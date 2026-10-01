@@ -58,15 +58,19 @@ class RefreshFileClient implements FileBasedSyncClientInterface {
 describe('import/file-import-refresh', () => {
     it.effect('persists the imported transaction and reports it as new after quick import', () =>
         Effect.gen(function* () {
-            const account = seed.account({ title: 'Refresh Bank', externalId: BANK_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
-            seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
+            const account = yield* seed.account({
+                title: 'Refresh Bank',
+                externalId: BANK_ACCOUNT_ID,
+                externalSource: ExternalSourceEnum.ERSTE
+            });
+            yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
             const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.ERSTE, new RefreshFileClient());
 
             const result = yield* syncService.quickImport(STATEMENT_URI);
 
             expect(result.newTransactionCount).toBe(1);
             expect(
-                testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'refresh-transaction-1')).all()
+                yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'refresh-transaction-1'))
             ).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );

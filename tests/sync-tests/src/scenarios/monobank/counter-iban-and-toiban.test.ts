@@ -12,16 +12,15 @@ describe('monobank/counter-iban-and-toiban', () => {
             const monobankSyncService = yield* MonobankSyncService;
             const counterIban = 'UA213223130000026007233566001';
 
-            setupMonobankFixture();
+            yield* setupMonobankFixture();
             monobankStub.statement([buildMonobank.transaction({ id: 'tx-with-iban', amount: -100000, hold: false, counterIban })]);
 
             yield* monobankSyncService.sync();
 
-            const entry = testDb
+            const entry = (yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-with-iban'))
-                .all()[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-with-iban')))[0];
             expect(entry.toIban).toBe(counterIban);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -29,16 +28,15 @@ describe('monobank/counter-iban-and-toiban', () => {
     it.effect('leaves toIban null when monobank omits counterIban', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            setupMonobankFixture();
+            yield* setupMonobankFixture();
             monobankStub.statement([buildMonobank.transaction({ id: 'tx-no-iban', amount: -100000, hold: false })]);
 
             yield* monobankSyncService.sync();
 
-            const entry = testDb
+            const entry = (yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-no-iban'))
-                .all()[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-no-iban')))[0];
             expect(entry.toIban).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );

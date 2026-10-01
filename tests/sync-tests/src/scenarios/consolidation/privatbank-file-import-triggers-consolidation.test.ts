@@ -57,27 +57,27 @@ class StubPrivatbankFileClient implements FileBasedSyncClientInterface {
 const buildPrivatbankSyncService = (transactions: SyncTransactionInterface[]) =>
     makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, new StubPrivatbankFileClient(transactions));
 
-const seedPrivatbankAccount = (): void => {
-    seed.account({
-        title: 'Privatbank Card',
-        externalId: PRIVATBANK_CARD_ID,
-        externalSource: ExternalSourceEnum.PRIVATBANK
+const seedPrivatbankAccount = () =>
+    Effect.gen(function* () {
+        yield* seed.account({
+            title: 'Privatbank Card',
+            externalId: PRIVATBANK_CARD_ID,
+            externalSource: ExternalSourceEnum.PRIVATBANK
+        });
     });
-};
 
 describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
     it.effect('enqueues consolidation after a Privatbank file import introduces new transactions', () =>
         Effect.gen(function* () {
-            seedPrivatbankAccount();
+            yield* seedPrivatbankAccount();
             const syncService = yield* buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-            const transaction = testDb
+            const [transaction] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK))
-                .get();
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK));
 
             yield* expectFileImportConsolidationEnqueued(transaction?.id);
         }).pipe(Effect.provide(TestLayer))
@@ -87,7 +87,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
         Effect.gen(function* () {
             const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
             const enqueue = vi.mocked(transferConsolidationDrainerService.enqueue);
-            seedPrivatbankAccount();
+            yield* seedPrivatbankAccount();
             const syncService = yield* buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);

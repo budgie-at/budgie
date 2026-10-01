@@ -16,21 +16,22 @@ vi.mock('expo-background-task', () => ({
 
 const SYNC_ONLY_PATH = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
 
-const stubSelectedBtcAccount = (): void => {
-    seedCryptoInstrument('BTC');
-    binanceStub.serverTime();
-    binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
-    binanceStub.fundingBalances([]);
-    binanceStub.earnPositions([]);
-    binanceStub.lockedEarnPositions([]);
-};
+const stubSelectedBtcAccount = () =>
+    Effect.gen(function* () {
+        yield* seedCryptoInstrument('BTC');
+        binanceStub.serverTime();
+        binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+        binanceStub.fundingBalances([]);
+        binanceStub.earnPositions([]);
+        binanceStub.lockedEarnPositions([]);
+    });
 
 describe('binance/setup-sync', () => {
     it.effect('starts Binance sync after setting up selected accounts', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            stubSelectedBtcAccount();
+            yield* stubSelectedBtcAccount();
 
             const requestedPaths: string[] = [];
             mockServer.events.on('request:start', ({ request }) => {

@@ -1,14 +1,16 @@
 import { MccCategoryEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/setup';
 
-import type { MccCategoryEntityInterface } from '@budgie/contracts';
+import type {} from '@budgie/contracts';
 
-export const findMccByCode = (mcc: string): Pick<MccCategoryEntityInterface, 'id' | 'mccGroupId'> => {
-    const row = testDb.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)).all()[0];
-    if (row === undefined) {
-        throw new Error(`MCC ${mcc} not found`);
-    }
-    return { id: row.id, mccGroupId: row.mccGroupId };
-};
+export const findMccByCode = (mcc: string) =>
+    Effect.gen(function* () {
+        const row = (yield* testDb.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)))[0];
+        if (row === undefined) {
+            throw new Error(`MCC ${mcc} not found`);
+        }
+        return { id: row.id, mccGroupId: row.mccGroupId };
+    });

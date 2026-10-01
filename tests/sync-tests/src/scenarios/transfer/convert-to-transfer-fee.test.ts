@@ -21,9 +21,9 @@ describe('transfer/convert-to-transfer-fee', () => {
         Effect.gen(function* () {
             const transactionTransferService = yield* TransactionTransferService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH });
-            const depositAccount = seed.account({ title: 'Savings', type: AccountTypeEnum.DEPOSIT });
-            const transaction = seed.bankPairExpense(
+            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH });
+            const depositAccount = yield* seed.account({ title: 'Savings', type: AccountTypeEnum.DEPOSIT });
+            const transaction = yield* seed.bankPairExpense(
                 { externalId: 'savings-move', operatedAt: new Date('2026-06-02T12:00:00.000Z') },
                 { accountId: cashAccount.id, amount: EXPENSE_AMOUNT * PRECISION }
             );
@@ -43,11 +43,9 @@ describe('transfer/convert-to-transfer-fee', () => {
                 ]
             });
 
-            const feeEntries = testDb
-                .select()
-                .from(TransactionEntryEntityTable)
-                .all()
-                .filter(entry => entry.transactionId === transaction.id && entry.type === TransactionEntryTypeEnum.FEE);
+            const feeEntries = (yield* testDb.select().from(TransactionEntryEntityTable)).filter(
+                entry => entry.transactionId === transaction.id && entry.type === TransactionEntryTypeEnum.FEE
+            );
             const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances([cashAccount.id, depositAccount.id]);
 
             expect(feeEntries.map(entry => [entry.accountId, entry.amount])).toEqual([[cashAccount.id, FEE_AMOUNT * PRECISION]]);

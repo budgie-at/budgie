@@ -1,6 +1,6 @@
-import { sql } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
-import type { SQLWrapper } from 'drizzle-orm';
+import type { DB } from '@budgie/contracts';
 
 const MUTABLE_TABLES = [
     'accounts',
@@ -22,11 +22,14 @@ const MUTABLE_TABLES = [
     'comment_embedding_tags'
 ] as const;
 
-export const resetTestDb = (db: { readonly run: (query: string | SQLWrapper) => void }): void => {
-    db.run(sql`PRAGMA foreign_keys = OFF`);
-    for (const tableName of MUTABLE_TABLES) {
-        db.run(sql.raw(`DELETE FROM "${tableName}"`));
-    }
-    db.run(sql`DELETE FROM sqlite_sequence WHERE name NOT IN ('instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings')`);
-    db.run(sql`PRAGMA foreign_keys = ON`);
-};
+export const resetTestDb = (database: DB) =>
+    Effect.forEach(
+        [
+            'PRAGMA foreign_keys = OFF',
+            ...MUTABLE_TABLES.map(tableName => `DELETE FROM "${tableName}"`),
+            "DELETE FROM sqlite_sequence WHERE name NOT IN ('instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings')",
+            'PRAGMA foreign_keys = ON'
+        ],
+        statement => database.$client.unsafe(statement).raw,
+        { discard: true }
+    );

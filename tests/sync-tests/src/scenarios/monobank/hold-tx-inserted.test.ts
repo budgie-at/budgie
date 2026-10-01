@@ -11,12 +11,12 @@ describe('monobank/hold-tx-inserted', () => {
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
 
-            setupMonobankFixture();
+            yield* setupMonobankFixture();
             monobankStub.statement([buildMonobank.transaction({ id: 'tx-hold-1', amount: -2500, hold: true })]);
 
             yield* monobankSyncService.sync();
 
-            const rows = testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-hold-1')).all();
+            const rows = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-hold-1'));
             expect(rows).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );

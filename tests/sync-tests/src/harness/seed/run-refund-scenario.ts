@@ -5,20 +5,21 @@ import { seed } from './seed';
 import { seedRefundedExpense } from './seed-refund-fixture';
 
 import type { ConsolidationResultInterface } from '@budgie/consolidation';
+import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
 type RunRefundScenarioInput = Omit<Parameters<typeof seedRefundedExpense>[0], 'accountId'>;
 
 interface RunRefundScenarioResult {
-    readonly account: ReturnType<typeof seed.account>;
-    readonly expense: ReturnType<typeof seedRefundedExpense>['expense'];
-    readonly refunds: ReturnType<typeof seedRefundedExpense>['refunds'];
+    readonly account: AccountEntityInterface;
+    readonly expense: TransactionEntityInterface;
+    readonly refunds: TransactionEntityInterface[];
     readonly result: ConsolidationResultInterface;
 }
 
 export const runRefundScenario = Effect.fnUntraced(function* (input: RunRefundScenarioInput) {
     const transferConsolidationService = yield* TransferConsolidationService;
-    const account = seed.account({ externalId: 'mono-card' });
-    const { expense, refunds } = seedRefundedExpense({ ...input, accountId: account.id });
+    const account = yield* seed.account({ externalId: 'mono-card' });
+    const { expense, refunds } = yield* seedRefundedExpense({ ...input, accountId: account.id });
     const result: ConsolidationResultInterface = yield* transferConsolidationService.consolidate(null);
     const scenario: RunRefundScenarioResult = { account, expense, refunds, result };
 

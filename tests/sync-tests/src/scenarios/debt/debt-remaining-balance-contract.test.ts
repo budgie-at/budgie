@@ -30,34 +30,34 @@ import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
 import type { DebtProgressContractInterface } from './interface/debt-progress-contract.interface';
-import type {
-    AccountEntityInterface,
-    DebtEventEntityInterface,
-    TransactionCreateEntityInterface,
-    TransactionEntryCreateEntityInterface
-} from '@budgie/contracts';
+import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
 
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
 
-const seedDebtAccount = (debtType: AccountDebtTypeEnum, targetBalance: number, instrumentId = 1): AccountEntityInterface =>
-    seed.account({ title: 'Debt contract account', type: AccountTypeEnum.DEBT, debtType, targetBalance, instrumentId });
-
-const insertDebtEvent = (debtAccountId: number, direction: DebtEventDirectionEnum, amount: number): DebtEventEntityInterface =>
-    insertOne(DebtEventEntityTable, {
-        debtAccountId,
-        direction,
-        source: DebtEventSourceEnum.MANUAL,
-        amount,
-        operatedAt: OPERATED_AT
+const seedDebtAccount = (debtType: AccountDebtTypeEnum, targetBalance: number, instrumentId = 1) =>
+    Effect.gen(function* () {
+        return yield* seed.account({ title: 'Debt contract account', type: AccountTypeEnum.DEBT, debtType, targetBalance, instrumentId });
     });
 
-const seedPartiallySettledDebt = (debtType: AccountDebtTypeEnum, instrumentId = 1): AccountEntityInterface => {
-    const account = seedDebtAccount(debtType, convertToMicroUnits(1_000), instrumentId);
-    insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(1_000));
-    insertDebtEvent(account.id, DebtEventDirectionEnum.CLOSE, convertToMicroUnits(250));
+const insertDebtEvent = (debtAccountId: number, direction: DebtEventDirectionEnum, amount: number) =>
+    Effect.gen(function* () {
+        return yield* insertOne(DebtEventEntityTable, {
+            debtAccountId,
+            direction,
+            source: DebtEventSourceEnum.MANUAL,
+            amount,
+            operatedAt: OPERATED_AT
+        });
+    });
 
-    return account;
-};
+const seedPartiallySettledDebt = (debtType: AccountDebtTypeEnum, instrumentId = 1) =>
+    Effect.gen(function* () {
+        const account = yield* seedDebtAccount(debtType, convertToMicroUnits(1_000), instrumentId);
+        yield* insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(1_000));
+        yield* insertDebtEvent(account.id, DebtEventDirectionEnum.CLOSE, convertToMicroUnits(250));
+
+        return account;
+    });
 
 const readHomeRow = Effect.fnUntraced(function* (accountId: number, defaultInstrumentId: number) {
     const accountBalanceRepository = yield* AccountBalanceRepository;
@@ -70,13 +70,15 @@ const readHomeRow = Effect.fnUntraced(function* (accountId: number, defaultInstr
     return row;
 });
 
-const updateDebtEventAmount = (debtEventId: number, amount: number): void => {
-    testDb.update(DebtEventEntityTable).set({ amount }).where(eq(DebtEventEntityTable.id, debtEventId)).run();
-};
+const updateDebtEventAmount = (debtEventId: number, amount: number) =>
+    Effect.gen(function* () {
+        yield* testDb.update(DebtEventEntityTable).set({ amount }).where(eq(DebtEventEntityTable.id, debtEventId));
+    });
 
-const softDeleteDebtEvent = (debtEventId: number): void => {
-    testDb.update(DebtEventEntityTable).set({ deletedAt: new Date() }).where(eq(DebtEventEntityTable.id, debtEventId)).run();
-};
+const softDeleteDebtEvent = (debtEventId: number) =>
+    Effect.gen(function* () {
+        yield* testDb.update(DebtEventEntityTable).set({ deletedAt: new Date() }).where(eq(DebtEventEntityTable.id, debtEventId));
+    });
 
 const sumConvertedOutstandingByDebtType = Effect.fnUntraced(function* (defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
     const accountBalanceRepository = yield* AccountBalanceRepository;
@@ -86,19 +88,18 @@ const sumConvertedOutstandingByDebtType = Effect.fnUntraced(function* (defaultIn
         .reduce((total, row) => total + convertFromMicroUnits(row.convertedDebtOutstandingAmount), 0);
 });
 
-const findCloseDebtEvent = (accountId: number): DebtEventEntityInterface => {
-    const settlement = testDb
-        .select()
-        .from(DebtEventEntityTable)
-        .all()
-        .find(event => event.debtAccountId === accountId && event.direction === DebtEventDirectionEnum.CLOSE);
+const findCloseDebtEvent = (accountId: number) =>
+    Effect.gen(function* () {
+        const settlement = (yield* testDb.select().from(DebtEventEntityTable)).find(
+            event => event.debtAccountId === accountId && event.direction === DebtEventDirectionEnum.CLOSE
+        );
 
-    if (!isDefined(settlement)) {
-        throw new Error(`Expected a seeded settlement debt event for account ${accountId}`);
-    }
+        if (!isDefined(settlement)) {
+            throw new Error(`Expected a seeded settlement debt event for account ${accountId}`);
+        }
 
-    return settlement;
-};
+        return settlement;
+    });
 
 const expectDebtProgressContract = Effect.fnUntraced(function* (accountId: number, expected: DebtProgressContractInterface) {
     const progress = yield* fetchDebtProgress(accountId);
@@ -113,7 +114,7 @@ const expectDebtProgressContract = Effect.fnUntraced(function* (accountId: numbe
 describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt remaining balance contract - %s', debtType => {
     it.effect('reports outstanding/paid/total/percentage for a partial settlement', () =>
         Effect.gen(function* () {
-            const account = seedPartiallySettledDebt(debtType);
+            const account = yield* seedPartiallySettledDebt(debtType);
 
             yield* expectDebtProgressContract(account.id, { outstandingAmount: 750, paidAmount: 250, totalAmount: 1_000, percentage: 25 });
         }).pipe(Effect.provide(TestLayer))
@@ -124,7 +125,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
             const accountDebtOpeningService = yield* AccountDebtOpeningService;
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            const fundingAccount = seed.account({ title: 'Funding account', type: AccountTypeEnum.BANK_SYNC });
+            const fundingAccount = yield* seed.account({ title: 'Funding account', type: AccountTypeEnum.BANK_SYNC });
             const debtAccount = yield* accountDebtOpeningService.openDebtWithFundingAccount(
                 {
                     title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
@@ -142,7 +143,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
             );
             const repaymentType = debtType === AccountDebtTypeEnum.LENT ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
             const isRepaymentExpense = repaymentType === TransactionTypeEnum.EXPENSE;
-            const repayment = insertOne(TransactionEntityTable, {
+            const repayment = yield* insertOne(TransactionEntityTable, {
                 type: repaymentType,
                 title: 'Repayment',
                 externalId: null,
@@ -155,7 +156,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
                 toAccountId: isRepaymentExpense ? null : fundingAccount.id
             } satisfies TransactionCreateEntityInterface);
 
-            insertOne(TransactionEntryEntityTable, {
+            yield* insertOne(TransactionEntryEntityTable, {
                 transactionId: repayment.id,
                 accountId: fundingAccount.id,
                 type: isRepaymentExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
@@ -185,7 +186,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it.effect('sums the section total in the default instrument when the debt is already in the default currency', () =>
         Effect.gen(function* () {
-            const account = seedPartiallySettledDebt(debtType);
+            const account = yield* seedPartiallySettledDebt(debtType);
             const row = yield* readHomeRow(account.id, account.instrumentId);
             const sectionTotal = yield* sumConvertedOutstandingByDebtType(account.instrumentId, debtType);
 
@@ -204,7 +205,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
                 exchangeRate
             );
 
-            const account = seedPartiallySettledDebt(debtType, usdInstrument.id);
+            const account = yield* seedPartiallySettledDebt(debtType, usdInstrument.id);
             const row = yield* readHomeRow(account.id, eurInstrument.id);
             const sectionTotal = yield* sumConvertedOutstandingByDebtType(eurInstrument.id, debtType);
 
@@ -216,10 +217,10 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it.effect('recomputes outstanding/paid after the settlement amount is edited', () =>
         Effect.gen(function* () {
-            const account = seedPartiallySettledDebt(debtType);
-            const settlement = findCloseDebtEvent(account.id);
+            const account = yield* seedPartiallySettledDebt(debtType);
+            const settlement = yield* findCloseDebtEvent(account.id);
 
-            updateDebtEventAmount(settlement.id, convertToMicroUnits(400));
+            yield* updateDebtEventAmount(settlement.id, convertToMicroUnits(400));
 
             yield* expectDebtProgressContract(account.id, { outstandingAmount: 600, paidAmount: 400, totalAmount: 1_000, percentage: 40 });
         }).pipe(Effect.provide(TestLayer))
@@ -227,10 +228,10 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it.effect('does not shrink the total when the settlement is soft-deleted', () =>
         Effect.gen(function* () {
-            const account = seedPartiallySettledDebt(debtType);
-            const settlement = findCloseDebtEvent(account.id);
+            const account = yield* seedPartiallySettledDebt(debtType);
+            const settlement = yield* findCloseDebtEvent(account.id);
 
-            softDeleteDebtEvent(settlement.id);
+            yield* softDeleteDebtEvent(settlement.id);
 
             yield* expectDebtProgressContract(account.id, { outstandingAmount: 1_000, paidAmount: 0, totalAmount: 1_000, percentage: 0 });
         }).pipe(Effect.provide(TestLayer))
@@ -238,7 +239,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it.effect('reports a zero-total account without NaN', () =>
         Effect.gen(function* () {
-            const account = seedDebtAccount(debtType, 0);
+            const account = yield* seedDebtAccount(debtType, 0);
 
             yield* expectDebtProgressContract(account.id, { outstandingAmount: 0, paidAmount: 0, totalAmount: 0, percentage: 0 });
         }).pipe(Effect.provide(TestLayer))
@@ -246,7 +247,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it.effect('reports the target amount as fully outstanding before any debt events exist', () =>
         Effect.gen(function* () {
-            const account = seedDebtAccount(debtType, convertToMicroUnits(13_000));
+            const account = yield* seedDebtAccount(debtType, convertToMicroUnits(13_000));
 
             yield* expectDebtProgressContract(account.id, { outstandingAmount: 13_000, paidAmount: 0, totalAmount: 13_000, percentage: 0 });
         }).pipe(Effect.provide(TestLayer))
@@ -254,9 +255,9 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it.effect('keeps the total at the principal and reports the excess as overpaid', () =>
         Effect.gen(function* () {
-            const account = seedDebtAccount(debtType, convertToMicroUnits(1_000));
-            insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(1_000));
-            insertDebtEvent(account.id, DebtEventDirectionEnum.CLOSE, convertToMicroUnits(1_200));
+            const account = yield* seedDebtAccount(debtType, convertToMicroUnits(1_000));
+            yield* insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(1_000));
+            yield* insertDebtEvent(account.id, DebtEventDirectionEnum.CLOSE, convertToMicroUnits(1_200));
 
             yield* expectDebtProgressContract(account.id, {
                 outstandingAmount: 0,
@@ -270,8 +271,8 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it.effect('grows the total when more is lent or borrowed after the opening amount', () =>
         Effect.gen(function* () {
-            const account = seedPartiallySettledDebt(debtType);
-            insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(500));
+            const account = yield* seedPartiallySettledDebt(debtType);
+            yield* insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(500));
 
             yield* expectDebtProgressContract(account.id, {
                 outstandingAmount: 1_250,

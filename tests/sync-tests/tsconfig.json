@@ -5,6 +5,7 @@
         "moduleResolution": "bundler",
         "customConditions": ["react-native-legacy-deep-imports"],
         "noEmit": true,
+        "allowJs": true,
         "types": ["node", "vitest/globals"],
         "paths": {
             "@app/*": ["../../packages/app/src/*"],

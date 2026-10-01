@@ -30,7 +30,7 @@ const OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
 
 const setupMonobankTransfer = Effect.fnUntraced(function* (monobankAccountId: string) {
     const monobankSyncService = yield* MonobankSyncService;
-    setupMonobankFixture(monobankAccountId);
+    yield* setupMonobankFixture(monobankAccountId);
     monobankStub.statement([
         buildMonobank.transaction({
             id: 'mono-transfer-out',
@@ -74,23 +74,25 @@ const importPrivatbankTransfer = Effect.fnUntraced(function* (privatbankAccountI
     return yield* transactionImportService.bulkUpsertImported([privatbankInput], new Map());
 });
 
-const expectTransferPairParents = (privatbankTransactionIds: number[]): void => {
-    const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-    expect(canonicals).toHaveLength(1);
-    const canonicalIds = canonicals.map(canonical => canonical.id);
-    const monobankParentTransactionIds = testDb
-        .select()
-        .from(TransactionEntityTable)
-        .where(eq(TransactionEntityTable.externalId, 'mono-transfer-out'))
-        .all()
-        .map(transaction => fetchTransactionById(transaction.id).consolidationParentTransactionId);
-    const privatbankParentTransactionIds = privatbankTransactionIds.map(
-        transactionId => fetchTransactionById(transactionId).consolidationParentTransactionId
-    );
+const expectTransferPairParents = (privatbankTransactionIds: number[]) =>
+    Effect.gen(function* () {
+        const canonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        expect(canonicals).toHaveLength(1);
+        const canonicalIds = canonicals.map(canonical => canonical.id);
+        const monobankTransactions = yield* testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalId, 'mono-transfer-out'));
+        const monobankParentTransactionIds = (yield* Effect.forEach(monobankTransactions, transaction =>
+            fetchTransactionById(transaction.id)
+        )).map(transaction => transaction.consolidationParentTransactionId);
+        const privatbankParentTransactionIds = (yield* Effect.forEach(privatbankTransactionIds, transactionId =>
+            fetchTransactionById(transactionId)
+        )).map(transaction => transaction.consolidationParentTransactionId);
 
-    expect(monobankParentTransactionIds).toEqual(canonicalIds);
-    expect(privatbankParentTransactionIds).toEqual(canonicalIds);
-};
+        expect(monobankParentTransactionIds).toEqual(canonicalIds);
+        expect(privatbankParentTransactionIds).toEqual(canonicalIds);
+    });
 
 describe('consolidation/monobank-privatbank-transfer', () => {
     it.effect('auto-consolidates a Monobank outgoing transfer with an imported Privatbank incoming transfer', () =>
@@ -99,7 +101,7 @@ describe('consolidation/monobank-privatbank-transfer', () => {
             const transferConsolidationService = yield* TransferConsolidationService;
             const monobankAccountId = 'mono-card';
             const privatbankCardId = 'privat-card';
-            const privatbankAccount = seed.account({
+            const privatbankAccount = yield* seed.account({
                 title: 'Privatbank Card',
                 externalId: privatbankCardId,
                 externalSource: ExternalSourceEnum.PRIVATBANK
@@ -115,7 +117,7 @@ describe('consolidation/monobank-privatbank-transfer', () => {
             const consolidateResult = yield* transferConsolidationService.consolidate(null);
             expect(consolidateResult.consolidated).toBe(1);
 
-            expectTransferPairParents(importedPrivatbankTransactions.map(transaction => transaction.id));
+            yield* expectTransferPairParents(importedPrivatbankTransactions.map(transaction => transaction.id));
         }).pipe(Effect.provide(TestLayer))
     );
 });

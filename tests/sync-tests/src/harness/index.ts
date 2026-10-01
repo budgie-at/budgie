@@ -81,3 +81,7 @@ export { skipRequestedSync } from './sync-workload/skip-requested-sync';
 export { expectForwardSyncWithoutHistory } from './db/expect-forward-sync-without-history';
 export { seedBankAndCashAccounts } from './seed/seed-bank-and-cash-accounts';
 export { explainQueryPlan } from './db/explain-query-plan';
+export { fetchCachedBalanceAmount } from './db/fetch-cached-balance-amount';
+export { seedUsdtFundingAccount } from './binance/seed-usdt-funding-account';
+export { expectParentedToCanonical } from './consolidation/expect-parented-to-canonical';
+export { seedEuroBaseUahAccount } from './seed/seed-euro-base-uah-account';

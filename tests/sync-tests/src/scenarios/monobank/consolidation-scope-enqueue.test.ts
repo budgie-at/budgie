@@ -14,7 +14,7 @@ describe('monobank/consolidation-scope-enqueue', () => {
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
-            setupMonobankFixture();
+            yield* setupMonobankFixture();
             monobankStub.statement([
                 buildMonobank.transaction({
                     id: 'tx-scoped-sync',
@@ -26,11 +26,10 @@ describe('monobank/consolidation-scope-enqueue', () => {
 
             yield* monobankSyncService.sync();
 
-            const transaction = testDb
+            const [transaction] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.MONOBANK))
-                .get();
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.MONOBANK));
 
             expect(transaction).toBeDefined();
             if (!isDefined(transaction)) {

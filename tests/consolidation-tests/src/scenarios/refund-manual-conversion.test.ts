@@ -11,14 +11,14 @@ layer(TestLayer)('consolidation/refund-manual-conversion', it => {
     it.effect('manually converts when the income and expense already share a tag', () =>
         Effect.gen(function* () {
             const refundConsolidationService = yield* RefundConsolidationService;
-            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: convertToMicroUnits(120),
                 refundAmounts: [convertToMicroUnits(40)]
             });
-            const tag = testSeedService.tag('Shared');
+            const tag = yield* testSeedService.tag('Shared');
 
-            testSeedService.transactionTag(expense.id, tag.id);
-            testSeedService.transactionTag(refunds[0].id, tag.id);
+            yield* testSeedService.transactionTag(expense.id, tag.id);
+            yield* testSeedService.transactionTag(refunds[0].id, tag.id);
 
             const canonicalTransactionId = yield* refundConsolidationService.convertToRefund({
                 refundIncomeTransactionId: refunds[0].id,
@@ -26,15 +26,17 @@ layer(TestLayer)('consolidation/refund-manual-conversion', it => {
             });
 
             expect(canonicalTransactionId).toBe(expense.id);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-            expect(testQueryService.fetchTransactionTagIds(expense.id)).toHaveLength(1);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
+            expect(yield* testQueryService.fetchTransactionTagIds(expense.id)).toHaveLength(1);
         })
     );
 
     it.effect('finds refundable expenses only from refund income transactions', () =>
         Effect.gen(function* () {
             const refundConsolidationService = yield* RefundConsolidationService;
-            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: convertToMicroUnits(120),
                 externalIdPrefix: 'manual-refund',
                 refundAmounts: [convertToMicroUnits(40)],
@@ -53,7 +55,7 @@ layer(TestLayer)('consolidation/refund-manual-conversion', it => {
     it.effect('rejects a sequential refund that exceeds the remaining expense amount', () =>
         Effect.gen(function* () {
             const refundConsolidationService = yield* RefundConsolidationService;
-            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: convertToMicroUnits(120),
                 refundAmounts: [convertToMicroUnits(80), convertToMicroUnits(50)]
             });
@@ -72,11 +74,10 @@ layer(TestLayer)('consolidation/refund-manual-conversion', it => {
                 )
             ).toMatchObject({ _tag: 'RefundExceedsExpenseError', message: 'Refund amount cannot exceed the expense' });
 
-            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
-            expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(expense.id);
+            expect((yield* testQueryService.fetchTransactionById(refunds[1].id)).consolidationParentTransactionId).toBeNull();
             expect(
-                testQueryService
-                    .fetchEntriesByTransactionId(expense.id)
+                (yield* testQueryService.fetchEntriesByTransactionId(expense.id))
                     .filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
                     .map(entry => entry.amount)
             ).toEqual([convertToMicroUnits(80)]);

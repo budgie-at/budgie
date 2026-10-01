@@ -64,15 +64,19 @@ describe('consolidation/atm-already-tracked', () => {
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const categorizeInboxService = yield* CategorizeInboxService;
             const transactionCategorizeInboxRepository = yield* TransactionCategorizeInboxRepository;
-            const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: INSTRUMENT_ID });
-            const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: INSTRUMENT_ID });
-            const atmExpense = seedBankPair.expense(
+            const bankAccount = yield* seed.account({
+                externalId: 'mono-bank',
+                type: AccountTypeEnum.BANK_SYNC,
+                instrumentId: INSTRUMENT_ID
+            });
+            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: INSTRUMENT_ID });
+            const atmExpense = yield* seedBankPair.expense(
                 { externalId: 'tx-atm-tracked', operatedAt: buildLastMonthDate() },
-                { accountId: bankAccount.id, amount: ATM_AMOUNT, mccCategoryId: findMccByCode('6011').id }
+                { accountId: bankAccount.id, amount: ATM_AMOUNT, mccCategoryId: (yield* findMccByCode('6011')).id }
             );
-            seedBankPair.expense(
+            yield* seedBankPair.expense(
                 { externalId: 'tx-groceries', operatedAt: buildLastMonthDate() },
-                { accountId: bankAccount.id, amount: GROCERY_AMOUNT, mccCategoryId: findMccByCode('5411').id }
+                { accountId: bankAccount.id, amount: GROCERY_AMOUNT, mccCategoryId: (yield* findMccByCode('5411')).id }
             );
             const accountIds = [bankAccount.id, cashAccount.id];
             yield* accountBalanceIncrementalService.updateAllBalances(true);

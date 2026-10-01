@@ -14,9 +14,9 @@ describe('bridged currency conversion', () => {
             const zloty = yield* requireInstrument(CurrencyEnum.PLN);
             const koruna = yield* requireInstrument(CurrencyEnum.CZK);
 
-            testDb.update(SettingsEntityTable).set({ defaultInstrumentId: dollar.id }).run();
-            seedExchangeRate(dollar.id, zloty.id, 4);
-            seedExchangeRate(koruna.id, dollar.id, 0.04);
+            yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: dollar.id });
+            yield* seedExchangeRate(dollar.id, zloty.id, 4);
+            yield* seedExchangeRate(koruna.id, dollar.id, 0.04);
 
             const sourceAmount = 100 * PRECISION;
             const conversion = yield* exchangeRatesService.convert(zloty.id, koruna.id, sourceAmount);

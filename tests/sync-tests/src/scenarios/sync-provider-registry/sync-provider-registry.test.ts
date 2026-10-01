@@ -8,14 +8,17 @@ import * as Effect from 'effect/Effect';
 
 import { seed, TestLayer } from '../../harness';
 
-import type { AccountEntityInterface } from '@budgie/contracts';
+import type {} from '@budgie/contracts';
 
-const seedAccount = (): AccountEntityInterface => seed.account({ externalId: `test-${Math.random()}`, instrumentId: 1 });
+const seedAccount = () =>
+    Effect.gen(function* () {
+        return yield* seed.account({ externalId: `test-${Math.random()}`, instrumentId: 1 });
+    });
 
 const resolveServiceForProvider = Effect.fnUntraced(function* (provider: ExternalSourceEnum) {
     const syncProviderRegistryService = yield* SyncProviderRegistryService;
-    const account = seedAccount();
-    seed.sync({ accountId: account.id, provider });
+    const account = yield* seedAccount();
+    yield* seed.sync({ accountId: account.id, provider });
 
     return yield* syncProviderRegistryService.getServiceForAccount(account.id);
 });
@@ -41,7 +44,7 @@ describe('SyncProviderRegistryService', () => {
         it.effect('returns null for account with no bank sync record', () =>
             Effect.gen(function* () {
                 const syncProviderRegistryService = yield* SyncProviderRegistryService;
-                const account = seedAccount();
+                const account = yield* seedAccount();
 
                 expect(yield* syncProviderRegistryService.getServiceForAccount(account.id)).toBeNull();
             }).pipe(Effect.provide(TestLayer))

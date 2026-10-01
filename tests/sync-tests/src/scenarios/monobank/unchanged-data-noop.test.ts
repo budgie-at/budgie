@@ -10,47 +10,42 @@ describe('monobank/unchanged-data-noop', () => {
     it.effect('re-sync of identical data does not touch updatedAt on transactions or entries', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const { sync } = setupMonobankFixture();
+            const { sync } = yield* setupMonobankFixture();
 
             const txPayload = buildMonobank.transaction({ id: 'tx-stable', amount: -2500, hold: false });
             monobankStub.statement([txPayload]);
             yield* monobankSyncService.sync();
 
-            const txAfterFirst = testDb
+            const txAfterFirst = (yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, 'tx-stable'))
-                .all()[0];
-            const entryAfterFirst = testDb
+                .where(eq(TransactionEntityTable.externalId, 'tx-stable')))[0];
+            const entryAfterFirst = (yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable'))
-                .all()[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable')))[0];
 
-            testDb
+            yield* testDb
                 .update(SyncEntityTable)
                 .set({ forwardSyncFromAt: new Date(2026, 0, 1) })
-                .where(eq(SyncEntityTable.id, sync.id))
-                .run();
+                .where(eq(SyncEntityTable.id, sync.id));
 
             monobankStub.statement([txPayload]);
             yield* monobankSyncService.sync();
 
-            const txAfterSecond = testDb
+            const txAfterSecond = (yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, 'tx-stable'))
-                .all()[0];
-            const entryAfterSecond = testDb
+                .where(eq(TransactionEntityTable.externalId, 'tx-stable')))[0];
+            const entryAfterSecond = (yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable'))
-                .all()[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable')))[0];
 
             expect(txAfterSecond.updatedAt?.getTime()).toBe(txAfterFirst.updatedAt?.getTime());
             expect(entryAfterSecond.updatedAt?.getTime()).toBe(entryAfterFirst.updatedAt?.getTime());
 
-            const allRows = testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-stable')).all();
+            const allRows = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-stable'));
             expect(allRows).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );

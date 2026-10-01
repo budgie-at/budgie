@@ -26,7 +26,9 @@ import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-export const testDb = buildTestDb();
+export const testDbHandle = await buildTestDb();
+
+export const testDb = testDbHandle.database;
 
 export const testQueryService = new TestQueryService(testDb);
 

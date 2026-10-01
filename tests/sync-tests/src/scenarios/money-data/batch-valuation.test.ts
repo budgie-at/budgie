@@ -54,10 +54,10 @@ describe('batch entry valuation', () => {
             const transactionService = yield* TransactionService;
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-            const account = seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: hryvnia.id });
+            const account = yield* seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: hryvnia.id });
             const inputs = Array.from({ length: TRANSACTION_COUNT }, (_, index) => buildExpenseInput(account.id, index));
 
-            testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+            yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
             const prepareSpy = vi.spyOn(BetterSQLiteSession.prototype, 'prepareQuery');
 
@@ -66,7 +66,7 @@ describe('batch entry valuation', () => {
             expect(prepareSpy.mock.calls.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
             prepareSpy.mockRestore();
 
-            const entries = testDb.select().from(TransactionEntryEntityTable).all();
+            const entries = yield* testDb.select().from(TransactionEntryEntityTable);
             const expected = yield* Effect.all(
                 inputs.map(input =>
                     entryBaseValuationService.valueMicroUnitEntry({

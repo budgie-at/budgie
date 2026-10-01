@@ -14,25 +14,26 @@ const FIAT_DORMANCY_MAX_AGE_MS = 200 * DAY_MS;
 const STALE_FORWARD_SYNC_AGE_MS = 5 * 60 * 1000;
 
 const fetchExternalIds = () =>
-    testDb
-        .select()
-        .from(TransactionEntityTable)
-        .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE))
-        .all()
-        .map(transaction => transaction.externalId);
+    Effect.gen(function* () {
+        return (yield* testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE))).map(transaction => transaction.externalId);
+    });
 
-const setupEmptyBackwardBinanceSync = (): void => {
-    setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
-    binanceStub.spotBalances([]);
-    binanceStub.fundingBalances([]);
-};
+const setupEmptyBackwardBinanceSync = () =>
+    Effect.gen(function* () {
+        yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
+        binanceStub.spotBalances([]);
+        binanceStub.fundingBalances([]);
+    });
 
 describe('binance/source-window-walk', () => {
     it.effect('collects available C2C history without requesting beyond the Binance six-month limit', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupEmptyBackwardBinanceSync();
+            yield* setupEmptyBackwardBinanceSync();
             const requestedWindows: TimeWindow[] = [];
             binanceStub.c2cOrders(
                 [
@@ -50,7 +51,7 @@ describe('binance/source-window-walk', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(fetchExternalIds()).toContain('binance:c2c:post-gap-p2p');
+            expect(yield* fetchExternalIds()).toContain('binance:c2c:post-gap-p2p');
             expect(Math.min(...requestedWindows.map(window => window.startMs))).toBeGreaterThan(Date.now() - FIAT_DORMANCY_MAX_AGE_MS);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -59,7 +60,7 @@ describe('binance/source-window-walk', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupEmptyBackwardBinanceSync();
+            yield* setupEmptyBackwardBinanceSync();
             const requestedWindows: TimeWindow[] = [];
             binanceStub.fiatOrders([], [], requestedWindows);
 
@@ -76,7 +77,7 @@ describe('binance/source-window-walk', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             const staleForwardSync = new Date(Date.now() - STALE_FORWARD_SYNC_AGE_MS);
-            const { sync } = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD, forwardSyncedAt: staleForwardSync });
+            const { sync } = yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD, forwardSyncedAt: staleForwardSync });
             const requestedWindows: TimeWindow[] = [];
             binanceStub.fiatOrders([], [], requestedWindows);
 
@@ -84,11 +85,10 @@ describe('binance/source-window-walk', () => {
             const firstRunRequestCount = requestedWindows.length;
 
             resetBinanceSyncForResync();
-            testDb
+            yield* testDb
                 .update(SyncEntityTable)
                 .set({ forwardSyncedAt: staleForwardSync, status: SyncStatusEnum.IDLE })
-                .where(eq(SyncEntityTable.id, sync.id))
-                .run();
+                .where(eq(SyncEntityTable.id, sync.id));
             yield* binanceSyncService.sync();
 
             expect(firstRunRequestCount).toBeGreaterThan(0);
@@ -100,7 +100,7 @@ describe('binance/source-window-walk', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupBinanceFixture({
+            yield* setupBinanceFixture({
                 asset: 'USDT',
                 mode: SyncModeEnum.FORWARD,
                 forwardSyncedAt: new Date(Date.now() - STALE_FORWARD_SYNC_AGE_MS)

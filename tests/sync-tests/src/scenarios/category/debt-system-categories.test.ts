@@ -16,18 +16,23 @@ import { testDb } from '../../harness/scenario/setup';
 
 const DEBT_CATEGORY_IDS = [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID];
 
-const fetchDebtSystemCategories = () => testDb.select().from(CategoryEntityTable).where(inArray(CategoryEntityTable.id, DEBT_CATEGORY_IDS));
+const fetchDebtSystemCategories = () =>
+    Effect.gen(function* () {
+        return yield* testDb.select().from(CategoryEntityTable).where(inArray(CategoryEntityTable.id, DEBT_CATEGORY_IDS));
+    });
 
 const fetchDebtSystemTranslations = () =>
-    testDb
-        .select()
-        .from(DefaultCategoryTranslationEntityTable)
-        .where(inArray(DefaultCategoryTranslationEntityTable.categoryId, DEBT_CATEGORY_IDS));
+    Effect.gen(function* () {
+        return yield* testDb
+            .select()
+            .from(DefaultCategoryTranslationEntityTable)
+            .where(inArray(DefaultCategoryTranslationEntityTable.categoryId, DEBT_CATEGORY_IDS));
+    });
 
 describe('category/debt-system-categories', () => {
     it.effect('seeds Lending and Borrowing as default system categories with a title per language', () =>
         Effect.gen(function* () {
-            const categories = yield* Effect.promise(() => fetchDebtSystemCategories());
+            const categories = yield* fetchDebtSystemCategories();
             const lending = categories.find(category => category.id === LENDING_CATEGORY_ID);
             const borrowing = categories.find(category => category.id === BORROWING_CATEGORY_ID);
 
@@ -38,7 +43,7 @@ describe('category/debt-system-categories', () => {
                 isDefault: true,
                 isSystemCategory: true
             });
-            expect(yield* Effect.promise(() => fetchDebtSystemTranslations())).toHaveLength(10);
+            expect(yield* fetchDebtSystemTranslations()).toHaveLength(10);
         }).pipe(Effect.provide(TestLayer))
     );
 

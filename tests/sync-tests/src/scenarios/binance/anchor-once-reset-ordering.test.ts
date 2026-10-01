@@ -1,6 +1,5 @@
 import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import {
-    AccountBalanceEntityTable,
     AccountBalanceRepository,
     AccountTypeEnum,
     SyncModeEnum,
@@ -11,13 +10,18 @@ import {
 } from '@budgie/contracts';
 import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import {} from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { binanceStub, buildBinance, resetBinanceSyncForResync, seed, setupBinanceFixture, testDb, TestLayer } from '../../harness';
-
-const fetchAnchoredAmount = (accountId: number): number | undefined =>
-    testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId)).get()?.amount;
+import {
+    binanceStub,
+    buildBinance,
+    fetchCachedBalanceAmount,
+    resetBinanceSyncForResync,
+    seed,
+    setupBinanceFixture,
+    TestLayer
+} from '../../harness';
 
 describe('binance/anchor-once-reset-ordering', () => {
     it.effect('anchors every Binance account exactly once per run via beforeProcessRun across a multi-pass loop', () =>
@@ -25,16 +29,16 @@ describe('binance/anchor-once-reset-ordering', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
 
-            const ethInstrument = seed.instrument({ code: 'ETH', name: 'ETH', symbol: 'ETH', type: InstrumentTypeEnum.CRYPTO });
-            const ethAccount = seed.account({
+            const ethInstrument = yield* seed.instrument({ code: 'ETH', name: 'ETH', symbol: 'ETH', type: InstrumentTypeEnum.CRYPTO });
+            const ethAccount = yield* seed.account({
                 externalId: encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'ETH' }),
                 externalSource: ExternalSourceEnum.BINANCE,
                 type: AccountTypeEnum.CRYPTO_SYNC,
                 instrumentId: ethInstrument.id
             });
-            seed.sync({
+            yield* seed.sync({
                 accountId: ethAccount.id,
                 token: JSON.stringify({ apiKey: 'test-api-key', apiSecret: 'test-api-secret' }),
                 provider: ExternalSourceEnum.BINANCE,
@@ -62,13 +66,13 @@ describe('binance/anchor-once-reset-ordering', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { account } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            const { account } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
 
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
 
             yield* binanceSyncService.sync();
 
-            expect(fetchAnchoredAmount(account.id)).toBe(PRECISION);
+            expect(yield* fetchCachedBalanceAmount(account.id)).toBe(PRECISION);
 
             resetBinanceSyncForResync();
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '5' })]);
@@ -77,7 +81,7 @@ describe('binance/anchor-once-reset-ordering', () => {
             yield* binanceSyncService.sync();
 
             expect(upsertSpy).toHaveBeenCalled();
-            expect(fetchAnchoredAmount(account.id)).toBe(5 * PRECISION);
+            expect(yield* fetchCachedBalanceAmount(account.id)).toBe(5 * PRECISION);
 
             upsertSpy.mockRestore();
         }).pipe(Effect.provide(TestLayer))
@@ -88,13 +92,13 @@ describe('binance/anchor-once-reset-ordering', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { account } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            const { account } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
             yield* accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION });
             binanceStub.spotBalances([buildBinance.balance({ asset: 'ETH', free: '2' })]);
 
             yield* binanceSyncService.sync();
 
-            expect(fetchAnchoredAmount(account.id)).toBe(0);
+            expect(yield* fetchCachedBalanceAmount(account.id)).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -103,13 +107,13 @@ describe('binance/anchor-once-reset-ordering', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { account } = setupBinanceFixture({ asset: 'PEPE', mode: SyncModeEnum.BACKWARD });
+            const { account } = yield* setupBinanceFixture({ asset: 'PEPE', mode: SyncModeEnum.BACKWARD });
             yield* accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION });
             binanceStub.spotBalances([buildBinance.balance({ asset: 'PEPE', free: '99999999999' })]);
 
             yield* binanceSyncService.sync();
 
-            expect(fetchAnchoredAmount(account.id)).toBe(7 * PRECISION);
+            expect(yield* fetchCachedBalanceAmount(account.id)).toBe(7 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -118,13 +122,13 @@ describe('binance/anchor-once-reset-ordering', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { sync } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            const { sync } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
             const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
 
             yield* binanceSyncService.sync(Date.now() - 1);
 
             expect(upsertSpy).not.toHaveBeenCalled();
-            expect(fetchAnchoredAmount(sync.accountId)).toBeUndefined();
+            expect(yield* fetchCachedBalanceAmount(sync.accountId)).toBeUndefined();
 
             upsertSpy.mockRestore();
         }).pipe(Effect.provide(TestLayer))

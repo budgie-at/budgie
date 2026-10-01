@@ -31,15 +31,15 @@ describe('binance/convert', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            seedCryptoInstrument('BTC');
-            setupUsdtSpotFixtureWithBalances('BTC', '1');
+            yield* seedCryptoInstrument('BTC');
+            yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             stubUsdtToBtcConvert(CONVERT_MAPPING_ORDER_ID);
 
             yield* binanceSyncService.sync();
 
-            expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:convert:7001');
-            expect(fetchBinanceTransactions()[0].exchangeRate).toBe(1);
-            expect(fetchBinanceEntriesByExternalId('binance:convert:7001')).toHaveLength(2);
+            yield* expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:convert:7001');
+            expect((yield* fetchBinanceTransactions())[0].exchangeRate).toBe(1);
+            expect(yield* fetchBinanceEntriesByExternalId('binance:convert:7001')).toHaveLength(2);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -47,13 +47,13 @@ describe('binance/convert', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            seedCryptoInstrument('BTC');
-            setupUsdtSpotFixtureWithBalances('BTC', '1');
+            yield* seedCryptoInstrument('BTC');
+            yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             stubUsdtToBtcConvert(CONVERT_FEE_ORDER_ID);
 
             yield* binanceSyncService.sync();
 
-            expect(fetchBinanceEntriesByExternalId('binance:convert:7002:fee')).toHaveLength(0);
+            expect(yield* fetchBinanceEntriesByExternalId('binance:convert:7002:fee')).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -61,8 +61,8 @@ describe('binance/convert', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            seedCryptoInstrument('BTC');
-            setupUsdtSpotFixtureWithBalances('BTC', '1');
+            yield* seedCryptoInstrument('BTC');
+            yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             binanceStub.convertTradeFlow([
                 buildBinance.convertFlow({ orderId: 7101, fromAsset: 'USDT', fromAmount: '100', toAsset: 'BTC', toAmount: '0.001' }),
                 buildBinance.convertFlow({
@@ -77,7 +77,7 @@ describe('binance/convert', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = fetchBinanceTransactions().map(transaction => transaction.externalId);
+            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId);
             expect(externalIds).toEqual(['binance:convert:7101']);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -86,8 +86,8 @@ describe('binance/convert', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            seedCryptoInstrument('BTC');
-            setupUsdtSpotFixtureWithBalances('BTC', '1');
+            yield* seedCryptoInstrument('BTC');
+            yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             binanceStub.myTrades({
                 BTCUSDT: [
                     buildBinance.trade({
@@ -104,9 +104,7 @@ describe('binance/convert', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = fetchBinanceTransactions()
-                .map(transaction => transaction.externalId)
-                .sort();
+            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
             expect(externalIds).toEqual(['binance:convert:7003', 'binance:trade:BTCUSDT:7003']);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -115,8 +113,8 @@ describe('binance/convert', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            seedCryptoInstrument('BTC');
-            setupUsdtSpotFixtureWithBalances('BTC', '1');
+            yield* seedCryptoInstrument('BTC');
+            yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             stubUsdtToBtcConvert(CONVERT_RESYNC_ORDER_ID);
 
             yield* binanceSyncService.sync();

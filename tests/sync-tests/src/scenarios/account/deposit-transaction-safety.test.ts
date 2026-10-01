@@ -22,7 +22,7 @@ import * as Exit from 'effect/Exit';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { buildTransferInput, seed, seedLedgerBalance, testDb, TestLayer } from '../../harness';
+import { buildTransferInput, fetchCachedBalanceAmount, seed, seedLedgerBalance, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const OPERATED_AT_YEAR = 2026;
@@ -100,54 +100,53 @@ const buildImportedExpenseInput = (accountId: number) => {
     };
 };
 
-const seedBalance = (accountId: number, amount: number): void => {
-    insertOne(AccountBalanceEntityTable, {
-        accountId,
-        amount,
-        updatedAt: OPERATED_AT
+const seedBalance = (accountId: number, amount: number) =>
+    Effect.gen(function* () {
+        yield* insertOne(AccountBalanceEntityTable, {
+            accountId,
+            amount,
+            updatedAt: OPERATED_AT
+        });
     });
-};
 
 const seedExpenseLedgerTransaction = (
     accountId: number,
     amount: number,
     externalId: string | null = null,
     externalSource: ExternalSourceEnum | null = null
-): void => {
-    const transaction = insertOne(TransactionEntityTable, {
-        type: TransactionTypeEnum.EXPENSE,
-        title: 'Legacy deposit expense',
-        externalId,
-        comment: '',
-        operatedAt: OPERATED_AT,
-        fromAccountId: accountId,
-        toAccountId: null,
-        exchangeRate: 1,
-        externalSource,
-        updatedBy: null,
-        needsEmbedding: false
-    });
+) =>
+    Effect.gen(function* () {
+        const transaction = yield* insertOne(TransactionEntityTable, {
+            type: TransactionTypeEnum.EXPENSE,
+            title: 'Legacy deposit expense',
+            externalId,
+            comment: '',
+            operatedAt: OPERATED_AT,
+            fromAccountId: accountId,
+            toAccountId: null,
+            exchangeRate: 1,
+            externalSource,
+            updatedBy: null,
+            needsEmbedding: false
+        });
 
-    insertOne(TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId: null,
-        mccCategoryId: null,
-        externalId,
-        exchangeRate: 1,
-        baseInstrumentId: null,
-        baseExchangeRate: null,
-        baseAmount: null,
-        toIban: null,
-        originalTransactionId: null
+        yield* insertOne(TransactionEntryEntityTable, {
+            transactionId: transaction.id,
+            accountId,
+            type: TransactionEntryTypeEnum.CREDIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount,
+            categoryId: null,
+            mccCategoryId: null,
+            externalId,
+            exchangeRate: 1,
+            baseInstrumentId: null,
+            baseExchangeRate: null,
+            baseAmount: null,
+            toIban: null,
+            originalTransactionId: null
+        });
     });
-};
-
-const fetchCachedBalanceAmount = (accountId: number): number | undefined =>
-    testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId)).get()?.amount;
 
 const fetchComputedBalance = Effect.fnUntraced(function* (accountId: number) {
     const accountBalanceRepository = yield* AccountBalanceRepository;
@@ -164,22 +163,28 @@ const expectFailureMessage = Effect.fnUntraced(function* <A, E, R>(effect: Effec
     }
 });
 
-const fetchTransactionCount = (): number => testDb.select().from(TransactionEntityTable).all().length;
+const fetchTransactionCount = () =>
+    Effect.gen(function* () {
+        return (yield* testDb.select().from(TransactionEntityTable)).length;
+    });
 
-const fetchTransactionEntryCount = (): number => testDb.select().from(TransactionEntryEntityTable).all().length;
+const fetchTransactionEntryCount = () =>
+    Effect.gen(function* () {
+        return (yield* testDb.select().from(TransactionEntryEntityTable)).length;
+    });
 
 describe('account/deposit-transaction-safety', () => {
     it.effect('rejects creating an expense from a funded deposit without changing rows or balances', () =>
         Effect.gen(function* () {
             const transactionService = yield* TransactionService;
-            const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
+            const depositAccount = yield* seed.account({ type: AccountTypeEnum.DEPOSIT });
 
             yield* seedLedgerBalance(depositAccount.id, 100 * PRECISION);
 
             yield* expectFailureMessage(transactionService.createInternal(buildExpenseInput(depositAccount.id, 40)), DEPOSIT_EXPENSE_ERROR);
 
-            expect(fetchTransactionCount()).toBe(1);
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
+            expect(yield* fetchTransactionCount()).toBe(1);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
             expect(yield* fetchComputedBalance(depositAccount.id)).toBe(100 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -188,8 +193,8 @@ describe('account/deposit-transaction-safety', () => {
         Effect.gen(function* () {
             const transactionService = yield* TransactionService;
             const transactionRepository = yield* TransactionRepository;
-            const bankAccount = seed.account({ type: AccountTypeEnum.BANK });
-            const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
+            const bankAccount = yield* seed.account({ type: AccountTypeEnum.BANK });
+            const depositAccount = yield* seed.account({ type: AccountTypeEnum.DEPOSIT });
             const transaction = yield* transactionService.createInternal(buildExpenseInput(bankAccount.id, 20));
 
             yield* seedLedgerBalance(depositAccount.id, 100 * PRECISION);
@@ -204,16 +209,21 @@ describe('account/deposit-transaction-safety', () => {
             expect(preservedTransaction?.type).toBe(TransactionTypeEnum.EXPENSE);
             expect(preservedTransaction?.fromAccountId).toBe(bankAccount.id);
             expect(preservedTransaction?.entries.map(entry => entry.accountId)).toEqual([bankAccount.id]);
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('rejects imported updates that would keep an existing deposit expense and preserves imported rows', () =>
         Effect.gen(function* () {
             const transactionService = yield* TransactionService;
-            const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
+            const depositAccount = yield* seed.account({ type: AccountTypeEnum.DEPOSIT });
 
-            seedExpenseLedgerTransaction(depositAccount.id, IMPORTED_INITIAL_AMOUNT, IMPORTED_EXTERNAL_ID, ExternalSourceEnum.MONOBANK);
+            yield* seedExpenseLedgerTransaction(
+                depositAccount.id,
+                IMPORTED_INITIAL_AMOUNT,
+                IMPORTED_EXTERNAL_ID,
+                ExternalSourceEnum.MONOBANK
+            );
             yield* seedLedgerBalance(depositAccount.id, 100 * PRECISION);
 
             yield* expectFailureMessage(
@@ -221,29 +231,27 @@ describe('account/deposit-transaction-safety', () => {
                 DEPOSIT_EXPENSE_ERROR
             );
 
-            const importedTransaction = testDb
+            const [importedTransaction] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, IMPORTED_EXTERNAL_ID))
-                .get();
-            const importedEntry = testDb
+                .where(eq(TransactionEntityTable.externalId, IMPORTED_EXTERNAL_ID));
+            const [importedEntry] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, IMPORTED_EXTERNAL_ID))
-                .get();
+                .where(eq(TransactionEntryEntityTable.externalId, IMPORTED_EXTERNAL_ID));
 
             expect(importedTransaction?.title).toBe('Legacy deposit expense');
             expect(importedTransaction?.comment).toBe('');
             expect(importedEntry?.amount).toBe(IMPORTED_INITIAL_AMOUNT);
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('rejects an overdrawing transfer from a deposit and rolls back transaction rows and balances', () =>
         Effect.gen(function* () {
             const transferCreationService = yield* TransferCreationService;
-            const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
-            const bankAccount = seed.account({ type: AccountTypeEnum.BANK });
+            const depositAccount = yield* seed.account({ type: AccountTypeEnum.DEPOSIT });
+            const bankAccount = yield* seed.account({ type: AccountTypeEnum.BANK });
 
             yield* seedLedgerBalance(depositAccount.id, 50 * PRECISION);
 
@@ -252,9 +260,9 @@ describe('account/deposit-transaction-safety', () => {
                 NEGATIVE_DEPOSIT_BALANCE_ERROR
             );
 
-            expect(fetchTransactionCount()).toBe(1);
-            expect(fetchTransactionEntryCount()).toBe(1);
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(50 * PRECISION);
+            expect(yield* fetchTransactionCount()).toBe(1);
+            expect(yield* fetchTransactionEntryCount()).toBe(1);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(50 * PRECISION);
             expect(yield* fetchComputedBalance(depositAccount.id)).toBe(50 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -263,35 +271,37 @@ describe('account/deposit-transaction-safety', () => {
         Effect.gen(function* () {
             const transferCreationService = yield* TransferCreationService;
             const transactionService = yield* TransactionService;
-            const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
+            const depositAccount = yield* seed.account({ type: AccountTypeEnum.DEPOSIT });
 
-            seedExpenseLedgerTransaction(depositAccount.id, LEGACY_EXPENSE_AMOUNT);
-            seedBalance(depositAccount.id, LEGACY_NEGATIVE_BALANCE);
+            yield* seedExpenseLedgerTransaction(depositAccount.id, LEGACY_EXPENSE_AMOUNT);
+            yield* seedBalance(depositAccount.id, LEGACY_NEGATIVE_BALANCE);
 
             yield* transactionService.createInternal(buildIncomeInput(depositAccount.id, 40));
 
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
 
             yield* expectFailureMessage(
-                transferCreationService.createInternalTransfer(buildTransferInput(depositAccount.id, seed.account().id, 50, OPERATED_AT)),
+                transferCreationService.createInternalTransfer(
+                    buildTransferInput(depositAccount.id, (yield* seed.account()).id, 50, OPERATED_AT)
+                ),
                 NEGATIVE_DEPOSIT_BALANCE_ERROR
             );
 
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('allows a full rebuild when a legacy negative deposit balance is unchanged', () =>
         Effect.gen(function* () {
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-            const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
+            const depositAccount = yield* seed.account({ type: AccountTypeEnum.DEPOSIT });
 
-            seedExpenseLedgerTransaction(depositAccount.id, LEGACY_EXPENSE_AMOUNT);
-            seedBalance(depositAccount.id, LEGACY_NEGATIVE_BALANCE);
+            yield* seedExpenseLedgerTransaction(depositAccount.id, LEGACY_EXPENSE_AMOUNT);
+            yield* seedBalance(depositAccount.id, LEGACY_NEGATIVE_BALANCE);
 
             yield* accountBalanceIncrementalService.updateAllBalances(true);
 
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(LEGACY_NEGATIVE_BALANCE);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(LEGACY_NEGATIVE_BALANCE);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -8,102 +8,117 @@ import { runConsolidation } from './run-consolidation';
 import { testQueryService, unconsolidateById } from './test-context';
 
 import type { SourceStateSnapshotInterface } from './interface/source-state-snapshot.interface';
-import type { TransactionConsolidationTypeEnum, TransactionEntryEntityInterface } from '@budgie/contracts';
+import type { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-export const expectConsolidationParent = (sourceTransactionId: number, canonicalTransactionId: number): void => {
-    expect(testQueryService.fetchTransactionById(sourceTransactionId).consolidationParentTransactionId).toBe(canonicalTransactionId);
-};
+export const expectConsolidationParent = (sourceTransactionId: number, canonicalTransactionId: number) =>
+    Effect.gen(function* () {
+        expect((yield* testQueryService.fetchTransactionById(sourceTransactionId)).consolidationParentTransactionId).toBe(
+            canonicalTransactionId
+        );
+    });
 
-export const fetchOwnLedgerEntries = (transactionId: number): TransactionEntryEntityInterface[] =>
-    testQueryService.fetchEntriesByTransactionId(transactionId).filter(entry => !isDefined(entry.originalTransactionId));
+export const fetchOwnLedgerEntries = (transactionId: number) =>
+    Effect.gen(function* () {
+        return (yield* testQueryService.fetchEntriesByTransactionId(transactionId)).filter(
+            entry => !isDefined(entry.originalTransactionId)
+        );
+    });
 
-export const fetchMovedSourceIds = (canonicalTransactionId: number): number[] =>
-    testQueryService
-        .fetchEntriesByTransactionId(canonicalTransactionId)
-        .flatMap(entry => (isDefined(entry.originalTransactionId) ? [entry.originalTransactionId] : []))
-        .sort((left, right) => left - right);
+export const fetchMovedSourceIds = (canonicalTransactionId: number) =>
+    Effect.gen(function* () {
+        return (yield* testQueryService.fetchEntriesByTransactionId(canonicalTransactionId))
+            .flatMap(entry => (isDefined(entry.originalTransactionId) ? [entry.originalTransactionId] : []))
+            .sort((left, right) => left - right);
+    });
 
-export const fetchLedgerEntry = (transactionId: number, accountId: number): TransactionEntryEntityInterface => {
-    const entry = fetchOwnLedgerEntries(transactionId).find(candidate => candidate.accountId === accountId);
+export const fetchLedgerEntry = (transactionId: number, accountId: number) =>
+    Effect.gen(function* () {
+        const entry = (yield* fetchOwnLedgerEntries(transactionId)).find(candidate => candidate.accountId === accountId);
 
-    if (!isDefined(entry)) {
-        throw new Error(`Ledger entry for account ${accountId} on transaction ${transactionId} not found`);
-    }
+        if (!isDefined(entry)) {
+            throw new Error(`Ledger entry for account ${accountId} on transaction ${transactionId} not found`);
+        }
 
-    return entry;
-};
+        return entry;
+    });
 
-export const expectSourcesRestored = (sourceTransactionIds: number[]): void => {
-    for (const sourceTransactionId of sourceTransactionIds) {
-        const source = testQueryService.fetchTransactionById(sourceTransactionId);
+export const expectSourcesRestored = (sourceTransactionIds: number[]) =>
+    Effect.gen(function* () {
+        for (const sourceTransactionId of sourceTransactionIds) {
+            const source = yield* testQueryService.fetchTransactionById(sourceTransactionId);
 
-        expect(source.consolidationParentTransactionId).toBeNull();
-        expect(source.deletedAt).toBeNull();
-        expect(fetchMovedSourceIds(sourceTransactionId)).toEqual([]);
-        expect(fetchOwnLedgerEntries(sourceTransactionId).length).toBeGreaterThan(0);
-    }
-};
+            expect(source.consolidationParentTransactionId).toBeNull();
+            expect(source.deletedAt).toBeNull();
+            expect(yield* fetchMovedSourceIds(sourceTransactionId)).toEqual([]);
+            expect((yield* fetchOwnLedgerEntries(sourceTransactionId)).length).toBeGreaterThan(0);
+        }
+    });
 
 const compareSnapshotEntries = (
     left: SourceStateSnapshotInterface['entries'][number],
     right: SourceStateSnapshotInterface['entries'][number]
 ): number => left.accountId - right.accountId || left.type.localeCompare(right.type) || left.amount - right.amount;
 
-const buildSourceStateSnapshot = (transactionId: number): SourceStateSnapshotInterface => {
-    const transaction = testQueryService.fetchTransactionById(transactionId);
+const buildSourceStateSnapshot = (transactionId: number) =>
+    Effect.gen(function* () {
+        const transaction = yield* testQueryService.fetchTransactionById(transactionId);
 
-    return {
-        consolidationType: transaction.consolidationType,
-        entries: fetchOwnLedgerEntries(transactionId)
-            .map(entry => ({
-                accountId: entry.accountId,
-                amount: entry.amount,
-                categoryId: entry.categoryId,
-                exchangeRate: entry.exchangeRate,
-                mccCategoryId: entry.mccCategoryId,
-                toIban: entry.toIban,
-                type: entry.type
-            }))
-            .sort(compareSnapshotEntries),
-        exchangeRate: transaction.exchangeRate,
-        fromAccountId: transaction.fromAccountId,
-        tagIds: testQueryService.fetchTransactionTagIds(transactionId).sort((left, right) => left - right),
-        toAccountId: transaction.toAccountId,
-        transactionId,
-        type: transaction.type
-    };
-};
+        return {
+            consolidationType: transaction.consolidationType,
+            entries: (yield* fetchOwnLedgerEntries(transactionId))
+                .map(entry => ({
+                    accountId: entry.accountId,
+                    amount: entry.amount,
+                    categoryId: entry.categoryId,
+                    exchangeRate: entry.exchangeRate,
+                    mccCategoryId: entry.mccCategoryId,
+                    toIban: entry.toIban,
+                    type: entry.type
+                }))
+                .sort(compareSnapshotEntries),
+            exchangeRate: transaction.exchangeRate,
+            fromAccountId: transaction.fromAccountId,
+            tagIds: (yield* testQueryService.fetchTransactionTagIds(transactionId)).sort((left, right) => left - right),
+            toAccountId: transaction.toAccountId,
+            transactionId,
+            type: transaction.type
+        };
+    });
 
-export const snapshotSourceState = (transactionIds: number[]): SourceStateSnapshotInterface[] =>
-    transactionIds.map(transactionId => buildSourceStateSnapshot(transactionId));
+export const snapshotSourceState = (transactionIds: number[]) =>
+    Effect.forEach(transactionIds, transactionId => buildSourceStateSnapshot(transactionId));
 
-export const expectSourceStateRestored = (snapshots: SourceStateSnapshotInterface[]): void => {
-    for (const snapshot of snapshots) {
-        expect(buildSourceStateSnapshot(snapshot.transactionId)).toEqual(snapshot);
-    }
-};
+export const expectSourceStateRestored = (snapshots: SourceStateSnapshotInterface[]) =>
+    Effect.gen(function* () {
+        for (const snapshot of snapshots) {
+            expect(yield* buildSourceStateSnapshot(snapshot.transactionId)).toEqual(snapshot);
+        }
+    });
 
-export const expectCanonicalDeleted = (canonicalTransactionId: number): void => {
-    expect(testQueryService.findTransactionById(canonicalTransactionId)).toBeUndefined();
-    expect(testQueryService.fetchEntriesByTransactionId(canonicalTransactionId)).toEqual([]);
-    expect(testQueryService.fetchChildTransactionIds(canonicalTransactionId)).toEqual([]);
-};
+export const expectCanonicalDeleted = (canonicalTransactionId: number) =>
+    Effect.gen(function* () {
+        expect(yield* testQueryService.findTransactionById(canonicalTransactionId)).toBeUndefined();
+        expect(yield* testQueryService.fetchEntriesByTransactionId(canonicalTransactionId)).toEqual([]);
+        expect(yield* testQueryService.fetchChildTransactionIds(canonicalTransactionId)).toEqual([]);
+    });
 
-export const expectRevertRemovedCanonical = (canonicalTransactionId: number, sourceTransactionIds: number[]): void => {
-    expectCanonicalDeleted(canonicalTransactionId);
-    expectSourcesRestored(sourceTransactionIds);
-};
+export const expectRevertRemovedCanonical = (canonicalTransactionId: number, sourceTransactionIds: number[]) =>
+    Effect.gen(function* () {
+        yield* expectCanonicalDeleted(canonicalTransactionId);
+        yield* expectSourcesRestored(sourceTransactionIds);
+    });
 
-export const fetchSingleCanonicalId = (consolidationType: TransactionConsolidationTypeEnum): number => {
-    const canonicals = testQueryService.fetchCanonicalsOfType(consolidationType);
+export const fetchSingleCanonicalId = (consolidationType: TransactionConsolidationTypeEnum) =>
+    Effect.gen(function* () {
+        const canonicals = yield* testQueryService.fetchCanonicalsOfType(consolidationType);
 
-    expect(canonicals).toHaveLength(1);
+        expect(canonicals).toHaveLength(1);
 
-    return canonicals[0].id;
-};
+        return canonicals[0].id;
+    });
 
 export const revertSingleCanonical = Effect.fnUntraced(function* (consolidationType: TransactionConsolidationTypeEnum) {
-    const canonicalId = fetchSingleCanonicalId(consolidationType);
+    const canonicalId = yield* fetchSingleCanonicalId(consolidationType);
 
     yield* unconsolidateById(canonicalId);
 
@@ -122,13 +137,13 @@ export const expectRevertRestoresSources = Effect.fnUntraced(function* (input: {
     readonly consolidationType: TransactionConsolidationTypeEnum;
     readonly sourceTransactionIds: number[];
 }) {
-    const stateBeforeConsolidation = snapshotSourceState(input.sourceTransactionIds);
+    const stateBeforeConsolidation = yield* snapshotSourceState(input.sourceTransactionIds);
     const balancesBeforeConsolidation = yield* fetchLedgerBalances(input.accountIds);
     const consolidationResult = yield* runConsolidation();
 
     expect(consolidationResult.consolidated).toBe(1);
 
-    expectRevertRemovedCanonical(yield* revertSingleCanonical(input.consolidationType), input.sourceTransactionIds);
-    expectSourceStateRestored(stateBeforeConsolidation);
+    yield* expectRevertRemovedCanonical(yield* revertSingleCanonical(input.consolidationType), input.sourceTransactionIds);
+    yield* expectSourceStateRestored(stateBeforeConsolidation);
     expect(yield* fetchLedgerBalances(input.accountIds)).toEqual(balancesBeforeConsolidation);
 });

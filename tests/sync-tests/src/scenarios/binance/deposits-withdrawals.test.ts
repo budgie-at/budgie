@@ -33,23 +33,35 @@ const stubCapitalHistory = (deposits: BinanceDepositApiInterface[], withdrawals:
     binanceStub.withdrawals(withdrawals);
 };
 
-const expectFeeBearingWithdrawalEntries = (): void => {
-    const transactions = fetchBinanceTransactions();
-    expect(transactions).toHaveLength(1);
-    expect(transactions[0].type).toBe(TransactionTypeEnum.EXPENSE);
-    const mainEntry = fetchBinanceEntriesByExternalId('wd-1');
-    const feeEntry = fetchBinanceEntriesByExternalId('wd-1:fee');
-    expect(mainEntry).toHaveLength(1);
-    expect(feeEntry).toHaveLength(1);
-    expect(mainEntry[0].type).toBe(TransactionEntryTypeEnum.CREDIT);
-    expect(mainEntry[0].exchangeRate).toBe(1);
-    expect(feeEntry[0].type).toBe(TransactionEntryTypeEnum.FEE);
-    expect(mainEntry[0].amount + feeEntry[0].amount).toBe(PRECISION);
-};
+const expectFeeBearingWithdrawalEntries = () =>
+    Effect.gen(function* () {
+        const transactions = yield* fetchBinanceTransactions();
+        expect(transactions).toHaveLength(1);
+        expect(transactions[0].type).toBe(TransactionTypeEnum.EXPENSE);
+        const mainEntry = yield* fetchBinanceEntriesByExternalId('wd-1');
+        const feeEntry = yield* fetchBinanceEntriesByExternalId('wd-1:fee');
+        expect(mainEntry).toHaveLength(1);
+        expect(feeEntry).toHaveLength(1);
+        expect(mainEntry[0].type).toBe(TransactionEntryTypeEnum.CREDIT);
+        expect(mainEntry[0].exchangeRate).toBe(1);
+        expect(feeEntry[0].type).toBe(TransactionEntryTypeEnum.FEE);
+        expect(mainEntry[0].amount + feeEntry[0].amount).toBe(PRECISION);
+    });
 
 const stubDuplicateDeposit = (): void => {
     stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
 };
+
+const syncSingleWithdrawal = (withdrawal: ReturnType<typeof buildBinance.withdrawal>) =>
+    Effect.gen(function* () {
+        const binanceSyncService = yield* BinanceSyncService;
+
+        yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
+        stubEmptyBinanceBalances();
+        stubCapitalHistory([], [withdrawal]);
+
+        yield* binanceSyncService.sync();
+    });
 
 describe('binance/deposits-withdrawals', () => {
     it.effect.each([
@@ -96,42 +108,30 @@ describe('binance/deposits-withdrawals', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
+            yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
             stubEmptyBinanceBalances();
             stubCapitalHistory([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '2' })], []);
 
             yield* binanceSyncService.sync();
 
-            expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'dep-1');
+            yield* expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'dep-1');
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('maps a fee-bearing withdrawal to an EXPENSE with a separate FEE entry that reconciles to gross', () =>
         Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
+            yield* syncSingleWithdrawal(buildBinance.withdrawal({ id: 'wd-1', coin: 'BTC', amount: '1', transactionFee: '0.1' }));
 
-            setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-            stubEmptyBinanceBalances();
-            stubCapitalHistory([], [buildBinance.withdrawal({ id: 'wd-1', coin: 'BTC', amount: '1', transactionFee: '0.1' })]);
-
-            yield* binanceSyncService.sync();
-
-            expectFeeBearingWithdrawalEntries();
+            yield* expectFeeBearingWithdrawalEntries();
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('drops the fee for a degenerate fee >= amount withdrawal', () =>
         Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
+            yield* syncSingleWithdrawal(buildBinance.withdrawal({ id: 'wd-degen', coin: 'BTC', amount: '1', transactionFee: '1' }));
 
-            setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-            stubEmptyBinanceBalances();
-            stubCapitalHistory([], [buildBinance.withdrawal({ id: 'wd-degen', coin: 'BTC', amount: '1', transactionFee: '1' })]);
-
-            yield* binanceSyncService.sync();
-
-            const mainEntry = fetchBinanceEntriesByExternalId('wd-degen');
-            const feeEntry = fetchBinanceEntriesByExternalId('wd-degen:fee');
+            const mainEntry = yield* fetchBinanceEntriesByExternalId('wd-degen');
+            const feeEntry = yield* fetchBinanceEntriesByExternalId('wd-degen:fee');
             expect(feeEntry).toHaveLength(0);
             expect(mainEntry[0].amount).toBe(PRECISION);
             expect(mainEntry[0].exchangeRate).toBe(1);
@@ -143,19 +143,19 @@ describe('binance/deposits-withdrawals', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             const staleForwardFrom = new Date(Date.now() - HOUR_MS);
-            const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: staleForwardFrom });
+            const { sync } = yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: staleForwardFrom });
             stubEmptyBinanceBalances();
             stubDuplicateDeposit();
 
             yield* binanceSyncService.sync();
-            expect(fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
 
             resetBinanceSyncForResync();
-            testDb.update(SyncEntityTable).set({ forwardSyncFromAt: staleForwardFrom }).where(eq(SyncEntityTable.id, sync.id)).run();
+            yield* testDb.update(SyncEntityTable).set({ forwardSyncFromAt: staleForwardFrom }).where(eq(SyncEntityTable.id, sync.id));
             stubDuplicateDeposit();
             yield* binanceSyncService.sync();
 
-            expect(fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

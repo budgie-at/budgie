@@ -13,7 +13,7 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
     it.effect('records the first empty `from` then walks 3 more months past it before terminating', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const sync = setupBackwardSweepFixture(new Date());
+            const sync = yield* setupBackwardSweepFixture(new Date());
 
             let monobankRequestCount = 0;
             mockServer.use(
@@ -27,9 +27,9 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
             yield* monobankSyncService.sync();
 
             expect(monobankRequestCount).toBe(EXPECTED_DORMANCY_BOUNDARY_REQUESTS);
-            expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
+            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(0);
 
-            const finalSync = fetchSyncById(sync.id);
+            const finalSync = yield* fetchSyncById(sync.id);
             expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
             expect(finalSync.transactionCount).toBe(0);
         }).pipe(Effect.provide(TestLayer))

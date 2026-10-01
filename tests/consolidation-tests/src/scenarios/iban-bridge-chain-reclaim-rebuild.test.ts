@@ -32,55 +32,64 @@ const STALE_DIRECT_TRANSFER = {
     directToIban: IBAN_BRIDGE_SOURCE_IBAN
 };
 
-const fetchRebuiltCanonicalId = (): number => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
+const fetchRebuiltCanonicalId = () =>
+    Effect.gen(function* () {
+        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
+    });
 
-const expectRebuiltCanonicalLedger = (canonicalId: number, sourceAccountId: number, targetAccountId: number): void => {
-    const sourceLedgerEntry = fetchLedgerEntry(canonicalId, sourceAccountId);
+const expectRebuiltCanonicalLedger = (canonicalId: number, sourceAccountId: number, targetAccountId: number) =>
+    Effect.gen(function* () {
+        const sourceLedgerEntry = yield* fetchLedgerEntry(canonicalId, sourceAccountId);
 
-    expect(testQueryService.fetchTransactionById(canonicalId).exchangeRate).toBeCloseTo(IBAN_BRIDGE_UAH_TO_EUR_RATE, RATE_PRECISION_DIGITS);
-    expect(sourceLedgerEntry.amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
-    expect(sourceLedgerEntry.toIban).toBe(IBAN_BRIDGE_TARGET_IBAN);
-    expect(sourceLedgerEntry.exchangeRate).toBeCloseTo(IBAN_BRIDGE_UAH_TO_EUR_RATE, RATE_PRECISION_DIGITS);
-    expect(fetchLedgerEntry(canonicalId, targetAccountId).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
-};
+        expect((yield* testQueryService.fetchTransactionById(canonicalId)).exchangeRate).toBeCloseTo(
+            IBAN_BRIDGE_UAH_TO_EUR_RATE,
+            RATE_PRECISION_DIGITS
+        );
+        expect(sourceLedgerEntry.amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
+        expect(sourceLedgerEntry.toIban).toBe(IBAN_BRIDGE_TARGET_IBAN);
+        expect(sourceLedgerEntry.exchangeRate).toBeCloseTo(IBAN_BRIDGE_UAH_TO_EUR_RATE, RATE_PRECISION_DIGITS);
+        expect((yield* fetchLedgerEntry(canonicalId, targetAccountId)).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
+    });
 
 layer(TestLayer)('consolidation/iban-bridge-chain-reclaim-rebuild', it => {
     it.effect('rebuilds an fx-correct canonical when the existing transfer ledger diverges', () =>
         Effect.gen(function* () {
-            const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = seedChainReclaimFixture({
+            const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = yield* seedChainReclaimFixture({
                 consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
                 ...STALE_DIRECT_TRANSFER
             });
 
             const result = yield* runConsolidation();
-            const rebuiltCanonicalId = fetchRebuiltCanonicalId();
+            const rebuiltCanonicalId = yield* fetchRebuiltCanonicalId();
 
             expect(result.found).toBe(1);
             expect(result.consolidated).toBe(1);
             expect(rebuiltCanonicalId).not.toBe(directTransfer.id);
-            expectConsolidationParent(directTransfer.id, rebuiltCanonicalId);
-            expectConsolidationParent(bridgeIncome.id, rebuiltCanonicalId);
-            expectConsolidationParent(bridgeExpense.id, rebuiltCanonicalId);
-            expectRebuiltCanonicalLedger(rebuiltCanonicalId, sourceAccount.id, targetAccount.id);
+            yield* expectConsolidationParent(directTransfer.id, rebuiltCanonicalId);
+            yield* expectConsolidationParent(bridgeIncome.id, rebuiltCanonicalId);
+            yield* expectConsolidationParent(bridgeExpense.id, rebuiltCanonicalId);
+            yield* expectRebuiltCanonicalLedger(rebuiltCanonicalId, sourceAccount.id, targetAccount.id);
         })
     );
 
     it.effect('restores the original transfer pair when a rebuilt chain canonical is reverted', () =>
         Effect.gen(function* () {
-            const { bridgeExpense, bridgeIncome, directTransfer } = seedChainReclaimFixture({
+            const { bridgeExpense, bridgeIncome, directTransfer } = yield* seedChainReclaimFixture({
                 consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
                 ...STALE_DIRECT_TRANSFER
             });
 
             yield* runConsolidation();
-            yield* unconsolidateById(fetchRebuiltCanonicalId());
+            yield* unconsolidateById(yield* fetchRebuiltCanonicalId());
 
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(0);
-            expect(testQueryService.fetchTransactionById(directTransfer.id).consolidationType).toBe(
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(
+                0
+            );
+            expect((yield* testQueryService.fetchTransactionById(directTransfer.id)).consolidationType).toBe(
                 TransactionConsolidationTypeEnum.TRANSFER_PAIR
             );
-            expectSourcesRestored([directTransfer.id, bridgeIncome.id, bridgeExpense.id]);
-            expect(fetchOwnLedgerEntries(directTransfer.id)).toHaveLength(REBUILT_LEDGER_ENTRY_COUNT);
+            yield* expectSourcesRestored([directTransfer.id, bridgeIncome.id, bridgeExpense.id]);
+            expect(yield* fetchOwnLedgerEntries(directTransfer.id)).toHaveLength(REBUILT_LEDGER_ENTRY_COUNT);
         })
     );
 
@@ -95,17 +104,19 @@ layer(TestLayer)('consolidation/iban-bridge-chain-reclaim-rebuild', it => {
                 sourceExpense,
                 targetAccount,
                 targetIncome
-            } = seedNestedChainReclaimFixture();
+            } = yield* seedNestedChainReclaimFixture();
             const accountIds = [sourceAccount.id, bridgeAccount.id, targetAccount.id];
             const balancesBeforeConsolidation = yield* fetchLedgerBalances(accountIds);
 
             yield* runConsolidation();
             yield* unconsolidateById(directTransfer.id);
 
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(0);
-            expect(testQueryService.findTransactionById(directTransfer.id)).toBeUndefined();
-            expectSourcesRestored([sourceExpense.id, targetIncome.id, bridgeIncome.id, bridgeExpense.id]);
-            expect(fetchOwnLedgerEntries(sourceExpense.id)).toHaveLength(1);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(
+                0
+            );
+            expect(yield* testQueryService.findTransactionById(directTransfer.id)).toBeUndefined();
+            yield* expectSourcesRestored([sourceExpense.id, targetIncome.id, bridgeIncome.id, bridgeExpense.id]);
+            expect(yield* fetchOwnLedgerEntries(sourceExpense.id)).toHaveLength(1);
             expect(yield* fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
         })
     );

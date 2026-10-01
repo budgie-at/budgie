@@ -45,14 +45,14 @@ describe('consolidation/privatbank-cash-withdrawal', () => {
     it.effect('promotes an imported Privatbank cash withdrawal into a TRANSFER to the unique cash account', () =>
         Effect.gen(function* () {
             vi.useFakeTimers({ now: WITHDRAWAL_OPERATED_AT, toFake: ['Date'] });
-            const privatbankAccount = seed.account({
+            const privatbankAccount = yield* seed.account({
                 title: 'Privatbank Card',
                 externalId: PRIVATBANK_CARD_ID,
                 externalSource: ExternalSourceEnum.PRIVATBANK,
                 type: AccountTypeEnum.BANK_SYNC,
                 instrumentId: 1
             });
-            const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
+            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
             const withdrawalTransactionId = yield* importPrivatbankCashWithdrawal(privatbankAccount.id);
 
             yield* expectAtmCashWithdrawalConsolidation(privatbankAccount.id, cashAccount.id, withdrawalTransactionId);

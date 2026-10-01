@@ -25,28 +25,28 @@ describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
     it.effect('auto-consolidates a bank UAH expense with a Binance USDT P2P top-up income via a triangulated rate', () =>
         Effect.gen(function* () {
             const { bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const { expense, income } = seedP2pPair(
+            const { expense, income } = yield* seedP2pPair(
                 { externalId: 'mono-uah-p2p-out', accountId: bankAccount.id, amount: P2P_UAH_TOTAL },
                 { externalId: 'binance:c2c:buy-1', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
             );
 
             yield* consolidateExpectingSingleResult();
-            expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, binanceAccount.id);
-            expect(fetchP2pCanonical().title).toBe('Binance P2P buy USDT');
+            yield* expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, binanceAccount.id);
+            expect((yield* fetchP2pCanonical()).title).toBe('Binance P2P buy USDT');
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('auto-consolidates a Binance USDT P2P sell expense with a bank UAH cash-out income', () =>
         Effect.gen(function* () {
             const { bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const { expense, income } = seedP2pPair(
+            const { expense, income } = yield* seedP2pPair(
                 { externalId: 'binance:c2c:sell-1', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT },
                 { externalId: 'mono-uah-p2p-in', accountId: bankAccount.id, amount: P2P_UAH_TOTAL }
             );
 
             yield* consolidateExpectingSingleResult();
-            expectConsolidatedToP2pCanonical(expense, income, binanceAccount.id, bankAccount.id);
-            expect(fetchP2pCanonical().title).toBe('Binance P2P sell USDT');
+            yield* expectConsolidatedToP2pCanonical(expense, income, binanceAccount.id, bankAccount.id);
+            expect((yield* fetchP2pCanonical()).title).toBe('Binance P2P sell USDT');
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -55,13 +55,13 @@ describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
     it.effect('consolidates a P2P top-up from any synced crypto exchange, not only Binance', () =>
         Effect.gen(function* () {
             const { bankAccount, binanceAccount: exchangeAccount } = yield* seedP2pFiatTransferFixture();
-            const { expense, income } = seedP2pPair(
+            const { expense, income } = yield* seedP2pPair(
                 { externalId: 'mono-uah-okx-out', accountId: bankAccount.id, amount: P2P_UAH_TOTAL },
                 { externalId: 'okx:c2c:buy-1', accountId: exchangeAccount.id, amount: P2P_USDT_AMOUNT }
             );
 
             yield* consolidateExpectingSingleResult();
-            expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, exchangeAccount.id);
+            yield* expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, exchangeAccount.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -69,7 +69,7 @@ describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
         Effect.gen(function* () {
             const { bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
             const offRateAmount = Number('8000') * PRECISION;
-            seedP2pPair(
+            yield* seedP2pPair(
                 { externalId: 'mono-uah-off-rate', accountId: bankAccount.id, amount: offRateAmount },
                 { externalId: 'binance:c2c:buy-off-rate', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
             );
@@ -78,7 +78,7 @@ describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
             const result = yield* transferConsolidationService.consolidate(null);
 
             expect(result.consolidated).toBe(0);
-            expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+            expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -1,8 +1,7 @@
-import * as schema from '@app/@generic/drizzle/db/schema';
-import { Db } from '@budgie/contracts';
-import { sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { Db, makeEffectSqliteClientDatabase } from '@budgie/contracts';
+import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
 import * as Effect from 'effect/Effect';
+import { identity } from 'effect/Function';
 
 import { testDb } from '../scenario/setup';
 
@@ -12,28 +11,28 @@ interface QueryPlanStepInterface {
 
 interface CapturedStatementInterface {
     readonly queryText: string;
-    readonly params: readonly unknown[];
+    readonly params: ReadonlyArray<unknown> | undefined;
 }
-
-const explainStatement = ({ queryText, params }: CapturedStatementInterface): QueryPlanStepInterface[] => {
-    const segments = queryText.split('?').map(segment => sql.raw(segment));
-    const fragments = segments.flatMap((segment, index) => (index < params.length ? [segment, sql`${params[index]}`] : [segment]));
-
-    return testDb.all<QueryPlanStepInterface>(sql`EXPLAIN QUERY PLAN ${sql.join(fragments, sql``)}`);
-};
 
 export const explainQueryPlan = Effect.fnUntraced(function* <A, E>(query: Effect.Effect<A, E, Db>) {
     const statements: CapturedStatementInterface[] = [];
-    const capturingDb = drizzle(testDb.$client, {
-        schema,
-        logger: {
-            logQuery: (queryText, params) => {
-                statements.push({ queryText, params });
-            }
-        }
+    const capturingClient = new Proxy(testDb.$client, {
+        get: (target, property, receiver) =>
+            property === 'unsafe'
+                ? (queryText: string, params?: ReadonlyArray<unknown>) => {
+                      statements.push({ queryText, params });
+
+                      return target.unsafe(queryText, params);
+                  }
+                : Reflect.get(target, property, receiver)
     });
+    const capturingPrimary = yield* makeEffectSqliteClientDatabase(capturingClient, { onMutate: () => Effect.void, runQuery: identity });
 
-    yield* query.pipe(Effect.provideService(Db, capturingDb));
+    yield* query.pipe(Effect.provideService(Db, withReplicas(capturingPrimary, [capturingPrimary])));
 
-    return statements.flatMap(explainStatement).map(step => step.detail);
+    const steps = yield* Effect.forEach(statements, ({ queryText, params }) =>
+        testDb.$client.unsafe<QueryPlanStepInterface>(`EXPLAIN QUERY PLAN ${queryText}`, params)
+    );
+
+    return steps.flat().map(step => step.detail);
 });

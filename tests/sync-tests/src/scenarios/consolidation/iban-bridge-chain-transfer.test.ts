@@ -32,77 +32,84 @@ const UAH_AMOUNT = 84_456_700_000;
 const EUR_TO_UAH_RATE = UAH_AMOUNT / EUR_AMOUNT;
 const UAH_TO_EUR_RATE = EUR_AMOUNT / UAH_AMOUNT;
 
-const seedBridgeAccounts = () => {
-    const transferMcc = findMccByCode('4829');
-    const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
-    const sourceAccount = seedBankSyncAccount('Monobank Fop EUR', null, SOURCE_IBAN, eur.id);
-    const bridgeAccount = seedBankSyncAccount('Monobank Fop UAH', null, BRIDGE_IBAN);
-    const targetAccount = seedBankSyncAccount('Monobank Black', null, TARGET_IBAN);
+const seedBridgeAccounts = () =>
+    Effect.gen(function* () {
+        const transferMcc = yield* findMccByCode('4829');
+        const eur = yield* seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
+        const sourceAccount = yield* seedBankSyncAccount('Monobank Fop EUR', null, SOURCE_IBAN, eur.id);
+        const bridgeAccount = yield* seedBankSyncAccount('Monobank Fop UAH', null, BRIDGE_IBAN);
+        const targetAccount = yield* seedBankSyncAccount('Monobank Black', null, TARGET_IBAN);
 
-    return { transferMcc, sourceAccount, bridgeAccount, targetAccount };
-};
+        return { transferMcc, sourceAccount, bridgeAccount, targetAccount };
+    });
 
-const seedBridgeRows = (operatedAt: Date, bridgeAccountId: number, transferMccId: number) => {
-    const bridgeIncome = seedBankPair.income(
-        { externalId: 'bridge-income', operatedAt },
-        {
-            accountId: bridgeAccountId,
-            amount: UAH_AMOUNT,
-            exchangeRate: EUR_TO_UAH_RATE,
-            mccCategoryId: transferMccId,
-            toIban: SOURCE_IBAN
-        }
-    );
-    const bridgeExpense = seedBankPair.expense(
-        { externalId: 'bridge-expense', operatedAt },
-        {
-            accountId: bridgeAccountId,
-            amount: UAH_AMOUNT,
-            mccCategoryId: transferMccId,
-            toIban: TARGET_IBAN
-        }
-    );
+const seedBridgeRows = (operatedAt: Date, bridgeAccountId: number, transferMccId: number) =>
+    Effect.gen(function* () {
+        const bridgeIncome = yield* seedBankPair.income(
+            { externalId: 'bridge-income', operatedAt },
+            {
+                accountId: bridgeAccountId,
+                amount: UAH_AMOUNT,
+                exchangeRate: EUR_TO_UAH_RATE,
+                mccCategoryId: transferMccId,
+                toIban: SOURCE_IBAN
+            }
+        );
+        const bridgeExpense = yield* seedBankPair.expense(
+            { externalId: 'bridge-expense', operatedAt },
+            {
+                accountId: bridgeAccountId,
+                amount: UAH_AMOUNT,
+                mccCategoryId: transferMccId,
+                toIban: TARGET_IBAN
+            }
+        );
 
-    return { bridgeIncome, bridgeExpense };
-};
+        return { bridgeIncome, bridgeExpense };
+    });
 
 const seedTargetIncome = (externalId: string, operatedAt: Date, targetAccountId: number, transferMccId: number) =>
-    seedBankPair.income(
-        { externalId, operatedAt },
-        {
-            accountId: targetAccountId,
-            amount: UAH_AMOUNT,
-            mccCategoryId: transferMccId
-        }
-    );
+    Effect.gen(function* () {
+        return yield* seedBankPair.income(
+            { externalId, operatedAt },
+            {
+                accountId: targetAccountId,
+                amount: UAH_AMOUNT,
+                mccCategoryId: transferMccId
+            }
+        );
+    });
 
 const seedDirectTransfer = (
     operatedAt: Date,
     sourceAccountId: number,
     targetAccountId: number,
     consolidationType: TransactionConsolidationTypeEnum | null = null
-): TransactionEntityInterface =>
-    seed.directTransfer({
-        consolidationType,
-        exchangeRate: UAH_TO_EUR_RATE,
-        operatedAt,
-        sourceAccountId,
-        sourceAmount: EUR_AMOUNT,
-        sourceEntryExchangeRate: UAH_TO_EUR_RATE,
-        targetAccountId,
-        targetAmount: UAH_AMOUNT,
-        toIban: TARGET_IBAN,
-        title: 'На чорну картку'
+) =>
+    Effect.gen(function* () {
+        return yield* seed.directTransfer({
+            consolidationType,
+            exchangeRate: UAH_TO_EUR_RATE,
+            operatedAt,
+            sourceAccountId,
+            sourceAmount: EUR_AMOUNT,
+            sourceEntryExchangeRate: UAH_TO_EUR_RATE,
+            targetAccountId,
+            targetAmount: UAH_AMOUNT,
+            toIban: TARGET_IBAN,
+            title: 'На чорну картку'
+        });
     });
 
-const seedBridgeReclaimFixture = (consolidationType: TransactionConsolidationTypeEnum | null) => {
-    const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
-    const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = seedBridgeAccounts();
-    const directTransfer = seedDirectTransfer(operatedAt, sourceAccount.id, targetAccount.id, consolidationType);
-    const { bridgeIncome, bridgeExpense } = seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
+const seedBridgeReclaimFixture = (consolidationType: TransactionConsolidationTypeEnum | null) =>
+    Effect.gen(function* () {
+        const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
+        const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = yield* seedBridgeAccounts();
+        const directTransfer = yield* seedDirectTransfer(operatedAt, sourceAccount.id, targetAccount.id, consolidationType);
+        const { bridgeIncome, bridgeExpense } = yield* seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
 
-    return { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount };
-};
+        return { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount };
+    });
 
 const buildBridgeScope = (transactions: Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]) => {
     const scope = consolidationScopeService.buildFromTransactions(transactions);
@@ -114,69 +121,69 @@ const buildBridgeScope = (transactions: Pick<TransactionEntityInterface, 'id' | 
     return scope;
 };
 
-const fetchMovedSourceIds = (canonicalId: number): number[] => {
-    const movedEntries = testDb
-        .select()
-        .from(TransactionEntryEntityTable)
-        .where(eq(TransactionEntryEntityTable.transactionId, canonicalId))
-        .all();
+const fetchMovedSourceIds = (canonicalId: number) =>
+    Effect.gen(function* () {
+        const movedEntries = yield* testDb
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.transactionId, canonicalId));
 
-    return movedEntries.flatMap(entry => (entry.originalTransactionId ? [entry.originalTransactionId] : []));
-};
+        return movedEntries.flatMap(entry => (entry.originalTransactionId ? [entry.originalTransactionId] : []));
+    });
 
-const expectCanonicalTransfer = (
-    consolidationType: TransactionConsolidationTypeEnum,
-    sourceAccountId: number,
-    targetAccountId: number
-): number => {
-    expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+const expectCanonicalTransfer = (consolidationType: TransactionConsolidationTypeEnum, sourceAccountId: number, targetAccountId: number) =>
+    Effect.gen(function* () {
+        expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
 
-    const canonicals = fetchCanonicalsOfType(consolidationType);
-    expect(canonicals).toHaveLength(1);
-    expect(canonicals[0].type).toBe(TransactionTypeEnum.TRANSFER);
-    expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
-    expect(canonicals[0].toAccountId).toBe(targetAccountId);
+        const canonicals = yield* fetchCanonicalsOfType(consolidationType);
+        expect(canonicals).toHaveLength(1);
+        expect(canonicals[0].type).toBe(TransactionTypeEnum.TRANSFER);
+        expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
+        expect(canonicals[0].toAccountId).toBe(targetAccountId);
 
-    return canonicals[0].id;
-};
+        return canonicals[0].id;
+    });
 
-const expectSourcesParented = (canonicalId: number, sourceTransactionIds: number[]): void => {
-    for (const sourceTransactionId of sourceTransactionIds) {
-        expect(fetchTransactionById(sourceTransactionId).consolidationParentTransactionId).toBe(canonicalId);
-    }
-};
+const expectSourcesParented = (canonicalId: number, sourceTransactionIds: number[]) =>
+    Effect.gen(function* () {
+        for (const sourceTransactionId of sourceTransactionIds) {
+            expect((yield* fetchTransactionById(sourceTransactionId)).consolidationParentTransactionId).toBe(canonicalId);
+        }
+    });
 
-const expectMovedSources = (canonicalId: number, expectedSourceIds: number[]): void => {
-    const sourceIds = fetchMovedSourceIds(canonicalId);
+const expectMovedSources = (canonicalId: number, expectedSourceIds: number[]) =>
+    Effect.gen(function* () {
+        const sourceIds = yield* fetchMovedSourceIds(canonicalId);
 
-    expect(sourceIds.sort((left, right) => left - right)).toEqual(expectedSourceIds.sort((left, right) => left - right));
-};
+        expect(sourceIds.sort((left, right) => left - right)).toEqual(expectedSourceIds.sort((left, right) => left - right));
+    });
 
 const expectBridgeReclaimedIntoDirectTransfer = (
     directTransferId: number,
     sourceAccountId: number,
     targetAccountId: number,
     sourceIds: number[]
-): void => {
-    expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+) =>
+    Effect.gen(function* () {
+        expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
 
-    const canonicalId = expectCanonicalTransfer(
-        TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
-        sourceAccountId,
-        targetAccountId
-    );
+        const canonicalId = yield* expectCanonicalTransfer(
+            TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
+            sourceAccountId,
+            targetAccountId
+        );
 
-    expect(canonicalId).toBe(directTransferId);
-    expectSourcesParented(canonicalId, sourceIds);
-    expectMovedSources(canonicalId, sourceIds);
-};
+        expect(canonicalId).toBe(directTransferId);
+        yield* expectSourcesParented(canonicalId, sourceIds);
+        yield* expectMovedSources(canonicalId, sourceIds);
+    });
 
 describe('consolidation/iban-bridge-chain-transfer', () => {
     it.effect('collapses a technical bridge chain into one direct canonical transfer', () =>
         Effect.gen(function* () {
             const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
-            const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = seedBridgeAccounts();
-            const sourceExpense = seedBankPair.expense(
+            const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = yield* seedBridgeAccounts();
+            const sourceExpense = yield* seedBankPair.expense(
                 { externalId: 'source-expense', operatedAt },
                 {
                     accountId: sourceAccount.id,
@@ -186,32 +193,32 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
                     toIban: TARGET_IBAN
                 }
             );
-            const { bridgeIncome, bridgeExpense } = seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
-            const targetIncome = seedTargetIncome('target-income', operatedAt, targetAccount.id, transferMcc.id);
+            const { bridgeIncome, bridgeExpense } = yield* seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
+            const targetIncome = yield* seedTargetIncome('target-income', operatedAt, targetAccount.id, transferMcc.id);
 
             yield* expectSingleConsolidation();
 
-            const canonicalId = expectCanonicalTransfer(
+            const canonicalId = yield* expectCanonicalTransfer(
                 TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
                 sourceAccount.id,
                 targetAccount.id
             );
             const sourceIds = [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id];
 
-            expectSourcesParented(canonicalId, sourceIds);
-            expectMovedSources(canonicalId, sourceIds);
+            yield* expectSourcesParented(canonicalId, sourceIds);
+            yield* expectMovedSources(canonicalId, sourceIds);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('reclaims a generated direct transfer pair before generic bridge consolidation in a full scan', () =>
         Effect.gen(function* () {
-            const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = seedBridgeReclaimFixture(
+            const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = yield* seedBridgeReclaimFixture(
                 TransactionConsolidationTypeEnum.TRANSFER_PAIR
             );
 
             yield* expectSingleConsolidation();
 
-            expectBridgeReclaimedIntoDirectTransfer(directTransfer.id, sourceAccount.id, targetAccount.id, [
+            yield* expectBridgeReclaimedIntoDirectTransfer(directTransfer.id, sourceAccount.id, targetAccount.id, [
                 bridgeIncome.id,
                 bridgeExpense.id
             ]);
@@ -221,7 +228,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
     it.effect('reclaims late bridge legs into an existing direct transfer pair inside a scoped sync scan', () =>
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
-            const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = seedBridgeReclaimFixture(
+            const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = yield* seedBridgeReclaimFixture(
                 TransactionConsolidationTypeEnum.TRANSFER_PAIR
             );
             const scope = buildBridgeScope([bridgeIncome, bridgeExpense]);
@@ -230,7 +237,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
 
             expect(result.found).toBe(1);
             expect(result.consolidated).toBe(1);
-            expectBridgeReclaimedIntoDirectTransfer(directTransfer.id, sourceAccount.id, targetAccount.id, [
+            yield* expectBridgeReclaimedIntoDirectTransfer(directTransfer.id, sourceAccount.id, targetAccount.id, [
                 bridgeIncome.id,
                 bridgeExpense.id
             ]);
@@ -240,30 +247,30 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
     it.effect('does not reclaim late bridge legs into a source-less hand-created transfer', () =>
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
-            const { bridgeExpense, bridgeIncome, directTransfer } = seedBridgeReclaimFixture(null);
+            const { bridgeExpense, bridgeIncome, directTransfer } = yield* seedBridgeReclaimFixture(null);
             const scope = buildBridgeScope([bridgeIncome, bridgeExpense]);
 
             const result = yield* transferConsolidationService.consolidate(scope);
 
             expect(result.found).toBe(0);
             expect(result.consolidated).toBe(0);
-            expect(fetchTransactionById(directTransfer.id).consolidationType).toBeNull();
-            expect(fetchTransactionById(bridgeIncome.id).consolidationParentTransactionId).toBeNull();
-            expect(fetchTransactionById(bridgeExpense.id).consolidationParentTransactionId).toBeNull();
+            expect((yield* fetchTransactionById(directTransfer.id)).consolidationType).toBeNull();
+            expect((yield* fetchTransactionById(bridgeIncome.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* fetchTransactionById(bridgeExpense.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('attaches leftover technical source and target rows to an existing bridge canonical transfer', () =>
         Effect.gen(function* () {
             const operatedAt = new Date(2026, 4, 21, 13, 50, 4);
-            const { transferMcc, sourceAccount, targetAccount } = seedBridgeAccounts();
-            const canonicalTransfer = seedDirectTransfer(
+            const { transferMcc, sourceAccount, targetAccount } = yield* seedBridgeAccounts();
+            const canonicalTransfer = yield* seedDirectTransfer(
                 operatedAt,
                 sourceAccount.id,
                 targetAccount.id,
                 TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER
             );
-            const sourceExpense = seedBankPair.expense(
+            const sourceExpense = yield* seedBankPair.expense(
                 { externalId: 'leftover-source-expense', operatedAt },
                 {
                     accountId: sourceAccount.id,
@@ -273,7 +280,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
                     toIban: TARGET_IBAN
                 }
             );
-            const targetIncome = seedTargetIncome(
+            const targetIncome = yield* seedTargetIncome(
                 'leftover-target-income',
                 new Date(operatedAt.getTime() + 1000),
                 targetAccount.id,
@@ -281,10 +288,10 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
             );
 
             yield* expectSingleConsolidation();
-            expectCanonicalTransfer(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, sourceAccount.id, targetAccount.id);
-            expect(fetchTransactionById(canonicalTransfer.id).consolidationParentTransactionId).toBeNull();
-            expectSourcesParented(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
-            expectMovedSources(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
+            yield* expectCanonicalTransfer(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, sourceAccount.id, targetAccount.id);
+            expect((yield* fetchTransactionById(canonicalTransfer.id)).consolidationParentTransactionId).toBeNull();
+            yield* expectSourcesParented(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
+            yield* expectMovedSources(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -10,8 +10,8 @@ describe('monobank/new-only-history-skips-backward', () => {
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const historyBoundary = new Date();
-            const account = seed.account({ externalId: 'mono-acc-new-only', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-            const bankSync = seed.sync({
+            const account = yield* seed.account({ externalId: 'mono-acc-new-only', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+            const bankSync = yield* seed.sync({
                 accountId: account.id,
                 mode: SyncModeEnum.BACKWARD,
                 backwardSyncFromAt: historyBoundary,
@@ -27,7 +27,7 @@ describe('monobank/new-only-history-skips-backward', () => {
             yield* monobankSyncService.sync();
 
             expect(requestedFromValues).toHaveLength(0);
-            expectForwardSyncWithoutHistory(bankSync.id);
+            yield* expectForwardSyncWithoutHistory(bankSync.id);
         }).pipe(Effect.provide(TestLayer))
     );
 });

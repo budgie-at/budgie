@@ -25,7 +25,8 @@ import {
     seedP2pFiatTransferFixture,
     seedP2pIncome,
     testDb,
-    TestLayer
+    TestLayer,
+    expectParentedToCanonical
 } from '../../harness';
 
 const REPAIR_PRIMARY_AMOUNT = 3_500 * PRECISION;
@@ -33,42 +34,43 @@ const REPAIR_EXTRA_AMOUNT = 500 * PRECISION;
 const REPAIR_WRONG_AMOUNT = REPAIR_PRIMARY_AMOUNT + REPAIR_EXTRA_AMOUNT;
 const REPAIR_SCOPE_WINDOW_MS = 60_000;
 
-const backfillP2pQuote = (quotedInstrumentId: number, incomeTransactionId: number): void => {
-    testDb
-        .update(TransactionEntryEntityTable)
-        .set({
-            quotedInstrumentId,
-            quotedAmount: REPAIR_PRIMARY_AMOUNT,
-            quotedUnitPrice: 35 * PRECISION
-        })
-        .where(eq(TransactionEntryEntityTable.originalTransactionId, incomeTransactionId))
-        .run();
-};
+const backfillP2pQuote = (quotedInstrumentId: number, incomeTransactionId: number) =>
+    Effect.gen(function* () {
+        yield* testDb
+            .update(TransactionEntryEntityTable)
+            .set({
+                quotedInstrumentId,
+                quotedAmount: REPAIR_PRIMARY_AMOUNT,
+                quotedUnitPrice: 35 * PRECISION
+            })
+            .where(eq(TransactionEntryEntityTable.originalTransactionId, incomeTransactionId));
+    });
 
-const seedWrongP2pRepairScenario = (externalIdPrefix: string, bankAccountId: number, binanceAccountId: number) => {
-    const wrongExpense = seedBankPair.expense(
-        { externalId: `mono-uah-repair-${externalIdPrefix}-wrong`, operatedAt: P2P_OPERATED_AT },
-        { accountId: bankAccountId, amount: REPAIR_WRONG_AMOUNT }
-    );
-    const correctExpense = seedBankPair.expense(
-        { externalId: `mono-uah-repair-${externalIdPrefix}-correct`, operatedAt: P2P_OPERATED_AT },
-        { accountId: bankAccountId, amount: REPAIR_PRIMARY_AMOUNT }
-    );
-    const income = seedP2pIncome(`binance:c2c:buy-repair-${externalIdPrefix}`, binanceAccountId);
+const seedWrongP2pRepairScenario = (externalIdPrefix: string, bankAccountId: number, binanceAccountId: number) =>
+    Effect.gen(function* () {
+        const wrongExpense = yield* seedBankPair.expense(
+            { externalId: `mono-uah-repair-${externalIdPrefix}-wrong`, operatedAt: P2P_OPERATED_AT },
+            { accountId: bankAccountId, amount: REPAIR_WRONG_AMOUNT }
+        );
+        const correctExpense = yield* seedBankPair.expense(
+            { externalId: `mono-uah-repair-${externalIdPrefix}-correct`, operatedAt: P2P_OPERATED_AT },
+            { accountId: bankAccountId, amount: REPAIR_PRIMARY_AMOUNT }
+        );
+        const income = yield* seedP2pIncome(`binance:c2c:buy-repair-${externalIdPrefix}`, binanceAccountId);
 
-    return { wrongExpense, correctExpense, income };
-};
+        return { wrongExpense, correctExpense, income };
+    });
 
 const consolidateWrongP2pRepairScenario = Effect.fnUntraced(function* (wrongExpenseId: number, incomeTransactionId: number) {
     const transferConsolidationService = yield* TransferConsolidationService;
 
     expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
 
-    const canonicalId = getDefined(fetchTransactionById(incomeTransactionId).consolidationParentTransactionId, () => {
+    const canonicalId = getDefined((yield* fetchTransactionById(incomeTransactionId)).consolidationParentTransactionId, () => {
         throw new Error('Expected heuristic P2P canonical id');
     });
 
-    expect(fetchTransactionById(wrongExpenseId).consolidationParentTransactionId).toBe(canonicalId);
+    expect((yield* fetchTransactionById(wrongExpenseId)).consolidationParentTransactionId).toBe(canonicalId);
 
     return canonicalId;
 });
@@ -88,49 +90,44 @@ const backfillAndConsolidateScopedP2pRepair = Effect.fnUntraced(function* (
     incomeTransactionId: number,
     transactionIds: readonly number[]
 ) {
-    backfillP2pQuote(quotedInstrumentId, incomeTransactionId);
+    yield* backfillP2pQuote(quotedInstrumentId, incomeTransactionId);
 
     return yield* consolidateP2pRepairWithScope(transactionIds);
 });
 
-const expectRepairCanonicalPreserved = (canonicalId: number, transactionIds: readonly number[]): void => {
-    transactionIds.forEach(transactionId => {
-        expect(fetchTransactionById(transactionId).consolidationParentTransactionId).toBe(canonicalId);
+const expectExpenseRepaired = (correctExpenseId: number, wrongExpenseId: number, incomeId: number) =>
+    Effect.gen(function* () {
+        expect((yield* fetchTransactionById(correctExpenseId)).consolidationParentTransactionId).toBe(
+            (yield* fetchTransactionById(incomeId)).consolidationParentTransactionId
+        );
+        expect((yield* fetchTransactionById(wrongExpenseId)).consolidationParentTransactionId).toBeNull();
     });
-};
-
-const expectExpenseRepaired = (correctExpenseId: number, wrongExpenseId: number, incomeId: number): void => {
-    expect(fetchTransactionById(correctExpenseId).consolidationParentTransactionId).toBe(
-        fetchTransactionById(incomeId).consolidationParentTransactionId
-    );
-    expect(fetchTransactionById(wrongExpenseId).consolidationParentTransactionId).toBeNull();
-};
 
 describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
     it.effect('repairs a system-generated group after provider fiat data is backfilled', () =>
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const primaryExpense = seedBankPair.expense(
+            const primaryExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-primary', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
             );
-            const extraExpense = seedBankPair.expense(
+            const extraExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-extra', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_EXTRA_AMOUNT }
             );
-            const income = seedP2pIncome('binance:c2c:buy-repair', binanceAccount.id);
+            const income = yield* seedP2pIncome('binance:c2c:buy-repair', binanceAccount.id);
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
-            expect(fetchTransactionById(extraExpense.id).consolidationParentTransactionId).not.toBeNull();
+            expect((yield* fetchTransactionById(extraExpense.id)).consolidationParentTransactionId).not.toBeNull();
 
-            backfillP2pQuote(uah.id, income.id);
+            yield* backfillP2pQuote(uah.id, income.id);
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
-            expect(fetchTransactionById(primaryExpense.id).consolidationParentTransactionId).toBe(
-                fetchTransactionById(income.id).consolidationParentTransactionId
+            expect((yield* fetchTransactionById(primaryExpense.id)).consolidationParentTransactionId).toBe(
+                (yield* fetchTransactionById(income.id)).consolidationParentTransactionId
             );
-            expect(fetchTransactionById(extraExpense.id).consolidationParentTransactionId).toBeNull();
+            expect((yield* fetchTransactionById(extraExpense.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -138,15 +135,15 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const { wrongExpense, correctExpense, income } = seedWrongP2pRepairScenario('1-to-1', bankAccount.id, binanceAccount.id);
+            const { wrongExpense, correctExpense, income } = yield* seedWrongP2pRepairScenario('1-to-1', bankAccount.id, binanceAccount.id);
 
             yield* consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
-            expect(fetchTransactionById(correctExpense.id).consolidationParentTransactionId).toBeNull();
+            expect((yield* fetchTransactionById(correctExpense.id)).consolidationParentTransactionId).toBeNull();
 
-            backfillP2pQuote(uah.id, income.id);
+            yield* backfillP2pQuote(uah.id, income.id);
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
-            expectExpenseRepaired(correctExpense.id, wrongExpense.id, income.id);
+            yield* expectExpenseRepaired(correctExpense.id, wrongExpense.id, income.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -154,19 +151,22 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const { wrongExpense, correctExpense, income } = seedWrongP2pRepairScenario('user-1-to-1', bankAccount.id, binanceAccount.id);
+            const { wrongExpense, correctExpense, income } = yield* seedWrongP2pRepairScenario(
+                'user-1-to-1',
+                bankAccount.id,
+                binanceAccount.id
+            );
             const canonicalId = yield* consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
 
-            testDb
+            yield* testDb
                 .update(TransactionEntityTable)
                 .set({ updatedBy: TransactionUpdatedByEnum.USER })
-                .where(eq(TransactionEntityTable.id, canonicalId))
-                .run();
-            backfillP2pQuote(uah.id, income.id);
+                .where(eq(TransactionEntityTable.id, canonicalId));
+            yield* backfillP2pQuote(uah.id, income.id);
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(0);
-            expectRepairCanonicalPreserved(canonicalId, [wrongExpense.id, income.id]);
-            expect(fetchTransactionById(correctExpense.id).consolidationParentTransactionId).toBeNull();
+            yield* expectParentedToCanonical(canonicalId, [wrongExpense.id, income.id]);
+            expect((yield* fetchTransactionById(correctExpense.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -176,36 +176,39 @@ describe('consolidation/binance-p2p-fiat-transfer existing source scope', () => 
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const historicalPrimaryExpense = seedBankPair.expense(
+            const historicalPrimaryExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-scoped-primary', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
             );
-            const historicalExtraExpense = seedBankPair.expense(
+            const historicalExtraExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-scoped-extra', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_EXTRA_AMOUNT }
             );
-            const historicalIncome = seedP2pIncome('binance:c2c:buy-repair-scoped', binanceAccount.id);
+            const historicalIncome = yield* seedP2pIncome('binance:c2c:buy-repair-scoped', binanceAccount.id);
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
-            expect(fetchTransactionById(historicalExtraExpense.id).consolidationParentTransactionId).not.toBeNull();
+            expect((yield* fetchTransactionById(historicalExtraExpense.id)).consolidationParentTransactionId).not.toBeNull();
 
-            const historicalCanonicalId = getDefined(fetchTransactionById(historicalIncome.id).consolidationParentTransactionId, () => {
-                throw new Error('Expected historical P2P canonical id');
-            });
+            const historicalCanonicalId = getDefined(
+                (yield* fetchTransactionById(historicalIncome.id)).consolidationParentTransactionId,
+                () => {
+                    throw new Error('Expected historical P2P canonical id');
+                }
+            );
 
-            backfillP2pQuote(uah.id, historicalIncome.id);
+            yield* backfillP2pQuote(uah.id, historicalIncome.id);
 
-            const scopedExpense = seedBankPair.expense(
+            const scopedExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-scoped-current-expense', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: P2P_UAH_TOTAL }
             );
-            const scopedIncome = seedBankPair.income(
+            const scopedIncome = yield* seedBankPair.income(
                 { externalId: 'binance:c2c:buy-repair-scoped-current-income', operatedAt: P2P_OPERATED_AT },
                 { accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
             );
 
             expect(yield* consolidateP2pRepairWithScope([scopedExpense.id, scopedIncome.id])).toEqual({ found: 1, consolidated: 1 });
-            expectRepairCanonicalPreserved(historicalCanonicalId, [
+            yield* expectParentedToCanonical(historicalCanonicalId, [
                 historicalPrimaryExpense.id,
                 historicalExtraExpense.id,
                 historicalIncome.id
@@ -220,37 +223,40 @@ describe('consolidation/binance-p2p-fiat-transfer grouped source scope', () => {
             const transferConsolidationService = yield* TransferConsolidationService;
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const historicalPrimaryExpense = seedBankPair.expense(
+            const historicalPrimaryExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-grouped-source-primary', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
             );
-            const historicalExtraExpense = seedBankPair.expense(
+            const historicalExtraExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-grouped-source-extra', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_EXTRA_AMOUNT }
             );
-            const historicalIncome = seedP2pIncome('binance:c2c:buy-repair-grouped-source', binanceAccount.id);
+            const historicalIncome = yield* seedP2pIncome('binance:c2c:buy-repair-grouped-source', binanceAccount.id);
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
 
-            const historicalCanonicalId = getDefined(fetchTransactionById(historicalIncome.id).consolidationParentTransactionId, () => {
-                throw new Error('Expected grouped repair canonical id');
-            });
+            const historicalCanonicalId = getDefined(
+                (yield* fetchTransactionById(historicalIncome.id)).consolidationParentTransactionId,
+                () => {
+                    throw new Error('Expected grouped repair canonical id');
+                }
+            );
 
-            backfillP2pQuote(uah.id, historicalIncome.id);
+            yield* backfillP2pQuote(uah.id, historicalIncome.id);
 
-            const scopedReplacementLikeExpense = seedBankPair.expense(
+            const scopedReplacementLikeExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-grouped-source-unrelated-replacement', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
             );
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds([bankAccount.id]);
 
             expect(yield* consolidateP2pRepairWithScope([scopedReplacementLikeExpense.id])).toEqual({ found: 0, consolidated: 0 });
-            expectRepairCanonicalPreserved(historicalCanonicalId, [
+            yield* expectParentedToCanonical(historicalCanonicalId, [
                 historicalPrimaryExpense.id,
                 historicalExtraExpense.id,
                 historicalIncome.id
             ]);
-            expect(fetchTransactionById(scopedReplacementLikeExpense.id).consolidationParentTransactionId).toBeNull();
+            expect((yield* fetchTransactionById(scopedReplacementLikeExpense.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -259,7 +265,7 @@ describe('consolidation/binance-p2p-fiat-transfer replacement source scope', () 
     it.effect('repairs a system-generated 1:1 heuristic match when only the replacement bank source id is scoped', () =>
         Effect.gen(function* () {
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const { wrongExpense, correctExpense, income } = seedWrongP2pRepairScenario(
+            const { wrongExpense, correctExpense, income } = yield* seedWrongP2pRepairScenario(
                 'replacement-scope',
                 bankAccount.id,
                 binanceAccount.id
@@ -271,30 +277,30 @@ describe('consolidation/binance-p2p-fiat-transfer replacement source scope', () 
                 found: 1,
                 consolidated: 1
             });
-            expectExpenseRepaired(correctExpense.id, wrongExpense.id, income.id);
+            yield* expectExpenseRepaired(correctExpense.id, wrongExpense.id, income.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('does not repair a system-generated 1:1 heuristic match through an inactive replacement bank account', () =>
         Effect.gen(function* () {
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const inactiveBankAccount = seed.account({
+            const inactiveBankAccount = yield* seed.account({
                 externalSource: ExternalSourceEnum.MONOBANK,
                 instrumentId: uah.id,
                 title: 'Inactive Monobank UAH',
                 type: AccountTypeEnum.BANK_SYNC
             });
-            const wrongExpense = seedBankPair.expense(
+            const wrongExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-inactive-wrong', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: REPAIR_WRONG_AMOUNT }
             );
-            const inactiveReplacementExpense = seedBankPair.expense(
+            const inactiveReplacementExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-repair-inactive-correct', operatedAt: P2P_OPERATED_AT },
                 { accountId: inactiveBankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
             );
-            const income = seedP2pIncome('binance:c2c:buy-repair-inactive', binanceAccount.id);
+            const income = yield* seedP2pIncome('binance:c2c:buy-repair-inactive', binanceAccount.id);
 
-            testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, inactiveBankAccount.id)).run();
+            yield* testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, inactiveBankAccount.id));
 
             const canonicalId = yield* consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
 
@@ -302,8 +308,8 @@ describe('consolidation/binance-p2p-fiat-transfer replacement source scope', () 
                 found: 0,
                 consolidated: 0
             });
-            expectRepairCanonicalPreserved(canonicalId, [wrongExpense.id, income.id]);
-            expect(fetchTransactionById(inactiveReplacementExpense.id).consolidationParentTransactionId).toBeNull();
+            yield* expectParentedToCanonical(canonicalId, [wrongExpense.id, income.id]);
+            expect((yield* fetchTransactionById(inactiveReplacementExpense.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 });

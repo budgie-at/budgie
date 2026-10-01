@@ -26,7 +26,7 @@ describe('monobank/suspended-run-lock', () => {
             const blockerStarted = yield* Deferred.make<void>();
             const blockerGate = yield* Deferred.make<void>();
 
-            seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
+            yield* seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
             const blockerWork = yield* Effect.forkChild(
                 inWorkload(Effect.andThen(Deferred.succeed(blockerStarted, undefined), Deferred.await(blockerGate)))
             );
@@ -62,7 +62,7 @@ describe('monobank/suspended-run-lock', () => {
             const statementRequestStarted = Promise.withResolvers<void>();
             let requestedStatementCount = 0;
 
-            seedMonobankForwardSyncAccounts(['mono-acc-1'], staleForwardSyncFromAt);
+            yield* seedMonobankForwardSyncAccounts(['mono-acc-1'], staleForwardSyncFromAt);
             mockServer.use(
                 http.get(statementEndpoint, () => {
                     requestedStatementCount += 1;
@@ -90,7 +90,7 @@ describe('monobank/suspended-run-lock', () => {
             yield* Fiber.join(backgroundSync);
 
             expect(didReplacementRequestStartWhileForegroundWasSuspended).toBe(false);
-            expect(fetchPersistedMonobankTransactions()).toHaveLength(1);
+            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

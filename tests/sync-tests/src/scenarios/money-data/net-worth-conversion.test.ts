@@ -22,9 +22,9 @@ const LIVE_CRYPTO_TOTAL = BITCOIN_EURO_RATE * CRYPTO_BALANCE_UNITS * PRECISION;
 const seedHryvniaCashWithBalance = Effect.fnUntraced(function* (balance: number) {
     const euro = yield* requireInstrument(CurrencyEnum.EUR);
     const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-    const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.CASH });
+    const account = yield* seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.CASH });
 
-    testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+    yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
     yield* seedLedgerBalance(account.id, balance);
 
     return euro;
@@ -33,7 +33,7 @@ const seedHryvniaCashWithBalance = Effect.fnUntraced(function* (balance: number)
 const seedBitcoinCryptoWithLiveRate = Effect.fnUntraced(function* (balance: number) {
     const result = yield* seedBitcoinCryptoAccount(balance);
 
-    insertOne(ExchangeRateEntityTable, {
+    yield* insertOne(ExchangeRateEntityTable, {
         source: 'test',
         baseInstrumentId: result.bitcoin.id,
         quoteInstrumentId: result.euro.id,
@@ -59,7 +59,12 @@ describe('net worth currency conversion', () => {
             const euro = yield* seedHryvniaCashWithBalance(1000 * PRECISION);
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
 
-            insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: hryvnia.id, quoteInstrumentId: euro.id, rate: 0.02 });
+            yield* insertOne(ExchangeRateEntityTable, {
+                source: 'test',
+                baseInstrumentId: hryvnia.id,
+                quoteInstrumentId: euro.id,
+                rate: 0.02
+            });
 
             const netWorth = (yield* accountBalanceRepository.getNetWorth(euro.id)).at(0);
 

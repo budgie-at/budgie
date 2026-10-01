@@ -19,7 +19,7 @@ import {
 } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
-import type { AccountEntityInterface, ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
+import type { ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
 import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const CURRENCY_CODE_EUR = 978;
@@ -100,40 +100,43 @@ const buildIncomeTransaction = (target: ImportedIncomeInterface): SyncTransactio
     feeAmount: 0
 });
 
-const expectTransferPairCanonical = (result: { readonly consolidated: number }, sourceAccountId: number): void => {
-    expect(result.consolidated).toBe(1);
-    const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-    expect(canonicals).toHaveLength(1);
-    expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
-    expect(fetchTransactionById(canonicals[0].id).toAccountId).not.toBe(sourceAccountId);
-};
-
-const seedExistingBankExpense = (source: ExistingExpenseInterface, instrumentId: number, mccCategoryId: number): AccountEntityInterface => {
-    const account = seed.account({
-        title: source.title,
-        type: AccountTypeEnum.BANK_SYNC,
-        externalId: source.externalId,
-        externalSource: source.externalSource,
-        iban: `${source.externalId}-IBAN`,
-        instrumentId
+const expectTransferPairCanonical = (result: { readonly consolidated: number }, sourceAccountId: number) =>
+    Effect.gen(function* () {
+        expect(result.consolidated).toBe(1);
+        const canonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        expect(canonicals).toHaveLength(1);
+        expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
+        expect((yield* fetchTransactionById(canonicals[0].id)).toAccountId).not.toBe(sourceAccountId);
     });
 
-    seedBankPair.expense(
-        { externalId: `${source.externalId}-expense`, operatedAt: OPERATED_AT },
-        { accountId: account.id, amount: IMPORTED_AMOUNT * PRECISION, mccCategoryId }
-    );
+const seedExistingBankExpense = (source: ExistingExpenseInterface, instrumentId: number, mccCategoryId: number) =>
+    Effect.gen(function* () {
+        const account = yield* seed.account({
+            title: source.title,
+            type: AccountTypeEnum.BANK_SYNC,
+            externalId: source.externalId,
+            externalSource: source.externalSource,
+            iban: `${source.externalId}-IBAN`,
+            instrumentId
+        });
 
-    return account;
-};
+        yield* seedBankPair.expense(
+            { externalId: `${source.externalId}-expense`, operatedAt: OPERATED_AT },
+            { accountId: account.id, amount: IMPORTED_AMOUNT * PRECISION, mccCategoryId }
+        );
 
-const buildMccCategoryLookup = (): MccCategoryLookupInterface => {
-    const transferMcc = findMccByCode(TRANSFER_MCC_CODE);
+        return account;
+    });
 
-    return {
-        id: transferMcc.id,
-        defaultCategoryId: null
-    };
-};
+const buildMccCategoryLookup = () =>
+    Effect.gen(function* () {
+        const transferMcc = yield* findMccByCode(TRANSFER_MCC_CODE);
+
+        return {
+            id: transferMcc.id,
+            defaultCategoryId: null
+        };
+    });
 
 const importAndRunQueuedScope = Effect.fnUntraced(function* (target: ImportedIncomeInterface, categoryLookup: MccCategoryLookupInterface) {
     const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
@@ -232,12 +235,12 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
     it.effect.each(INTERBANK_TRANSFER_CASES)('$title', ({ source, target }) =>
         Effect.gen(function* () {
             const instrument = yield* requireInstrument(source.currency);
-            const transferMcc = buildMccCategoryLookup();
-            const sourceAccount = seedExistingBankExpense(source, instrument.id, transferMcc.id);
+            const transferMcc = yield* buildMccCategoryLookup();
+            const sourceAccount = yield* seedExistingBankExpense(source, instrument.id, transferMcc.id);
 
             const result = yield* importAndRunQueuedScope(target, transferMcc);
 
-            expectTransferPairCanonical(result, sourceAccount.id);
+            yield* expectTransferPairCanonical(result, sourceAccount.id);
         }).pipe(Effect.provide(TestLayer))
     );
 });

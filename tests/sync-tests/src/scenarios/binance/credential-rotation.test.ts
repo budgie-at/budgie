@@ -66,124 +66,138 @@ interface SeedFailedForwardSyncInputInterface {
     readonly token: string;
 }
 
-const seedBinanceAccount = (asset: string): AccountEntityInterface => {
-    const instrument = seedCryptoInstrument(asset);
+const seedBinanceAccount = (asset: string) =>
+    Effect.gen(function* () {
+        const instrument = yield* seedCryptoInstrument(asset);
 
-    return seed.account({
-        externalId: encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset }),
-        externalSource: ExternalSourceEnum.BINANCE,
-        type: AccountTypeEnum.CRYPTO_SYNC,
-        instrumentId: instrument.id
-    });
-};
-
-const seedMonobankAccount = (externalId: string): AccountEntityInterface =>
-    seed.account({
-        externalId,
-        externalSource: ExternalSourceEnum.MONOBANK,
-        type: AccountTypeEnum.BANK_SYNC
+        return yield* seed.account({
+            externalId: encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset }),
+            externalSource: ExternalSourceEnum.BINANCE,
+            type: AccountTypeEnum.CRYPTO_SYNC,
+            instrumentId: instrument.id
+        });
     });
 
-const seedFailedForwardSync = (input: SeedFailedForwardSyncInputInterface): SyncEntityInterface =>
-    seed.sync({
-        accountId: input.accountId,
-        token: input.token,
-        provider: input.provider,
-        mode: SyncModeEnum.FORWARD,
-        status: SyncStatusEnum.FAILED,
-        enabled: input.enabled ?? true,
-        forwardSyncFromAt: input.forwardSyncFromAt,
-        forwardSyncedAt: input.forwardSyncedAt ?? null,
-        backwardSyncFromAt: null,
-        backwardSyncedAt: null,
-        errorCount: input.errorCount,
-        lastError: input.lastError
+const seedMonobankAccount = (externalId: string) =>
+    Effect.gen(function* () {
+        return yield* seed.account({
+            externalId,
+            externalSource: ExternalSourceEnum.MONOBANK,
+            type: AccountTypeEnum.BANK_SYNC
+        });
     });
 
-const seedFailedBackwardSync = (accountId: number): SyncEntityInterface =>
-    seed.sync({
-        accountId,
-        token: SHARED_OLD_TOKEN,
-        provider: ExternalSourceEnum.BINANCE,
-        mode: SyncModeEnum.BACKWARD,
-        status: SyncStatusEnum.FAILED,
-        forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
-        forwardSyncedAt: SHARED_FORWARD_SYNCED_AT,
-        backwardSyncFromAt: SHARED_BACKWARD_SYNC_FROM_AT,
-        backwardSyncedAt: SHARED_BACKWARD_SYNCED_AT,
-        errorCount: 4,
-        lastError: 'shared failure'
+const seedFailedForwardSync = (input: SeedFailedForwardSyncInputInterface) =>
+    Effect.gen(function* () {
+        return yield* seed.sync({
+            accountId: input.accountId,
+            token: input.token,
+            provider: input.provider,
+            mode: SyncModeEnum.FORWARD,
+            status: SyncStatusEnum.FAILED,
+            enabled: input.enabled ?? true,
+            forwardSyncFromAt: input.forwardSyncFromAt,
+            forwardSyncedAt: input.forwardSyncedAt ?? null,
+            backwardSyncFromAt: null,
+            backwardSyncedAt: null,
+            errorCount: input.errorCount,
+            lastError: input.lastError
+        });
     });
 
-const markSyncDeleted = (syncId: number): void => {
-    testDb
-        .update(SyncEntityTable)
-        .set({ deletedAt: new Date('2026-03-04T10:00:00.000Z') })
-        .where(eq(SyncEntityTable.id, syncId))
-        .run();
-};
+const seedFailedBackwardSync = (accountId: number) =>
+    Effect.gen(function* () {
+        return yield* seed.sync({
+            accountId,
+            token: SHARED_OLD_TOKEN,
+            provider: ExternalSourceEnum.BINANCE,
+            mode: SyncModeEnum.BACKWARD,
+            status: SyncStatusEnum.FAILED,
+            forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
+            forwardSyncedAt: SHARED_FORWARD_SYNCED_AT,
+            backwardSyncFromAt: SHARED_BACKWARD_SYNC_FROM_AT,
+            backwardSyncedAt: SHARED_BACKWARD_SYNCED_AT,
+            errorCount: 4,
+            lastError: 'shared failure'
+        });
+    });
 
-const seedBinanceAccounts = (): BinanceAccountsInterface => ({
-    crossProviderAccount: seedMonobankAccount('monobank-same-binance-token'),
-    deletedAccount: seedBinanceAccount('SOL'),
-    disabledAccount: seedBinanceAccount('ADA'),
-    selectedAccount: seedBinanceAccount('BTC'),
-    separateAccount: seedBinanceAccount('BNB'),
-    sharedAccount: seedBinanceAccount('ETH')
-});
+const markSyncDeleted = (syncId: number) =>
+    Effect.gen(function* () {
+        yield* testDb
+            .update(SyncEntityTable)
+            .set({ deletedAt: new Date('2026-03-04T10:00:00.000Z') })
+            .where(eq(SyncEntityTable.id, syncId));
+    });
 
-const seedBinanceSyncs = (accounts: BinanceAccountsInterface): BinanceSyncsInterface => ({
-    crossProviderSync: seedFailedForwardSync({
-        accountId: accounts.crossProviderAccount.id,
-        errorCount: 8,
-        forwardSyncFromAt: CROSS_PROVIDER_FORWARD_SYNC_FROM_AT,
-        lastError: 'cross provider failure',
-        provider: ExternalSourceEnum.MONOBANK,
-        token: SHARED_OLD_TOKEN
-    }),
-    deletedSync: seedFailedForwardSync({
-        accountId: accounts.deletedAccount.id,
-        errorCount: 7,
-        forwardSyncFromAt: DELETED_FORWARD_SYNC_FROM_AT,
-        lastError: 'deleted failure',
-        provider: ExternalSourceEnum.BINANCE,
-        token: SHARED_OLD_TOKEN
-    }),
-    disabledSync: seedFailedForwardSync({
-        accountId: accounts.disabledAccount.id,
-        enabled: false,
-        errorCount: 6,
-        forwardSyncFromAt: DISABLED_FORWARD_SYNC_FROM_AT,
-        lastError: 'disabled failure',
-        provider: ExternalSourceEnum.BINANCE,
-        token: SHARED_OLD_TOKEN
-    }),
-    selectedSync: seedFailedForwardSync({
-        accountId: accounts.selectedAccount.id,
-        errorCount: 3,
-        forwardSyncedAt: SELECTED_FORWARD_SYNCED_AT,
-        forwardSyncFromAt: SELECTED_FORWARD_SYNC_FROM_AT,
-        lastError: 'selected failure',
-        provider: ExternalSourceEnum.BINANCE,
-        token: SHARED_OLD_TOKEN
-    }),
-    separateSync: seedFailedForwardSync({
-        accountId: accounts.separateAccount.id,
-        errorCount: 5,
-        forwardSyncedAt: SEPARATE_FORWARD_SYNCED_AT,
-        forwardSyncFromAt: SEPARATE_FORWARD_SYNC_FROM_AT,
-        lastError: 'separate failure',
-        provider: ExternalSourceEnum.BINANCE,
-        token: SEPARATE_OLD_TOKEN
-    }),
-    sharedSync: seedFailedBackwardSync(accounts.sharedAccount.id)
-});
+const seedBinanceAccounts = () =>
+    Effect.gen(function* () {
+        return {
+            crossProviderAccount: yield* seedMonobankAccount('monobank-same-binance-token'),
+            deletedAccount: yield* seedBinanceAccount('SOL'),
+            disabledAccount: yield* seedBinanceAccount('ADA'),
+            selectedAccount: yield* seedBinanceAccount('BTC'),
+            separateAccount: yield* seedBinanceAccount('BNB'),
+            sharedAccount: yield* seedBinanceAccount('ETH')
+        };
+    });
 
-const seedBinanceCredentialRotationScenario = (): BinanceRotationScenarioInterface => {
-    const accounts = seedBinanceAccounts();
+const seedBinanceSyncs = (accounts: BinanceAccountsInterface) =>
+    Effect.gen(function* () {
+        return {
+            crossProviderSync: yield* seedFailedForwardSync({
+                accountId: accounts.crossProviderAccount.id,
+                errorCount: 8,
+                forwardSyncFromAt: CROSS_PROVIDER_FORWARD_SYNC_FROM_AT,
+                lastError: 'cross provider failure',
+                provider: ExternalSourceEnum.MONOBANK,
+                token: SHARED_OLD_TOKEN
+            }),
+            deletedSync: yield* seedFailedForwardSync({
+                accountId: accounts.deletedAccount.id,
+                errorCount: 7,
+                forwardSyncFromAt: DELETED_FORWARD_SYNC_FROM_AT,
+                lastError: 'deleted failure',
+                provider: ExternalSourceEnum.BINANCE,
+                token: SHARED_OLD_TOKEN
+            }),
+            disabledSync: yield* seedFailedForwardSync({
+                accountId: accounts.disabledAccount.id,
+                enabled: false,
+                errorCount: 6,
+                forwardSyncFromAt: DISABLED_FORWARD_SYNC_FROM_AT,
+                lastError: 'disabled failure',
+                provider: ExternalSourceEnum.BINANCE,
+                token: SHARED_OLD_TOKEN
+            }),
+            selectedSync: yield* seedFailedForwardSync({
+                accountId: accounts.selectedAccount.id,
+                errorCount: 3,
+                forwardSyncedAt: SELECTED_FORWARD_SYNCED_AT,
+                forwardSyncFromAt: SELECTED_FORWARD_SYNC_FROM_AT,
+                lastError: 'selected failure',
+                provider: ExternalSourceEnum.BINANCE,
+                token: SHARED_OLD_TOKEN
+            }),
+            separateSync: yield* seedFailedForwardSync({
+                accountId: accounts.separateAccount.id,
+                errorCount: 5,
+                forwardSyncedAt: SEPARATE_FORWARD_SYNCED_AT,
+                forwardSyncFromAt: SEPARATE_FORWARD_SYNC_FROM_AT,
+                lastError: 'separate failure',
+                provider: ExternalSourceEnum.BINANCE,
+                token: SEPARATE_OLD_TOKEN
+            }),
+            sharedSync: yield* seedFailedBackwardSync(accounts.sharedAccount.id)
+        };
+    });
 
-    return { accounts, syncs: seedBinanceSyncs(accounts) };
-};
+const seedBinanceCredentialRotationScenario = () =>
+    Effect.gen(function* () {
+        const accounts = yield* seedBinanceAccounts();
+
+        return { accounts, syncs: yield* seedBinanceSyncs(accounts) };
+    });
 
 const expectForwardSync = (sync: SyncEntityInterface, expected: ExpectedForwardSyncInterface): void => {
     expect(sync).toMatchObject({
@@ -212,14 +226,17 @@ const expectBackwardSyncUpdated = (sync: SyncEntityInterface): void => {
     expect(sync.backwardSyncedAt).toEqual(SHARED_BACKWARD_SYNCED_AT);
 };
 
-const fetchBinanceUpdatedSyncs = (syncs: BinanceSyncsInterface): BinanceSyncsInterface => ({
-    crossProviderSync: fetchSyncById(syncs.crossProviderSync.id),
-    deletedSync: fetchSyncById(syncs.deletedSync.id),
-    disabledSync: fetchSyncById(syncs.disabledSync.id),
-    selectedSync: fetchSyncById(syncs.selectedSync.id),
-    separateSync: fetchSyncById(syncs.separateSync.id),
-    sharedSync: fetchSyncById(syncs.sharedSync.id)
-});
+const fetchBinanceUpdatedSyncs = (syncs: BinanceSyncsInterface) =>
+    Effect.gen(function* () {
+        return {
+            crossProviderSync: yield* fetchSyncById(syncs.crossProviderSync.id),
+            deletedSync: yield* fetchSyncById(syncs.deletedSync.id),
+            disabledSync: yield* fetchSyncById(syncs.disabledSync.id),
+            selectedSync: yield* fetchSyncById(syncs.selectedSync.id),
+            separateSync: yield* fetchSyncById(syncs.separateSync.id),
+            sharedSync: yield* fetchSyncById(syncs.sharedSync.id)
+        };
+    });
 
 const expectUpdatedBinanceGroup = (syncs: BinanceSyncsInterface): void => {
     expectForwardSync(syncs.selectedSync, {
@@ -263,32 +280,34 @@ const expectExcludedBinanceRows = (syncs: BinanceSyncsInterface): void => {
     });
 };
 
-const expectRotatedIntegrationTokens = (accounts: BinanceAccountsInterface): void => {
-    expect(fetchAccountIntegrationToken(accounts.selectedAccount.id)).toBe(NEW_TOKEN);
-    expect(fetchAccountIntegrationToken(accounts.sharedAccount.id)).toBe(NEW_TOKEN);
-    expect(fetchAccountIntegrationToken(accounts.disabledAccount.id)).toBe(NEW_TOKEN);
-    expect(fetchAccountIntegrationToken(accounts.separateAccount.id)).toBe(SEPARATE_OLD_TOKEN);
-    expect(fetchAccountIntegrationToken(accounts.crossProviderAccount.id)).toBe(SHARED_OLD_TOKEN);
-};
+const expectRotatedIntegrationTokens = (accounts: BinanceAccountsInterface) =>
+    Effect.gen(function* () {
+        expect(yield* fetchAccountIntegrationToken(accounts.selectedAccount.id)).toBe(NEW_TOKEN);
+        expect(yield* fetchAccountIntegrationToken(accounts.sharedAccount.id)).toBe(NEW_TOKEN);
+        expect(yield* fetchAccountIntegrationToken(accounts.disabledAccount.id)).toBe(NEW_TOKEN);
+        expect(yield* fetchAccountIntegrationToken(accounts.separateAccount.id)).toBe(SEPARATE_OLD_TOKEN);
+        expect(yield* fetchAccountIntegrationToken(accounts.crossProviderAccount.id)).toBe(SHARED_OLD_TOKEN);
+    });
 
-const expectBinanceCredentialRotationScenario = (scenario: BinanceRotationScenarioInterface): void => {
-    const syncs = fetchBinanceUpdatedSyncs(scenario.syncs);
+const expectBinanceCredentialRotationScenario = (scenario: BinanceRotationScenarioInterface) =>
+    Effect.gen(function* () {
+        const syncs = yield* fetchBinanceUpdatedSyncs(scenario.syncs);
 
-    expectRotatedIntegrationTokens(scenario.accounts);
-    expectUpdatedBinanceGroup(syncs);
-    expectExcludedBinanceRows(syncs);
-};
+        yield* expectRotatedIntegrationTokens(scenario.accounts);
+        expectUpdatedBinanceGroup(syncs);
+        expectExcludedBinanceRows(syncs);
+    });
 
 describe('Binance credential rotation', () => {
     it.effect('rotates the shared integration token and clears every non-deleted sync in the credential group', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            const scenario = seedBinanceCredentialRotationScenario();
+            const scenario = yield* seedBinanceCredentialRotationScenario();
 
-            markSyncDeleted(scenario.syncs.deletedSync.id);
+            yield* markSyncDeleted(scenario.syncs.deletedSync.id);
             yield* binanceSyncService.updateAccountToken(scenario.accounts.selectedAccount.id, NEW_TOKEN);
-            expectBinanceCredentialRotationScenario(scenario);
+            yield* expectBinanceCredentialRotationScenario(scenario);
         }).pipe(Effect.provide(TestLayer))
     );
 });

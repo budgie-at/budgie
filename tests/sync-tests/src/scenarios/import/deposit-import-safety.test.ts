@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 
-import { seed, seedLedgerBalance, testDb, TestLayer } from '../../harness';
+import { fetchCachedBalanceAmount, seed, seedLedgerBalance, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type { ImportedBatchPreparationInterface } from '@app/transaction/interface/imported-batch-preparation.interface';
@@ -50,44 +50,41 @@ const buildPrepared = (input: Contracts.TransactionCreateInputInterface, existin
     transactionInputs: [input]
 });
 
-const seedImportedExpense = (accountId: number): number => {
-    const transaction = insertOne(Contracts.TransactionEntityTable, {
-        type: Contracts.TransactionTypeEnum.EXPENSE,
-        title: 'Original imported deposit expense',
-        externalId: IMPORT_EXTERNAL_ID,
-        comment: 'original',
-        operatedAt: OPERATED_AT,
-        fromAccountId: accountId,
-        toAccountId: null,
-        exchangeRate: 1,
-        externalSource: Contracts.ExternalSourceEnum.ERSTE,
-        updatedBy: null,
-        needsEmbedding: false
+const seedImportedExpense = (accountId: number) =>
+    Effect.gen(function* () {
+        const transaction = yield* insertOne(Contracts.TransactionEntityTable, {
+            type: Contracts.TransactionTypeEnum.EXPENSE,
+            title: 'Original imported deposit expense',
+            externalId: IMPORT_EXTERNAL_ID,
+            comment: 'original',
+            operatedAt: OPERATED_AT,
+            fromAccountId: accountId,
+            toAccountId: null,
+            exchangeRate: 1,
+            externalSource: Contracts.ExternalSourceEnum.ERSTE,
+            updatedBy: null,
+            needsEmbedding: false
+        });
+
+        yield* insertOne(Contracts.TransactionEntryEntityTable, {
+            transactionId: transaction.id,
+            accountId,
+            type: Contracts.TransactionEntryTypeEnum.CREDIT,
+            kind: Contracts.TransactionEntryKindEnum.PRIMARY,
+            amount: IMPORT_INITIAL_AMOUNT,
+            categoryId: null,
+            mccCategoryId: null,
+            externalId: IMPORT_EXTERNAL_ID,
+            exchangeRate: 1,
+            baseInstrumentId: null,
+            baseExchangeRate: null,
+            baseAmount: null,
+            toIban: null,
+            originalTransactionId: null
+        });
+
+        return transaction.id;
     });
-
-    insertOne(Contracts.TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId,
-        type: Contracts.TransactionEntryTypeEnum.CREDIT,
-        kind: Contracts.TransactionEntryKindEnum.PRIMARY,
-        amount: IMPORT_INITIAL_AMOUNT,
-        categoryId: null,
-        mccCategoryId: null,
-        externalId: IMPORT_EXTERNAL_ID,
-        exchangeRate: 1,
-        baseInstrumentId: null,
-        baseExchangeRate: null,
-        baseAmount: null,
-        toIban: null,
-        originalTransactionId: null
-    });
-
-    return transaction.id;
-};
-
-const fetchCachedBalanceAmount = (accountId: number): number | undefined =>
-    testDb.select().from(Contracts.AccountBalanceEntityTable).where(eq(Contracts.AccountBalanceEntityTable.accountId, accountId)).get()
-        ?.amount;
 
 const expectDepositExpenseRejected = Effect.fnUntraced(function* (prepared: ImportedBatchPreparationInterface) {
     const transactionImportService = yield* TransactionImportService;
@@ -99,23 +96,23 @@ const expectDepositExpenseRejected = Effect.fnUntraced(function* (prepared: Impo
 describe('import/deposit-import-safety', () => {
     it.effect('rejects new prepared imported deposit expenses without changing rows or balances', () =>
         Effect.gen(function* () {
-            const depositAccount = seed.account({ type: Contracts.AccountTypeEnum.DEPOSIT });
+            const depositAccount = yield* seed.account({ type: Contracts.AccountTypeEnum.DEPOSIT });
             const prepared = buildPrepared(buildImportInput(depositAccount.id));
 
             yield* seedLedgerBalance(depositAccount.id, 100 * Contracts.PRECISION);
 
             yield* expectDepositExpenseRejected(prepared);
 
-            expect(testDb.select().from(Contracts.TransactionEntityTable).all()).toHaveLength(1);
-            expect(testDb.select().from(Contracts.TransactionEntryEntityTable).all()).toHaveLength(1);
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * Contracts.PRECISION);
+            expect(yield* testDb.select().from(Contracts.TransactionEntityTable)).toHaveLength(1);
+            expect(yield* testDb.select().from(Contracts.TransactionEntryEntityTable)).toHaveLength(1);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * Contracts.PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('rejects prepared imported refreshes for existing deposit expenses and preserves rows', () =>
         Effect.gen(function* () {
-            const depositAccount = seed.account({ type: Contracts.AccountTypeEnum.DEPOSIT });
-            const transactionId = seedImportedExpense(depositAccount.id);
+            const depositAccount = yield* seed.account({ type: Contracts.AccountTypeEnum.DEPOSIT });
+            const transactionId = yield* seedImportedExpense(depositAccount.id);
             const prepared: ImportedBatchPreparationInterface = buildPrepared(
                 buildImportInput(depositAccount.id),
                 new Map([[IMPORT_EXTERNAL_ID, transactionId]])
@@ -125,21 +122,19 @@ describe('import/deposit-import-safety', () => {
 
             yield* expectDepositExpenseRejected(prepared);
 
-            const transaction = testDb
+            const [transaction] = yield* testDb
                 .select()
                 .from(Contracts.TransactionEntityTable)
-                .where(eq(Contracts.TransactionEntityTable.id, transactionId))
-                .get();
-            const entry = testDb
+                .where(eq(Contracts.TransactionEntityTable.id, transactionId));
+            const [entry] = yield* testDb
                 .select()
                 .from(Contracts.TransactionEntryEntityTable)
-                .where(eq(Contracts.TransactionEntryEntityTable.transactionId, transactionId))
-                .get();
+                .where(eq(Contracts.TransactionEntryEntityTable.transactionId, transactionId));
 
             expect(transaction?.title).toBe('Original imported deposit expense');
             expect(transaction?.comment).toBe('original');
             expect(entry?.amount).toBe(IMPORT_INITIAL_AMOUNT);
-            expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * Contracts.PRECISION);
+            expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * Contracts.PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 });

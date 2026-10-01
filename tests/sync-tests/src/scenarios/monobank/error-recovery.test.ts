@@ -12,14 +12,14 @@ describe('monobank/error-recovery', () => {
         ({ status }) =>
             Effect.gen(function* () {
                 const monobankSyncService = yield* MonobankSyncService;
-                const { sync } = setupMonobankFixture();
+                const { sync } = yield* setupMonobankFixture();
                 mockServer.use(
                     http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => new HttpResponse(null, { status }))
                 );
 
                 yield* monobankSyncService.sync();
 
-                expectSyncFailedAndDisabled(sync.id);
+                yield* expectSyncFailedAndDisabled(sync.id);
             }).pipe(Effect.provide(TestLayer))
     );
 });

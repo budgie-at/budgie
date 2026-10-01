@@ -4,6 +4,7 @@
         "module": "ESNext",
         "moduleResolution": "bundler",
         "noEmit": true,
+        "allowJs": true,
         "types": ["node"],
         "paths": {
             "@app/*": ["../../packages/app/src/*"]

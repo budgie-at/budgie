@@ -16,7 +16,7 @@ import {
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { requireInstrument, seedBitcoinCryptoAccount, TestLayer } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, seedEuroBaseUahAccount, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -25,17 +25,14 @@ import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInte
 
 const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_419_222;
 
-const setDefaultInstrument = (defaultInstrumentId: number): void => {
-    testDb.update(SettingsEntityTable).set({ defaultInstrumentId }).run();
-};
+const setDefaultInstrument = (defaultInstrumentId: number) =>
+    Effect.gen(function* () {
+        yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
+    });
 
 const expectHistoricalUahValuation = Effect.fnUntraced(function* (externalSource: ExternalSourceEnum | null) {
     const entryBaseValuationService = yield* EntryBaseValuationService;
-    const euro = yield* requireInstrument(CurrencyEnum.EUR);
-    const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-    const account = seed.account({ instrumentId: hryvnia.id });
-
-    setDefaultInstrument(euro.id);
+    const { euro, account } = yield* seedEuroBaseUahAccount();
 
     const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
         accountId: account.id,
@@ -51,11 +48,14 @@ const expectHistoricalUahValuation = Effect.fnUntraced(function* (externalSource
     });
 });
 
-const dbCategories = () => testDb.select().from(CategoryEntityTable).all();
+const dbCategories = () =>
+    Effect.gen(function* () {
+        return yield* testDb.select().from(CategoryEntityTable);
+    });
 
 const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, categoryId: number, operatedAt: Date) {
     const entryBaseValuationService = yield* EntryBaseValuationService;
-    const transaction = insertOne(TransactionEntityTable, {
+    const transaction = yield* insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.EXPENSE,
         title: 'Historical UAH expense',
         operatedAt,
@@ -74,7 +74,7 @@ const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, 
         externalSource: ExternalSourceEnum.CSV
     });
 
-    insertOne(TransactionEntryEntityTable, {
+    yield* insertOne(TransactionEntryEntityTable, {
         transactionId: transaction.id,
         accountId,
         type: TransactionEntryTypeEnum.CREDIT,
@@ -128,10 +128,10 @@ describe('base valuation', () => {
             const statisticsRepository = yield* StatisticsRepository;
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-            const [category] = dbCategories();
-            const account = seed.account({ instrumentId: hryvnia.id });
+            const [category] = yield* dbCategories();
+            const account = yield* seed.account({ instrumentId: hryvnia.id });
 
-            setDefaultInstrument(euro.id);
+            yield* setDefaultInstrument(euro.id);
             yield* createHistoricalExpense(account.id, category.id, new Date('2011-05-25T12:00:00.000Z'));
             yield* createHistoricalExpense(account.id, category.id, new Date('2026-05-25T12:00:00.000Z'));
 

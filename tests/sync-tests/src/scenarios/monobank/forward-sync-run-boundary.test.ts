@@ -35,7 +35,7 @@ describe('monobank/forward-sync-run-boundary', () => {
             const requestedAccountIds: string[] = [];
             let shouldStopSync = false;
 
-            seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
+            yield* seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
 
             const advanceClockOneMinute = Effect.suspend(() => {
                 if (shouldStopSync) {

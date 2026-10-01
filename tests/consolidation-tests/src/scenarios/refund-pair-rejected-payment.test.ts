@@ -2,6 +2,7 @@ import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum }
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { expectRefundOutcome } from '../harness/expect-refund-outcome';
 import {
     REJECTED_PAYMENT_EXPENSE_AMOUNT,
     REJECTED_PAYMENT_FEE_AMOUNT,
@@ -27,45 +28,50 @@ const UNRELATED_INCOME_AMOUNT_UAH = 41_000;
 const UNRELATED_INCOME_AMOUNT = UNRELATED_INCOME_AMOUNT_UAH * PRECISION;
 
 const seedRetryExpense = (accountId: number, externalIdPrefix: string) =>
-    testSeedService.refundedExpense({
-        accountId,
-        title: 'FOP TESTOVYI PRODUCTS',
-        expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-        refundAmounts: [],
-        expenseOperatedAt: REJECTED_PAYMENT_RETRY_OPERATED_AT,
-        externalIdPrefix
-    }).expense;
+    Effect.gen(function* () {
+        return (yield* testSeedService.refundedExpense({
+            accountId,
+            title: 'FOP TESTOVYI PRODUCTS',
+            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+            refundAmounts: [],
+            expenseOperatedAt: REJECTED_PAYMENT_RETRY_OPERATED_AT,
+            externalIdPrefix
+        })).expense;
+    });
 
 const seedRejectedPaymentFullCycle = (accountId: number, externalIdPrefix: string) =>
-    testSeedService.refundedExpense({
-        accountId,
-        title: 'FOP TESTOVYI PRODUCTS',
-        expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-        expenseFeeAmount: REJECTED_PAYMENT_FEE_AMOUNT,
-        refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT, REJECTED_PAYMENT_FEE_AMOUNT],
-        refundTitles: [REJECTED_PAYMENT_PRINCIPAL_TITLE, REJECTED_PAYMENT_FEE_TITLE],
-        expenseOperatedAt: REJECTED_PAYMENT_ORIGINAL_OPERATED_AT,
-        refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS,
-        externalIdPrefix
+    Effect.gen(function* () {
+        return yield* testSeedService.refundedExpense({
+            accountId,
+            title: 'FOP TESTOVYI PRODUCTS',
+            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+            expenseFeeAmount: REJECTED_PAYMENT_FEE_AMOUNT,
+            refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT, REJECTED_PAYMENT_FEE_AMOUNT],
+            refundTitles: [REJECTED_PAYMENT_PRINCIPAL_TITLE, REJECTED_PAYMENT_FEE_TITLE],
+            expenseOperatedAt: REJECTED_PAYMENT_ORIGINAL_OPERATED_AT,
+            refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS,
+            externalIdPrefix
+        });
     });
 
 const runConsolidationAndAssertSingleRefund = Effect.fnUntraced(function* (expenseId: number, refundId: number) {
     const result = yield* runConsolidation();
 
     expect(result.consolidated).toBe(1);
-    expect(testQueryService.fetchTransactionById(expenseId).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-    expect(testQueryService.fetchTransactionById(refundId).consolidationParentTransactionId).toBe(expenseId);
+    expect((yield* testQueryService.fetchTransactionById(expenseId)).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+    expect((yield* testQueryService.fetchTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
 
     return result;
 });
 
-const expectBothRefundsConsolidatedToExpense = (expenseId: number, refunds: TransactionEntityInterface[]) => {
-    expect(testQueryService.fetchTransactionById(expenseId).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-    expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([
-        expenseId,
-        expenseId
-    ]);
-};
+const expectBothRefundsConsolidatedToExpense = (expenseId: number, refunds: TransactionEntityInterface[]) =>
+    Effect.gen(function* () {
+        yield* expectRefundOutcome(
+            expenseId,
+            refunds.map(refund => refund.id),
+            [expenseId, expenseId]
+        );
+    });
 
 const runRejectedPaymentPrincipalRefundScenarioAndAssert = Effect.fnUntraced(function* (refundTitle: string) {
     const { consolidated, expense, refunds } = yield* runRefundScenario({
@@ -77,8 +83,7 @@ const runRejectedPaymentPrincipalRefundScenarioAndAssert = Effect.fnUntraced(fun
     });
 
     expect(consolidated).toBe(1);
-    expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-    expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+    yield* expectRefundOutcome(expense.id, [refunds[0].id], [expense.id]);
 });
 
 layer(TestLayer)('consolidation/refund-pair-rejected-payment', it => {
@@ -96,7 +101,7 @@ layer(TestLayer)('consolidation/refund-pair-rejected-payment', it => {
 
     it.effect('does not consolidate a same-title retry expense that occurs after the refund income', () =>
         Effect.gen(function* () {
-            const { account, expense, refunds } = seedRefundedExpenseOnCard('privat-card', {
+            const { account, expense, refunds } = yield* seedRefundedExpenseOnCard('privat-card', {
                 title: 'FOP TESTOVYI PRODUCTS',
                 refundTitle: REJECTED_PAYMENT_PRINCIPAL_TITLE,
                 expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
@@ -105,18 +110,18 @@ layer(TestLayer)('consolidation/refund-pair-rejected-payment', it => {
                 refundDelaySeconds: 4_380,
                 externalIdPrefix: 'rejected-payment-original'
             });
-            const retryExpense = seedRetryExpense(account.id, 'rejected-payment-retry');
+            const retryExpense = yield* seedRetryExpense(account.id, 'rejected-payment-retry');
 
             yield* runConsolidationAndAssertSingleRefund(expense.id, refunds[0].id);
 
-            expect(testQueryService.fetchTransactionById(retryExpense.id).consolidationType).toBeNull();
-            expect(testQueryService.fetchTransactionById(retryExpense.id).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(retryExpense.id)).consolidationType).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(retryExpense.id)).consolidationParentTransactionId).toBeNull();
         })
     );
 
     it.effect('auto-consolidates a PrivatBank fee-return refund matched to the expense FEE entry amount', () =>
         Effect.gen(function* () {
-            const { expense, refunds } = seedRefundedExpenseOnCard('privat-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('privat-card', {
                 title: 'FOP TESTOVYI PRODUCTS',
                 refundTitle: REJECTED_PAYMENT_FEE_TITLE,
                 expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
@@ -131,7 +136,7 @@ layer(TestLayer)('consolidation/refund-pair-rejected-payment', it => {
 
     it.effect('auto-consolidates a PrivatBank fee-return refund when the FEE entry exceeds the primary CREDIT amount', () =>
         Effect.gen(function* () {
-            const { expense, refunds } = seedRefundedExpenseOnCard('privat-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('privat-card', {
                 title: 'FOP TESTOVYI PRODUCTS',
                 refundTitle: REJECTED_PAYMENT_FEE_TITLE,
                 expenseAmount: REJECTED_PAYMENT_HIGH_FEE_PRIMARY_AMOUNT,
@@ -146,8 +151,8 @@ layer(TestLayer)('consolidation/refund-pair-rejected-payment', it => {
 
     it.effect('does not match a fee-return refund title when the expense has no FEE entry', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'privat-card' });
-            testSeedService.refundedExpense({
+            const account = yield* testSeedService.account({ externalId: 'privat-card' });
+            yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 title: 'FOP TESTOVYI PRODUCTS',
                 refundTitle: REJECTED_PAYMENT_FEE_TITLE,
@@ -166,11 +171,11 @@ layer(TestLayer)('consolidation/refund-pair-rejected-payment', it => {
 layer(TestLayer)('consolidation/refund-pair-rejected-payment full cycle', it => {
     it.effect('absorbs both the principal and fee refunds from a full PrivatBank rejected-payment cycle', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'privat-card' });
-            const otherAccount = testSeedService.account({ externalId: 'mono-other' });
-            const { expense, refunds } = seedRejectedPaymentFullCycle(account.id, 'rejected-payment-full');
-            const retryExpense = seedRetryExpense(account.id, 'rejected-payment-full-retry');
-            const unrelatedIncome = testSeedService.bankPairIncome(
+            const account = yield* testSeedService.account({ externalId: 'privat-card' });
+            const otherAccount = yield* testSeedService.account({ externalId: 'mono-other' });
+            const { expense, refunds } = yield* seedRejectedPaymentFullCycle(account.id, 'rejected-payment-full');
+            const retryExpense = yield* seedRetryExpense(account.id, 'rejected-payment-full-retry');
+            const unrelatedIncome = yield* testSeedService.bankPairIncome(
                 { externalId: 'unrelated-income', operatedAt: UNRELATED_INCOME_OPERATED_AT },
                 { accountId: otherAccount.id, amount: UNRELATED_INCOME_AMOUNT }
             );
@@ -178,35 +183,34 @@ layer(TestLayer)('consolidation/refund-pair-rejected-payment full cycle', it => 
             const result = yield* runConsolidation();
 
             expect(result.consolidated).toBe(2);
-            expectBothRefundsConsolidatedToExpense(expense.id, refunds);
+            yield* expectBothRefundsConsolidatedToExpense(expense.id, refunds);
             expect(
-                testQueryService
-                    .fetchEntriesByTransactionId(expense.id)
+                (yield* testQueryService.fetchEntriesByTransactionId(expense.id))
                     .filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
                     .map(entry => entry.amount)
                     .sort((left, right) => left - right)
             ).toEqual([REJECTED_PAYMENT_FEE_AMOUNT, REJECTED_PAYMENT_EXPENSE_AMOUNT]);
-            expect(testQueryService.fetchTransactionById(retryExpense.id)).toMatchObject({
+            expect(yield* testQueryService.fetchTransactionById(retryExpense.id)).toMatchObject({
                 consolidationParentTransactionId: null,
                 consolidationType: null
             });
-            expect(testQueryService.fetchTransactionById(unrelatedIncome.id).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(unrelatedIncome.id)).consolidationParentTransactionId).toBeNull();
         })
     );
 
     it.effect('consolidates zero on a second run and keeps the expense entry layout unchanged', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'privat-card' });
-            const { expense, refunds } = seedRejectedPaymentFullCycle(account.id, 'rejected-payment-idempotent');
+            const account = yield* testSeedService.account({ externalId: 'privat-card' });
+            const { expense, refunds } = yield* seedRejectedPaymentFullCycle(account.id, 'rejected-payment-idempotent');
 
             const firstResult = yield* runConsolidation();
             const secondResult = yield* runConsolidation();
 
             expect(firstResult.consolidated).toBe(2);
             expect(secondResult.consolidated).toBe(0);
-            expectBothRefundsConsolidatedToExpense(expense.id, refunds);
+            yield* expectBothRefundsConsolidatedToExpense(expense.id, refunds);
 
-            const expenseEntries = testQueryService.fetchEntriesByTransactionId(expense.id);
+            const expenseEntries = yield* testQueryService.fetchEntriesByTransactionId(expense.id);
             const entryCountsByType = {
                 credit: expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT).length,
                 fee: expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.FEE).length,

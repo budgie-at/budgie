@@ -83,21 +83,20 @@ describe('erste/atm-withdrawal-mcc', () => {
         Effect.gen(function* () {
             const ersteSyncService = yield* ErsteSyncService;
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
-            const cashAccount = seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH, instrumentId: euro.id });
+            const cashAccount = yield* seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH, instrumentId: euro.id });
 
             yield* ersteSyncService.executeImportForSelectedAccounts('erste-statement.pdf', [erste.account.iban]);
 
-            const transactions = testDb
+            const transactions = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE))
-                .all();
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE));
             const atmTransaction = transactions.find(transaction => transaction.title === erste.atmRow.description);
             const nonAtmTransactions = transactions.filter(transaction => transaction.id !== atmTransaction?.id);
-            const [atmEntry] = fetchExpenseEntries(atmTransaction?.id ?? 0);
-            const nonAtmEntries = nonAtmTransactions.map(transaction => fetchExpenseEntries(transaction.id));
+            const [atmEntry] = yield* fetchExpenseEntries(atmTransaction?.id ?? 0);
+            const nonAtmEntries = yield* Effect.forEach(nonAtmTransactions, transaction => fetchExpenseEntries(transaction.id));
 
-            expect(atmEntry.mccCategoryId).toBe(findMccByCode(String(ATM_MCC)).id);
+            expect(atmEntry.mccCategoryId).toBe((yield* findMccByCode(String(ATM_MCC))).id);
             expect(nonAtmEntries.flat().map(entry => entry.mccCategoryId)).toEqual([null, null, null, null]);
 
             yield* expectAtmCashWithdrawalConsolidation(atmEntry.accountId, cashAccount.id, atmEntry.transactionId);

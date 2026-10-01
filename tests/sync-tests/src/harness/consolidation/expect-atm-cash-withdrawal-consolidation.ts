@@ -17,12 +17,12 @@ export const expectAtmCashWithdrawalConsolidation = Effect.fnUntraced(function* 
 
     yield* transferConsolidationService.consolidate(null);
 
-    expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+    expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
     expect(yield* categorizeInboxService.moveToCash([sourceTransactionId])).toEqual([sourceTransactionId]);
 
-    const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
+    const canonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
     expect(canonicals).toHaveLength(1);
     expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
     expect(canonicals[0].toAccountId).toBe(cashAccountId);
-    expect(fetchTransactionById(sourceTransactionId).consolidationParentTransactionId).toBe(canonicals[0].id);
+    expect((yield* fetchTransactionById(sourceTransactionId)).consolidationParentTransactionId).toBe(canonicals[0].id);
 });

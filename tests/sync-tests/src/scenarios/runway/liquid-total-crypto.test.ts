@@ -12,10 +12,10 @@ const BITCOIN_EURO_VALUE = BITCOIN_BALANCE * BITCOIN_EURO_RATE;
 
 const seedLiquidFixture = Effect.fnUntraced(function* () {
     const { bitcoin, euro } = yield* seedBitcoinCryptoAccount(BITCOIN_BALANCE);
-    const cashAccount = seed.account({ instrumentId: euro.id, type: AccountTypeEnum.CASH });
+    const cashAccount = yield* seed.account({ instrumentId: euro.id, type: AccountTypeEnum.CASH });
 
     yield* seedLedgerBalance(cashAccount.id, CASH_BALANCE);
-    insertOne(ExchangeRateEntityTable, {
+    yield* insertOne(ExchangeRateEntityTable, {
         source: 'test',
         baseInstrumentId: bitcoin.id,
         quoteInstrumentId: euro.id,

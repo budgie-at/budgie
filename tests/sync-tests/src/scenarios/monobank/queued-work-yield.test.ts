@@ -28,7 +28,7 @@ describe('monobank/queued-work-yield', () => {
             const queuedImport = yield* Deferred.make<void>();
             let hasQueuedImport = false;
 
-            seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
+            yield* seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
 
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
@@ -65,7 +65,7 @@ describe('monobank/queued-work-yield', () => {
             const importRan = yield* Deferred.make<void>();
             const clock = yield* Effect.clockWith(Effect.succeed);
 
-            seedMonobankForwardSyncAccounts(['mono-acc-1', 'mono-acc-2'], staleForwardSyncFromAt);
+            yield* seedMonobankForwardSyncAccounts(['mono-acc-1', 'mono-acc-2'], staleForwardSyncFromAt);
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
                     events.push(`request:${String(params[statementAccountParam])}`);

@@ -23,37 +23,53 @@ const DEFAULT_RECENT_DAY_OF_MONTH = 15;
 const SPOT_QUOTE_FREE = '100';
 
 export const fetchBinanceTransactions = () =>
-    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE)).all();
+    Effect.gen(function* () {
+        return yield* testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE));
+    });
 
 export const fetchBinanceEntriesByExternalId = (externalId: string) =>
-    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId)).all();
+    Effect.gen(function* () {
+        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId));
+    });
 
-export const seedCryptoInstrument = (code: string) => seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
+export const seedCryptoInstrument = (code: string) =>
+    Effect.gen(function* () {
+        return yield* seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
+    });
 
-export const setupAdaUsdtFixture = (mode: SyncModeEnum, forwardSyncedAt?: Date, binanceTradeCursor?: string) => {
-    const fixture = setupBinanceFixture({ asset: 'USDT', mode, forwardSyncedAt, binanceTradeCursor });
+export const setupAdaUsdtFixture = (mode: SyncModeEnum, forwardSyncedAt?: Date, binanceTradeCursor?: string) =>
+    Effect.gen(function* () {
+        const fixture = yield* setupBinanceFixture({ asset: 'USDT', mode, forwardSyncedAt, binanceTradeCursor });
 
-    binanceStub.exchangeInfo(['ADAUSDT']);
-    binanceStub.spotBalances([buildBinance.balance({ asset: 'ADA', free: '200' }), buildBinance.balance({ asset: 'USDT', free: '100' })]);
+        binanceStub.exchangeInfo(['ADAUSDT']);
+        binanceStub.spotBalances([
+            buildBinance.balance({ asset: 'ADA', free: '200' }),
+            buildBinance.balance({ asset: 'USDT', free: '100' })
+        ]);
 
-    return fixture;
-};
+        return fixture;
+    });
 
-export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string): void => {
-    setupBinanceFixture({ asset: 'USDT' });
-    binanceStub.spotBalances([
-        buildBinance.balance({ asset: 'USDT', free: SPOT_QUOTE_FREE }),
-        buildBinance.balance({ asset: baseAsset, free: baseFree })
-    ]);
-};
+export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string) =>
+    Effect.gen(function* () {
+        yield* setupBinanceFixture({ asset: 'USDT' });
+        binanceStub.spotBalances([
+            buildBinance.balance({ asset: 'USDT', free: SPOT_QUOTE_FREE }),
+            buildBinance.balance({ asset: baseAsset, free: baseFree })
+        ]);
+    });
 
-export const expectSingleBinanceTransaction = (transactionType: TransactionTypeEnum, externalId: string): void => {
-    const transactions = fetchBinanceTransactions();
+export const expectSingleBinanceTransaction = (transactionType: TransactionTypeEnum, externalId: string) =>
+    Effect.gen(function* () {
+        const transactions = yield* fetchBinanceTransactions();
 
-    expect(transactions).toHaveLength(1);
-    expect(transactions[0].type).toBe(transactionType);
-    expect(transactions[0].externalId).toBe(externalId);
-};
+        expect(transactions).toHaveLength(1);
+        expect(transactions[0].type).toBe(transactionType);
+        expect(transactions[0].externalId).toBe(externalId);
+    });
 
 export const buildEarnDayKey = (timeMs: number): string => new Date(timeMs).toISOString().slice(0, EARN_DAY_KEY_LENGTH);
 
@@ -76,11 +92,11 @@ export const resetBinanceSyncForResync = (): void => {
 export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubForResync: () => void) {
     const binanceSyncService = yield* BinanceSyncService;
 
-    expect(fetchBinanceTransactions()).toHaveLength(1);
+    expect(yield* fetchBinanceTransactions()).toHaveLength(1);
 
     resetBinanceSyncForResync();
     restubForResync();
     yield* binanceSyncService.sync();
 
-    expect(fetchBinanceTransactions()).toHaveLength(1);
+    expect(yield* fetchBinanceTransactions()).toHaveLength(1);
 });

@@ -18,16 +18,22 @@ const OPERATED_AT = new Date(2025, 5, 1, 12, 0, 0);
 
 const seedLedgerFixture = Effect.fnUntraced(function* () {
     const accountDebtOpeningService = yield* AccountDebtOpeningService;
-    const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-    const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
-    const historicalAtm = seedBankPair.expense(
+    const bankAccount = yield* seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+    const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
+    const historicalAtm = yield* seedBankPair.expense(
         { externalId: 'tx-atm', operatedAt: OPERATED_AT },
         { accountId: bankAccount.id, amount: 408 * PRECISION }
     );
 
-    seedBankPair.expense({ externalId: 'tx-groceries', operatedAt: OPERATED_AT }, { accountId: bankAccount.id, amount: 37 * PRECISION });
-    seedBankPair.income({ externalId: 'tx-salary', operatedAt: OPERATED_AT }, { accountId: bankAccount.id, amount: 2_100 * PRECISION });
-    seed.directTransfer({
+    yield* seedBankPair.expense(
+        { externalId: 'tx-groceries', operatedAt: OPERATED_AT },
+        { accountId: bankAccount.id, amount: 37 * PRECISION }
+    );
+    yield* seedBankPair.income(
+        { externalId: 'tx-salary', operatedAt: OPERATED_AT },
+        { accountId: bankAccount.id, amount: 2_100 * PRECISION }
+    );
+    yield* seed.directTransfer({
         exchangeRate: 1,
         operatedAt: OPERATED_AT,
         sourceAccountId: bankAccount.id,
@@ -37,13 +43,9 @@ const seedLedgerFixture = Effect.fnUntraced(function* () {
         targetAmount: 150 * PRECISION,
         toIban: null
     });
-    yield* Effect.promise(() =>
-        testDb.$client.execAsync(`UPDATE transactions SET title = 'Банкомат Erste Bank' WHERE id = ${historicalAtm.id}`)
-    );
-    yield* Effect.promise(() =>
-        testDb.$client.execAsync(
-            `UPDATE transaction_entries SET created_at = (SELECT MIN(created_at) FROM mcc_categories) - 86400 WHERE transaction_id = ${historicalAtm.id}`
-        )
+    yield* testDb.$client.unsafe(`UPDATE transactions SET title = 'Банкомат Erste Bank' WHERE id = ${historicalAtm.id}`);
+    yield* testDb.$client.unsafe(
+        `UPDATE transaction_entries SET created_at = (SELECT MIN(created_at) FROM mcc_categories) - 86400 WHERE transaction_id = ${historicalAtm.id}`
     );
     const debtAccount = yield* accountDebtOpeningService.openDebtWithFundingAccount(
         {

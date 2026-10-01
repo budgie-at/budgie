@@ -20,31 +20,32 @@ import { insertOne } from '../../harness/db/insert-one';
 const ENTRY_AMOUNT = -1_000_000;
 const PRE_ARCHIVED_AT = new Date(2026, 0, 1);
 
-const seedExpense = (accountId: number, index: number, consolidationType: TransactionConsolidationTypeEnum | null): number => {
-    const transaction = insertOne(TransactionEntityTable, {
-        type: TransactionTypeEnum.EXPENSE,
-        title: `Archived expense ${accountId}-${index}`,
-        externalId: `archive-${accountId}-${index}`,
-        comment: '',
-        toAccountId: null,
-        fromAccountId: accountId,
-        exchangeRate: 1,
-        externalSource: null,
-        updatedBy: null,
-        needsEmbedding: false,
-        consolidationType
-    });
+const seedExpense = (accountId: number, index: number, consolidationType: TransactionConsolidationTypeEnum | null) =>
+    Effect.gen(function* () {
+        const transaction = yield* insertOne(TransactionEntityTable, {
+            type: TransactionTypeEnum.EXPENSE,
+            title: `Archived expense ${accountId}-${index}`,
+            externalId: `archive-${accountId}-${index}`,
+            comment: '',
+            toAccountId: null,
+            fromAccountId: accountId,
+            exchangeRate: 1,
+            externalSource: null,
+            updatedBy: null,
+            needsEmbedding: false,
+            consolidationType
+        });
 
-    insertOne(TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        amount: ENTRY_AMOUNT,
-        exchangeRate: 1
-    });
+        yield* insertOne(TransactionEntryEntityTable, {
+            transactionId: transaction.id,
+            accountId,
+            type: TransactionEntryTypeEnum.CREDIT,
+            amount: ENTRY_AMOUNT,
+            exchangeRate: 1
+        });
 
-    return transaction.id;
-};
+        return transaction.id;
+    });
 
 const requireRow = <T>(row: T | undefined): T => {
     if (!isDefined(row)) {
@@ -54,54 +55,56 @@ const requireRow = <T>(row: T | undefined): T => {
     return row;
 };
 
-const getLiveSummary = (accountId: number): { count: number; total: number } =>
-    requireRow(
-        testDb
-            .select({ count: sql<number>`COUNT(*)`, total: sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount}), 0)` })
-            .from(TransactionEntryEntityTable)
-            .where(and(eq(TransactionEntryEntityTable.accountId, accountId), isNull(TransactionEntryEntityTable.deletedAt)))
-            .get()
-    );
+const getLiveSummary = (accountId: number) =>
+    Effect.gen(function* () {
+        return requireRow(
+            (yield* testDb
+                .select({ count: sql<number>`COUNT(*)`, total: sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount}), 0)` })
+                .from(TransactionEntryEntityTable)
+                .where(and(eq(TransactionEntryEntityTable.accountId, accountId), isNull(TransactionEntryEntityTable.deletedAt))))[0]
+        );
+    });
 
 describe('account/archive-account-preserves-deleted-at', () => {
     it.effect('archives every transaction of a large account without touching other accounts', () =>
         Effect.gen(function* () {
             const accountArchiveService = yield* AccountArchiveService;
-            seed.instrument({});
-            const archivedAccount = seed.account({ title: 'Archived', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-            const untouchedAccount = seed.account({ title: 'Untouched', type: AccountTypeEnum.CASH, instrumentId: 1 });
+            yield* seed.instrument({});
+            const archivedAccount = yield* seed.account({ title: 'Archived', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+            const untouchedAccount = yield* seed.account({ title: 'Untouched', type: AccountTypeEnum.CASH, instrumentId: 1 });
 
-            seedExpense(archivedAccount.id, 0, TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-            seedExpense(archivedAccount.id, 1, TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-            const untouchedTransactionId = seedExpense(untouchedAccount.id, 0, null);
-            const preArchivedTransactionId = seedExpense(archivedAccount.id, 2, null);
+            yield* seedExpense(archivedAccount.id, 0, TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            yield* seedExpense(archivedAccount.id, 1, TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const untouchedTransactionId = yield* seedExpense(untouchedAccount.id, 0, null);
+            const preArchivedTransactionId = yield* seedExpense(archivedAccount.id, 2, null);
 
-            testDb
+            yield* testDb
                 .update(TransactionEntryEntityTable)
                 .set({ deletedAt: PRE_ARCHIVED_AT })
-                .where(eq(TransactionEntryEntityTable.transactionId, preArchivedTransactionId))
-                .run();
+                .where(eq(TransactionEntryEntityTable.transactionId, preArchivedTransactionId));
 
             yield* accountArchiveService.archiveById(archivedAccount.id);
 
             expect(
-                requireRow(testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.id, archivedAccount.id)).get()).deletedAt
+                requireRow((yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.id, archivedAccount.id)))[0])
+                    .deletedAt
             ).not.toBeNull();
 
-            const archivedSummary = getLiveSummary(archivedAccount.id);
+            const archivedSummary = yield* getLiveSummary(archivedAccount.id);
             expect(archivedSummary.count).toBe(0);
             expect(archivedSummary.total).toBe(0);
 
-            const untouchedSummary = getLiveSummary(untouchedAccount.id);
+            const untouchedSummary = yield* getLiveSummary(untouchedAccount.id);
             expect(untouchedSummary.count).toBe(1);
             expect(untouchedSummary.total).toBe(ENTRY_AMOUNT);
 
             expect(
-                requireRow(testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, untouchedTransactionId)).get())
-                    .deletedAt
+                requireRow(
+                    (yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, untouchedTransactionId)))[0]
+                ).deletedAt
             ).toBeNull();
             expect(
-                testDb
+                yield* testDb
                     .select({ id: TransactionEntityTable.id })
                     .from(TransactionEntityTable)
                     .where(
@@ -111,15 +114,13 @@ describe('account/archive-account-preserves-deleted-at', () => {
                             isNull(TransactionEntityTable.deletedAt)
                         )
                     )
-                    .all()
             ).toStrictEqual([]);
             expect(
                 requireRow(
-                    testDb
+                    (yield* testDb
                         .select()
                         .from(TransactionEntryEntityTable)
-                        .where(eq(TransactionEntryEntityTable.transactionId, preArchivedTransactionId))
-                        .get()
+                        .where(eq(TransactionEntryEntityTable.transactionId, preArchivedTransactionId)))[0]
                 ).deletedAt
             ).toStrictEqual(PRE_ARCHIVED_AT);
         }).pipe(Effect.provide(TestLayer))
@@ -128,10 +129,10 @@ describe('account/archive-account-preserves-deleted-at', () => {
     it.effect('keeps a transfer live while one side is active and retires it once both sides are archived', () =>
         Effect.gen(function* () {
             const accountArchiveService = yield* AccountArchiveService;
-            seed.instrument({});
-            const fromAccount = seed.account({ title: 'Transfer source', type: AccountTypeEnum.BANK, instrumentId: 1 });
-            const toAccount = seed.account({ title: 'Transfer target', type: AccountTypeEnum.BANK, instrumentId: 1 });
-            const transfer = insertOne(TransactionEntityTable, {
+            yield* seed.instrument({});
+            const fromAccount = yield* seed.account({ title: 'Transfer source', type: AccountTypeEnum.BANK, instrumentId: 1 });
+            const toAccount = yield* seed.account({ title: 'Transfer target', type: AccountTypeEnum.BANK, instrumentId: 1 });
+            const transfer = yield* insertOne(TransactionEntityTable, {
                 type: TransactionTypeEnum.TRANSFER,
                 title: 'Own transfer',
                 comment: '',
@@ -140,14 +141,14 @@ describe('account/archive-account-preserves-deleted-at', () => {
                 exchangeRate: 1
             });
 
-            insertOne(TransactionEntryEntityTable, {
+            yield* insertOne(TransactionEntryEntityTable, {
                 transactionId: transfer.id,
                 accountId: fromAccount.id,
                 type: TransactionEntryTypeEnum.CREDIT,
                 amount: 1_000_000,
                 exchangeRate: 1
             });
-            insertOne(TransactionEntryEntityTable, {
+            yield* insertOne(TransactionEntryEntityTable, {
                 transactionId: transfer.id,
                 accountId: toAccount.id,
                 type: TransactionEntryTypeEnum.DEBIT,
@@ -155,13 +156,17 @@ describe('account/archive-account-preserves-deleted-at', () => {
                 exchangeRate: 1
             });
             const getTransferDeletedAt = () =>
-                requireRow(testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, transfer.id)).get()).deletedAt;
+                Effect.gen(function* () {
+                    return requireRow(
+                        (yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, transfer.id)))[0]
+                    ).deletedAt;
+                });
 
             yield* accountArchiveService.archiveById(fromAccount.id);
-            expect(getTransferDeletedAt()).toBeNull();
+            expect(yield* getTransferDeletedAt()).toBeNull();
 
             yield* accountArchiveService.archiveById(toAccount.id);
-            expect(getTransferDeletedAt()).not.toBeNull();
+            expect(yield* getTransferDeletedAt()).not.toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -36,15 +36,15 @@ describe('monobank/pagination-cursor-advances', () => {
     it.effect('processes a 500-row page, advances the cursor, and continues until the next page is empty', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const { sync } = setupMonobankFixture('mono-acc-1', SyncModeEnum.FORWARD, FIXTURE_FORWARD_FROM);
+            const { sync } = yield* setupMonobankFixture('mono-acc-1', SyncModeEnum.FORWARD, FIXTURE_FORWARD_FROM);
 
             monobankStub.statementBatches([buildBatch(0)]);
 
             yield* monobankSyncService.sync();
 
-            expect(fetchPersistedMonobankTransactions()).toHaveLength(PAGE_SIZE);
+            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(PAGE_SIZE);
 
-            const finalSync = fetchSyncById(sync.id);
+            const finalSync = yield* fetchSyncById(sync.id);
             expect(finalSync.forwardSyncedAt).not.toBeNull();
             expect(finalSync.transactionCount).toBe(PAGE_SIZE);
         }).pipe(Effect.provide(TestLayer))

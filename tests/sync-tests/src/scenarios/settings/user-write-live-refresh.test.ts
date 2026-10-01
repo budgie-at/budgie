@@ -63,7 +63,7 @@ describe('settings/user-write-live-refresh', () => {
         Effect.gen(function* () {
             const accountService = yield* AccountService;
             const accountRepository = yield* AccountRepository;
-            const account = seed.account({ title: 'Inactive', isActive: false });
+            const account = yield* seed.account({ title: 'Inactive', isActive: false });
 
             expect(yield* countSettledTransactionBoundaries(accountService.activateById(account.id))).toBe(1);
             expect((yield* accountRepository.findById(account.id))?.isActive).toBe(true);

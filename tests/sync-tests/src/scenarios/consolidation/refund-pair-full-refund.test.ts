@@ -29,11 +29,11 @@ describe('consolidation/refund-pair-full-refund', () => {
 
             expect(result.consolidated).toBe(1);
 
-            const promotedExpense = fetchTransactionById(expense.id);
+            const promotedExpense = yield* fetchTransactionById(expense.id);
             expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-            expect(fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+            expect((yield* fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(expense.id);
 
-            const expenseEntries = fetchExpenseEntries(expense.id);
+            const expenseEntries = yield* fetchExpenseEntries(expense.id);
             const credits = expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
             const debits = expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
             const creditTotal = credits.reduce((sum, entry) => sum + entry.amount, 0);
@@ -47,7 +47,7 @@ describe('consolidation/refund-pair-full-refund', () => {
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const statisticsRepository = yield* StatisticsRepository;
-            const { account, category } = seedRefundStatisticsScenario(120 * PRECISION);
+            const { account, category } = yield* seedRefundStatisticsScenario(120 * PRECISION);
 
             yield* transferConsolidationService.consolidate(null);
 
