@@ -15,8 +15,6 @@ import { format } from 'date-fns/format';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import { File, Paths } from 'expo-file-system';
-import { isAvailableAsync, shareAsync } from 'expo-sharing';
 import Papa from 'papaparse';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -24,6 +22,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
+import { shareCacheFile } from '../utils/share-cache-file.util';
 
 export class ExporterService extends Context.Service<ExporterService>()('@budgie/app/ExporterService', {
     make: Effect.gen(function* () {
@@ -175,16 +174,17 @@ export class ExporterService extends Context.Service<ExporterService>()('@budgie
         return {
             saveAndShare: Effect.fn('ExporterService.saveAndShare')(function* () {
                 const csvContent = yield* exportToCsv();
-                const fileName = `budgie-export-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.csv`;
 
-                const file = new File(Paths.cache, fileName);
-                file.create();
-                file.writeSync(csvContent);
-
-                const canShare = yield* Effect.promise(() => isAvailableAsync());
-                if (canShare) {
-                    yield* Effect.promise(() => shareAsync(file.uri, { mimeType: 'text/csv', dialogTitle: fileName }));
-                }
+                yield* shareCacheFile(
+                    'budgie-export',
+                    'csv',
+                    file =>
+                        Effect.sync(() => {
+                            file.create();
+                            file.writeSync(csvContent);
+                        }),
+                    { mimeType: 'text/csv' }
+                );
             })
         };
     })
