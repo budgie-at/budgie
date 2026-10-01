@@ -7,10 +7,10 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import bundledMigrations from '../../../../drizzle/migrations';
-import LEGACY_MIGRATION_TIMESTAMPS from '../constant/legacy-migration-timestamps.json';
+import { DatabaseOpenError } from '../error/database-open.error';
 
 import type { MigrationMeta } from 'drizzle-orm/migrator';
 import type * as SqlClient from 'effect/sql/SqlClient';
@@ -18,6 +18,8 @@ import type * as SqlClient from 'effect/sql/SqlClient';
 export class DatabaseMigrationService extends Context.Service<DatabaseMigrationService>()('@budgie/app/DatabaseMigrationService', {
     make: Effect.gen(function* () {
         const migrationsTableName = '__drizzle_migrations';
+        const lastLegacyMigrationName = '20260929184637_monobank_entry_external_index';
+        const lastLegacyMigrationCreatedAt = 1790707597573;
         const migrations = yield* Schema.decodeUnknownEffect(Schema.Struct({ migrations: Schema.Record(Schema.String, Schema.String) }))(
             bundledMigrations
         ).pipe(Effect.orDie);
@@ -30,35 +32,48 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
                 folderMillis: formatToMillis(name.slice(0, 14)),
                 hash: ''
             }));
+        const [baselineMigration] = localMigrations;
 
-        const backfillLegacyMigrationNames = Effect.fn('DatabaseMigrationService.backfillLegacyMigrationNames')(function* (
+        const recordBaselineOnLatestLegacyDatabase = Effect.fn('DatabaseMigrationService.recordBaselineOnLatestLegacyDatabase')(function* (
             client: SqlClient.SqlClient
         ) {
-            const columns = yield* client<{ readonly name: string }>`SELECT name FROM pragma_table_info(${migrationsTableName})`;
+            const columnNames = (yield* client<{ readonly name: string }>`SELECT name FROM pragma_table_info(${migrationsTableName})`).map(
+                column => column.name
+            );
 
-            if (isEmptyArray(columns) || columns.some(column => column.name === 'name')) {
+            if (isEmptyArray(columnNames)) {
                 return;
+            }
+
+            const migrationsTable = client(migrationsTableName);
+            const hasNameColumn = columnNames.includes('name');
+            const appliedNames = hasNameColumn
+                ? (yield* client<{ readonly name: string | null }>`SELECT name FROM ${migrationsTable}`).map(row => row.name)
+                : [];
+            const [{ lastCreatedAt }] = yield* client<{
+                readonly lastCreatedAt: number | null;
+            }>`SELECT MAX(created_at) AS lastCreatedAt FROM ${migrationsTable}`;
+
+            if (!isDefined(lastCreatedAt) || appliedNames.includes(baselineMigration.name)) {
+                return;
+            }
+
+            const isLatestLegacyDatabase = hasNameColumn
+                ? appliedNames.includes(lastLegacyMigrationName)
+                : lastCreatedAt >= lastLegacyMigrationCreatedAt;
+
+            if (!isLatestLegacyDatabase) {
+                return yield* new DatabaseOpenError({ cause: 'The database predates the migration baseline' });
             }
 
             yield* client.withTransaction(
                 Effect.gen(function* () {
-                    const migrationsTable = client(migrationsTableName);
-                    const [{ lastAppliedAt }] = yield* client<{
-                        readonly lastAppliedAt: number | null;
-                    }>`SELECT MAX(created_at) AS lastAppliedAt FROM ${migrationsTable}`;
+                    if (!hasNameColumn) {
+                        yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN name text`;
+                        yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN applied_at TEXT`;
+                    }
 
-                    yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN name text`;
-                    yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN applied_at TEXT`;
-                    yield* Effect.forEach(
-                        Object.entries(LEGACY_MIGRATION_TIMESTAMPS).filter(([, createdAt]) => createdAt <= (lastAppliedAt ?? 0)),
-                        ([name, createdAt]) =>
-                            client`UPDATE ${migrationsTable} SET name = ${name} WHERE created_at = ${createdAt}`.pipe(
-                                Effect.andThen(
-                                    client`INSERT INTO ${migrationsTable} (hash, created_at, name) SELECT '', ${createdAt}, ${name} WHERE NOT EXISTS (SELECT 1 FROM ${migrationsTable} WHERE name = ${name})`
-                                )
-                            ),
-                        { discard: true }
-                    );
+                    yield* client`INSERT INTO ${migrationsTable} (hash, created_at, name, applied_at) VALUES (${baselineMigration.hash}, ${baselineMigration.folderMillis}, ${baselineMigration.name}, ${new Date().toISOString()})`;
                 })
             );
         });
@@ -67,7 +82,7 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
             migrate: Effect.fn('DatabaseMigrationService.migrate')(function* () {
                 const db = yield* Db;
 
-                yield* backfillLegacyMigrationNames(db.$client);
+                yield* recordBaselineOnLatestLegacyDatabase(db.$client);
                 yield* migrate(localMigrations, db.$primary._.session, migrationsTableName);
             })
         };
