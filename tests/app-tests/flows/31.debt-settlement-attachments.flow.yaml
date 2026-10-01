@@ -173,8 +173,6 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.12905_933'
 - assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2094_067'
-- assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_Debt.15000'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -235,8 +233,6 @@ appId: ${APP_ID}
 
 - assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.13405_933'
-- assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2094_067'
 - assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_Debt.15500'
 
