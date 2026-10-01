@@ -1,6 +1,6 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';

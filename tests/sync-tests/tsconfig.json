@@ -3,6 +3,7 @@
     "compilerOptions": {
         "module": "ESNext",
         "moduleResolution": "bundler",
+        "customConditions": ["react-native-legacy-deep-imports"],
         "noEmit": true,
         "types": ["node", "vitest/globals"],
         "paths": {

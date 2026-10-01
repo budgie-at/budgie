@@ -1,4 +1,4 @@
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
+import type { NativeStackNavigationOptions } from 'expo-router';
 
 const SHEET_DETENT_MEDIUM = 0.75;
 const SHEET_DETENT_LARGE = 0.95;
@@ -6,7 +6,7 @@ const SHEET_DETENT_DATE = 0.55;
 const SHEET_DETENT_DATE_LARGE = 0.85;
 const SHEET_CORNER_RADIUS = 24;
 
-export const UNIFIED_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
+export const UNIFIED_FILTER_SHEET_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,
@@ -15,7 +15,7 @@ export const UNIFIED_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
     contentStyle: { backgroundColor: 'transparent' }
 };
 
-export const DATE_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
+export const DATE_FILTER_SHEET_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,
@@ -24,7 +24,7 @@ export const DATE_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
     contentStyle: { backgroundColor: 'transparent' }
 };
 
-export const STACKED_FILTER_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
+export const STACKED_FILTER_MODAL_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'pageSheet',
     headerShown: false,
     contentStyle: { backgroundColor: 'transparent' }

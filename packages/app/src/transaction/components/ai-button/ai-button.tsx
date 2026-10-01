@@ -1,6 +1,6 @@
 /* eslint-disable max-lines-per-function, max-statements */
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';

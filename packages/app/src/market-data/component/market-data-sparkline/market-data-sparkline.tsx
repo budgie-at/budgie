@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { InteractionManager, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Svg, { Polyline } from 'react-native-svg';
 
 import { emptyFn, isPositiveNumber } from '@rnw-community/shared';
@@ -62,12 +62,12 @@ export const MarketDataSparkline = ({ prices, isPositive, testID }: Props) => {
             return emptyFn;
         }
 
-        const task = InteractionManager.runAfterInteractions(() => {
+        const idleHandle = requestIdleCallback(() => {
             setReadyHistoryVersion(historyVersion);
         });
 
         return () => {
-            task.cancel();
+            cancelIdleCallback(idleHandle);
         };
     }, [hasRenderableHistory, historyVersion]);
 

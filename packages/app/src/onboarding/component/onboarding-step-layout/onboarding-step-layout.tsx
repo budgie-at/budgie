@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInRight, useReducedMotion } from 'react-native-reanimated';

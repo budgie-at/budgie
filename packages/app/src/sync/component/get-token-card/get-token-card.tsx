@@ -18,7 +18,7 @@ interface Props {
 
 export const GetTokenCard = ({ provider, url, title, description, modalTitle }: Props) => {
     const { t } = useLingui();
-    const webViewRef = useRef<WebView>(null);
+    const webViewRef = useRef<WebView<object>>(null);
     const [isWebViewVisible, setIsWebViewVisible] = useState(false);
 
     const webViewSource = { uri: url };
@@ -47,7 +47,7 @@ export const GetTokenCard = ({ provider, url, title, description, modalTitle }: 
                         <Text className="text-primary">{modalTitle}</Text>
                         <Button variant="ghost" onPress={handleCloseWebView} content={t`Close`} />
                     </View>
-                    <WebView ref={webViewRef} source={webViewSource} />
+                    <WebView<object> ref={webViewRef} source={webViewSource} />
                 </View>
             </Modal>
         </>

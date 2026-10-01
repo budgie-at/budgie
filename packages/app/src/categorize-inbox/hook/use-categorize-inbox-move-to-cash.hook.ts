@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';

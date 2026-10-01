@@ -179,7 +179,7 @@ export class ExporterService extends Context.Service<ExporterService>()('@budgie
 
                 const file = new File(Paths.cache, fileName);
                 file.create();
-                file.write(csvContent);
+                file.writeSync(csvContent);
 
                 const canShare = yield* Effect.promise(() => isAvailableAsync());
                 if (canShare) {
