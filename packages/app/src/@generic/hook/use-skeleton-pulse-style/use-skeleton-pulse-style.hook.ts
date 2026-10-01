@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import { useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+
+import { useReducedMotion } from '../use-reduced-motion.hook';
 
 const PULSE_DURATION = 850;
 const MIN_OPACITY = 0.42;

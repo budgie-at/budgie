@@ -1,7 +1,9 @@
 import { cn } from 'cn';
 import { useEffect } from 'react';
 import { View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 
 interface Props {
     readonly percentage: number;

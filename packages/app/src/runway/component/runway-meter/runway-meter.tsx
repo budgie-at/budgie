@@ -1,9 +1,10 @@
 import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useReducedMotion, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { RUNWAY_HORIZON_MONTHS } from '../../constant/runway-horizon-months.constant';
 

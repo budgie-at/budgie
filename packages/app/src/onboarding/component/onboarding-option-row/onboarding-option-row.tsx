@@ -1,12 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
 import { EmptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 
 const PRESS_SCALE = 0.97;
 const FULL_SCALE = 1;
