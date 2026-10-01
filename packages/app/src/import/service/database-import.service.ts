@@ -45,7 +45,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
             const probeClient = yield* openSqliteClient(probeDatabaseName, backupPin);
 
-            return isNotEmptyArray(yield* probeClient.unsafe('SELECT name FROM sqlite_master')); // oxlint-disable-line lingui/no-unlocalized-strings
+            return isNotEmptyArray(yield* probeClient`SELECT name FROM sqlite_master`);
         }, Effect.scoped);
 
         const replaceDestinationFile = Effect.fn('DatabaseImportService.replaceDestinationFile')(function* (

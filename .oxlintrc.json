@@ -725,6 +725,7 @@
                             "^Arrow[A-Z]+",
                             "Tab",
                             "Enter",
+                            "SQLite",
                             "use client"
                         ],
                         "ignoreNames": [

@@ -13,7 +13,7 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
         exportAndShare: Effect.fn('DatabaseExportService.exportAndShare')(function* () {
             const { $client: client } = yield* Db;
 
-            yield* client.unsafe('PRAGMA wal_checkpoint(FULL)').raw; // oxlint-disable-line lingui/no-unlocalized-strings
+            yield* client`PRAGMA wal_checkpoint(FULL)`.raw;
             yield* shareCacheFile('budgie-backup', 'db', file => Effect.promise(() => new File(DATABASE_DIRECTORY, DB_NAME).copy(file)), {
                 mimeType: 'application/x-sqlite3',
                 UTI: 'public.database'

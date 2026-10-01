@@ -1,4 +1,3 @@
-/* oxlint-disable lingui/no-unlocalized-strings */
 import { makeEffectSqliteClientDatabase } from '@budgie/contracts';
 import * as SqliteClient from '@effect/sql-sqlite-react-native/SqliteClient';
 import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
@@ -19,35 +18,38 @@ import { readDatabaseKey } from '../utils/read-database-key.util';
 import { DatabaseChangeService } from './database-change.service';
 
 import type * as SqlClient from 'effect/sql/SqlClient';
+import type { SqlError } from 'effect/sql/SqlError';
 
 export class DatabaseConnectionService extends Context.Service<DatabaseConnectionService>()('@budgie/app/DatabaseConnectionService', {
     make: Effect.gen(function* () {
         const databaseChangeService = yield* DatabaseChangeService;
-        const connectionPragmas = [
-            'PRAGMA busy_timeout = 5000',
-            'PRAGMA cache_size = -20000',
-            'PRAGMA mmap_size = 268435456',
-            'PRAGMA temp_store = MEMORY'
+        const connectionPragmas = (client: SqlClient.SqlClient) => [
+            client`PRAGMA busy_timeout = 5000`.raw,
+            client`PRAGMA cache_size = -20000`.raw,
+            client`PRAGMA mmap_size = 268435456`.raw,
+            client`PRAGMA temp_store = MEMORY`.raw
         ];
-        const writerPragmas = [
-            'PRAGMA journal_mode = WAL',
-            'PRAGMA foreign_keys = ON',
-            'PRAGMA synchronous = NORMAL',
-            ...connectionPragmas
+        const writerPragmas = (client: SqlClient.SqlClient) => [
+            client`PRAGMA journal_mode = WAL`.raw,
+            client`PRAGMA foreign_keys = ON`.raw,
+            client`PRAGMA synchronous = NORMAL`.raw,
+            ...connectionPragmas(client)
         ];
-        const readerPragmas = ['PRAGMA query_only = 1', ...connectionPragmas];
+        const readerPragmas = (client: SqlClient.SqlClient) => [client`PRAGMA query_only = 1`.raw, ...connectionPragmas(client)];
         const vectorTableNames = ['title_embedding_vec', 'merchant_embedding_vec', 'comment_embedding_vec'];
         const scope = yield* Scope.make();
 
         yield* Effect.addFinalizer(exit => Scope.close(scope, exit));
 
-        const runStatements = (client: SqlClient.SqlClient, statements: readonly string[]) =>
-            Effect.forEach(statements, statement => client.unsafe(statement).raw, { discard: true });
+        const runStatements = (statements: readonly Effect.Effect<unknown, SqlError>[]) => Effect.all(statements, { discard: true });
 
-        const openConnection = Effect.fnUntraced(function* (encryptionKey: string | null, pragmas: readonly string[]) {
+        const openConnection = Effect.fnUntraced(function* (
+            encryptionKey: string | null,
+            makePragmas: (client: SqlClient.SqlClient) => readonly Effect.Effect<unknown, SqlError>[]
+        ) {
             const client = yield* openSqliteClient(DB_NAME, encryptionKey).pipe(Scope.provide(scope));
 
-            yield* runStatements(client, pragmas).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
+            yield* runStatements(makePragmas(client)).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
 
             return client;
         });
@@ -56,8 +58,9 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
         const writer = yield* openConnection(encryptionKey, writerPragmas);
 
         yield* runStatements(
-            writer,
-            vectorTableNames.map(tableName => `CREATE VIRTUAL TABLE IF NOT EXISTS ${tableName} USING vec0(embedding float[768])`)
+            vectorTableNames.map(
+                tableName => writer`CREATE VIRTUAL TABLE IF NOT EXISTS ${writer(tableName)} USING vec0(embedding float[768])`.raw
+            )
         ).pipe(Effect.catch(vecError => Effect.logError('sqlite:vec-init-error', { errorMessage: getErrorMessage(vecError) })));
 
         const reader = yield* openConnection(encryptionKey, readerPragmas);

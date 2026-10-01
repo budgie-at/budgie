@@ -1,4 +1,3 @@
-/* oxlint-disable lingui/no-unlocalized-strings */
 import { Db } from '@budgie/contracts';
 import { formatToMillis } from 'drizzle-orm/migrator.utils';
 import { migrate } from 'drizzle-orm/sqlite-core/effect';
@@ -27,7 +26,7 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
             .sort()
             .map(name => ({
                 name,
-                sql: migrations.migrations[name].split('--> statement-breakpoint'),
+                sql: migrations.migrations[name].split(/--> statement-breakpoint/u),
                 bps: true,
                 folderMillis: formatToMillis(name.slice(0, 14)),
                 hash: ''
