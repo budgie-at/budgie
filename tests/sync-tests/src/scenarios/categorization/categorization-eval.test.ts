@@ -2,13 +2,25 @@ import { categorizeInboxEngineService } from '@app/categorize-inbox/service/cate
 import { RuleMatcherService } from '@app/rule/service/rule-matcher.service';
 import { extractRuleActionOutcomes } from '@app/rule/util/extract-rule-action-outcomes.util';
 import { EMBEDDING_VEC_DISTANCE_THRESHOLD, buildCommentContext, buildMerchantContext, buildTransactionContext } from '@budgie/ai';
-import { CategorySourceEnum, RuleRepository, SettingsRepository } from '@budgie/contracts';
+import {
+    CategoryEntityTable,
+    CategorySourceEnum,
+    CommentEmbeddingRepository,
+    MerchantEmbeddingRepository,
+    RuleRepository,
+    SettingsRepository,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryKindEnum,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { afterAll, describe, expect, it } from '@effect/vitest';
+import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { testDb, TestLayer } from '../../harness';
+import { seed, testDb, TestLayer } from '../../harness';
 import { embedCategorizationEvalTexts } from '../../harness/categorization-eval/embed-categorization-eval-texts';
 import { fetchCategorizationEvalEntries } from '../../harness/categorization-eval/fetch-categorization-eval-entries';
 import { backupDatabasePath } from '../../harness/scenario/setup';
@@ -56,6 +68,33 @@ const buildKnnQueryText = (entry: EvalEntry): string =>
     buildTransactionContext({ title: entry.title, mccDescription: entry.mccDescription, comment: entry.comment });
 
 const isKnnIndexable = (entry: EvalEntry): boolean => isNotEmptyString(entry.title) || isNotEmptyString(entry.comment);
+
+const isKnnDocumentCandidate = (entry: EvalEntry): entry is EvalEntry & { readonly categoryId: number } =>
+    isDefined(entry.categoryId) && isKnnIndexable(entry);
+
+const addKnnDocument = (
+    entry: EvalEntry,
+    documentVectors: ReadonlyMap<string, Float32Array>,
+    merchantDocuments: Map<string, KnnDocument>,
+    commentDocuments: Map<string, KnnDocument>,
+    tagIds: readonly number[]
+): void => {
+    if (!isKnnDocumentCandidate(entry)) {
+        return;
+    }
+
+    const text = buildKnnDocumentText(entry);
+    const vector = documentVectors.get(text);
+    if (!isDefined(vector)) {
+        return;
+    }
+
+    const documents = isNotEmptyString(entry.title) ? merchantDocuments : commentDocuments;
+    const key = `${entry.categoryId}|${text}`;
+    const document = documents.get(key) ?? { vector, categoryId: entry.categoryId, tagIds: new Set<number>() };
+    tagIds.forEach(tagId => document.tagIds.add(tagId));
+    documents.set(key, document);
+};
 
 const sumScores = (scored: readonly (readonly [number, number])[]): [number, number][] => {
     const scores = new Map<number, number>();
@@ -149,7 +188,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                 const categoryEvidence = new Map<string, LabelEvidenceRowInterface>();
                 const tagEvidence = new Map<string, LabelEvidenceRowInterface>();
                 const { modelFile, documentVectors, queryVectors } = yield* embedCategorizationEvalTexts(
-                    entries.filter(isCategoryEvidence).filter(isKnnIndexable).map(buildKnnDocumentText),
+                    entries.filter(isKnnDocumentCandidate).map(buildKnnDocumentText),
                     evalEntries.map(buildKnnQueryText)
                 );
                 const merchantDocuments = new Map<string, KnnDocument>();
@@ -171,25 +210,15 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
 
                             if (isCategoryEvidence(historyEntry)) {
                                 addEvidence(categoryEvidence, historyEntry, historyEntry.categoryId);
-
-                                const text = buildKnnDocumentText(historyEntry);
-                                const vector = documentVectors.get(text);
-                                const documents = isNotEmptyString(historyEntry.title) ? merchantDocuments : commentDocuments;
-                                const key = `${historyEntry.categoryId}|${text}`;
-
-                                if (isDefined(vector)) {
-                                    const document = documents.get(key) ?? {
-                                        vector,
-                                        categoryId: historyEntry.categoryId,
-                                        tagIds: new Set<number>()
-                                    };
-
-                                    (tagIdsByTransactionId.get(historyEntry.transactionId) ?? []).forEach(tagId =>
-                                        document.tagIds.add(tagId)
-                                    );
-                                    documents.set(key, document);
-                                }
                             }
+
+                            addKnnDocument(
+                                historyEntry,
+                                documentVectors,
+                                merchantDocuments,
+                                commentDocuments,
+                                tagIdsByTransactionId.get(historyEntry.transactionId) ?? []
+                            );
 
                             (tagIdsByTransactionId.get(historyEntry.transactionId) ?? []).forEach(tagId =>
                                 addEvidence(tagEvidence, historyEntry, tagId)
@@ -250,5 +279,120 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                 expect(cases.length).toBeGreaterThan(0);
             }).pipe(Effect.provide(TestLayer)),
         EVAL_TIMEOUT_MS
+    );
+});
+
+describe('categorization-eval/index-candidates', () => {
+    it.effect('includes production-indexed MCC documents while keeping them out of user-set evaluation labels', () =>
+        Effect.gen(function* () {
+            const merchantEmbeddingRepository = yield* MerchantEmbeddingRepository;
+            const commentEmbeddingRepository = yield* CommentEmbeddingRepository;
+            const [mccSystemCategory, userCategory] = testDb
+                .insert(CategoryEntityTable)
+                .values([
+                    { title: 'Default Dining', titleEn: 'Default Dining', icon: UserIconNameEnum.Wallet, isSystemCategory: true },
+                    { title: 'User Dining', titleEn: 'User Dining', icon: UserIconNameEnum.Wallet, isSystemCategory: false }
+                ])
+                .returning()
+                .all();
+            const account = seed.account();
+            const mccMerchant = seed.bankPairExpense(
+                { externalId: 'eval-mcc-merchant', operatedAt: new Date('2026-01-01T12:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+            const userMerchant = seed.bankPairExpense(
+                { externalId: 'eval-user-merchant', operatedAt: new Date('2026-01-02T12:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+            const userTarget = seed.bankPairExpense(
+                { externalId: 'eval-user-target', operatedAt: new Date('2026-01-03T12:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+            const mccComment = seed.bankPairExpense(
+                { externalId: 'eval-mcc-comment', operatedAt: new Date('2026-01-01T13:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+
+            [mccMerchant, userMerchant, userTarget, mccComment].forEach((transaction, index) => {
+                testDb
+                    .update(TransactionEntityTable)
+                    .set({
+                        title: index === 0 ? 'Cafe' : index === 1 ? 'Cafe shop' : index === 3 ? '' : 'Cafe',
+                        comment: index === 3 ? 'Cafe receipt' : '',
+                        needsEmbedding: true
+                    })
+                    .where(eq(TransactionEntityTable.id, transaction.id))
+                    .run();
+            });
+            [mccMerchant, mccComment].forEach(transaction => {
+                testDb
+                    .update(TransactionEntryEntityTable)
+                    .set({ categoryId: mccSystemCategory.id, categorySource: CategorySourceEnum.MCC_DEFAULT })
+                    .where(
+                        and(
+                            eq(TransactionEntryEntityTable.transactionId, transaction.id),
+                            eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY)
+                        )
+                    )
+                    .run();
+            });
+            [userMerchant, userTarget].forEach(transaction => {
+                testDb
+                    .update(TransactionEntryEntityTable)
+                    .set({ categoryId: userCategory.id, categorySource: CategorySourceEnum.USER })
+                    .where(
+                        and(
+                            eq(TransactionEntryEntityTable.transactionId, transaction.id),
+                            eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY)
+                        )
+                    )
+                    .run();
+            });
+
+            const { entries } = yield* fetchCategorizationEvalEntries();
+            const mccMerchantEntry = entries.find(entry => entry.transactionId === mccMerchant.id);
+            const userMerchantEntry = entries.find(entry => entry.transactionId === userMerchant.id);
+            const userTargetEntry = entries.find(entry => entry.transactionId === userTarget.id);
+            const mccCommentEntry = entries.find(entry => entry.transactionId === mccComment.id);
+            const targetDayStart = Math.floor(userTarget.operatedAt.getTime() / DAY_MS) * DAY_MS;
+            const historicalEntries = entries.filter(entry => entry.operatedAt.getTime() < targetDayStart);
+            const mccDocumentVector = new Float32Array([1, 0]);
+            const userDocumentVector = new Float32Array([0.8, 0.6]);
+            const otherDocumentVector = new Float32Array([0, 1]);
+            const queryVector = new Float32Array([1, 0]);
+            const merchantDocuments = new Map<string, KnnDocument>();
+            const commentDocuments = new Map<string, KnnDocument>();
+            const documentVectors = new Map<string, Float32Array>();
+
+            entries.forEach(entry => {
+                documentVectors.set(
+                    buildKnnDocumentText(entry),
+                    entry.transactionId === mccMerchant.id
+                        ? mccDocumentVector
+                        : entry.transactionId === userMerchant.id
+                          ? userDocumentVector
+                          : otherDocumentVector
+                );
+            });
+
+            historicalEntries.forEach(entry => {
+                addKnnDocument(entry, documentVectors, merchantDocuments, commentDocuments, []);
+            });
+
+            const knnIndexes: KnnDocument[][] = [Array.from(merchantDocuments.values()), Array.from(commentDocuments.values())];
+
+            const merchantContexts = yield* merchantEmbeddingRepository.findPendingMerchantContexts(100);
+            const commentContexts = yield* commentEmbeddingRepository.findPendingCommentContexts(100);
+
+            expect(isDefined(mccMerchantEntry) && isCategoryEvidence(mccMerchantEntry)).toBe(false);
+            expect(isDefined(userTargetEntry) && isCategoryEvidence(userTargetEntry)).toBe(true);
+            expect(isDefined(userMerchantEntry) && isCategoryEvidence(userMerchantEntry)).toBe(true);
+            expect(isDefined(mccCommentEntry) && isKnnIndexable(mccCommentEntry)).toBe(true);
+            expect(merchantContexts.some(context => context.categoryId === mccSystemCategory.id && context.title === 'Cafe')).toBe(true);
+            expect(commentContexts.some(context => context.categoryId === mccSystemCategory.id && context.comment === 'Cafe receipt')).toBe(
+                true
+            );
+            expect(rankKnn(queryVector, knnIndexes, document => [document.categoryId])[0]).toBe(mccSystemCategory.id);
+        }).pipe(Effect.provide(TestLayer))
     );
 });
