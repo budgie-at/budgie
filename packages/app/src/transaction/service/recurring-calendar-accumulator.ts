@@ -1,3 +1,5 @@
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
@@ -18,7 +20,7 @@ export class RecurringCalendarAccumulator {
             isForecast: false
         });
         this.addEntry(this.entriesByDay, event.day, entry);
-        this.totalAmount += event.amount;
+        this.totalAmount += isPositiveNumber(event.amount) ? event.amount : 0;
     }
 
     addForecast(series: RecurringSeriesInterface, day: number): void {
@@ -29,7 +31,7 @@ export class RecurringCalendarAccumulator {
             isForecast: true
         });
         this.addEntry(this.forecastedEntriesByDay, day, entry);
-        this.forecastedTotalAmount += series.predictedAmount;
+        this.forecastedTotalAmount += isPositiveNumber(series.predictedAmount) ? series.predictedAmount : 0;
     }
 
     build(): RecurringCalendarDataInterface {

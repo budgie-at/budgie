@@ -43,7 +43,10 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
 
     if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
         handlePress = () => {
-            router.push({ pathname: '/transactions/[id]/expense', params: { id: String(entry.latestTransactionId) } });
+            router.push({
+                pathname: entry.latestAmount < 0 ? '/transactions/[id]/income' : '/transactions/[id]/expense',
+                params: { id: String(entry.latestTransactionId) }
+            });
         };
     }
 
