@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.88.2](https://github.com/budgie-at/budgie/compare/v6.88.1...v6.88.2) (2026-10-02)
+
+
+### Bug Fixes
+
+* **app:** forecast only active recurring series and include income ([40fcfbb](https://github.com/budgie-at/budgie/commit/40fcfbbf93fe10f28b3c48f2938ff61f1cec674b)), closes [#1357](https://github.com/budgie-at/budgie/issues/1357)
+
+
+
+
+
 ## [6.87.2](https://github.com/budgie-at/budgie/compare/v6.87.1...v6.87.2) (2026-10-01)
 
 
