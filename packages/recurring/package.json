@@ -24,7 +24,9 @@
         "lint": "oxlint --type-aware src && eslint src",
         "lint:eslint": "eslint src",
         "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p . && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.test.json",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
@@ -32,5 +34,12 @@
         "date-fns": "^4.3.0",
         "drizzle-orm": "^0.45.2",
         "effect": "4.0.0-rc.118"
+    },
+    "devDependencies": {
+        "@budgie-at/test-kit": "workspace:*",
+        "@effect/vitest": "4.0.0-rc.118",
+        "@types/node": "22.20.1",
+        "typescript": "npm:@typescript/typescript6@6.0.2",
+        "vitest": "^5.0.2"
     }
 }

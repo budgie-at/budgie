@@ -1,9 +1,10 @@
 import { PRECISION } from '@budgie/contracts';
-import { RecurringService } from '@budgie/recurring';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { TestLayer, testSeedService } from '../harness/test-context';
+import { RecurringService } from '../src/index';
+
+import { TestLayer, testSeedService } from './test-context';
 
 const NOW = new Date(2026, 5, 15, 12);
 const JUNE = 5;

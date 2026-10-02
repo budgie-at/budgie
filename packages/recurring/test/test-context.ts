@@ -1,6 +1,7 @@
 import { buildTestDb, makeTestPlatformLayer, TestSeedService } from '@budgie-at/test-kit';
-import { RecurringService } from '@budgie/recurring';
 import * as Layer from 'effect/Layer';
+
+import { RecurringService } from '../src/index';
 
 export const testDb = buildTestDb();
 

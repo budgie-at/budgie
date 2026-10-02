@@ -4,11 +4,19 @@
         "composite": true,
         "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
         "rootDir": "./src",
-        "lib": ["esnext"],
+        "lib": [
+            "esnext"
+        ],
         "outDir": "dist/esm",
         "module": "esnext",
         "noEmit": false
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist"]
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "test"
+    ]
 }

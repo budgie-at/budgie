@@ -23,7 +23,16 @@ const MONTHLY_MAX_GAP_DAYS = 45;
 const MIN_MONTH_PRESENCE = 0.75;
 const RECENT_AMOUNT_COUNT = 3;
 const PERIOD_TOLERANCE = 0.2;
-const PERIOD_MONTHS: readonly number[] = [1, 2, 3, 6];
+const MONTHLY_DAYS = 30;
+const BIMONTHLY_DAYS = 61;
+const QUARTERLY_DAYS = 91;
+const SEMIANNUAL_DAYS = 182;
+const PERIOD_DAYS_BY_MONTHS: readonly (readonly [number, number])[] = [
+    [1, MONTHLY_DAYS],
+    [2, BIMONTHLY_DAYS],
+    [3, QUARTERLY_DAYS],
+    [6, SEMIANNUAL_DAYS]
+];
 
 const BAND_MAX_RATIO = 1.2;
 const MIN_FUZZY_LENGTH = 5;
@@ -160,9 +169,7 @@ const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSer
     }
 
     const latest = charges.reduce((current, charge) => (charge.operatedAt.getTime() > current.operatedAt.getTime() ? charge : current));
-    const periodMonths = PERIOD_MONTHS.find(
-        months => Math.abs(medianGap - months * DAYS_PER_MONTH) <= months * DAYS_PER_MONTH * PERIOD_TOLERANCE
-    );
+    const period = PERIOD_DAYS_BY_MONTHS.find(([, days]) => Math.abs(medianGap - days) <= days * PERIOD_TOLERANCE);
 
     return {
         title: cleanTokens(latest).slice(0, DISPLAY_TOKEN_COUNT).join(' '),
@@ -170,7 +177,7 @@ const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSer
         categoryTitle: latest.categoryTitle,
         categoryIcon: latest.categoryIcon,
         accountId: latest.accountId,
-        periodMonths: periodMonths ?? null,
+        periodMonths: period?.[0] ?? null,
         periodDays: medianGap,
         anchorTimestamp: events[events.length - 1].timestamp,
         predictedAmount: Math.round(median(events.slice(-RECENT_AMOUNT_COUNT).map(event => event.amount))),
