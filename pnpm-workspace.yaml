@@ -39,6 +39,7 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
   '@parcel/watcher': false
+  node-llama-cpp: false
 
 patchedDependencies:
   drizzle-orm@1.0.0-rc.4: patches/drizzle-orm@1.0.0-rc.4.patch
@@ -73,3 +74,11 @@ minimumReleaseAgeExclude:
   - expo-updates@58.0.12
   - expo-widgets@58.0.10
   - expo@58.0.1
+
+ignoredOptionalDependencies:
+  - '@node-llama-cpp/linux-x64-cuda'
+  - '@node-llama-cpp/linux-x64-cuda-ext'
+  - '@node-llama-cpp/linux-x64-vulkan'
+  - '@node-llama-cpp/win-x64-cuda'
+  - '@node-llama-cpp/win-x64-cuda-ext'
+  - '@node-llama-cpp/win-x64-vulkan'

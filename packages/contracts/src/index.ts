@@ -12,12 +12,7 @@ export type { EmojiIconType } from './@generic/type/emoji-icon.type';
 export type { UserIconType } from './@generic/type/user-icon.type';
 
 export type { AmountRangeInterface } from './@generic/interface/amount-range.interface';
-export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
-export type { EmbeddingPendingContextBaseInterface } from './@generic/interface/embedding-pending-context-base.interface';
-export type { EmbeddingQueryConfigInterface } from './@generic/interface/embedding-query-config.interface';
-export type { SimilarTagsParamsInterface } from './@generic/interface/similar-tags-params.interface';
-export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
 
 export { BaseTransactionFilterRepository } from './@generic/repository/base-transaction-filter.repository';
 export { buildTranslatedCategoryRelation } from './@generic/util/build-translated-category-relation.util';
@@ -30,7 +25,6 @@ export type { TransactionBoundaryType } from './@generic/type/transaction-bounda
 export { makeEffectSqliteClientDatabase } from './@generic/drizzle/effect-sqlite-client.driver';
 
 export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util';
-export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
 export { Db } from './@generic/service/db.service';
 export { DbError } from './@generic/error/db.error';
 
@@ -244,9 +238,6 @@ export type { SimilarTransactionStatsQueryInterface } from './transaction/interf
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 export { TransactionConsolidationRepository } from './transaction/repository/transaction-consolidation.repository';
 export { TransactionViewRepository } from './transaction/repository/transaction-view.repository';
-export { TransactionCategorizeInboxRepository } from './transaction/repository/transaction-categorize-inbox.repository';
-
-export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';
 
 export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 
@@ -267,8 +258,6 @@ export { TransferTransactionCreateInputSchema } from './transaction/schema/trans
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
 export type { AmountPatternQueryInterface } from './transaction/interface/amount-pattern-query.interface';
-export type { CategorizeInboxRowInterface } from './transaction/interface/categorize-inbox-row.interface';
-export type { LabelEvidenceRowInterface } from './transaction/interface/label-evidence-row.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
@@ -352,8 +341,6 @@ export { StatisticsRepository } from './statistics/repository/statistics.reposit
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
 
-export { EMBEDDING_DIMENSIONS } from './@generic/constant/embedding-dimensions.constant';
-
 export { MerchantEmbeddingEntityTable } from './merchant-embedding/table/merchant-embedding-entity.table';
 export { MerchantEmbeddingTagEntityTable } from './merchant-embedding/table/merchant-embedding-tag-entity.table';
 
@@ -362,13 +349,6 @@ export { MerchantEmbeddingTagAssociationEnum } from './merchant-embedding/enum/m
 
 export type { MerchantEmbeddingEntityInterface } from './merchant-embedding/entity/merchant-embedding-entity.interface';
 
-export type { CommentDistanceResultInterface } from './merchant-embedding/interface/comment-distance-result.interface';
-export type { MerchantPendingContextInterface } from './merchant-embedding/interface/merchant-pending-context.interface';
-export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
-export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
-
-export { MerchantEmbeddingRepository } from './merchant-embedding/repository/merchant-embedding.repository';
-
 export { CommentEmbeddingEntityTable } from './comment-embedding/table/comment-embedding-entity.table';
 export { CommentEmbeddingTagEntityTable } from './comment-embedding/table/comment-embedding-tag-entity.table';
 
@@ -376,11 +356,6 @@ export { CommentEmbeddingAssociationEnum } from './comment-embedding/enum/commen
 export { CommentEmbeddingTagAssociationEnum } from './comment-embedding/enum/comment-embedding-tag-association.enum';
 
 export type { CommentEmbeddingEntityInterface } from './comment-embedding/entity/comment-embedding-entity.interface';
-
-export type { CommentPendingContextInterface } from './comment-embedding/interface/comment-pending-context.interface';
-export type { UpsertCommentEmbeddingParamsInterface } from './comment-embedding/interface/upsert-comment-embedding-params.interface';
-
-export { CommentEmbeddingRepository } from './comment-embedding/repository/comment-embedding.repository';
 
 export { RuleConditionFieldEnum } from './rule/enum/rule-condition-field.enum';
 export { RuleConditionOperatorEnum } from './rule/enum/rule-condition-operator.enum';

@@ -28,6 +28,7 @@
     "dependencies": {
         "@budgie/ai": "workspace:^",
         "@budgie/budget": "workspace:*",
+        "@budgie/categorization": "workspace:*",
         "@budgie/recurring": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",

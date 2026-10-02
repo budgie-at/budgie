@@ -1,5 +1,4 @@
-import type { CategorizeInboxClusterInterface } from './categorize-inbox-cluster.interface';
-import type { CategorizeInboxRowInterface } from '@budgie/contracts';
+import type { CategorizeInboxClusterInterface, CategorizeInboxRowInterface } from '@budgie/categorization';
 
 export interface CategorizeInboxVisibilityInterface {
     readonly excludedTransactionIds: ReadonlySet<number>;

@@ -15,7 +15,7 @@ import { useMoveToCashTransactionIdsQuery } from '../../query/use-move-to-cash-t
 
 import { CategorizeInboxMoveToCashChipSelector } from './categorize-inbox-move-to-cash-chip.selector';
 
-import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;

@@ -14,7 +14,7 @@ import { useCategorizeInboxContext } from '../../context/categorize-inbox.contex
 
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
 
-import type { CategorizeInboxRowInterface } from '@budgie/contracts';
+import type { CategorizeInboxRowInterface } from '@budgie/categorization';
 
 interface Props {
     readonly row: CategorizeInboxRowInterface;

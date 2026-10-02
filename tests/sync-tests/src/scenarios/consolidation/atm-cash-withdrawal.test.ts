@@ -1,5 +1,5 @@
 import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { CategorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
+import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
 import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -110,7 +110,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
     it.effect('keeps Monobank ATM commission as a fee entry after cash withdrawal consolidation', () =>
         Effect.gen(function* () {
-            const categorizeInboxService = yield* CategorizeInboxService;
+            const categorizeInboxService = yield* CategorizeInboxCashService;
             const monobankSyncService = yield* MonobankSyncService;
             const transferConsolidationService = yield* TransferConsolidationService;
             const transactionService = yield* TransactionService;
@@ -265,7 +265,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
     it.effect('moves exactly the chosen ATM withdrawal to cash, keeps stored balances on the ledger and undoes the move', () =>
         Effect.gen(function* () {
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-            const categorizeInboxService = yield* CategorizeInboxService;
+            const categorizeInboxService = yield* CategorizeInboxCashService;
             const transferConsolidationService = yield* TransferConsolidationService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
 
@@ -304,7 +304,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
     it.effect('does not move to cash when more than one cash account shares the currency', () =>
         Effect.gen(function* () {
-            const categorizeInboxService = yield* CategorizeInboxService;
+            const categorizeInboxService = yield* CategorizeInboxCashService;
             const transferConsolidationService = yield* TransferConsolidationService;
 
             const bankAccount = yield* seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
@@ -320,7 +320,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
     it.effect('reverts an ATM cash withdrawal canonical and restores the source expense', () =>
         Effect.gen(function* () {
-            const categorizeInboxService = yield* CategorizeInboxService;
+            const categorizeInboxService = yield* CategorizeInboxCashService;
             const transactionService = yield* TransactionService;
 
             const bankAccount = yield* seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });

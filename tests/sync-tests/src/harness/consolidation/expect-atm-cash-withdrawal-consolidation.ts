@@ -1,4 +1,4 @@
-import { CategorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
+import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
 import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
@@ -13,7 +13,7 @@ export const expectAtmCashWithdrawalConsolidation = Effect.fnUntraced(function* 
     sourceTransactionId: number
 ) {
     const transferConsolidationService = yield* TransferConsolidationService;
-    const categorizeInboxService = yield* CategorizeInboxService;
+    const categorizeInboxService = yield* CategorizeInboxCashService;
 
     yield* transferConsolidationService.consolidate(null);
 

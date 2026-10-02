@@ -1,7 +1,6 @@
 import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { CategorizeInboxLabelKindEnum } from '@app/categorize-inbox/enum/categorize-inbox-label-kind.enum';
-import { CategorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
 import { BudgetRepository } from '@budgie/budget';
+import { CategorizeInboxLabelKindEnum, CategorizeInboxService, TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -10,7 +9,6 @@ import {
     LanguageEnum,
     RUNWAY_WINDOW_MONTHS,
     StatisticsRepository,
-    TransactionCategorizeInboxRepository,
     TransactionViewRepository
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
