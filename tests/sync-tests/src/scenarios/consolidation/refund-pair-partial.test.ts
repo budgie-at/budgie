@@ -1,4 +1,3 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { computeRefundedSummary } from '@app/transaction/utils/compute-refunded-summary.util';
 import {
     AccountBalanceRepository,
@@ -10,6 +9,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionViewRepository
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

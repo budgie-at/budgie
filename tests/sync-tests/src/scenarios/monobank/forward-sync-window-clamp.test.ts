@@ -1,6 +1,5 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
-import { MONOBANK_MAX_PERIOD_SECONDS } from '@budgie/sync';
+import { MONOBANK_MAX_PERIOD_SECONDS, MonobankSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';

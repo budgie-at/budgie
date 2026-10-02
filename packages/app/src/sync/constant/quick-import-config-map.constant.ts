@@ -1,9 +1,8 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
+import { ErsteSyncService, PrivatbankSyncService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
-import { ErsteSyncService } from '../service/erste-sync.service';
-import { PrivatbankSyncService } from '../service/privatbank-sync.service';
 
 import { PDF_MIME_TYPE } from './pdf-mime-type.constant';
 import { XLSX_MIME_TYPE } from './xlsx-mime-type.constant';

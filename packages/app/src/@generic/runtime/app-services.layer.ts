@@ -16,6 +16,7 @@ import {
     TransactionCategorizeInboxRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
     AccountRepository,
@@ -65,6 +66,18 @@ import {
 } from '@budgie/market';
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
+import {
+    BinanceSyncService,
+    ErsteSyncService,
+    MonobankSyncService,
+    PrivatbankCategoryMatcherService,
+    PrivatbankSyncService,
+    ResyncService,
+    SyncProviderRegistryService,
+    SyncRepairService,
+    TransferConsolidationService,
+    UnpairedOwnCardTransferRepairService
+} from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -96,25 +109,11 @@ import { HistoricalMarketDataDrainerService } from '../../market-data/service/hi
 import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
-import { consolidationCoordinatorLayer } from '../../sync/layer/consolidation-coordinator.layer';
+import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
+import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
+import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
-import { BinanceAccountService } from '../../sync/service/binance-account.service';
-import { BinanceAssetCodeService } from '../../sync/service/binance-asset-code.service';
-import { BinanceSourceQuoteService } from '../../sync/service/binance-source-quote.service';
-import { BinanceSyncService } from '../../sync/service/binance-sync.service';
-import { BinanceTradeCursorService } from '../../sync/service/binance-trade-cursor.service';
-import { ErsteSyncService } from '../../sync/service/erste-sync.service';
-import { MonobankSyncService } from '../../sync/service/monobank-sync.service';
-import { PrivatbankCategoryMatcherService } from '../../sync/service/privatbank-category-matcher.service';
-import { PrivatbankSyncService } from '../../sync/service/privatbank-sync.service';
-import { ResyncService } from '../../sync/service/resync.service';
-import { SyncDuplicateSoftDeleteService } from '../../sync/service/sync-duplicate-soft-delete.service';
-import { SyncIntegrationTokenService } from '../../sync/service/sync-integration-token.service';
-import { SyncProviderRegistryService } from '../../sync/service/sync-provider-registry.service';
-import { SyncRepairService } from '../../sync/service/sync-repair.service';
 import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
-import { TransferConsolidationService } from '../../sync/service/transfer-consolidation.service';
-import { UnpairedOwnCardTransferRepairService } from '../../sync/service/unpaired-own-card-transfer-repair.service';
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
@@ -203,20 +202,14 @@ export const appServicesLayer = Layer.mergeAll(
     InstrumentRepository.layer,
     InstrumentMarketDataJobRepository.layer,
     InstrumentDailyMarketPriceRepository.layer,
-    consolidationCoordinatorLayer,
+    ConsolidationCoordinatorService.layer,
     ExchangeRatesService.layer,
     ExchangeRateBackgroundService.layer,
     HistoricalMarketDataDrainerService.layer,
-    SyncIntegrationTokenService.layer,
     TransferConsolidationService.layer,
     TransferConsolidationDrainerService.layer,
-    SyncDuplicateSoftDeleteService.layer,
     UnpairedOwnCardTransferRepairService.layer,
     SyncRepairService.layer,
-    BinanceAssetCodeService.layer,
-    BinanceSourceQuoteService.layer,
-    BinanceTradeCursorService.layer,
-    BinanceAccountService.layer,
     PrivatbankCategoryMatcherService.layer,
     MonobankSyncService.layer,
     BinanceSyncService.layer,
@@ -252,4 +245,7 @@ export const appServicesLayer = Layer.mergeAll(
     TransactionTransferService.layer,
     TransferCreationService.layer,
     TransactionService.layer
-).pipe(Layer.provide(ledgerWorkloadLayer));
+).pipe(
+    Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)),
+    Layer.provide(Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer))
+);

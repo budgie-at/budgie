@@ -1,11 +1,10 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import { HttpResponse, http } from 'msw';
 
-import { TestLayer } from '../../harness';
+import { MonobankSyncService, TestLayer } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 

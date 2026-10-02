@@ -6,8 +6,7 @@ import * as Effect from 'effect/Effect';
 
 import { makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
 
-import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
-import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
+import type { FileBasedSyncClientInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const BANK_ACCOUNT_ID = 'AT_REFRESH';
 const STATEMENT_URI = 'erste-refresh.pdf';

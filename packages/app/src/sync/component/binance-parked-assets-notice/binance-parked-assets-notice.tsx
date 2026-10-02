@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { SyncAccountPreviewInterface } from '@budgie/sync';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -6,7 +7,6 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 
 interface Props {
     readonly parkedPreviews: SyncAccountPreviewInterface[];

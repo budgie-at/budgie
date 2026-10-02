@@ -1,7 +1,13 @@
-import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { TransactionImportService } from '@budgie/ledger';
-import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum, ersteMapper } from '@budgie/sync';
+import {
+    ersteMapper,
+    mapBankTransactionToCreateInput,
+    SyncAccountBalanceStateEnum,
+    SyncAccountTypeEnum,
+    SyncProviderEnum,
+    SyncTransactionTypeEnum
+} from '@budgie/sync';
 import { beforeEach, describe, expect, it, vi } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -12,9 +18,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { expectFileImportConsolidationEnqueued, makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
 
-import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
-import type { ErsteRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
+import type { ErsteRowInterface, FileBasedSyncClientInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const ERSTE_ACCOUNT_ID = 'AT123';
 const ERSTE_EXTERNAL_ID = 'erste-transaction-1';

@@ -838,6 +838,18 @@ importers:
 
   packages/sync:
     dependencies:
+      '@budgie/consolidation':
+        specifier: workspace:*
+        version: link:../consolidation
+      '@budgie/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@budgie/ledger':
+        specifier: workspace:*
+        version: link:../ledger
+      '@budgie/rules':
+        specifier: workspace:*
+        version: link:../rules
       '@liaugust/monobank-sdk':
         specifier: ^0.8.0
         version: 0.8.0

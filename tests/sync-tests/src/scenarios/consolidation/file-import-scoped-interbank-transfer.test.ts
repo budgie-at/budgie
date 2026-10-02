@@ -1,7 +1,12 @@
 import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
+import {
+    SyncAccountBalanceStateEnum,
+    SyncAccountTypeEnum,
+    SyncProviderEnum,
+    SyncTransactionTypeEnum,
+    TransferConsolidationService
+} from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -18,9 +23,8 @@ import {
     TestLayer
 } from '../../harness';
 
-import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
-import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
+import type { FileBasedSyncClientInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const CURRENCY_CODE_EUR = 978;
 const CURRENCY_CODE_UAH = 980;

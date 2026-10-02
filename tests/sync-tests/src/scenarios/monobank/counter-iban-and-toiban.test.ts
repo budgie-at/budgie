@@ -1,10 +1,9 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { TransactionEntryEntityTable } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/counter-iban-and-toiban', () => {
     it.effect('persists counterIban from the API into transaction_entries.toIban', () =>

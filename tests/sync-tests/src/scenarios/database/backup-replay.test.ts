@@ -1,7 +1,7 @@
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountBalanceRepository, AccountEntityTable, InstrumentEntityTable } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

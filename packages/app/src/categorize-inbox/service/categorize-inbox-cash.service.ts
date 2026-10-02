@@ -1,13 +1,12 @@
 import { UnconsolidationService } from '@budgie/consolidation';
 import { Db, TransactionRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { TransferConsolidationService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { TransferConsolidationService } from '../../sync/service/transfer-consolidation.service';
 
 export class CategorizeInboxCashService extends Context.Service<CategorizeInboxCashService>()('@budgie/app/CategorizeInboxCashService', {
     make: Effect.gen(function* () {

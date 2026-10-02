@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     AccountBalanceRepository,
     BANK_FEE_CATEGORY_ID,
@@ -16,7 +15,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/fee-entry', () => {
     it.effect('finds the bank fee default category by lowercase localized search', () =>

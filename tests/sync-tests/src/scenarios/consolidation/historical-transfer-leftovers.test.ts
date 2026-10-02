@@ -1,5 +1,3 @@
-import { SyncRepairService } from '@app/sync/service/sync-repair.service';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -13,6 +11,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { SyncRepairService, TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

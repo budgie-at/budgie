@@ -1,4 +1,5 @@
 import { consolidationScopeService } from '@budgie/consolidation';
+import { TransferConsolidationService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -9,8 +10,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
-
-import { TransferConsolidationService } from './transfer-consolidation.service';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 

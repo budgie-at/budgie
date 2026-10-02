@@ -1,5 +1,5 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { ExternalSourceEnum, SyncEntityTable, SyncModeEnum, SyncStatusEnum, TransactionEntityTable } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

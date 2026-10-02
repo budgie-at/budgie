@@ -1,4 +1,3 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountTypeEnum,
     CurrencyEnum,
@@ -9,6 +8,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';

@@ -1,3 +1,4 @@
+import { MonobankSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
@@ -5,9 +6,8 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
+import { DEFAULT_SYNC_HISTORY_DEPTH } from '../../constant/sync-history-depth-options.constant';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
-import { MonobankSyncService } from '../../service/monobank-sync.service';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
@@ -25,7 +25,7 @@ export const CreateMonobankAccount = () => {
 
     const [step, setStep] = useState<SetupStep>('token');
     const [token, setToken] = useState('');
-    const [historyDepth, setHistoryDepth] = useState(SyncHistoryDepthEnum.MONTHS_3);
+    const [historyDepth, setHistoryDepth] = useState(DEFAULT_SYNC_HISTORY_DEPTH);
 
     const {
         accountPreviews,

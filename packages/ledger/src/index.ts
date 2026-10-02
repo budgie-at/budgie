@@ -21,6 +21,8 @@ export { TransactionService } from './transaction/service/transaction.service';
 export { TransactionTransferService } from './transaction/service/transaction-transfer.service';
 export { TransferCreationService } from './transaction/service/transfer-creation.service';
 
+export { convertToMicroUnits } from './@generic/util/convert-to-micro-units.util';
+
 export { assertTransferAccountsAreNotDebt } from './transaction/util/assert-transfer-accounts-are-not-debt.util';
 export { buildTransferEntries } from './transaction/util/build-transfer-entries.util';
 export { createTransactionInput } from './transaction/util/create-transaction-input.util';

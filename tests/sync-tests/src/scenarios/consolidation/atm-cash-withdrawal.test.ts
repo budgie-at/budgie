@@ -1,7 +1,5 @@
 import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -17,6 +15,7 @@ import {
     TransactionEntityTable
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
+import { MonobankSyncService, TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

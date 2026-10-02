@@ -1,6 +1,5 @@
-import { SyncHistoryDepthEnum } from '@app/sync/enum/sync-history-depth.enum';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncEntityTable } from '@budgie/contracts';
+import { MonobankSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

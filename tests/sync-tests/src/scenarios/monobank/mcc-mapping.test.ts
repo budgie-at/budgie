@@ -1,17 +1,15 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { MccCategoryEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { TransactionEntryEntityTable } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, findMccByCode, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/mcc-mapping', () => {
     it.effect('resolves the MCC code to the matching mcc_categories row id on insert', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const groceryRow = (yield* testDb.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, '5411')))[0];
-            expect(groceryRow).toBeDefined();
+            const groceryRow = yield* findMccByCode('5411');
 
             yield* setupMonobankFixture();
             monobankStub.statement([
