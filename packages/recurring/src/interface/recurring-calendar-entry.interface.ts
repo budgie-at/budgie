@@ -1,6 +1,7 @@
-import { UserIconType } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 
 export interface RecurringCalendarEntryInterface {
+    readonly key: string;
     readonly categoryId: number | null;
     readonly categoryTitle: string | null;
     readonly categoryIcon: UserIconType | null;

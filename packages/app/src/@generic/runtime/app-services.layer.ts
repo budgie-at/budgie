@@ -40,6 +40,7 @@ import {
     TransactionRuleRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { RecurringService } from '@budgie/recurring';
 import * as Layer from 'effect/Layer';
 
 import { AccountArchiveService } from '../../account/service/account-archive.service';
@@ -132,6 +133,7 @@ export const appServicesLayer = Layer.mergeAll(
     BudgetAlertThresholdService.layer,
     BudgetTemplateService.layer,
     BudgetService.layer,
+    RecurringService.layer,
     AccountBalanceIncrementalService.layer,
     AccountTransferConversionService.layer,
     AccountService.layer,

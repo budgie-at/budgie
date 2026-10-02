@@ -1,6 +1,5 @@
-import { UserIconType } from '@budgie/contracts';
-
 import type { RecurringSeriesEventInterface } from './recurring-series-event.interface';
+import type { UserIconType } from '@budgie/contracts';
 
 export interface RecurringSeriesInterface {
     readonly title: string;

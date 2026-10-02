@@ -1,5 +1,5 @@
-/* eslint-disable max-lines -- Transaction pattern repository owns recurring-candidate, repeated, and amount pattern queries that share private SQL helpers */
-import { SQL, and, between, desc, eq, gt, gte, inArray, isNotNull, lte, ne, or, sql } from 'drizzle-orm';
+/* eslint-disable max-lines -- Transaction pattern repository owns repeated and amount pattern queries that share private SQL helpers */
+import { SQL, and, between, desc, eq, gte, inArray, isNotNull, lte, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -12,7 +12,6 @@ import { Db } from '../../@generic/service/db.service';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
@@ -22,7 +21,6 @@ import { isValidPatternRow } from '../type-guard/is-valid-pattern-row.type-guard
 
 import type { AmountPatternQueryInterface } from '../interface/amount-pattern-query.interface';
 import type { PatternRowInterface } from '../interface/pattern-row.interface';
-import type { RecurringChargeCandidateQueryInterface } from '../interface/recurring-charge-candidate-query.interface';
 import type { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
 import type { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
 import type { ValidPatternRowInterface } from '../interface/valid-pattern-row.interface';
@@ -275,64 +273,7 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
                     );
 
                     return mergePatternResults(pathResults, limit);
-                }),
-
-                findRecurringChargeCandidates: (query: RecurringChargeCandidateQueryInterface) =>
-                    Db.query(db => {
-                        const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * (CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN -1.0 ELSE 1.0 END) * COALESCE(
-            (SELECT ${ExchangeRateEntityTable.rate} * 1.0 FROM ${ExchangeRateEntityTable}
-             WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId}
-               AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${query.defaultInstrumentId}
-               AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-             ORDER BY ${ExchangeRateEntityTable.createdAt} DESC LIMIT 1),
-            (SELECT 1.0 / ${ExchangeRateEntityTable.rate} FROM ${ExchangeRateEntityTable}
-             WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${query.defaultInstrumentId}
-               AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${AccountEntityTable.instrumentId}
-               AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-             ORDER BY ${ExchangeRateEntityTable.createdAt} DESC LIMIT 1),
-            1.0
-        )`;
-
-                        return db
-                            .select({
-                                transactionId: TransactionEntityTable.id,
-                                operatedAt: TransactionEntityTable.operatedAt,
-                                title: TransactionEntityTable.title,
-                                comment: TransactionEntityTable.comment,
-                                defaultAmount,
-                                accountId: AccountEntityTable.id,
-                                categoryId: TransactionEntryEntityTable.categoryId,
-                                categoryTitle: sql<
-                                    string | null
-                                >`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
-                                categoryIcon: CategoryEntityTable.icon
-                            })
-                            .from(TransactionEntityTable)
-                            .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
-                            .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
-                            .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
-                            .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(query.language))
-                            .where(
-                                and(
-                                    or(
-                                        and(
-                                            eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-                                            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
-                                        ),
-                                        and(
-                                            eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
-                                            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT)
-                                        )
-                                    ),
-                                    transactionFilters.buildVisibleTransactionCondition(),
-                                    transactionFilters.buildCategorizableEntryCondition(),
-                                    transactionFilters.buildNonDebtAccountCondition(),
-                                    gt(TransactionEntryEntityTable.amount, 0),
-                                    gte(TransactionEntityTable.operatedAt, query.since),
-                                    or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))
-                                )
-                            );
-                    })
+                })
             };
         })
     }

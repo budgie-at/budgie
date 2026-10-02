@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
-import { getRecurringEntryKey } from '../../utils/get-recurring-entry-key.util';
 import { RecurringCalendarEntryRow } from '../recurring-calendar-entry-row/recurring-calendar-entry-row';
+
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 interface Props {
     readonly entries: readonly RecurringCalendarEntryInterface[];
@@ -18,9 +18,8 @@ export const RecurringCalendarEntryRows = ({ entries, displayMonth, displayYear 
         <View className="gap-y-lg pt-lg">
             {entries.map((entry, index) => {
                 const dayLabel = formatMonthAndDay(new Date(displayYear, displayMonth, entry.dayOfMonth));
-                const key = getRecurringEntryKey(entry);
 
-                return <RecurringCalendarEntryRow key={key} entry={entry} index={index} dayLabel={dayLabel} />;
+                return <RecurringCalendarEntryRow key={entry.key} entry={entry} index={index} dayLabel={dayLabel} />;
             })}
         </View>
     );

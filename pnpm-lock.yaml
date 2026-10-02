@@ -199,6 +199,9 @@ importers:
       '@budgie/logger':
         specifier: workspace:*
         version: link:../logger
+      '@budgie/recurring':
+        specifier: workspace:*
+        version: link:../recurring
       '@budgie/sync':
         specifier: workspace:*
         version: link:../sync
@@ -640,6 +643,24 @@ importers:
         specifier: 4.0.0-rc.118
         version: 4.0.0-rc.118
 
+  packages/recurring:
+    dependencies:
+      '@budgie/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@rnw-community/shared':
+        specifier: ^2.2.0
+        version: 2.15.0
+      date-fns:
+        specifier: ^4.3.0
+        version: 4.4.0
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(patch_hash=c9bf0eed9322ceab91fa49c1a6f2dc23357ed54213b086860226d733c70f5f50)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(expo-sqlite@57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))
+      effect:
+        specifier: 4.0.0-rc.118
+        version: 4.0.0-rc.118
+
   packages/sync:
     dependencies:
       '@liaugust/monobank-sdk':
@@ -730,6 +751,34 @@ importers:
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
+      '@types/node':
+        specifier: 22.20.1
+        version: 22.20.1
+      effect:
+        specifier: 4.0.0-rc.118
+        version: 4.0.0-rc.118
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+
+  tests/recurring-tests:
+    dependencies:
+      '@budgie-at/test-kit':
+        specifier: workspace:*
+        version: link:../test-kit
+      '@budgie/contracts':
+        specifier: workspace:^
+        version: link:../../packages/contracts
+      '@budgie/recurring':
+        specifier: workspace:*
+        version: link:../../packages/recurring
+      '@effect/vitest':
+        specifier: 4.0.0-rc.118
+        version: 4.0.0-rc.118(effect@4.0.0-rc.118)(vitest@5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(@typescript/typescript6@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(@typescript/typescript6@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+    devDependencies:
       '@types/node':
         specifier: 22.20.1
         version: 22.20.1
