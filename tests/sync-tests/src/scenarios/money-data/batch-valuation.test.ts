@@ -1,5 +1,4 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
-import { EntryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
 import { TransactionService } from '@app/transaction/service/transaction.service';
 import { makeTestDatabase } from '@budgie-at/test-kit';
 import {
@@ -13,6 +12,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { EntryBaseValuationService } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

@@ -7,7 +7,7 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { HistoricalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
+import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { RuleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
 import { TransferConsolidationDrainerService } from '../../../sync/service/transfer-consolidation-drainer.service';
 import { Workload } from '../../service/workload.service';
@@ -23,7 +23,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
         const databaseConnectionService = yield* DatabaseConnectionService;
         const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
         const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
-        const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+        const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
         const drainTimeoutMs = 5000;
         const semaphore = yield* Semaphore.make(1);
         const closeLock = yield* Semaphore.make(1);
@@ -43,7 +43,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
             yield* workload.block;
             yield* transferConsolidationDrainerService.cancelPending();
             yield* ruleApplicationDrainerService.cancelPending();
-            yield* historicalMarketDataLoaderService.cancelScheduledDrain();
+            yield* historicalMarketDataDrainerService.cancelScheduledDrain();
             yield* workload.awaitForegroundIdle.pipe(Effect.timeoutOption(drainTimeoutMs));
             yield* workload
                 .runForeground(work)
@@ -81,7 +81,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
             DatabaseConnectionService.layer,
             TransferConsolidationDrainerService.layer,
             RuleApplicationDrainerService.layer,
-            HistoricalMarketDataLoaderService.layer
+            HistoricalMarketDataDrainerService.layer
         ])
     );
 }

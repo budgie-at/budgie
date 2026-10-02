@@ -1,15 +1,14 @@
+import { Db, HistoricalExchangeRateEntityTable } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { Db } from '../../@generic/service/db.service';
 import { bulkUpsert } from '../../@generic/util/bulk-upsert.util';
-import { HistoricalExchangeRateEntityTable } from '../table/historical-exchange-rate-entity.table';
 
-import type { HistoricalExchangeRateCreateEntityInterface } from '../entity/historical-exchange-rate-create-entity.interface';
+import type { HistoricalExchangeRateCreateEntityInterface } from '@budgie/contracts';
 
 export class HistoricalExchangeRateRepository extends Context.Service<HistoricalExchangeRateRepository>()(
-    '@budgie/contracts/HistoricalExchangeRateRepository',
+    '@budgie/market/HistoricalExchangeRateRepository',
     {
         make: Effect.sync(() => {
             const buildPairCondition = (sourceInstrumentId: number, targetInstrumentId: number) =>

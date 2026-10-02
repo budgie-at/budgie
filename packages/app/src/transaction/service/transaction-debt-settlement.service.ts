@@ -15,6 +15,7 @@ import {
     TransactionRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -23,8 +24,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';

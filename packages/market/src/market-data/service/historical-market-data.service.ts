@@ -1,15 +1,4 @@
-import {
-    AccountRepository,
-    AccountTypeEnum,
-    Db,
-    HistoricalExchangeRateRepository,
-    InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository,
-    InstrumentPriceProviderEnum,
-    InstrumentRepository,
-    InstrumentTypeEnum
-} from '@budgie/contracts';
-import { t } from '@lingui/core/macro';
+import { AccountTypeEnum, Db, InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
 import { addDays } from 'date-fns/addDays';
 import { format } from 'date-fns/format';
 import { isAfter } from 'date-fns/isAfter';
@@ -19,13 +8,15 @@ import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { Workload } from '../../@generic/service/workload.service';
-import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
+import { fetchJson } from '../../@generic/util/fetch-json.util';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { coinGeckoMarketChartFetchApi } from '../api/coin-gecko-market-chart-fetch.api';
+import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
+import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
+import { InstrumentMarketDataJobRepository } from '../repository/instrument-market-data-job.repository';
 
 import type {
     AccountEntityInterface,
@@ -35,24 +26,28 @@ import type {
     InstrumentMarketDataJobEntityInterface
 } from '@budgie/contracts';
 
-export class HistoricalMarketDataLoaderService extends Context.Service<HistoricalMarketDataLoaderService>()(
-    '@budgie/app/HistoricalMarketDataLoaderService',
+export class HistoricalMarketDataService extends Context.Service<HistoricalMarketDataService>()(
+    '@budgie/market/HistoricalMarketDataService',
     {
         make: Effect.gen(function* () {
-            const workload = yield* Workload;
-            const accountRepository = yield* AccountRepository;
             const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
             const instrumentDailyMarketPriceRepository = yield* InstrumentDailyMarketPriceRepository;
             const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
             const instrumentRepository = yield* InstrumentRepository;
             const exchangeRatesService = yield* ExchangeRatesService;
             const dataWindowDays = 365;
-            const drainDelayMs = 500;
-            const drainKey = 'historical-market-data';
+            const coinGeckoCoinsApiUrl = 'https://api.coingecko.com/api/v3/coins';
+            const fetchTimeoutMs = 10_000;
             const maxAttempts = 3;
             const source = 'coingecko.com';
             const rateDateFormat = 'yyyy-MM-dd';
             const staleLockMs = 5 * 60 * 1000;
+            const coinGeckoTimedValueSchema = Schema.Tuple([Schema.Number, Schema.Number]);
+            const coinGeckoMarketChartResponseSchema = Schema.Struct({
+                prices: Schema.Array(coinGeckoTimedValueSchema),
+                market_caps: Schema.Array(coinGeckoTimedValueSchema),
+                total_volumes: Schema.Array(coinGeckoTimedValueSchema)
+            });
 
             const isSupportedInstrument = (instrument: InstrumentEntityInterface | undefined): boolean =>
                 isDefined(instrument) &&
@@ -87,12 +82,8 @@ export class HistoricalMarketDataLoaderService extends Context.Service<Historica
 
             const buildHistoricalRateInputs = (
                 prices: InstrumentDailyMarketPriceCreateEntityInterface[]
-            ): HistoricalExchangeRateCreateEntityInterface[] => {
-                if (!isNotEmptyArray(prices)) {
-                    return [];
-                }
-
-                return prices.flatMap(price => [
+            ): HistoricalExchangeRateCreateEntityInterface[] =>
+                prices.flatMap(price => [
                     {
                         sourceInstrumentId: price.instrumentId,
                         targetInstrumentId: price.quoteInstrumentId,
@@ -106,12 +97,11 @@ export class HistoricalMarketDataLoaderService extends Context.Service<Historica
                         rate: 1 / price.price
                     }
                 ]);
-            };
 
             const buildTimedValueMap = (values: ReadonlyArray<readonly [number, number]>): Map<string, number> =>
                 new Map(values.map(([timestamp, value]) => [format(new Date(timestamp), rateDateFormat), value]));
 
-            const getNextMissingFromDate = Effect.fn('HistoricalMarketDataLoaderService.getNextMissingFromDate')(function* (
+            const getNextMissingFromDate = Effect.fn('HistoricalMarketDataService.getNextMissingFromDate')(function* (
                 instrumentId: number,
                 quoteInstrumentId: number
             ) {
@@ -124,7 +114,7 @@ export class HistoricalMarketDataLoaderService extends Context.Service<Historica
                 return format(subDays(new Date(), dataWindowDays - 1), rateDateFormat);
             });
 
-            const buildAccountJobInput = Effect.fn('HistoricalMarketDataLoaderService.buildAccountJobInput')(function* (
+            const buildAccountJobInput = Effect.fn('HistoricalMarketDataService.buildAccountJobInput')(function* (
                 instrumentId: number,
                 quoteInstrumentId: number
             ) {
@@ -150,7 +140,7 @@ export class HistoricalMarketDataLoaderService extends Context.Service<Historica
                 };
             });
 
-            const fetchHistoricalPrices = Effect.fn('HistoricalMarketDataLoaderService.fetchHistoricalPrices')(function* (
+            const fetchHistoricalPrices = Effect.fn('HistoricalMarketDataService.fetchHistoricalPrices')(function* (
                 instrument: InstrumentEntityInterface,
                 job: InstrumentMarketDataJobEntityInterface
             ) {
@@ -165,10 +155,19 @@ export class HistoricalMarketDataLoaderService extends Context.Service<Historica
                     return [];
                 }
 
-                const data = yield* coinGeckoMarketChartFetchApi(instrument.providerInstrumentId, quoteCode, fromDate, job.toDate);
+                const data = yield* fetchJson(
+                    `${coinGeckoCoinsApiUrl}/${encodeURIComponent(instrument.providerInstrumentId)}/market_chart/range`,
+                    coinGeckoMarketChartResponseSchema,
+                    fetchTimeoutMs,
+                    {
+                        vs_currency: quoteCode,
+                        from: Math.floor(parseISO(fromDate).getTime() / 1000),
+                        to: Math.floor(parseISO(job.toDate).getTime() / 1000)
+                    }
+                );
 
                 if (!isNotEmptyArray(data.prices)) {
-                    return yield* Effect.die(new Error(t`Market data prices missing`));
+                    return yield* Effect.die(new Error('Market data prices missing'));
                 }
 
                 const marketCapByDate = buildTimedValueMap(data.market_caps);
@@ -195,61 +194,7 @@ export class HistoricalMarketDataLoaderService extends Context.Service<Historica
                 });
             });
 
-            const processJob = Effect.fn('HistoricalMarketDataLoaderService.processJob')(function* (
-                job: InstrumentMarketDataJobEntityInterface
-            ) {
-                const instrument = yield* instrumentRepository.findById(job.instrumentId);
-
-                if (!isDefined(instrument)) {
-                    return yield* Effect.die(new Error(t`Instrument not found`));
-                }
-
-                const prices = yield* fetchHistoricalPrices(instrument, job);
-
-                return yield* workload.run(
-                    Db.transaction(
-                        Effect.all(
-                            [
-                                instrumentDailyMarketPriceRepository.bulkUpsert(prices),
-                                historicalExchangeRateRepository.bulkUpsert(buildHistoricalRateInputs(prices)),
-                                instrumentMarketDataJobRepository.markCompleted(job.id)
-                            ],
-                            { discard: true }
-                        )
-                    )
-                );
-            });
-
-            const drainNextJob = Effect.fn('HistoricalMarketDataLoaderService.drainNextJob')(function* () {
-                const staleLockedBefore = new Date(Date.now() - staleLockMs);
-                const job = yield* workload.run(instrumentMarketDataJobRepository.claimNext(maxAttempts, staleLockedBefore));
-
-                if (!isDefined(job)) {
-                    return false;
-                }
-
-                yield* processJob(job).pipe(
-                    Effect.catchCause(cause =>
-                        workload.run(instrumentMarketDataJobRepository.markFailed(job.id, getErrorMessage(Cause.squash(cause))))
-                    )
-                );
-
-                return true;
-            });
-
-            const scheduleDrain = Effect.fn('HistoricalMarketDataLoaderService.scheduleDrain')(function* () {
-                yield* workload.schedule(
-                    drainKey,
-                    Effect.sleep(drainDelayMs).pipe(
-                        Effect.andThen(waitForIdle),
-                        Effect.andThen(drainNextJob()),
-                        Effect.repeat({ while: shouldContinue => shouldContinue }),
-                        Effect.catch(Effect.logError)
-                    )
-                );
-            });
-
-            const enqueueAccounts = Effect.fn('HistoricalMarketDataLoaderService.enqueueAccounts')(function* (
+            const enqueueAccounts = Effect.fn('HistoricalMarketDataService.enqueueAccounts')(function* (
                 accounts: AccountEntityInterface[]
             ) {
                 const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
@@ -267,28 +212,41 @@ export class HistoricalMarketDataLoaderService extends Context.Service<Historica
                 );
 
                 yield* instrumentMarketDataJobRepository.enqueueMany(inputs.filter(isDefined));
-                yield* scheduleDrain();
             });
 
             return {
                 enqueueAccounts,
-                scheduleDrain,
-                enqueueActiveAccounts: Effect.fn('HistoricalMarketDataLoaderService.enqueueActiveAccounts')(function* () {
-                    const accounts = yield* accountRepository.getAllActiveAccounts();
+                claimNextJob: () => instrumentMarketDataJobRepository.claimNext(maxAttempts, new Date(Date.now() - staleLockMs)),
+                fetchJobPrices: Effect.fn('HistoricalMarketDataService.fetchJobPrices')(function* (
+                    job: InstrumentMarketDataJobEntityInterface
+                ) {
+                    const instrument = yield* instrumentRepository.findById(job.instrumentId);
 
-                    yield* enqueueAccounts(accounts);
+                    if (!isDefined(instrument)) {
+                        return yield* Effect.die(new Error('Instrument not found'));
+                    }
+
+                    return yield* fetchHistoricalPrices(instrument, job);
                 }),
-                cancelScheduledDrain: Effect.fn('HistoricalMarketDataLoaderService.cancelScheduledDrain')(function* () {
-                    yield* workload.cancelScheduled(drainKey);
-                })
+                storeJobPrices: (job: InstrumentMarketDataJobEntityInterface, prices: InstrumentDailyMarketPriceCreateEntityInterface[]) =>
+                    Db.transaction(
+                        Effect.all(
+                            [
+                                instrumentDailyMarketPriceRepository.bulkUpsert(prices),
+                                historicalExchangeRateRepository.bulkUpsert(buildHistoricalRateInputs(prices)),
+                                instrumentMarketDataJobRepository.markCompleted(job.id)
+                            ],
+                            { discard: true }
+                        )
+                    ),
+                failJob: (job: InstrumentMarketDataJobEntityInterface, cause: Cause.Cause<unknown>) =>
+                    instrumentMarketDataJobRepository.markFailed(job.id, getErrorMessage(Cause.squash(cause)))
             };
         })
     }
 ) {
-    static readonly layer = Layer.effect(HistoricalMarketDataLoaderService, HistoricalMarketDataLoaderService.make).pipe(
+    static readonly layer = Layer.effect(HistoricalMarketDataService, HistoricalMarketDataService.make).pipe(
         Layer.provide([
-            Workload.layer,
-            AccountRepository.layer,
             HistoricalExchangeRateRepository.layer,
             InstrumentDailyMarketPriceRepository.layer,
             InstrumentMarketDataJobRepository.layer,

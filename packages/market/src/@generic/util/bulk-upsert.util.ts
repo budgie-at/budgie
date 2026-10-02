@@ -1,9 +1,8 @@
+import { Db } from '@budgie/contracts';
 import { getTableColumns, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
-
-import { Db } from '../service/db.service';
 
 import type { SQLiteColumn, SQLiteInsertValue, SQLiteTable, SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 

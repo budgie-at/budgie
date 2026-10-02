@@ -31,6 +31,7 @@
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
+        "@budgie/market": "workspace:*",
         "@budgie/sync": "workspace:*",
         "@effect/atom-react": "4.0.0",
         "@effect/sql-sqlite-react-native": "4.0.0",

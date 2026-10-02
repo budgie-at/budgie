@@ -13,13 +13,13 @@ import {
     TransactionTagsRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 

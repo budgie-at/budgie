@@ -37,6 +37,7 @@ export { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from './account/constant/bank-author
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
 
+export { AccountNotFoundError } from './account/error/account-not-found.error';
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountNatureEnum } from './account/enum/account-nature.enum';
 export { ExternalSourceEnum } from './account/enum/external-source.enum';
@@ -146,8 +147,6 @@ export type { InstrumentMarketDataJobEntityInterface } from './instrument-market
 export type { InstrumentMarketDataJobCreateEntityInterface } from './instrument-market-data-job/entity/instrument-market-data-job-create-entity.interface';
 
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
-export { InstrumentDailyMarketPriceRepository } from './instrument-daily-market-price/repository/instrument-daily-market-price.repository';
-export { InstrumentMarketDataJobRepository } from './instrument-market-data-job/repository/instrument-market-data-job.repository';
 
 export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
 export { DEBT_PAYMENT_CATEGORY_ID } from './category/constant/debt-payment-category-id.constant';
@@ -335,14 +334,10 @@ export { ExchangeRateEntityTable } from './exchange-rate/table/exchange-rate-ent
 export type { ExchangeRateEntityInterface } from './exchange-rate/entity/exchange-rate-entity.interface';
 export type { ExchangeRateCreateEntityInterface } from './exchange-rate/entity/exchange-rate-create-entity.interface';
 
-export { ExchangeRateRepository } from './exchange-rate/repository/exchange-rate.repository';
-
 export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/table/historical-exchange-rate-entity.table';
 
 export type { HistoricalExchangeRateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-entity.interface';
 export type { HistoricalExchangeRateCreateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-create-entity.interface';
-
-export { HistoricalExchangeRateRepository } from './historical-exchange-rate/repository/historical-exchange-rate.repository';
 
 export { SettingsAssociationEnum } from './settings/enum/settings-association.enum';
 

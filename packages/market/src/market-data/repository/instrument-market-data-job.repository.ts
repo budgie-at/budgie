@@ -1,3 +1,4 @@
+import { Db, InstrumentMarketDataJobEntityTable, InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 import { and, asc, desc, eq, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -5,14 +6,10 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { Db } from '../../@generic/service/db.service';
-import { InstrumentMarketDataJobStatusEnum } from '../enum/instrument-market-data-job-status.enum';
-import { InstrumentMarketDataJobEntityTable } from '../table/instrument-market-data-job-entity.table';
-
-import type { InstrumentMarketDataJobCreateEntityInterface } from '../entity/instrument-market-data-job-create-entity.interface';
+import type { InstrumentMarketDataJobCreateEntityInterface } from '@budgie/contracts';
 
 export class InstrumentMarketDataJobRepository extends Context.Service<InstrumentMarketDataJobRepository>()(
-    '@budgie/contracts/InstrumentMarketDataJobRepository',
+    '@budgie/market/InstrumentMarketDataJobRepository',
     {
         make: Effect.sync(() => {
             const buildInstrumentQuoteFilter = (instrumentId: number, quoteInstrumentId: number) =>

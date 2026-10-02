@@ -16,9 +16,7 @@ import {
     DebtEventEntityTable,
     DebtEventRepository,
     DebtEventSourceEnum,
-    ExchangeRateRepository,
     ExternalSourceEnum,
-    HistoricalExchangeRateRepository,
     LENDING_CATEGORY_ID,
     LanguageEnum,
     PRECISION,
@@ -32,6 +30,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

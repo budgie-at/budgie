@@ -12,6 +12,7 @@ import {
     TransactionRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { i18n } from '@lingui/core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -21,14 +22,12 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
 import { buildAdditionalTransferEntries } from '../utils/build-additional-transfer-entries.util';
 import { getEntryAccountIds } from '../utils/get-entry-account-ids.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 
-import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
+import type { EntryBaseValuationInterface } from '@budgie/market';
 
 export class TransferCreationService extends Context.Service<TransferCreationService>()('@budgie/app/TransferCreationService', {
     make: Effect.gen(function* () {

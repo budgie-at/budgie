@@ -1,5 +1,5 @@
-import { ExchangeRatesService } from '@app/exchange-rate/service/exchange-rates.service';
 import { CurrencyEnum, PRECISION, SettingsEntityTable } from '@budgie/contracts';
+import { ExchangeRatesService } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

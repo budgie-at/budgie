@@ -8,8 +8,8 @@ import { emptyFn } from '@rnw-community/shared';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
-import { ExchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
-import { HistoricalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
+import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
+import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
 import { BinanceSyncService } from '../../sync/service/binance-sync.service';
@@ -26,7 +26,7 @@ const STARTUP_SERVICE_DELAY_MS = 1_000;
 
 const registerBackgroundTasks = Effect.gen(function* () {
     const authService = yield* AuthService;
-    const exchangeRatesSyncService = yield* ExchangeRatesSyncService;
+    const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
     const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
     const transferConsolidationService = yield* TransferConsolidationService;
     const monobankSyncService = yield* MonobankSyncService;
@@ -37,7 +37,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
     yield* Effect.all(
         [
             authService.ensurePinBackgroundAccessibility(),
-            exchangeRatesSyncService.registerBackgroundTask(),
+            exchangeRateBackgroundService.registerBackgroundTask(),
             accountBalanceIncrementalService.registerBackgroundTask(),
             transferConsolidationService.registerBackgroundTask(),
             monobankSyncService.registerBackgroundTask(),
@@ -54,13 +54,13 @@ const initializeAppServices = Effect.gen(function* () {
     const workload = yield* Workload;
     const appDataSyncService = yield* AppDataSyncService;
     const onboardingService = yield* OnboardingService;
-    const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+    const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
 
     yield* registerBackgroundTasks;
     yield* widgetSnapshotService.start();
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
     yield* logAndContinue(onboardingService.initializeLocale());
-    yield* logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts());
+    yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
 });
 
 const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS).pipe(
