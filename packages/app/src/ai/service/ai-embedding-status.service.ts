@@ -1,4 +1,9 @@
-import { CommentEmbeddingRepository, MerchantEmbeddingRepository, TransactionEmbeddingRepository } from '@budgie/categorization';
+import {
+    CommentEmbeddingRepository,
+    EMBEDDING_MODEL_FILENAME,
+    MerchantEmbeddingRepository,
+    TransactionEmbeddingRepository
+} from '@budgie/categorization';
 import { Storage } from '@op-engineering/op-sqlite';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -6,7 +11,6 @@ import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
 
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
-import { EMBEDDING_MODEL_FILENAME } from '../util/ai-constants.util';
 
 import { EmbeddingDrainerService } from './embedding-drainer.service';
 

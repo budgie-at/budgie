@@ -1,10 +1,11 @@
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL } from '@app/ai/util/ai-constants.util';
 import { EMBEDDING_DOCUMENT_PREFIX, EMBEDDING_QUERY_PREFIX } from '@budgie/categorization';
 import * as Effect from 'effect/Effect';
 import { getLlama, resolveModelFile } from 'node-llama-cpp';
+
+import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL } from '../../src/embedding/constant/embedding.constant';
 
 const normalize = (vector: readonly number[]): Float32Array => {
     const norm = Math.hypot(...vector);

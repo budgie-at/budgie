@@ -5,7 +5,10 @@ export { CommentEmbeddingRepository } from './embedding/repository/comment-embed
 export { MerchantEmbeddingRepository } from './embedding/repository/merchant-embedding.repository';
 export { TransactionEmbeddingRepository } from './embedding/repository/transaction-embedding.repository';
 export {
+    EMBEDDING_CONTEXT_SIZE,
     EMBEDDING_DOCUMENT_PREFIX,
+    EMBEDDING_MODEL_FILENAME,
+    EMBEDDING_MODEL_URL,
     EMBEDDING_QUERY_PREFIX,
     EMBEDDING_VEC_DISTANCE_THRESHOLD
 } from './embedding/constant/embedding.constant';

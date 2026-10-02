@@ -3,10 +3,6 @@ export const CHAT_MODEL_URL = 'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/re
 export const CHAT_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
 export const CHAT_CONTEXT_SIZE = 2048;
 
-export const EMBEDDING_MODEL_URL = 'https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embeddinggemma-300M-Q8_0.gguf';
-export const EMBEDDING_MODEL_FILENAME = 'embeddinggemma-300M-Q8_0.gguf';
-export const EMBEDDING_CONTEXT_SIZE = 512;
-
 export const STOP_TOKENS = ['<|im_end|>', '<|endoftext|>'];
 export const DEFAULT_MAX_TOKENS = 64;
 export const GPU_LAYERS = 99;

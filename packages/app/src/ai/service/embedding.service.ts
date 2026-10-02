@@ -1,5 +1,5 @@
 import { AiInvokeError } from '@budgie/ai';
-import { EmbeddingInvoker } from '@budgie/categorization';
+import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL, EmbeddingInvoker } from '@budgie/categorization';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -7,7 +7,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
-import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL } from '../util/ai-constants.util';
 
 import { LlamaModelService } from './llama-model.service';
 
