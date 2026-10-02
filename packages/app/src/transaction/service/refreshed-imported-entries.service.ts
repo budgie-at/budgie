@@ -1,10 +1,10 @@
+import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 

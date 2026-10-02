@@ -8,14 +8,12 @@ import {
     TransactionRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 
 import type { RuleTransferAccountIdsInterface } from '../interface/rule-transfer-account-ids.interface';
 import type { RuleTransferAccountsInterface } from '../interface/rule-transfer-accounts.interface';

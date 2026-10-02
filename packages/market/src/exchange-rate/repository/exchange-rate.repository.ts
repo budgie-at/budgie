@@ -1,3 +1,4 @@
+import { Db, ExchangeRateEntityTable } from '@budgie/contracts';
 import { isNull, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -5,12 +6,9 @@ import * as Layer from 'effect/Layer';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Db } from '../../@generic/service/db.service';
-import { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
+import type { ExchangeRateCreateEntityInterface } from '@budgie/contracts';
 
-import type { ExchangeRateCreateEntityInterface } from '../entity/exchange-rate-create-entity.interface';
-
-export class ExchangeRateRepository extends Context.Service<ExchangeRateRepository>()('@budgie/contracts/ExchangeRateRepository', {
+export class ExchangeRateRepository extends Context.Service<ExchangeRateRepository>()('@budgie/market/ExchangeRateRepository', {
     make: Effect.succeed({
         bulkUpsert: Effect.fn('ExchangeRateRepository.bulkUpsert')(function* (inputs: ExchangeRateCreateEntityInterface[]) {
             if (!isNotEmptyArray(inputs)) {

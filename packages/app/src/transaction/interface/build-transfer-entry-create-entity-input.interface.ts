@@ -1,5 +1,5 @@
-import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 import type { TransactionEntryTypeEnum } from '@budgie/contracts';
+import type { EntryBaseValuationInterface } from '@budgie/market';
 
 export interface BuildTransferEntryCreateEntityInputInterface {
     readonly transactionId: number;

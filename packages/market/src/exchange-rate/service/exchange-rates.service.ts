@@ -1,11 +1,13 @@
-import { ExchangeRateRepository, InstrumentRepository, SettingsRepository } from '@budgie/contracts';
+import { InstrumentRepository, SettingsRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-export class ExchangeRatesService extends Context.Service<ExchangeRatesService>()('@budgie/app/ExchangeRatesService', {
+import { ExchangeRateRepository } from '../repository/exchange-rate.repository';
+
+export class ExchangeRatesService extends Context.Service<ExchangeRatesService>()('@budgie/market/ExchangeRatesService', {
     make: Effect.gen(function* () {
         const exchangeRateRepository = yield* ExchangeRateRepository;
         const instrumentRepository = yield* InstrumentRepository;
@@ -77,6 +79,7 @@ export class ExchangeRatesService extends Context.Service<ExchangeRatesService>(
 
         return {
             getBaseInstrument,
+            findDirectOrInverseConversionRate,
             convert: Effect.fn('ExchangeRatesService.convert')(function* (
                 fromInstrumentId: number,
                 toInstrumentId: number,

@@ -10,6 +10,7 @@ import {
     TransactionRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { i18n } from '@lingui/core';
 import { t } from '@lingui/core/macro';
 import * as Context from 'effect/Context';
@@ -23,8 +24,6 @@ import { DepositNegativeBalanceError } from '../../account/error/deposit-negativ
 import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AccountService } from '../../account/service/account.service';
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
@@ -37,9 +36,9 @@ import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map
 
 import { TransferCreationService } from './transfer-creation.service';
 
-import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import type { TransactionEntryEntityInterface } from '@budgie/contracts';
+import type { EntryBaseValuationInterface } from '@budgie/market';
 
 export class TransactionTransferService extends Context.Service<TransactionTransferService>()('@budgie/app/TransactionTransferService', {
     make: Effect.gen(function* () {

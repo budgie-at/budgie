@@ -12,6 +12,7 @@ import {
     TransactionUpdatedByEnum,
     type TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
+import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -20,7 +21,6 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { getEntryAccountIds } from '../utils/get-entry-account-ids.util';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';

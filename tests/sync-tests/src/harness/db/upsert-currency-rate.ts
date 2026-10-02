@@ -1,4 +1,4 @@
-import { ExchangeRateRepository } from '@budgie/contracts';
+import { ExchangeRateRepository } from '@budgie/market';
 import * as Effect from 'effect/Effect';
 
 import { requireInstrument } from './require-instrument';

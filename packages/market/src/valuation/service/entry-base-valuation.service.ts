@@ -1,12 +1,4 @@
-import {
-    AccountRepository,
-    AccountTypeEnum,
-    CurrencyEnum,
-    ExchangeRateRepository,
-    HistoricalExchangeRateRepository,
-    InstrumentRepository
-} from '@budgie/contracts';
-import { t } from '@lingui/core/macro';
+import { AccountNotFoundError, AccountRepository, AccountTypeEnum, CurrencyEnum, InstrumentRepository, PRECISION } from '@budgie/contracts';
 import { format } from 'date-fns/format';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Cache from 'effect/Cache';
@@ -16,14 +8,12 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { AccountNotFoundError } from '../../account/error/account-not-found.error';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 
 import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
-import type { EntryBaseValuationRateKeyType } from '../type/entry-base-valuation-rate-key.type';
 import type {
     Db,
     DbError,
@@ -32,10 +22,9 @@ import type {
     TransactionEntryCreateInputInterface
 } from '@budgie/contracts';
 
-export class EntryBaseValuationService extends Context.Service<EntryBaseValuationService>()('@budgie/app/EntryBaseValuationService', {
+export class EntryBaseValuationService extends Context.Service<EntryBaseValuationService>()('@budgie/market/EntryBaseValuationService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
-        const exchangeRateRepository = yield* ExchangeRateRepository;
         const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const exchangeRatesService = yield* ExchangeRatesService;
@@ -62,7 +51,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 return missingValuation;
             }
 
-            return yield* Effect.die(new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`));
+            return yield* Effect.die(new Error(`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`));
         });
 
         const resolveDirectOrInverseRate = Effect.fnUntraced(function* (
@@ -83,22 +72,6 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
 
             if (isDefined(inverse)) {
                 return 1 / inverse.rate;
-            }
-
-            return null;
-        });
-
-        const resolveCurrentBaseExchangeRate = Effect.fnUntraced(function* (sourceInstrumentId: number, targetInstrumentId: number) {
-            const directExchangeRate = yield* exchangeRateRepository.findByBaseAndQuoteIds(sourceInstrumentId, targetInstrumentId);
-
-            if (isDefined(directExchangeRate)) {
-                return directExchangeRate.rate;
-            }
-
-            const inverseExchangeRate = yield* exchangeRateRepository.findByBaseAndQuoteIds(targetInstrumentId, sourceInstrumentId);
-
-            if (isDefined(inverseExchangeRate)) {
-                return 1 / inverseExchangeRate.rate;
             }
 
             return null;
@@ -169,7 +142,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                     return bridgeExchangeRate;
                 }
 
-                return yield* resolveCurrentBaseExchangeRate(sourceInstrumentId, targetInstrumentId);
+                return yield* exchangeRatesService.findDirectOrInverseConversionRate(sourceInstrumentId, targetInstrumentId);
             }
         );
 
@@ -182,7 +155,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 }),
                 rates: yield* Cache.make({
                     capacity: Number.MAX_SAFE_INTEGER,
-                    lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart]: EntryBaseValuationRateKeyType) =>
+                    lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart]: readonly [number, number, number]) =>
                         resolveHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
                 })
             };
@@ -202,7 +175,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             }
 
             if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-                return yield* Effect.die(new Error(t`Base instrument not found`));
+                return yield* Effect.die(new Error('Base instrument not found'));
             }
 
             if (account.instrumentId === baseInstrument.id) {
@@ -243,7 +216,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             }
 
             return yield* valueAccountAmount(
-                { accountId: entry.accountId, amount: convertToMicroUnits(entry.amount), operatedAt },
+                { accountId: entry.accountId, amount: Math.round(entry.amount * PRECISION), operatedAt },
                 context
             );
         });
@@ -293,7 +266,6 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
     static readonly layer = Layer.effect(EntryBaseValuationService, EntryBaseValuationService.make).pipe(
         Layer.provide([
             AccountRepository.layer,
-            ExchangeRateRepository.layer,
             HistoricalExchangeRateRepository.layer,
             InstrumentRepository.layer,
             ExchangeRatesService.layer

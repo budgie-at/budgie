@@ -1,5 +1,5 @@
-import { EntryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
 import { PRECISION } from '@budgie/contracts';
+import { EntryBaseValuationService } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

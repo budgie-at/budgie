@@ -14,10 +14,6 @@ import {
     CategoryRepository,
     CommentEmbeddingRepository,
     DebtEventRepository,
-    ExchangeRateRepository,
-    HistoricalExchangeRateRepository,
-    InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository,
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
@@ -40,6 +36,14 @@ import {
     TransactionRuleRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import {
+    EntryBaseValuationService,
+    ExchangeRateRepository,
+    ExchangeRatesService,
+    HistoricalExchangeRateRepository,
+    InstrumentDailyMarketPriceRepository,
+    InstrumentMarketDataJobRepository
+} from '@budgie/market';
 import * as Layer from 'effect/Layer';
 
 import { AccountArchiveService } from '../../account/service/account-archive.service';
@@ -66,14 +70,12 @@ import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategorizeInboxService } from '../../categorize-inbox/service/categorize-inbox.service';
 import { CategoryService } from '../../category/service/category.service';
-import { ExchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { ExporterService } from '../../export/service/exporter.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
 import { ImporterService } from '../../import/service/importer.service';
-import { HistoricalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -195,8 +197,8 @@ export const appServicesLayer = Layer.mergeAll(
     InstrumentDailyMarketPriceRepository.layer,
     consolidationCoordinatorLayer,
     ExchangeRatesService.layer,
-    ExchangeRatesSyncService.layer,
-    HistoricalMarketDataLoaderService.layer,
+    ExchangeRateBackgroundService.layer,
+    HistoricalMarketDataDrainerService.layer,
     SyncIntegrationTokenService.layer,
     TransferConsolidationService.layer,
     TransferConsolidationDrainerService.layer,

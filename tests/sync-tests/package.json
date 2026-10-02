@@ -13,6 +13,7 @@
         "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
+        "@budgie/market": "workspace:*",
         "@budgie/sync": "workspace:*",
         "@effect/sql-sqlite-node": "4.0.0",
         "@effect/vitest": "4.0.0",

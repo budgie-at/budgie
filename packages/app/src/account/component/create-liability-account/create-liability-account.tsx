@@ -12,7 +12,7 @@ import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
-import { HistoricalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
+import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
@@ -60,8 +60,8 @@ export const CreateLiabilityAccount = ({
 
         void appRuntime
             .runPromise(
-                Effect.flatMap(HistoricalMarketDataLoaderService, historicalMarketDataLoaderService =>
-                    historicalMarketDataLoaderService.enqueueAccounts([account])
+                Effect.flatMap(HistoricalMarketDataDrainerService, historicalMarketDataDrainerService =>
+                    historicalMarketDataDrainerService.enqueueAccounts([account])
                 )
             )
             .catch(emptyFn);

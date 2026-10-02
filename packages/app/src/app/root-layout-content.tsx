@@ -53,7 +53,7 @@ import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
-import { HistoricalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
+import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
@@ -74,13 +74,13 @@ const handleAppStateChange = (isActive: boolean): void => {
             }
 
             const appDataSyncService = yield* AppDataSyncService;
-            const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+            const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
 
             yield* logAndContinue(
                 workload.run(
                     Effect.gen(function* () {
                         if (yield* appDataSyncService.sync()) {
-                            yield* Effect.forkDetach(logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts()));
+                            yield* Effect.forkDetach(logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts()));
                         }
                     })
                 )
