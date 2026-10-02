@@ -49,8 +49,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: account.id,
                 amount: account.targetBalance,
-                operatedAt,
-                externalSource: null
+                operatedAt
             });
 
             return yield* accountRepository.updateById(account.id, {

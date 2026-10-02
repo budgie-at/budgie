@@ -1019,13 +1019,17 @@ const setupUsdDebtExchangeRateScenario = Effect.fnUntraced(function* () {
     const usdInstrument = yield* requireInstrument(CurrencyEnum.USD);
 
     yield* settingsRepository.update({ defaultInstrumentId: euroInstrument.id });
-    yield* exchangeRateRepository.upsert(usdInstrument.id, euroInstrument.id, CURRENT_USD_TO_EUR_RATE, 'test');
-    yield* historicalExchangeRateRepository.upsert({
-        sourceInstrumentId: usdInstrument.id,
-        targetInstrumentId: euroInstrument.id,
-        rate: HISTORICAL_USD_TO_EUR_RATE,
-        rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
-    });
+    yield* exchangeRateRepository.bulkUpsert([
+        { baseInstrumentId: usdInstrument.id, quoteInstrumentId: euroInstrument.id, rate: CURRENT_USD_TO_EUR_RATE, source: 'test' }
+    ]);
+    yield* historicalExchangeRateRepository.bulkUpsert([
+        {
+            sourceInstrumentId: usdInstrument.id,
+            targetInstrumentId: euroInstrument.id,
+            rate: HISTORICAL_USD_TO_EUR_RATE,
+            rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
+        }
+    ]);
     vi.useFakeTimers({ now: new Date(`${HISTORICAL_USD_TO_EUR_RATE_DATE}T12:00:00.000Z`) });
 
     return { euroInstrument, usdInstrument };

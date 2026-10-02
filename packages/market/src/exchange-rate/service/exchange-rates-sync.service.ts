@@ -1,9 +1,12 @@
 import { Db, InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
 import * as Arr from 'effect/Array';
+import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Ref from 'effect/Ref';
 import * as Schema from 'effect/Schema';
+import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -30,8 +33,8 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
             rates: Schema.Record(Schema.String, Schema.Number)
         });
         const coinGeckoSimplePriceResponseSchema = Schema.Record(Schema.String, Schema.Record(Schema.String, Schema.Number));
-        let isSyncing = false;
-        let lastSyncedAtMs: number | null = null;
+        const syncPermit = yield* Semaphore.make(1);
+        const lastSyncedAtMs = yield* Ref.make<number | null>(null);
 
         const buildRatePairInputs = (
             baseInstrumentId: number,
@@ -103,41 +106,29 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
             );
         });
 
-        const syncInner = Effect.fn('ExchangeRatesSyncService.syncInner')(function* () {
-            if (isDefined(lastSyncedAtMs) && Date.now() - lastSyncedAtMs < syncCooldownMs) {
-                return;
-            }
-
-            const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
-
-            if (!isDefined(baseInstrument)) {
-                return;
-            }
-
-            yield* syncFiatRates(baseInstrument);
-            yield* Effect.sleep(1);
-            yield* syncCryptoRates(baseInstrument);
-            yield* Effect.sync(() => {
-                lastSyncedAtMs = Date.now();
-            });
-        });
-
         return {
-            sync: Effect.fn('ExchangeRatesSyncService.sync')(function* () {
-                if (isSyncing) {
-                    return;
-                }
+            sync: Effect.fn('ExchangeRatesSyncService.sync')(
+                function* () {
+                    const lastSyncedAt = yield* Ref.get(lastSyncedAtMs);
 
-                isSyncing = true;
+                    if (isDefined(lastSyncedAt) && (yield* Clock.currentTimeMillis) - lastSyncedAt < syncCooldownMs) {
+                        return;
+                    }
 
-                yield* syncInner().pipe(
-                    Effect.ensuring(
-                        Effect.sync(() => {
-                            isSyncing = false;
-                        })
-                    )
-                );
-            })
+                    const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
+
+                    if (!isDefined(baseInstrument)) {
+                        return;
+                    }
+
+                    yield* syncFiatRates(baseInstrument);
+                    yield* Effect.sleep(1);
+                    yield* syncCryptoRates(baseInstrument);
+                    yield* Ref.set(lastSyncedAtMs, yield* Clock.currentTimeMillis);
+                },
+                syncPermit.withPermitsIfAvailable(1),
+                Effect.asVoid
+            )
         };
     })
 }) {

@@ -98,8 +98,7 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                     (yield* entryBaseValuationService.valueMicroUnitEntry({
                         accountId: entry.accountId,
                         amount: convertToMicroUnits(entry.amount),
-                        operatedAt: input.operatedAt,
-                        externalSource: input.externalSource
+                        operatedAt: input.operatedAt
                     }))
                 );
             });

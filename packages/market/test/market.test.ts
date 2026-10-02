@@ -25,7 +25,9 @@ describe('exchange rates', () => {
             const exchangeRateRepository = yield* ExchangeRateRepository;
             const { base, quote } = yield* seedPair('TA1', 'TB1');
 
-            yield* exchangeRateRepository.upsert(base.id, quote.id, 0.5, 'test');
+            yield* exchangeRateRepository.bulkUpsert([
+                { baseInstrumentId: base.id, quoteInstrumentId: quote.id, rate: 0.5, source: 'test' }
+            ]);
 
             const direct = yield* exchangeRatesService.convertStrict(base.id, quote.id, 100 * PRECISION);
             const inverse = yield* exchangeRatesService.convertStrict(quote.id, base.id, 50 * PRECISION);
@@ -75,18 +77,19 @@ describe('base valuation', () => {
             const account = yield* testSeedService.account({ instrumentId: quote.id });
 
             yield* setDefaultInstrument(base.id);
-            yield* historicalExchangeRateRepository.upsert({
-                sourceInstrumentId: quote.id,
-                targetInstrumentId: base.id,
-                rateDate: '2020-01-01',
-                rate: 0.03
-            });
+            yield* historicalExchangeRateRepository.bulkUpsert([
+                {
+                    sourceInstrumentId: quote.id,
+                    targetInstrumentId: base.id,
+                    rateDate: '2020-01-01',
+                    rate: 0.03
+                }
+            ]);
 
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: account.id,
                 amount: 100 * PRECISION,
-                operatedAt: new Date('2020-01-02T12:00:00.000Z'),
-                externalSource: null
+                operatedAt: new Date('2020-01-02T12:00:00.000Z')
             });
 
             expect(valuation).toStrictEqual({ baseInstrumentId: base.id, baseExchangeRate: 0.03, baseAmount: 3 * PRECISION });
@@ -103,25 +106,25 @@ describe('base valuation', () => {
             const unratedAccount = yield* testSeedService.account({ instrumentId: unratedCoin.id, type: AccountTypeEnum.CRYPTO });
 
             yield* setDefaultInstrument(base.id);
-            yield* historicalExchangeRateRepository.upsert({
-                sourceInstrumentId: coin.id,
-                targetInstrumentId: base.id,
-                rateDate: '2020-01-01',
-                rate: 20_000
-            });
+            yield* historicalExchangeRateRepository.bulkUpsert([
+                {
+                    sourceInstrumentId: coin.id,
+                    targetInstrumentId: base.id,
+                    rateDate: '2020-01-01',
+                    rate: 20_000
+                }
+            ]);
 
             const operatedAt = new Date('2020-06-01T12:00:00.000Z');
             const valued = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: account.id,
                 amount: PRECISION / 2,
-                operatedAt,
-                externalSource: null
+                operatedAt
             });
             const unvalued = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: unratedAccount.id,
                 amount: PRECISION,
-                operatedAt,
-                externalSource: null
+                operatedAt
             });
 
             expect(valued).toStrictEqual({ baseInstrumentId: base.id, baseExchangeRate: 20_000, baseAmount: 10_000 * PRECISION });

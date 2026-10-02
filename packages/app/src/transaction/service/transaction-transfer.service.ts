@@ -192,8 +192,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                         .valueMicroUnitEntry({
                             accountId: entry.accountId,
                             amount: entry.amount,
-                            operatedAt: conversion.operatedAt,
-                            externalSource: null
+                            operatedAt: conversion.operatedAt
                         })
                         .pipe(Effect.map(valuation => buildFeeEntryCreateEntity(params.id, entry, valuation))),
                 { concurrency: 'unbounded' }
@@ -216,14 +215,12 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                         entryBaseValuationService.valueMicroUnitEntry({
                             accountId: conversion.creditAccountId,
                             amount: conversion.creditAmount,
-                            operatedAt: conversion.operatedAt,
-                            externalSource: null
+                            operatedAt: conversion.operatedAt
                         }),
                         entryBaseValuationService.valueMicroUnitEntry({
                             accountId: conversion.debitAccountId,
                             amount: conversion.debitAmount,
-                            operatedAt: conversion.operatedAt,
-                            externalSource: null
+                            operatedAt: conversion.operatedAt
                         })
                     ],
                     { concurrency: 'unbounded' }

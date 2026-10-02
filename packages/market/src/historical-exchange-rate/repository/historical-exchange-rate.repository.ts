@@ -30,45 +30,19 @@ export class HistoricalExchangeRateRepository extends Context.Service<Historical
                         inputs,
                         ['rate']
                     ),
-                findForDateOrBefore: Effect.fn('HistoricalExchangeRateRepository.findForDateOrBefore')(function* (
-                    sourceInstrumentId: number,
-                    targetInstrumentId: number,
-                    rateDate: string
-                ) {
-                    return yield* Db.query(db =>
+                findForDateOrBefore: (sourceInstrumentId: number, targetInstrumentId: number, rateDate: string) =>
+                    Db.query(db =>
                         db.query.HistoricalExchangeRateEntityTable.findFirst({
                             where: { ...buildPairCondition(sourceInstrumentId, targetInstrumentId), rateDate: { lte: rateDate } },
                             orderBy: { rateDate: 'desc' }
                         })
-                    );
-                }),
-                findEarliest: Effect.fn('HistoricalExchangeRateRepository.findEarliest')(function* (
-                    sourceInstrumentId: number,
-                    targetInstrumentId: number
-                ) {
-                    return yield* Db.query(db =>
+                    ),
+                findEarliest: (sourceInstrumentId: number, targetInstrumentId: number) =>
+                    Db.query(db =>
                         db.query.HistoricalExchangeRateEntityTable.findFirst({
                             where: buildPairCondition(sourceInstrumentId, targetInstrumentId),
                             orderBy: { rateDate: 'asc' }
                         })
-                    );
-                }),
-                upsert: (input: HistoricalExchangeRateCreateEntityInterface) =>
-                    Db.query(db =>
-                        db
-                            .insert(HistoricalExchangeRateEntityTable)
-                            .values(input)
-                            .onConflictDoUpdate({
-                                target: [
-                                    HistoricalExchangeRateEntityTable.sourceInstrumentId,
-                                    HistoricalExchangeRateEntityTable.targetInstrumentId,
-                                    HistoricalExchangeRateEntityTable.rateDate
-                                ],
-                                set: {
-                                    rate: input.rate,
-                                    updatedAt: new Date()
-                                }
-                            })
                     )
             };
         })

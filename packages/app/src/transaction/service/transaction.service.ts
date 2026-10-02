@@ -151,8 +151,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                     accountId,
                     amount,
-                    operatedAt,
-                    externalSource: null
+                    operatedAt
                 });
 
                 const transaction = yield* transactionRepository.create({

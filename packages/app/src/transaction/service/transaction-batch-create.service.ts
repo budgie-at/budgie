@@ -70,8 +70,7 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
                 const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                     accountId: debtAccount.id,
                     amount,
-                    operatedAt: input.operatedAt,
-                    externalSource: input.externalSource
+                    operatedAt: input.operatedAt
                 });
 
                 yield* debtEventRepository.create({

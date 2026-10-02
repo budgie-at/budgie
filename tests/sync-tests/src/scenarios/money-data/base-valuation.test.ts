@@ -30,16 +30,11 @@ const setDefaultInstrument = (defaultInstrumentId: number) =>
         yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
     });
 
-const expectHistoricalUahValuation = Effect.fnUntraced(function* (externalSource: ExternalSourceEnum | null) {
+const expectSeededUahValuation = Effect.fnUntraced(function* (operatedAt: Date) {
     const entryBaseValuationService = yield* EntryBaseValuationService;
     const { euro, account } = yield* seedEuroBaseUahAccount();
 
-    const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
-        accountId: account.id,
-        amount: 50 * PRECISION,
-        operatedAt: new Date('2011-05-25T12:00:00.000Z'),
-        externalSource
-    });
+    const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({ accountId: account.id, amount: 50 * PRECISION, operatedAt });
 
     expect(valuation).toStrictEqual({
         baseInstrumentId: euro.id,
@@ -70,8 +65,7 @@ const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, 
     const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
         accountId,
         amount: 50 * PRECISION,
-        operatedAt,
-        externalSource: ExternalSourceEnum.CSV
+        operatedAt
     });
 
     yield* insertOne(TransactionEntryEntityTable, {
@@ -91,16 +85,12 @@ const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, 
 });
 
 describe('base valuation', () => {
-    it.effect('values imported UAH entries with seeded historical NBU rates', () =>
-        Effect.gen(function* () {
-            yield* expectHistoricalUahValuation(ExternalSourceEnum.CSV);
-        }).pipe(Effect.provide(TestLayer))
+    it.effect('values a back-dated UAH entry with the seeded historical NBU rate, not the current one', () =>
+        expectSeededUahValuation(new Date('2011-05-25T12:00:00.000Z')).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('values a manually back-dated UAH entry with the historical rate, not the current one', () =>
-        Effect.gen(function* () {
-            yield* expectHistoricalUahValuation(null);
-        }).pipe(Effect.provide(TestLayer))
+    it.effect('values a transaction older than the seeded range using the oldest available historical rate', () =>
+        expectSeededUahValuation(new Date('2009-01-01T12:00:00.000Z')).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('allows manual crypto entries to remain unvalued when no live crypto rate exists', () =>
@@ -111,8 +101,7 @@ describe('base valuation', () => {
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: account.id,
                 amount: 100 * PRECISION,
-                operatedAt: new Date('2026-06-04T15:35:37.321Z'),
-                externalSource: null
+                operatedAt: new Date('2026-06-04T15:35:37.321Z')
             });
 
             expect(valuation).toStrictEqual({

@@ -157,8 +157,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                     accountId: debtAccount.id,
                     amount,
-                    operatedAt: transaction.operatedAt,
-                    externalSource: transaction.externalSource
+                    operatedAt: transaction.operatedAt
                 });
 
                 return {

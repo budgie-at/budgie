@@ -88,8 +88,7 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: fundingAccountId,
                 amount,
-                operatedAt: transaction.operatedAt,
-                externalSource: null
+                operatedAt: transaction.operatedAt
             });
 
             return yield* transactionEntryRepository.create({

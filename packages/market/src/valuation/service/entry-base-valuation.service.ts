@@ -164,7 +164,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         });
 
         const valueAccountAmount = Effect.fnUntraced(function* (
-            { accountId, amount, operatedAt }: Pick<EntryBaseValuationInputInterface, 'accountId' | 'amount' | 'operatedAt'>,
+            { accountId, amount, operatedAt }: EntryBaseValuationInputInterface,
             context: EntryBaseValuationContextInterface
         ) {
             const { baseInstrument } = context;
@@ -237,12 +237,10 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
 
         return {
             resolveHistoricalBaseExchangeRateOrNull,
-            valueMicroUnitEntry: Effect.fn('EntryBaseValuationService.valueMicroUnitEntry')(function* ({
-                accountId,
-                amount,
-                operatedAt
-            }: EntryBaseValuationInputInterface) {
-                return yield* valueAccountAmount({ accountId, amount, operatedAt }, yield* createContext());
+            valueMicroUnitEntry: Effect.fn('EntryBaseValuationService.valueMicroUnitEntry')(function* (
+                input: EntryBaseValuationInputInterface
+            ) {
+                return yield* valueAccountAmount(input, yield* createContext());
             }),
             valueEntries: Effect.fn('EntryBaseValuationService.valueEntries')(function* (
                 entries: TransactionEntryCreateInputInterface[],

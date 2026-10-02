@@ -66,8 +66,7 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             return yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId,
                 amount,
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource
+                operatedAt: input.operatedAt
             });
         });
 

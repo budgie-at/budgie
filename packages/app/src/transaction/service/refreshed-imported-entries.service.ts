@@ -29,8 +29,7 @@ export class RefreshedImportedEntriesService extends Context.Service<RefreshedIm
                 const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                     accountId: entry.accountId,
                     amount: entry.amount,
-                    operatedAt: input.operatedAt,
-                    externalSource: input.externalSource
+                    operatedAt: input.operatedAt
                 });
 
                 return { ...entry, ...valuation };

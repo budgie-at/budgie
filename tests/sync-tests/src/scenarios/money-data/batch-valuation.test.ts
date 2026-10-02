@@ -74,8 +74,7 @@ describe('batch entry valuation', () => {
                     entryBaseValuationService.valueMicroUnitEntry({
                         accountId: account.id,
                         amount: convertToMicroUnits(input.amount),
-                        operatedAt: input.operatedAt,
-                        externalSource: input.externalSource
+                        operatedAt: input.operatedAt
                     })
                 )
             );

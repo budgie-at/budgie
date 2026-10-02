@@ -66,14 +66,12 @@ export class RuleTransferConversionService extends Context.Service<RuleTransferC
                             entryBaseValuationService.valueMicroUnitEntry({
                                 accountId: fromAccountId,
                                 amount: originalEntry.amount,
-                                operatedAt: transaction.operatedAt,
-                                externalSource: null
+                                operatedAt: transaction.operatedAt
                             }),
                             entryBaseValuationService.valueMicroUnitEntry({
                                 accountId: toAccountId,
                                 amount: converted.amount,
-                                operatedAt: transaction.operatedAt,
-                                externalSource: null
+                                operatedAt: transaction.operatedAt
                             })
                         ],
                         { concurrency: 'unbounded' }
