@@ -5,6 +5,8 @@ export { CommentEmbeddingRepository } from './embedding/repository/comment-embed
 export { MerchantEmbeddingRepository } from './embedding/repository/merchant-embedding.repository';
 export { TransactionEmbeddingRepository } from './embedding/repository/transaction-embedding.repository';
 export {
+    EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
+    EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE,
     EMBEDDING_DOCUMENT_FORMAT,
     EMBEDDING_DOCUMENT_PREFIX,
     EMBEDDING_QUERY_PREFIX,

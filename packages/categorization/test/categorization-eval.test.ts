@@ -1,5 +1,7 @@
 import {
     CommentEmbeddingRepository,
+    EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
+    EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE,
     EMBEDDING_VEC_DISTANCE_THRESHOLD,
     MerchantEmbeddingRepository,
     buildCommentContext,
@@ -150,6 +152,13 @@ const rankKnn = (
         .slice(0, TOP_K)
         .map(([labelId]) => labelId);
 
+const predictAutoApplyCategory = (query: Float32Array | undefined, indexes: readonly (readonly KnnDocument[])[]) => {
+    const scored = scoreKnn(query, indexes, EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD, document => [document.categoryId]);
+    const total = scored.reduce((sum, [, score]) => sum + score, 0);
+
+    return isNotEmptyArray(scored) ? { categoryId: scored[0][0], confidence: scored[0][1] / total } : null;
+};
+
 const mergeRanked = (...rankings: (readonly number[])[]): number[] => [...new Set(rankings.flat())].slice(0, TOP_K);
 
 const formatShare = (count: number, total: number): string => (isPositiveNumber(total) ? `${((count / total) * 100).toFixed(1)}%` : '-');
@@ -167,6 +176,24 @@ const formatCategoryRows = (
             '\t'
         );
     });
+
+const formatAutoApplyRows = (
+    cases: readonly {
+        readonly categoryId: number;
+        readonly hasRuleCategory: boolean;
+        readonly autoApply: { readonly categoryId: number; readonly confidence: number } | null;
+    }[]
+): string[] => {
+    const candidates = cases.filter(evalCase => !evalCase.hasRuleCategory);
+
+    return [...new Set([0.5, EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE, 0.7, 0.8, 0.9])].map(minConfidence => {
+        const applied = candidates.filter(evalCase => (evalCase.autoApply?.confidence ?? 0) >= minConfidence);
+        const correct = applied.filter(evalCase => evalCase.autoApply?.categoryId === evalCase.categoryId).length;
+        const label = minConfidence === EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE ? `${minConfidence}*` : `${minConfidence}`;
+
+        return [label, formatShare(applied.length, candidates.length), formatShare(correct, applied.length)].join('\t');
+    });
+};
 
 const formatTagRows = (
     cases: readonly { readonly tagIds: readonly number[]; readonly tags: Readonly<Record<string, readonly number[]>> }[]
@@ -258,6 +285,8 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
 
                     return {
                         categoryId: evalEntry.categoryId,
+                        hasRuleCategory: isDefined(ruleOutcome.categoryId),
+                        autoApply: predictAutoApplyCategory(queryVector, knnIndexes),
                         tagIds: tagIdsByTransactionId.get(evalEntry.transactionId) ?? [],
                         categories: {
                             rules: ruleCategoryIds,
@@ -284,6 +313,9 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                         ...formatCategoryRows(cases),
                         ['tagSignal', 'precision@3', 'recall@3'].join('\t'),
                         ...formatTagRows(cases),
+                        `autoApplyCandidates=${cases.filter(evalCase => !evalCase.hasRuleCategory).length} distance<${EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD}`,
+                        ['minConfidence', 'coverage', 'precision'].join('\t'),
+                        ...formatAutoApplyRows(cases),
                         ''
                     ].join('\n')
                 );
