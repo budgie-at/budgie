@@ -1,20 +1,25 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import {
+    AccountBalanceRepository,
+    AccountRepository,
     AccountTypeEnum,
     CategoryCreateEntityInterface,
+    CategoryRepository,
     CategorySourceEnum,
+    DEFAULT_CATEGORY_ICON,
     ExternalSourceEnum,
     InstrumentEntityInterface,
     InstrumentRepository,
     LiabilityAccountCreateInputInterface,
-    MccCategoryRepository,
-    SettingsRepository,
     TransactionEntryCreateInputInterface,
+    TransactionEntryRepository,
+    TransactionRepository,
+    TransactionTagsRepository,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { AccountService, CategoryService, TransactionService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, AccountService, CategoryService, TransactionService } from '@budgie/ledger';
 import { isValid } from 'date-fns/isValid';
 import { parse } from 'date-fns/parse';
 import * as Context from 'effect/Context';
@@ -25,28 +30,32 @@ import Papa, { ParseStepResult } from 'papaparse';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { DEFAULT_CATEGORY_ICON } from '../../category/constant/default-category-icon.constant';
-import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
-import { loadMccCategoryLookupMap } from '../../sync/util/load-mcc-category-lookup-map.util';
+import { ImportRowError } from '../error/import-row.error';
+import { MccCategoryLookup } from '../port/mcc-category-lookup.port';
 
 import type { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
+import type { CsvImportResultInterface } from '../interface/csv-import-result.interface';
 import type { EntryParamsInterface } from '../interface/entry-params.interface';
-import type { ImportProgressInterface } from '../interface/import-progress.interface';
 import type { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import type { ImporterLookupInterface } from '../interface/importer-lookup.interface';
 import type { ImporterRowInterface } from '../interface/importer-row.interface';
 import type { NormalizedRowType } from '../type/normalized-row.type';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
-export class ImporterService extends Context.Service<ImporterService>()('@budgie/app/ImporterService', {
+export class ImporterService extends Context.Service<ImporterService>()('@budgie/import-export/ImporterService', {
     make: Effect.gen(function* () {
+        const accountRepository = yield* AccountRepository;
+        const categoryRepository = yield* CategoryRepository;
+        const transactionTagsRepository = yield* TransactionTagsRepository;
+        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const transactionRepository = yield* TransactionRepository;
+        const accountBalanceRepository = yield* AccountBalanceRepository;
         const instrumentRepository = yield* InstrumentRepository;
-        const mccCategoryRepository = yield* MccCategoryRepository;
-        const settingsRepository = yield* SettingsRepository;
         const accountService = yield* AccountService;
         const categoryService = yield* CategoryService;
         const transactionService = yield* TransactionService;
-        const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+        const mccCategoryLookup = yield* MccCategoryLookup;
 
         const getToAccountKey = (normalizedRow: NormalizedRowType): string => `${normalizedRow.toAccount} ${normalizedRow.toCurrency}`;
 
@@ -323,43 +332,49 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
 
         const processTransactions = Effect.fn('ImporterService.processTransactions')(function* (
             csvText: string,
-            progress: ImportProgressInterface,
             lookup: ImporterLookupInterface
         ) {
             const transactions: TransactionCreateInputInterface[] = [];
-            const rowErrors: Record<string, string>[] = [];
+            const rowErrors: ImportRowError[] = [];
 
             yield* processRows(csvText, lookup.columnMap, (normalizedRow, row) => {
-                progress.processed += 1;
-
                 const transaction = Result.map(parseRow(normalizedRow, lookup), parsedRow => buildTransaction(normalizedRow, parsedRow));
 
                 if (Result.isSuccess(transaction)) {
                     transactions.push(transaction.success);
-                    progress.successful += 1;
                 } else {
-                    progress.errors += 1;
-                    rowErrors.push({ errorMessage: transaction.failure, rowColumns: Object.keys(row).join(',') });
+                    rowErrors.push(new ImportRowError({ reason: transaction.failure, rowColumns: Object.keys(row).join(',') }));
                 }
             });
-            yield* Effect.forEach(rowErrors, rowError => Effect.logError('row:process-error', rowError), { discard: true });
+            yield* Effect.forEach(
+                rowErrors,
+                rowError => Effect.logError('row:process-error', { errorMessage: rowError.message, rowColumns: rowError.rowColumns }),
+                { discard: true }
+            );
 
-            return transactions;
+            return { transactions, rowErrors };
         });
 
         return {
-            process: Effect.fn('ImporterService.process')(function* (
-                columnMap: ImporterColumnMapInterface,
-                csvText: string,
-                totalRows: number
-            ) {
-                const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
+            replaceAll: Effect.fn('ImporterService.replaceAll')(function* (columnMap: ImporterColumnMapInterface, csvText: string) {
+                yield* Effect.all(
+                    [
+                        accountRepository.truncate(),
+                        categoryRepository.truncate(false),
+                        transactionTagsRepository.truncate(),
+                        transactionEntryRepository.truncate(),
+                        transactionRepository.truncate(),
+                        accountBalanceRepository.truncate()
+                    ],
+                    { discard: true }
+                );
+
                 const instrumentsMap = yield* initializeInstruments();
-                const mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
+                const mccCategoryLookupMap = yield* mccCategoryLookup.load;
                 const { accountInputs, categoryInputs } = yield* collectEntities(csvText, columnMap, instrumentsMap);
                 const accountsMap = yield* accountService.bulkCreate([...accountInputs.values()]);
                 const categoriesMap = yield* categoryService.bulkCreate([...categoryInputs.values()]);
-                const transactions = yield* processTransactions(csvText, progress, {
+                const { transactions, rowErrors } = yield* processTransactions(csvText, {
                     columnMap,
                     instrumentsMap,
                     accountsMap,
@@ -368,25 +383,30 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 });
                 const createdTransactions = yield* transactionService.bulkCreate(transactions);
 
-                yield* ruleApplicationDrainerService.enqueueTransactions(
-                    createdTransactions.map(transaction => transaction.id),
-                    transactions
-                );
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
 
-                return progress;
+                return {
+                    transactionIds: createdTransactions.map(transaction => transaction.id),
+                    transactions,
+                    rowErrors
+                } satisfies CsvImportResultInterface;
             })
         };
     })
 }) {
     static readonly layer = Layer.effect(ImporterService, ImporterService.make).pipe(
         Layer.provide([
+            AccountRepository.layer,
+            CategoryRepository.layer,
+            TransactionTagsRepository.layer,
+            TransactionEntryRepository.layer,
+            TransactionRepository.layer,
+            AccountBalanceRepository.layer,
             InstrumentRepository.layer,
-            MccCategoryRepository.layer,
-            SettingsRepository.layer,
             AccountService.layer,
             CategoryService.layer,
             TransactionService.layer,
-            RuleApplicationDrainerService.layer
+            AccountBalanceIncrementalService.layer
         ])
     );
 }

@@ -36,6 +36,7 @@ import {
     TransactionViewRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { ExporterService, ImporterService, MccCategoryLookup } from '@budgie/import-export';
 import {
     AccountArchiveService,
     AccountBalanceIncrementalService,
@@ -88,9 +89,7 @@ import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { CategorizeInboxCashService } from '../../categorize-inbox/service/categorize-inbox-cash.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
-import { ExporterService } from '../../export/service/exporter.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
-import { ImporterService } from '../../import/service/importer.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
@@ -114,6 +113,7 @@ import { SyncRepairService } from '../../sync/service/sync-repair.service';
 import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { TransferConsolidationService } from '../../sync/service/transfer-consolidation.service';
 import { UnpairedOwnCardTransferRepairService } from '../../sync/service/unpaired-own-card-transfer-repair.service';
+import { loadMccCategoryLookupMap } from '../../sync/util/load-mcc-category-lookup-map.util';
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
@@ -130,6 +130,13 @@ const ledgerWorkloadLayer = Layer.effect(
     LedgerWorkload,
     Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
 ).pipe(Layer.provide(Workload.layer));
+
+const mccCategoryLookupLayer = Layer.effect(
+    MccCategoryLookup,
+    Effect.gen(function* () {
+        return MccCategoryLookup.of({ load: loadMccCategoryLookupMap(yield* MccCategoryRepository, yield* SettingsRepository) });
+    })
+).pipe(Layer.provide([MccCategoryRepository.layer, SettingsRepository.layer]));
 
 export const appServicesLayer = Layer.mergeAll(
     AccountRepository.layer,
@@ -159,7 +166,7 @@ export const appServicesLayer = Layer.mergeAll(
     DatabaseExportService.layer,
     DatabaseImportService.layer,
     ExporterService.layer,
-    ImporterService.layer,
+    ImporterService.layer.pipe(Layer.provide(mccCategoryLookupLayer)),
     TagRepository.layer,
     TagService.layer,
     CategoryRepository.layer,

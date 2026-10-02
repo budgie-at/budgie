@@ -150,6 +150,7 @@ export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id
 export { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID } from './category/constant/cash-withdrawal-tracked-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
 export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
+export { DEFAULT_CATEGORY_ICON } from './category/constant/default-category-icon.constant';
 
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
