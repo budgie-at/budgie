@@ -17,9 +17,6 @@ import {
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
-    RuleActionRepository,
-    RuleConditionRepository,
-    RuleRepository,
     SettingsRepository,
     SyncRepository,
     TagRepository,
@@ -33,7 +30,6 @@ import {
     TransactionRepository,
     TransactionConsolidationRepository,
     TransactionViewRepository,
-    TransactionRuleRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
 import {
@@ -44,6 +40,7 @@ import {
     InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobRepository
 } from '@budgie/market';
+import { RuleMatcherService, RuleRepository, TransactionRuleRepository } from '@budgie/rules';
 import * as Layer from 'effect/Layer';
 
 import { AccountArchiveService } from '../../account/service/account-archive.service';
@@ -78,11 +75,8 @@ import { ImporterService } from '../../import/service/importer.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
+import { rulesLayer } from '../../rule/layer/rules.layer';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
-import { RuleEngineService } from '../../rule/service/rule-engine.service';
-import { RuleMatcherService } from '../../rule/service/rule-matcher.service';
-import { RuleTransferConversionService } from '../../rule/service/rule-transfer-conversion.service';
-import { RuleService } from '../../rule/service/rule.service';
 import { consolidationCoordinatorLayer } from '../../sync/layer/consolidation-coordinator.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
 import { BinanceAccountService } from '../../sync/service/binance-account.service';
@@ -161,13 +155,9 @@ export const appServicesLayer = Layer.mergeAll(
     MerchantEmbeddingRepository.layer,
     TransactionEmbeddingRepository.layer,
     RuleRepository.layer,
-    RuleActionRepository.layer,
-    RuleConditionRepository.layer,
     TransactionRuleRepository.layer,
     RuleMatcherService.layer,
-    RuleTransferConversionService.layer,
-    RuleEngineService.layer,
-    RuleService.layer,
+    rulesLayer,
     RuleApplicationDrainerService.layer,
     TransactionCategorizeInboxRepository.layer,
     CategorizeInboxService.layer,

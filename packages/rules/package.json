@@ -1,0 +1,44 @@
+{
+    "name": "@budgie/rules",
+    "version": "6.87.2",
+    "private": true,
+    "description": "Rules engine domain services",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/esm/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "react-native": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/esm/index.js",
+    "react-native": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "scripts": {
+        "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
+        "build:watch": "pnpm build --watch",
+        "clear": "rimraf dist node_modules/.cache .turbo",
+        "format": "oxfmt --write src test",
+        "lint": "oxlint --type-aware src && eslint src",
+        "lint:eslint": "eslint src",
+        "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
+        "test": "vitest run",
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p . && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.test.json"
+    },
+    "dependencies": {
+        "@budgie/contracts": "workspace:^",
+        "@rnw-community/shared": "^2.2.0",
+        "drizzle-orm": "1.0.0-rc.4",
+        "effect": "4.0.0"
+    },
+    "devDependencies": {
+        "@budgie-at/test-kit": "workspace:*",
+        "@effect/sql-sqlite-node": "4.0.0",
+        "@effect/vitest": "4.0.0",
+        "@types/node": "22.20.1",
+        "typescript": "npm:@typescript/typescript6@6.0.2",
+        "vitest": "^5.0.2"
+    }
+}

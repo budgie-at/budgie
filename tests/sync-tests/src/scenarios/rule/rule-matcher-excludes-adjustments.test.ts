@@ -1,4 +1,3 @@
-import { RuleMatcherService } from '@app/rule/service/rule-matcher.service';
 import {
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
@@ -8,6 +7,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { RuleMatcherService } from '@budgie/rules';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

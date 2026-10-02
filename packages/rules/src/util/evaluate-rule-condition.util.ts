@@ -1,4 +1,5 @@
 import { RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
+import * as Result from 'effect/Result';
 
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
@@ -58,13 +59,14 @@ export const matchOperator = (
             if (conditionValue.length > MAX_REGEX_LENGTH || hasNestedQuantifiers(conditionValue)) {
                 return false;
             }
-            try {
-                const regex = new RegExp(conditionValue, 'iu');
 
-                return regex.test(String(fieldValue));
-            } catch {
-                return false;
-            }
+            return Result.getOrElse(
+                Result.map(
+                    Result.try(() => new RegExp(conditionValue, 'iu')),
+                    regex => regex.test(String(fieldValue))
+                ),
+                () => false
+            );
 
         case RuleConditionOperatorEnum.GREATER_THAN:
             return isNumber(fieldValue) && fieldValue > Number(conditionValue);

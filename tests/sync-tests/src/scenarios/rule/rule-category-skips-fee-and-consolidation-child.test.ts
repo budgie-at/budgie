@@ -1,4 +1,3 @@
-import { RuleEngineService } from '@app/rule/service/rule-engine.service';
 import {
     CategoryEntityTable,
     RuleActionEntityTable,
@@ -8,11 +7,11 @@ import {
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
     RuleEntityTable,
-    TransactionRuleRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
+import { RuleEngineService, TransactionRuleRepository } from '@budgie/rules';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

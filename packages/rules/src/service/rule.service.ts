@@ -1,24 +1,22 @@
-import {
-    AccountRepository,
-    Db,
-    RuleActionRepository,
-    RuleActionTypeEnum,
-    RuleConditionRepository,
-    RuleRepository
-} from '@budgie/contracts';
+import { AccountRepository, Db, RuleActionTypeEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { assertTransferAccountsAreNotDebt } from '../../transaction/utils/assert-transfer-accounts-are-not-debt.util';
+import { RuleHost } from '../port/rule-host.port';
+import { RuleActionRepository } from '../repository/rule-action.repository';
+import { RuleConditionRepository } from '../repository/rule-condition.repository';
+import { RuleRepository } from '../repository/rule.repository';
 
 import type { RuleCreateInputInterface, RuleUpdateInputInterface } from '@budgie/contracts';
 
-export class RuleService extends Context.Service<RuleService>()('@budgie/app/RuleService', {
+export class RuleService extends Context.Service<RuleService>()('@budgie/rules/RuleService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+
+        const ruleHost = yield* RuleHost;
 
         const ruleActionRepository = yield* RuleActionRepository;
 
@@ -26,13 +24,9 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/app/Rul
 
         const ruleRepository = yield* RuleRepository;
 
-        const toggleEnabled = Effect.fn('RuleService.toggleEnabled')(function* (id: number, enabled: boolean) {
-            yield* ruleRepository.updateById(id, { enabled });
-        });
+        const toggleEnabled = (id: number, enabled: boolean) => Effect.asVoid(ruleRepository.updateById(id, { enabled }));
 
-        const archiveById = Effect.fn('RuleService.archiveById')(function* (id: number) {
-            yield* ruleRepository.archiveById(id);
-        });
+        const archiveById = (id: number) => Effect.asVoid(ruleRepository.archiveById(id));
 
         const assertTransferActionsAreNotDebt = Effect.fn('RuleService.assertTransferActionsAreNotDebt')(function* (
             actions: RuleCreateInputInterface['actions']
@@ -46,7 +40,7 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/app/Rul
                 { concurrency: 'unbounded' }
             );
 
-            yield* assertTransferAccountsAreNotDebt(accounts.filter(isDefined));
+            yield* ruleHost.assertTransferAccountsAllowed(accounts.filter(isDefined));
         });
 
         const create = Effect.fn('RuleService.create')(

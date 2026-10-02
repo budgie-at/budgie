@@ -12,6 +12,7 @@ import {
     TransactionRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { RuleEngineService } from '@budgie/rules';
 import {
     MONOBANK_RATE_LIMIT_MS,
     MonobankClient,
@@ -27,8 +28,8 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { rulesLayer } from '../../rule/layer/rules.layer';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
-import { RuleEngineService } from '../../rule/service/rule-engine.service';
 import { TransactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
@@ -286,7 +287,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             SettingsRepository.layer,
             AccountBalanceIncrementalService.layer,
             RuleApplicationDrainerService.layer,
-            RuleEngineService.layer,
+            rulesLayer,
             TransferConsolidationService.layer
         ])
     );

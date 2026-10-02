@@ -199,7 +199,7 @@ jobs:
             package-manager: pnpm
             install-command: pnpm install --frozen-lockfile
             runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
-            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/market --filter=@budgie/logger
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/market --filter=@budgie/rules --filter=@budgie/logger
             release-tag-prefix: ota-pr${{ github.event.pull_request.number }}
             prune-keep: '100'
 
@@ -259,7 +259,7 @@ jobs:
             test-timeout-minutes: 110
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
-            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/market --filter=@budgie/logger
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/market --filter=@budgie/rules --filter=@budgie/logger
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
