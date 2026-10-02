@@ -34,7 +34,6 @@ type KnnDocument = { readonly vector: Float32Array; readonly categoryId: number;
 const EVAL_TIMEOUT_MS = 600_000;
 const EVAL_WINDOW_MONTHS = 6;
 const TOP_K = 3;
-const DAY_MS = 86_400_000;
 const KNN_OVERSAMPLE_LIMIT = 50;
 
 const isCategoryEvidence = (entry: EvalEntry): entry is EvalEntry & { readonly categoryId: number } =>
@@ -42,6 +41,16 @@ const isCategoryEvidence = (entry: EvalEntry): entry is EvalEntry & { readonly c
     entry.categorySource !== CategorySourceEnum.MCC_DEFAULT &&
     entry.isSystemCategory === false &&
     !isDefined(entry.categoryDeletedAt);
+
+const getHistoryEndIndex = (entries: readonly EvalEntry[], startIndex: number, evaluationTime: Date): number => {
+    let historyEndIndex = startIndex;
+
+    while (historyEndIndex < entries.length && entries[historyEndIndex].operatedAt.getTime() < evaluationTime.getTime()) {
+        historyEndIndex += 1;
+    }
+
+    return historyEndIndex;
+};
 
 const addEvidence = (evidence: Map<string, LabelEvidenceRowInterface>, entry: EvalEntry, labelId: number): void => {
     const key = `${entry.type}|${entry.title}|${entry.mccCategoryId}|${labelId}`;
@@ -195,40 +204,35 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                 const commentDocuments = new Map<string, KnnDocument>();
                 let knnIndexes: KnnDocument[][] = [];
                 let historyIndex = 0;
-                let contextDay = Number.NaN;
                 let categoryContext = categorizeInboxEngineService.buildContext([], defaultInstrumentId);
                 let tagContext = categoryContext;
 
                 const cases = evalEntries.map(evalEntry => {
-                    const day = Math.floor(evalEntry.operatedAt.getTime() / DAY_MS);
+                    const historyStartIndex = historyIndex;
+                    historyIndex = getHistoryEndIndex(entries, historyIndex, evalEntry.operatedAt);
 
-                    if (day !== contextDay) {
-                        while (historyIndex < entries.length && entries[historyIndex].operatedAt.getTime() < day * DAY_MS) {
-                            const historyEntry = entries[historyIndex];
-
-                            historyIndex += 1;
-
-                            if (isCategoryEvidence(historyEntry)) {
-                                addEvidence(categoryEvidence, historyEntry, historyEntry.categoryId);
-                            }
-
-                            addKnnDocument(
-                                historyEntry,
-                                documentVectors,
-                                merchantDocuments,
-                                commentDocuments,
-                                tagIdsByTransactionId.get(historyEntry.transactionId) ?? []
-                            );
-
-                            (tagIdsByTransactionId.get(historyEntry.transactionId) ?? []).forEach(tagId =>
-                                addEvidence(tagEvidence, historyEntry, tagId)
-                            );
+                    entries.slice(historyStartIndex, historyIndex).forEach(historyEntry => {
+                        if (isCategoryEvidence(historyEntry)) {
+                            addEvidence(categoryEvidence, historyEntry, historyEntry.categoryId);
                         }
 
+                        addKnnDocument(
+                            historyEntry,
+                            documentVectors,
+                            merchantDocuments,
+                            commentDocuments,
+                            tagIdsByTransactionId.get(historyEntry.transactionId) ?? []
+                        );
+
+                        (tagIdsByTransactionId.get(historyEntry.transactionId) ?? []).forEach(tagId =>
+                            addEvidence(tagEvidence, historyEntry, tagId)
+                        );
+                    });
+
+                    if (historyIndex !== historyStartIndex) {
                         categoryContext = categorizeInboxEngineService.buildContext([...categoryEvidence.values()], defaultInstrumentId);
                         tagContext = categorizeInboxEngineService.buildContext([...tagEvidence.values()], defaultInstrumentId);
                         knnIndexes = [[...merchantDocuments.values()], [...commentDocuments.values()]];
-                        contextDay = day;
                     }
 
                     const ruleOutcome = extractRuleActionOutcomes(
@@ -282,7 +286,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
     );
 });
 
-describe('categorization-eval/index-candidates', () => {
+describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candidates', () => {
     it.effect('includes production-indexed MCC documents while keeping them out of user-set evaluation labels', () =>
         Effect.gen(function* () {
             const merchantEmbeddingRepository = yield* MerchantEmbeddingRepository;
@@ -297,11 +301,11 @@ describe('categorization-eval/index-candidates', () => {
                 .all();
             const account = seed.account();
             const mccMerchant = seed.bankPairExpense(
-                { externalId: 'eval-mcc-merchant', operatedAt: new Date('2026-01-01T12:00:00Z') },
+                { externalId: 'eval-mcc-merchant', operatedAt: new Date('2026-01-03T09:00:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
             const userMerchant = seed.bankPairExpense(
-                { externalId: 'eval-user-merchant', operatedAt: new Date('2026-01-02T12:00:00Z') },
+                { externalId: 'eval-user-merchant', operatedAt: new Date('2026-01-03T09:30:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
             const userTarget = seed.bankPairExpense(
@@ -309,11 +313,19 @@ describe('categorization-eval/index-candidates', () => {
                 { accountId: account.id, amount: 1_000 }
             );
             const mccComment = seed.bankPairExpense(
-                { externalId: 'eval-mcc-comment', operatedAt: new Date('2026-01-01T13:00:00Z') },
+                { externalId: 'eval-mcc-comment', operatedAt: new Date('2026-01-03T08:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+            const equalTimestamp = seed.bankPairExpense(
+                { externalId: 'eval-equal-timestamp', operatedAt: userTarget.operatedAt },
+                { accountId: account.id, amount: 1_000 }
+            );
+            const future = seed.bankPairExpense(
+                { externalId: 'eval-future', operatedAt: new Date('2026-01-03T13:00:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
 
-            [mccMerchant, userMerchant, userTarget, mccComment].forEach((transaction, index) => {
+            [mccMerchant, userMerchant, userTarget, mccComment, equalTimestamp, future].forEach((transaction, index) => {
                 testDb
                     .update(TransactionEntityTable)
                     .set({
@@ -336,7 +348,7 @@ describe('categorization-eval/index-candidates', () => {
                     )
                     .run();
             });
-            [userMerchant, userTarget].forEach(transaction => {
+            [userMerchant, userTarget, equalTimestamp, future].forEach(transaction => {
                 testDb
                     .update(TransactionEntryEntityTable)
                     .set({ categoryId: userCategory.id, categorySource: CategorySourceEnum.USER })
@@ -354,8 +366,10 @@ describe('categorization-eval/index-candidates', () => {
             const userMerchantEntry = entries.find(entry => entry.transactionId === userMerchant.id);
             const userTargetEntry = entries.find(entry => entry.transactionId === userTarget.id);
             const mccCommentEntry = entries.find(entry => entry.transactionId === mccComment.id);
-            const targetDayStart = Math.floor(userTarget.operatedAt.getTime() / DAY_MS) * DAY_MS;
-            const historicalEntries = entries.filter(entry => entry.operatedAt.getTime() < targetDayStart);
+            const morningHistoryEndIndex = getHistoryEndIndex(entries, 0, userMerchant.operatedAt);
+            const afternoonHistoryEndIndex = getHistoryEndIndex(entries, morningHistoryEndIndex, userTarget.operatedAt);
+            const morningHistoricalEntries = entries.slice(0, morningHistoryEndIndex);
+            const historicalEntries = entries.slice(0, afternoonHistoryEndIndex);
             const mccDocumentVector = new Float32Array([1, 0]);
             const userDocumentVector = new Float32Array([0.8, 0.6]);
             const otherDocumentVector = new Float32Array([0, 1]);
@@ -387,6 +401,12 @@ describe('categorization-eval/index-candidates', () => {
             expect(isDefined(mccMerchantEntry) && isCategoryEvidence(mccMerchantEntry)).toBe(false);
             expect(isDefined(userTargetEntry) && isCategoryEvidence(userTargetEntry)).toBe(true);
             expect(isDefined(userMerchantEntry) && isCategoryEvidence(userMerchantEntry)).toBe(true);
+            expect(morningHistoricalEntries.some(entry => entry.transactionId === mccMerchant.id)).toBe(true);
+            expect(morningHistoricalEntries.some(entry => entry.transactionId === userMerchant.id)).toBe(false);
+            expect(historicalEntries.some(entry => entry.transactionId === userMerchant.id)).toBe(true);
+            expect(historicalEntries.some(entry => entry.transactionId === userTarget.id)).toBe(false);
+            expect(historicalEntries.some(entry => entry.transactionId === equalTimestamp.id)).toBe(false);
+            expect(historicalEntries.some(entry => entry.transactionId === future.id)).toBe(false);
             expect(isDefined(mccCommentEntry) && isKnnIndexable(mccCommentEntry)).toBe(true);
             expect(merchantContexts.some(context => context.categoryId === mccSystemCategory.id && context.title === 'Cafe')).toBe(true);
             expect(commentContexts.some(context => context.categoryId === mccSystemCategory.id && context.comment === 'Cafe receipt')).toBe(
