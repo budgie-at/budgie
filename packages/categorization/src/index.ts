@@ -6,6 +6,10 @@ export { MerchantEmbeddingRepository } from './embedding/repository/merchant-emb
 export { TransactionEmbeddingRepository } from './embedding/repository/transaction-embedding.repository';
 export {
     EMBEDDING_CONTEXT_SIZE,
+    EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
+    EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE,
+    EMBEDDING_CROSS_CATEGORY_TAG_DISTANCE_THRESHOLD,
+    EMBEDDING_DOCUMENT_FORMAT,
     EMBEDDING_DOCUMENT_PREFIX,
     EMBEDDING_MODEL_FILENAME,
     EMBEDDING_MODEL_URL,

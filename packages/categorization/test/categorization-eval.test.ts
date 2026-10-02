@@ -1,5 +1,8 @@
 import {
     CommentEmbeddingRepository,
+    EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
+    EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE,
+    EMBEDDING_CROSS_CATEGORY_TAG_DISTANCE_THRESHOLD,
     EMBEDDING_VEC_DISTANCE_THRESHOLD,
     MerchantEmbeddingRepository,
     buildCommentContext,
@@ -38,6 +41,7 @@ const subtractMonths = (date: Date, months: number): Date =>
 const EVAL_TIMEOUT_MS = 600_000;
 const EVAL_WINDOW_MONTHS = 6;
 const TOP_K = 3;
+const KNN_KERNEL_POWER = 8;
 const KNN_OVERSAMPLE_LIMIT = 50;
 
 const isCategoryEvidence = (entry: EvalEntry): entry is EvalEntry & { readonly categoryId: number } =>
@@ -69,9 +73,7 @@ const addEvidence = (evidence: Map<string, LabelEvidenceRowInterface>, entry: Ev
 };
 
 const buildKnnDocumentText = (entry: EvalEntry): string =>
-    isNotEmptyString(entry.title)
-        ? buildMerchantContext(entry.title, entry.mccDescription ?? '', entry.categoryTitleEn ?? entry.categoryTitle)
-        : buildCommentContext(entry.comment, entry.categoryTitleEn ?? entry.categoryTitle);
+    isNotEmptyString(entry.title) ? buildMerchantContext(entry.title, entry.mccDescription ?? '') : buildCommentContext(entry.comment);
 
 const buildKnnQueryText = (entry: EvalEntry): string => buildTransactionContext(entry.title, entry.mccDescription, entry.comment);
 
@@ -109,14 +111,15 @@ const sumScores = (scored: readonly (readonly [number, number])[]): [number, num
 
     scored.forEach(([labelId, score]) => scores.set(labelId, (scores.get(labelId) ?? 0) + score));
 
-    return [...scores].sort((first, second) => second[1] - first[1]).slice(0, TOP_K);
+    return [...scores].sort((first, second) => second[1] - first[1]);
 };
 
-const rankKnn = (
+const scoreKnn = (
     query: Float32Array | undefined,
     indexes: readonly (readonly KnnDocument[])[],
+    distanceThreshold: number,
     labelsOf: (document: KnnDocument) => readonly number[]
-): number[] =>
+): [number, number][] =>
     isDefined(query)
         ? sumScores(
               indexes.flatMap(documents =>
@@ -130,14 +133,33 @@ const rankKnn = (
                           }))
                           .sort((first, second) => first.distance - second.distance)
                           .slice(0, KNN_OVERSAMPLE_LIMIT)
-                          .filter(neighbour => neighbour.distance < EMBEDDING_VEC_DISTANCE_THRESHOLD)
+                          .filter(neighbour => neighbour.distance < distanceThreshold)
                           .flatMap(neighbour =>
-                              labelsOf(neighbour.document).map(labelId => [labelId, 1 / (neighbour.distance + 0.01)] as const)
+                              labelsOf(neighbour.document).map(
+                                  labelId => [labelId, 1 / (neighbour.distance + 0.01) ** KNN_KERNEL_POWER] as const
+                              )
                           )
-                  )
+                  ).slice(0, TOP_K)
               )
-          ).map(([labelId]) => labelId)
+          )
         : [];
+
+const rankKnn = (
+    query: Float32Array | undefined,
+    indexes: readonly (readonly KnnDocument[])[],
+    distanceThreshold: number,
+    labelsOf: (document: KnnDocument) => readonly number[]
+): number[] =>
+    scoreKnn(query, indexes, distanceThreshold, labelsOf)
+        .slice(0, TOP_K)
+        .map(([labelId]) => labelId);
+
+const predictAutoApplyCategory = (query: Float32Array | undefined, indexes: readonly (readonly KnnDocument[])[]) => {
+    const scored = scoreKnn(query, indexes, EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD, document => [document.categoryId]);
+    const total = scored.reduce((sum, [, score]) => sum + score, 0);
+
+    return isNotEmptyArray(scored) ? { categoryId: scored[0][0], confidence: scored[0][1] / total } : null;
+};
 
 const mergeRanked = (...rankings: (readonly number[])[]): number[] => [...new Set(rankings.flat())].slice(0, TOP_K);
 
@@ -156,6 +178,24 @@ const formatCategoryRows = (
             '\t'
         );
     });
+
+const formatAutoApplyRows = (
+    cases: readonly {
+        readonly categoryId: number;
+        readonly hasRuleCategory: boolean;
+        readonly autoApply: { readonly categoryId: number; readonly confidence: number } | null;
+    }[]
+): string[] => {
+    const candidates = cases.filter(evalCase => !evalCase.hasRuleCategory);
+
+    return [...new Set([0.5, EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE, 0.7, 0.8, 0.9])].map(minConfidence => {
+        const applied = candidates.filter(evalCase => (evalCase.autoApply?.confidence ?? 0) >= minConfidence);
+        const correct = applied.filter(evalCase => evalCase.autoApply?.categoryId === evalCase.categoryId).length;
+        const label = minConfidence === EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE ? `${minConfidence}*` : `${minConfidence}`;
+
+        return [label, formatShare(applied.length, candidates.length), formatShare(correct, applied.length)].join('\t');
+    });
+};
 
 const formatTagRows = (
     cases: readonly { readonly tagIds: readonly number[]; readonly tags: Readonly<Record<string, readonly number[]>> }[]
@@ -240,13 +280,20 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                     const mccDefaultCategoryIds = isDefined(evalEntry.mccDefaultCategoryId) ? [evalEntry.mccDefaultCategoryId] : [];
                     const historyTagIds = categorizeInboxEngineService.suggestLabelIds([evalEntry], tagContext);
                     const queryVector = queryVectors.get(buildKnnQueryText(evalEntry));
-                    const knnCategoryIds = rankKnn(queryVector, knnIndexes, document => [document.categoryId]);
-                    const knnTagIds = rankKnn(queryVector, knnIndexes, document =>
-                        document.categoryId === evalEntry.categoryId ? [...document.tagIds] : []
+                    const knnCategoryIds = rankKnn(queryVector, knnIndexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, document => [
+                        document.categoryId
+                    ]);
+                    const knnTagIds = mergeRanked(
+                        rankKnn(queryVector, knnIndexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, document =>
+                            document.categoryId === evalEntry.categoryId ? [...document.tagIds] : []
+                        ),
+                        rankKnn(queryVector, knnIndexes, EMBEDDING_CROSS_CATEGORY_TAG_DISTANCE_THRESHOLD, document => [...document.tagIds])
                     );
 
                     return {
                         categoryId: evalEntry.categoryId,
+                        hasRuleCategory: isDefined(ruleOutcome.categoryId),
+                        autoApply: predictAutoApplyCategory(queryVector, knnIndexes),
                         tagIds: tagIdsByTransactionId.get(evalEntry.transactionId) ?? [],
                         categories: {
                             rules: ruleCategoryIds,
@@ -273,6 +320,9 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                         ...formatCategoryRows(cases),
                         ['tagSignal', 'precision@3', 'recall@3'].join('\t'),
                         ...formatTagRows(cases),
+                        `autoApplyCandidates=${cases.filter(evalCase => !evalCase.hasRuleCategory).length} distance<${EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD}`,
+                        ['minConfidence', 'coverage', 'precision'].join('\t'),
+                        ...formatAutoApplyRows(cases),
                         ''
                     ].join('\n')
                 );
@@ -374,11 +424,12 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
             entries.forEach(entry => {
                 documentVectors.set(
                     buildKnnDocumentText(entry),
-                    entry.transactionId === mccMerchant.id
-                        ? mccDocumentVector
-                        : entry.transactionId === userMerchant.id
-                          ? userDocumentVector
-                          : otherDocumentVector
+                    documentVectors.get(buildKnnDocumentText(entry)) ??
+                        (entry.transactionId === mccMerchant.id
+                            ? mccDocumentVector
+                            : entry.transactionId === userMerchant.id
+                              ? userDocumentVector
+                              : otherDocumentVector)
                 );
             });
 
@@ -405,7 +456,9 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
             expect(commentContexts.some(context => context.categoryId === mccSystemCategory.id && context.comment === 'Cafe receipt')).toBe(
                 true
             );
-            expect(rankKnn(queryVector, knnIndexes, document => [document.categoryId])[0]).toBe(mccSystemCategory.id);
+            expect(rankKnn(queryVector, knnIndexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, document => [document.categoryId])[0]).toBe(
+                mccSystemCategory.id
+            );
         }).pipe(Effect.provide(TestLayer))
     );
 });

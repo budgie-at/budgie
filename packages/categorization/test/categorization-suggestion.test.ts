@@ -2,23 +2,27 @@ import {
     CategorizeInboxLabelKindEnum,
     CategorizeInboxService,
     CommentEmbeddingRepository,
+    EmbeddingIndexService,
     EmbeddingInvoker,
     EmbeddingService,
     EmbeddingSuggestionService,
     MerchantEmbeddingRepository,
     TransactionCategorizeInboxRepository,
+    TransactionEmbeddingRepository,
     categorizeInboxEngineService
 } from '@budgie/categorization';
 import {
     CategoryEntityTable,
     CategorySourceEnum,
     DEFAULT_TRANSACTION_FILTER,
+    MerchantEmbeddingEntityTable,
+    TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -54,9 +58,11 @@ const seedExpense = Effect.fnUntraced(function* (accountId: number, externalId: 
             .set({ categoryId, categorySource: CategorySourceEnum.USER })
             .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
     }
+
+    return transaction;
 });
 
-const makeSuggestionLayer = (documents: readonly FakeDocumentInterface[]) => {
+const makeFakeEmbeddingLayer = (documents: readonly FakeDocumentInterface[]) => {
     const merchantRepository = Layer.effect(
         MerchantEmbeddingRepository,
         Effect.map(MerchantEmbeddingRepository.make, repository => ({
@@ -87,11 +93,42 @@ const makeSuggestionLayer = (documents: readonly FakeDocumentInterface[]) => {
         Effect.map(CommentEmbeddingRepository.make, repository => ({ ...repository, findSimilarCategories: () => Effect.succeed([]) }))
     );
 
-    return Layer.effect(EmbeddingSuggestionService, EmbeddingSuggestionService.make).pipe(
-        Layer.provide([merchantRepository, commentRepository, TransactionRepository.layer, EmbeddingService.layer]),
-        Layer.provide(Layer.succeed(EmbeddingInvoker, { embed: () => Effect.succeed([1, 0]) }))
-    );
+    return Layer.mergeAll(merchantRepository, commentRepository, Layer.succeed(EmbeddingInvoker, { embed: () => Effect.succeed([1, 0]) }));
 };
+
+const makeSuggestionLayer = (documents: readonly FakeDocumentInterface[]) =>
+    Layer.effect(EmbeddingSuggestionService, EmbeddingSuggestionService.make).pipe(
+        Layer.provide(EmbeddingService.layer),
+        Layer.provide([makeFakeEmbeddingLayer(documents), TransactionRepository.layer])
+    );
+
+const autoCategorize = Effect.fnUntraced(function* (documents: readonly FakeDocumentInterface[]) {
+    const account = yield* testSeedService.account();
+    const transaction = yield* seedExpense(account.id, 'imported', 'Blue Bottle', null);
+
+    yield* testDb.update(TransactionEntityTable).set({ needsEmbedding: true }).where(eq(TransactionEntityTable.id, transaction.id));
+    yield* Effect.flatMap(EmbeddingIndexService, embeddingIndexService =>
+        Effect.flatMap(embeddingIndexService.merchant.next(10), rows => Effect.all(rows))
+    ).pipe(
+        Effect.provide(
+            Layer.effect(EmbeddingIndexService, EmbeddingIndexService.make).pipe(
+                Layer.provide([
+                    makeFakeEmbeddingLayer(documents),
+                    TransactionEmbeddingRepository.layer,
+                    TransactionCategorizeInboxRepository.layer
+                ])
+            )
+        )
+    );
+
+    const [stored] = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, transaction.id));
+    const entries = yield* testDb
+        .select()
+        .from(TransactionEntryEntityTable)
+        .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+
+    return { needsEmbedding: stored.needsEmbedding, entries };
+});
 
 describe('categorization/suggestion', () => {
     it.effect('suggests the category a merchant was categorized with twice before', () =>
@@ -131,6 +168,57 @@ describe('categorization/suggestion', () => {
             );
 
             expect(suggestions.map(category => category.id)).toEqual([coffee.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('a category correction forgets the merchant embedding of the previous category', () =>
+        Effect.gen(function* () {
+            const merchantEmbeddingRepository = yield* MerchantEmbeddingRepository;
+            const account = yield* testSeedService.account();
+            const coffee = yield* seedCategory('Coffee');
+            const groceries = yield* seedCategory('Groceries');
+            const transaction = yield* seedExpense(account.id, 'corrected', 'Blue Bottle', coffee.id);
+
+            yield* testDb.run(sql`CREATE TABLE IF NOT EXISTS merchant_embedding_vec (rowid INTEGER PRIMARY KEY, embedding BLOB)`);
+            yield* testDb.insert(MerchantEmbeddingEntityTable).values(
+                [coffee.id, groceries.id].map(categoryId => ({
+                    title: 'Blue Bottle',
+                    mccDescription: '',
+                    categoryId,
+                    comment: '',
+                    embedding: new Uint8Array(4),
+                    dimensions: 1
+                }))
+            );
+            yield* merchantEmbeddingRepository.deleteStaleCategories(transaction.id, [groceries.id, coffee.id]);
+
+            const embeddings = yield* testDb.select().from(MerchantEmbeddingEntityTable);
+
+            expect(embeddings.map(embedding => embedding.categoryId)).toEqual([coffee.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('auto-applies a confident neighbour category to an uncategorized import', () =>
+        Effect.gen(function* () {
+            const coffee = yield* seedCategory('Coffee');
+            const { needsEmbedding, entries } = yield* autoCategorize([{ vector: [1, 0], categoryId: coffee.id }]);
+
+            expect(needsEmbedding).toBe(true);
+            expect(entries.some(entry => entry.categoryId === coffee.id && entry.categorySource === CategorySourceEnum.AI)).toBe(true);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves an ambiguous import uncategorized and stops retrying it', () =>
+        Effect.gen(function* () {
+            const coffee = yield* seedCategory('Coffee');
+            const groceries = yield* seedCategory('Groceries');
+            const { needsEmbedding, entries } = yield* autoCategorize([
+                { vector: [1, 0], categoryId: coffee.id },
+                { vector: [1, 0], categoryId: groceries.id }
+            ]);
+
+            expect(needsEmbedding).toBe(false);
+            expect(entries.every(entry => !isDefined(entry.categoryId))).toBe(true);
         }).pipe(Effect.provide(TestLayer))
     );
 

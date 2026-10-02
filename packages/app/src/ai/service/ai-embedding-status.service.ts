@@ -1,6 +1,7 @@
 import {
     CommentEmbeddingRepository,
     EMBEDDING_MODEL_FILENAME,
+    EMBEDDING_DOCUMENT_FORMAT,
     MerchantEmbeddingRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
@@ -23,6 +24,7 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
         const embeddingProgressStore = yield* EmbeddingProgressStore;
         const legacyEmbeddingModelFilename = 'nomic-embed-text-v2-moe.Q8_0.gguf';
         const embeddingModelStorageKey = 'ai.embeddingModel';
+        const embeddingIndexVersion = `${EMBEDDING_MODEL_FILENAME}:${EMBEDDING_DOCUMENT_FORMAT}`;
         const storage = yield* Effect.acquireRelease(
             Effect.sync(() => new Storage({ name: 'ai-embedding.sqlite' })),
             embeddingStorage =>
@@ -41,11 +43,11 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
         return {
             migrateModel: Effect.fn('AiEmbeddingStatusService.migrateModel')(function* () {
                 const storedModel = yield* Effect.promise(() => storage.getItem(embeddingModelStorageKey));
-                if (storedModel === EMBEDDING_MODEL_FILENAME) {
+                if (storedModel === embeddingIndexVersion) {
                     return;
                 }
                 yield* reset;
-                yield* Effect.promise(() => storage.setItem(embeddingModelStorageKey, EMBEDDING_MODEL_FILENAME));
+                yield* Effect.promise(() => storage.setItem(embeddingModelStorageKey, embeddingIndexVersion));
                 yield* Effect.sync(() => {
                     const legacyModel = new File(Paths.document, legacyEmbeddingModelFilename);
                     if (legacyModel.exists) {
