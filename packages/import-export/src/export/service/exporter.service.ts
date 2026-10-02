@@ -11,6 +11,7 @@ import {
     TransactionTypeEnum,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
+import { convertFromMicroUnits } from '@budgie/ledger';
 import { format } from 'date-fns/format';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -19,12 +20,9 @@ import Papa from 'papaparse';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
-import { shareCacheFile } from '../utils/share-cache-file.util';
 
-export class ExporterService extends Context.Service<ExporterService>()('@budgie/app/ExporterService', {
+export class ExporterService extends Context.Service<ExporterService>()('@budgie/import-export/ExporterService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const categoryRepository = yield* CategoryRepository;
@@ -141,50 +139,35 @@ export class ExporterService extends Context.Service<ExporterService>()('@budgie
                     }
                 }
 
-                yield* YIELD_TO_UI;
+                yield* Effect.sleep(1);
                 transactions = yield* transactionRepository.getAllAfter(transactions[transactions.length - 1].id, batchSize);
             }
 
             return rows;
         });
 
-        const exportToCsv = Effect.fn('ExporterService.exportToCsv')(function* () {
-            const [accounts, deletedAccounts, categories, instruments, mccCategories] = yield* Effect.all(
-                [
-                    accountRepository.getAll(),
-                    accountRepository.getAllArchived(),
-                    categoryRepository.findAllNonSystem(),
-                    instrumentRepository.getAll(),
-                    mccCategoryRepository.findAll()
-                ],
-                { concurrency: 'unbounded' }
-            );
-
-            fillMap(accountsMap, accounts);
-            fillMap(deletedAccountsMap, deletedAccounts);
-            fillMap(categoriesMap, categories);
-            fillMap(instrumentsMap, instruments);
-            fillMap(mccCategoriesMap, mccCategories);
-
-            const rows = yield* processTransactionsInBatches();
-
-            return Papa.unparse(rows, { header: true, columns: csvColumns });
-        });
-
         return {
-            saveAndShare: Effect.fn('ExporterService.saveAndShare')(function* () {
-                const csvContent = yield* exportToCsv();
-
-                yield* shareCacheFile(
-                    'budgie-export',
-                    'csv',
-                    file =>
-                        Effect.sync(() => {
-                            file.create();
-                            file.writeSync(csvContent);
-                        }),
-                    { mimeType: 'text/csv' }
+            exportToCsv: Effect.fn('ExporterService.exportToCsv')(function* () {
+                const [accounts, deletedAccounts, categories, instruments, mccCategories] = yield* Effect.all(
+                    [
+                        accountRepository.getAll(),
+                        accountRepository.getAllArchived(),
+                        categoryRepository.findAllNonSystem(),
+                        instrumentRepository.getAll(),
+                        mccCategoryRepository.findAll()
+                    ],
+                    { concurrency: 'unbounded' }
                 );
+
+                fillMap(accountsMap, accounts);
+                fillMap(deletedAccountsMap, deletedAccounts);
+                fillMap(categoriesMap, categories);
+                fillMap(instrumentsMap, instruments);
+                fillMap(mccCategoriesMap, mccCategories);
+
+                const rows = yield* processTransactionsInBatches();
+
+                return Papa.unparse(rows, { header: true, columns: csvColumns });
             })
         };
     })

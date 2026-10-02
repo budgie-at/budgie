@@ -1,4 +1,4 @@
-import { AccountTypeEnum, ExternalSourceEnum, MccCategoryRepository, SettingsRepository, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, loadMccCategoryLookupMap, MccCategoryRepository, SettingsRepository, UserIconNameEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -6,7 +6,6 @@ import * as Layer from 'effect/Layer';
 import { fileSyncDependenciesLayer } from '../../core/layer/file-sync-dependencies.layer';
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { generateDefaultSyncAccountTitle } from '../../core/util/generate-default-sync-account-title.util';
-import { loadMccCategoryLookupMap } from '../../core/util/load-mcc-category-lookup-map.util';
 import { makeFileSyncService } from '../../core/util/make-file-sync-service.util';
 import { ErsteFileClient } from '../client/erste-file.client';
 

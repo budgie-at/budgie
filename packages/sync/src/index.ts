@@ -66,7 +66,6 @@ export { SyncProviderRegistryService } from './core/service/sync-provider-regist
 export { SyncRepairService } from './core/service/sync-repair.service';
 export { TransferConsolidationService } from './core/service/transfer-consolidation.service';
 export { generateDefaultSyncAccountTitle } from './core/util/generate-default-sync-account-title.util';
-export { loadMccCategoryLookupMap } from './core/util/load-mcc-category-lookup-map.util';
 export { makeFileSyncService } from './core/util/make-file-sync-service.util';
 export { mapBankTransactionToCreateInput } from './core/util/map-bank-transaction-to-create-input.util';
 export { mapSyncAccountToCreateInput } from './core/util/map-sync-account-to-create-input.util';

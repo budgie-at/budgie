@@ -1,5 +1,6 @@
 import { consolidationScopeService } from '@budgie/consolidation';
 import {
+    loadMccCategoryLookupMap,
     AccountBalanceRepository,
     AccountRepository,
     AccountTypeEnum,
@@ -28,7 +29,6 @@ import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-depe
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { TransferConsolidationService } from '../../core/service/transfer-consolidation.service';
-import { loadMccCategoryLookupMap } from '../../core/util/load-mcc-category-lookup-map.util';
 import { makePollingSyncService } from '../../core/util/make-polling-sync-service.util';
 import { mapBankTransactionToCreateInput } from '../../core/util/map-bank-transaction-to-create-input.util';
 import { resolveSyncProgressUpdate } from '../../core/util/resolve-sync-progress-update.util';

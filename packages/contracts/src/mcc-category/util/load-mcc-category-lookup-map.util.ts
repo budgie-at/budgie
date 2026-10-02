@@ -1,6 +1,7 @@
 import * as Effect from 'effect/Effect';
 
-import type { MccCategoryRepository, SettingsRepository } from '@budgie/contracts';
+import type { SettingsRepository } from '../../settings/repository/settings.repository';
+import type { MccCategoryRepository } from '../repository/mcc-category.repository';
 import type * as Context from 'effect/Context';
 
 export const loadMccCategoryLookupMap = Effect.fnUntraced(function* (

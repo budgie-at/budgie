@@ -38,6 +38,7 @@ import {
     TransactionViewRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { ExporterService, ImporterService } from '@budgie/import-export';
 import {
     AccountArchiveService,
     AccountBalanceIncrementalService,
@@ -102,9 +103,7 @@ import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { CategorizeInboxCashService } from '../../categorize-inbox/service/categorize-inbox-cash.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
-import { ExporterService } from '../../export/service/exporter.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
-import { ImporterService } from '../../import/service/importer.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';

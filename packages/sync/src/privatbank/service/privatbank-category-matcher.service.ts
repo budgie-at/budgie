@@ -1,11 +1,10 @@
-import { MccCategoryRepository, SettingsRepository } from '@budgie/contracts';
+import { loadMccCategoryLookupMap, MccCategoryRepository, SettingsRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { loadMccCategoryLookupMap } from '../../core/util/load-mcc-category-lookup-map.util';
 import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '../constant/privatbank-category-to-mcc-code.constant';
 
 import type { MccCategoryLookupInterface } from '@budgie/contracts';

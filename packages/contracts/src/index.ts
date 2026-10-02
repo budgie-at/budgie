@@ -150,6 +150,7 @@ export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id
 export { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID } from './category/constant/cash-withdrawal-tracked-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
 export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
+export { DEFAULT_CATEGORY_ICON } from './category/constant/default-category-icon.constant';
 
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
@@ -193,6 +194,7 @@ export type { MccCategoryCreateEntityInterface } from './mcc-category/entity/mcc
 export type { MccCategoryLookupInterface } from './mcc-category/interface/mcc-category-lookup.interface';
 
 export { MccCategoryRepository } from './mcc-category/repository/mcc-category.repository';
+export { loadMccCategoryLookupMap } from './mcc-category/util/load-mcc-category-lookup-map.util';
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionUpdatedByEnum } from './transaction/enum/transaction-updated-by.enum';
