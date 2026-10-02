@@ -1,9 +1,20 @@
-import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { describe, expect, it, vi } from 'vitest';
+import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
+import { vi } from 'vitest';
 
-import { BINANCE_TEST_TOKEN, binanceStub, buildBinance, seedCryptoInstrument } from '../../harness';
+import { BINANCE_TEST_TOKEN, binanceStub, buildBinance, seedCryptoInstrument, TestLayer } from '../../harness';
+import { mockServer } from '../../harness/scenario/mock-server';
 
-const BACKGROUND_TASK_SUCCESS_RESULT = 1;
+const { registerTaskAsync } = vi.hoisted(() => ({ registerTaskAsync: vi.fn(() => Promise.resolve()) }));
+
+vi.mock('expo-background-task', () => ({
+    BackgroundTaskResult: Object.freeze({ Success: 'success', Failed: 'failed' }),
+    registerTaskAsync,
+    unregisterTaskAsync: () => Promise.resolve()
+}));
+
+const SYNC_ONLY_PATH = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
 
 const stubSelectedBtcAccount = (): void => {
     seedCryptoInstrument('BTC');
@@ -15,20 +26,32 @@ const stubSelectedBtcAccount = (): void => {
 };
 
 describe('binance/setup-sync', () => {
-    it('starts Binance sync after setting up selected accounts', async () => {
-        stubSelectedBtcAccount();
+    it.effect('starts Binance sync after setting up selected accounts', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-        const registerBackgroundTaskSpy = vi.spyOn(binanceSyncService, 'registerBackgroundTask').mockResolvedValue();
-        const syncSpy = vi.spyOn(binanceSyncService, 'sync').mockResolvedValue(BACKGROUND_TASK_SUCCESS_RESULT);
+            stubSelectedBtcAccount();
 
-        try {
-            await binanceSyncService.setupAccountSyncBatch(BINANCE_TEST_TOKEN, ['SPOT:BTC']);
+            const requestedPaths: string[] = [];
+            mockServer.events.on('request:start', ({ request }) => {
+                requestedPaths.push(new URL(request.url).pathname);
+            });
 
-            expect(registerBackgroundTaskSpy).toHaveBeenCalledTimes(1);
-            expect(syncSpy).toHaveBeenCalledTimes(1);
-        } finally {
-            registerBackgroundTaskSpy.mockRestore();
-            syncSpy.mockRestore();
-        }
-    });
+            yield* Effect.addFinalizer(() =>
+                Effect.sync(() => {
+                    registerTaskAsync.mockClear();
+                    mockServer.events.removeAllListeners();
+                })
+            );
+
+            yield* binanceSyncService.setupAccountSyncBatch(BINANCE_TEST_TOKEN, ['SPOT:BTC']);
+
+            yield* Effect.promise(() =>
+                vi.waitFor(() => {
+                    expect(registerTaskAsync).toHaveBeenCalledTimes(1);
+                    expect(requestedPaths).toContain(SYNC_ONLY_PATH);
+                })
+            );
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

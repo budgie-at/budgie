@@ -12,8 +12,9 @@ export const OFFLINE_FIRST_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
         msg`offline expense tracker`,
         msg`no internet budget app`,
         msg`budget app without wifi`,
-        msg`local expense tracker`
+        msg`local expense tracker`,
+        msg`offline expense tracker app`
     ],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07'
+    updatedAt: '2026-09-26'
 };

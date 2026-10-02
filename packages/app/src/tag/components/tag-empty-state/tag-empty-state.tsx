@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
+import { TagsSettingsFeatureIntro } from '../tags-settings-feature-intro/tags-settings-feature-intro';
 
 interface Props {
     readonly search: string;
@@ -12,10 +13,9 @@ interface Props {
 export const TagEmptyState = ({ search }: Props) => {
     const { t } = useLingui();
 
-    const isSearching = isNotEmptyString(search);
-    const icon = isSearching ? UserIconNameEnum.Search : UserIconNameEnum.Tag;
-    const title = isSearching ? t`No Results` : t`No Tags Yet`;
-    const description = isSearching ? t`No tags match your search` : t`Create tags to organize your transactions`;
+    if (isNotEmptyString(search)) {
+        return <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={t`No Results`} description={t`No tags match your search`} />;
+    }
 
-    return <SearchablePageEmptyState icon={icon} title={title} description={description} />;
+    return <TagsSettingsFeatureIntro />;
 };

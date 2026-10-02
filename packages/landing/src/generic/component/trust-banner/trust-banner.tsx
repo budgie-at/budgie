@@ -1,56 +1,29 @@
 import { Trans } from '@lingui/react/macro';
-import { GitBranch, Shield, Zap } from 'lucide-react';
-import Link from 'next/link';
-
-import { Motion } from '../motion/motion';
-
-const initialMotion = { opacity: 0, y: 10 };
-const animatedMotion = { opacity: 1, y: 0 };
-const transitionMotion = { duration: 0.4 };
+import { GitBranch, Shield, Smartphone } from 'lucide-react';
 
 export const TrustBanner = () => (
-    <section className="w-full py-6 border-b border-border/40 bg-muted/20">
-        <Motion animate={animatedMotion} className="container px-4 md:px-6" initial={initialMotion} transition={transitionMotion}>
-            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 text-sm">
-                <div className="flex items-center gap-2">
-                    <Shield className="size-4 text-green-500" />
+    <section className="w-full border-b border-border/40 bg-muted/20 py-6">
+        <h2 className="sr-only">
+            <Trans>What Budgie guarantees</Trans>
+        </h2>
 
-                    <span className="font-semibold">100%</span>
+        <div className="container px-4 md:px-6 max-w-7xl">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm md:gap-x-12">
+                <p className="flex items-center gap-2">
+                    <Shield aria-hidden="true" className="size-4 text-green-600 dark:text-green-500" />
+                    <Trans>100% on-device</Trans>
+                </p>
 
-                    <span className="text-muted-foreground">
-                        <Trans>On-Device — No Servers</Trans>
-                    </span>
-                </div>
+                <p className="flex items-center gap-2">
+                    <GitBranch aria-hidden="true" className="size-4 text-muted-foreground" />
+                    <Trans>Source-available on GitHub</Trans>
+                </p>
 
-                <Link
-                    className="flex items-center gap-2 hover:text-foreground transition-colors"
-                    href="https://github.com/rnw-community/budgie"
-                    rel="noopener noreferrer" // oxlint-disable-line lingui/no-unlocalized-strings
-                    target="_blank"
-                >
-                    <GitBranch className="size-4" />
-
-                    <span className="font-semibold">
-                        <Trans>Source-Available</Trans>
-                    </span>
-
-                    <span className="text-muted-foreground">
-                        <Trans>on GitHub</Trans>
-                    </span>
-                </Link>
-
-                <div className="flex items-center gap-2">
-                    <Zap className="size-4 text-orange-500" />
-
-                    <span className="font-semibold">
-                        <Trans>Private Beta</Trans>
-                    </span>
-
-                    <span className="text-muted-foreground">
-                        <Trans>Join the waitlist for early access</Trans>
-                    </span>
-                </div>
+                <p className="flex items-center gap-2">
+                    <Smartphone aria-hidden="true" className="size-4 text-muted-foreground" />
+                    <Trans>iOS and Android</Trans>
+                </p>
             </div>
-        </Motion>
+        </div>
     </section>
 );

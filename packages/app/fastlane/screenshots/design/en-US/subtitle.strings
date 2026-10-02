@@ -1,0 +1,13 @@
+/* Budgie - App Store screenshot descriptors (en-US)
+ * Second-tier caption line under each headline in title.strings - same scene
+ * keys, 4-8 words, rendered smaller and at reduced opacity. These wrap inside
+ * the caption width rather than shrinking, so a long descriptor grows the
+ * caption stack and pushes the device down. */
+
+"01-home" = "All your accounts, one clear balance.";
+"02-transactions" = "Search, filter and tag in a tap.";
+"03-analytics" = "Spending trends across every category.";
+"04-budget" = "Set the limit, watch what is left.";
+"05-add-expense" = "Amount, category, done.";
+"06-account" = "Bank sync or manual entry. Your call.";
+"07-settings" = "Your data stays on your device.";

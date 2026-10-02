@@ -4,7 +4,6 @@ env:
     TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     PR_NUMBER: ${{ github.event.pull_request.number }}
     PR_TITLE: ${{ github.event.pull_request.title }}
-    EAS_CLI_VERSION: '20.5.1'
 
 concurrency:
     group: pr-${{ github.event.pull_request.number }}
@@ -15,7 +14,7 @@ on: pull_request
 jobs:
     detect-mobile-impact:
         name: Detect mobile impact
-        runs-on: [self-hosted, linux-tiered, linux-medium]
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 15
         permissions:
             contents: read
@@ -25,7 +24,7 @@ jobs:
         steps:
             - name: Compute mobile-impact gate
               id: gate
-              uses: actions/github-script@v8
+              uses: actions/github-script@v9
               with:
                   script: |
                       let mobile = true;
@@ -37,13 +36,27 @@ jobs:
                           pull_number: context.issue.number,
                           per_page: 100,
                         });
-                        const landingOnly = files.length > 0 && files.every(({ filename }) =>
+                        const mobileSuiteExempt = files.length > 0 && files.every(({ filename }) =>
                           filename.startsWith('packages/landing/') ||
                           filename.startsWith('docs/') ||
-                          filename === 'README.md' ||
-                          filename === 'LICENSE'
+                          filename.endsWith('.md') ||
+                          filename === 'LICENSE' ||
+                          filename === '.gitattributes' ||
+                          filename === '.gitignore' ||
+                          filename === '.editorconfig' ||
+                          filename === '.github/CODEOWNERS' ||
+                          filename === '.github/dependabot.yml' ||
+                          filename.startsWith('tests/app-tests/flows/media/') ||
+                          filename.startsWith('tests/app-tests/fixtures/screenshots/') ||
+                          filename.startsWith('packages/app/fastlane/') ||
+                          filename === '.github/landing-media.config.json' ||
+                          filename === '.github/store-screenshots.config.json' ||
+                          filename === 'tests/app-tests/scripts/seed-screenshot-scene.sh' ||
+                          filename === 'tests/app-tests/scripts/capture-store-screenshots.sh' ||
+                          (filename.startsWith('tests/app-tests/scripts/') &&
+                            (/^test-|media|compose/.test(filename.slice('tests/app-tests/scripts/'.length))))
                         );
-                        mobile = !landingOnly;
+                        mobile = !mobileSuiteExempt;
                         core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}`);
                       } catch (error) {
                         core.warning(`Could not inspect PR files; defaulting to mobile=true: ${error.message}`);
@@ -53,23 +66,21 @@ jobs:
 
     code-quality:
         name: Code quality checks
-        runs-on: [self-hosted, linux-tiered, linux-large]
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 60
         permissions:
             contents: read
-        outputs:
-            coverage-artifact-id: ${{ steps.upload-coverage.outputs.artifact-id }}
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version: 22.22.1
                   cache: pnpm
@@ -89,6 +100,9 @@ jobs:
             - name: Typescript checks
               run: pnpm ts
 
+            - name: Effect diagnostics
+              run: pnpm effect:check
+
             - name: Maestro selector checks
               run: pnpm --filter @budgie-at/app-tests selectors:check
 
@@ -105,41 +119,33 @@ jobs:
               run: pnpm build
 
             - name: Unit tests
-              run: pnpm test:coverage
+              run: pnpm test
 
             - name: Verify generated files are committed
               run: git diff --exit-code
 
-            - name: Upload coverage artifact
-              id: upload-coverage
-              uses: actions/upload-artifact@v6
-              with:
-                  name: coverage-reports
-                  path: |
-                      **/coverage/**
-                      !**/node_modules/**
-                  if-no-files-found: ignore
-                  retention-days: 1
-
     e2e-script-tests:
         name: E2E script self-tests
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version: 22.22.1
 
-            - name: Verify sqlite3 is available
-              run: sqlite3 --version
+            - name: Install sqlite3 and ruby
+              run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends sqlite3 ruby
+
+            - name: Store metadata budgets
+              run: bash .github/scripts/check-store-metadata.sh
 
             - name: Run E2E script self-tests
               run: |
@@ -149,99 +155,85 @@ jobs:
                     bash "$t"
                   done
 
-    codecov:
-        if: ${{ needs.code-quality.outputs.coverage-artifact-id != '' }}
-        needs: [code-quality]
-        name: Upload coverage reports
-        runs-on: ubuntu-24.04
+    assert-ai-ota:
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact]
+        name: Assert AI is enabled (OTA preview)
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
-            id-token: write
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
-              with:
-                  persist-credentials: false
-
-            - name: Download coverage artifact
-              uses: actions/download-artifact@v6
-              with:
-                  name: coverage-reports
-                  path: coverage-reports
-
-            - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v5
-              with:
-                  directory: coverage-reports
-                  use_oidc: true
-
-    eas-update-preview:
-        if: needs.detect-mobile-impact.outputs.mobile == 'true'
-        needs: [detect-mobile-impact]
-        name: EAS Update Preview
-        # Expo's Hermes compiler package ships an x86-64 Linux host binary.
-        # Keep this export on the hosted x86-64 image and reserve the Mac mini
-        # for the native iOS build and simulator stages below.
-        runs-on: ubuntu-24.04
-        timeout-minutes: 60
-        permissions:
-            contents: read
-        steps:
-            - name: Check for EXPO_TOKEN
-              run: |
-                  if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-                    echo "You must provide an EXPO_TOKEN secret linked to this project."
-                    echo "Learn more: https://docs.expo.dev/eas/github-actions"
-                    exit 1
-                  fi
-
-            - name: Verify x86-64 Hermes host
-              run: test "$(uname -m)" = 'x86_64'
-
-            - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
-                  node-version: 22.x
+                  node-version: 22.22.1
                   cache: pnpm
 
-            - name: Setup EAS
-              uses: expo/expo-github-action@v9
-              with:
-                  eas-version: ${{ env.EAS_CLI_VERSION }}
-                  token: ${{ secrets.EXPO_TOKEN }}
-
             - name: Install dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
 
-            - name: Build internal workspace packages
-              run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+            - name: Assert AI is enabled
+              run: bash .github/scripts/assert-ai-enabled.sh
 
-            - name: Create preview
-              id: create-preview
-              working-directory: packages/app
-              env:
-                  APP_VARIANT: development
-                  USE_CCACHE: '1'
-              run: |
-                  pnpm exec expo export --output-dir dist --dump-assetmap --platform ios --platform android
-                  eas update --skip-bundler --input-dir dist --channel development --message "PR #$PR_NUMBER - $PR_TITLE"
+    ota-preview:
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact, assert-ai-ota]
+        name: OTA preview
+        permissions:
+            contents: write
+            pull-requests: write
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v3.1.0 # v3.1.0
+        with:
+            app-dir: packages/app
+            scheme: budgie
+            platforms: ios,android
+            package-manager: pnpm
+            install-command: pnpm install --frozen-lockfile
+            runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/logger
+            release-tag-prefix: ota-pr${{ github.event.pull_request.number }}
+            prune-keep: '100'
+
+    fingerprint-guard:
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact]
+        name: Native runtime fingerprint
+        permissions:
+            contents: read
+            pull-requests: read
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v3.1.0 # v3.1.0
+        with:
+            working-directory: packages/app
+            platforms: ios,android
+            app-env: |
+                APP_VARIANT=production
+            package-manager: pnpm
+            install-command: pnpm install --frozen-lockfile
+            runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            node-version: 22.22.1
 
     ios-maestro:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, code-quality]
         name: iOS Maestro E2E
+        # A reusable workflow can only narrow the token it is given: the base
+        # binary every pull request repacks is fetched (packages) and published
+        # (packages: write, default-branch runs) by mobile-ci's plan/build jobs,
+        # and this repository's default workflow token permission is read.
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.10.0 # v1.10.0
+            packages: write
+            actions: read
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.1.0 # v3.1.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -261,13 +253,140 @@ jobs:
             pre-test-command: bash tests/app-tests/scripts/setup-ios-e2e-fixtures.sh "$SIMULATOR_UDID" "$APP_ID"
             pre-flow-command: bash tests/app-tests/scripts/seed-flow-fixture.sh
             flow-retries: '1'
-            maestro-version: '2.6.1'
             simulator-device: iPhone 17 Pro
-            test-timeout-minutes: 85
-            cache-profile: ios-e2e-budgie-v2
+            simulator-reduce-motion: 'true'
+            simulator-requires: push,universal-links
+            test-timeout-minutes: 110
             install-command: pnpm install --frozen-lockfile
-            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+            package-manager: pnpm
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/logger
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
-            repack-on-hit: true
+            fingerprint-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            repack-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            expect-config: |
+                extra.appVariant=e2e
+                extra.aiEnabled=false
+                extra.loggingEnabled=false
+
+    store-screenshots-gallery:
+        name: Store screenshots gallery
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        timeout-minutes: 10
+        permissions:
+            pull-requests: write
+        steps:
+            - name: Post or update the screenshot gallery comment
+              uses: actions/github-script@v9
+              with:
+                  script: |
+                      const marker = '<!-- budgie-store-screenshots-gallery -->';
+                      const screenshotPathPattern = /^packages\/app\/fastlane\/screenshots\/variants\/.*\.png$/i;
+                      const orderedLocales = ['en-US', 'fr-FR', 'uk', 'de-DE', 'es-ES'];
+                      const maxImages = 40;
+
+                      const files = await github.paginate(github.rest.pulls.listFiles, {
+                        ...context.repo,
+                        pull_number: context.issue.number,
+                        per_page: 100,
+                      });
+                      const screenshots = files
+                        .filter(file => file.status !== 'removed')
+                        .map(file => file.filename)
+                        .filter(filename => screenshotPathPattern.test(filename));
+
+                      const comments = await github.paginate(github.rest.issues.listComments, {
+                        ...context.repo,
+                        issue_number: context.issue.number,
+                        per_page: 100,
+                      });
+                      const existingComment = comments.find(comment => comment.body?.startsWith(marker));
+
+                      if (screenshots.length === 0) {
+                        if (existingComment) {
+                          await github.rest.issues.deleteComment({ ...context.repo, comment_id: existingComment.id });
+                          core.info('No store screenshot changes left in this PR; removed the stale gallery comment.');
+                          return;
+                        }
+                        core.info('No store screenshot changes in this PR; skipping the gallery comment.');
+                        return;
+                      }
+
+                      const headSha = context.payload.pull_request.head.sha;
+                      const groups = new Map();
+                      const iPadDirectories = new Set();
+
+                      for (const path of screenshots) {
+                        const segments = path.split('/');
+                        const variantsIndex = segments.indexOf('variants');
+                        const appearance = segments[variantsIndex + 1] === 'dark' ? 'dark' : 'light';
+                        const locale = segments[variantsIndex + 3];
+
+                        if (/ipad/i.test(path)) {
+                          iPadDirectories.add(segments.slice(0, -1).join('/'));
+                          continue;
+                        }
+                        const key = `${appearance} ${locale}`;
+                        if (!groups.has(key)) {
+                          groups.set(key, []);
+                        }
+                        groups.get(key).push(path);
+                      }
+
+                      const localesPresent = new Set([...groups.keys()].map(key => key.split(' ')[1]));
+                      const extraLocales = [...localesPresent].filter(locale => !orderedLocales.includes(locale)).sort();
+                      const displayLocales = [...orderedLocales, ...extraLocales];
+
+                      const lines = [marker, '### Store screenshots (iPhone)', ''];
+                      let shown = 0;
+
+                      for (const appearance of ['light', 'dark']) {
+                        const localesForAppearance = displayLocales.filter(locale => groups.has(`${appearance} ${locale}`));
+                        if (localesForAppearance.length === 0) {
+                          continue;
+                        }
+                        lines.push(`#### ${appearance === 'light' ? 'Light' : 'Dark'}`, '');
+                        lines.push(`| ${localesForAppearance.join(' | ')} |`);
+                        lines.push(`| ${localesForAppearance.map(() => '---').join(' | ')} |`);
+                        const row = localesForAppearance.map(locale => {
+                          const paths = groups.get(`${appearance} ${locale}`) ?? [];
+                          return paths
+                            .filter(() => {
+                              if (shown >= maxImages) {
+                                return false;
+                              }
+                              shown += 1;
+                              return true;
+                            })
+                            .map(path => `<img width="180" src="https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/${headSha}/${path}">`)
+                            .join('<br>');
+                        });
+                        lines.push(`| ${row.join(' | ')} |`, '');
+                      }
+
+                      if (shown >= maxImages) {
+                        lines.push(`_Showing the first ${maxImages} screenshots; see the full diff for the rest._`, '');
+                      }
+                      if (iPadDirectories.size > 0) {
+                        lines.push('iPad sets:', '');
+                        for (const directory of [...iPadDirectories].sort()) {
+                          lines.push(`- [\`${directory}\`](https://github.com/${context.repo.owner}/${context.repo.repo}/tree/${headSha}/${directory})`);
+                        }
+                        lines.push('');
+                      }
+
+                      const body = lines.join('\n');
+
+                      if (existingComment) {
+                        await github.rest.issues.updateComment({ ...context.repo, comment_id: existingComment.id, body });
+                      } else {
+                        await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+                      }

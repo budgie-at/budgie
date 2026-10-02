@@ -1,5 +1,6 @@
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     expectRevertRemovedCanonical,
@@ -8,48 +9,52 @@ import {
     revertSingleCanonical
 } from '../harness/consolidation-revert-audit';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const TRANSFER_PAIR_AMOUNT = 250 * PRECISION;
 
-describe('consolidation/unconsolidate-restores-sources', () => {
-    it('deletes the canonical transfer and restores source ledger entries', async () => {
-        const transferMcc = testQueryService.findMccByCode('4829');
-        const { expense, income } = testSeedService.amountTransferPair(TRANSFER_PAIR_AMOUNT, transferMcc.id);
+layer(TestLayer)('consolidation/unconsolidate-restores-sources', it => {
+    it.effect('deletes the canonical transfer and restores source ledger entries', () =>
+        Effect.gen(function* () {
+            const transferMcc = testQueryService.findMccByCode('4829');
+            const { expense, income } = testSeedService.amountTransferPair(TRANSFER_PAIR_AMOUNT, transferMcc.id);
 
-        const result = await runConsolidation();
-        expect(result.consolidated).toBe(1);
+            const result = yield* runConsolidation();
+            expect(result.consolidated).toBe(1);
 
-        const canonicalId = await revertSingleCanonical(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const canonicalId = yield* revertSingleCanonical(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
-        expectRevertRemovedCanonical(canonicalId, [expense.id, income.id]);
-        expect(testQueryService.fetchEntryByExternalId('tx-expense').transactionId).toBe(expense.id);
-        expect(testQueryService.fetchEntryByExternalId('tx-income').transactionId).toBe(income.id);
+            expectRevertRemovedCanonical(canonicalId, [expense.id, income.id]);
+            expect(testQueryService.fetchEntryByExternalId('tx-expense').transactionId).toBe(expense.id);
+            expect(testQueryService.fetchEntryByExternalId('tx-income').transactionId).toBe(income.id);
 
-        const secondResult = await runConsolidation();
-        expect(secondResult.consolidated).toBe(1);
-    });
+            const secondResult = yield* runConsolidation();
+            expect(secondResult.consolidated).toBe(1);
+        })
+    );
 
-    it('keeps source tags on the sources and restores account balances when the canonical transfer is reverted', async () => {
-        const { expense, fromAccount, income, toAccount } = testSeedService.amountTransferPair(
-            TRANSFER_PAIR_AMOUNT,
-            testQueryService.findMccByCode('4829').id
-        );
-        const tag = testSeedService.tag('Travel');
-        const accountIds = [fromAccount.id, toAccount.id];
+    it.effect('keeps source tags on the sources and restores account balances when the canonical transfer is reverted', () =>
+        Effect.gen(function* () {
+            const { expense, fromAccount, income, toAccount } = testSeedService.amountTransferPair(
+                TRANSFER_PAIR_AMOUNT,
+                testQueryService.findMccByCode('4829').id
+            );
+            const tag = testSeedService.tag('Travel');
+            const accountIds = [fromAccount.id, toAccount.id];
 
-        testSeedService.transactionTag(expense.id, tag.id);
-        const balancesBeforeConsolidation = await fetchLedgerBalances(accountIds);
+            testSeedService.transactionTag(expense.id, tag.id);
+            const balancesBeforeConsolidation = yield* fetchLedgerBalances(accountIds);
 
-        await runConsolidation();
-        const canonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            yield* runConsolidation();
+            const canonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
-        expect(testQueryService.fetchTransactionTagIds(canonicalId)).toEqual([]);
+            expect(testQueryService.fetchTransactionTagIds(canonicalId)).toEqual([]);
 
-        await revertSingleCanonical(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            yield* revertSingleCanonical(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
-        expectRevertRemovedCanonical(canonicalId, [expense.id, income.id]);
-        expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
-        expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
-    });
+            expectRevertRemovedCanonical(canonicalId, [expense.id, income.id]);
+            expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
+            expect(yield* fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+        })
+    );
 });

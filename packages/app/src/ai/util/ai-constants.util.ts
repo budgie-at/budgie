@@ -13,6 +13,7 @@ export const DEFAULT_MAX_TOKENS = 64;
 export const GPU_LAYERS = 99;
 export const GENERATION_CONFIG = { temperature: 0.7, top_k: 20, top_p: 0.8 };
 export const BACKGROUND_RELEASE_DELAY_MS = 30_000;
+export const MODEL_IDLE_RELEASE_DELAY_MS = 30_000;
 
 const CHAT_MODEL_SIZE_MB = 1110;
 const EMBEDDING_MODEL_SIZE_MB = 488;

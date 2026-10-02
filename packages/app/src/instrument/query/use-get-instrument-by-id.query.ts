@@ -1,19 +1,15 @@
-import { isDefined } from '@rnw-community/shared';
+import { InstrumentEntityTable, InstrumentRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { instrumentRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const instrumentByIdAtom = databaseQueryFamily([InstrumentEntityTable], InstrumentRepository, (instrumentRepository, id: number) =>
+    instrumentRepository.findById(id)
+);
 
 export const useGetInstrumentByIdQuery = (id: number) => {
-    const { data, updatedAt, error } = useDatabaseLiveQuery(instrumentRepository.findById(id), [id]);
+    const result = useLiveAtomValue(instrumentByIdAtom(id));
 
-    if (!isDefined(data)) {
-        return { isLoading: !isDefined(updatedAt), instrument: null, updatedAt, error };
-    }
-
-    return {
-        instrument: data,
-        isLoading: false,
-        updatedAt,
-        error
-    };
+    return { instrument: AsyncResult.getOrElse(result, () => null) ?? null, isLoading: AsyncResult.isInitial(result) };
 };

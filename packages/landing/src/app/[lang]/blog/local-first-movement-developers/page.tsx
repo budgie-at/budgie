@@ -1,7 +1,6 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import Link from 'next/link';
 
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
 import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
@@ -20,8 +19,8 @@ import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-i
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
+import { buildPageMetadata } from '../../../../generic/util/build-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
@@ -35,14 +34,13 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
 
-    return buildBlogArticleMetadata({
+    return buildPageMetadata({
         author: ARTICLE_METADATA.author,
-        date: ARTICLE_METADATA.date,
         description: i18n._(ARTICLE_METADATA.seoDescription),
-        image: ARTICLE_METADATA.image,
         keywords: t(i18n)`local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance`,
         locale: lang,
-        slug: ARTICLE_METADATA.slug,
+        path: `/blog/${ARTICLE_METADATA.slug}`,
+        publishedAt: ARTICLE_METADATA.date,
         title: i18n._(ARTICLE_METADATA.title)
     });
 }
@@ -59,21 +57,14 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                 date={ARTICLE_METADATA.date}
                 description={i18n._(ARTICLE_METADATA.description)}
                 homeLabel={t(i18n)`Home`}
-                image={ARTICLE_METADATA.image}
+                image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`}
                 keywords={ARTICLE_METADATA.seoKeywords.join(', ')}
                 locale={lang}
                 slug={ARTICLE_METADATA.slug}
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
-                <Link
-                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-                    href={`/${lang}/blog`}
-                >
-                    <Trans>← Back to Blog</Trans>
-                </Link>
-
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
@@ -786,9 +777,9 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            All your financial data, including transactions, accounts, budgets, and categories, is stored in a local SQLite
-                            database on your device. We use Drizzle ORM for type-safe database operations, ensuring data integrity while
-                            keeping everything local.
+                            All your financial data, including transactions, accounts, budgets, and categories, is stored in a local
+                            database on your device, with type-safe operations that keep data integrity intact while keeping everything
+                            local.
                         </Trans>
                     </BlogArticleProse>
 

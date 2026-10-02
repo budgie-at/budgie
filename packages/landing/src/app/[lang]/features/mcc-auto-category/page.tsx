@@ -5,68 +5,29 @@ import { Trans } from '@lingui/react/macro';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageBreadcrumbsJsonLd } from '../../../../feature/component/feature-page-breadcrumbs-json-ld/feature-page-breadcrumbs-json-ld';
-import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
-import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
-import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
-import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildFeaturePageMetadata({
-        locale: lang,
-        slug: FEATURE_METADATA.slug,
-        title: i18n._(FEATURE_METADATA.metaTitle),
-        description: i18n._(FEATURE_METADATA.metaDescription),
-        keywords: FEATURE_METADATA.seoKeywords.join(', '),
-        publishedAt: FEATURE_METADATA.publishedAt,
-        updatedAt: FEATURE_METADATA.updatedAt
-    });
-}
+export const generateMetadata = createFeatureGenerateMetadata(FEATURE_METADATA);
 
 export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
-    const title = i18n._(FEATURE_METADATA.metaTitle);
-    const homePath = `/${lang}`;
-    const featuresPath = `/${lang}/features`;
-    const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
 
     return (
-        <main className="flex-1">
-            <FeaturePageBreadcrumbsJsonLd locale={lang} slug={FEATURE_METADATA.slug}>
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={homePath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={featuresPath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={featureName} path={featurePath} />
-            </FeaturePageBreadcrumbsJsonLd>
-            <FeaturePageWebPageJsonLd
-                description={description}
-                featureName={featureName}
-                locale={lang}
-                publishedAt={FEATURE_METADATA.publishedAt}
-                slug={FEATURE_METADATA.slug}
-                title={title}
-                updatedAt={FEATURE_METADATA.updatedAt}
-            />
+        <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>MCC Auto-Categorization</Trans>}
@@ -78,6 +39,74 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Categories before you type</Trans>}>
+                    <Trans>
+                        Budgie turns the merchant category code the bank attaches to each card transaction into one of your own categories.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>The bank already told you what it was</Trans>}>
+                    <Trans>
+                        Every card transaction carries a merchant category code. Silpo arrives on the expense form with its Grocery code
+                        shown under the merchant name.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="mcc-auto-category-1"
+                    slug="mcc-auto-category"
+                >
+                    <FeatureStory.Callout y={0.411}>
+                        <Trans>The bank&apos;s category code</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Mapped to your tree</Trans>}>
+                    <Trans>The code resolves to one of your categories — here Groceries — before you open the form.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category`}
+                    index={1}
+                    locale={lang}
+                    scene="mcc-auto-category-1"
+                    slug="mcc-auto-category"
+                >
+                    <FeatureStory.Callout y={0.543}>
+                        <Trans>Mapped to your category</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Override once, remember forever</Trans>}>
+                    <Trans>
+                        Change the category and a Quick rule pill appears above the amount, offering to keep the override for that merchant.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category`}
+                    index={2}
+                    locale={lang}
+                    scene="mcc-auto-category-2"
+                    slug="mcc-auto-category"
+                >
+                    <FeatureStory.Callout y={0.267}>
+                        <Trans>Quick rule offered</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.545}>
+                        <Trans>Override the category</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -120,18 +149,6 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        On bank import, each transaction&apos;s MCC is read from the source. Budgie looks up the MCC in the lookup table;
-                        the resulting category fills the form. AI category suggestions take over for transactions without an MCC.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>What&apos;s an MCC?</Trans>}
@@ -167,11 +184,6 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     }
                 />
             </FeaturePageFaqSection>
-
-            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
-            <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
-
-            <FeaturePageCta locale={lang} />
-        </main>
+        </FeaturePageShell>
     );
 }

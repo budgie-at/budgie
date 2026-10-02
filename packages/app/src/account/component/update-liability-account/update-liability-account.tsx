@@ -1,5 +1,6 @@
 import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,13 +10,14 @@ import { CreateAccountCurrencyField } from '../../../@generic/component/create-a
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { accountService } from '../../service/account.service';
+import { AccountService } from '../../service/account.service';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
@@ -42,16 +44,20 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(
         formValues,
         async values =>
-            await accountService.updateById(account.id, {
-                externalId: values.externalId,
-                iban: values.iban,
-                icon: values.icon,
-                title: values.title,
-                currentBalance: values.currentBalance,
-                instrumentId: values.instrumentId,
-                includeInNetWorth: values.includeInNetWorth,
-                isActive: values.isActive
-            })
+            await appRuntime.runPromise(
+                Effect.flatMap(AccountService, accountService =>
+                    accountService.updateById(account.id, {
+                        externalId: values.externalId,
+                        iban: values.iban,
+                        icon: values.icon,
+                        title: values.title,
+                        currentBalance: values.currentBalance,
+                        instrumentId: values.instrumentId,
+                        includeInNetWorth: values.includeInNetWorth,
+                        isActive: values.isActive
+                    })
+                )
+            )
     );
 
     const stickyInstrument = useStickyDefinedValue(instrument);

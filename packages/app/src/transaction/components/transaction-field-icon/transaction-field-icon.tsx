@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { Text, View } from 'react-native';
@@ -20,7 +20,7 @@ export interface TransactionFieldIconRef {
 
 interface Props {
     readonly ref?: RefObject<TransactionFieldIconRef | null>;
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
     readonly label: string;
     readonly value?: string;
     readonly variant: ColorPaletteVariant;

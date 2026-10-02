@@ -1,73 +1,34 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageBreadcrumbsJsonLd } from '../../../../feature/component/feature-page-breadcrumbs-json-ld/feature-page-breadcrumbs-json-ld';
-import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
-import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
-import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
-import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildFeaturePageMetadata({
-        locale: lang,
-        slug: FEATURE_METADATA.slug,
-        title: i18n._(FEATURE_METADATA.metaTitle),
-        description: i18n._(FEATURE_METADATA.metaDescription),
-        keywords: FEATURE_METADATA.seoKeywords.join(', '),
-        image: `/${lang}/features/${FEATURE_METADATA.slug}/opengraph-image`,
-        publishedAt: FEATURE_METADATA.publishedAt,
-        updatedAt: FEATURE_METADATA.updatedAt
-    });
-}
+export const generateMetadata = createFeatureGenerateMetadata(FEATURE_METADATA);
 
 export default async function UncategorizedTransactionsFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
-    const title = i18n._(FEATURE_METADATA.metaTitle);
-    const homePath = `/${lang}`;
-    const featuresPath = `/${lang}/features`;
-    const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
 
     return (
-        <main className="flex-1">
-            <FeaturePageBreadcrumbsJsonLd locale={lang} slug={FEATURE_METADATA.slug}>
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={homePath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={featuresPath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={featureName} path={featurePath} />
-            </FeaturePageBreadcrumbsJsonLd>
-            <FeaturePageWebPageJsonLd
-                description={description}
-                featureName={featureName}
-                locale={lang}
-                publishedAt={FEATURE_METADATA.publishedAt}
-                slug={FEATURE_METADATA.slug}
-                title={title}
-                updatedAt={FEATURE_METADATA.updatedAt}
-            />
+        <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Find Uncategorized Transactions Before They Skew Your Budget</Trans>}
@@ -79,6 +40,73 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Three screens to a clean report</Trans>}>
+                    <Trans>The count above your list, the focused list behind it, and the row you open to fix.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>The pill counts what you missed</Trans>}>
+                    <Trans>
+                        It sits above the list and counts only the transactions without a category inside your active account, date, type,
+                        tag and amount filters.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list with a missing categories pill between the filter chips and the rows`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="uncategorized-transactions-1"
+                    slug="uncategorized-transactions"
+                >
+                    <FeatureStory.Callout y={0.204}>
+                        <Trans>Missing categories in this filter</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Open the list behind the inbox</Trans>}>
+                    <Trans>
+                        The pill opens the{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            Categorize inbox
+                        </Link>{' '}
+                        for bulk work. The list button in its header shows only these rows, with your filters carried across.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Missing categories screen listing income and expense rows that still have no category`}
+                    index={1}
+                    locale={lang}
+                    scene="uncategorized-transactions-2"
+                    slug="uncategorized-transactions"
+                >
+                    <FeatureStory.Callout y={0.128}>
+                        <Trans>Only the rows without a category</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Fix one, the count drops</Trans>}>
+                    <Trans>
+                        Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual
+                        refresh.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`The same Budgie Missing categories list with its first uncategorised row ready to open`}
+                    index={2}
+                    locale={lang}
+                    scene="uncategorized-transactions-2"
+                    slug="uncategorized-transactions"
+                >
+                    <FeatureStory.Callout y={0.285}>
+                        <Trans>Tap a row to categorize it</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -94,6 +122,18 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     <Trans>
                         Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a
                         compact missing-category pill appears above the list with the exact count.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Tapping the pill opens the Categorize inbox, which groups those transactions by merchant so you can{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            categorize them in bulk
+                        </Link>{' '}
+                        with suggestions learned from your own past choices.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -113,31 +153,12 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                         <Trans>Category cleanup from the same transaction cards you already use for editing</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Indexed local SQLite queries, so the insight stays fast on long transaction histories</Trans>
+                        <Trans>Stays fast on long transaction histories, entirely on-device</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Works offline and on-device, with no analytics service reading your financial data</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Open Transactions or an account&apos;s transaction list. Apply any filters you need. If Budgie finds matching
-                        transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup
-                        page that preserves those filters.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        From there, edit the transactions, apply your custom categories, accept AI category suggestions, or rely on MCC
-                        mapping for bank-synced rows. The goal is simple: every report should explain where your money actually went.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -162,27 +183,20 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                 <FeaturePageFaqItem
                     question={<Trans>Will this slow down my transaction list?</Trans>}
                     answer={
-                        <Trans>
-                            No. Budgie uses an indexed local SQLite query for the count and the drill-down list. Everything runs on-device,
-                            without a cloud analytics service.
-                        </Trans>
+                        <Trans>No. The count and the drill-down list both run entirely on-device, without a cloud analytics service.</Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can AI categorize the missing transactions?</Trans>}
                     answer={
                         <Trans>
-                            Yes. You can still use Budgie&apos;s on-device AI category suggestions, MCC mapping, or manual categories. The
-                            missing-category page simply finds the gaps so you know what to fix.
+                            Yes. The pill opens the Categorize inbox, which suggests a category for each merchant group from your own
+                            history and can accept every confident suggestion at once. On-device AI suggestions, MCC mapping and manual
+                            categories keep working alongside it.
                         </Trans>
                     }
                 />
             </FeaturePageFaqSection>
-
-            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
-            <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
-
-            <FeaturePageCta locale={lang} />
-        </main>
+        </FeaturePageShell>
     );
 }

@@ -1,22 +1,21 @@
-import { AbstractSyncService } from '@app/sync/service/abstract-sync.service';
-import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
+import { mapSyncAccountToCreateInput } from '@app/sync/util/map-sync-account-to-create-input.util';
+import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Schema from 'effect/Schema';
 
 import type { LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 import type { SyncAccountInterface } from '@budgie/sync';
 
-class TestSyncService extends AbstractSyncService {
-    protected readonly provider = ExternalSourceEnum.MONOBANK;
-    protected readonly providerTitle = 'Monobank';
-    protected readonly accountType = AccountTypeEnum.BANK_SYNC;
+const testDefinition = {
+    provider: ExternalSourceEnum.MONOBANK,
+    accountType: AccountTypeEnum.BANK_SYNC,
+    generateAccountTitle: () => 'Monobank',
+    accountIcon: () => UserIconNameEnum.Landmark
+};
 
-    mapAccount(account: SyncAccountInterface): LiabilityAccountCreateInputInterface {
-        return this.mapAccountToCreateInput(account, 1);
-    }
-}
-
-const testSyncService = new TestSyncService();
+const mapAccount = (account: SyncAccountInterface): LiabilityAccountCreateInputInterface =>
+    mapSyncAccountToCreateInput(testDefinition, account, 1);
 
 const buildSyncAccount = (iban: string | undefined): SyncAccountInterface => ({
     id: 'external-account-1',
@@ -33,20 +32,20 @@ const buildSyncAccount = (iban: string | undefined): SyncAccountInterface => ({
 
 describe('account/account-update-validation', () => {
     it('nulls an empty IBAN instead of persisting it', () => {
-        expect(testSyncService.mapAccount(buildSyncAccount('')).iban).toBeNull();
+        expect(mapAccount(buildSyncAccount('')).iban).toBeNull();
     });
 
     it('nulls a too-short IBAN instead of persisting it', () => {
-        expect(testSyncService.mapAccount(buildSyncAccount('UA11111113126')).iban).toBeNull();
+        expect(mapAccount(buildSyncAccount('UA11111113126')).iban).toBeNull();
     });
 
     it('preserves and normalizes a valid IBAN', () => {
-        expect(testSyncService.mapAccount(buildSyncAccount('at48 1200 0100 1234 5678')).iban).toBe('AT481200010012345678');
+        expect(mapAccount(buildSyncAccount('at48 1200 0100 1234 5678')).iban).toBe('AT481200010012345678');
     });
 
     it('produces input the liability update form schema accepts', () => {
-        const input = testSyncService.mapAccount(buildSyncAccount(''));
+        const input = mapAccount(buildSyncAccount(''));
 
-        expect(LiabilityAccountCreateInputSchema.safeParse(input).success).toBe(true);
+        expect(Schema.is(LiabilityAccountCreateInputSchema)(input)).toBe(true);
     });
 });

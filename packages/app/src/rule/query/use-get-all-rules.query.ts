@@ -1,19 +1,38 @@
-import { isDefined } from '@rnw-community/shared';
+import {
+    AccountEntityTable,
+    CategoryEntityTable,
+    DefaultCategoryTranslationEntityTable,
+    RuleActionEntityTable,
+    RuleConditionEntityTable,
+    RuleEntityTable,
+    RuleRepository,
+    TagEntityTable
+} from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { ruleRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+
+import type { LanguageEnum } from '@budgie/contracts';
+
+const allRulesAtom = databaseQueryFamily(
+    [
+        RuleEntityTable,
+        RuleConditionEntityTable,
+        RuleActionEntityTable,
+        CategoryEntityTable,
+        DefaultCategoryTranslationEntityTable,
+        TagEntityTable,
+        AccountEntityTable
+    ],
+    RuleRepository,
+    (ruleRepository, [language]: readonly [LanguageEnum, number]) => ruleRepository.findAllWithActionsAndCategories(language)
+);
 
 export const useGetAllRulesQuery = (refreshKey = 0) => {
     const language = useSetting('language');
-    const { data, error, updatedAt } = useDatabaseLiveQuery(ruleRepository.findAllWithActionsAndCategories(language), [
-        refreshKey,
-        language
-    ]);
+    const result = useLiveAtomValue(allRulesAtom([language, refreshKey]));
 
-    if (!isDefined(updatedAt)) {
-        return { isLoading: true, rules: null, error, updatedAt: null };
-    }
-
-    return { rules: data, isLoading: false, error, updatedAt };
+    return { rules: AsyncResult.getOrElse(result, () => null), isLoading: AsyncResult.isInitial(result) };
 };

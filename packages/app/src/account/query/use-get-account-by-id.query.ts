@@ -1,14 +1,24 @@
+import { AccountEntityTable, AccountRepository, InstrumentEntityTable } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+
 import { isDefined } from '@rnw-community/shared';
 
-import { accountRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const accountByIdAtom = databaseQueryFamily(
+    [AccountEntityTable, InstrumentEntityTable],
+    AccountRepository,
+    (accountRepository, id: number) => accountRepository.findById(id)
+);
 
 export const useGetAccountByIdQuery = (id: number) => {
-    const { data, updatedAt, error } = useDatabaseLiveQuery(accountRepository.findById(id), [id]);
+    const result = useLiveAtomValue(accountByIdAtom(id));
+    const account = AsyncResult.getOrElse(result, () => null);
 
-    if (!isDefined(data)) {
-        return { isLoading: true, account: null, updatedAt: null, error };
+    if (!isDefined(account)) {
+        return { isLoading: true, account: null };
     }
 
-    return { account: data, isLoading: false, updatedAt, error };
+    return { account, isLoading: false };
 };

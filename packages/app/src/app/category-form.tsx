@@ -1,8 +1,9 @@
 import { CategoryForm, CategoryFormResult } from '../category/components/category-form/category-form';
-import { useCategoryFormModal } from '../category/context/category-form-modal.context';
+import { useCategoryFormModal, useCategoryFormModalParams } from '../category/context/category-form-modal.context';
 
 export default function CategoryFormModal() {
-    const [, resolveCategoryForm, currentParams] = useCategoryFormModal();
+    const [, resolveCategoryForm] = useCategoryFormModal();
+    const currentParams = useCategoryFormModalParams();
 
     const handleSuccess = (result: CategoryFormResult) => {
         resolveCategoryForm(result);

@@ -1,9 +1,8 @@
 import { fileURLToPath } from 'node:url';
 
-import js from '@eslint/js';
 import { fixupPluginRules } from '@eslint/compat';
+import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
-import jestPlugin from 'eslint-plugin-jest';
 import pluginLingui from 'eslint-plugin-lingui';
 import eslintPluginOxlint from 'eslint-plugin-oxlint';
 import promisePlugin from 'eslint-plugin-promise';
@@ -36,6 +35,43 @@ const oxlintFallbackConfigs = eslintPluginOxlint
         rules: Object.fromEntries(Object.entries(config.rules ?? {}).filter(([ruleId]) => !residualRuleIds.includes(ruleId)))
     }));
 
+const guardSelectors = [
+    {
+        selector: "BinaryExpression[operator='==='][right.raw='null']",
+        message: 'Use !isDefined(x) from @rnw-community/shared (CLAUDE.md Canonical Mapping).'
+    },
+    {
+        selector: "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
+        message: 'Use !isDefined(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='!=='][right.raw='null']",
+        message: 'Use isDefined(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
+        message: 'Use isDefined(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='==='][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+        message: 'Use isEmptyArray(x) or isEmptyString(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='>'][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+        message: 'Use isNotEmptyArray(x) or isNotEmptyString(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='==='][right.value='']",
+        message: 'Use isEmptyString(x) from @rnw-community/shared.'
+    }
+];
+
+const effectSelectors = [
+    { selector: 'TryStatement', message: 'Use Effect (see AGENTS.md ## Effect)' },
+    { selector: 'ThrowStatement', message: 'Use Effect (see AGENTS.md ## Effect)' },
+    { selector: "NewExpression[callee.name='Promise']", message: 'Use Effect (see AGENTS.md ## Effect)' }
+];
+
 export default defineConfig(
     {
         ignores: [
@@ -58,6 +94,7 @@ export default defineConfig(
 
             '**/messages.po',
             '**/messages.ts',
+            '**/media-manifest.constant.ts',
             '**/babel.config.js',
             '**/fingerprint.config.js',
             'packages/app/scripts/**',
@@ -322,44 +359,21 @@ export default defineConfig(
         }
     },
     {
+        files: ['packages/app/src/**/*.{ts,tsx}', 'packages/contracts/src/**/*.ts', 'packages/ai/src/**/*.ts', 'packages/sync/src/**/*.ts'],
+        rules: {
+            'no-restricted-syntax': ['warn', ...guardSelectors]
+        }
+    },
+    {
         files: [
-            'packages/app/src/**/*.{ts,tsx}',
-            'packages/contracts/src/**/*.ts',
-            'packages/ai/src/**/*.ts',
-            'packages/sync/src/**/*.ts'
+            'packages/{contracts,sync,consolidation,budget,ai}/src/**/*.ts',
+            'packages/app/src/**/service/**/*.ts',
+            'packages/app/src/**/repository/**/*.ts',
+            'packages/app/src/**/*.task.ts',
+            'packages/app/src/**/api/**/*.ts'
         ],
         rules: {
-            'no-restricted-syntax': [
-                'warn',
-                {
-                    selector: "BinaryExpression[operator='==='][right.raw='null']",
-                    message: 'Use !isDefined(x) from @rnw-community/shared (CLAUDE.md Canonical Mapping).'
-                },
-                {
-                    selector: "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
-                    message: 'Use !isDefined(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='!=='][right.raw='null']",
-                    message: 'Use isDefined(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
-                    message: 'Use isDefined(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='==='][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
-                    message: 'Use isEmptyArray(x) or isEmptyString(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='>'][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
-                    message: 'Use isNotEmptyArray(x) or isNotEmptyString(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='==='][right.value='']",
-                    message: 'Use isEmptyString(x) from @rnw-community/shared.'
-                }
-            ]
+            'no-restricted-syntax': ['error', ...effectSelectors, ...guardSelectors]
         }
     },
     {
@@ -372,29 +386,6 @@ export default defineConfig(
         }
     },
     ...oxlintFallbackConfigs,
-    {
-        files: ['**/*.spec.ts'],
-        extends: [jestPlugin.configs['flat/recommended']],
-        rules: {
-            'no-await-in-loop': 'off',
-
-            'jest/require-hook': 'off',
-            'jest/max-expects': 'off',
-            'jest/unbound-method': 'off',
-            'jest/expect-expect': 'off',
-            'jest/no-done-callback': 'off',
-
-            'no-undef': 'off',
-            'no-undefined': 'off',
-            'max-classes-per-file': 'off',
-            'max-lines-per-function': 'off',
-            'max-lines': 'off',
-            'max-statements': 'off',
-            'func-names': 'off',
-            'promise/no-nesting': 'off',
-            '@typescript-eslint/no-magic-numbers': 'warn'
-        }
-    },
     {
         files: ['**/*.{ts,tsx}'],
         rules: {

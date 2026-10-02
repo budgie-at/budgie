@@ -1,9 +1,9 @@
-import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
+import type { UserIconType } from '../../@generic/type/user-icon.type';
 
 export interface RepeatedTransactionPatternInterface {
     readonly categoryId: number;
     readonly categoryTitle: string;
-    readonly categoryIcon: UserIconNameEnum;
+    readonly categoryIcon: UserIconType;
     readonly tagIds: number[];
     readonly title: string;
     readonly comment: string | null;

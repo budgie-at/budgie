@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+env:
+    CATEGORY_SEARCH: ${CATEGORY_SEARCH || 'Groceries'}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.CategorySelector.Title'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionForm.CategorySelector.Title'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 10000
+
+- tapOn:
+      id: 'CategoryPickerBottomSheet.Input'
+
+- inputText: ${CATEGORY_SEARCH}
+
+- extendedWaitUntil:
+      visible:
+          id: '^CategoryPickerBottomSheet[.]Card[.].+[.]Label$'
+      timeout: 10000
+
+- tapOn:
+      id: '^CategoryPickerBottomSheet[.]Card[.].+[.]Label$'
+      index: 0
+
+- extendedWaitUntil:
+      visible:
+          id: 'SuggestionPill.PatternTag.0'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

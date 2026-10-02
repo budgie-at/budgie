@@ -1,13 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
-import { binanceSyncService } from '../../service/binance-sync.service';
+import { BinanceSyncService } from '../../service/binance-sync.service';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
 import { KeySecretInputStep } from '../key-secret-input-step/key-secret-input-step';
@@ -35,11 +35,13 @@ export const CreateBinanceAccount = () => {
         selectAllAccounts,
         deselectAllAccounts,
         isLoading,
-        setIsLoading,
+        fetchAccountPreviews,
         handleGoBack,
         handleSetupSync,
         isStartSyncDisabled
-    } = useSyncAccountSetupFlow(selectedAccountIds => binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds));
+    } = useSyncAccountSetupFlow(BinanceSyncService, (binanceSyncService, selectedAccountIds) =>
+        binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds)
+    );
 
     const handleFetchAccounts = async () => {
         if (!isNotEmptyString(apiKey.trim()) || !isNotEmptyString(apiSecret.trim())) {
@@ -48,17 +50,14 @@ export const CreateBinanceAccount = () => {
             return;
         }
 
-        setIsLoading(true);
-        try {
-            const previews = await binanceSyncService.fetchAccountsPreview(buildToken());
-            setPreviews(previews.filter(preview => !preview.isParked));
-            setParkedPreviews(previews.filter(preview => preview.isParked));
-            setStep('accounts');
-        } catch (error) {
-            showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
-        } finally {
-            setIsLoading(false);
-        }
+        await fetchAccountPreviews(
+            binanceSyncService => binanceSyncService.fetchAccountsPreview(buildToken()),
+            previews => {
+                setPreviews(previews.filter(preview => !preview.isParked));
+                setParkedPreviews(previews.filter(preview => preview.isParked));
+                setStep('accounts');
+            }
+        );
     };
 
     const isInputStep = step === 'credentials';

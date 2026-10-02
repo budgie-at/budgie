@@ -1,19 +1,14 @@
-import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
-type BalanceQuery =
-    | ReturnType<typeof accountBalanceRepository.getByAccountId>
-    | ReturnType<typeof accountBalanceRepository.getArchivedAccountBalance>
-    | ReturnType<typeof accountBalanceRepository.getTotalByCryptoInstrument>;
+import type * as Atom from 'effect/reactivity/Atom';
 
-export const useCachedBalanceQuery = (query: BalanceQuery, dependencies: unknown[]) => {
-    const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
-    const queryDependencies = [...dependencies, accountBalancesUpdatedAt];
-    const { data } = useDatabaseLiveQuery(query, queryDependencies);
-    const balance = useCachedMicroUnitQuery(data.at(0)?.balance);
+export const useCachedBalanceQuery = <E>(atom: Atom.Atom<AsyncResult.AsyncResult<readonly { readonly balance: number }[], E>>) => {
+    const result = useLiveAtomValue(atom);
+    const balance = useCachedMicroUnitQuery(AsyncResult.getOrElse(result, () => []).at(0)?.balance);
 
     return { balance };
 };

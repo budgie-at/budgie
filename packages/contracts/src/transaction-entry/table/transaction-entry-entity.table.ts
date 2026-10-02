@@ -55,12 +55,18 @@ export const TransactionEntryEntityTable = sqliteTable(
     table => [
         index('transaction_entries_transaction_idx').on(table.transactionId),
         index('transaction_entries_account_idx').on(table.accountId),
+        index('transaction_entries_account_external_idx')
+            .on(table.accountId, table.externalId)
+            .where(sql`${table.externalId} IS NOT NULL AND ${table.deletedAt} IS NULL`),
         index('transaction_entries_original_transaction_idx')
             .on(table.originalTransactionId)
             .where(sql`${table.originalTransactionId} IS NOT NULL`),
         index('transaction_entries_ledger_account_idx')
             .on(table.accountId)
             .where(sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NULL`),
+        index('transaction_entries_live_account_created_idx')
+            .on(table.accountId, table.createdAt)
+            .where(sql`${table.deletedAt} IS NULL`),
         index('transaction_entries_live_account_amount_transaction_idx')
             .on(table.accountId, table.amount, table.transactionId)
             .where(sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NULL`),

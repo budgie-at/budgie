@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { MccGroupEntityInterface } from './mcc-group-entity.interface';
 
-import type { MccGroupCreateEntitySchema } from '../schema/mcc-group-create-entity.schema';
-
-export type MccGroupCreateEntityInterface = z.infer<typeof MccGroupCreateEntitySchema>;
+export type MccGroupCreateEntityInterface = Pick<MccGroupEntityInterface, 'type' | 'description'>;

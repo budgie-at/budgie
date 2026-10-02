@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { CategoryCreateEntityInterface } from './category-create-entity.interface';
 
-import type { CategoryUpdateEntitySchema } from '../schema/category-update-entity.schema';
-
-export type CategoryUpdateEntityInterface = z.infer<typeof CategoryUpdateEntitySchema>;
+export type CategoryUpdateEntityInterface = Partial<CategoryCreateEntityInterface>;

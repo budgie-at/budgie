@@ -8,6 +8,9 @@ Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.
 pnpm start                    # Development server (next dev)
 pnpm build                    # Production build
 pnpm i18n:sync                # Extract & compile i18n translations
+pnpm media:manifest           # Rescan public/media and regenerate the committed media manifest
+pnpm media:og                 # Regenerate the dark OG device plates in public/og-plate from public/media
+pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot>/<AppClip> usages
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
@@ -47,7 +50,9 @@ Before starting any of the work areas below, read the corresponding doc first.
 | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
 | Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related     | `docs/seo-pages.md`  |
 | `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
+| `FeatureStory` page copy, callout `y`/`x` anchors, i18n sync/rebase for a story PR, locale QA before merging a story page              | `docs/feature-story-i18n-qa.md` |
 | IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                       | `docs/indexnow.md`   |
+| Product screenshots and motion clips, `public/media/**`, `<AppShot>`/`<AppClip>`, the generated media manifest, `media:manifest`/`media:check` | `tests/app-tests/readme.md` |
 
 ---
 
@@ -155,10 +160,12 @@ Wrap with `LinguiClientProvider`:
 
 ```typescript
 // In layout.tsx
-<LinguiClientProvider initialLocale={lang} initialMessages={messages}>
+<LinguiClientProvider initialLocale={lang} initialMessages={clientMessages[lang]}>
     {children}
 </LinguiClientProvider>
 ```
+
+`clientMessages` is the generated client subset of the catalog, never `allMessages` — see `docs/lingui-rsc.md` section 5.
 
 ### Supported Locales
 
@@ -211,10 +218,10 @@ const buttonVariants = cva('inline-flex items-center justify-center rounded-md f
 
 ### Utility Function
 
-Use `cn()` for conditional classes:
+Use `cn()` from the `cn` package for conditional classes:
 
 ```typescript
-import { cn } from '../lib/utils';
+import { cn } from 'cn';
 
 className={cn('base-classes', isActive && 'active-classes', className)}
 ```
@@ -355,6 +362,32 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
+### No implementation details in user-facing copy
+
+Never name libraries, runtimes, model names, database engines, encryption libraries, frameworks, file formats, or vendor SDKs in anything a visitor can read. Naming an implementation binds the product to it. Examples of banned terms: llama.cpp, whisper.cpp, ONNX, GGUF, Qwen, nomic, SQLCipher, SQLite, Drizzle, Expo, React Native, Hermes, Metal, AES, Lingui.
+
+Describe the outcome for the user instead: what they get, not what ships it. Verify the outcome against `packages/app` and cite that code in the PR description, never on the page.
+
+Applies to pages, metadata sidecars, FAQ copy, JSON-LD, blog articles, and OG text. Brand names of banks and exchanges the user connects to, and OS names, are product facts and stay.
+
+## Platform & SEO Invariants
+
+**Viewport theme colors.** `export const viewport` in `src/app/[lang]/layout.tsx` keeps dual `themeColor` (light `#ffffff`, dark `#09090b`) plus `viewportFit: 'cover'`, and the manifest `theme_color` must match the light page background. Safari/WebKit paints the rubber-band overscroll and browser chrome from manifest `theme_color` / meta theme-color when the meta tag is missing — never reintroduce a decorative color there.
+
+**Locale redirect matcher.** The matcher in `src/proxy.ts` excludes asset paths with the generic `.*\.\w+$` alternative. Do not add per-extension entries when new asset types appear. Every locale redirect response sets `Vary: Accept-Language` — without it, CDNs can cache a 301 for one locale and serve it to everyone.
+
+**Security header baseline.** Set in `next.config.ts`: `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, HSTS `max-age=63072000; includeSubDomains` (no preload), `Permissions-Policy` denying camera/microphone/geolocation/payment, and `X-Permitted-Cross-Domain-Policies: none`. Preserve all of it when editing config.
+
+**OG image coverage.** Every `page.tsx` SEO route (feature page, blog article, hub) must have a sibling `opengraph-image.tsx` using the shared builders (`createFeatureOgImage` / `createBlogOgImage`), which both render the one shared `OgCard` composition. App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`; never commit binary icon variants next to them.
+
+**OG product imagery.** `OgCard` composites a locale-matched dark device plate resolved by `resolveOgPlate(mediaSlug, lang)` and degrades to the text-only card when the slug has no capture. The media slug is a page-local literal in the `opengraph-image.tsx`, never a registry field. Plates live in `public/og-plate/<media-slug>/<locale>.jpg` and are generated from `public/media` by `pnpm media:og`, because satori decodes only PNG/JPEG/GIF/SVG and rejects the WebP and AVIF stills. Re-run `pnpm media:og` after any capture change; `pnpm media:check` fails on a missing plate, an orphaned plate, or a stale one, by comparing the committed `public/og-plate/fingerprint.json` against a fresh hash of every source capture.
+
+**Metadata char budgets.** Titles fit 60 chars including the ` | Budgie` template suffix; descriptions fit 160 chars. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in sidecars may be longer — the builder clamps. Page-author details: `docs/seo-pages.md`.
+
+**IndexNow is automated.** `.github/workflows/landing-indexnow.yml` submits sitemap URLs to `https://budgie.at/api/indexnow` (Bearer `ADMIN_SECRET`) after a 5-minute deploy wait, with 3 retries. Manual submission is only for emergency re-crawl requests.
+
+**Next.js 16 caching flags.** `cacheComponents` and `partialPrefetching` are enabled top-level in `next.config.ts`, alongside `reactCompiler`. Metadata and route code must stay SSG-safe; if a page truly needs request-time IO, use `await connection()` per the Next 16 cacheComponents rules.
+
 ## SOTA Bar — Next.js 16+ / React 19+
 
 **Server components are async functions.** A page is `export default async function Page(props)`. No HOF page builders, no service classes wrapping single helpers.
@@ -378,7 +411,7 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 ```tsx
 <main className="flex-1">
     <BlogPostingJsonLd ... />
-    <BlogArticleHero image="...">
+    <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
         <BlogBreadcrumbs> ... </BlogBreadcrumbs>
         <h1><Trans>Article Title</Trans></h1>
         <BlogArticleMeta date="..." author="..." locale={lang} />
@@ -436,3 +469,13 @@ experimental: {
 - **Sections in `/components/`** - Page sections organized by feature
 - **Base UI in `/ui/`** - Reusable primitives
 - **No barrel exports** - Direct imports only
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

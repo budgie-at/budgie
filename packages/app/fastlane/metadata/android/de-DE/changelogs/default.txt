@@ -1,0 +1,1 @@
+Dieses Update macht die Krypto-Synchronisierung mit Binance nach Unterbrechungen zuverlässiger und korrigiert die Reparatur von Übertragungen zwischen eigenen Karten nach der Wiederherstellung einer archivierten Karte. Dazu kommen zahlreiche kleinere Übersetzungs- und Stabilitätsverbesserungen.

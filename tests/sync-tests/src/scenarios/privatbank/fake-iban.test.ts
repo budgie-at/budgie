@@ -1,6 +1,6 @@
 import { normalizeAccountIban } from '@budgie/contracts';
 import { privatbankAccountMapper } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 const buildPrivatbankRow = (card: string) => ({
     rawDate: '13.01.2026 11:42:53',

@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { AccountEntityTable } from '../table/account-entity.table';
 
-import { AccountEntitySchema } from '../schema/account-entity.schema';
-
-export type AccountEntityInterface = z.infer<typeof AccountEntitySchema>;
+export type AccountEntityInterface = typeof AccountEntityTable.$inferSelect;

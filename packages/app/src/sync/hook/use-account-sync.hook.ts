@@ -1,15 +1,17 @@
+import { SyncEntityTable, SyncRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+
 import { isDefined } from '@rnw-community/shared';
 
-import { syncRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const accountSyncAtom = databaseQueryFamily([SyncEntityTable], SyncRepository, (syncRepository, accountId: number) =>
+    syncRepository.getByAccountId(accountId)
+);
 
 export const useAccountSync = (accountId: number) => {
-    const { data, error } = useDatabaseLiveQuery(syncRepository.findByAccountId(accountId), [accountId]);
+    const sync = AsyncResult.getOrElse(useLiveAtomValue(accountSyncAtom(accountId)), () => null) ?? null;
 
-    return {
-        sync: data ?? null,
-        hasSync: isDefined(data),
-        isLoading: !isDefined(data) && !isDefined(error),
-        error
-    };
+    return { sync, hasSync: isDefined(sync) };
 };

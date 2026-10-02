@@ -1,7 +1,8 @@
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { Component } from 'react';
 
+import { appRuntime } from '../../runtime/app.runtime';
 import { openGithubIssueCreation } from '../../utils/open-github-issue-creation.util';
 import { ErrorBoundaryFallback } from '../error-boundary-fallback/error-boundary-fallback';
 
@@ -12,8 +13,6 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const logger = getLogger('ErrorBoundary');
-
 export class ErrorBoundary extends Component<Props, ErrorBoundaryStateInterface> {
     override readonly state: ErrorBoundaryStateInterface = {
         error: null,
@@ -21,11 +20,11 @@ export class ErrorBoundary extends Component<Props, ErrorBoundaryStateInterface>
     };
 
     override componentDidCatch(error: Error): void {
-        logger.error('throw', error);
+        appRuntime.runFork(Effect.logError('throw', error));
     }
 
     handleReportBug = (): void => {
-        void openGithubIssueCreation().catch((error: unknown) => void logger.error('throw', error));
+        void openGithubIssueCreation().catch((error: unknown) => void appRuntime.runFork(Effect.logError('throw', error)));
     };
 
     handleRestart = (): void => {

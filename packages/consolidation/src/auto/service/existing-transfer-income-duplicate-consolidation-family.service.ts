@@ -1,34 +1,28 @@
+import * as Context from 'effect/Context';
+import * as Layer from 'effect/Layer';
+
+import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
+import { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
+import { makeConsolidationFamilyService } from '../utils/make-consolidation-family-service.util';
 
-import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
-
-import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
-import type { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
-import type { ConsolidationScanScopeInterface, ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
-
-export class ExistingTransferIncomeDuplicateConsolidationFamilyService extends ConsolidationFamilyStrategyService<ExistingTransferIncomeDuplicateCandidateInterface> {
-    readonly key = ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_INCOME_DUPLICATE;
-
-    constructor(
-        private readonly existingTransferRepository: Pick<ExistingTransferRepository, 'findIncomeDuplicateCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<
+export class ExistingTransferIncomeDuplicateConsolidationFamilyService extends Context.Service<ExistingTransferIncomeDuplicateConsolidationFamilyService>()(
+    '@budgie/consolidation/ExistingTransferIncomeDuplicateConsolidationFamilyService',
+    {
+        make: makeConsolidationFamilyService(
+            ExistingTransferRepository,
             ConsolidationRepairExecutorService,
-            'consolidateExistingTransferIncomeDuplicate'
-        >,
-        yieldControl: () => Promise<void>
-    ) {
-        super(yieldControl);
+            (existingTransferRepository, consolidationRepairExecutorService) => ({
+                key: ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_INCOME_DUPLICATE,
+                findCandidates: scope => existingTransferRepository.findIncomeDuplicateCandidates(scope),
+                consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate(candidate),
+                getSourceTransactionIds: candidate => [candidate.existingTransferId, candidate.duplicateTransactionId]
+            })
+        )
     }
-
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
-        return this.existingTransferRepository.findIncomeDuplicateCandidates(scope);
-    }
-
-    protected consolidateCandidate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<boolean> {
-        return this.consolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate(candidate);
-    }
-
-    protected getSourceTransactionIds(candidate: ExistingTransferIncomeDuplicateCandidateInterface): number[] {
-        return [candidate.existingTransferId, candidate.incomeTransactionId];
-    }
+) {
+    static readonly layer = Layer.effect(
+        ExistingTransferIncomeDuplicateConsolidationFamilyService,
+        ExistingTransferIncomeDuplicateConsolidationFamilyService.make
+    ).pipe(Layer.provide([ExistingTransferRepository.layer, ConsolidationRepairExecutorService.layer]));
 }

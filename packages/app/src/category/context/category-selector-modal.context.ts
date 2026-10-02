@@ -10,7 +10,7 @@ export interface CategorySelectorModalParams {
 
 export type CategorySelectorResult = number | null;
 
-export const [CategorySelectorModalContext, useCategorySelectorModal] = createModalContext<
+export const [CategorySelectorModalContext, useCategorySelectorModal, useCategorySelectorModalParams] = createModalContext<
     CategorySelectorModalParams,
     CategorySelectorResult
 >(null);

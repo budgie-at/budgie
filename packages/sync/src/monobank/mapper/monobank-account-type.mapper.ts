@@ -8,6 +8,7 @@ const monobankAccountTypeMap = new Map<AccountType, SyncAccountTypeEnum>([
     [AccountType.Platinum, SyncAccountTypeEnum.PLATINUM],
     [AccountType.Iron, SyncAccountTypeEnum.IRON],
     [AccountType.Fop, SyncAccountTypeEnum.FOP],
+    [AccountType.MadeInUkraine, SyncAccountTypeEnum.MADE_IN_UKRAINE],
     [AccountType.Yellow, SyncAccountTypeEnum.YELLOW],
     [AccountType.EAid, SyncAccountTypeEnum.EAID]
 ]);

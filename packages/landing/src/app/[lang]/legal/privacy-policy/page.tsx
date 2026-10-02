@@ -94,7 +94,9 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
                     <Trans>Device information (type, operating system version) for debugging purposes</Trans>
                 </li>
                 <li>
-                    <Trans>Authentication tokens for optional bank sync services (stored securely in device keychain)</Trans>
+                    <Trans>
+                        Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)
+                    </Trans>
                 </li>
             </ul>
             <h2>
@@ -137,13 +139,12 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             </h3>
             <p>
                 <Trans>
-                    All your financial data is stored locally on your device using industry-standard encryption. We utilize device-level
-                    security features including:
+                    All your financial data is stored locally on your device. We utilize device-level security features including:
                 </Trans>
             </p>
             <ul>
                 <li>
-                    <Trans>Encrypted local database storage</Trans>
+                    <Trans>Local database storage encrypted whenever you set a PIN — that PIN is the encryption key</Trans>
                 </li>
                 <li>
                     <Trans>Secure keychain/keystore for sensitive credentials</Trans>

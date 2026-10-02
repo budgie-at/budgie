@@ -61,10 +61,16 @@ appId: ${APP_ID}
       timeout: 5000
       centerElement: true
       optional: true
+- evalScript: ${output.consolidatedCardVisible = false}
 - runFlow:
       when:
-          notVisible:
+          visible:
               id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+      commands:
+          - evalScript: ${output.consolidatedCardVisible = true}
+- runFlow:
+      when:
+          true: ${!output.consolidatedCardVisible}
       commands:
           - scrollUntilVisible:
                 element:
@@ -88,9 +94,7 @@ appId: ${APP_ID}
       id: 'TransactionCard.ToAccount.E2E_Consolidation_EUR.Label'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
-- assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Consolidation_Card.Label'
-- assertVisible:
+- assertNotVisible:
       id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash.Label'
 - scrollUntilVisible:
       element:
@@ -190,33 +194,7 @@ appId: ${APP_ID}
           id: 'TransactionCard.FromAccount.E2E_Consolidation_A.Label'
       timeout: 5000
 
-# 8. Long-press menu on the ATM canonical replaces Delete with Revert
-- scrollUntilVisible:
-      element:
-          id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
-      direction: DOWN
-      centerElement: true
-- longPressOn:
-      id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionContextMenu.RevertButton'
-      timeout: 10000
-- assertNotVisible:
-      id: 'TransactionContextMenu.DeleteButton'
-- tapOn:
-      id: 'TransactionContextMenu.RevertButton'
-- runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
-      timeout: 10000
-- assertNotVisible:
-      id: 'TransactionCard.FromAccount.E2E_Consolidation_Card.Label'
-- assertNotVisible:
-      id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash.Label'
-
-# 9. Final balance assertions show generated cash withdrawal entries are gone
+# 8. Final balances: consolidation never moves ATM cash
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:

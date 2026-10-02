@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { BaseEntityKeyType } from '../../@generic/type/base-entity-key.type';
+import type { HistoricalExchangeRateEntityInterface } from './historical-exchange-rate-entity.interface';
 
-import { HistoricalExchangeRateCreateEntitySchema } from '../schema/historical-exchange-rate-create-entity.schema';
-
-export type HistoricalExchangeRateCreateEntityInterface = z.infer<typeof HistoricalExchangeRateCreateEntitySchema>;
+export type HistoricalExchangeRateCreateEntityInterface = Omit<HistoricalExchangeRateEntityInterface, BaseEntityKeyType>;

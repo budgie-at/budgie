@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { SyncEntityTable } from '../table/sync-entity.table';
 
-import { SyncEntitySchema } from '../schema/sync-entity.schema';
-
-export type SyncEntityInterface = z.infer<typeof SyncEntitySchema>;
+export type SyncEntityInterface = typeof SyncEntityTable.$inferSelect;

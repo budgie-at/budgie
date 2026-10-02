@@ -1,23 +1,38 @@
-import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
-import { differenceInCalendarDays, parseISO } from 'date-fns';
+import {
+    InstrumentDailyMarketPriceEntityTable,
+    InstrumentDailyMarketPriceRepository,
+    InstrumentMarketDataJobEntityTable,
+    InstrumentMarketDataJobRepository,
+    InstrumentMarketDataJobStatusEnum
+} from '@budgie/contracts';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { parseISO } from 'date-fns/parseISO';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { instrumentDailyMarketPriceRepository, instrumentMarketDataJobRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
 const FULL_PERCENT = 100;
 
+const latestMarketDataJobAtom = databaseQueryFamily(
+    [InstrumentMarketDataJobEntityTable],
+    InstrumentMarketDataJobRepository,
+    (instrumentMarketDataJobRepository, [instrumentId, quoteInstrumentId]: readonly [number, number]) =>
+        instrumentMarketDataJobRepository.findLatestByInstrumentAndQuote(instrumentId, quoteInstrumentId)
+);
+
+const marketPriceCountAtom = databaseQueryFamily(
+    [InstrumentDailyMarketPriceEntityTable],
+    InstrumentDailyMarketPriceRepository,
+    (instrumentDailyMarketPriceRepository, [instrumentId, quoteInstrumentId]: readonly [number, number]) =>
+        instrumentDailyMarketPriceRepository.countByInstrumentAndQuote(instrumentId, quoteInstrumentId)
+);
+
 export const useInstrumentMarketDataProgressQuery = (instrumentId: number, quoteInstrumentId: number) => {
-    const dependencies = [instrumentId, quoteInstrumentId];
-    const { data: job } = useDatabaseLiveQuery(
-        instrumentMarketDataJobRepository.findLatestByInstrumentAndQuote(instrumentId, quoteInstrumentId),
-        dependencies
-    );
-    const { data: countRows } = useDatabaseLiveQuery(
-        instrumentDailyMarketPriceRepository.countByInstrumentAndQuote(instrumentId, quoteInstrumentId),
-        dependencies
-    );
+    const job = AsyncResult.getOrElse(useLiveAtomValue(latestMarketDataJobAtom([instrumentId, quoteInstrumentId])), () => null);
+    const countRows = AsyncResult.getOrElse(useLiveAtomValue(marketPriceCountAtom([instrumentId, quoteInstrumentId])), () => []);
 
     const loadedDays = countRows.at(0)?.count ?? 0;
     let totalDays = loadedDays;

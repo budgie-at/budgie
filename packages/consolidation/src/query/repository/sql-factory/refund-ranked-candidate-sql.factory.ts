@@ -30,7 +30,7 @@ const buildExpenseEntriesSql = (
     reviewMerchantTitle: string,
     scope: ConsolidationScanScopeInterface | null
 ): string => `
-    expense_entries AS (
+    expense_entries AS MATERIALIZED (
         SELECT
             expense_tx.id AS expenseTxId,
             expense_tx.operated_at AS operatedAt, expense_entry.account_id AS accountId,
@@ -74,7 +74,7 @@ const buildIncomeEntriesSql = (
     reviewMerchantTitle: string,
     scope: ConsolidationScanScopeInterface | null
 ): string => `
-    income_entries AS (
+    income_entries AS MATERIALIZED (
         SELECT
             income_tx.id AS txId,
             income_tx.operated_at AS operatedAt, income_entry.account_id AS accountId,

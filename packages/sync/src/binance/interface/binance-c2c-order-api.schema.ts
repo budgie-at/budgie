@@ -1,34 +1,24 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceC2cOrderApiSchema = z.object({
-    orderNumber: z.string(),
-    tradeType: z.string(),
-    asset: z.string(),
-    fiat: z.string(),
-    amount: z.string(),
-    totalPrice: z.string(),
-    unitPrice: z.string(),
-    orderStatus: z.string(),
-    createTime: z.number(),
-    takerCommission: z.string()
+const BinanceC2cOrderApiSchema = Schema.Struct({
+    orderNumber: Schema.String,
+    tradeType: Schema.String,
+    asset: Schema.String,
+    fiat: Schema.String,
+    amount: Schema.String,
+    totalPrice: Schema.String,
+    unitPrice: Schema.String,
+    orderStatus: Schema.String,
+    createTime: Schema.Number,
+    takerCommission: Schema.String
 });
 
-export const BinanceC2cOrderListApiSchema = z.object({
-    code: z.string(),
-    message: z.string(),
-    data: z.array(BinanceC2cOrderApiSchema),
-    total: z.number(),
-    success: z.boolean()
+export const BinanceC2cOrderListApiSchema = Schema.Struct({
+    code: Schema.String,
+    message: Schema.String,
+    data: Schema.Array(BinanceC2cOrderApiSchema),
+    total: Schema.Number,
+    success: Schema.Boolean
 });
 
-export const BinanceC2cResponseStatusApiSchema = z.object({
-    code: z.union([z.string(), z.number()]),
-    message: z.string(),
-    success: z.boolean()
-});
-
-export const BinanceC2cResponseShapeApiSchema = z.object({
-    data: z.array(z.record(z.string(), z.unknown()))
-});
-
-export type BinanceC2cOrderApiInterface = z.infer<typeof BinanceC2cOrderApiSchema>;
+export type BinanceC2cOrderApiInterface = typeof BinanceC2cOrderApiSchema.Type;

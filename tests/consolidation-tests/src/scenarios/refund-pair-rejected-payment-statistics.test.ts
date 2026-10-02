@@ -1,5 +1,6 @@
 import { DEFAULT_TRANSACTION_FILTER, StatisticsRepository, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     REJECTED_PAYMENT_EXPENSE_AMOUNT,
@@ -9,31 +10,33 @@ import {
     REJECTED_PAYMENT_PRINCIPAL_TITLE
 } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const DEFAULT_INSTRUMENT_ID = 1;
 
-describe('consolidation/refund-pair-rejected-payment-statistics', () => {
-    it('nets an over-primary PrivatBank rejected-payment refund (principal + fee absorbed) to zero', async () => {
-        const account = testSeedService.account({ externalId: 'privat-card' });
-        const { expense } = testSeedService.refundedExpense({
-            accountId: account.id,
-            title: 'FOP TESTOVYI PRODUCTS',
-            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-            expenseFeeAmount: REJECTED_PAYMENT_FEE_AMOUNT,
-            refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT, REJECTED_PAYMENT_FEE_AMOUNT],
-            refundTitles: [REJECTED_PAYMENT_PRINCIPAL_TITLE, REJECTED_PAYMENT_FEE_TITLE],
-            refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS
-        });
+layer(TestLayer)('consolidation/refund-pair-rejected-payment-statistics', it => {
+    it.effect('nets an over-primary PrivatBank rejected-payment refund (principal + fee absorbed) to zero', () =>
+        Effect.gen(function* () {
+            const account = testSeedService.account({ externalId: 'privat-card' });
+            const { expense } = testSeedService.refundedExpense({
+                accountId: account.id,
+                title: 'FOP TESTOVYI PRODUCTS',
+                expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+                expenseFeeAmount: REJECTED_PAYMENT_FEE_AMOUNT,
+                refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT, REJECTED_PAYMENT_FEE_AMOUNT],
+                refundTitles: [REJECTED_PAYMENT_PRINCIPAL_TITLE, REJECTED_PAYMENT_FEE_TITLE],
+                refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS
+            });
 
-        const result = await runConsolidation();
-        expect(result.consolidated).toBe(2);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            const result = yield* runConsolidation();
+            expect(result.consolidated).toBe(2);
+            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
-        const statisticsRepository = new StatisticsRepository(testDb);
-        const [totals] = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, DEFAULT_INSTRUMENT_ID).all();
+            const statisticsRepository = yield* StatisticsRepository;
+            const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, DEFAULT_INSTRUMENT_ID);
 
-        expect(totals.expense).toBe(0);
-        expect(totals.income).toBe(0);
-    });
+            expect(totals.expense).toBe(0);
+            expect(totals.income).toBe(0);
+        })
+    );
 });

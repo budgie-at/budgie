@@ -1,38 +1,30 @@
 import { useLingui } from '@lingui/react/macro';
-import Image from 'next/image';
 
-import { Motion } from '../motion/motion';
+import { AppClip } from '../app-clip/app-clip';
+import { AppShot } from '../app-shot/app-shot';
 
-const initialMotionImage = { opacity: 0, y: 40 };
-const animatedMotionImage = { opacity: 1, y: 0 };
-const transitionMotionImage = { duration: 0.7, delay: 0.2 };
+interface Props {
+    locale: string;
+}
 
-export const HeroSectionImage = () => {
+export const HeroSectionImage = ({ locale }: Props) => {
     const { t } = useLingui();
+    const alt = t`Budgie showing a total balance, a monthly budget bar and bank, cash and savings accounts on one screen`;
 
     return (
-        <Motion
-            animate={animatedMotionImage}
-            className="relative mx-auto max-w-2xl"
-            initial={initialMotionImage}
-            transition={transitionMotionImage}
-        >
-            <div className="rounded-2xl overflow-hidden shadow-2xl border border-border/40 bg-linear-to-b from-background to-muted/20">
-                <Image
-                    alt={t`Budgie mobile app interface showing balance overview with multi-currency bank accounts including Monobank cards and various account types`}
-                    className="w-full h-auto"
-                    height={720}
+        <div className="hero-stage hero-enter">
+            <span aria-hidden="true" className="hero-bloom" />
+
+            <div className="hero-frame">
+                <AppClip
+                    alt={alt}
+                    fallback={<AppShot alt={alt} locale={locale} priority scene="home-hero-1" sizes="60vw" slug="home-hero" />}
+                    locale={locale}
                     priority
-                    src="/images/design-mode/ai-budgeting-app-4x.jpg"
-                    width={1280}
+                    scene="home-hero-clip-1"
+                    slug="home-hero"
                 />
-
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/10" />
             </div>
-
-            <div className="absolute -bottom-6 -right-6 -z-10 h-[400px] w-[400px] rounded-full bg-linear-to-br from-primary/30 to-secondary/30 blur-3xl opacity-70" />
-
-            <div className="absolute -top-6 -left-6 -z-10 h-[400px] w-[400px] rounded-full bg-linear-to-br from-secondary/30 to-primary/30 blur-3xl opacity-70" />
-        </Motion>
+        </div>
     );
 };

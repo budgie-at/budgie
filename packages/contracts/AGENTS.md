@@ -1,12 +1,11 @@
 # Contracts Package
 
-Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by `app`, `ai`, and `bank-sync` packages.
+Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Effect Schemas, repository classes, and TypeScript types used by `app`, `ai`, and `sync` packages.
 
 ## Commands
 
 ```bash
 pnpm build                    # Build package (required after changes)
-pnpm test                     # Run Jest task (passes when no package tests exist)
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
@@ -29,8 +28,8 @@ src/
 │   ├── input/                # Form input interfaces
 │   ├── interface/            # Filter interfaces
 │   ├── relations/            # Drizzle relations
-│   ├── repository/           # Repository class
-│   ├── schema/               # Zod schemas
+│   ├── repository/           # Repository service (Context.Service + layer)
+│   ├── schema/               # Effect Schemas (runtime-validated inputs only)
 │   └── table/                # Drizzle table definition
 ├── schema.ts                 # Aggregated schema exports
 └── index.ts                  # Public API exports
@@ -55,23 +54,23 @@ account/
 
 ## Entities
 
-| Entity | Table | Purpose |
-|--------|-------|---------|
-| Account | `accounts` | Financial accounts (bank, cash, crypto, etc.) |
-| AccountBalance | `account_balances` | Cached balance snapshots |
-| Transaction | `transactions` | Financial transactions |
-| TransactionEntry | `transaction_entries` | Double-entry bookkeeping lines |
-| TransactionTags | `transaction_tags` | Many-to-many transaction-tag links |
-| Category | `categories` | Transaction categorization |
-| Tag | `tags` | User-defined labels |
-| Instrument | `instruments` | Currencies and assets |
-| ExchangeRate | `exchange_rates` | Currency conversion rates |
-| Settings | `settings` | User preferences |
-| BankSync | `bank_syncs` | Bank integration configuration |
-| MccGroup | `mcc_groups` | Merchant category groups |
-| MccCategory | `mcc_categories` | Merchant category codes |
-| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles |
-| CommentEmbedding | `title_embeddings_comment` | Vector embeddings for transaction comments |
+| Entity            | Table                       | Purpose                                       |
+| ----------------- | --------------------------- | --------------------------------------------- |
+| Account           | `accounts`                  | Financial accounts (bank, cash, crypto, etc.) |
+| AccountBalance    | `account_balances`          | Cached balance snapshots                      |
+| Transaction       | `transactions`              | Financial transactions                        |
+| TransactionEntry  | `transaction_entries`       | Double-entry bookkeeping lines                |
+| TransactionTags   | `transaction_tags`          | Many-to-many transaction-tag links            |
+| Category          | `categories`                | Transaction categorization                    |
+| Tag               | `tags`                      | User-defined labels                           |
+| Instrument        | `instruments`               | Currencies and assets                         |
+| ExchangeRate      | `exchange_rates`            | Currency conversion rates                     |
+| Settings          | `settings`                  | User preferences                              |
+| BankSync          | `bank_syncs`                | Bank integration configuration                |
+| MccGroup          | `mcc_groups`                | Merchant category groups                      |
+| MccCategory       | `mcc_categories`            | Merchant category codes                       |
+| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles         |
+| CommentEmbedding  | `title_embeddings_comment`  | Vector embeddings for transaction comments    |
 
 ## Drizzle Table Definitions
 
@@ -83,13 +82,14 @@ All tables use `withBaseEntityTableColumns()` for standard columns:
 import { withBaseEntityTableColumns } from '../@generic/util/with-base-entity-table-columns.util';
 
 export const AccountEntityTable = sqliteTable('accounts', {
-    ...withBaseEntityTableColumns(),  // id, createdAt, updatedAt, deletedAt
-    title: text('title').notNull(),
+    ...withBaseEntityTableColumns(), // id, createdAt, updatedAt, deletedAt
+    title: text('title').notNull()
     // ... other columns
 });
 ```
 
 **Standard columns:**
+
 - `id` - Auto-incrementing primary key
 - `createdAt` - Timestamp (default: current)
 - `updatedAt` - Timestamp (default: current)
@@ -110,7 +110,7 @@ export const TransactionEntityTable = sqliteTable('transactions', {
     title: text('title').notNull().default(''),
     operatedAt: integer('operated_at', { mode: 'timestamp' }).notNull(),
     fromAccountId: integer('from_account_id').references(() => AccountEntityTable.id),
-    toAccountId: integer('to_account_id').references(() => AccountEntityTable.id),
+    toAccountId: integer('to_account_id').references(() => AccountEntityTable.id)
 });
 ```
 
@@ -135,164 +135,140 @@ export const TransactionEntityRelations = relations(TransactionEntityTable, ({ o
 
 ### Class Structure
 
-Repositories are framework-agnostic classes with constructor injection:
+Repositories are `Context.Service` classes with a `static readonly layer`. Every method is an Effect over `Db.query`, so it joins the active `Db.transaction` automatically. No method takes a `tx` or `db` parameter and there is no constructor.
 
 ```typescript
-export class AccountRepository {
-    constructor(private db: DB) {}
+export class AccountRepository extends Context.Service<AccountRepository>()('@budgie/contracts/AccountRepository', {
+    make: Effect.sync(() => {
+        const bulkCreate = (inputs: AccountCreateEntityInterface[]) =>
+            Db.query(db => db.insert(AccountEntityTable).values(inputs).returning());
 
-    // Methods accept optional transaction parameter
-    async create(input: AccountCreateInputInterface, tx?: TX): Promise<void> {
-        await (tx ?? this.db).insert(AccountEntityTable).values(input);
-    }
+        return {
+            create: Effect.fn('AccountRepository.create')(function* (input: AccountCreateEntityInterface) {
+                const [account] = yield* bulkCreate([input]);
 
-    // Query methods return Drizzle query objects
-    findById(id: number) {
-        return this.db.query.AccountEntityTable.findFirst({
-            where: eq(AccountEntityTable.id, id),
-            with: { instrument: true }
-        });
-    }
+                return account;
+            }),
+            bulkCreate,
+            findById: (id: number) => Db.query(db => db.query.AccountEntityTable.findFirst({ where: eq(AccountEntityTable.id, id) }))
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(AccountRepository, AccountRepository.make);
 }
 ```
+
+- A single-query method is a plain arrow over `Db.query`; a multi-step method is `Effect.fn('Repo.method')`.
+- Private helpers are `make` locals, never `this`. Dependencies on other services are resolved once in `make` with `yield*` and provided in `layer` via `Layer.provide`.
+- Never capture `Db` in `make`; `Db.transaction` swaps it per transaction.
 
 ### Transaction Support
 
-All write methods and read methods used within transactions accept optional `tx?: TX` parameter:
+Atomic work is `Db.transaction(Effect.gen(function* () { ... }))`. Repository methods never open or accept transactions. `Db.transaction` reuses the active transaction when nested, so expo-sqlite's lack of nested transactions is handled in one place.
 
 ```typescript
-async updateById(id: number, input: Partial<AccountInterface>, tx?: TX): Promise<void> {
-    await (tx ?? this.db)
-        .update(AccountEntityTable)
-        .set(input)
-        .where(eq(AccountEntityTable.id, id));
-}
-
-async getByAccountId(accountId: number, tx?: TX): Promise<EntityInterface | undefined> {
-    return await (tx ?? this.db).query.EntityTable.findFirst({
-        where: eq(EntityTable.accountId, accountId)
-    });
-}
-```
-
-**When to add `tx?: TX`:**
-- All write methods (create, update, delete) — always
-- Read methods used inside transactions (e.g., check-before-create patterns) — add `tx` so reads see uncommitted writes within the same transaction
-
-**expo-sqlite does NOT support nested transactions.** Services that wrap operations in `db.transaction` must also accept `tx` and skip `db.transaction` when `tx` is provided:
-
-```typescript
-// In the app package (services):
-async bulkCreate(inputs: InputInterface[], batchSize = 100, tx?: Transaction) {
-    const batchProcessor = isDefined(tx)
-        ? (batch: InputInterface[]) => this.processBatchInner(batch, tx)
-        : this.processBatch.bind(this);
-
-    return processInputWithBatches(inputs, batchSize, batchProcessor);
-}
-
-private processBatch(batch: InputInterface[]) {
-    return db.transaction(async tx => this.processBatchInner(batch, tx));
-}
-
-private async processBatchInner(batch: InputInterface[], tx: Transaction) {
-    // All DB operations use tx
-}
+yield *
+    Db.transaction(
+        Effect.gen(function* () {
+            yield* accountRepository.archiveById(id);
+            yield* debtEventRepository.archiveByAccountIds([id]);
+        })
+    );
 ```
 
 ### Query API Preference
 
-### Red Flag: Do Not Decorate Query Builders
+### Reads Are Effects
 
-Repository methods that return Drizzle query builders must not use `@Log`. Drizzle query builders are thenable, so log decorators can mistake them for promises and wrap them. `useLiveQuery` expects the original query object so it can read table metadata; a wrapped builder can crash at runtime with `Cannot read property 'table' of undefined`.
-
-Keep `@Log` on methods that execute work themselves, especially `async` methods that `await` the database call. Leave builder-returning methods undecorated:
-
-```typescript
-// Good
-findRecent(accountId: number) {
-    return this.db.query.AccountEntityTable.findMany({
-        where: eq(AccountEntityTable.id, accountId)
-    });
-}
-
-// Bad
-@Log(...)
-findRecent(accountId: number) {
-    return this.db.query.AccountEntityTable.findMany({
-        where: eq(AccountEntityTable.id, accountId)
-    });
-}
-```
+Reads that feed React are `Db.query(db => ...)` Effects run by `databaseQueryAtom([Tables], Effect.flatMap(Repo, repo => repo.method(...)))` in the app; list every table the SQL reads. Repositories never return Drizzle builders.
 
 **Prefer:**
+
 ```typescript
-this.db.query.AccountEntityTable.findMany({
-    where: eq(AccountEntityTable.isActive, true),
-    with: { instrument: true }
-});
+Db.query(db =>
+    db.query.AccountEntityTable.findMany({
+        where: eq(AccountEntityTable.isActive, true),
+        with: { instrument: true }
+    })
+);
 ```
 
 **Use `db.select()` only for complex queries:**
+
 ```typescript
-this.db
-    .select({ total: sql<number>`SUM(amount)` })
-    .from(TransactionEntryEntityTable)
-    .innerJoin(...)
-    .where(...);
+Db.query(db =>
+    db
+        .select({ total: sql<number>`SUM(amount)` })
+        .from(TransactionEntryEntityTable)
+        .innerJoin(...)
+        .where(...)
+);
 ```
 
 ### Base Repository
 
-Extend `BaseTransactionFilterRepository` for filter support:
+`BaseTransactionFilterRepository` is a plain predicate-builder class. Instantiate it inside `make` and reuse its `build*Condition` methods:
 
 ```typescript
-export class TransactionRepository extends BaseTransactionFilterRepository {
-    getAll(limit: number, filters?: TransactionFilterInterface) {
-        return this.db.query.TransactionEntityTable.findMany({
-            where: this.buildFilterWhere(filters),
-            limit,
-            with: { entries: true, transactionTags: true }
-        });
-    }
-}
-```
+make: Effect.sync(() => {
+    const filters = new BaseTransactionFilterRepository();
 
-## Zod Schemas
-
-### Schema Pattern
-
-Use `drizzle-zod` for automatic schema generation:
-
-```typescript
-import { createSelectSchema } from 'drizzle-zod';
-import { zodEnum } from '../@generic/util/zod-enum.util';
-
-export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
-    type: zodEnum(AccountTypeEnum),
-    nature: zodEnum(AccountNatureEnum),
-    icon: zodEnum(UserIconNameEnum),
+    return {
+        getAll: (limit: number, transactionFilters?: TransactionFilterInterface) =>
+            Db.query(db =>
+                db.query.TransactionEntityTable.findMany({
+                    where: filters.buildFilterWhere(transactionFilters),
+                    limit,
+                    with: { entries: true, transactionTags: true }
+                })
+            )
+    };
 });
 ```
 
-### Create/Update Schemas
+## Effect Schemas
 
-Use `convertToCreateEntitySchema` to omit base fields:
+Entity, create and update types are plain Drizzle types; there is no schema layer for them. Only inputs validated at runtime (forms, IBAN check) get an Effect Schema in `schema/`.
+
+### Entity / Create / Update Interfaces
 
 ```typescript
-import { convertToCreateEntitySchema } from '../@generic/util/convert-to-create-entity-schema.util';
+// entity/account-entity.interface.ts
+export type AccountEntityInterface = typeof AccountEntityTable.$inferSelect;
 
-export const AccountCreateInputSchema = convertToCreateEntitySchema(AccountEntitySchema)
-    .omit({ titleSearch: true });  // Auto-generated fields
+// entity/account-create-entity.interface.ts
+export type AccountCreateEntityInterface = PartialByKeysType<
+    Omit<AccountEntityInterface, BaseEntityKeyType | 'titleSearch'>,
+    'iban' | 'debtType'
+>;
+
+// entity/account-update-entity.interface.ts
+export type AccountUpdateEntityInterface = Partial<AccountCreateEntityInterface>;
 ```
+
+Narrow enum columns with `.$type<XEnum>()` on the table column (type-only, no migration).
+
+### Runtime Input Schemas
+
+```typescript
+import * as Schema from 'effect/Schema';
+
+export const TagCreateEntitySchema = Schema.Struct({
+    title: Schema.Trim.check(Schema.isMinLength(TAG_TITLE_MIN_LENGTH), Schema.isMaxLength(TAG_TITLE_MAX_LENGTH))
+});
+```
+
+- Reuse `PositiveNumberSchema` / `NonNegativeNumberSchema` from `@generic/schema`.
+- Cross-field rules use `.check(Schema.makeFilter(value => ok || { path, issue }))`.
+- Validate synchronously with `Schema.is(X)(value)` or `Schema.decodeUnknownSync(X)(value)`.
 
 ### Input Interfaces
 
-Infer from schemas for type safety:
+Infer from schemas; `Mutable` keeps the type usable as React Hook Form values:
 
 ```typescript
 // input/account-create-input.interface.ts
-export type AccountCreateInputInterface = z.infer<typeof AccountCreateInputSchema>;
+export type AccountCreateInputInterface = Mutable<typeof AccountCreateInputSchema.Type>;
 ```
 
 ## Type System
@@ -359,14 +335,14 @@ export const ACCOUNT_TITLE_MAX_LENGTH = 50;
 
 ### Common Enums
 
-| Enum | Values |
-|------|--------|
-| `AccountTypeEnum` | DEBT, CASH, BANK, CRYPTO, STOCKS, SAVINGS, BANK_SYNC |
-| `AccountNatureEnum` | ASSET, LIABILITY |
-| `TransactionTypeEnum` | DEBT, INCOME, EXPENSE, TRANSFER, ADJUSTMENT |
-| `TransactionEntryTypeEnum` | DEBIT, CREDIT |
-| `LanguageEnum` | EN, FR, UK, DE, ES |
-| `ThemeEnum` | LIGHT, DARK, SYSTEM |
+| Enum                       | Values                                               |
+| -------------------------- | ---------------------------------------------------- |
+| `AccountTypeEnum`          | DEBT, CASH, BANK, CRYPTO, STOCKS, SAVINGS, BANK_SYNC |
+| `AccountNatureEnum`        | ASSET, LIABILITY                                     |
+| `TransactionTypeEnum`      | DEBT, INCOME, EXPENSE, TRANSFER, ADJUSTMENT          |
+| `TransactionEntryTypeEnum` | DEBIT, CREDIT                                        |
+| `LanguageEnum`             | EN, FR, UK, DE, ES                                   |
+| `ThemeEnum`                | LIGHT, DARK, SYSTEM                                  |
 
 ### UserIconNameEnum
 
@@ -378,9 +354,7 @@ Create type guards for entity narrowing:
 
 ```typescript
 // transaction/type-guard/is-expense-transaction.type-guard.ts
-export const isExpenseTransaction = (
-    transaction: TransactionInterface
-): transaction is ExpenseTransactionInterface =>
+export const isExpenseTransaction = (transaction: TransactionInterface): transaction is ExpenseTransactionInterface =>
     transaction.type === TransactionTypeEnum.EXPENSE;
 ```
 
@@ -389,55 +363,24 @@ export const isExpenseTransaction = (
 All entities support soft delete via `deletedAt`:
 
 ```typescript
-// Archive (soft delete)
-async archiveById(id: number, tx?: TX): Promise<void> {
-    await (tx ?? this.db)
-        .update(AccountEntityTable)
-        .set({ deletedAt: new Date() })
-        .where(eq(AccountEntityTable.id, id));
-}
+archiveById: (id: number) =>
+    Db.query(db => db.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id))),
+restoreById: (id: number) =>
+    Db.query(db => db.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id))),
 
-// Restore
-async restoreById(id: number, tx?: TX): Promise<void> {
-    await (tx ?? this.db)
-        .update(AccountEntityTable)
-        .set({ deletedAt: null })
-        .where(eq(AccountEntityTable.id, id));
-}
-
-// Filter active records
 where: isNull(AccountEntityTable.deletedAt)
 ```
 
 ## Testing
 
-### Test Location
-
-Tests are in the same directory as the source file:
-```
-schema/
-├── account-create-input.schema.ts
-└── account-create-input.schema.spec.ts
-```
-
-### Test Pattern
-
-Focus on schema validation with invalid inputs:
-
-```typescript
-describe('AccountCreateInputSchema', () => {
-    it('should reject empty title', () => {
-        const result = AccountCreateInputSchema.safeParse({ title: '' });
-        expect(result.success).toBe(false);
-    });
-});
-```
+Production packages host no unit tests. Cover schemas through the integration suites under `tests/` and `pnpm ts` / `pnpm lint`.
 
 ## Export Rules
 
 ### Public API (index.ts)
 
 Export everything consumers need:
+
 - Entity types
 - Input interfaces
 - Schemas

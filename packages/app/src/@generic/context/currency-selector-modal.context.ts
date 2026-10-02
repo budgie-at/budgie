@@ -9,7 +9,7 @@ export interface CurrencySelectorModalParams {
 
 export type CurrencySelectorResult = number | null;
 
-export const [CurrencySelectorModalContext, useCurrencySelectorModal] = createModalContext<
+export const [CurrencySelectorModalContext, useCurrencySelectorModal, useCurrencySelectorModalParams] = createModalContext<
     CurrencySelectorModalParams,
     CurrencySelectorResult
 >(null);

@@ -8,7 +8,7 @@ export interface LanguageSelectorModalParams {
 
 export type LanguageSelectorResult = LanguageEnum | null;
 
-export const [LanguageSelectorModalContext, useLanguageSelectorModal] = createModalContext<
+export const [LanguageSelectorModalContext, useLanguageSelectorModal, useLanguageSelectorModalParams] = createModalContext<
     LanguageSelectorModalParams,
     LanguageSelectorResult
 >(null);

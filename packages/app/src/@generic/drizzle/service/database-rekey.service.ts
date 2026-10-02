@@ -1,6 +1,9 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
-import { SettingsRepository } from '@budgie/contracts';
+import { Db, SettingsRepository } from '@budgie/contracts';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
@@ -10,140 +13,131 @@ import { DB_NAME } from '../constant/db-name.constant';
 import { expoDb } from '../db/db';
 import * as schema from '../db/schema';
 
+import { DatabaseLifecycleService } from './database-lifecycle.service';
 import { RekeyParamsInterface } from './interface/rekey-params.interface';
 import { RekeyPathsInterface } from './interface/rekey-paths.interface';
 
-class DatabaseRekeyService {
-    async rekey(params: RekeyParamsInterface, onCommit: () => Promise<void>): Promise<void> {
-        const paths = this.getPaths();
+export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>()('@budgie/app/DatabaseRekeyService', {
+    make: Effect.gen(function* () {
+        const databaseLifecycleService = yield* DatabaseLifecycleService;
+        const settingsRepository = yield* SettingsRepository;
 
-        try {
-            await this.prepare(paths, params);
-            await this.commit(paths, onCommit);
-        } catch (error) {
-            await this.rollback(paths);
-            throw error;
-        } finally {
-            this.deleteDatabaseFiles(paths.tempDatabasePath);
-            this.deleteDatabaseFiles(paths.backupPath);
-        }
-    }
+        const deleteFileIfExists = (path: string): void => {
+            const file = new File(path);
 
-    private async prepare(paths: RekeyPathsInterface, params: RekeyParamsInterface): Promise<void> {
-        this.deleteDatabaseFiles(paths.tempDatabasePath);
-        this.deleteDatabaseFiles(paths.backupPath);
-        await this.exportDatabase(paths.tempDatabasePath, params.nextKey);
+            if (file.exists) {
+                file.delete();
+            }
+        };
 
-        if (params.nextSettings) {
-            await this.updateMigratedDatabaseSettings(paths.tempDatabaseName, params.nextKey, params.nextSettings);
-        }
-    }
+        const deleteDatabaseFiles = (databasePath: string): void => {
+            deleteFileIfExists(databasePath);
+            deleteFileIfExists(`${databasePath}-wal`);
+            deleteFileIfExists(`${databasePath}-shm`);
+        };
 
-    private async commit(paths: RekeyPathsInterface, onCommit: () => Promise<void>): Promise<void> {
-        await expoDb.closeAsync();
-        this.clearDatabaseGlobals();
-        this.deleteDestinationSidecars(paths.destinationPath);
-        this.moveExistingDatabaseToBackup(paths.destinationPath, paths.backupPath);
-        new File(paths.tempDatabasePath).move(new File(paths.destinationPath));
-        await onCommit();
-        this.deleteDatabaseFiles(paths.backupPath);
-    }
+        const escapeSqlString = (value: string): string => value.replaceAll("'", "''");
 
-    private async rollback(paths: RekeyPathsInterface): Promise<void> {
-        this.deleteFileIfExists(paths.destinationPath);
-        this.restoreBackupDatabase(paths.backupPath, paths.destinationPath);
-    }
+        const getPaths = (): RekeyPathsInterface => {
+            const tempDatabaseName = 'auth-migration.db';
+            const destinationPath = `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
 
-    private async exportDatabase(tempDatabasePath: string, nextKey: string | null): Promise<void> {
-        await expoDb.execAsync('PRAGMA wal_checkpoint(FULL)');
-        await expoDb.execAsync('PRAGMA journal_mode = DELETE');
-        await expoDb.execAsync(
-            `ATTACH DATABASE '${this.escapeSqlString(tempDatabasePath)}' AS migrated KEY '${this.escapeSqlString(nextKey ?? '')}';`
-        );
+            return {
+                tempDatabaseName,
+                tempDatabasePath: `${Paths.cache.uri}/${tempDatabaseName}`,
+                destinationPath,
+                backupPath: `${destinationPath}.bak`
+            };
+        };
 
-        try {
-            await expoDb.execAsync(`SELECT sqlcipher_export('migrated');`);
-        } finally {
-            await expoDb.execAsync('DETACH DATABASE migrated;');
-        }
-    }
+        const moveFile = Effect.fnUntraced(function* (sourcePath: string, destinationPath: string) {
+            yield* Effect.promise(() => new File(sourcePath).move(new File(destinationPath)));
+        });
 
-    private async updateMigratedDatabaseSettings(
-        tempDatabaseName: string,
-        nextKey: string | null,
-        nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
-    ): Promise<void> {
-        const tempDatabase = await SQLite.openDatabaseAsync(tempDatabaseName, { enableChangeListener: true }, Paths.cache.uri);
+        const exportDatabase = Effect.fn('DatabaseRekeyService.exportDatabase')(function* (
+            tempDatabasePath: string,
+            nextKey: string | null
+        ) {
+            yield* Effect.promise(() => expoDb.execAsync('PRAGMA wal_checkpoint(FULL)'));
+            yield* Effect.promise(() => expoDb.execAsync('PRAGMA journal_mode = DELETE'));
+            yield* Effect.promise(() =>
+                expoDb.execAsync(
+                    `ATTACH DATABASE '${escapeSqlString(tempDatabasePath)}' AS migrated KEY '${escapeSqlString(nextKey ?? '')}';`
+                )
+            );
+            yield* Effect.promise(() => expoDb.execAsync(`SELECT sqlcipher_export('migrated');`)).pipe(
+                Effect.ensuring(Effect.promise(() => expoDb.execAsync('DETACH DATABASE migrated;')))
+            );
+        });
 
-        try {
+        const writeMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.writeMigratedDatabaseSettings')(function* (
+            tempDatabase: SQLite.SQLiteDatabase,
+            nextKey: string | null,
+            nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
+        ) {
             if (isNotEmptyString(nextKey)) {
-                await tempDatabase.execAsync(`PRAGMA key = '${this.escapeSqlString(nextKey)}';`);
+                yield* Effect.promise(() => tempDatabase.execAsync(`PRAGMA key = '${escapeSqlString(nextKey)}';`));
             }
 
-            const tempSettingsRepository = new SettingsRepository(drizzle(tempDatabase, { schema }));
-            await tempSettingsRepository.update(nextSettings);
-        } finally {
-            await tempDatabase.closeAsync();
-        }
-    }
+            yield* settingsRepository.update(nextSettings).pipe(Effect.provideService(Db, drizzle(tempDatabase, { schema })));
+        });
 
-    private getPaths(): RekeyPathsInterface {
-        const tempDatabaseName = 'auth-migration.db';
-        const destinationPath = `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
+        const updateMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.updateMigratedDatabaseSettings')(function* (
+            tempDatabaseName: string,
+            nextKey: string | null,
+            nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
+        ) {
+            yield* Effect.acquireUseRelease(
+                Effect.promise(() => SQLite.openDatabaseAsync(tempDatabaseName, { enableChangeListener: true }, Paths.cache.uri)),
+                tempDatabase => writeMigratedDatabaseSettings(tempDatabase, nextKey, nextSettings),
+                tempDatabase => Effect.promise(() => tempDatabase.closeAsync())
+            );
+        });
+
+        const prepare = Effect.fn('DatabaseRekeyService.prepare')(function* (paths: RekeyPathsInterface, params: RekeyParamsInterface) {
+            deleteDatabaseFiles(paths.tempDatabasePath);
+            deleteDatabaseFiles(paths.backupPath);
+            yield* exportDatabase(paths.tempDatabasePath, params.nextKey);
+
+            if (params.nextSettings) {
+                yield* updateMigratedDatabaseSettings(paths.tempDatabaseName, params.nextKey, params.nextSettings);
+            }
+        });
+
+        const commit = Effect.fn('DatabaseRekeyService.commit')(function* (paths: RekeyPathsInterface, onCommit: Effect.Effect<void>) {
+            yield* databaseLifecycleService.close();
+            deleteFileIfExists(`${paths.destinationPath}-wal`);
+            deleteFileIfExists(`${paths.destinationPath}-shm`);
+            if (new File(paths.destinationPath).exists) {
+                yield* moveFile(paths.destinationPath, paths.backupPath);
+            }
+            yield* moveFile(paths.tempDatabasePath, paths.destinationPath);
+            yield* onCommit;
+            deleteDatabaseFiles(paths.backupPath);
+        });
+
+        const restoreBackupDatabase = Effect.fn('DatabaseRekeyService.restoreBackupDatabase')(function* (paths: RekeyPathsInterface) {
+            if (!new File(paths.backupPath).exists) {
+                return;
+            }
+
+            deleteDatabaseFiles(paths.destinationPath);
+            yield* moveFile(paths.backupPath, paths.destinationPath);
+        });
 
         return {
-            tempDatabaseName,
-            tempDatabasePath: `${Paths.cache.uri}/${tempDatabaseName}`,
-            destinationPath,
-            backupPath: `${destinationPath}.bak`
+            rekey: Effect.fn('DatabaseRekeyService.rekey')(function* (params: RekeyParamsInterface, onCommit: Effect.Effect<void>) {
+                const paths = getPaths();
+
+                yield* prepare(paths, params).pipe(
+                    Effect.andThen(commit(paths, onCommit).pipe(Effect.onError(() => restoreBackupDatabase(paths)))),
+                    Effect.ensuring(Effect.sync(() => deleteDatabaseFiles(paths.tempDatabasePath)))
+                );
+            })
         };
-    }
-
-    private moveExistingDatabaseToBackup(destinationPath: string, backupPath: string): void {
-        const destinationFile = new File(destinationPath);
-
-        if (destinationFile.exists) {
-            destinationFile.move(new File(backupPath));
-        }
-    }
-
-    private restoreBackupDatabase(backupPath: string, destinationPath: string): void {
-        const backupFile = new File(backupPath);
-
-        if (backupFile.exists) {
-            backupFile.move(new File(destinationPath));
-        }
-    }
-
-    private deleteDestinationSidecars(destinationPath: string): void {
-        this.deleteFileIfExists(`${destinationPath}-wal`);
-        this.deleteFileIfExists(`${destinationPath}-shm`);
-    }
-
-    private clearDatabaseGlobals(): void {
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__expoSqliteDb__ = undefined;
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__drizzleDb__ = undefined;
-    }
-
-    private deleteDatabaseFiles(databasePath: string): void {
-        this.deleteFileIfExists(databasePath);
-        this.deleteFileIfExists(`${databasePath}-wal`);
-        this.deleteFileIfExists(`${databasePath}-shm`);
-    }
-
-    private deleteFileIfExists(path: string): void {
-        const file = new File(path);
-
-        if (file.exists) {
-            file.delete();
-        }
-    }
-
-    private escapeSqlString(value: string): string {
-        return value.replaceAll("'", "''");
-    }
+    })
+}) {
+    static readonly layer = Layer.effect(DatabaseRekeyService, DatabaseRekeyService.make).pipe(
+        Layer.provide([DatabaseLifecycleService.layer, SettingsRepository.layer])
+    );
 }
-
-export const databaseRekeyService = new DatabaseRekeyService();

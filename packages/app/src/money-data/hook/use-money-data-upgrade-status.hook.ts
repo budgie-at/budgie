@@ -1,14 +1,16 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useEffect, useState } from 'react';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-progress-state.enum';
 import { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';
-import { moneyDataUpgradeService } from '../service/money-data-upgrade.service';
+import { MoneyDataUpgradeService } from '../service/money-data-upgrade.service';
 import { buildMoneyDataUpgradeStatusText } from '../utils/build-money-data-upgrade-status-text.util';
 
 const EMPTY_RUNTIME_SNAPSHOT: MoneyDataUpgradeRuntimeSnapshotInterface = {
@@ -47,8 +49,8 @@ export const useMoneyDataUpgradeStatus = () => {
     const [runtimeSnapshot, setRuntimeSnapshot] = useState<MoneyDataUpgradeRuntimeSnapshotInterface>(EMPTY_RUNTIME_SNAPSHOT);
 
     useEffect(() => {
-        void moneyDataUpgradeService
-            .getSnapshot()
+        void appRuntime
+            .runPromise(Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService => moneyDataUpgradeService.getSnapshot()))
             .then(setRuntimeSnapshot)
             .catch((error: unknown) => {
                 showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
@@ -75,7 +77,11 @@ export const useMoneyDataUpgradeStatus = () => {
         }
 
         try {
-            setRuntimeSnapshot(await moneyDataUpgradeService.run(setRuntimeSnapshot));
+            setRuntimeSnapshot(
+                await appRuntime.runPromise(
+                    Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService => moneyDataUpgradeService.run(setRuntimeSnapshot))
+                )
+            );
         } catch (error: unknown) {
             showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
         }

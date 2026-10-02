@@ -1,26 +1,66 @@
+import { LanguageEnum } from '@budgie/contracts';
 import { createIntl, createIntlCache } from '@formatjs/intl';
 import { i18n } from '@lingui/core';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
-import { ReactNode, useEffect } from 'react';
+import * as Effect from 'effect/Effect';
+import { ReactNode, useEffect, useState } from 'react';
 
-import { useSetting } from '../../settings/hook/use-setting.hook';
+import { isDefined } from '@rnw-community/shared';
+
+import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { useSettingsContext } from '../../settings/context/settings.context';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
+import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../util/i18n.util';
 import { languageToLocale } from '../util/language-to-locale.util';
 
 interface Props {
     readonly children: ReactNode;
 }
 
+const intlCache = createIntlCache();
+
 export const I18nProvider = ({ children }: Props) => {
-    const language = useSetting('language');
-    const locale = languageToLocale(language);
+    const { settings, isLoading: isSettingsLoading } = useSettingsContext();
+    const { language } = settings;
+    const [activatedLanguage, setActivatedLanguage] = useState<LanguageEnum | null>(null);
+    const [isFallbackActivated, setIsFallbackActivated] = useState(false);
 
-    useEffect(() => void i18n.activate(language), [language]);
+    useEffect(() => {
+        const targetLanguage = isSettingsLoading ? i18nGetOSLocale() : language;
+        const fiber = appRuntime.runFork(
+            i18nEnsureLanguageActivated(targetLanguage).pipe(
+                Effect.match({
+                    onSuccess: () => {
+                        setIsFallbackActivated(false);
+                        setActivatedLanguage(targetLanguage);
+                    },
+                    onFailure: () => {
+                        i18nActivateFallback();
+                        setIsFallbackActivated(true);
+                        setActivatedLanguage(LanguageEnum.EN);
+                    }
+                })
+            )
+        );
 
-    const cache = createIntlCache();
-    const intl = createIntl({ locale }, cache);
+        return () => void fiber.interruptUnsafe();
+    }, [isSettingsLoading, language]);
+
+    const locale = languageToLocale(isDefined(activatedLanguage) ? activatedLanguage : language);
+
+    const intl = createIntl({ locale }, intlCache);
 
     const value: I18nContextInterface = { intl };
+
+    if (!isDefined(activatedLanguage)) {
+        return null;
+    }
+
+    const isLanguageSwitchPending = !isFallbackActivated && !isSettingsLoading && activatedLanguage !== language;
+
+    if (isLanguageSwitchPending) {
+        return null;
+    }
 
     return (
         <I18nContext.Provider value={value}>

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, bank-sync, budget, consolidation, and logger packages.
+Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, consolidation, and logger packages.
 
 ## Commands
 
@@ -18,11 +18,12 @@ pnpm ts                                   # TypeScript check
 pnpm lint                                 # Oxlint + 13-rule ESLint fallback (skip during debug sessions)
 pnpm deadcode                             # Knip dead code detection
 pnpm cpd                                  # Code duplication check
+pnpm effect:check                         # Effect language-service diagnostics (errors fail)
 
 # IMPORTANT: After completing any task, ALWAYS run:
 # During debug sessions (when user says "skip lint"), only run: pnpm ts
 # Otherwise run full validation:
-pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd
+pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd && pnpm effect:check
 
 # Utilities
 pnpm deps:check                           # Check dependency versions
@@ -39,6 +40,7 @@ These rules are vital and apply to every AI agent and orchestrator working in th
 - Set the LOWEST effort level that fits the task; raise effort only for verification/judging stages where correctness is critical.
 - Subagent prompts must be self-contained (paths, rules, constraints, validation steps) so no round-trips are wasted.
 - Do not spawn a top-tier agent for work a cheaper one can verify; prefer cheap execution + targeted verification over expensive single-shot runs.
+- **Effect is mandatory for all logic.** Every agent and subagent MUST load the `effect` skill (`.agents/skills/effect/SKILL.md`, alongside the official `effect-ts` skill) before writing or reviewing any logic, and subagent prompts must say so. All new effectful code is Effect; no Promise/`async` logic outside the runtime edges.
 - For codebase/architecture questions and cross-cutting sweeps that must not miss a reference (renames, model swaps, copy updates across packages and locales), use the `graphify` skill (`/graphify .`) to build or refresh the project knowledge graph and query it instead of burning tokens on repeated broad greps; confirm results with targeted grep. Keep `graphify-out/` uncommitted.
 
 ## Git Commits And Pull Requests
@@ -72,7 +74,7 @@ Use the repo package scopes without the npm namespace prefix:
 - `contracts`
 - `ai`
 - `landing`
-- `bank-sync`
+- `sync`
 - `budget`
 - `consolidation`
 - `logger`
@@ -84,17 +86,56 @@ Use the repo package scopes without the npm namespace prefix:
 3. Keep the description short, imperative, and specific to the user-visible or developer-visible outcome.
 4. Prefer `refactor`, `feat`, `fix`, `chore`, `docs`, `test`, or `build` as the type.
 
+### Native Runtime Fingerprint
+
+The `Native runtime fingerprint` check fails any PR that moves the app's Expo fingerprint (`runtimeVersion: { policy: 'fingerprint' }`), because OTA updates published after such a PR merges target a runtime no shipped binary has: a fingerprint change requires a store build via `native-publish.yml` before OTA resumes, and the `native-change-acknowledged` label is how you acknowledge that and let the PR through.
+
+### Pull requests do not compile native code
+
+From mobile-ci **v3.0.0** a pull request never runs `pod install` or `xcodebuild`
+when a base binary exists for its native key. `pr.yml`'s `ios-maestro` job, the
+`media-smoke` lane and `store-screenshots.yml` all plan first on the Linux pool
+`trf-linux-amd64-4x8`: they compute the native key, fetch the base published at
+`ghcr.io/budgie-at/budgie/e2e-base`, repack this commit's JavaScript into it, and
+hand the result to Maestro. No Mac slot is claimed. A Mac build happens only for
+a key nothing has published a base for.
+
+`.github/workflows/ios-native-cache.yml` is the warm-up that publishes the base.
+It runs on a push to `main` touching `packages/app/**`, the lockfile or the
+workspace manifests, and it can be dispatched with `force-base: true` for the two
+things a fingerprint cannot see: a native change inside an ignored path, and a
+value compiled into the binary that was rotated.
+
+Three rules hold this together, and breaking any one of them silently makes every
+pull request build natively again (or, worse, test the wrong binary):
+
+- **`fingerprint-env` is one address.** `pr.yml`, `media-smoke.yml`,
+  `store-screenshots.yml` and `ios-native-cache.yml` pass byte-identical
+  `APP_VARIANT=e2e` + `EXPO_PUBLIC_AI_DISABLE=true` +
+  `EXPO_PUBLIC_LOGGING_DISABLE=true`. A single differing byte and the warm-up
+  publishes under a key nobody looks up.
+- **`fingerprint-env`, `repack-env` and `build-env` are the same set per lane.**
+  `app.config.js` branches on all three variables, so the key must see exactly
+  what the build and the re-bundle see. `ios-e2e-ai-build.yml` is the deliberate
+  exception: it builds the AI-enabled app, whose `llama.rn` and
+  `react-native-audio-api` config plugins are real native surface, so it passes
+  its own set without `EXPO_PUBLIC_AI_DISABLE` and gets its own native key.
+- **`packages/app/fingerprint.config.js` is the correctness boundary**, and it is
+  the only file the key hashes - there is no `.fingerprintignore`. Every entry in
+  `ignorePaths` promises that path cannot change the native binary; when that
+  promise breaks, dispatch the warm-up with `force-base: true`.
+
 ## Structure
 
 ```
 packages/
-├── app/                # React Native (Expo 56) - main mobile app
+├── app/                # React Native (Expo 57) - main mobile app
 ├── ai/                 # Pure TypeScript AI/LLM services
 ├── budget/             # Budget domain logic
 ├── consolidation/      # Transaction consolidation
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 16 marketing site
-├── bank-sync/          # Bank integration package
+├── sync/          # Bank integration package
 └── logger/             # Shared logging package
 ```
 
@@ -104,7 +145,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 
 ## Architecture Layers
 
-1. **API** - External service calls (fetch, ky)
+1. **API** - External service calls (Effect `HttpClient`)
 2. **Repository** - Database operations (Drizzle ORM)
 3. **Service** - Business logic orchestration
 4. **Task** - Background jobs (`.task.ts` suffix)
@@ -120,7 +161,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()`
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
 9. **One component per file/folder** - Each top-level component lives in its own file inside its own folder. Lazy wrappers (`const Foo = lazy(() => import('...'))`) count as components — extract them to their own file so the dynamic-import boundary is a real code-split point and the file has exactly one default-shaped export.
-10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Zod schemas and their inferred types used by forms.
+10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Effect Schemas and their `Type` aliases used by forms.
 11. **Use `t` macro for string props** - Use `t\`text\``from`@lingui/react/macro`for string props (like`content={t\`Cancel\`}`), `<Trans>` only for direct JSX text children
 12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
 13. **No complex logic in JSX props** - Extract ternaries/logical operators to variables before JSX
@@ -132,28 +173,28 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix. **Exception — React component props:** a component's props type is named exactly `Props` (no `*Interface` suffix) and declared inline in the component file. A named `*PropsInterface` in `/interface` is allowed **only** when the same props shape is consumed by 2+ components (single-consumer = inline, per rule 51). A `*PropsInterface` imported by exactly one component is prohibited — inline it as `interface Props`.
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
-22. **Services use classes, not utility functions** - Service files (`.service.ts`) should export a class instance, not standalone functions
+22. **Effectful code is Effect; services are `make` services.** Anything with IO, state, concurrency, time or failure returns an `Effect`. Every service and repository is `export class X extends Context.Service<X>()('@budgie/<pkg>/X', { make: Effect.gen(function* () { const dep = yield* Dep; return { m: Effect.fn('X.m')(...) }; }) }) { static readonly layer = Layer.effect(X, X.make).pipe(Layer.provide([Dep.layer])); }`. No constructors, no `this`: dependencies are resolved once at the top of `make`, helpers and state are `make` locals, and the returned object is the service shape. `Db` stays a per-call requirement and is never captured. Callers use only the tag (`yield* X`, `Effect.flatMap(X, x => ...)`, never `X.use`). Ports without an implementation (`Db`, native invokers) are layer-less tags. Pure code (math, parsers, mappers, SQL/predicate builders) stays plain TypeScript with no tag.
 23. **One utility per file** - Each utility function should be in its own file with `.util.ts` suffix, don't combine multiple utilities
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
-32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Service, repository, parser, mapper, and other class-owned files must not use module-scope `getLogger`; split the real work into granular public/private class methods and decorate those methods with `@Log`. Free-function, component, and hook files use `getLogger(context)`. Never use `console.*` in service code.
+32. **Tracing uses `Effect.fn`.** Every effectful service method is `m: Effect.fn('X.m')(function* (...) {...})` in the object returned by `make`, named after the service and method; internal hot-loop helpers are `make` locals with `Effect.fnUntraced`. A method whose body is a single call (one `Db.query`, or a delegation to a dependency) is a plain arrow (`m: (a: A) => dep.m(a)`) without `Effect.fn`. Add context with `Effect.annotateCurrentSpan` or `Effect.logDebug` only when it names a real debugging handle. Never `console.*`.
 33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
-34. **No log-only abstractions.** Do not add helpers, wrapper decorators, shared constants, or one-line wrappers whose only purpose is logging. Put `@Log` on the method that owns the batch, transaction, or error boundary.
-35. **No internal catch-and-log inside `@Log` class methods.** If a decorated class method can fail, let `@Log` record the throw and handle intentional suppression at the call site with `.catch(...)`.
+34. **No log-only abstractions.** Do not add helpers, wrappers or constants whose only purpose is logging.
+35. **Errors travel in the typed channel.** No `throw`, `try`, `new Promise`, or `.catch(emptyFn)` in `src/`. Expected failures are `Schema.TaggedError` classes in the module `/error` folder (`*.error.ts`), created only when a caller branches on them; everything else is a defect. Wrap foreign Promise/SDK/native calls with `Effect.tryPromise`/`Effect.try` at that boundary only. Recover only at edges (React, background task, boot) with `Effect.catchTag`/`catchTags`/`catch`.
 36. **Update inputs derive from entity types.** Use `Partial<Pick<*CreateEntityInterface, 'fieldA' | 'fieldB'>>` — never hand-write update field shapes. Pick from `*CreateEntityInterface` (already filtered to user-settable columns), not from `*EntityInterface` (which includes auto-managed fields like id/createdAt/deletedAt).
 37. **Service signatures encode invariants — no silent field-dropping.** If a method ignores or strips fields from its input before calling deeper, narrow the parameter type so dropped fields are unrepresentable. Never accept a wide input "for convenience" and quietly filter.
 38. **Class boundaries: cohesion over ceremony.** One-method classes are functions in disguise — keep them as free functions. Single-consumer free functions are methods in disguise — inline as private methods of the consumer class (see rule 51 — same logic applies to constants, reducers, and type aliases). Use a class when state is held, OR multiple cohesive methods share private helpers, OR two or more consumers share the same logic. When inlining produces a long file, prefer `// eslint-disable max-lines -- approved by <human>` with rationale over premature decomposition. Lint-disable additions of this kind require explicit human approval (see rule 4).
 39. **Class-owned constants are `private static readonly` fields**, not module-level. Module-level `const` is reserved for values shared by multiple classes/functions in the same file.
 40. **Domain-specific shapes carry the domain prefix.** Parser state, layout types, row interfaces specific to one bank/source/feature: `Erste*`, `Monobank*`. Bank-agnostic shapes (raw native-module output, generic transaction interfaces) stay neutral. Drop legacy qualifiers (`Modern`, `Classic`) once only one variant remains.
-41. **Don't double-log a flow.** If a service method already carries `@Log` (enter/done/throw), don't add `getLogger` calls in the hook/component that triggers it. Service-level decorators record the lifecycle; hook-level logs of the same flow are noise duplication.
+41. **Log failures once, at the edge.** The runtime edge (`runtime.runPromise` in hooks, atoms, tasks and boot) logs the cause; services do not log their own failures.
 42. **Do not create single-use utilities to appease lint.** PR review fixes should address the root design issue, not move code into one-off `.util.ts` files, one-off interfaces, or wrappers used by a single service. Keep service orchestration private, dedupe repeated batch/reducer/update flows inside the owning class, and reserve `/utils` for genuinely shared pure helpers.
-43. **No module-level helpers for class-internal use.** If a free function/const/logger is consumed only by one class in the same file, it belongs inside the class — pure helpers as `private` (or `private static`) methods, value constants as `private static readonly` fields, and logs as `@Log` decorators on granular methods. Module-level scope in class-owned files is reserved for imports, type-only imports, exported singleton instances, and shapes shared by 2+ top-level declarations in the file.
+43. **No module-level helpers for class-internal use.** If a free function/const is consumed only by one class in the same file, it belongs inside the class — pure helpers as `private` (or `private static`) methods, value constants as `private static readonly` fields. Module-level scope in class-owned files is reserved for imports, type-only imports, exported singleton instances, and shapes shared by 2+ top-level declarations in the file.
 44. **No single-field interfaces.** If an interface or type alias has exactly one field, pass that field's value directly. `interface Options { language?: string }` → `language: string | null` parameter. Wrappers cost one indirection per consumer for no payoff and rot when fields are added.
 45. **Bank-specific business logic lives behind bank-owned strategies/services.** Orchestrators compose bank services; they must not inline per-bank SQL, parsing, matching, or branch-heavy bank behavior.
 46. **Magic strings that name a thing become an enum.** Subsystem names, error sources, telemetry channels, storage keys, **hook return states (`'idle' | 'recording' | ...`), and reducer action types** that are referenced by ≥2 sites — define an enum (rule 28) and use it everywhere. `'chat' | 'embedding' | 'stt'` literal unions, hook state-machine unions, and string returns from `getSomeKind()` are red flags.
@@ -166,20 +207,34 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 53. **`useEffect` cleanups capture their target via a stable ref, not via deps.** A cleanup that depends on a function returned by a custom hook, a tuple member from a context provider, or any prop reconstructed each render fires on every parent re-render — not on actual unmount. Pattern:
     ```ts
     const resolveRef = useRef(resolveFromHook);
-    resolveRef.current = resolveFromHook;
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only cleanup; ref reads the live value
+
+    useEffect(() => {
+        resolveRef.current = resolveFromHook;
+    });
+
+    // oxlint-disable-next-line react/exhaustive-deps -- mount-only cleanup; ref reads the live value
     useEffect(() => () => resolveRef.current(...), []);
     ```
     Empty deps + ref-stable read = cleanup fires only on actual unmount.
 54. **After `await` inside `useEffect`, downstream reads come from the awaited result, not the captured closure.** Hook destructured state (`const { data } = useFoo()`) is captured at render time. By the time `await something()` resolves, `data` is stale. Thread fresh values through the resolved value, the callback parameter, or a fresh ref read — never `data.foo` from the original closure.
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
-57. **For `@Log` callbacks, preserve APIs and destructure callback rest args.** If logging callbacks trip `max-params`, use `(result, ...[argA, argB]) => ...`; never reshape the method signature or add a lint disable just for the decorator.
-58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
+57. **Concurrency, time and resources use Effect primitives.** `Schedule` + `Effect.retry`/`repeat`, `Effect.timeout`, `Effect.sleep`, `Semaphore`, `Latch`, `FiberMap`, `Cache`, fiber interruption and `Effect.acquireRelease`. Never `setTimeout` loops, generation counters, promise-chain mutexes, `Promise.race`, or boolean cancel flags.
+58. **Repositories are services; reads are Effects.** A repository is a `make` service (rule 22) whose methods return Effects over `Db.query(db => ...)`; it holds no `db` and returns no Drizzle builders. Shared repository behaviour is a `make<X>Repository(table, columns)` factory spread into `make`, not a base class. Atomic work is `Db.transaction(effect)` from `@budgie/contracts`, never a transaction argument threaded through method signatures.
 59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
-60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Class service methods that perform top-level app database writes use `@InvalidateDatabaseLiveQuery()` so subscribers refresh after successful writes without manual invalidation inside business logic. Use the predicate form only to preserve real transaction ownership, such as nested writes that receive an existing `tx`. Do not add event names, groups, or metadata until profiling proves broad invalidation is a real rerender problem. Free-function mutations may invalidate directly only when converting to a service would create a one-method class.
+60. **Live database reads are atoms; writes carry no keys.** React reads of app database state are `databaseQueryAtom([Tables...], effect)` atoms (`databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` when parametrised) read with `useLiveAtomValue`, listing every table the SQL reads. Never raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. The expo change listener (`databaseChangeReactivityLayer`) invalidates changed tables once each top-level `Db.transaction` settles; only writes it cannot see (virtual tables, `WITHOUT ROWID`, truncate-optimised deletes, file swaps) wrap themselves in `Reactivity.mutation([tableName], effect)`.
 61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`eslint-rules/max-component-props.mjs`). The `allow` list in `.oxlintrc.json` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
 62. **No delegate-only hooks, no logic above components.** A hook whose body is one call to another hook plus constants (strings, an enum literal, a settings key) gets inlined into its consumers and deleted. Every layer of a hook chain must add real composition (state, refs, effects, 2+ composed sources with branching); single-consumer wrapper hooks are inlined into their component unless that forces a new lint disable. Component files contain imports, the inline `Props`, and the component — free functions with branching, hooks, and inline anonymous object types above a component belong in their proper module folders or in the child component that consumes them. See [docs/component-composition.md](docs/component-composition.md).
+63. **Never force-add ignored files.** If a path matches `.gitignore`, do not use `git add -f` or any equivalent override to commit it. Keep the file untracked unless the ignore rule itself is intentionally changed through normal review.
+64. **Reuse the transaction predicate builders before writing a query.** `BaseTransactionFilterRepository` owns `buildFilterWhere`, `buildVisibleTransactionCondition`, `buildLedgerEntryCondition`, `buildPrimaryLedgerEntryCondition`, `buildCategorizableEntryCondition`, `buildNonDebtAccountCondition`, `buildUncategorizedEntryCondition`, `buildUntaggedCondition`, `buildCategorizableTypeCondition` and `buildAccountCondition`; `StatisticsRepository.buildExpenseAnalyticsEntryCondition` owns the analytics expense entry. A new domain predicate needs a stated reason in the PR, and claims about existing behaviour must be verified by running the real query, not by reading it.
+
+Rule 3 ("No comments") applies to every language in this repo, not just TypeScript — shell, SQL, YAML, and config included. At most one single-line header comment per file; explanations belong in the README or the PR description, not inline. Treat these as over-engineering red flags to refactor before shipping, not to ship: a config map that a naming convention would replace, parallel scripts that could share one implementation, a test larger than the code it covers, and single-consumer abstractions.
+
+### Money Safety
+
+- Any PR that adds a data migration or touches consolidation, balance, ledger, or import code must run `pnpm verify:backup <latest backup .db>` locally and report only redacted account ids and the pass/fail totals in the PR description. Never commit backup files or their output, and never paste account titles or balances.
+- Every data migration must pass `tests/sync-tests/src/scenarios/database/data-migration-money-impact.test.ts`; a migration that moves ledger money needs an explicit allowlist entry there with its reason, never a relaxed assertion.
+- `tests/sync-tests` and `tests/consolidation-tests` assert after every test that stored `account_balances` equal `getLedgerBalances`; fix the production path or the seed, never the check.
 
 ### Naming Conventions
 
@@ -245,15 +300,12 @@ const numbers: number[] = [1, 2, 3];
 numbers.filter(isDefined); // Unnecessary, array can't have nulls
 ```
 
-**Use Zod for complex external data validation.** Validate unknown external input at the boundary, then pass typed values inward. This includes API request bodies, webhook payloads, bank/provider responses, AI service responses, persisted JSON migrations, and other untrusted object payloads. Prefer an existing shared/domain schema before creating a new one.
+**Use Effect Schema for complex external data validation.** Validate unknown external input at the boundary, then pass typed values inward. This includes API request bodies, webhook payloads, bank/provider responses, AI service responses, persisted JSON migrations, and other untrusted object payloads. Prefer an existing shared/domain schema before creating a new one.
 
 ```typescript
-// Good - Zod schema
-const ItemSchema = z.object({ id: z.number(), name: z.string() });
-const result = ItemSchema.safeParse(data);
-if (result.success) {
-    /* use result.data */
-}
+// Good - Effect Schema
+const ItemSchema = Schema.Struct({ id: Schema.Number, name: Schema.String });
+const item = yield * Schema.decodeUnknownEffect(ItemSchema)(data);
 
 // Bad - manual type guard
 const isItem = (x: unknown): x is Item => typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
@@ -264,17 +316,17 @@ const isItem = (x: unknown): x is Item => typeof x === 'object' && x !== null &&
 ```typescript
 // Good - schema in constant file
 // src/transaction/constant/convert-to-transfer-schema.constant.ts
-export const ConvertToTransferSchema = z.object({
-    accountId: z.number().positive()
+export const ConvertToTransferSchema = Schema.Struct({
+    accountId: Schema.Number.check(Schema.isGreaterThan(0))
 });
-export type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
+export type ConvertToTransferFormValues = typeof ConvertToTransferSchema.Type;
 
 // Then import in component
 import { ConvertToTransferFormValues, ConvertToTransferSchema } from '../../constant/convert-to-transfer-schema.constant';
 
 // Bad - schema defined inline in component
-const ConvertToTransferSchema = z.object({ accountId: z.number().positive() });
-type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
+const ConvertToTransferSchema = Schema.Struct({ accountId: Schema.Number });
+type ConvertToTransferFormValues = typeof ConvertToTransferSchema.Type;
 ```
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
@@ -414,115 +466,89 @@ After modifying user-facing text, run `pnpm i18n:sync` and commit both file type
 4. Run `pnpm i18n:sync` again to compile the `.ts` files
 5. Commit both `.po` and `.ts` files
 
-## Logging
+## Effect
 
-The transport auto-prefixes every line with `[ClassName::methodName]` (for `@Log`-decorated methods) or `[context]` (for `getLogger(context)`). Tags must not repeat that information.
+All effectful logic runs on **Effect v4** (`effect`, pinned exactly). Reference: `https://github.com/Effect-TS/effect/blob/main/LLMS.md` and the installed `node_modules/effect/dist/*.d.ts`, which are authoritative for API names. Rules 22, 32, 35, 41, 57, 58 and 60 are the binding summary.
 
-### `@Log` decorator (class methods)
-
-Three lifecycle hooks: `pre` (entry), `post` (success), `error` (catch). **Each hook accepts either a string OR a function. Use a string when the message is fully static; use a function only when the message needs values from method args / result / error.** When a function is used, the library **auto-infers parameter types** from the decorated method's signature — never annotate them.
+**Binding:** load the `effect` skill first (it points at `node_modules/effect/AGENTS.md` and `ai-docs`, the official `effect-ts` skill's source of truth). All new logic is Effect: no `async`/`await`, `try`/`throw`, `new Promise`, `setTimeout` loops, or `useEffect` fetches with cancelled flags anywhere except the edges (`appRuntime.runPromise`/`runFork` in hooks, tasks and boot; `Effect.runPromise` in Next.js route edges). Tests are `@effect/vitest` `it.effect` (see below).
 
 ```ts
-import { Log } from '@budgie/logger';
-import { getErrorMessage } from '@rnw-community/shared';
+import { Db, TransactionRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 
-class TransactionRepository {
-    @Log(
-        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
-        result => `done insertedIds=${result.map(row => row.id).join(',')}`,
-        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
-    )
-    async bulkCreate(inputs: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> {
-        /* ... */
-    }
+export class RefundExceedsExpenseError extends Schema.TaggedError<RefundExceedsExpenseError>()('RefundExceedsExpenseError', {
+    transactionId: Schema.Number
+}) {}
+
+export class RefundService extends Context.Service<RefundService>()('@budgie/app/RefundService', {
+    make: Effect.gen(function* () {
+        const transactionRepository = yield* TransactionRepository;
+
+        return {
+            apply: Effect.fn('RefundService.apply')(function* (transactionId: number, amount: number) {
+                const expense = yield* transactionRepository.findById(transactionId);
+
+                if (amount > expense.amount) {
+                    return yield* new RefundExceedsExpenseError({ transactionId });
+                }
+
+                return yield* Db.transaction(transactionRepository.createRefund(transactionId, amount));
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(RefundService, RefundService.make).pipe(Layer.provide(TransactionRepository.layer));
 }
 ```
 
-Output:
-
-```
-[TransactionRepository::bulkCreate] enter externalIds=tx_abc,tx_def
-[TransactionRepository::bulkCreate] done insertedIds=42,43
-```
-
-**Static-tag shortcut.** When `enter` and/or `done` carry no dynamic data (no inputs, no result), pass strings directly — don't wrap in `() =>`:
-
-```ts
-// Good — static strings
-@Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-async start(): Promise<void> { /* ... */ }
-
-// Bad — needless arrow wrapping a static value
-@Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
-async start(): Promise<void> { /* ... */ }
-```
-
-Mix freely: any of the three hooks can independently be a string or a function.
-
-### Hook formatting rules
-
-1. **Tag prefix:** `enter` | `done` | `throw` only. No method name. The transport already shows `[Class::method]`.
-2. **String when static, function when dynamic.** Don't wrap a constant in `() =>`.
-3. **Function-hook param types are auto-inferred.** Never write `(error: unknown, x: string) => ...`. Just `(error, x) => ...`.
-4. **Every method argument must appear in every hook.** Don't underscore-prefix args. If the data is too large to log directly (LLM prompts, embeddings), use `.length` or another scalar derived from the arg — but the arg is still present in the message.
-5. **Strings (short or business-identifying)** → output quoted values: `title="${transactionTitle}"`. Do not log `titleLen=${title.length}` because length is not useful for debugging identifiers.
-6. **Strings (long, sensitive, or prompt-sized)** → use a quoted preview plus a scalar only when the full value would be noisy or unsafe: `promptPreview="${prompt.slice(0, 120)}" promptLen=${prompt.length}`.
-7. **Numbers / IDs** → output directly: `id=${row.id}`.
-8. **Arrays of entities** → default to counts, for example `transactionCount=${transactions.length}`. Include joined IDs only when the collection is small or the specific entries are the debugging handle.
-9. **Arrays of primitives** (`string[]`, `number[]`) → default to counts. Include `.join(',')` only when the values are small, non-sensitive, and identify the failure.
-10. **`Map<K, V>`** → default to `.size`. Include keys only when the key set is small and materially useful.
-11. **`Set<T>`** → default to `.size`. Include values only when the value set is small and materially useful.
-12. **Typed arrays** (`Uint8Array`, `Float32Array`, embedding buffers) → KEEP `.length` as `dimensions=${vec.length}`. Raw bytes are meaningless inline.
-13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
-14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
-15. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
-16. **Extract for logging only when it names a real boundary.** Good candidates: batch transaction handlers, retry/error boundaries, and public-to-private orchestration steps. Bad candidates: one-line wrappers whose only job is to satisfy `@Log`.
-
-### `getLogger(context)` (free-form / non-class)
-
-Do not use `getLogger` in service, repository, parser, mapper, or other class-owned files. Create a granular class method for the logged boundary and decorate it with `@Log`.
-
-```ts
-import { getLogger } from '@budgie/logger';
-import { getErrorMessage } from '@rnw-community/shared';
-
-const logger = getLogger('useCategorySuggestion');
-
-logger.log('fired', { transactionTitle });
-logger.error('failed', { errorMessage: getErrorMessage(error) });
-```
-
-Free-form `context: string`. Convention: hook/file/component name. Instantiate once at module top.
-
-### Build-time gate
-
-`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output. Metro dev bundles still log through `__DEV__`; native development and profiling builds set logging at build time, so non-dev bundle changes require rebuilds. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
-
-### `bank-sync` exception
-
-`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+- **Lint guards.** `zod`, `ky` and `drizzle-zod` imports are banned repo-wide. In effectful non-UI code (contracts, sync, consolidation, budget, ai, and app `service`, `repository`, `api` and `.task.ts` files) `try`, `throw` and `new Promise` are lint errors: use Effect. `max-lines-per-function` and `max-statements` are off for `*.service.ts`, `*.repository.ts`, `*.layer.ts` and the `make-*` service factories, because they would measure the whole `make` recipe; `complexity`, `max-depth` and `max-nested-callbacks` still apply. Split a service only along a cohesive seam (reads vs writes, import vs sync), never to shrink line counts.
+- **Import by subpath.** `import * as Effect from 'effect/Effect'`, never the `effect` barrel (lint-enforced). Metro does not tree-shake, and the barrel adds about 1.1 MB of Hermes bytecode.
+- **Keep the code minimal.** Pure code stays plain. Do not wrap a pure function in `Effect.sync`, give pure code a tag, or add a service interface file; the object returned by `make` is the contract. Layers are static values (never getters), so each service is built once per runtime. Register every layer in `appServicesLayer`.
+- **Database.** `Db.query(db => builder)` for executed queries, `Db.transaction(effect)` for atomic work. Nested `Db.transaction` calls reuse the outer transaction.
+- **Validation.** Effect `Schema` only (`Schema.decodeUnknownEffect` at boundaries; `Schema.toStandardSchemaV1` for form resolvers). Drizzle row types come from `typeof Table.$inferSelect` / `$inferInsert`.
+- **HTTP.** `HttpClient` from `effect/http` with `Schedule` retries and `Effect.timeout`.
+- **Running.** Only edges run effects: the app `ManagedRuntime` (`runtime.runPromise`) in hooks, atoms, background tasks and boot, `Effect.runPromise` in Next.js route edges, `it.effect` in `tests/*`. No `Effect.runPromise`/`runSync` inside services.
+- **Tests.** `tests/*` suites use `@effect/vitest`: every test is `it.effect('...', () => Effect.gen(function* () {...}))` (`it.layer` for shared layers), with `Db` and services provided as layers from `tests/test-kit`. No `async` test bodies, no `runPromise` in tests, no `try`/`catch`; assert failures with `Effect.flip`/`Effect.exit`. Time-dependent tests use `TestClock`.
+- **React.** Service-calling state and live database reads live in `@effect/atom-react` atoms (`databaseQueryAtom` for reads).
+- **Logging.** The `makeLoggerLayer` layer from `@budgie/logger` is the only sink. `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output; Metro dev bundles still log through `__DEV__`. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
 ## Tech Stack
 
-| Package       | Stack                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **app**       | Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                                             |
-| **ai**        | Pure TypeScript, Zod                                                                                                                                                            |
-| **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                                   |
-| **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                |
-| **bank-sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
-| **Build**     | pnpm 11.22.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 JS bridge + 13-rule ESLint 10 fallback |
+| Package       | Stack                                                                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **app**       | Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                      |
+| **ai**        | Pure TypeScript, Effect                                                                                                                                  |
+| **contracts** | Drizzle ORM, Effect                                                                                                                                      |
+| **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                         |
+| **sync**      | @liaugust/monobank-sdk, date-fns, Effect                                                                                                                 |
+| **logger**    | Effect `Logger` layer (`makeLoggerLayer`)                                                                                                                |
+| **Build**     | pnpm 11.24.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.11.5, native TypeScript 7 + TypeScript 6 API, Oxlint 1.86 JS bridge + 13-rule ESLint 10 fallback, `@effect/language-service` 0.87 diagnostics gate |
 
 ## Workflow
 
 1. **Fresh clone:** `pnpm install`
 2. **After contracts changes:** `pnpm build`
 3. **Before commit:** Husky runs `pnpm ts`, then lint-staged applies Oxlint, the 13-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
-4. **Before PR:** Run all validation commands
+4. **Before PR:** Run all validation commands, including `pnpm effect:check`
 5. **Commit after every accepted change.** During interactive/live-tweak sessions, each user-approved fix or feature increment gets its own focused conventional commit immediately (validated via ts + lint first) — do not batch unrelated accepted changes into one commit or leave approved work uncommitted.
 6. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 
 ## Simulator Dev Testing
+
+### Every simulator runs slim (canonical rule)
+
+Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v3.1.0/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
+
+How to invoke it here:
+
+- Once per Mac: `brew install mobai-app/tap/simslim`.
+- By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v3.1.0`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
+- In CI nothing is passed: the `ios-maestro.yml` and `store-screenshots.yml` callers default `simulator-slim-profile` to `bundled`, and only `simulator-requires` stays per consumer.
+
+### serve-sim
 
 1. For dev-client feature checks and debugging, use the local `serve-sim` skill and the Codex in-app browser.
 2. Read `.agents/skills/serve-sim/SKILL.md` before using serve-sim. Follow its referenced workflow files when interacting with the simulator.
@@ -537,6 +563,31 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 11. Use `serve-sim tap` for taps. Use normalized coordinates only.
 12. Do not use Maestro for dev-client checks. Maestro is only acceptance evidence against a clean E2E build.
 
+## Remote Mac Fleet
+
+The dev box is Linux and cannot boot iOS simulators. It reaches two Macs over SSH for simulator, Maestro, and media-capture work:
+
+- `macstudio` (`ssh macstudio`) — the capture machine: macOS + Xcode, reached through the Cloudflare tunnel `macstudio.vitaliiyehorov.dev` (`ProxyCommand cloudflared access ssh`). Homebrew tools (`magick`, `ffmpeg`) and `maestro` (`~/.maestro/bin`) are not on a non-interactive SSH `PATH`; export `PATH="/opt/homebrew/bin:$HOME/.maestro/bin:$PATH"` first. Treat it as off-limits while it is overloaded.
+- `macmini` (`ssh macmini`, `192.168.1.35`) — LAN machine, now on Xcode 26.6 + iOS 26.5 runtime with iPhone 17 simulators, so it is the preferred host for interactive simulator runs. Homebrew Node is present; install pnpm with `npm i -g pnpm@11.24.0`. `sudo` requires a password.
+
+Rules:
+
+1. Use the repo's own pipeline, not hand-driven sims, to produce committed assets: `capture-store-screenshots.sh` with `--config .github/landing-media.config.json` (the default config is the store one — always pass it), then compose and manifest. `serve-sim` (`.agents/skills/serve-sim/SKILL.md`) is for interactive tapping/preview, not for capture.
+2. The Mac's `/bin/bash` is 3.2 and has no `mapfile`, so `compose-web-media.sh` runs on this Linux box: copy the raw tree back (`landing-raw/raw/ios/<device-slug>/<locale>/<appearance>/`), then `bash packages/app/fastlane/screenshots/design/compose-web-media.sh --raw-dir <raw> --output packages/landing/public/media --scenes <a,b>` and `pnpm --filter @budgie-at/landing media:manifest`.
+3. Reuse the installed E2E app with `--skip-install` when it is current (bundle id `com.vitalyiegorov.budgie.e2e`); otherwise pass a packaged `Base.app` with `--app`. Force a rebuild when app UI changed.
+4. Check the data volume before capturing: `df -h /System/Volumes/Data`. DerivedData and stale simulator devices fill it, and a full volume makes Maestro fail with `No space left on device`. Delete `~/Library/Developer/Xcode/DerivedData/*` and stale `*-derived` trees when low.
+5. A single-scene run replaces the whole device raw directory, so pass every scene you need to one invocation; copy assets and repo changes back with `scp` or `git pull`.
+6. **Interactive simulator runs (dev checks)** — use `serve-sim` (Evan Bacon): `npx --yes serve-sim`. Both Macs need `simslim` on `PATH` (`brew install mobai-app/tap/simslim`) because every simulator runs slim — see [Simulator Dev Testing](#every-simulator-runs-slim-canonical-rule). Verified path on macmini (Xcode 26.6 + iOS 26.5 runtime):
+    1. Sync the worktree with a tar pipe — macmini's `rsync` is `openrsync` and rejects GNU flags: `tar czf - --exclude=.git --exclude=node_modules --exclude=dist … . | ssh macmini 'tar xzf - -C ~/budgie-runway'`.
+    2. `pnpm install && pnpm build` with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` (install pnpm first: `npm i -g pnpm@11.24.0`).
+    3. `cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean`.
+    4. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do not use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
+    5. `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
+    6. Stream on the Mac (`npx --yes serve-sim -p <port> <udid>`), expose with `cloudflared tunnel --url http://127.0.0.1:<port>`, and open the `*.trycloudflare.com` URL in the T3 preview. Drive with `serve-sim tap -d <udid> <x> <y>` and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
+7. **Xcode 26 toolchain** — `expo-modules-jsi@57.0.6` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.0.6.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
+
+Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/cloudflared when done; restore any shared Mac checkout you touched (`git checkout -f <branch> && git clean -fd`).
+
 ## E2E Testing
 
 1. Prefer black-box E2E flows over app-owned test hooks.
@@ -544,7 +595,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
 4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
 5. Run Maestro verification only against a clean E2E build installed fresh from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
-6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id. Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
+6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id — against a slim simulator, per [Simulator Dev Testing](#every-simulator-runs-slim-canonical-rule). Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
 7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
 9. When an app component derives a child or state-specific `testID` from a base id, use `testID` from `packages/app/src/@generic/utils/test-id.util.ts` and spread it in JSX, for example `<Text {...testID(parentTestID, 'Label')} />`. If the component already has a `testID` prop in scope, alias the import as `testIDProps`. Do not hand-build strings like `` `${testID}.Label` `` inside components. Selector factory files that intentionally create canonical ids are excluded.
@@ -573,7 +624,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 - **Never lower a timeout, weaken an assertion, or relax a test on a bot's say-so when the test has not been run** - Guessing toward flakiness is worse than an over-generous wait.
 - **Note when a bot review is incomplete** - Rate limits, partial runs, and reviews that predate the latest commits produce misleadingly short findings lists. Say so rather than implying the PR came back clean.
 - **Review all changes before finishing** - Check for unused imports and unnecessary code
-- **Fix review feedback without utility sprawl** - Do not resolve review findings by creating single-consumer utility files. Inline service-specific logic as private methods, preserve class-owned logging with `@Log`, and keep only genuinely shared helpers in `/utils`.
+- **Fix review feedback without utility sprawl** - Do not resolve review findings by creating single-consumer utility files. Inline service-specific logic as private methods, keep tracing on `Effect.fn`, and keep only genuinely shared helpers in `/utils`.
 
 ## Important Notes
 
@@ -600,7 +651,7 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 | `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`           |
 | `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                               |
 | `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
-| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape. For `@Log` callbacks, prefer rest-arg destructuring from rule 57 instead                    | `-- Existing public API intentionally keeps positional arguments`            |
+| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape.                                                                                             | `-- Existing public API intentionally keeps positional arguments`            |
 | `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                 |
 
 Example:
@@ -609,6 +660,36 @@ Example:
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const MyFormComponent = (props: Props) => { ... };
 ```
+
+## Issue Tracking
+
+Work is tracked as GitHub issues linked as **native sub-issues** of the relevant epic — never as task-list checkboxes; checkboxes in an epic body are a reading aid, not the source of truth. GitHub caps sub-issues at 100 per epic, so a program that outgrows that splits into milestone/phase epics rather than flattening into one.
+
+Every issue states acceptance criteria, including the validation commands required to close it.
+
+Label taxonomy (one line per prefix — see label descriptions in the repo for exact wording):
+
+- `status:*` — `ready` | `in-progress` | `blocked` | `review`
+- `kind:*` — `bug` | `feat` | `test` | `docs` | `perf` | `regression`
+- `priority:*` — `P0` blocker | `P1` schedule now | `P2` do when the area is open | `P3` nice to have
+- `needs:*` — `decision` | `repro` | `triage`
+- `agent:*` — which agent/model claimed the issue (e.g. `agent:claude`)
+- `area:*` — one per package plus cross-cutting areas (`e2e`, `ci`, `media`)
+
+Claiming an issue: post a comment in this exact format, then set `status:in-progress` and `agent:<model>`.
+
+```text
+CLAIM <UTC timestamp> — model: <model> — session: <session id>
+Scope: <what you will and will not do>
+Files: <files you expect to touch>
+Expires: <timestamp ~4h out>
+```
+
+An expired claim is void — anyone may reclaim the issue. When a PR opens against the issue, set `status:review` and comment with the PR reference. One PR per issue. Branch names mirror the commit type: `type/kebab-slug`. PR titles follow the same `type(scope): description` convention as commits. Close the issue with evidence: the merged PR plus the validation output that proves the acceptance criteria pass.
+
+The coordinator (main/orchestrating agent) runs builds, gates, and git operations; subagents keep their edits scoped to the files listed in their claim.
+
+`CLAUDE.md` is a symlink to this file — no separate copy to keep in sync (`readlink CLAUDE.md` to confirm before assuming otherwise).
 
 ## Local Documentation
 

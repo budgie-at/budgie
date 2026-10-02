@@ -1,16 +1,12 @@
-import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
+import * as Schema from 'effect/Schema';
 
-import { CategoryEntitySchema } from './category-entity.schema';
+import { PositiveNumberSchema } from '../../@generic/schema/positive-number.schema';
+import { UserIconSchema } from '../../@generic/schema/user-icon.schema';
+import { CATEGORY_TITLE_MAX_LENGTH } from '../constant/category-title-max-length.constant';
+import { CATEGORY_TITLE_MIN_LENGTH } from '../constant/category-title-min-length.constant';
 
-export const CategoryCreateEntitySchema = convertToCreateEntitySchema(CategoryEntitySchema)
-    .omit({
-        isDefault: true,
-        isSystemCategory: true,
-        titleSearch: true,
-        titleEn: true,
-        titleTags: true,
-        tagsGeneratedAt: true
-    })
-    .partial({
-        parentId: true
-    });
+export const CategoryCreateEntitySchema = Schema.Struct({
+    title: Schema.Trim.check(Schema.isMinLength(CATEGORY_TITLE_MIN_LENGTH), Schema.isMaxLength(CATEGORY_TITLE_MAX_LENGTH)),
+    icon: UserIconSchema,
+    parentId: Schema.optional(Schema.NullOr(PositiveNumberSchema))
+});

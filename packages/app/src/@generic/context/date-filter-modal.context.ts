@@ -8,4 +8,7 @@ export interface DateFilterModalParams {
 
 export type DateFilterResult = { readonly value: DateRangeInterface | null };
 
-export const [DateFilterModalContext, useDateFilterModal] = createModalContext<DateFilterModalParams, DateFilterResult | null>(null);
+export const [DateFilterModalContext, useDateFilterModal, useDateFilterModalParams] = createModalContext<
+    DateFilterModalParams,
+    DateFilterResult | null
+>(null);

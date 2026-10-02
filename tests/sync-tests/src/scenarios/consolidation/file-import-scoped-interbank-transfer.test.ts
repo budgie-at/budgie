@@ -1,9 +1,9 @@
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -14,7 +14,8 @@ import {
     requireInstrument,
     seed,
     seedBankPair,
-    StubFileBankSyncService
+    makeStubFileBankSyncService,
+    TestLayer
 } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
@@ -65,8 +66,6 @@ class SingleIncomeFileClient implements FileBasedSyncClientInterface {
         return [this.transaction];
     }
 }
-
-const enqueueSpy = vi.spyOn(transferConsolidationDrainerService, 'enqueue');
 
 const buildBankAccount = (target: ImportedIncomeInterface): SyncAccountInterface => ({
     id: target.externalId,
@@ -127,15 +126,6 @@ const seedExistingBankExpense = (source: ExistingExpenseInterface, instrumentId:
     return account;
 };
 
-const buildSyncService = (target: ImportedIncomeInterface, categoryLookup: MccCategoryLookupInterface): StubFileBankSyncService =>
-    new StubFileBankSyncService(
-        target.externalSource,
-        new SingleIncomeFileClient(buildBankAccount(target), buildIncomeTransaction(target)),
-        new Map([[TRANSFER_CATEGORY, categoryLookup]])
-    );
-
-const getQueuedConsolidationScope = (): ConsolidationScanScopeInterface | null => enqueueSpy.mock.calls[0]?.[1] ?? null;
-
 const buildMccCategoryLookup = (): MccCategoryLookupInterface => {
     const transferMcc = findMccByCode(TRANSFER_MCC_CODE);
 
@@ -145,18 +135,27 @@ const buildMccCategoryLookup = (): MccCategoryLookupInterface => {
     };
 };
 
-const importAndRunQueuedScope = async (syncService: StubFileBankSyncService, accountExternalId: string) => {
-    await syncService.executeImportForSelectedAccounts(STATEMENT_FILE_URI, [accountExternalId]);
+const importAndRunQueuedScope = Effect.fnUntraced(function* (target: ImportedIncomeInterface, categoryLookup: MccCategoryLookupInterface) {
+    const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
+    const transferConsolidationService = yield* TransferConsolidationService;
+    const enqueueSpy = vi.mocked(transferConsolidationDrainerService.enqueue);
+    const syncService = yield* makeStubFileBankSyncService(
+        target.externalSource,
+        new SingleIncomeFileClient(buildBankAccount(target), buildIncomeTransaction(target)),
+        new Map([[TRANSFER_CATEGORY, categoryLookup]])
+    );
 
-    const scope = getQueuedConsolidationScope();
-    expect(enqueueSpy).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.FILE_IMPORT, scope);
+    yield* syncService.executeImportForSelectedAccounts(STATEMENT_FILE_URI, [target.externalId]);
+
+    const scope: ConsolidationScanScopeInterface | null = enqueueSpy.mock.calls[0]?.[0] ?? null;
+    expect(enqueueSpy).toHaveBeenCalledWith(scope);
     expect(scope).toBeDefined();
     if (!isDefined(scope)) {
         return { consolidated: 0 };
     }
 
-    return transferConsolidationService.consolidate(scope);
-};
+    return yield* transferConsolidationService.consolidate(scope);
+});
 
 const INTERBANK_TRANSFER_CASES: readonly InterbankTransferCaseInterface[] = [
     {
@@ -230,18 +229,15 @@ const INTERBANK_TRANSFER_CASES: readonly InterbankTransferCaseInterface[] = [
 ];
 
 describe('consolidation/file-import-scoped-interbank-transfer', () => {
-    beforeEach(() => {
-        enqueueSpy.mockClear();
-    });
+    it.effect.each(INTERBANK_TRANSFER_CASES)('$title', ({ source, target }) =>
+        Effect.gen(function* () {
+            const instrument = yield* requireInstrument(source.currency);
+            const transferMcc = buildMccCategoryLookup();
+            const sourceAccount = seedExistingBankExpense(source, instrument.id, transferMcc.id);
 
-    it.each(INTERBANK_TRANSFER_CASES)('$title', async ({ source, target }) => {
-        const instrument = await requireInstrument(source.currency);
-        const transferMcc = buildMccCategoryLookup();
-        const sourceAccount = seedExistingBankExpense(source, instrument.id, transferMcc.id);
-        const syncService = buildSyncService(target, transferMcc);
+            const result = yield* importAndRunQueuedScope(target, transferMcc);
 
-        const result = await importAndRunQueuedScope(syncService, target.externalId);
-
-        expectTransferPairCanonical(result, sourceAccount.id);
-    });
+            expectTransferPairCanonical(result, sourceAccount.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

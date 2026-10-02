@@ -1,4 +1,3 @@
-/* jscpd:ignore-start - Selector modal imports pattern */
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
@@ -7,14 +6,13 @@ import { Text, View } from 'react-native';
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-/* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
-import { useTagsSelectorModal } from '../tag/context/tags-selector-modal.context';
+import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { reorderTagIdsByPrimary } from '../tag/utils/reorder-tag-ids-by-primary.util';
 
@@ -48,20 +46,23 @@ const resolvePrimaryTagId = (selectedTagIds: number[], primaryTagId: number | nu
 export default function TagsSelectorModal() {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
-    const [, resolveTagsSelector, currentParams] = useTagsSelectorModal();
+    const [, resolveTagsSelector] = useTagsSelectorModal();
+    const currentParams = useTagsSelectorModalParams();
     const { backgroundColor } = useFormsheetListStyles();
 
     const {
         initialTagIds = [],
+        suggestedTagIds = [],
         excludeTagIds = [],
         description,
         singleSelect = false,
         enablePrimarySelection = false
     } = currentParams ?? {};
     const initialPrimaryTagId = enablePrimarySelection ? (initialTagIds[0] ?? null) : null;
+    const initialSelectedTagIds = [...initialTagIds, ...suggestedTagIds.filter(tagId => !initialTagIds.includes(tagId))];
 
     const [search, setSearch] = useState('');
-    const [selected, setSelected] = useState<number[]>(initialTagIds);
+    const [selected, setSelected] = useState<number[]>(initialSelectedTagIds);
     const [primaryTagId, setPrimaryTagId] = useState<number | null>(initialPrimaryTagId);
     const { tags } = useSearchTagsQuery(search);
 
@@ -133,7 +134,6 @@ export default function TagsSelectorModal() {
         [resolveTagsSelector]
     );
 
-    /* jscpd:ignore-start - FormSheet selector modal pattern */
     return (
         <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
@@ -166,5 +166,4 @@ export default function TagsSelectorModal() {
             ) : null}
         </View>
     );
-    /* jscpd:ignore-end */
 }

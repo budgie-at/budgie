@@ -1,4 +1,5 @@
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import * as Effect from 'effect/Effect';
 
 import { seed } from './seed';
 import { seedRefundedExpense } from './seed-refund-fixture';
@@ -14,10 +15,12 @@ interface RunRefundScenarioResult {
     readonly result: ConsolidationResultInterface;
 }
 
-export const runRefundScenario = async (input: RunRefundScenarioInput): Promise<RunRefundScenarioResult> => {
+export const runRefundScenario = Effect.fnUntraced(function* (input: RunRefundScenarioInput) {
+    const transferConsolidationService = yield* TransferConsolidationService;
     const account = seed.account({ externalId: 'mono-card' });
     const { expense, refunds } = seedRefundedExpense({ ...input, accountId: account.id });
-    const result: ConsolidationResultInterface = await transferConsolidationService.consolidate();
+    const result: ConsolidationResultInterface = yield* transferConsolidationService.consolidate(null);
+    const scenario: RunRefundScenarioResult = { account, expense, refunds, result };
 
-    return { account, expense, refunds, result };
-};
+    return scenario;
+});

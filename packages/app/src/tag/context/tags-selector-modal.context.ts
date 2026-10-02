@@ -2,6 +2,7 @@ import { createModalContext } from '../../@generic/utils/create-modal-context/cr
 
 export interface TagsSelectorModalParams {
     readonly initialTagIds?: number[];
+    readonly suggestedTagIds?: number[];
     readonly excludeTagIds?: number[];
     readonly description?: string;
     readonly singleSelect?: boolean;
@@ -10,4 +11,7 @@ export interface TagsSelectorModalParams {
 
 export type TagsSelectorResult = number[] | null;
 
-export const [TagsSelectorModalContext, useTagsSelectorModal] = createModalContext<TagsSelectorModalParams, TagsSelectorResult>(null);
+export const [TagsSelectorModalContext, useTagsSelectorModal, useTagsSelectorModalParams] = createModalContext<
+    TagsSelectorModalParams,
+    TagsSelectorResult
+>(null);

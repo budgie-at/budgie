@@ -54,7 +54,7 @@ export const WaitlistSuccess = ({ variant, position }: Props) => {
                 <Sparkles className="size-4 text-yellow-500" />
 
                 <span className={discountTextVariants({ variant })}>
-                    <Trans>Early access members get 50% off lifetime</Trans>
+                    <Trans>Budgie is completely free — nothing to unlock later</Trans>
                 </span>
             </div>
         </div>

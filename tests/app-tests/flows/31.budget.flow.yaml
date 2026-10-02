@@ -28,7 +28,6 @@ env:
       timeout: 3000
 - tapOn:
       id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
 
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml

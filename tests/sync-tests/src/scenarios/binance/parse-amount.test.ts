@@ -1,5 +1,5 @@
 import { binanceMapper } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 describe('binance/parse-amount', () => {
     it('parses a whole amount to a major-unit number', () => {

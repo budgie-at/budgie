@@ -1,85 +1,79 @@
 import { TranslationLlmService } from '@budgie/ai';
-import { Log } from '@budgie/logger';
+import { CategoryRepository, TagRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { translationDrainerSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
+import { TranslationProgressStore } from '../store/translation-progress.store';
 
-import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
-import { DrainerKindEnum } from '../enum/drainer-kind.enum';
-import { translationProgressStore } from '../store/translation-progress.store';
+import { AiModelResidencyService } from './ai-model-residency.service';
+import { ChatService } from './chat.service';
+import { DrainerService } from './drainer.service';
 
-import { BaseDrainerService } from './base-drainer.service';
-import { chatService } from './chat.service';
+import type { AiInvokeError } from '@budgie/ai';
+import type { CategoryEntityInterface, Db, DbError } from '@budgie/contracts';
 
-import type { CategoryOrTagRowInterface } from '../interface/category-or-tag-row.interface';
-import type { TranslationResultInterface } from '@budgie/ai';
+export class TranslationDrainerService extends Context.Service<TranslationDrainerService>()('@budgie/app/TranslationDrainerService', {
+    make: Effect.gen(function* () {
+        const categoryRepository = yield* CategoryRepository;
+        const tagRepository = yield* TagRepository;
+        const translationLlmService = yield* TranslationLlmService;
+        const translationProgressStore = yield* TranslationProgressStore;
+        const aiModelResidencyService = yield* AiModelResidencyService;
 
-class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInterface> {
-    private static readonly RELAXED_INTERVAL_MS = 5000;
-    private static readonly RELAXED_BATCH_SIZE = 3;
-    private static readonly BOOST_BATCH_SIZE = 5;
-    private static readonly YIELD_EVERY_ROWS = 2;
+        const translateRow = (
+            row: Pick<CategoryEntityInterface, 'id' | 'title'>,
+            updateTranslation: (id: number, titleEn: string, titleTags: string) => Effect.Effect<void, DbError, Db>
+        ): Effect.Effect<void, DbError | AiInvokeError, Db> =>
+            translationLlmService
+                .translate(row.title)
+                .pipe(Effect.flatMap(result => updateTranslation(row.id, result.titleEn, result.titleTags)));
 
-    protected readonly kind = DrainerKindEnum.TRANSLATION;
-    protected readonly relaxedIntervalMs = TranslationDrainerService.RELAXED_INTERVAL_MS;
-    protected readonly relaxedBatchSize = TranslationDrainerService.RELAXED_BATCH_SIZE;
-    protected readonly boostBatchSize = TranslationDrainerService.BOOST_BATCH_SIZE;
-    protected readonly yieldEveryRows = TranslationDrainerService.YIELD_EVERY_ROWS;
-
-    @Log(
-        row => `enter kind=${row.kind} id=${row.id} title="${row.title}"`,
-        (result, row) => `done id=${row.id} titleEn="${result.titleEn}"`,
-        (error, row) => `throw id=${row.id} error=${getErrorMessage(error)}`
-    )
-    private async translateRow(row: CategoryOrTagRowInterface): Promise<TranslationResultInterface> {
-        const service = new TranslationLlmService(chatService);
-
-        return service.translate(row.title);
-    }
-
-    @Log(
-        (row, translationResult) => `enter kind=${row.kind} id=${row.id} titleEn="${translationResult.titleEn}"`,
-        'done',
-        (error, row, translationResult) => `throw id=${row.id} titleEn="${translationResult.titleEn}" error=${getErrorMessage(error)}`
-    )
-    private async persistTranslation(row: CategoryOrTagRowInterface, result: TranslationResultInterface): Promise<void> {
-        if (row.kind === 'category') {
-            await categoryRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
-        } else {
-            await tagRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
-        }
-    }
-
-    protected subscribeToSubsystem(listener: () => void): () => void {
-        return chatService.subscribe(listener);
-    }
-
-    protected isSubsystemReady(): boolean {
-        return chatService.isReady;
-    }
-
-    protected async fetchPending(limit: number): Promise<CategoryOrTagRowInterface[]> {
-        const half = Math.ceil(limit / 2);
-        const [categories, tags] = await Promise.all([
-            categoryRepository.findUntranslated(half),
-            tagRepository.findUntranslated(limit - half)
-        ]);
-
-        return [
-            ...categories.map((row): CategoryOrTagRowInterface => ({ kind: 'category', id: row.id, title: row.title })),
-            ...tags.map((row): CategoryOrTagRowInterface => ({ kind: 'tag', id: row.id, title: row.title }))
-        ];
-    }
-
-    protected async countPending(): Promise<number> {
-        await translationProgressStore.refresh();
-
-        return translationProgressStore.getSnapshot().pending;
-    }
-
-    protected async processRow(row: CategoryOrTagRowInterface): Promise<void> {
-        const result = await this.translateRow(row);
-        await this.persistTranslation(row, result);
-    }
+        return new DrainerService<DbError | AiInvokeError>(
+            {
+                subsystem: AiSubsystemNameEnum.CHAT,
+                relaxedIntervalMs: 5000,
+                relaxedBatchSize: 3,
+                boostBatchSize: 5,
+                yieldEveryRows: 2,
+                snapshot: translationDrainerSnapshotAtom,
+                fetchPending: limit =>
+                    Effect.all(
+                        [
+                            categoryRepository.findUntranslated(Math.ceil(limit / 2)),
+                            tagRepository.findUntranslated(limit - Math.ceil(limit / 2))
+                        ],
+                        {
+                            concurrency: 'unbounded'
+                        }
+                    ).pipe(
+                        Effect.map(([categories, tags]) => [
+                            ...categories.map(row => translateRow(row, categoryRepository.updateTranslation)),
+                            ...tags.map(row =>
+                                translateRow(row, (id, titleEn, titleTags) => tagRepository.updateTranslation(id, titleEn, titleTags))
+                            )
+                        ])
+                    ),
+                countPending: Effect.map(
+                    translationProgressStore.refresh(),
+                    () => appAtomRegistry.get(translationProgressStore.snapshot).pending
+                ),
+                afterBatch: Effect.void
+            },
+            aiModelResidencyService
+        );
+    })
+}) {
+    static readonly layer = Layer.effect(TranslationDrainerService, TranslationDrainerService.make).pipe(
+        Layer.provide([
+            CategoryRepository.layer,
+            TagRepository.layer,
+            TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
+            TranslationProgressStore.layer,
+            AiModelResidencyService.layer
+        ])
+    );
 }
-
-export const translationDrainerService = new TranslationDrainerService();

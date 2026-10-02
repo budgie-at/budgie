@@ -1,9 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Contacts from 'expo-contacts';
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+
+import { appRuntime } from '../runtime/app.runtime';
 
 export type Contact = Contacts.ExistingContact;
 
@@ -26,42 +29,32 @@ export const useContacts = () => {
     const { t } = useLingui();
 
     useEffect(() => {
-        const loadContacts = async () => {
-            setState(prev => ({ ...prev, loading: true, error: null }));
+        const fiber = appRuntime.runFork(
+            Effect.gen(function* () {
+                setState(prev => ({ ...prev, loading: true, error: null }));
+                const { status } = yield* Effect.tryPromise(() => Contacts.requestPermissionsAsync());
 
-            try {
-                const { status } = await Contacts.requestPermissionsAsync();
-
-                if (status === Contacts.PermissionStatus.GRANTED) {
-                    const { data } = await Contacts.getContactsAsync({
-                        fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Image]
-                    });
-
-                    setState({
-                        contacts: data,
-                        loading: false,
-                        error: isEmptyArray(data) ? t`No contacts found on this device.` : null,
-                        hasLoaded: true
-                    });
-                } else {
-                    setState({
-                        contacts: [],
-                        loading: false,
-                        error: t`Permission to access contacts was denied.`,
-                        hasLoaded: true
-                    });
+                if (status !== Contacts.PermissionStatus.GRANTED) {
+                    return { contacts: [], error: t`Permission to access contacts was denied.` };
                 }
-            } catch {
-                setState(prev => ({
-                    ...prev,
-                    loading: false,
-                    hasLoaded: true,
-                    error: t`Failed to load contacts.`
-                }));
-            }
-        };
 
-        void loadContacts();
+                const { data } = yield* Effect.tryPromise(() =>
+                    Contacts.getContactsAsync({
+                        fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Image]
+                    })
+                );
+
+                return { contacts: data, error: isEmptyArray(data) ? t`No contacts found on this device.` : null };
+            }).pipe(
+                Effect.match({
+                    onSuccess: result => void setState({ ...result, loading: false, hasLoaded: true }),
+                    onFailure: () =>
+                        void setState(prev => ({ ...prev, loading: false, hasLoaded: true, error: t`Failed to load contacts.` }))
+                })
+            )
+        );
+
+        return () => void fiber.interruptUnsafe();
     }, [t]);
 
     useEffect(() => {

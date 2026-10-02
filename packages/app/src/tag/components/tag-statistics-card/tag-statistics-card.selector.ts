@@ -2,5 +2,6 @@ const normalizePart = (value: number | string) => String(value).replace(/[^a-zA-
 
 export const TagStatisticsCardSelector = {
     Card: (title: string) => `TagStatisticsCard.${normalizePart(title)}` as const,
+    Untagged: 'TagStatisticsCard.Untagged',
     Amount: (title: string, amount: number) => `TagStatisticsCard.Amount.${normalizePart(title)}.${normalizePart(amount)}` as const
 } as const;

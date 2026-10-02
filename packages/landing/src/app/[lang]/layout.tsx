@@ -7,12 +7,13 @@ import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
 import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/util/build-alternates.util';
-import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
+import { clientMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
 import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 import { ThemeProvider } from '../../providers/theme-provider';
 
+import type { Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 const fixelDisplay = localFont({
@@ -23,19 +24,9 @@ const fixelDisplay = localFont({
             style: 'normal'
         },
         {
-            path: '../fonts/fixel-display/fixel-display-regular-italic.woff2',
-            weight: '400',
-            style: 'italic'
-        },
-        {
             path: '../fonts/fixel-display/fixel-display-medium.woff2',
             weight: '500',
             style: 'normal'
-        },
-        {
-            path: '../fonts/fixel-display/fixel-display-medium-italic.woff2',
-            weight: '500',
-            style: 'italic'
         },
         {
             path: '../fonts/fixel-display/fixel-display-semi-bold.woff2',
@@ -43,19 +34,9 @@ const fixelDisplay = localFont({
             style: 'normal'
         },
         {
-            path: '../fonts/fixel-display/fixel-display-semi-bold-italic.woff2',
-            weight: '600',
-            style: 'italic'
-        },
-        {
             path: '../fonts/fixel-display/fixel-display-bold.woff2',
             weight: '700',
             style: 'normal'
-        },
-        {
-            path: '../fonts/fixel-display/fixel-display-bold-italic.woff2',
-            weight: '700',
-            style: 'italic'
         }
     ],
     display: 'swap'
@@ -70,6 +51,16 @@ export async function generateStaticParams() {
     return SUPPORTED_LOCALES.map(lang => ({ lang }));
 }
 
+export const viewport: Viewport = {
+    themeColor: [
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
+        { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
+        { media: '(prefers-color-scheme: dark)', color: '#09090b' }
+    ],
+    viewportFit: 'cover'
+};
+
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props) {
     const { lang } = await props.params;
@@ -77,7 +68,7 @@ export async function generateMetadata(props: Props) {
 
     const siteTitle = i18n._(msg`Budgie - Privacy-First Expense Tracker`);
     const shortDescription = i18n._(
-        msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
+        msg`Track expenses, sync banks, manage crypto with complete privacy. Multi-currency support, debt tracking, and AI insights.`
     );
 
     return {
@@ -99,19 +90,31 @@ export async function generateMetadata(props: Props) {
         // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'index, follow',
         alternates: buildAlternates(lang, ''),
+        icons: {
+            icon: [
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
+                { url: '/icon.svg', type: 'image/svg+xml' },
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
+                { url: '/icon0.png', sizes: '32x32', type: 'image/png' },
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
+                { url: '/icon1.png', sizes: '48x48', type: 'image/png' }
+            ],
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            other: [{ rel: 'mask-icon', url: '/mask-icon.svg', color: '#464ee7' }]
+        },
         openGraph: {
             title: siteTitle,
             description: shortDescription,
             type: 'website',
             url: `${BASE_URL}/${lang}`,
-            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
-            images: [{ url: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`, width: 1200, height: 630 }]
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US'
         },
         twitter: {
             card: 'summary_large_image',
             title: siteTitle,
             description: shortDescription,
-            images: [`${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`],
 
             site: '@budgie_at',
 
@@ -140,7 +143,8 @@ export default async function RootLayout({ params, children }: Props) {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'Budgie',
-        url: BASE_URL
+        url: BASE_URL,
+        inLanguage: lang
     };
     /* oxlint-enable lingui/no-unlocalized-strings */
 
@@ -150,7 +154,7 @@ export default async function RootLayout({ params, children }: Props) {
                 <JsonLd data={organizationData} />
                 <JsonLd data={websiteData} />
 
-                <LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
+                <LinguiClientProvider initialLocale={lang} initialMessages={clientMessages[lang]}>
                     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
                         <div className="flex min-h-dvh flex-col">
                             <Header lang={lang} />

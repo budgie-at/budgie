@@ -29,7 +29,7 @@ export const BlogSearch = ({ onSearch, searchQuery }: Props) => {
     const hasSearchQuery = isNotEmptyString(searchQuery);
 
     return (
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto mb-12">
             <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground" />
 

@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceAssetBalanceApiSchema = z.object({
-    asset: z.string(),
-    free: z.string(),
-    locked: z.string(),
-    freeze: z.string().optional(),
-    withdrawing: z.string().optional(),
-    ipoable: z.string().optional()
+const BinanceAssetBalanceApiSchema = Schema.Struct({
+    asset: Schema.String,
+    free: Schema.String,
+    locked: Schema.String,
+    freeze: Schema.optional(Schema.String),
+    withdrawing: Schema.optional(Schema.String),
+    ipoable: Schema.optional(Schema.String)
 });
 
-export const BinanceAssetBalanceListApiSchema = z.array(BinanceAssetBalanceApiSchema);
+export const BinanceAssetBalanceListApiSchema = Schema.Array(BinanceAssetBalanceApiSchema);
 
-export type BinanceAssetBalanceApiInterface = z.infer<typeof BinanceAssetBalanceApiSchema>;
+export type BinanceAssetBalanceApiInterface = typeof BinanceAssetBalanceApiSchema.Type;

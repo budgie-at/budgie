@@ -1,6 +1,7 @@
 import { AccountEntityInterface, DepositAccountCreateInputSchema } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Resolver, useWatch } from 'react-hook-form';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import * as Schema from 'effect/Schema';
+import { useWatch } from 'react-hook-form';
 
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 import { DepositAccountFormValues } from '../interface/deposit-account-form-values.interface';
@@ -13,7 +14,7 @@ export const useDepositAccountForm = (
     syncInitialValues = false
 ) => {
     const form = useAccountEntityForm(
-        zodResolver(DepositAccountCreateInputSchema) as Resolver<DepositAccountFormValues>,
+        standardSchemaResolver(Schema.toStandardSchemaV1(DepositAccountCreateInputSchema)),
         initialValues,
         onSubmit,
         syncInitialValues

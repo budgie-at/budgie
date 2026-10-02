@@ -1,0 +1,1 @@
+.read shared/rules.sql

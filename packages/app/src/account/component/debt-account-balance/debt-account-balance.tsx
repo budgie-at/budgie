@@ -2,42 +2,50 @@ import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
+import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
+import { DebtAccountBalanceSkeleton } from '../debt-account-balance-skeleton/debt-account-balance-skeleton';
 import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import { DebtAccountBalanceSelector } from './debt-account-balance.selector';
 
-import type { DebtAccountProgressSummaryInterface } from '../../interface/debt-account-progress-summary.interface';
+import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
 interface Props {
     readonly debtType: AccountDebtTypeEnum;
     readonly instrumentSymbol: string;
-    readonly summary: DebtAccountProgressSummaryInterface;
+    readonly summary: DebtAccountProgressSummaryInterface | null;
 }
-
-const isBorrowed = (debtType: AccountDebtTypeEnum): boolean => debtType === AccountDebtTypeEnum.BORROW;
 
 export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const protectAmount = useProtectedAmountLabel();
 
-    const { outstandingAmount, paidAmount, percentage, totalAmount } = summary;
-    const borrowed = isBorrowed(debtType);
+    if (!isDefined(summary)) {
+        return <DebtAccountBalanceSkeleton />;
+    }
+
+    const { outstandingAmount, overpaidAmount, paidAmount, percentage, totalAmount } = summary;
+    const borrowed = debtType === AccountDebtTypeEnum.BORROW;
+    const isOverpaid = isPositiveNumber(overpaidAmount);
 
     const labels = {
         directionIcon: borrowed ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight,
-        directionLabel: borrowed ? t`Left to repay` : t`Left to receive`,
-        paidLabel: borrowed ? t`Repaid` : t`Returned`,
+        directionLabel: t(DEBT_REMAINING_LABEL[debtType]),
+        overpaidLabel: t`Overpaid`,
+        paidLabel: t(DEBT_SETTLED_LABEL[debtType]),
         totalLabel: borrowed ? t`Borrowed` : t`Lent`
     };
-    const formattedOutstandingAmount = formatDigits(outstandingAmount, instrumentSymbol);
-    const formattedPaidAmount = formatDigits(paidAmount, instrumentSymbol);
-    const formattedTotalAmount = formatDigits(totalAmount, instrumentSymbol);
-    const accessibilityLabel = `${labels.directionLabel}: ${formattedOutstandingAmount}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
+    const formattedOverpaidAmount = protectAmount(overpaidAmount, instrumentSymbol);
+    const formattedPaidAmount = protectAmount(paidAmount, instrumentSymbol);
+    const formattedTotalAmount = protectAmount(totalAmount, instrumentSymbol);
+    const overpaidAccessibilityLabel = isOverpaid ? ` ${labels.overpaidLabel}: ${formattedOverpaidAmount}.` : '';
+    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}.${overpaidAccessibilityLabel} ${percentage}%`;
 
     return (
         <View
@@ -79,6 +87,12 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
                     {labels.totalLabel}: {formattedTotalAmount}
                 </Text>
             </View>
+
+            {isOverpaid ? (
+                <Text className="text-warning-foreground text-sm" testID={DebtAccountBalanceSelector.OverpaidAmount(overpaidAmount)}>
+                    {labels.overpaidLabel}: {formattedOverpaidAmount}
+                </Text>
+            ) : null}
         </View>
     );
 };

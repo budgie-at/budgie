@@ -1,13 +1,11 @@
-import { UseSuggestionReturnInterface } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
+import { EmbeddingSuggestionService, UseSuggestionReturnInterface } from '@budgie/ai';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
+import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
-const logger = getLogger('useCommentSuggestion');
-
-import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCommentSuggestionParams {
@@ -22,32 +20,17 @@ interface UseCommentSuggestionParams {
 export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSuggestionReturnInterface<string> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { status: embeddingStatus } = useEmbedding();
+    const embeddingStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
-    const fetchSuggestions = async (): Promise<string[]> => {
+    const fetchSuggestions = () => {
         const mccDescription = mccCategory?.fullDescription ?? null;
-        logger.log('hook:suggestion:comment:fetch:start', {
-            transactionTitle,
-            categoryId,
-            mccCategoryId,
-            mccDescription,
-            comment,
-            aiContext
-        });
-        const results = await embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext);
-        logger.log('hook:suggestion:comment:fetch:done', { count: results.length });
 
-        return results;
+        return Effect.flatMap(EmbeddingSuggestionService, embeddingSuggestionService =>
+            embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext)
+        );
     };
-
-    logger.log('hook:suggestion:comment:hook:state', {
-        enabled,
-        embeddingStatus,
-        embeddingReady,
-        isMccLoading
-    });
 
     const { status, suggestions } = useSuggestionBase({
         enabled,

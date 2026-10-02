@@ -1,4 +1,3 @@
-import type { BudgetUpdateEntitySchema } from '../schema/budget-update-entity.schema';
-import type { z } from 'zod';
+import type { BudgetCreateEntityInterface } from './budget-create-entity.interface';
 
-export type BudgetUpdateEntityInterface = z.infer<typeof BudgetUpdateEntitySchema>;
+export type BudgetUpdateEntityInterface = Partial<BudgetCreateEntityInterface>;

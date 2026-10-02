@@ -1,6 +1,7 @@
 export const CreateTransactionMenuSelector = {
     Trigger: 'ActionButton',
     Close: 'ActionButton.Close',
+    AiButton: 'ActionItem.AiButton',
     Expense: 'ActionItem.Expense',
     Income: 'ActionItem.Income',
     Transfer: 'ActionItem.Transfer',

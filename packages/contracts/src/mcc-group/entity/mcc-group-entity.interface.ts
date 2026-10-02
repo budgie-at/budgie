@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
-import type { MccGroupEntitySchema } from '../schema/mcc-group-entity.schema';
-
-export type MccGroupEntityInterface = z.infer<typeof MccGroupEntitySchema>;
+export type MccGroupEntityInterface = typeof MccGroupEntityTable.$inferSelect;

@@ -1,3 +1,5 @@
+import { sql } from 'drizzle-orm';
+
 import { testDb, testQueryService, testSeedService } from './test-context';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
@@ -84,13 +86,11 @@ export const seedIbanBridgeTargetIncome = (targetAccountId: number, transferMccI
         }
     );
 
-export const parentConsolidationSource = async (sourceTransactionId: number, canonicalTransactionId: number): Promise<void> => {
-    await testDb.$client.runAsync(
-        'UPDATE transaction_entries SET original_transaction_id = ?, transaction_id = ? WHERE transaction_id = ?',
-        [sourceTransactionId, canonicalTransactionId, sourceTransactionId]
+export const parentConsolidationSource = (sourceTransactionId: number, canonicalTransactionId: number): void => {
+    testDb.run(
+        sql`UPDATE transaction_entries SET original_transaction_id = ${sourceTransactionId}, transaction_id = ${canonicalTransactionId} WHERE transaction_id = ${sourceTransactionId}`
     );
-    await testDb.$client.runAsync('UPDATE transactions SET consolidation_parent_transaction_id = ? WHERE id = ?', [
-        canonicalTransactionId,
-        sourceTransactionId
-    ]);
+    testDb.run(
+        sql`UPDATE transactions SET consolidation_parent_transaction_id = ${canonicalTransactionId} WHERE id = ${sourceTransactionId}`
+    );
 };

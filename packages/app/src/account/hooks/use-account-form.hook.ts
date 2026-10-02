@@ -1,6 +1,7 @@
 import { AccountEntityInterface, LiabilityAccountCreateInputInterface, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { t } from '@lingui/core/macro';
+import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { FieldErrors, useForm, useWatch } from 'react-hook-form';
 
@@ -14,8 +15,8 @@ export const useAccountForm = (
     onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
 ) => {
     const showError = useShowError();
-    const form = useForm({
-        resolver: zodResolver(LiabilityAccountCreateInputSchema),
+    const form = useForm<LiabilityAccountCreateInputInterface>({
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(LiabilityAccountCreateInputSchema)),
         mode: 'onSubmit',
         values,
         resetOptions: {

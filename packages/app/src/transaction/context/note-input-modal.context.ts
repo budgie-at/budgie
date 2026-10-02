@@ -4,4 +4,6 @@ export interface NoteInputModalParams {
     readonly initialValue?: string;
 }
 
-export const [NoteInputModalContext, useNoteInputModal] = createModalContext<NoteInputModalParams, string | null>(null);
+export const [NoteInputModalContext, useNoteInputModal, useNoteInputModalParams] = createModalContext<NoteInputModalParams, string | null>(
+    null
+);

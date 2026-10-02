@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -8,10 +9,12 @@ import type { BinanceAccountIdInterface } from '../interface/binance-account-id.
 
 const BINANCE_ACCOUNT_ID_SEPARATOR = ':';
 
-const BinanceAccountIdSchema = z.object({
-    wallet: z.enum(BinanceWalletEnum),
-    asset: z.string().min(1)
-});
+const decodeBinanceAccountIdParts = Schema.decodeUnknownOption(
+    Schema.Struct({
+        wallet: Schema.Enum(BinanceWalletEnum),
+        asset: Schema.NonEmptyString
+    })
+);
 
 export const encodeBinanceAccountId = (accountId: BinanceAccountIdInterface): string =>
     `${accountId.wallet}${BINANCE_ACCOUNT_ID_SEPARATOR}${accountId.asset}`;
@@ -30,7 +33,5 @@ export const decodeBinanceAccountId = (accountId: string): BinanceAccountIdInter
         return null;
     }
 
-    const result = BinanceAccountIdSchema.safeParse({ wallet, asset });
-
-    return result.success ? result.data : null;
+    return Option.getOrNull(decodeBinanceAccountIdParts({ wallet, asset }));
 };

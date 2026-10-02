@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { SettingsEntityTable } from '../table/settings-entity.table';
 
-import { SettingsEntitySchema } from '../schema/settings-entity.schema';
-
-export type SettingsEntityInterface = z.infer<typeof SettingsEntitySchema>;
+export type SettingsEntityInterface = typeof SettingsEntityTable.$inferSelect;

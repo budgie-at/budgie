@@ -1,5 +1,5 @@
 import { ersteMapper } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 import type { ErsteRowInterface } from '@budgie/sync';
 

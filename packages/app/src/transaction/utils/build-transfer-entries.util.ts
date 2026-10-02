@@ -4,18 +4,16 @@ interface BuildTransferEntriesParams {
     readonly fromAccountId: number;
     readonly toAccountId: number;
     readonly amount: number;
-    readonly categoryId: number;
 }
 
 export const buildTransferEntries = ({
     fromAccountId,
     toAccountId,
-    amount,
-    categoryId
+    amount
 }: BuildTransferEntriesParams): TransactionEntryCreateInputInterface[] => [
     {
         accountId: fromAccountId,
-        categoryId,
+        categoryId: null,
         amount,
         type: TransactionEntryTypeEnum.CREDIT,
         kind: TransactionEntryKindEnum.PRIMARY,
@@ -24,7 +22,7 @@ export const buildTransferEntries = ({
     },
     {
         accountId: toAccountId,
-        categoryId,
+        categoryId: null,
         amount,
         type: TransactionEntryTypeEnum.DEBIT,
         kind: TransactionEntryKindEnum.PRIMARY,

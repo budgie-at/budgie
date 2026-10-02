@@ -1,6 +1,8 @@
+import * as Schema from 'effect/Schema';
+
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { AccountEntitySchema } from '../schema/account-entity.schema';
+import { AccountIbanSchema } from '../schema/account-iban.schema';
 
 export const normalizeAccountIban = (iban: string | null | undefined): string | null => {
     if (!isNotEmptyString(iban)) {
@@ -9,5 +11,5 @@ export const normalizeAccountIban = (iban: string | null | undefined): string | 
 
     const candidate = iban.replaceAll(/\s/gu, '').toUpperCase();
 
-    return AccountEntitySchema.shape.iban.safeParse(candidate).success ? candidate : null;
+    return Schema.is(AccountIbanSchema)(candidate) ? candidate : null;
 };

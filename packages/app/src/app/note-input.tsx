@@ -7,13 +7,14 @@ import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-p
 import { Icon } from '../@generic/component/icon/icon';
 import { TextArea } from '../@generic/component/textarea/text-area';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
-import { useNoteInputModal } from '../transaction/context/note-input-modal.context';
+import { useNoteInputModal, useNoteInputModalParams } from '../transaction/context/note-input-modal.context';
 
 import { NoteInputModalSelector } from './note-input-modal.selector';
 
 export default function NoteInputModal() {
     const { t } = useLingui();
-    const [, resolveNoteInput, currentParams] = useNoteInputModal();
+    const [, resolveNoteInput] = useNoteInputModal();
+    const currentParams = useNoteInputModalParams();
     const { backgroundColor } = useFormsheetListStyles();
 
     const initialValue = currentParams?.initialValue ?? '';

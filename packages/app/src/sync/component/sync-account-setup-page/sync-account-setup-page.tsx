@@ -1,3 +1,5 @@
+import { View } from 'react-native';
+
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
@@ -18,7 +20,7 @@ export const SyncAccountSetupPage = ({ title, description, onGoBack, footer, scr
         title={title}
         subtitle={description}
         leading={<GoBackButton onPress={onGoBack} />}
-        footer={footer}
+        footer={<View className="gap-md pt-xl px-7xl">{footer}</View>}
         testID={scrollViewTestID}
     >
         <FormLayoutGroup>{children}</FormLayoutGroup>

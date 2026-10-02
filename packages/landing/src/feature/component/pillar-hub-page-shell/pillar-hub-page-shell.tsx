@@ -1,5 +1,5 @@
-import { PillarHubBreadcrumbsJsonLd } from '../pillar-hub-breadcrumbs-json-ld/pillar-hub-breadcrumbs-json-ld';
-import { PillarHubWebPageJsonLd } from '../pillar-hub-web-page-json-ld/pillar-hub-web-page-json-ld';
+import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
+import { WebPageJsonLd } from '../../../generic/component/web-page-json-ld/web-page-json-ld';
 
 import type { ReactNode } from 'react';
 
@@ -20,15 +20,15 @@ export const PillarHubPageShell = ({ locale, slug, title, description, homeLabel
 
     return (
         <main className="flex-1">
-            <PillarHubBreadcrumbsJsonLd locale={locale} slug={slug}>
-                <PillarHubBreadcrumbsJsonLd.Item name={homeLabel} path={homePath} />
-                <PillarHubBreadcrumbsJsonLd.Item name={title} path={hubPath} />
-            </PillarHubBreadcrumbsJsonLd>
-            <PillarHubWebPageJsonLd
+            <BreadcrumbsJsonLd locale={locale} path={`/${slug}`}>
+                <BreadcrumbsJsonLd.Item name={homeLabel} path={homePath} />
+                <BreadcrumbsJsonLd.Item name={title} path={hubPath} />
+            </BreadcrumbsJsonLd>
+            <WebPageJsonLd
                 description={description}
                 locale={locale}
+                path={`/${slug}`}
                 publishedAt={publishedAt}
-                slug={slug}
                 title={title}
                 updatedAt={updatedAt}
             />

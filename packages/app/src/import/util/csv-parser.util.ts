@@ -1,17 +1,18 @@
+import * as Effect from 'effect/Effect';
 import Papa, { ParseResult } from 'papaparse';
 
-export const parseCsvHeaders = (csvText: string): Promise<string[]> =>
-    new Promise((resolve, reject) => {
+export const parseCsvHeaders = (csvText: string) =>
+    Effect.callback<string[], Error>(resume => {
         Papa.parse<Record<string, string>>(csvText, {
             header: true,
             preview: 1,
-            complete: ({ meta }: ParseResult<Record<string, string>>) => void resolve(meta.fields ?? []),
-            error: (error: Error) => void reject(error)
+            complete: ({ meta }: ParseResult<Record<string, string>>) => void resume(Effect.succeed(meta.fields ?? [])),
+            error: (error: Error) => void resume(Effect.fail(error))
         });
     });
 
-export const countCsvRows = (csvText: string): Promise<number> =>
-    new Promise((resolve, reject) => {
+export const countCsvRows = (csvText: string) =>
+    Effect.callback<number, Error>(resume => {
         let count = 0;
         Papa.parse<Record<string, string>>(csvText, {
             header: true,
@@ -19,7 +20,7 @@ export const countCsvRows = (csvText: string): Promise<number> =>
             chunk: ({ data }: ParseResult<Record<string, string>>) => {
                 count += data.length;
             },
-            complete: () => void resolve(count),
-            error: (error: Error) => void reject(error)
+            complete: () => void resume(Effect.succeed(count)),
+            error: (error: Error) => void resume(Effect.fail(error))
         });
     });

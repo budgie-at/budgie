@@ -1,11 +1,10 @@
 import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
+import { ClassValue, cn } from 'cn';
 import { ComponentProps, ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { CardSizeType } from '../../type/card-size.type';
 import { HorizontalCellAlignType } from '../../type/horizontal-cell-align.type';
-import { cn } from '../../utils/cn.util';
 import { Card } from '../card/card';
 
 interface Props extends ComponentProps<typeof Card> {

@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+- runFlow: ../subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: '^TransactionCard[.]Label[.].+$'
+      timeout: 15000
+
+- longPressOn:
+      id: '^TransactionCard[.]Label[.].+$'
+      index: 0
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionContextMenu.EditButton'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

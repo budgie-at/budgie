@@ -12,7 +12,7 @@ export interface TransactionFeeModalParamsInterface {
 
 export type TransactionFeeModalResult = readonly TransactionEntryCreateInputInterface[];
 
-export const [TransactionFeeModalContext, useTransactionFeeModal] = createModalContext<
+export const [TransactionFeeModalContext, useTransactionFeeModal, useTransactionFeeModalParams] = createModalContext<
     TransactionFeeModalParamsInterface,
     TransactionFeeModalResult | null
 >(null);

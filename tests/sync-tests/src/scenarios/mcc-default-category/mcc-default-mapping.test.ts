@@ -1,7 +1,13 @@
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
-import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, MCC_DEFAULT_CATEGORY_SEED, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    BANK_FEE_CATEGORY_ID,
+    CategorySourceEnum,
+    ExternalSourceEnum,
+    MCC_DEFAULT_CATEGORY_SEED,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 import { SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 import type { SyncTransactionInterface } from '@budgie/sync';
@@ -34,7 +40,7 @@ const FEE_OPERATION_AMOUNT_NEGATIVE = -30000;
 const makeFeeTransaction = (): SyncTransactionInterface =>
     makeExpenseTransaction({ amount: FEE_CARD_AMOUNT_NEGATIVE, operationAmount: FEE_OPERATION_AMOUNT_NEGATIVE, feeAmount: 300 });
 
-const expectFeeEntryMapping = (result: ReturnType<typeof mapBankTransactionToCreateInput>): void => {
+const expectFeeEntryMapping = (result: Awaited<ReturnType<typeof mapBankTransactionToCreateInput>>): void => {
     const categoryEntries = result.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE);
     const feeEntries = result.entries.filter(entry => entry.type === TransactionEntryTypeEnum.FEE);
 
@@ -63,7 +69,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: 42 };
         const bankTransaction = makeExpenseTransaction({ mcc: 5411 });
 
-        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries[0].categoryId).toBe(42);
         expect(result.entries[0].categorySource).toBe(CategorySourceEnum.MCC_DEFAULT);
@@ -74,7 +80,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: null };
         const bankTransaction = makeExpenseTransaction({ mcc: 5411 });
 
-        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries[0].categoryId).toBeNull();
         expect(result.entries[0].categorySource).toBe(CategorySourceEnum.USER);
@@ -84,7 +90,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
     it('leaves categoryId and mccCategoryId null when lookup is null (update-path)', () => {
         const bankTransaction = makeExpenseTransaction({ mcc: 5411 });
 
-        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, null);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, null, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries[0].categoryId).toBeNull();
         expect(result.entries[0].categorySource).toBe(CategorySourceEnum.USER);
@@ -95,7 +101,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: 42 };
         const bankTransaction = makeExpenseTransaction({ feeAmount: 0 });
 
-        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries).toHaveLength(1);
         expect(result.entries[0].amount).toBe(2500);
@@ -103,7 +109,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
 
     it('creates a fee entry without turning the transaction into category splits', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: 42 };
-        const result = mapBankTransactionToCreateInput(makeFeeTransaction(), ACCOUNT_ID, lookup);
+        const result = mapBankTransactionToCreateInput(makeFeeTransaction(), ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expectFeeEntryMapping(result);
     });

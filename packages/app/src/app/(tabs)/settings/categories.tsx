@@ -2,6 +2,7 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
@@ -9,13 +10,15 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
+import { CategoryDefaultIconButton } from '../../../category/components/category-default-icon-button/category-default-icon-button';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
 import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
-import { categoryService } from '../../../category/service/category.service';
+import { CategoryService } from '../../../category/service/category.service';
 
 import { CategoryPageSelector } from './category-page.selector';
 
@@ -37,7 +40,9 @@ export default function Categories() {
     });
 
     const handleDeleteCategory = async (id: number) => {
-        const count = await categoryService.countTransactionEntries(id);
+        const count = await appRuntime.runPromise(
+            Effect.flatMap(CategoryService, categoryService => categoryService.countTransactionEntries(id))
+        );
         if (isPositiveNumber(count)) {
             const description = t({
                 message: plural(count, {
@@ -53,7 +58,9 @@ export default function Categories() {
 
             if (isDefined(targetCategoryId)) {
                 try {
-                    await categoryService.mergeInto(id, targetCategoryId);
+                    await appRuntime.runPromise(
+                        Effect.flatMap(CategoryService, categoryService => categoryService.mergeInto(id, targetCategoryId))
+                    );
                 } catch {
                     Toast.show({
                         type: 'error',
@@ -67,7 +74,7 @@ export default function Categories() {
         }
 
         try {
-            await categoryService.deleteById(id);
+            await appRuntime.runPromise(Effect.flatMap(CategoryService, categoryService => categoryService.deleteById(id)));
         } catch (error) {
             Toast.show({
                 type: 'error',
@@ -97,6 +104,7 @@ export default function Categories() {
             onSearchChange={setSearch}
             searchInputTestID={CategoryPageSelector.SearchInput}
             emptyState={<CategoryEmptyState search={search} />}
+            listHeader={<CategoryDefaultIconButton />}
         />
     );
 }

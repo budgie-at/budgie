@@ -1,7 +1,6 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import Link from 'next/link';
 
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
 import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
@@ -20,8 +19,8 @@ import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-i
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
+import { buildPageMetadata } from '../../../../generic/util/build-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
@@ -35,14 +34,13 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
 
-    return buildBlogArticleMetadata({
+    return buildPageMetadata({
         author: ARTICLE_METADATA.author,
-        date: ARTICLE_METADATA.date,
         description: i18n._(ARTICLE_METADATA.seoDescription),
-        image: ARTICLE_METADATA.image,
         keywords: t(i18n)`Mint shutdown alternative, private Mint replacement, offline budget app after Mint, no cloud Mint alternative`,
         locale: lang,
-        slug: ARTICLE_METADATA.slug,
+        path: `/blog/${ARTICLE_METADATA.slug}`,
+        publishedAt: ARTICLE_METADATA.date,
         title: i18n._(ARTICLE_METADATA.title)
     });
 }
@@ -59,21 +57,14 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                 date={ARTICLE_METADATA.date}
                 description={i18n._(ARTICLE_METADATA.description)}
                 homeLabel={t(i18n)`Home`}
-                image={ARTICLE_METADATA.image}
+                image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`}
                 keywords={ARTICLE_METADATA.seoKeywords.join(', ')}
                 locale={lang}
                 slug={ARTICLE_METADATA.slug}
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
-                <Link
-                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-                    href={`/${lang}/blog`}
-                >
-                    <Trans>← Back to Blog</Trans>
-                </Link>
-
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
@@ -248,14 +239,14 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Your-cloud backup</strong> — Encrypted backups that you store in your own cloud storage (iCloud,
-                                Google Drive, Dropbox) or locally, not on the developer&apos;s servers.
+                                <strong>Your-cloud backup</strong> — Backups, encrypted if you set a PIN when you made them, stored in your
+                                own cloud storage (iCloud, Google Drive, Dropbox) or locally, not on the developer&apos;s servers.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Standard export formats</strong> — CSV, JSON, or SQL exports that you can import into any
-                                spreadsheet or another app if you ever choose to leave.
+                                <strong>Standard export formats</strong> — CSV or JSON exports that you can import into any spreadsheet or
+                                another app if you ever choose to leave.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -268,9 +259,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in an encrypted SQLite
-                            database on your device. There are no Budgie servers that receive your transactions, no aggregator that holds
-                            your bank credentials, and no subscription required to use the core features.
+                            Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your
+                            device, encrypted the moment you set a PIN. There are no Budgie servers that receive your transactions, no
+                            aggregator that holds your bank credentials, and no subscription required to use the core features.
                         </Trans>
                     </BlogArticleProse>
 
@@ -281,13 +272,14 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>On-device SQLite storage</strong> — Every transaction, account, and category is stored locally in an
-                                encrypted database. Budgie works fully offline; connectivity is optional, never required.
+                                <strong>On-device storage</strong> — Every transaction, account, and category is stored locally in a
+                                database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never
+                                required.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>AES-256 database encryption</strong> — The database is encrypted at rest. Even if someone gains
+                                <strong>Strong database encryption</strong> — The database is encrypted at rest. Even if someone gains
                                 physical access to your device, they cannot read your financial data without the key.
                             </Trans>
                         </BlogArticleListItem>
@@ -450,9 +442,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         <BlogFaqItem question={<Trans>How is Budgie different from a cloud budgeting app?</Trans>}>
                             <Trans>
                                 The fundamental difference is where your data lives. Cloud apps store your transaction history on company
-                                servers. Budgie stores it in an encrypted database on your device. That difference determines who controls
-                                your financial data, who can access it, and what happens when the company changes its mind about the
-                                product.
+                                servers. Budgie stores it on your device, encrypted the moment you set a PIN. That difference determines who
+                                controls your financial data, who can access it, and what happens when the company changes its mind about
+                                the product.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>

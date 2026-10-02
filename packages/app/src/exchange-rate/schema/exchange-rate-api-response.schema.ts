@@ -1,7 +1,7 @@
-import { number, object, record, string } from 'zod';
+import * as Schema from 'effect/Schema';
 
-export const ExchangeRateApiResponseSchema = object({
-    base: string(),
-    date: string(),
-    rates: record(string(), number())
+export const ExchangeRateApiResponseSchema = Schema.Struct({
+    base: Schema.String,
+    date: Schema.String,
+    rates: Schema.Record(Schema.String, Schema.Number)
 });

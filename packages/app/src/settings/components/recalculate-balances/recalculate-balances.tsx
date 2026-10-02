@@ -1,41 +1,31 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import Toast from 'react-native-toast-message';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
-import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
-import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
+import { AccountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
+import { useConfirmedSettingsAction } from '../../hook/use-confirmed-settings-action.hook';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const RecalculateBalances = () => {
     const { t } = useLingui();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleRecalculate = async () => {
-        const confirmed = await confirmAlert({
+    const { isLoading, run } = useConfirmedSettingsAction(
+        {
             title: t`Recalculate Balances`,
             message: t`This will clear all cached account balances and recalculate them from your transactions. This may take a moment.`,
             confirmText: t`Recalculate`,
             cancelText: t`Cancel`,
             isDestructive: true
-        });
+        },
+        t`Could not recalculate balances`
+    );
 
-        if (!confirmed) {
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            await accountBalanceIncrementalService.updateAllBalances(true);
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Could not recalculate balances`, text2: getErrorMessage(error) });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const handleRecalculate = () =>
+        run(
+            Effect.flatMap(AccountBalanceIncrementalService, accountBalanceIncrementalService =>
+                accountBalanceIncrementalService.updateAllBalances(true)
+            )
+        );
 
     return (
         <SettingsCard

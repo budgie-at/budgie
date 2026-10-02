@@ -163,7 +163,6 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CryptoGroup.Toggle.BTC'
-- waitForAnimationToEnd
 - extendedWaitUntil:
       notVisible:
           id: 'AccountCard.E2E Crypto Vault'
@@ -298,3 +297,148 @@ appId: ${APP_ID}
       id: 'CurrencyMarket.Holdings.CostBasis.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000
+
+# --- Runway pill on home (default: shown, crypto excluded) ---
+
+- scrollUntilVisible:
+      element:
+          id: 'NetWorthAssetChips'
+      direction: UP
+      speed: 20
+      centerElement: true
+      optional: true
+- assertVisible:
+      id: 'RunwayPill'
+
+# --- Runway verdict, fiat-only baseline (29.db seeds 3 net-negative months) ---
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics?tab=runway'
+- extendedWaitUntil:
+      visible:
+          id: 'RunwayVerdict.Figure._3'
+      timeout: 10000
+- assertNotVisible:
+      id: 'RunwayVerdict.CryptoNote'
+
+# --- Runway settings section (crypto fixture) ---
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=runway'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayCryptoCard'
+      timeout: 10000
+- assertVisible:
+      id: 'SettingsPage.RunwayPillSwitch'
+      text: '1'
+- assertVisible:
+      id: 'SettingsPage.RunwayCryptoSwitch'
+      text: '0'
+
+- tapOn:
+      id: 'SettingsPage.RunwayCryptoSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayCryptoSwitch'
+          text: '1'
+      timeout: 3000
+
+# --- Runway verdict changes once crypto is included ---
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics?tab=runway'
+- extendedWaitUntil:
+      visible:
+          id: 'RunwayVerdict.Figure._15'
+      timeout: 10000
+- assertVisible:
+      id: 'RunwayVerdict.CryptoNote'
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=runway'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayPillSwitch'
+          text: '1'
+      timeout: 10000
+
+- tapOn:
+      id: 'SettingsPage.RunwayPillSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayPillSwitch'
+          text: '0'
+      timeout: 3000
+
+# --- Runway pill hides on home once "Show on home" is off ---
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: 'NetWorthAssetChips'
+      direction: UP
+      speed: 20
+      centerElement: true
+- assertNotVisible:
+      id: 'RunwayPill'
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=runway'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayPillSwitch'
+          text: '0'
+      timeout: 10000
+
+- tapOn:
+      id: 'SettingsPage.RunwayPillSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayPillSwitch'
+          text: '1'
+      timeout: 3000
+
+# --- Runway pill returns on home once "Show on home" is back on ---
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: 'NetWorthAssetChips'
+      direction: UP
+      speed: 20
+      centerElement: true
+      optional: true
+- assertVisible:
+      id: 'RunwayPill'

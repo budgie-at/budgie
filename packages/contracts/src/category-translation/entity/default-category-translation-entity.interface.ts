@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { DefaultCategoryTranslationEntityTable } from '../table/default-category-translation-entity.table';
 
-import type { DefaultCategoryTranslationEntitySchema } from '../schema/default-category-translation-entity.schema';
-
-export type DefaultCategoryTranslationEntityInterface = z.infer<typeof DefaultCategoryTranslationEntitySchema>;
+export type DefaultCategoryTranslationEntityInterface = typeof DefaultCategoryTranslationEntityTable.$inferSelect;

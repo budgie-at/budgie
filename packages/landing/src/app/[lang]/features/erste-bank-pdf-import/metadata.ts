@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'Austrian bank statement import',
         'Erste statement to budget app'
     ],
-    relatedFeatureSlugs: ['csv-import', 'privatbank-import', 'monobank-sync', 'mcc-auto-category'],
+    relatedFeatureSlugs: ['csv-import', 'privatbank-import', 'monobank-sync', 'bank-integration-management', 'mcc-auto-category'],
     relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
     publishedAt: '2026-02-04',
     updatedAt: '2026-05-03',

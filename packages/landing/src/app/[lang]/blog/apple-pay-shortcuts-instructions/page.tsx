@@ -20,33 +20,15 @@ import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-i
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
+import { createBlogGenerateMetadata } from '../../../../blog/util/create-blog-generate-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 
 import { ArticleFigure } from './article-figure/article-figure';
 import { ARTICLE_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildBlogArticleMetadata({
-        author: ARTICLE_METADATA.author,
-        date: ARTICLE_METADATA.date,
-        description: i18n._(ARTICLE_METADATA.seoDescription),
-        image: ARTICLE_METADATA.image,
-        keywords: ARTICLE_METADATA.seoKeywords.join(', '),
-        locale: lang,
-        slug: ARTICLE_METADATA.slug,
-        title: i18n._(ARTICLE_METADATA.title)
-    });
-}
+export const generateMetadata = createBlogGenerateMetadata(ARTICLE_METADATA);
 
 export default async function ApplePayShortcutsInstructionsArticle(props: PageLangParam) {
     const { lang } = await props.params;
@@ -67,7 +49,7 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <Link
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
                     href={`/${lang}/blog`}

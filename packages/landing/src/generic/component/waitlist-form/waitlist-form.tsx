@@ -3,6 +3,8 @@
 import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
+import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
 import { ArrowRight, Loader2, Users } from 'lucide-react';
 import { useState } from 'react';
 
@@ -34,11 +36,11 @@ const inputVariants = cva(
     }
 );
 
-const buttonVariants = cva('rounded-full h-14 px-8 text-lg font-semibold transition-all', {
+const buttonVariants = cva('rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold transition-all', {
     variants: {
         variant: {
-            hero: 'bg-linear-to-r from-primary to-primary/80 hover:opacity-90',
-            cta: 'bg-white text-red-600 hover:bg-white/90'
+            hero: 'bg-primary text-primary-foreground hover:bg-primary/90',
+            cta: 'bg-white text-primary hover:bg-white/90'
         }
     }
 });
@@ -47,7 +49,7 @@ const countTextVariants = cva('flex items-center gap-2 text-sm', {
     variants: {
         variant: {
             hero: 'text-muted-foreground',
-            cta: 'text-white/70'
+            cta: 'text-white/90'
         }
     }
 });
@@ -55,8 +57,8 @@ const countTextVariants = cva('flex items-center gap-2 text-sm', {
 const disclaimerVariants = cva('text-xs', {
     variants: {
         variant: {
-            hero: 'text-muted-foreground/70',
-            cta: 'text-white/50'
+            hero: 'text-muted-foreground',
+            cta: 'text-white/90'
         }
     }
 });
@@ -65,7 +67,7 @@ const errorVariants = cva('text-sm', {
     variants: {
         variant: {
             hero: 'text-red-500',
-            cta: 'text-white-500'
+            cta: 'text-white'
         }
     }
 });
@@ -89,28 +91,23 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
         setError('');
         setIsLoading(true);
 
-        let confirmationDeadlineTimer: number | undefined;
+        const outcome = await Effect.runPromise(
+            Effect.tryPromise(async () => await joinWaitlist(email)).pipe(Effect.timeout(WAITLIST_CONFIRMATION_DEADLINE_MS), Effect.option)
+        );
 
-        try {
-            const confirmationDeadline = new Promise<never>((_resolve, reject) => {
-                confirmationDeadlineTimer = window.setTimeout(() => void reject(new Error()), WAITLIST_CONFIRMATION_DEADLINE_MS);
-            });
-            const result = await Promise.race([joinWaitlist(email), confirmationDeadline]);
-
-            if (
-                (result.messageKey === WaitlistMessageKeyEnum.SUCCESS || result.messageKey === WaitlistMessageKeyEnum.ALREADY_REGISTERED) &&
-                isPositiveNumber(result.position)
-            ) {
-                setPosition(result.position);
-            } else {
-                setError(i18n._(WAITLIST_ERROR_MESSAGES[result.messageKey] ?? WAITLIST_CONFIRMATION_ERROR_MESSAGE));
-            }
-        } catch {
+        if (Option.isNone(outcome)) {
             setError(i18n._(WAITLIST_CONFIRMATION_ERROR_MESSAGE));
-        } finally {
-            window.clearTimeout(confirmationDeadlineTimer);
-            setIsLoading(false);
+        } else if (
+            (outcome.value.messageKey === WaitlistMessageKeyEnum.SUCCESS ||
+                outcome.value.messageKey === WaitlistMessageKeyEnum.ALREADY_REGISTERED) &&
+            isPositiveNumber(outcome.value.position)
+        ) {
+            setPosition(outcome.value.position);
+        } else {
+            setError(i18n._(WAITLIST_ERROR_MESSAGES[outcome.value.messageKey] ?? WAITLIST_CONFIRMATION_ERROR_MESSAGE));
         }
+
+        setIsLoading(false);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +125,6 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
             other: '#+ people already waiting'
         })
     });
-    const isButtonDisabled = isLoading || !isNotEmptyString(email);
 
     return (
         <div className="flex flex-col items-center gap-4">
@@ -143,7 +139,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
                     value={email}
                 />
 
-                <Button className={buttonVariants({ variant })} disabled={isButtonDisabled} size="lg" type="submit">
+                <Button className={buttonVariants({ variant })} disabled={isLoading} size="lg" type="submit">
                     {isLoading ? (
                         <Loader2 className="size-5 animate-spin" />
                     ) : (

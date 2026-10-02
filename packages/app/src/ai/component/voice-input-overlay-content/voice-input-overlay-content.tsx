@@ -12,6 +12,7 @@ import { RecordButtonStateType } from '../../type/record-button-state.type';
 import { AnimatedRecordButton } from '../animated-record-button/animated-record-button';
 import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
 import { VoiceInputError } from '../voice-input-error/voice-input-error';
+import { VoiceInputOverlaySelector } from '../voice-input-overlay/voice-input-overlay.selector';
 
 const MIC_BOTTOM_OFFSET = -16;
 const CLOSE_BUTTON_ROTATION = 45;
@@ -59,11 +60,17 @@ export const VoiceInputOverlayContent = ({ voiceInput, contentOpacity, onRecord,
                     audioLevel={voiceInput.data.audioLevel}
                     downloadProgress={voiceInput.downloadProgress}
                     onPress={onRecord}
+                    testID={VoiceInputOverlaySelector.RecordButton}
                 />
             </View>
 
             <View className="absolute right-0 bottom-0 px-lg" style={closeContainerStyle} pointerEvents="box-none">
-                <CircularActionButton icon={UserIconNameEnum.Plus} onPress={onCancel} animatedStyle={closeButtonStyle} />
+                <CircularActionButton
+                    icon={UserIconNameEnum.Plus}
+                    onPress={onCancel}
+                    animatedStyle={closeButtonStyle}
+                    testID={VoiceInputOverlaySelector.CancelButton}
+                />
             </View>
         </Animated.View>
     );

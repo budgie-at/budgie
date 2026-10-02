@@ -1,109 +1,90 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
-import { emptyFn, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
+import { IconSuggestions } from '../@generic/component/icon-suggestions/icon-suggestions';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { USER_ICONS_LIST, UserIcon } from '../@generic/constant/user-icons.constant';
-import { useIconSelectorModal } from '../@generic/context/icon-selector-modal.context';
+import { useIconSelectorModal, useIconSelectorModalParams } from '../@generic/context/icon-selector-modal.context';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useIconSearchEntries } from '../@generic/hook/use-icon-search-entries.hook';
+import { IconSearchEntryInterface } from '../@generic/interface/icon-search-entry.interface';
+import { iconSearchService } from '../@generic/service/icon-search.service';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 
 import { IconSelectorModalSelector } from './icon-selector-modal.selector';
 
 const NUM_COLUMNS = 4;
-const MAX_ICONS = 100;
 
-const keyExtractor = (item: FlatListDataItem<UserIcon>, index: number) => (item.isEmpty ? `empty-${index}` : item.name);
-
-const sortIconsByKeywords = (icons: UserIcon[], keywords: string[]): UserIcon[] => {
-    if (isEmptyArray(keywords)) {
-        return icons;
-    }
-
-    const keywordsLower = keywords.map(keyword => keyword.toLowerCase());
-
-    const matchesKeyword = (icon: UserIcon): boolean => icon.tags.some(tag => keywordsLower.some(keyword => tag.includes(keyword)));
-
-    const matched: UserIcon[] = [];
-    const unmatched: UserIcon[] = [];
-
-    for (const icon of icons) {
-        if (matchesKeyword(icon)) {
-            matched.push(icon);
-        } else {
-            unmatched.push(icon);
-        }
-    }
-
-    return [...matched, ...unmatched];
-};
-
-const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserIcon>[] => {
-    if (!isNotEmptyString(search)) {
-        const sorted = sortIconsByKeywords(USER_ICONS_LIST, keywords);
-
-        return padFlatListData(sorted.slice(0, MAX_ICONS), NUM_COLUMNS);
-    }
-
-    const searchLower = search.toLowerCase();
-    const filtered = USER_ICONS_LIST.filter(
-        ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
-    );
-
-    return padFlatListData(filtered.slice(0, MAX_ICONS), NUM_COLUMNS);
-};
+const keyExtractor = (item: FlatListDataItem<IconSearchEntryInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.icon);
 
 export default function IconSelectorModal() {
     const { t } = useLingui();
-    const [, resolveIconSelector, currentParams] = useIconSelectorModal();
+    const [, resolveIconSelector] = useIconSelectorModal();
+    const currentParams = useIconSelectorModalParams();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
+    const entries = useIconSearchEntries();
 
     const { selectedIcon, variant = 'default', keywords = [] } = currentParams ?? {};
-    const data = filterIcons(search, keywords);
+    const hasSearch = isNotEmptyString(search.trim());
+    const matchedEntries = hasSearch ? iconSearchService.rank(entries, [search]) : entries;
+    const data = padFlatListData([...matchedEntries], NUM_COLUMNS);
     const containerStyle = { flex: 1, backgroundColor };
 
-    const handleSelect = (icon: UserIconNameEnum) => {
-        resolveIconSelector(icon);
-    };
-
-    const renderItem = ({ item }: { item: FlatListDataItem<UserIcon> }) =>
+    const renderItem = ({ item }: { item: FlatListDataItem<IconSearchEntryInterface> }) =>
         item.isEmpty ? (
             <IconSelectorCard
                 className="opacity-0"
                 isSelected={false}
                 onSelect={emptyFn}
-                name={UserIconNameEnum.Circle}
+                label=""
                 variant={variant}
                 icon={UserIconNameEnum.Circle}
             />
         ) : (
             <IconSelectorCard
-                isSelected={item.name === selectedIcon}
-                onSelect={handleSelect}
-                name={item.name}
+                isSelected={item.icon === selectedIcon}
+                onSelect={resolveIconSelector}
+                label={item.label}
                 variant={variant}
-                icon={item.name}
+                icon={item.icon}
             />
         );
 
-    const listEmptyComponent = (
+    const listHeader = hasSearch ? null : (
+        <View className="gap-y-xl">
+            <IconSuggestions terms={keywords} limit={8} onSelect={resolveIconSelector} testID={IconSelectorModalSelector.Suggestions}>
+                <Text className="text-secondary-foreground px-xs text-xxs font-semibold uppercase tracking-widest">
+                    <Trans>Suggested</Trans>
+                </Text>
+            </IconSuggestions>
+
+            <View className="flex-row items-center gap-x-md px-xs">
+                <Text className="text-secondary-foreground text-xxs font-semibold uppercase tracking-widest">
+                    <Trans>All icons</Trans>
+                </Text>
+                <View className="h-px flex-1 bg-secondary-corner" />
+            </View>
+        </View>
+    );
+
+    const listEmptyComponent = isNotEmptyArray(entries) ? (
         <View className="flex-1 justify-center">
             <EmptyState title={t`No icons found`} description={t`Try a different search term`} />
         </View>
-    );
+    ) : null;
 
     return (
         <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
-                placeholder={t`Search icons (e.g., money, travel, food)...`}
+                placeholder={t`Search icons and emoji in any language...`}
                 testID={IconSelectorModalSelector.SearchInput}
             />
 
@@ -117,7 +98,11 @@ export default function IconSelectorModal() {
                 showsVerticalScrollIndicator={false}
                 columnWrapperClassName="gap-x-lg mb-lg"
                 contentContainerStyle={contentContainerStyle}
+                ListHeaderComponent={listHeader}
+                ListHeaderComponentClassName="mb-xl"
                 ListEmptyComponent={listEmptyComponent}
+                initialNumToRender={24}
+                windowSize={5}
             />
         </View>
     );

@@ -13,7 +13,7 @@ appId: ${APP_ID}
       optional: true
 
 - tapOn:
-      text: 'Browse'
+      text: 'Browse|Explorer|Durchsuchen|Examinar|Огляд'
       optional: true
 
 - waitForAnimationToEnd
@@ -23,12 +23,34 @@ appId: ${APP_ID}
           notVisible:
               text: 'budgie \(E2E\)'
       commands:
+          - tapOn:
+                id: 'BackButton'
+                optional: true
+          - waitForAnimationToEnd
+          - tapOn:
+                id: 'BackButton'
+                optional: true
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+      commands:
+          - tapOn:
+                text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          notVisible:
+              text: 'budgie \(E2E\)'
+      commands:
           - runFlow:
                 when:
-                    visible: 'On My iPhone'
+                    visible: 'On My iPhone|Sur mon iPhone|Auf meinem iPhone|En mi iPhone|На iPhone'
                 commands:
                     - tapOn:
-                          text: 'On My iPhone'
+                          text: 'On My iPhone|Sur mon iPhone|Auf meinem iPhone|En mi iPhone|На iPhone'
                     - waitForAnimationToEnd
 
 - runFlow:
@@ -40,7 +62,7 @@ appId: ${APP_ID}
                 element:
                     text: 'budgie \(E2E\)'
                 direction: DOWN
-                timeout: 10000
+                timeout: 20000
                 speed: 20
                 centerElement: true
                 waitToSettleTimeoutMs: 1000
@@ -48,7 +70,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           text: 'budgie \(E2E\)'
-      timeout: 3000
+      timeout: 20000
 
 - tapOn:
       text: 'budgie \(E2E\)'
@@ -56,10 +78,25 @@ appId: ${APP_ID}
 
 - waitForAnimationToEnd
 
+- retry:
+      maxRetries: 3
+      commands:
+          - runFlow:
+                when:
+                    visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+                commands:
+                    - tapOn:
+                          text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+                    - waitForAnimationToEnd
+          - extendedWaitUntil:
+                visible:
+                    id: 'E2EFixtures, Folder'
+                timeout: 8000
+
 - extendedWaitUntil:
       visible:
           id: 'E2EFixtures, Folder'
-      timeout: 3000
+      timeout: 20000
 
 - tapOn:
       id: 'E2EFixtures, Folder'

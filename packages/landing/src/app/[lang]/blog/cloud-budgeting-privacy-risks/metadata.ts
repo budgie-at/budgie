@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'cloud-budgeting-privacy-risks',
     date: '2025-01-27',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 16,
     title: msg`Why Cloud Budgeting Apps Are a Privacy Nightmare`,
     description: msg`A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation.`,
@@ -16,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['cloud budget app privacy', 'Plaid data risks', 'financial app data breaches'],
     seoDescription: msg`Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security.`,
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'screenshot-protection']
+    relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'screenshot-protection']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

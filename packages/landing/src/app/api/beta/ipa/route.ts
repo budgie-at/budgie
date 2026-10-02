@@ -1,4 +1,6 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
+import * as Effect from 'effect/Effect';
+import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import { NextResponse } from 'next/server';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,21 +13,21 @@ const NO_STORE_CACHE_CONTROL_HEADER = 'no-store';
 const REDIRECT_STATUS = 302;
 const NOT_FOUND_STATUS = 404;
 
-const resolveIpaDownloadUrl = async (): Promise<string | null> => {
-    const release = await iosDevReleaseFetchApi({ cache: 'no-store' });
+const resolveIpaDownloadUrl = Effect.fnUntraced(function* () {
+    const release = yield* iosDevReleaseFetchApi({ cache: 'no-store' });
 
     if (!isDefined(release)) {
         return null;
     }
 
-    const buildMeta = await iosDevBuildMetaFetchApi(release, { cache: 'no-store' });
+    const buildMeta = yield* iosDevBuildMetaFetchApi(release, { cache: 'no-store' });
 
     return isDefined(buildMeta) ? findIosDevReleaseAssetUrl(release, buildMeta.assetName) : null;
-};
+});
 
 // eslint-disable-next-line func-style,no-implicit-globals -- Next.js route handlers must be exported functions
 export async function GET(): Promise<NextResponse> {
-    const ipaDownloadUrl = await resolveIpaDownloadUrl();
+    const ipaDownloadUrl = await Effect.runPromise(resolveIpaDownloadUrl().pipe(Effect.provide(FetchHttpClient.layer)));
 
     if (!isDefined(ipaDownloadUrl)) {
         return NextResponse.json(

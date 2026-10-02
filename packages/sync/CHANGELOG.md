@@ -3,6 +3,93 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.85.4](https://github.com/budgie-at/budgie/compare/v6.85.3...v6.85.4) (2026-09-28)
+
+
+### Bug Fixes
+
+* **sync:** mark Erste ATM withdrawals with the ATM MCC at import ([dbb3aff](https://github.com/budgie-at/budgie/commit/dbb3aff91cf0647f876e84211e405d31db209e0e))
+
+
+
+
+
+## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
+
+
+### Bug Fixes
+
+* **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+
+
+
+
+
+## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
+
+
+### Features
+
+* let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+
+
+
+
+
+## [6.10.2](https://github.com/budgie-at/budgie/compare/v6.10.1...v6.10.2) (2026-09-04)
+
+
+### Performance Improvements
+
+* convert date-fns barrel imports to deep subpaths ([f8ffe99](https://github.com/budgie-at/budgie/commit/f8ffe99c0b58dfcfb39b887020adc5a2ca88dafc))
+
+
+
+
+
+## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.5.0](https://github.com/budgie-at/budgie/compare/v6.4.2...v6.5.0) (2026-08-29)
+
+
+### Features
+
+* **sync:** upgrade Monobank SDK to 0.7.0 for live client-info payloads ([#688](https://github.com/budgie-at/budgie/issues/688)) ([97d1732](https://github.com/budgie-at/budgie/commit/97d1732a80f2031dfb8088320059661149d85e4d))
+
+
+
+
+
 ## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
 
 **Note:** Version bump only for package @budgie/sync

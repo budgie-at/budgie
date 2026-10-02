@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'PinPage.Container'
+      timeout: 15000
+
+- tapOn:
+      id: 'PinPage.Digit.4'
+
+- tapOn:
+      id: 'PinPage.Digit.2'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

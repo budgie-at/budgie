@@ -3,18 +3,18 @@ export type { BudgetAllocationInputInterface } from './allocation/interface/budg
 export type { BudgetAllocationInterface } from './allocation/interface/budget-allocation.interface';
 
 export { BudgetAlertScopeEnum } from './alert/enum/budget-alert-scope.enum';
-export { budgetAlertThresholdService } from './alert/service/budget-alert-threshold.service';
+export { BudgetAlertThresholdService } from './alert/service/budget-alert-threshold.service';
 export type { BudgetAlertBudgetInterface } from './alert/interface/budget-alert-budget.interface';
 export type { BudgetAlertTriggerInterface } from './alert/interface/budget-alert-trigger.interface';
 
 export { budgetPeriodService } from './period/service/budget-period.service';
 
-export { budgetSpentService } from './spent/service/budget-spent.service';
+export { BudgetSpentService } from './spent/service/budget-spent.service';
 export type { BudgetCategorySpentInterface } from './spent/interface/budget-category-spent.interface';
 export type { BudgetSpentEntryInterface } from './spent/interface/budget-spent-entry.interface';
 export type { BudgetSpentInterface } from './spent/interface/budget-spent.interface';
 
-export { budgetTemplateService } from './template/service/budget-template.service';
+export { BudgetTemplateService } from './template/service/budget-template.service';
 export type { BudgetCategoryLimitInputInterface } from './template/interface/budget-category-limit-input.interface';
 export type { BudgetCategoryMonthlySpentInterface } from './template/interface/budget-category-monthly-spent.interface';
 export type { BudgetGenericCategoryRowInterface } from './template/interface/budget-generic-category-row.interface';
@@ -25,6 +25,8 @@ export type { BudgetTemplateDraftInterface } from './template/interface/budget-t
 export type { BudgetTemplateResolutionInterface } from './template/interface/budget-template-resolution.interface';
 
 export { BudgetService } from './mutation/service/budget.service';
+export { BudgetRepository } from './query/repository/budget.repository';
+export { BudgetCategoryLimitRepository } from './query/repository/budget-category-limit.repository';
 export type { BudgetCreateInputInterface } from './mutation/interface/budget-create-input.interface';
 export type { BudgetUpdateInputInterface } from './mutation/interface/budget-update-input.interface';
 export type { BudgetAlertTrackedBudgetInterface } from './alert/interface/budget-alert-tracked-budget.interface';

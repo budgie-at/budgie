@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { HistoricalExchangeRateEntityTable } from '../table/historical-exchange-rate-entity.table';
 
-import { HistoricalExchangeRateEntitySchema } from '../schema/historical-exchange-rate-entity.schema';
-
-export type HistoricalExchangeRateEntityInterface = z.infer<typeof HistoricalExchangeRateEntitySchema>;
+export type HistoricalExchangeRateEntityInterface = typeof HistoricalExchangeRateEntityTable.$inferSelect;

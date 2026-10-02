@@ -1,46 +1,20 @@
-import { Stack, useRouter } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
-import { useConsolidationSourceModal } from '../transaction/context/consolidation-source-modal.context';
+import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
-/* jscpd:ignore-start */
 export default function ConsolidationSourceModal() {
-    const router = useRouter();
-    const [, resolveConsolidationSource, currentParams] = useConsolidationSourceModal();
-    const hadParamsRef = useRef(false);
-    const { backgroundColor } = useFormsheetListStyles();
+    const [, resolveConsolidationSource] = useConsolidationSourceModal();
+    const currentParams = useConsolidationSourceModalParams();
+    const { backgroundColor, screenOptions } = useModalRouteState(currentParams, resolveConsolidationSource, null);
 
-    const screenOptions = { contentStyle: { backgroundColor } };
     const containerStyle = { backgroundColor };
 
     const handleClose = () => {
         resolveConsolidationSource(null);
     };
-
-    const handleRevertSuccess = () => {
-        resolveConsolidationSource(null);
-    };
-
-    useEffect(
-        () => () => {
-            resolveConsolidationSource(null, { skipBack: true });
-        },
-        // oxlint-disable-next-line react/exhaustive-deps -- Resolve on unmount only
-        []
-    );
-
-    useEffect(() => {
-        if (currentParams) {
-            hadParamsRef.current = true;
-        }
-
-        if (!currentParams && !hadParamsRef.current && router.canGoBack()) {
-            router.back();
-        }
-    }, [currentParams, router]);
 
     if (!currentParams) {
         return null;
@@ -52,9 +26,8 @@ export default function ConsolidationSourceModal() {
             <ConsolidationSourceModalContent
                 transactionId={currentParams.transactionId}
                 onClose={handleClose}
-                onRevertSuccess={handleRevertSuccess}
+                onRevertSuccess={handleClose}
             />
         </View>
     );
 }
-/* jscpd:ignore-end */

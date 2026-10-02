@@ -2,11 +2,13 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { Easing, FadeInUp, cancelAnimation, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import { Easing, cancelAnimation, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
+import { AiTranslationField } from '../ai-translation-field/ai-translation-field';
 import { AiTranslationFieldsHeaderRight } from '../ai-translation-fields-header-right/ai-translation-fields-header-right';
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
+
+import { AiTranslationFieldsSelector } from './ai-translation-fields.selector';
 
 interface ModelStatusInterface {
     readonly isReady: boolean;
@@ -83,39 +85,36 @@ export const AiTranslationFields = (props: Props) => {
                     )}
                 </View>
 
-                {/* jscpd:ignore-start -- Intentionally similar field rows with different icons/labels */}
-                <Animated.View
-                    entering={FadeInUp.delay(animationDelay).duration(DEFAULT_ANIMATION_DELAY)}
-                    className={`px-xl py-lg border-b border-secondary-corner ${fieldOpacity}`}
+                <AiTranslationField
+                    icon={UserIconNameEnum.Globe}
+                    onPress={onTitleEnPress}
+                    disabled={isTitleEnPressDisabled}
+                    delay={animationDelay}
+                    containerClassName={`px-xl py-lg border-b border-secondary-corner ${fieldOpacity}`}
+                    testID={AiTranslationFieldsSelector.EnglishField}
                 >
-                    <HapticPressable className="flex-row items-center" onPress={onTitleEnPress} disabled={isTitleEnPressDisabled}>
-                        <Icon icon={UserIconNameEnum.Globe} size={18} className="text-secondary-foreground" />
-                        <View className="ml-lg flex-1">
-                            <Text className="text-xxs text-secondary-foreground uppercase">
-                                <Trans>English Translation</Trans>
-                            </Text>
-                            <Text className="text-sm text-primary font-medium" numberOfLines={1}>
-                                {englishValue}
-                            </Text>
-                        </View>
-                    </HapticPressable>
-                </Animated.View>
+                    <Text className="text-xxs text-secondary-foreground uppercase">
+                        <Trans>English Translation</Trans>
+                    </Text>
+                    <Text className="text-sm text-primary font-medium" numberOfLines={1}>
+                        {englishValue}
+                    </Text>
+                </AiTranslationField>
 
-                <Animated.View
-                    entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)}
-                    className={`px-xl py-lg ${fieldOpacity}`}
+                <AiTranslationField
+                    icon={UserIconNameEnum.Tag}
+                    iconClassName="text-secondary-foreground mt-xs"
+                    onPress={onTitleTagsPress}
+                    disabled={isTitleTagsPressDisabled}
+                    delay={tagsDelay}
+                    containerClassName={`px-xl py-lg ${fieldOpacity}`}
+                    testID={AiTranslationFieldsSelector.TagsField}
                 >
-                    <HapticPressable className="flex-row items-center" onPress={onTitleTagsPress} disabled={isTitleTagsPressDisabled}>
-                        <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground mt-xs" />
-                        <View className="ml-lg flex-1">
-                            <Text className="text-xxs text-secondary-foreground uppercase">
-                                <Trans>Search Keywords</Trans>
-                            </Text>
-                            <Text className="text-sm text-primary font-medium">{tagsValue}</Text>
-                        </View>
-                    </HapticPressable>
-                </Animated.View>
-                {/* jscpd:ignore-end */}
+                    <Text className="text-xxs text-secondary-foreground uppercase">
+                        <Trans>Search Keywords</Trans>
+                    </Text>
+                    <Text className="text-sm text-primary font-medium">{tagsValue}</Text>
+                </AiTranslationField>
             </View>
         </View>
     );

@@ -1,20 +1,20 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceFiatOrderApiSchema = z.object({
-    orderNo: z.string(),
-    fiatCurrency: z.string(),
-    amount: z.string(),
-    totalFee: z.string(),
-    status: z.string(),
-    createTime: z.number()
+const BinanceFiatOrderApiSchema = Schema.Struct({
+    orderNo: Schema.String,
+    fiatCurrency: Schema.String,
+    amount: Schema.String,
+    totalFee: Schema.String,
+    status: Schema.String,
+    createTime: Schema.Number
 });
 
-export const BinanceFiatOrderListApiSchema = z.object({
-    code: z.string(),
-    message: z.string(),
-    data: z.array(BinanceFiatOrderApiSchema),
-    total: z.number(),
-    success: z.boolean()
+export const BinanceFiatOrderListApiSchema = Schema.Struct({
+    code: Schema.String,
+    message: Schema.String,
+    data: Schema.Array(BinanceFiatOrderApiSchema),
+    total: Schema.Number,
+    success: Schema.Boolean
 });
 
-export type BinanceFiatOrderApiInterface = z.infer<typeof BinanceFiatOrderApiSchema>;
+export type BinanceFiatOrderApiInterface = typeof BinanceFiatOrderApiSchema.Type;

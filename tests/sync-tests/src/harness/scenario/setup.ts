@@ -1,18 +1,16 @@
-import { buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
-import { sql } from 'drizzle-orm';
+import { assertStoredBalancesMatchLedger, buildTestDb, resetTestDb } from '@budgie-at/test-kit';
+import * as Effect from 'effect/Effect';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import type { DB } from '@budgie/contracts';
+vi.mock('@app/sync/service/transfer-consolidation-drainer.service', async () => {
+    const { FakeTransferConsolidationDrainerService } = await import('../fake/fake-transfer-consolidation-drainer.service');
 
-vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
-    transferConsolidationDrainerService: { enqueue: vi.fn() }
-}));
+    return { TransferConsolidationDrainerService: FakeTransferConsolidationDrainerService };
+});
 
-vi.mock('@app/@generic/utils/micro-pause.util', () => ({
-    microPause: vi.fn((): Promise<void> => Promise.resolve())
-}));
+vi.mock('@app/@generic/constant/yield-to-ui.constant', () => ({ YIELD_TO_UI: Effect.void }));
 
 const resolveLinguiMessage = (descriptor: unknown): string => {
     if (typeof descriptor === 'string') {
@@ -28,6 +26,9 @@ const resolveLinguiMessage = (descriptor: unknown): string => {
 
 vi.mock('@lingui/core', () => ({
     i18n: {
+        locale: 'en',
+        load: emptyFn,
+        activate: emptyFn,
         _: (descriptor: unknown, values?: Record<string, string>): string => {
             const message = resolveLinguiMessage(descriptor);
 
@@ -40,59 +41,28 @@ vi.mock('@lingui/core', () => ({
     }
 }));
 
-export const testDb = buildTestDb();
+export const backupDatabasePath = isNotEmptyString(process.env['BUDGIE_BACKUP_DB']) ? process.env['BUDGIE_BACKUP_DB'] : null;
 
-let transactionDepth = 0;
-let transactionSequence = 0;
-let exclusiveTransactionQueue: Promise<unknown> = Promise.resolve();
+export const testDb = buildTestDb(backupDatabasePath);
 
-vi.mock('@app/@generic/drizzle/db/db', async () => ({
+vi.mock('@app/@generic/drizzle/db/db', () => ({
     db: testDb,
-    ...createTestRepositories(testDb),
-    expoDb: void 0,
-    __REMOVE_ME_RESET_DB: (): Promise<void> => Promise.resolve()
+    expoDb: { closeAsync: vi.fn((): Promise<void> => Promise.resolve()) }
 }));
 
-vi.mock('@budgie/contracts', async importOriginal => {
-    const actual = await importOriginal<typeof import('@budgie/contracts')>();
+vi.mock('@app/@generic/runtime/app.runtime', async () => {
+    const { testRuntime } = await import('./test-runtime');
 
-    return {
-        ...actual,
-        transactionAsync: async <T>(_database: DB, cb: (tx: DB) => Promise<T>): Promise<T> => {
-            if (transactionDepth > 0) {
-                return cb(testDb);
-            }
-
-            const runExclusively = async (): Promise<T> => {
-                transactionSequence += 1;
-                const savepointName = `test_transaction_${transactionSequence}`;
-
-                transactionDepth += 1;
-                testDb.run(sql.raw(`SAVEPOINT ${savepointName}`));
-
-                try {
-                    const result = await cb(testDb);
-
-                    testDb.run(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
-
-                    return result;
-                } catch (error) {
-                    testDb.run(sql.raw(`ROLLBACK TO SAVEPOINT ${savepointName}`));
-                    testDb.run(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
-
-                    throw error;
-                } finally {
-                    transactionDepth -= 1;
-                }
-            };
-
-            const queuedTransaction = exclusiveTransactionQueue.then(runExclusively, runExclusively);
-            exclusiveTransactionQueue = queuedTransaction.catch(emptyFn);
-
-            return queuedTransaction;
-        }
-    };
+    return { appRuntime: testRuntime };
 });
+
+vi.mock('@app/../modules/apple-wallet-capture/src/apple-wallet-capture', async () => {
+    const { walletCaptureNativeStub } = await import('../wallet-capture/wallet-capture-native.stub');
+
+    return { appleWalletCaptureNativeModule: Effect.succeed(walletCaptureNativeStub) };
+});
+
+import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-native.stub';
 
 import { mockServer } from './mock-server';
 
@@ -100,17 +70,16 @@ beforeAll(() => {
     mockServer.listen({ onUnhandledRequest: 'error' });
 });
 
-beforeEach(async () => {
-    transactionDepth = 0;
-    transactionSequence = 0;
-    exclusiveTransactionQueue = Promise.resolve();
-    resetTestDb(testDb);
-    const { resetSingletons } = await import('./reset-singletons');
-    resetSingletons();
+beforeEach(() => {
+    walletCaptureNativeStub.reset();
+    if (!isDefined(backupDatabasePath)) {
+        resetTestDb(testDb);
+    }
 });
 
-afterEach(() => {
+afterEach(async () => {
     mockServer.resetHandlers();
+    await assertStoredBalancesMatchLedger(testDb);
 });
 
 afterAll(() => {

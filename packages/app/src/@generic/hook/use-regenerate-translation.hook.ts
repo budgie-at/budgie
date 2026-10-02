@@ -1,17 +1,18 @@
 import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { AiSubsystemStatusEnum } from '../../ai/enum/ai-subsystem-status.enum';
-import { useChat } from '../../ai/hook/use-chat.hook';
-import { chatService } from '../../ai/service/chat.service';
+import { AiSubsystemNameEnum } from '../../ai/enum/ai-subsystem-name.enum';
+import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
+import { appRuntime } from '../runtime/app.runtime';
 
-const logger = getLogger('useRegenerateTranslation');
+import type { AppServices } from '../runtime/app.runtime';
 
-type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Promise<void>;
+type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Effect.Effect<unknown, unknown, AppServices>;
 
 export interface UseRegenerateTranslationReturn {
     readonly regenerate: (entityId: number, title: string) => Promise<TranslationResultInterface | null>;
@@ -20,39 +21,45 @@ export interface UseRegenerateTranslationReturn {
 }
 
 export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn): UseRegenerateTranslationReturn => {
-    const { status: chatStatus } = useChat();
-    const isChatReady = chatStatus === AiSubsystemStatusEnum.READY;
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // eslint-disable-next-line max-statements -- Lifecycle-guarded translate with structured logging and error capture
-    const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
-        if (!isChatReady) {
-            logger.log('translation:regenerate:skip:not-ready', { chatStatus });
-            setError(t`LLM not ready`);
-
-            return null;
-        }
-
-        logger.log('translation:regenerate:start', { entityId, titleLen: title.length });
+    const regenerate = (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
         setIsRegenerating(true);
         setError(null);
 
-        try {
-            const service = new TranslationLlmService(chatService);
-            const result = await service.translate(title);
-            await updateTranslation(entityId, result.titleEn, result.titleTags);
-            logger.log('translation:regenerate:complete', { entityId, titleEnLen: result.titleEn.length });
+        return appRuntime.runPromise(
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                Effect.acquireUseRelease(
+                    aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT),
+                    isChatReady =>
+                        Effect.gen(function* () {
+                            if (!isChatReady) {
+                                setError(t`LLM not ready`);
 
-            return result;
-        } catch (regenerateError: unknown) {
-            logger.error('translation:regenerate:throw', { errorMessage: getErrorMessage(regenerateError) });
-            setError(getErrorMessage(regenerateError));
+                                return null;
+                            }
 
-            return null;
-        } finally {
-            setIsRegenerating(false);
-        }
+                            const translationLlmService = yield* TranslationLlmService;
+                            const result = yield* translationLlmService.translate(title);
+                            yield* updateTranslation(entityId, result.titleEn, result.titleTags);
+
+                            return result;
+                        }),
+                    () => aiModelResidencyService.release(AiSubsystemNameEnum.CHAT)
+                )
+            ).pipe(
+                Effect.tapCause(Effect.logError),
+                Effect.catchCause(cause =>
+                    Effect.sync(() => {
+                        setError(getErrorMessage(Cause.squash(cause)));
+
+                        return null;
+                    })
+                ),
+                Effect.ensuring(Effect.sync(() => void setIsRegenerating(false)))
+            )
+        );
     };
 
     return { regenerate, isRegenerating, error };

@@ -1,11 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { FormsheetHeaderAlign } from '../../type/formsheet-header-align.type';
-import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
 interface Props {

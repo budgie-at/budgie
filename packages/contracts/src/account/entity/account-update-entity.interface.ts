@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { AccountCreateEntityInterface } from './account-create-entity.interface';
 
-import type { AccountUpdateEntitySchema } from '../schema/account-update-entity.schema';
-
-export type AccountUpdateEntityInterface = z.infer<typeof AccountUpdateEntitySchema>;
+export type AccountUpdateEntityInterface = Partial<AccountCreateEntityInterface>;

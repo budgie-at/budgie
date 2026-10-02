@@ -1,10 +1,11 @@
-import { binanceSyncService } from '@app/sync/service/binance-sync.service';
+import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { AccountTypeEnum, ExternalSourceEnum, SyncEntityTable, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb } from '../../harness';
+import { fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb, TestLayer } from '../../harness';
 
 import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
@@ -279,11 +280,15 @@ const expectBinanceCredentialRotationScenario = (scenario: BinanceRotationScenar
 };
 
 describe('Binance credential rotation', () => {
-    it('rotates the shared integration token and clears every non-deleted sync in the credential group', async () => {
-        const scenario = seedBinanceCredentialRotationScenario();
+    it.effect('rotates the shared integration token and clears every non-deleted sync in the credential group', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-        markSyncDeleted(scenario.syncs.deletedSync.id);
-        await binanceSyncService.updateAccountToken(scenario.accounts.selectedAccount.id, NEW_TOKEN);
-        expectBinanceCredentialRotationScenario(scenario);
-    });
+            const scenario = seedBinanceCredentialRotationScenario();
+
+            markSyncDeleted(scenario.syncs.deletedSync.id);
+            yield* binanceSyncService.updateAccountToken(scenario.accounts.selectedAccount.id, NEW_TOKEN);
+            expectBinanceCredentialRotationScenario(scenario);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

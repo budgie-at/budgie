@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { CommentEmbeddingEntityTable } from '../table/comment-embedding-entity.table';
 
-import type { CommentEmbeddingEntitySchema } from '../schema/comment-embedding-entity.schema';
-
-export type CommentEmbeddingEntityInterface = z.infer<typeof CommentEmbeddingEntitySchema>;
+export type CommentEmbeddingEntityInterface = typeof CommentEmbeddingEntityTable.$inferSelect;

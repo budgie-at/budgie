@@ -1,20 +1,30 @@
-import { Log } from '@budgie/logger';
+import { AccountRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { WalletCaptureNativeService } from './wallet-capture-native.service';
 
-import { accountRepository } from '../../@generic/drizzle/db/db';
+export class WalletCaptureAccountMirrorService extends Context.Service<WalletCaptureAccountMirrorService>()(
+    '@budgie/app/WalletCaptureAccountMirrorService',
+    {
+        make: Effect.gen(function* () {
+            const accountRepository = yield* AccountRepository;
+            const nativeService = yield* WalletCaptureNativeService;
 
-import { walletCaptureNativeService } from './wallet-capture-native.service';
-
-class WalletCaptureAccountMirrorService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async refresh(): Promise<void> {
-        const accounts = await accountRepository.getAllActiveAccounts();
-        const activeAccounts = accounts.filter(account => account.isActive);
-        const walletCaptureAccounts = activeAccounts.map(({ id, title }) => ({ id, title }));
-
-        await walletCaptureNativeService.replaceAccounts(walletCaptureAccounts);
+            return {
+                refresh: Effect.fn('WalletCaptureAccountMirrorService.refresh')(function* () {
+                    yield* nativeService.replaceAccounts(
+                        (yield* accountRepository.getAllActiveAccounts())
+                            .filter(account => account.isActive)
+                            .map(({ id, title }) => ({ id, title }))
+                    );
+                })
+            };
+        })
     }
+) {
+    static readonly layer = Layer.effect(WalletCaptureAccountMirrorService, WalletCaptureAccountMirrorService.make).pipe(
+        Layer.provide([AccountRepository.layer, WalletCaptureNativeService.layer])
+    );
 }
-
-export const walletCaptureAccountMirrorService = new WalletCaptureAccountMirrorService();

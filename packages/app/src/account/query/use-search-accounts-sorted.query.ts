@@ -1,31 +1,35 @@
-import { AccountFilterInterface } from '@budgie/contracts';
+import { AccountBalanceEntityTable, AccountEntityTable, AccountRepository, InstrumentEntityTable } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined } from '@rnw-community/shared';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-import { accountRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import type { AccountFilterInterface } from '@budgie/contracts';
+
+const searchAccountsSortedAtom = databaseQueryFamily(
+    [AccountEntityTable, InstrumentEntityTable, AccountBalanceEntityTable],
+    AccountRepository,
+    (accountRepository, [search, filter]: readonly [string, AccountFilterInterface]) =>
+        accountRepository.findBySearchQuerySortedByBalance(search, filter)
+);
 
 export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilterInterface) => {
-    const excludeAccountId = filter?.excludeAccountId;
-    const excludeTypes = filter?.excludeTypes;
-    const includeTypes = filter?.includeTypes;
-    const excludeTypesKey = excludeTypes?.join(',');
-    const includeTypesKey = includeTypes?.join(',');
-    const onlyActive = filter?.onlyActive;
-    const debtType = filter?.debtType;
-
-    const { data, updatedAt, error } = useDatabaseLiveQuery(
-        accountRepository.findBySearchQuerySortedByBalance(search, { debtType, excludeAccountId, excludeTypes, includeTypes, onlyActive }),
-        [search, debtType, excludeAccountId, excludeTypesKey, includeTypesKey, onlyActive]
+    const result = useLiveAtomValue(
+        searchAccountsSortedAtom([
+            search,
+            {
+                debtType: filter?.debtType,
+                excludeAccountId: filter?.excludeAccountId,
+                excludeTypes: filter?.excludeTypes,
+                includeTypes: filter?.includeTypes,
+                onlyActive: filter?.onlyActive
+            }
+        ])
     );
 
-    if (!isDefined(updatedAt)) {
-        return { isLoading: true, accounts: [], updatedAt: null, error };
+    if (AsyncResult.isInitial(result)) {
+        return { isLoading: true, accounts: [] };
     }
 
-    return {
-        isLoading: false,
-        accounts: data,
-        error
-    };
+    return { isLoading: false, accounts: AsyncResult.getOrElse(result, () => []) };
 };

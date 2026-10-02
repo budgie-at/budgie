@@ -75,7 +75,7 @@ export const seedChainReclaimFixture = (input: {
     };
 };
 
-export const seedNestedChainReclaimFixture = async (
+export const seedNestedChainReclaimFixture = (
     input: {
         readonly directExchangeRate?: number;
         readonly directToIban?: string;
@@ -85,8 +85,8 @@ export const seedNestedChainReclaimFixture = async (
     const sourceExpense = seedIbanBridgeSourceExpense(fixture.sourceAccount.id, fixture.transferMccId);
     const targetIncome = seedIbanBridgeTargetIncome(fixture.targetAccount.id, fixture.transferMccId);
 
-    await parentConsolidationSource(sourceExpense.id, fixture.directTransfer.id);
-    await parentConsolidationSource(targetIncome.id, fixture.directTransfer.id);
+    parentConsolidationSource(sourceExpense.id, fixture.directTransfer.id);
+    parentConsolidationSource(targetIncome.id, fixture.directTransfer.id);
 
     return { ...fixture, sourceExpense, targetIncome };
 };

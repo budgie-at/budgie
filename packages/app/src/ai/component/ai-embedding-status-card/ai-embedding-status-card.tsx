@@ -1,14 +1,18 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 
-import { useAiEmbeddingStatus } from '../../hook/use-ai-embedding-status.hook';
-import { aiEmbeddingStatusService } from '../../service/ai-embedding-status.service';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { aiEmbeddingStatusAtom } from '../../constant/ai-embedding-status-atom.constant';
+import { AiEmbeddingStatusService } from '../../service/ai-embedding-status.service';
 import { AiSubsystemCard } from '../ai-subsystem-card/ai-subsystem-card';
 
-const handleRebuild = () => aiEmbeddingStatusService.rebuild();
+const handleRebuild = () =>
+    appRuntime.runPromise(Effect.flatMap(AiEmbeddingStatusService, aiEmbeddingStatusService => aiEmbeddingStatusService.rebuild()));
 
 export const AiEmbeddingStatusCard = () => {
-    const snapshot = useAiEmbeddingStatus();
+    const snapshot = useAtomValue(aiEmbeddingStatusAtom);
     const { t } = useLingui();
 
     return (

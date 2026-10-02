@@ -12,8 +12,9 @@ export const OPEN_SOURCE_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
         msg`public source budget app`,
         msg`auditable expense tracker`,
         msg`transparent finance app`,
-        msg`auditable budget app`
+        msg`auditable budget app`,
+        msg`source available mobile budget app`
     ],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07'
+    updatedAt: '2026-09-26'
 };

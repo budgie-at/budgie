@@ -35,10 +35,11 @@ Before any other action, verify the host satisfies these. If something is missin
 | Xcode CLI tools | `xcrun --version` exits 0 | `simctl` is the underlying simulator driver |
 | Node.js ≥18 | `node --version` ≥18 | serve-sim is an npm package run via `npx` |
 | macOS 14+ (optional) | `sw_vers -productVersion` ≥14 | Required ONLY for `camera` subcommand |
+| simslim | `simslim version` exits 0 | Every simulator runs slim — `brew install mobai-app/tap/simslim` |
 
-A bundled helper script is available: `scripts/check-prereqs.sh`. Run it; if it exits non-zero, surface the message to the user.
+A bundled helper script is available: `scripts/check-prereqs.sh`. Run it; if it exits non-zero, surface the message to the user. It also slims every booted simulator, so run it before `scripts/ensure-running.sh` (which slims too and refuses to start a helper against a stock simulator).
 
-A booted simulator is required for most subcommands. Check with `xcrun simctl list devices booted`. If none are booted, tell the user to open Xcode → Simulator or to run `xcrun simctl boot <UDID>`.
+A booted simulator is required for most subcommands. Check with `xcrun simctl list devices booted`. If none are booted, tell the user to open Xcode → Simulator or to run `xcrun simctl boot <UDID>`, then re-run `scripts/check-prereqs.sh` so the new device is slimmed. Why slim, and the boot → slim → install → drive order: root `AGENTS.md`, "Simulator Dev Testing".
 
 ## Mental model
 

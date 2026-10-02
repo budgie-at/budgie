@@ -1,0 +1,64 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { Text } from 'react-native';
+
+import { isEmptyArray } from '@rnw-community/shared';
+
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { testID } from '../../../@generic/utils/test-id.util';
+import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';
+import { CATEGORIZE_INBOX_RAIL_HIT_SLOP } from '../../constant/categorize-inbox-rail-hit-slop.constant';
+import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
+import { CategorizeInboxSuggestionChip } from '../categorize-inbox-suggestion-chip/categorize-inbox-suggestion-chip';
+
+import { CategorizeInboxSuggestionChipsSelector } from './categorize-inbox-suggestion-chips.selector';
+
+import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
+
+interface Props {
+    readonly cluster: CategorizeInboxClusterInterface;
+}
+
+export const CategorizeInboxSuggestionChips = ({ cluster }: Props) => {
+    const { strategy, pickClusterLabels } = useCategorizeInboxContext();
+
+    const handlePickLabelsPress = (): void => void pickClusterLabels(cluster);
+
+    const candidateLimit = cluster.section === CategorizeInboxSectionEnum.ONE_OFFS ? 1 : 2;
+    const candidateLabelIds = cluster.candidateLabelIds.slice(0, candidateLimit);
+
+    return (
+        <>
+            {candidateLabelIds.map((labelId, index) => (
+                <CategorizeInboxSuggestionChip key={labelId} cluster={cluster} labelId={labelId} index={index} />
+            ))}
+
+            {isEmptyArray(candidateLabelIds) ? (
+                <HapticPressable
+                    onPress={handlePickLabelsPress}
+                    hitSlop={CATEGORIZE_INBOX_RAIL_HIT_SLOP}
+                    className={categorizeInboxChipVariants({ variant: 'ghost' })}
+                    accessibilityRole="button"
+                    {...testID(CategorizeInboxSuggestionChipsSelector.SelectCategory, cluster.key)}
+                >
+                    <Icon icon={UserIconNameEnum.Tag} size={14} className="text-secondary-foreground" />
+                    <Text className="text-xs font-medium text-secondary-foreground" numberOfLines={1}>
+                        {strategy.selectLabel}
+                    </Text>
+                </HapticPressable>
+            ) : null}
+
+            <HapticPressable
+                onPress={handlePickLabelsPress}
+                hitSlop={CATEGORIZE_INBOX_RAIL_HIT_SLOP}
+                className="ml-auto h-10 w-10 items-center justify-center rounded-xl border border-secondary-corner"
+                accessibilityRole="button"
+                accessibilityLabel={strategy.moreLabels}
+                {...testID(CategorizeInboxSuggestionChipsSelector.More, cluster.key)}
+            >
+                <Icon icon={UserIconNameEnum.Ellipsis} size={16} className="text-secondary-foreground" />
+            </HapticPressable>
+        </>
+    );
+};

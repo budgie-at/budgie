@@ -6,7 +6,8 @@
         "noEmit": true,
         "types": ["node", "vitest/globals"],
         "paths": {
-            "@app/*": ["../../packages/app/src/*"]
+            "@app/*": ["../../packages/app/src/*"],
+            "whisper.rn": ["../../packages/app/node_modules/whisper.rn/lib/typescript/index.d.ts"]
         }
     },
     "include": ["src/**/*.ts", "vitest.config.ts", "../../packages/app/nativewind-env.d.ts"]

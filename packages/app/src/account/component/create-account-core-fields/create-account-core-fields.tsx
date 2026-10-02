@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { ReactNode } from 'react';
 import { Control } from 'react-hook-form';
 
@@ -13,7 +13,7 @@ import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in
 interface Props<
     T extends {
         title: string;
-        icon: UserIconNameEnum;
+        icon: UserIconType;
         instrumentId: number;
         currentBalance: number;
         includeInNetWorth?: boolean;
@@ -22,13 +22,14 @@ interface Props<
     readonly control: Control<T>;
     readonly variant: ColorPaletteVariant;
     readonly instrumentSymbol: string;
+    readonly balanceFieldLabel?: string;
     readonly children?: ReactNode;
 }
 
 export const CreateAccountCoreFields = <
     T extends {
         title: string;
-        icon: UserIconNameEnum;
+        icon: UserIconType;
         instrumentId: number;
         currentBalance: number;
         includeInNetWorth?: boolean;
@@ -37,10 +38,11 @@ export const CreateAccountCoreFields = <
     control,
     variant,
     instrumentSymbol,
+    balanceFieldLabel,
     children
 }: Props<T>) => (
     <>
-        <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
+        <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} label={balanceFieldLabel} />
 
         <FormLayoutGroup>
             <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />

@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=general'
+
+- extendedWaitUntil:
+      visible:
+          id: '^SettingsPage[.]LanguageCard[.].+$'
+      timeout: 15000
+
+- runFlow:
+      file: ../subflows/navigation/open-settings-card.flow.yaml
+      env:
+          CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
+          DESTINATION_ID: 'LanguageSelector.SearchInput'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

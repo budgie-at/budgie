@@ -1,10 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 
 const CHECK_ICON_SIZE = 16;

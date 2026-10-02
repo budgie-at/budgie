@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import * as Haptics from 'expo-haptics';
 import { useEffect, useRef } from 'react';
 import { Pressable, View } from 'react-native';
@@ -15,7 +15,7 @@ import Animated, {
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 
 interface Props {
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
     readonly onPress: () => void;
     readonly triggerTestID?: string;
     readonly iconTestID?: string;

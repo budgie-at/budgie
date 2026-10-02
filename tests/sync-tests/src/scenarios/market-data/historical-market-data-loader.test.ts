@@ -1,12 +1,12 @@
-import { instrumentMarketDataJobRepository, instrumentRepository } from '@app/@generic/drizzle/db/db';
-import { historicalMarketDataLoaderService } from '@app/market-data/service/historical-market-data-loader.service';
-import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Workload } from '@app/@generic/service/workload.service';
+import { HistoricalMarketDataLoaderService } from '@app/market-data/service/historical-market-data-loader.service';
+import { InstrumentMarketDataJobRepository, InstrumentMarketDataJobStatusEnum, InstrumentRepository } from '@budgie/contracts';
+import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { getDefined } from '@rnw-community/shared';
 
-import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
-import { PausedUserWork } from '../../harness/sync-workload/paused-user-work';
+import { advanceScheduledDrain, pauseUserWork, TestClockLayer } from '../../harness';
 
 import type { InstrumentMarketDataJobEntityInterface } from '@budgie/contracts';
 
@@ -29,82 +29,87 @@ const buildMarketDataJob = (): InstrumentMarketDataJobEntityInterface => ({
     updatedAt: new Date('2026-06-22T05:17:02.000Z')
 });
 
-const spyOnClaimNextJob = () => vi.spyOn(instrumentMarketDataJobRepository, 'claimNext');
+const claimNextExecutions = vi.fn();
+const markFailedExecutions = vi.fn();
 
-const spyOnMarkFailed = () => vi.spyOn(instrumentMarketDataJobRepository, 'markFailed');
+const recordClaimNext = <Job>(job: Job) =>
+    Effect.suspend(() => {
+        claimNextExecutions();
 
-const missingMarketDataJobs: Array<Awaited<ReturnType<typeof instrumentMarketDataJobRepository.claimNext>>> = [];
-const missingInstruments: Array<Awaited<ReturnType<typeof instrumentRepository.findByIdAsync>>> = [];
-
-const resolveMissingMarketDataJob = (): ReturnType<typeof instrumentMarketDataJobRepository.claimNext> =>
-    Promise.resolve(missingMarketDataJobs[0]);
-
-const resolveMissingInstrument = (): ReturnType<typeof instrumentRepository.findByIdAsync> => Promise.resolve(missingInstruments[0]);
-
-const setupMissingInstrumentJob = (job: InstrumentMarketDataJobEntityInterface, importWorks: PausedUserWork[]): void => {
-    spyOnClaimNextJob().mockResolvedValueOnce(job).mockImplementation(resolveMissingMarketDataJob);
-    vi.spyOn(instrumentRepository, 'findByIdAsync').mockImplementation(() => {
-        const importWork = new PausedUserWork('file-import');
-        importWorks.push(importWork);
-
-        return importWork.started.then(resolveMissingInstrument);
+        return Effect.succeed(job);
     });
-    spyOnMarkFailed().mockResolvedValue();
-};
 
 describe('market-data/historical-market-data-loader', () => {
     beforeEach(() => {
-        vi.useFakeTimers();
+        vi.useFakeTimers({ toFake: ['Date'] });
+        claimNextExecutions.mockClear();
+        markFailedExecutions.mockClear();
         vi.stubGlobal('requestIdleCallback', null);
         vi.stubGlobal('cancelIdleCallback', null);
-        Object.assign(historicalMarketDataLoaderService, {
-            cancelIdleCallback: null,
-            isRunning: false,
-            timer: null
-        });
-        spyOnClaimNextJob().mockImplementation(resolveMissingMarketDataJob);
     });
 
     afterEach(() => {
-        historicalMarketDataLoaderService.cancelScheduledDrain();
         vi.useRealTimers();
         vi.unstubAllGlobals();
         vi.restoreAllMocks();
     });
 
-    it('waits for active user import work before claiming the next market data job', async () => {
-        const importWork = new PausedUserWork('file-import');
+    it.effect('waits for active user import work before claiming the next market data job', () =>
+        Effect.gen(function* () {
+            const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+            const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
+            vi.spyOn(instrumentMarketDataJobRepository, 'claimNext').mockImplementation(() => recordClaimNext(undefined));
+            const releaseImportWork = yield* pauseUserWork(Effect.void);
 
-        await importWork.started;
-        historicalMarketDataLoaderService.scheduleDrain();
-        await flushScheduledDrain(drainDelayMs);
-        expect(spyOnClaimNextJob()).not.toHaveBeenCalled();
+            yield* historicalMarketDataLoaderService.scheduleDrain();
+            yield* advanceScheduledDrain(drainDelayMs);
+            expect(claimNextExecutions).not.toHaveBeenCalled();
 
-        importWork.release();
-        await importWork.work;
-        await Promise.resolve();
+            yield* releaseImportWork();
+            yield* advanceScheduledDrain(drainDelayMs);
 
-        expect(spyOnClaimNextJob()).toHaveBeenCalledTimes(1);
-    });
+            expect(claimNextExecutions).toHaveBeenCalledTimes(1);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
 
-    it('waits for active user import work before marking a market data job failed', async () => {
-        const job = buildMarketDataJob();
-        const importWorks: PausedUserWork[] = [];
+    it.effect('waits for active user import work before marking a market data job failed', () =>
+        Effect.gen(function* () {
+            const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+            const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
+            const instrumentRepository = yield* InstrumentRepository;
+            const workload = yield* Workload;
+            const importWorkReleases: Array<() => Effect.Effect<void>> = [];
 
-        setupMissingInstrumentJob(job, importWorks);
+            vi.spyOn(instrumentMarketDataJobRepository, 'claimNext')
+                .mockReturnValueOnce(recordClaimNext(buildMarketDataJob()))
+                .mockImplementation(() => recordClaimNext(undefined));
+            vi.spyOn(instrumentRepository, 'findById').mockImplementation(() =>
+                pauseUserWork(Effect.void).pipe(
+                    Effect.provideService(Workload, workload),
+                    Effect.tap(release => Effect.sync(() => importWorkReleases.push(release))),
+                    Effect.as(undefined)
+                )
+            );
+            vi.spyOn(instrumentMarketDataJobRepository, 'markFailed').mockReturnValue(
+                Effect.suspend(() => {
+                    markFailedExecutions();
 
-        historicalMarketDataLoaderService.scheduleDrain();
-        await flushScheduledDrain(drainDelayMs);
-        expect(spyOnMarkFailed()).not.toHaveBeenCalled();
+                    return Effect.void;
+                })
+            );
 
-        const startedImportWork = getDefined(importWorks[0], () => {
-            throw new Error('file import did not start');
-        });
+            yield* historicalMarketDataLoaderService.scheduleDrain();
+            yield* advanceScheduledDrain(drainDelayMs);
+            expect(markFailedExecutions).not.toHaveBeenCalled();
 
-        startedImportWork.release();
-        await startedImportWork.work;
-        await Promise.resolve();
+            const releaseImportWork = getDefined(importWorkReleases[0], () => {
+                throw new Error('file import did not start');
+            });
 
-        expect(spyOnMarkFailed()).toHaveBeenCalledTimes(1);
-    });
+            yield* releaseImportWork();
+            yield* advanceScheduledDrain(drainDelayMs);
+
+            expect(markFailedExecutions).toHaveBeenCalledTimes(1);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
 });

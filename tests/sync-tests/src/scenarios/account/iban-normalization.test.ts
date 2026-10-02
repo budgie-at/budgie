@@ -1,5 +1,5 @@
 import { normalizeAccountIban } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 describe('account/iban-normalization', () => {
     it('returns null for absent, empty and whitespace values', () => {

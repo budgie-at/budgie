@@ -1,9 +1,10 @@
-import { binanceSyncService } from '@app/sync/service/binance-sync.service';
+import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { ExternalSourceEnum, SyncEntityTable, SyncModeEnum, SyncStatusEnum, TransactionEntityTable } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { binanceStub, buildBinance, resetBinanceSyncForResync, setupBinanceFixture, testDb } from '../../harness';
+import { binanceStub, buildBinance, resetBinanceSyncForResync, setupBinanceFixture, testDb, TestLayer } from '../../harness';
 
 import type { TimeWindow } from '../../harness';
 
@@ -20,79 +21,97 @@ const fetchExternalIds = () =>
         .all()
         .map(transaction => transaction.externalId);
 
+const setupEmptyBackwardBinanceSync = (): void => {
+    setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
+    binanceStub.spotBalances([]);
+    binanceStub.fundingBalances([]);
+};
+
 describe('binance/source-window-walk', () => {
-    it('collects available C2C history without requesting beyond the Binance six-month limit', async () => {
-        setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
-        binanceStub.spotBalances([]);
-        binanceStub.fundingBalances([]);
-        const requestedWindows: TimeWindow[] = [];
-        binanceStub.c2cOrders(
-            [
-                buildBinance.c2cOrder({
-                    orderNumber: 'post-gap-p2p',
-                    tradeType: 'BUY',
-                    asset: 'USDT',
-                    amount: '100',
-                    createTime: Date.now() - POST_GAP_ORDER_AGE_MS
-                })
-            ],
-            [],
-            requestedWindows
-        );
+    it.effect('collects available C2C history without requesting beyond the Binance six-month limit', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-        await binanceSyncService.sync();
+            setupEmptyBackwardBinanceSync();
+            const requestedWindows: TimeWindow[] = [];
+            binanceStub.c2cOrders(
+                [
+                    buildBinance.c2cOrder({
+                        orderNumber: 'post-gap-p2p',
+                        tradeType: 'BUY',
+                        asset: 'USDT',
+                        amount: '100',
+                        createTime: Date.now() - POST_GAP_ORDER_AGE_MS
+                    })
+                ],
+                [],
+                requestedWindows
+            );
 
-        expect(fetchExternalIds()).toContain('binance:c2c:post-gap-p2p');
-        expect(Math.min(...requestedWindows.map(window => window.startMs))).toBeGreaterThan(Date.now() - FIAT_DORMANCY_MAX_AGE_MS);
-    });
+            yield* binanceSyncService.sync();
 
-    it('stops walking fiat windows after the dormancy gap when there are no fiat orders', async () => {
-        setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
-        binanceStub.spotBalances([]);
-        binanceStub.fundingBalances([]);
-        const requestedWindows: TimeWindow[] = [];
-        binanceStub.fiatOrders([], [], requestedWindows);
+            expect(fetchExternalIds()).toContain('binance:c2c:post-gap-p2p');
+            expect(Math.min(...requestedWindows.map(window => window.startMs))).toBeGreaterThan(Date.now() - FIAT_DORMANCY_MAX_AGE_MS);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await binanceSyncService.sync();
+    it.effect('stops walking fiat windows after the dormancy gap when there are no fiat orders', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-        expect(requestedWindows.length).toBeGreaterThan(0);
-        const oldestRequestedStartMs = Math.min(...requestedWindows.map(window => window.startMs));
-        expect(Date.now() - oldestRequestedStartMs).toBeLessThan(FIAT_DORMANCY_MAX_AGE_MS);
-    });
+            setupEmptyBackwardBinanceSync();
+            const requestedWindows: TimeWindow[] = [];
+            binanceStub.fiatOrders([], [], requestedWindows);
 
-    it('does not spend the fiat UID budget again during the daily refresh interval', async () => {
-        const staleForwardSync = new Date(Date.now() - STALE_FORWARD_SYNC_AGE_MS);
-        const { sync } = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD, forwardSyncedAt: staleForwardSync });
-        const requestedWindows: TimeWindow[] = [];
-        binanceStub.fiatOrders([], [], requestedWindows);
+            yield* binanceSyncService.sync();
 
-        await binanceSyncService.sync();
-        const firstRunRequestCount = requestedWindows.length;
+            expect(requestedWindows.length).toBeGreaterThan(0);
+            const oldestRequestedStartMs = Math.min(...requestedWindows.map(window => window.startMs));
+            expect(Date.now() - oldestRequestedStartMs).toBeLessThan(FIAT_DORMANCY_MAX_AGE_MS);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        resetBinanceSyncForResync();
-        testDb
-            .update(SyncEntityTable)
-            .set({ forwardSyncedAt: staleForwardSync, status: SyncStatusEnum.IDLE })
-            .where(eq(SyncEntityTable.id, sync.id))
-            .run();
-        await binanceSyncService.sync();
+    it.effect('does not spend the fiat UID budget again during the daily refresh interval', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-        expect(firstRunRequestCount).toBeGreaterThan(0);
-        expect(requestedWindows).toHaveLength(firstRunRequestCount);
-    });
+            const staleForwardSync = new Date(Date.now() - STALE_FORWARD_SYNC_AGE_MS);
+            const { sync } = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD, forwardSyncedAt: staleForwardSync });
+            const requestedWindows: TimeWindow[] = [];
+            binanceStub.fiatOrders([], [], requestedWindows);
 
-    it('finishes transfer requests before spending the heavyweight fiat UID budget', async () => {
-        setupBinanceFixture({
-            asset: 'USDT',
-            mode: SyncModeEnum.FORWARD,
-            forwardSyncedAt: new Date(Date.now() - STALE_FORWARD_SYNC_AGE_MS)
-        });
-        const requestOrder: string[] = [];
-        binanceStub.convertTradeFlow([], [], false, requestOrder);
-        binanceStub.fiatOrders([], [], [], requestOrder);
+            yield* binanceSyncService.sync();
+            const firstRunRequestCount = requestedWindows.length;
 
-        await binanceSyncService.sync();
+            resetBinanceSyncForResync();
+            testDb
+                .update(SyncEntityTable)
+                .set({ forwardSyncedAt: staleForwardSync, status: SyncStatusEnum.IDLE })
+                .where(eq(SyncEntityTable.id, sync.id))
+                .run();
+            yield* binanceSyncService.sync();
 
-        expect(requestOrder.indexOf('convert')).toBeLessThan(requestOrder.indexOf('fiat'));
-    });
+            expect(firstRunRequestCount).toBeGreaterThan(0);
+            expect(requestedWindows).toHaveLength(firstRunRequestCount);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('finishes transfer requests before spending the heavyweight fiat UID budget', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+
+            setupBinanceFixture({
+                asset: 'USDT',
+                mode: SyncModeEnum.FORWARD,
+                forwardSyncedAt: new Date(Date.now() - STALE_FORWARD_SYNC_AGE_MS)
+            });
+            const requestOrder: string[] = [];
+            binanceStub.convertTradeFlow([], [], false, requestOrder);
+            binanceStub.fiatOrders([], [], [], requestOrder);
+
+            yield* binanceSyncService.sync();
+
+            expect(requestOrder.indexOf('convert')).toBeLessThan(requestOrder.indexOf('fiat'));
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

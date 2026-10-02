@@ -1,3 +1,3 @@
-import { number, record, string } from 'zod';
+import * as Schema from 'effect/Schema';
 
-export const CoinGeckoSimplePriceResponseSchema = record(string(), record(string(), number()));
+export const CoinGeckoSimplePriceResponseSchema = Schema.Record(Schema.String, Schema.Record(Schema.String, Schema.Number));

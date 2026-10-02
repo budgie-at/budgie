@@ -18,7 +18,7 @@ export const AccountGridItem = ({ account, balance, balanceRow, type, isLeft }: 
     const { id, title, icon, externalId, instrument, deadline, debtType, targetBalance, createdAt, sync } = account;
 
     const containerClassName = isLeft ? 'flex-1 pr-1.5' : 'flex-1 pl-1.5';
-    const cardDebtProgressSummary = balanceRow?.debtProgressSummary;
+    const cardDebtProgressSummary = balanceRow?.debtProgressSummary ?? null;
     const cardTargetBalance = convertFromMicroUnits(targetBalance);
 
     return (

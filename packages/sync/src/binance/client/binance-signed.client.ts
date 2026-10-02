@@ -1,32 +1,28 @@
 /* eslint-disable max-lines -- File owns a single multi-stage Binance signed-client pipeline (balances, crypto + fiat history, HMAC signing, weight throttle) that must stay together */
-import { Log } from '@budgie/logger';
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
-import { subMonths } from 'date-fns';
-import { z } from 'zod';
+import { subMonths } from 'date-fns/subMonths';
+import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
-import { SyncErrorCodeEnum } from '../../core/enum/sync-error-code.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { SyncError } from '../../core/error/sync.error';
-import { syncLogger } from '../../core/util/sync-logger.util';
+import { SyncDeferredError } from '../../core/error/sync-deferred.error';
+import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
+import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { BINANCE_API_BASE_URL } from '../constant/binance-api-base-url.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
 import { BINANCE_DORMANCY_PERIOD_MS } from '../constant/binance-dormancy-period-ms.constant';
 import { BINANCE_FIAT_MAX_PERIOD_MS } from '../constant/binance-fiat-max-period-ms.constant';
 import { BINANCE_MAJOR_QUOTE_ASSETS } from '../constant/binance-major-quote-asset.constant';
 import { BINANCE_MICRO_UNITS_PRECISION as MICRO_UNITS_PRECISION } from '../constant/binance-precision.constant';
-import { BINANCE_RETRY_METHODS, BINANCE_RETRY_STATUS_CODES } from '../constant/binance-retry-status-codes.constant';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
-import {
-    BinanceC2cOrderListApiSchema,
-    BinanceC2cResponseShapeApiSchema,
-    BinanceC2cResponseStatusApiSchema
-} from '../interface/binance-c2c-order-api.schema';
+import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
 import { BinanceConvertTradeFlowApiSchema } from '../interface/binance-convert-api.schema';
 import { BinanceDepositListApiSchema } from '../interface/binance-deposit-api.schema';
 import { BinanceEarnPositionListApiSchema } from '../interface/binance-earn-position-api.schema';
@@ -42,25 +38,26 @@ import { decodeBinanceAccountId, encodeBinanceAccountId } from '../util/binance-
 
 import { BinanceWeightThrottle } from './binance-weight-throttle';
 
-import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
-import type { SyncClientInfoInterface } from '../../core/interface/sync-client-info.interface';
-import type { SyncErrorInterface } from '../../core/interface/sync-error.interface';
-import type { SyncResultInterface } from '../../core/interface/sync-result.type';
+import type { SyncError } from '../../core/interface/sync-error.type';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 import type { BinanceCredentialsInterface } from '../constant/binance-credentials.schema';
+import type { BinanceTradeCursorMapInterface } from '../constant/binance-trade-cursor-map.schema';
+import type { BinanceAccountIdInterface } from '../interface/binance-account-id.interface';
 import type { BinanceAssetBalanceApiInterface } from '../interface/binance-asset-balance-api.schema';
 import type { BinanceC2cOrderApiInterface } from '../interface/binance-c2c-order-api.schema';
+import type { BinanceCapitalHistorySourceInterface } from '../interface/binance-capital-history-source.interface';
 import type { BinanceConvertFlowApiInterface } from '../interface/binance-convert-api.schema';
 import type { BinanceDepositApiInterface } from '../interface/binance-deposit-api.schema';
-import type { BinanceEarnPositionApiInterface } from '../interface/binance-earn-position-api.schema';
 import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
-import type { BinanceLockedEarnPositionApiInterface } from '../interface/binance-locked-earn-position-api.schema';
 import type { BinanceTradeSymbolInterface } from '../interface/binance-trade-symbol.interface';
 import type { BinanceTransactionSourcesInterface } from '../interface/binance-transaction-sources.interface';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
 import type { BinanceWindowWalkConfigInterface } from '../interface/binance-window-walk-config.interface';
 import type { BinanceWithdrawalApiInterface } from '../interface/binance-withdrawal-api.schema';
+import type * as Headers from 'effect/http/Headers';
+import type * as HttpClient from 'effect/http/HttpClient';
+import type { HttpMethod } from 'effect/http/HttpMethod';
 
 const SPOT_BALANCE_ENDPOINT = '/sapi/v3/asset/getUserAsset';
 const FUNDING_BALANCE_ENDPOINT = '/sapi/v1/asset/get-funding-asset';
@@ -99,194 +96,570 @@ const EARN_PAGE_SIZE = 100;
 const TRADES_PER_SYMBOL_LIMIT = 1000;
 const BINANCE_INVALID_SYMBOL_CODE = -1121;
 
-const BinanceApiErrorCodeSchema = z.object({
-    code: z.union([z.string(), z.number()])
-});
-
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;
+    private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
+
+    readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
+        const balanceByAsset = this.buildSpotBalanceMap(
+            yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST')
+        );
+        const earnPositions = yield* this.collectPages(current =>
+            this.fetchEarnPage(BinanceEarnPositionListApiSchema, EARN_POSITION_ENDPOINT, { current, size: EARN_PAGE_SIZE })
+        );
+        for (const position of earnPositions) {
+            this.foldEarnPositionAmount(balanceByAsset, position.asset, position.totalAmount);
+        }
+
+        const lockedEarnPositions = yield* this.collectPages(current =>
+            this.fetchEarnPage(BinanceLockedEarnPositionListApiSchema, LOCKED_EARN_POSITION_ENDPOINT, { current, size: EARN_PAGE_SIZE })
+        );
+        for (const position of lockedEarnPositions) {
+            this.foldEarnPositionAmount(balanceByAsset, position.asset, position.amount);
+        }
+
+        const fundingBalances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, FUNDING_BALANCE_ENDPOINT, 'POST');
+
+        return [
+            ...this.buildSpotAccounts(balanceByAsset),
+            ...fundingBalances.map(balance => this.mapBalance(balance, BinanceWalletEnum.FUNDING)).filter(isDefined)
+        ];
+    });
+
+    readonly getTransactions = Effect.fn('BinanceSignedClient.getTransactions')(function* (
+        this: BinanceSignedClient,
+        accountId: string,
+        from: number,
+        to?: number
+    ) {
+        const decoded = yield* this.decodeAccountId(accountId);
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+        const isSpot = decoded.wallet === BinanceWalletEnum.SPOT;
+        const c2cOrders = isSpot ? yield* this.fetchC2cOrders(startTimeMs, endTimeMs) : [];
+        const earnRewards = isSpot ? yield* this.fetchEarnRewards(startTimeMs, endTimeMs) : [];
+        const capitalSources = yield* this.fetchCapitalSources(decoded.wallet, startTimeMs, endTimeMs);
+        const fiatSources = yield* this.fetchFiatSources(startTimeMs, endTimeMs);
+
+        return this.buildTransactions(accountId, decoded.asset, {
+            deposits: capitalSources.deposits,
+            withdrawals: capitalSources.withdrawals,
+            fiatDeposits: fiatSources.fiatDeposits,
+            fiatWithdrawals: fiatSources.fiatWithdrawals,
+            c2cOrders,
+            earnRewards
+        });
+    });
+
+    readonly getC2cTransactions = Effect.fn('BinanceSignedClient.getC2cTransactions')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to?: number
+    ) {
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+
+        return this.buildSourceTransactions(
+            BinanceWalletEnum.FUNDING,
+            this.emptySources({ c2cOrders: yield* this.fetchC2cOrders(startTimeMs, endTimeMs) })
+        );
+    });
+
+    readonly getEarnTransactions = Effect.fn('BinanceSignedClient.getEarnTransactions')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to?: number
+    ) {
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+
+        return this.buildSourceTransactions(
+            BinanceWalletEnum.SPOT,
+            this.emptySources({ earnRewards: yield* this.fetchEarnRewards(startTimeMs, endTimeMs) })
+        );
+    });
+
+    readonly getCapitalTransactions = Effect.fn('BinanceSignedClient.getCapitalTransactions')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to?: number
+    ) {
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+
+        return this.buildSourceTransactions(
+            BinanceWalletEnum.SPOT,
+            yield* this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
+        );
+    });
+
+    readonly getFiatTransactions = Effect.fn('BinanceSignedClient.getFiatTransactions')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to?: number
+    ) {
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+
+        return this.buildSourceTransactions(BinanceWalletEnum.SPOT, yield* this.fetchFiatSources(startTimeMs, endTimeMs));
+    });
+
+    readonly getTransfers = Effect.fn('BinanceSignedClient.getTransfers')(
+        // eslint-disable-next-line max-params -- Existing public API intentionally keeps positional arguments
+        function* (
+            this: BinanceSignedClient,
+            accountId: string,
+            from: number,
+            to: number | null = null,
+            eligibleSoldOffBaseAssets: readonly string[] = [],
+            initialSymbolTradeCursors: BinanceTradeCursorMapInterface = {}
+        ) {
+            yield* this.decodeAccountId(accountId);
+            const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+
+            return yield* this.cached(
+                this.transferCache,
+                `${startTimeMs}-${endTimeMs}:${[...eligibleSoldOffBaseAssets].sort().join(',')}`,
+                this.fetchTradesAndConverts(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets, initialSymbolTradeCursors)
+            );
+        }
+    );
 
     protected readonly provider = SyncProviderEnum.BINANCE;
     protected readonly baseUrl = BINANCE_API_BASE_URL;
-
-    private readonly credentials: BinanceCredentialsInterface;
+    protected readonly headers: Record<string, string>;
+    protected override readonly retryMethods: readonly HttpMethod[] = ['GET', 'POST'];
+    private readonly credentials: Option.Option<BinanceCredentialsInterface>;
     private readonly throttle: BinanceWeightThrottle;
-    private readonly deadlineAtMs: number;
-    private readonly depositCache = new Map<string, BinanceDepositApiInterface[]>();
-    private readonly withdrawalCache = new Map<string, BinanceWithdrawalApiInterface[]>();
-    private readonly fiatOrderCache = new Map<string, BinanceFiatOrderApiInterface[]>();
-    private readonly c2cOrderCache = new Map<string, BinanceC2cOrderApiInterface[]>();
-    private readonly earnRewardCache = new Map<string, BinanceEarnRewardApiInterface[]>();
+
+    private readonly depositSource: BinanceCapitalHistorySourceInterface<BinanceDepositApiInterface> = {
+        endpoint: DEPOSIT_HISTORY_ENDPOINT,
+        schema: BinanceDepositListApiSchema,
+        cache: new Map()
+    };
+
+    private readonly withdrawalSource: BinanceCapitalHistorySourceInterface<BinanceWithdrawalApiInterface> = {
+        endpoint: WITHDRAW_HISTORY_ENDPOINT,
+        schema: BinanceWithdrawalListApiSchema,
+        cache: new Map()
+    };
+
+    private readonly fiatOrderCache = new Map<string, readonly BinanceFiatOrderApiInterface[]>();
+    private readonly c2cOrderCache = new Map<string, readonly BinanceC2cOrderApiInterface[]>();
+    private readonly earnRewardCache = new Map<string, readonly BinanceEarnRewardApiInterface[]>();
     private readonly transferCache = new Map<string, BinanceTransferInterface[]>();
+    private readonly runSymbolTradeCursors = new Map<string, number>();
+    private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
     private validSymbols: Set<string> | undefined;
 
-    constructor(token: string, deadlineAtMs = Number.POSITIVE_INFINITY) {
-        super(token, { retryStatusCodes: BINANCE_RETRY_STATUS_CODES, retryMethods: BINANCE_RETRY_METHODS });
-        this.credentials = BinanceSignedClient.parseCredentials(token);
-        this.throttle = new BinanceWeightThrottle(deadlineAtMs);
-        this.deadlineAtMs = deadlineAtMs;
-    }
-
-    @Log('enter', 'done')
-    async getClientInfo(): Promise<SyncResultInterface<SyncClientInfoInterface>> {
-        return this.success({
-            id: SyncProviderEnum.BINANCE,
-            name: SyncProviderEnum.BINANCE,
-            provider: this.provider
-        });
-    }
-
-    @Log(
-        'enter',
-        result => `done success=${String(result.success)} count=${result.success ? result.data.length : 0}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getAccounts(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        const spotResult = await this.fetchSpotBalancesWithEarn();
-        if (!spotResult.success) {
-            return spotResult;
-        }
-
-        const fundingResult = await this.fetchWalletBalances(BinanceWalletEnum.FUNDING);
-        if (!fundingResult.success) {
-            return fundingResult;
-        }
-
-        return this.success([...spotResult.data, ...fundingResult.data]);
-    }
-
-    @Log(
-        (accountId, from, to) => `enter accountId=${accountId} from=${from} to=${to ?? 'now'}`,
-        result => `done count=${result.success ? result.data.length : 0}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.withDecodedAccount(accountId, from, to, async (decoded, startTimeMs, endTimeMs) => {
-            const sourcesResult = await this.fetchTransactionSources(decoded.wallet, startTimeMs, endTimeMs);
-
-            return sourcesResult.success
-                ? this.success(this.buildTransactions(accountId, decoded.asset, sourcesResult.data))
-                : sourcesResult;
-        });
-    }
-
-    @Log(
-        (from, to) => `enter from=${from} to=${to ?? 'now'}`,
-        result => `done count=${result.success ? result.data.length : 0}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getC2cTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(BinanceWalletEnum.FUNDING, from, to, async (startTimeMs, endTimeMs) => {
-            const c2cOrdersResult = await this.fetchC2cOrders(startTimeMs, endTimeMs);
-
-            return c2cOrdersResult.success ? this.success(this.emptySources({ c2cOrders: c2cOrdersResult.data })) : c2cOrdersResult;
-        });
-    }
-
-    @Log(
-        (from, to) => `enter from=${from} to=${to ?? 'now'}`,
-        result => `done count=${result.success ? result.data.length : 0}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getEarnTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, async (startTimeMs, endTimeMs) => {
-            const earnRewardsResult = await this.fetchEarnRewards(startTimeMs, endTimeMs);
-
-            return earnRewardsResult.success ? this.success(this.emptySources({ earnRewards: earnRewardsResult.data })) : earnRewardsResult;
-        });
-    }
-
-    @Log(
-        (from, to) => `enter from=${from} to=${to ?? 'now'}`,
-        result => `done count=${result.success ? result.data.length : 0}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getCapitalTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
-        );
-    }
-
-    @Log(
-        (from, to) => `enter from=${from} to=${to ?? 'now'}`,
-        result => `done count=${result.success ? result.data.length : 0}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getFiatTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            this.fetchFiatSources(startTimeMs, endTimeMs)
-        );
-    }
-
-    @Log(
-        (accountId, from, to) => `enter accountId=${accountId} from=${from} to=${to ?? 'now'}`,
-        result => `done transferCount=${result.success ? result.data.length : 0}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getTransfers(
-        accountId: string,
-        from: number,
-        to: number | null = null,
-        eligibleSoldOffBaseAssets: readonly string[] = []
-    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        return this.withDecodedAccount(accountId, from, to, (_decoded, startTimeMs, endTimeMs) =>
-            this.fetchAllTransfers(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets)
-        );
-    }
-
-    protected getDefaultHeaders(): Record<string, string> {
-        return {
-            'X-MBX-APIKEY': this.credentials.apiKey,
-            'Content-Type': 'application/json'
-        };
-    }
-
-    protected override onResponseHeaders(headers: Headers): void {
-        this.throttle.recordHeaders(headers);
-    }
-
-    // eslint-disable-next-line max-statements -- Orchestrates six sequential guarded fetches (c2c, earn, deposits, withdrawals, fiat) into one sources result
-    private async fetchTransactionSources(
+    private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
+        this: BinanceSignedClient,
         wallet: BinanceWalletEnum,
         startTimeMs: number,
         endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceTransactionSourcesInterface>> {
-        const isSpot = wallet === BinanceWalletEnum.SPOT;
+    ) {
+        const deposits = yield* this.fetchCapitalHistory(this.depositSource, wallet, startTimeMs, endTimeMs);
+        const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, wallet, startTimeMs, endTimeMs);
 
-        const c2cOrdersResult = isSpot
-            ? await this.fetchC2cOrders(startTimeMs, endTimeMs)
-            : this.success<BinanceC2cOrderApiInterface[]>([]);
-        if (!c2cOrdersResult.success) {
-            return c2cOrdersResult;
-        }
+        return this.emptySources({ deposits, withdrawals });
+    });
 
-        const earnRewardsResult = isSpot
-            ? await this.fetchEarnRewards(startTimeMs, endTimeMs)
-            : this.success<BinanceEarnRewardApiInterface[]>([]);
-        if (!earnRewardsResult.success) {
-            return earnRewardsResult;
-        }
+    private readonly fetchFiatSources = Effect.fn('BinanceSignedClient.fetchFiatSources')(function* (
+        this: BinanceSignedClient,
+        startTimeMs: number,
+        endTimeMs: number
+    ) {
+        const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
+        const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
 
-        const capitalSourcesResult = await this.fetchCapitalSources(wallet, startTimeMs, endTimeMs);
-        if (!capitalSourcesResult.success) {
-            return capitalSourcesResult;
-        }
+        return this.emptySources({ fiatDeposits, fiatWithdrawals });
+    });
 
-        const fiatSourcesResult = await this.fetchFiatSources(startTimeMs, endTimeMs);
-        if (!fiatSourcesResult.success) {
-            return fiatSourcesResult;
-        }
-
-        return this.success({
-            deposits: capitalSourcesResult.data.deposits,
-            withdrawals: capitalSourcesResult.data.withdrawals,
-            fiatDeposits: fiatSourcesResult.data.fiatDeposits,
-            fiatWithdrawals: fiatSourcesResult.data.fiatWithdrawals,
-            c2cOrders: c2cOrdersResult.data,
-            earnRewards: earnRewardsResult.data
+    private readonly fetchConvertWindow: (
+        startTimeMs: number,
+        endTimeMs: number
+    ) => Effect.Effect<BinanceConvertFlowApiInterface[], SyncError, HttpClient.HttpClient> = Effect.fn(
+        'BinanceSignedClient.fetchConvertWindow'
+    )(function* (this: BinanceSignedClient, startTimeMs: number, endTimeMs: number) {
+        const chunk = yield* this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
+            startTime: startTimeMs,
+            endTime: endTimeMs,
+            limit: CONVERT_ROWS_PER_PAGE
         });
+
+        if (!chunk.moreData || endTimeMs <= startTimeMs) {
+            return [...chunk.list];
+        }
+
+        const midpointMs = Math.floor((startTimeMs + endTimeMs) / 2);
+        const older = yield* this.fetchConvertWindow(startTimeMs, midpointMs);
+        const newer = yield* this.fetchConvertWindow(midpointMs + 1, endTimeMs);
+
+        return [...older, ...newer];
+    });
+
+    private readonly resolveValidSymbols = Effect.fn('BinanceSignedClient.resolveValidSymbols')(function* (this: BinanceSignedClient) {
+        if (isDefined(this.validSymbols)) {
+            return this.validSymbols;
+        }
+
+        yield* this.throttle.waitIfNeeded();
+        const exchangeInfo = yield* this.fetchJson(BinanceExchangeInfoApiSchema, EXCHANGE_INFO_ENDPOINT).pipe(Effect.option);
+
+        if (Option.isNone(exchangeInfo)) {
+            return null;
+        }
+
+        this.validSymbols = new Set(
+            exchangeInfo.value.symbols.filter(symbol => symbol.status === EXCHANGE_INFO_TRADING_STATUS).map(symbol => symbol.symbol)
+        );
+
+        return this.validSymbols;
+    });
+
+    private readonly resolveTimestamp = Effect.fn('BinanceSignedClient.resolveTimestamp')(function* (this: BinanceSignedClient) {
+        if (!isDefined(this.serverTimeOffsetMs)) {
+            const serverTime = yield* this.fetchJson(BinanceServerTimeApiSchema, SERVER_TIME_ENDPOINT).pipe(Effect.option);
+            this.serverTimeOffsetMs = Option.isSome(serverTime) ? serverTime.value.serverTime - Date.now() : 0;
+        }
+
+        return Date.now() + this.serverTimeOffsetMs;
+    });
+
+    private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
+        config: BinanceWindowWalkConfigInterface,
+        fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Effect.Effect<readonly T[], SyncError, HttpClient.HttpClient>
+    ): Effect.fn.Return<T[], SyncError, HttpClient.HttpClient> {
+        const records: T[] = [];
+        let windowEndMs = config.endTimeMs;
+        let consecutiveEmptyWindows = 0;
+
+        while (consecutiveEmptyWindows < config.dormancyWindowCount && windowEndMs > config.startTimeMs) {
+            const windowStartMs = Math.max(config.startTimeMs, windowEndMs - config.periodMs);
+            const windowRecords = yield* fetchOneWindow(windowStartMs, windowEndMs);
+            records.push(...windowRecords);
+            consecutiveEmptyWindows = isNotEmptyArray(windowRecords) ? 0 : consecutiveEmptyWindows + 1;
+            windowEndMs = windowStartMs;
+        }
+
+        return records;
+    });
+
+    private readonly collectPages = Effect.fnUntraced(function* <T>(
+        fetchPage: (
+            page: number
+        ) => Effect.Effect<{ readonly rows: readonly T[]; readonly hasMore: boolean }, SyncError, HttpClient.HttpClient>
+    ): Effect.fn.Return<T[], SyncError, HttpClient.HttpClient> {
+        let page = 1;
+        let result = yield* fetchPage(page);
+        const rows = [...result.rows];
+
+        while (result.hasMore) {
+            page += 1;
+            result = yield* fetchPage(page);
+            rows.push(...result.rows);
+        }
+
+        return rows;
+    });
+
+    constructor(
+        token: string,
+        private readonly deadlineAtMs = Number.POSITIVE_INFINITY
+    ) {
+        super();
+        this.credentials = BinanceSignedClient.decodeCredentials(token);
+        this.headers = {
+            'X-MBX-APIKEY': Option.match(this.credentials, { onNone: () => '', onSome: ({ apiKey }) => apiKey }),
+            'Content-Type': 'application/json'
+        };
+        this.throttle = new BinanceWeightThrottle(deadlineAtMs);
+    }
+
+    getSymbolTradeCursors(): BinanceTradeCursorMapInterface {
+        return Object.fromEntries(this.runSymbolTradeCursors);
+    }
+
+    isC2cUnavailable(): boolean {
+        return this.c2cUnavailableThisRun;
+    }
+
+    protected override onResponseHeaders(headers: Headers.Headers): void {
+        this.throttle.recordHeaders(headers);
+    }
+
+    private fetchTradesAndConverts(
+        startTimeMs: number,
+        endTimeMs: number,
+        eligibleSoldOffBaseAssets: readonly string[],
+        initialSymbolTradeCursors: BinanceTradeCursorMapInterface
+    ) {
+        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+            const convertFlows = yield* this.walkWindowsBackward(
+                { startTimeMs, endTimeMs, periodMs: CONVERT_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
+                (windowStartMs, windowEndMs) => this.fetchConvertWindow(windowStartMs, windowEndMs)
+            );
+            const convertTransfers = convertFlows
+                .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
+                .map(flow => binanceMapper.mapConvertToTransfer(flow))
+                .filter(isDefined);
+            const symbols = yield* this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
+            const byExternalId = new Map<string, BinanceTransferInterface>();
+
+            for (const symbol of symbols) {
+                const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
+                const symbolTransfers = yield* this.fetchSymbolTrades(
+                    symbol,
+                    startTimeMs,
+                    endTimeMs,
+                    isDefined(resumeFromId) ? resumeFromId + 1 : null
+                );
+                for (const transfer of symbolTransfers) {
+                    byExternalId.set(transfer.externalId, transfer);
+                }
+            }
+
+            for (const transfer of convertTransfers) {
+                byExternalId.set(transfer.externalId, transfer);
+            }
+
+            return [...byExternalId.values()];
+        });
+    }
+
+    private readonly recoverMissingPermission = (error: SyncUnauthorizedError) =>
+        Effect.as(Effect.logWarning(`Binance history skipped: ${error.message}`), []);
+
+    private deriveTradeSymbols(
+        startTimeMs: number,
+        endTimeMs: number,
+        convertTransfers: BinanceTransferInterface[],
+        eligibleSoldOffBaseAssets: readonly string[]
+    ) {
+        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+            const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
+            const baseAssets = this.collectBaseAssets(balances, convertTransfers);
+            const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
+            );
+            const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
+            );
+            const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
+            );
+            [
+                ...deposits.map(deposit => deposit.coin),
+                ...withdrawals.map(withdrawal => withdrawal.coin),
+                ...c2cOrders.map(order => order.asset)
+            ].forEach(asset => baseAssets.add(asset));
+            const validSymbols = yield* this.resolveValidSymbols();
+            const candidates = this.buildTradeSymbolCandidates(baseAssets, validSymbols, new Set(eligibleSoldOffBaseAssets));
+
+            return isDefined(validSymbols) ? candidates.filter(candidate => validSymbols.has(candidate.symbol)) : candidates;
+        });
+    }
+
+    private fetchSymbolTrades(symbol: BinanceTradeSymbolInterface, startTimeMs: number, endTimeMs: number, initialFromId: number | null) {
+        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+            const transfers: BinanceTransferInterface[] = [];
+            let fromId = initialFromId;
+
+            do {
+                const trades = yield* this.signedRequest(BinanceTradeListApiSchema, MY_TRADES_ENDPOINT, 'GET', {
+                    symbol: symbol.symbol,
+                    ...(isDefined(fromId) ? { fromId } : { startTime: startTimeMs }),
+                    limit: TRADES_PER_SYMBOL_LIMIT
+                }).pipe(
+                    Effect.catchTag('SyncInvalidResponseError', error =>
+                        Number(error.apiCode) === BINANCE_INVALID_SYMBOL_CODE ? Effect.succeed([]) : Effect.fail(error)
+                    )
+                );
+                const lastTrade = trades.at(-1);
+
+                transfers.push(
+                    ...trades
+                        .filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs)
+                        .map(trade => binanceMapper.mapTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset))
+                        .filter(isDefined)
+                );
+                if (isDefined(lastTrade)) {
+                    this.runSymbolTradeCursors.set(symbol.symbol, lastTrade.id);
+                }
+                fromId = trades.length === TRADES_PER_SYMBOL_LIMIT && isDefined(lastTrade) ? lastTrade.id + 1 : null;
+            } while (isDefined(fromId));
+
+            return transfers;
+        });
+    }
+
+    private signedRequest<S extends Schema.ConstraintDecoder<unknown>>(
+        schema: S,
+        endpoint: string,
+        method: HttpMethod,
+        params: Record<string, string | number> = {}
+    ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
+        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+            if (Date.now() >= this.deadlineAtMs) {
+                return yield* new SyncDeferredError({ provider: this.provider, message: 'Sync deadline reached' });
+            }
+
+            const credentials = yield* Option.match(this.credentials, {
+                onNone: () => Effect.fail(new SyncUnauthorizedError({ provider: this.provider, message: 'Invalid Binance credentials' })),
+                onSome: Effect.succeed
+            });
+
+            yield* this.throttle.waitIfNeeded();
+            const query = Object.entries({ ...params, recvWindow: SIGNATURE_RECV_WINDOW_MS, timestamp: yield* this.resolveTimestamp() })
+                .map(([key, value]) => `${key}=${String(value)}`)
+                .join('&');
+
+            return yield* this.fetchJson(schema, `${endpoint}?${query}&signature=${this.sign(query, credentials.apiSecret)}`, method);
+        });
+    }
+
+    private fetchCapitalHistory<T>(
+        { cache, schema, endpoint }: BinanceCapitalHistorySourceInterface<T>,
+        wallet: BinanceWalletEnum,
+        startTimeMs: number,
+        endTimeMs: number
+    ): Effect.Effect<T[], SyncError, HttpClient.HttpClient> {
+        return this.walkWindowsBackward(
+            { startTimeMs, endTimeMs, periodMs: CAPITAL_HISTORY_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
+            (windowStartMs, windowEndMs) =>
+                this.cached(
+                    cache,
+                    `${wallet}:${endpoint}:${windowStartMs}-${windowEndMs}`,
+                    this.collectPages(page =>
+                        this.signedRequest(schema, endpoint, 'GET', {
+                            startTime: windowStartMs,
+                            endTime: windowEndMs,
+                            limit: MAX_TRANSACTIONS_PER_WINDOW,
+                            offset: (page - 1) * MAX_TRANSACTIONS_PER_WINDOW
+                        }).pipe(Effect.map(rows => ({ rows, hasMore: rows.length === MAX_TRANSACTIONS_PER_WINDOW })))
+                    )
+                )
+        );
+    }
+
+    private fetchFiatOrders(transactionType: number, startTimeMs: number, endTimeMs: number) {
+        return this.cached(
+            this.fiatOrderCache,
+            `${transactionType}:${FIAT_ORDERS_ENDPOINT}:${startTimeMs}-${endTimeMs}`,
+            this.walkWindowsBackward(
+                {
+                    startTimeMs,
+                    endTimeMs,
+                    periodMs: BINANCE_FIAT_MAX_PERIOD_MS,
+                    dormancyWindowCount: Math.max(1, Math.ceil(BINANCE_DORMANCY_PERIOD_MS / BINANCE_FIAT_MAX_PERIOD_MS))
+                },
+                (windowStartMs, windowEndMs) =>
+                    this.collectPages(page =>
+                        this.signedRequest(BinanceFiatOrderListApiSchema, FIAT_ORDERS_ENDPOINT, 'GET', {
+                            transactionType,
+                            beginTime: windowStartMs,
+                            endTime: windowEndMs,
+                            page,
+                            rows: FIAT_ROWS_PER_PAGE
+                        }).pipe(
+                            Effect.map(response => ({
+                                rows: response.data.filter(order => order.status === FIAT_SUCCESSFUL_STATUS),
+                                hasMore: response.data.length === FIAT_ROWS_PER_PAGE
+                            }))
+                        )
+                    )
+            )
+        );
+    }
+
+    private fetchC2cOrders(startTimeMs: number, endTimeMs: number) {
+        const availableStartTimeMs = Math.max(startTimeMs, this.c2cHistoryFloorTimeMs);
+
+        if (availableStartTimeMs >= endTimeMs) {
+            return Effect.succeed<readonly BinanceC2cOrderApiInterface[]>([]);
+        }
+
+        return this.cached(
+            this.c2cOrderCache,
+            `${availableStartTimeMs}-${endTimeMs}`,
+            Effect.forEach([C2C_BUY_TRADE_TYPE, C2C_SELL_TRADE_TYPE], tradeType =>
+                this.walkWindowsBackward(
+                    {
+                        startTimeMs: availableStartTimeMs,
+                        endTimeMs,
+                        periodMs: C2C_MAX_PERIOD_MS,
+                        dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT
+                    },
+                    (windowStartMs, windowEndMs) =>
+                        this.collectPages(page => this.fetchC2cOrderPage(tradeType, windowStartMs, windowEndMs, page))
+                )
+            ).pipe(Effect.map(ordersByType => ordersByType.flat()))
+        );
+    }
+
+    private fetchC2cOrderPage(tradeType: string, startTimeMs: number, endTimeMs: number, page: number) {
+        return this.signedRequest(BinanceC2cOrderListApiSchema, C2C_ORDERS_ENDPOINT, 'GET', {
+            tradeType,
+            startTimestamp: startTimeMs,
+            endTimestamp: endTimeMs,
+            page,
+            rows: C2C_ROWS_PER_PAGE
+        }).pipe(
+            Effect.map(response => ({
+                rows: response.data.filter(order => order.orderStatus === C2C_COMPLETED_STATUS),
+                hasMore: response.data.length === C2C_ROWS_PER_PAGE
+            })),
+            Effect.catchTag('SyncUnauthorizedError', () =>
+                Effect.sync(() => {
+                    this.c2cUnavailableThisRun = true;
+
+                    return { rows: [], hasMore: false };
+                })
+            )
+        );
+    }
+
+    private fetchEarnRewards(startTimeMs: number, endTimeMs: number) {
+        return this.cached(
+            this.earnRewardCache,
+            `${startTimeMs}-${endTimeMs}`,
+            this.walkWindowsBackward(
+                { startTimeMs, endTimeMs, periodMs: EARN_REWARD_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
+                (windowStartMs, windowEndMs) =>
+                    this.collectPages(current =>
+                        this.fetchEarnPage(BinanceEarnRewardListApiSchema, EARN_REWARDS_ENDPOINT, {
+                            type: EARN_REWARD_TYPE_ALL,
+                            startTime: windowStartMs,
+                            endTime: windowEndMs,
+                            current,
+                            size: EARN_PAGE_SIZE
+                        })
+                    )
+            )
+        );
+    }
+
+    private fetchEarnPage<T>(
+        schema: Schema.ConstraintDecoder<{ readonly rows: readonly T[] }>,
+        endpoint: string,
+        params: Record<string, string | number>
+    ) {
+        return this.signedRequest(schema, endpoint, 'GET', params).pipe(
+            Effect.map(response => ({ rows: response.rows, hasMore: response.rows.length === EARN_PAGE_SIZE }))
+        );
+    }
+
+    private cached<T, E, R>(cache: Map<string, T>, key: string, effect: Effect.Effect<T, E, R>): Effect.Effect<T, E, R> {
+        return Effect.suspend(() => {
+            const hit = cache.get(key);
+
+            return isDefined(hit) ? Effect.succeed(hit) : Effect.tap(effect, value => Effect.sync(() => cache.set(key, value)));
+        });
+    }
+
+    private decodeAccountId(accountId: string): Effect.Effect<BinanceAccountIdInterface, SyncInvalidResponseError> {
+        const decoded = decodeBinanceAccountId(accountId);
+
+        return isDefined(decoded)
+            ? Effect.succeed(decoded)
+            : Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
     }
 
     private resolveSourceWindow(from: number, to?: number | null): { startTimeMs: number; endTimeMs: number } {
@@ -294,76 +667,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const endTimeMs = isDefined(to) ? to * MILLISECONDS_PER_SECOND : Date.now();
 
         return { startTimeMs, endTimeMs };
-    }
-
-    private async getSourceTransactions(
-        wallet: BinanceWalletEnum,
-        from: number,
-        to: number | undefined,
-        fetchSources: (startTimeMs: number, endTimeMs: number) => Promise<SyncResultInterface<BinanceTransactionSourcesInterface>>
-    ): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-        const sourcesResult = await fetchSources(startTimeMs, endTimeMs);
-        if (!sourcesResult.success) {
-            return sourcesResult;
-        }
-
-        return this.success(this.dedupeTransactions(this.buildSourceTransactions(wallet, sourcesResult.data)));
-    }
-
-    private async withDecodedAccount<T>(
-        accountId: string,
-        from: number,
-        to: number | null | undefined,
-        execute: (
-            decoded: NonNullable<ReturnType<typeof decodeBinanceAccountId>>,
-            startTimeMs: number,
-            endTimeMs: number
-        ) => Promise<SyncResultInterface<T>>
-    ): Promise<SyncResultInterface<T>> {
-        const decoded = decodeBinanceAccountId(accountId);
-        if (!isDefined(decoded)) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return execute(decoded, startTimeMs, endTimeMs);
-    }
-
-    private async fetchCapitalSources(
-        wallet: BinanceWalletEnum,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceTransactionSourcesInterface>> {
-        const depositsResult = await this.fetchDeposits(wallet, startTimeMs, endTimeMs);
-        if (!depositsResult.success) {
-            return depositsResult;
-        }
-
-        const withdrawalsResult = await this.fetchWithdrawals(wallet, startTimeMs, endTimeMs);
-        if (!withdrawalsResult.success) {
-            return withdrawalsResult;
-        }
-
-        return this.success(this.emptySources({ deposits: depositsResult.data, withdrawals: withdrawalsResult.data }));
-    }
-
-    private async fetchFiatSources(
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceTransactionSourcesInterface>> {
-        const fiatDepositsResult = await this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-        if (!fiatDepositsResult.success) {
-            return fiatDepositsResult;
-        }
-
-        const fiatWithdrawalsResult = await this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-        if (!fiatWithdrawalsResult.success) {
-            return fiatWithdrawalsResult;
-        }
-
-        return this.success(this.emptySources({ fiatDeposits: fiatDepositsResult.data, fiatWithdrawals: fiatWithdrawalsResult.data }));
     }
 
     private emptySources(overrides: Partial<BinanceTransactionSourcesInterface>): BinanceTransactionSourcesInterface {
@@ -376,252 +679,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             earnRewards: [],
             ...overrides
         };
-    }
-
-    private resolveDormancyWindowCount(periodMs: number): number {
-        return Math.max(1, Math.ceil(BINANCE_DORMANCY_PERIOD_MS / periodMs));
-    }
-
-    private async walkWindowsBackward<T>(
-        config: BinanceWindowWalkConfigInterface,
-        fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Promise<SyncResultInterface<T[]>>
-    ): Promise<SyncResultInterface<T[]>> {
-        return this.walkNextWindow({ config, fetchOneWindow, records: [], windowEndMs: config.endTimeMs, consecutiveEmptyWindows: 0 });
-    }
-
-    private async walkNextWindow<T>(state: {
-        readonly config: BinanceWindowWalkConfigInterface;
-        readonly fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Promise<SyncResultInterface<T[]>>;
-        readonly records: T[];
-        readonly windowEndMs: number;
-        readonly consecutiveEmptyWindows: number;
-    }): Promise<SyncResultInterface<T[]>> {
-        if (state.consecutiveEmptyWindows >= state.config.dormancyWindowCount || state.windowEndMs <= state.config.startTimeMs) {
-            return this.success(state.records);
-        }
-
-        const deadlineError = this.resolveDeadlineError();
-        if (isDefined(deadlineError)) {
-            return this.failure(deadlineError);
-        }
-
-        const windowStartMs = Math.max(state.config.startTimeMs, state.windowEndMs - state.config.periodMs);
-        const windowResult = await state.fetchOneWindow(windowStartMs, state.windowEndMs);
-        if (!windowResult.success) {
-            return windowResult;
-        }
-
-        return this.walkNextWindow({
-            ...state,
-            windowEndMs: windowStartMs,
-            consecutiveEmptyWindows: this.accumulateWindow(state.records, windowResult.data, state.consecutiveEmptyWindows)
-        });
-    }
-
-    private accumulateWindow<T>(records: T[], windowData: T[], consecutiveEmptyWindows: number): number {
-        records.push(...windowData);
-
-        return isNotEmptyArray(windowData) ? 0 : consecutiveEmptyWindows + 1;
-    }
-
-    private async fetchDeposits(
-        wallet: BinanceWalletEnum,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceDepositApiInterface[]>> {
-        return this.walkWindowsBackward(
-            { startTimeMs, endTimeMs, periodMs: CAPITAL_HISTORY_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
-            (windowStartMs, windowEndMs) => this.fetchDepositWindow(wallet, windowStartMs, windowEndMs)
-        );
-    }
-
-    private async fetchDepositWindow(
-        wallet: BinanceWalletEnum,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceDepositApiInterface[]>> {
-        const cacheKey = `${wallet}:${DEPOSIT_HISTORY_ENDPOINT}:${startTimeMs}-${endTimeMs}`;
-        const cached = this.depositCache.get(cacheKey);
-        if (isDefined(cached)) {
-            return this.success(cached);
-        }
-
-        const result = await this.fetchOffsetPagedRows(offset => this.fetchDepositWindowPage(startTimeMs, endTimeMs, offset));
-        if (result.success) {
-            this.depositCache.set(cacheKey, result.data);
-        }
-
-        return result;
-    }
-
-    private async fetchDepositWindowPage(
-        startTimeMs: number,
-        endTimeMs: number,
-        offset: number
-    ): Promise<SyncResultInterface<BinanceDepositApiInterface[]>> {
-        const result = await this.signedRequest(DEPOSIT_HISTORY_ENDPOINT, 'GET', {
-            startTime: startTimeMs,
-            endTime: endTimeMs,
-            limit: MAX_TRANSACTIONS_PER_WINDOW,
-            offset
-        });
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceDepositListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        return this.success(parsed.data);
-    }
-
-    private async fetchWithdrawals(
-        wallet: BinanceWalletEnum,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceWithdrawalApiInterface[]>> {
-        return this.walkWindowsBackward(
-            { startTimeMs, endTimeMs, periodMs: CAPITAL_HISTORY_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
-            (windowStartMs, windowEndMs) => this.fetchWithdrawalWindow(wallet, windowStartMs, windowEndMs)
-        );
-    }
-
-    private async fetchWithdrawalWindow(
-        wallet: BinanceWalletEnum,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceWithdrawalApiInterface[]>> {
-        const cacheKey = `${wallet}:${WITHDRAW_HISTORY_ENDPOINT}:${startTimeMs}-${endTimeMs}`;
-        const cached = this.withdrawalCache.get(cacheKey);
-        if (isDefined(cached)) {
-            return this.success(cached);
-        }
-
-        const result = await this.fetchOffsetPagedRows(offset => this.fetchWithdrawalWindowPage(startTimeMs, endTimeMs, offset));
-        if (result.success) {
-            this.withdrawalCache.set(cacheKey, result.data);
-        }
-
-        return result;
-    }
-
-    private async fetchWithdrawalWindowPage(
-        startTimeMs: number,
-        endTimeMs: number,
-        offset: number
-    ): Promise<SyncResultInterface<BinanceWithdrawalApiInterface[]>> {
-        const result = await this.signedRequest(WITHDRAW_HISTORY_ENDPOINT, 'GET', {
-            startTime: startTimeMs,
-            endTime: endTimeMs,
-            limit: MAX_TRANSACTIONS_PER_WINDOW,
-            offset
-        });
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceWithdrawalListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        return this.success(parsed.data);
-    }
-
-    private fetchOffsetPagedRows<T>(fetchPage: (offset: number) => Promise<SyncResultInterface<T[]>>): Promise<SyncResultInterface<T[]>> {
-        const rows: T[] = [];
-
-        return this.fetchNextOffsetPage(fetchPage, 0, rows);
-    }
-
-    private fetchNextOffsetPage<T>(
-        fetchPage: (offset: number) => Promise<SyncResultInterface<T[]>>,
-        offset: number,
-        rows: T[]
-    ): Promise<SyncResultInterface<T[]>> {
-        return fetchPage(offset).then(pageResult => {
-            if (!pageResult.success) {
-                return pageResult;
-            }
-
-            rows.push(...pageResult.data);
-
-            return pageResult.data.length === MAX_TRANSACTIONS_PER_WINDOW
-                ? this.fetchNextOffsetPage(fetchPage, offset + MAX_TRANSACTIONS_PER_WINDOW, rows)
-                : this.success(rows);
-        });
-    }
-
-    private async fetchFiatOrders(
-        transactionType: number,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceFiatOrderApiInterface[]>> {
-        const cacheKey = `${transactionType}:${FIAT_ORDERS_ENDPOINT}:${startTimeMs}-${endTimeMs}`;
-        const cached = this.fiatOrderCache.get(cacheKey);
-        if (isDefined(cached)) {
-            return this.success(cached);
-        }
-
-        const result = await this.fetchAllFiatOrderWindows(transactionType, startTimeMs, endTimeMs);
-        if (result.success) {
-            this.fiatOrderCache.set(cacheKey, result.data);
-        }
-
-        return result;
-    }
-
-    private async fetchAllFiatOrderWindows(
-        transactionType: number,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceFiatOrderApiInterface[]>> {
-        return this.walkWindowsBackward(
-            {
-                startTimeMs,
-                endTimeMs,
-                periodMs: BINANCE_FIAT_MAX_PERIOD_MS,
-                dormancyWindowCount: this.resolveDormancyWindowCount(BINANCE_FIAT_MAX_PERIOD_MS)
-            },
-            (windowStartMs, windowEndMs) => this.fetchFiatOrderWindow(transactionType, windowStartMs, windowEndMs)
-        );
-    }
-
-    private async fetchFiatOrderWindow(
-        transactionType: number,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceFiatOrderApiInterface[]>> {
-        return this.fetchPagedOrders(page => this.fetchFiatOrderPage(transactionType, startTimeMs, endTimeMs, page));
-    }
-
-    private async fetchFiatOrderPage(
-        transactionType: number,
-        startTimeMs: number,
-        endTimeMs: number,
-        page: number
-    ): Promise<SyncResultInterface<{ orders: BinanceFiatOrderApiInterface[]; hasMore: boolean }>> {
-        const result = await this.signedRequest(FIAT_ORDERS_ENDPOINT, 'GET', {
-            transactionType,
-            beginTime: startTimeMs,
-            endTime: endTimeMs,
-            page,
-            rows: FIAT_ROWS_PER_PAGE
-        });
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceFiatOrderListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        const orders = parsed.data.data.filter(order => order.status === FIAT_SUCCESSFUL_STATUS);
-
-        return this.success({ orders, hasMore: parsed.data.data.length === FIAT_ROWS_PER_PAGE });
     }
 
     private buildTransactions(accountId: string, asset: string, sources: BinanceTransactionSourcesInterface): SyncTransactionInterface[] {
@@ -659,248 +716,29 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private buildSourceTransactions(wallet: BinanceWalletEnum, sources: BinanceTransactionSourcesInterface): SyncTransactionInterface[] {
-        const transactions: SyncTransactionInterface[] = [];
-        for (const asset of this.collectSourceAssets(sources)) {
-            const accountId = encodeBinanceAccountId({ wallet, asset });
-            transactions.push(...this.buildTransactions(accountId, asset, sources));
-        }
-
-        return transactions;
-    }
-
-    private dedupeTransactions(transactions: SyncTransactionInterface[]): SyncTransactionInterface[] {
         const byId = new Map<string, SyncTransactionInterface>();
-        for (const transaction of transactions) {
-            byId.set(transaction.id, transaction);
-        }
-
-        return [...byId.values()];
-    }
-
-    private collectSourceAssets(sources: BinanceTransactionSourcesInterface): Set<string> {
-        const assets = [
+        const assets = new Set([
             ...sources.deposits.map(deposit => deposit.coin),
             ...sources.withdrawals.map(withdrawal => withdrawal.coin),
             ...sources.fiatDeposits.map(order => order.fiatCurrency),
             ...sources.fiatWithdrawals.map(order => order.fiatCurrency),
             ...sources.c2cOrders.map(order => order.asset),
             ...sources.earnRewards.map(reward => reward.asset)
-        ];
+        ]);
 
-        return new Set(assets);
-    }
-
-    private async fetchAllTransfers(
-        startTimeMs: number,
-        endTimeMs: number,
-        eligibleSoldOffBaseAssets: readonly string[]
-    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const cacheKey = `${startTimeMs}-${endTimeMs}:${[...eligibleSoldOffBaseAssets].sort().join(',')}`;
-        const cached = this.transferCache.get(cacheKey);
-        if (isDefined(cached)) {
-            return this.success(cached);
-        }
-
-        const result = await this.fetchTradesAndConverts(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets);
-        if (result.success) {
-            this.transferCache.set(cacheKey, result.data);
-        }
-
-        return result;
-    }
-
-    private async fetchTradesAndConverts(
-        startTimeMs: number,
-        endTimeMs: number,
-        eligibleSoldOffBaseAssets: readonly string[]
-    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const convertResult = await this.fetchConvertTransfers(startTimeMs, endTimeMs);
-        if (!convertResult.success) {
-            return convertResult;
-        }
-
-        const tradeResult = await this.fetchTradeTransfers(startTimeMs, endTimeMs, convertResult.data, eligibleSoldOffBaseAssets);
-        if (!tradeResult.success) {
-            return tradeResult;
-        }
-
-        return this.success(this.dedupeTransfers([...tradeResult.data, ...convertResult.data]));
-    }
-
-    private dedupeTransfers(transfers: BinanceTransferInterface[]): BinanceTransferInterface[] {
-        const byExternalId = new Map<string, BinanceTransferInterface>();
-        for (const transfer of transfers) {
-            byExternalId.set(transfer.externalId, transfer);
-        }
-
-        return [...byExternalId.values()];
-    }
-
-    private async fetchConvertTransfers(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const flowsResult = await this.fetchAllConvertWindows(startTimeMs, endTimeMs);
-        if (!flowsResult.success) {
-            return flowsResult;
-        }
-
-        const transfers = flowsResult.data
-            .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
-            .map(flow => binanceMapper.mapConvertToTransfer(flow))
-            .filter(isDefined);
-
-        return this.success(transfers);
-    }
-
-    private async fetchAllConvertWindows(
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceConvertFlowApiInterface[]>> {
-        return this.walkWindowsBackward(
-            { startTimeMs, endTimeMs, periodMs: CONVERT_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
-            (windowStartMs, windowEndMs) => this.fetchConvertWindow(windowStartMs, windowEndMs)
-        );
-    }
-
-    private async fetchConvertWindow(
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceConvertFlowApiInterface[]>> {
-        const result = await this.fetchConvertWindowChunk(startTimeMs, endTimeMs);
-        if (!result.success || !result.data.moreData || endTimeMs <= startTimeMs) {
-            return result.success ? this.success(result.data.list) : result;
-        }
-
-        const midpointMs = Math.floor((startTimeMs + endTimeMs) / 2);
-        const olderResult = await this.fetchConvertWindow(startTimeMs, midpointMs);
-        if (!olderResult.success) {
-            return olderResult;
-        }
-
-        const newerResult = await this.fetchConvertWindow(midpointMs + 1, endTimeMs);
-        if (!newerResult.success) {
-            return newerResult;
-        }
-
-        return this.success([...olderResult.data, ...newerResult.data]);
-    }
-
-    private async fetchConvertWindowChunk(
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<{ list: BinanceConvertFlowApiInterface[]; moreData: boolean }>> {
-        const result = await this.signedRequest(CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
-            startTime: startTimeMs,
-            endTime: endTimeMs,
-            limit: CONVERT_ROWS_PER_PAGE
-        });
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceConvertTradeFlowApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        return this.success({ list: parsed.data.list, moreData: parsed.data.moreData });
-    }
-
-    private async fetchTradeTransfers(
-        startTimeMs: number,
-        endTimeMs: number,
-        convertTransfers: BinanceTransferInterface[],
-        eligibleSoldOffBaseAssets: readonly string[]
-    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const symbolsResult = await this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
-        if (!symbolsResult.success) {
-            return symbolsResult;
-        }
-
-        syncLogger.log('binance:trades:symbols', { symbols: symbolsResult.data.map(symbol => symbol.symbol).join(',') });
-
-        const transfers: BinanceTransferInterface[] = [];
-        for (const symbol of symbolsResult.data) {
-            // eslint-disable-next-line no-await-in-loop -- Per-symbol myTrades calls must be paced sequentially against the shared api IP weight pool
-            const symbolResult = await this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs);
-            if (!symbolResult.success) {
-                return symbolResult;
+        for (const asset of assets) {
+            for (const transaction of this.buildTransactions(encodeBinanceAccountId({ wallet, asset }), asset, sources)) {
+                byId.set(transaction.id, transaction);
             }
-
-            transfers.push(...symbolResult.data);
         }
 
-        syncLogger.log('binance:trades:counts', {
-            symbols: symbolsResult.data.map(symbol => symbol.symbol).join(','),
-            count: transfers.length
-        });
-
-        return this.success(transfers);
+        return [...byId.values()];
     }
 
-    private async deriveTradeSymbols(
-        startTimeMs: number,
-        endTimeMs: number,
-        convertTransfers: BinanceTransferInterface[],
-        eligibleSoldOffBaseAssets: readonly string[]
-    ): Promise<SyncResultInterface<BinanceTradeSymbolInterface[]>> {
-        const balanceResult = await this.signedRequest(SPOT_BALANCE_ENDPOINT, 'POST');
-        if (!balanceResult.success) {
-            return balanceResult;
-        }
-
-        const parsed = BinanceAssetBalanceListApiSchema.safeParse(balanceResult.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        const baseAssets = this.collectBaseAssets(parsed.data, convertTransfers);
-        await this.addHistoryAssets(baseAssets, startTimeMs, endTimeMs);
-        const validSymbols = await this.resolveValidSymbols();
-        const candidates = this.buildTradeSymbolCandidates(baseAssets, validSymbols, new Set(eligibleSoldOffBaseAssets));
-
-        return this.success(this.filterCandidatesByExchangeInfo(candidates, validSymbols));
-    }
-
-    private filterCandidatesByExchangeInfo(
-        candidates: BinanceTradeSymbolInterface[],
-        validSymbols: Set<string> | null
-    ): BinanceTradeSymbolInterface[] {
-        if (!isDefined(validSymbols)) {
-            syncLogger.log('binance:exchange-info:fallback', { candidates: candidates.length });
-
-            return candidates;
-        }
-
-        const symbols = candidates.filter(candidate => validSymbols.has(candidate.symbol));
-        syncLogger.log('binance:exchange-info:filtered', { candidates: candidates.length, valid: symbols.length });
-
-        return symbols;
-    }
-
-    private async resolveValidSymbols(): Promise<Set<string> | null> {
-        if (isDefined(this.validSymbols)) {
-            return this.validSymbols;
-        }
-
-        await this.throttle.waitIfNeeded();
-
-        const result = await this.fetchJson<unknown>(EXCHANGE_INFO_ENDPOINT);
-        if (!result.success) {
-            return null;
-        }
-
-        const parsed = BinanceExchangeInfoApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return null;
-        }
-
-        this.validSymbols = new Set(
-            parsed.data.symbols.filter(symbol => symbol.status === EXCHANGE_INFO_TRADING_STATUS).map(symbol => symbol.symbol)
-        );
-
-        return this.validSymbols;
-    }
-
-    private collectBaseAssets(balances: BinanceAssetBalanceApiInterface[], convertTransfers: BinanceTransferInterface[]): Set<string> {
+    private collectBaseAssets(
+        balances: readonly BinanceAssetBalanceApiInterface[],
+        convertTransfers: BinanceTransferInterface[]
+    ): Set<string> {
         const baseAssets = new Set<string>();
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
@@ -910,38 +748,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         for (const transfer of convertTransfers) {
-            this.addTransferAssets(baseAssets, transfer);
+            for (const decoded of [
+                decodeBinanceAccountId(transfer.fromAssetAccountId),
+                decodeBinanceAccountId(transfer.toAssetAccountId)
+            ]) {
+                if (isDefined(decoded)) {
+                    baseAssets.add(decoded.asset);
+                }
+            }
         }
 
         return baseAssets;
-    }
-
-    private async addHistoryAssets(baseAssets: Set<string>, startTimeMs: number, endTimeMs: number): Promise<void> {
-        const depositsResult = await this.fetchDeposits(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
-        if (depositsResult.success) {
-            depositsResult.data.forEach(deposit => baseAssets.add(deposit.coin));
-        }
-
-        const withdrawalsResult = await this.fetchWithdrawals(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
-        if (withdrawalsResult.success) {
-            withdrawalsResult.data.forEach(withdrawal => baseAssets.add(withdrawal.coin));
-        }
-
-        const c2cOrdersResult = await this.fetchC2cOrders(startTimeMs, endTimeMs);
-        if (c2cOrdersResult.success) {
-            c2cOrdersResult.data.forEach(order => baseAssets.add(order.asset));
-        }
-    }
-
-    private addTransferAssets(baseAssets: Set<string>, transfer: BinanceTransferInterface): void {
-        const fromDecoded = decodeBinanceAccountId(transfer.fromAssetAccountId);
-        const toDecoded = decodeBinanceAccountId(transfer.toAssetAccountId);
-        if (isDefined(fromDecoded)) {
-            baseAssets.add(fromDecoded.asset);
-        }
-        if (isDefined(toDecoded)) {
-            baseAssets.add(toDecoded.asset);
-        }
     }
 
     private buildTradeSymbolCandidates(
@@ -950,15 +767,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         eligibleSoldOffBaseAssets: Set<string>
     ): BinanceTradeSymbolInterface[] {
         const symbolsById = new Map<string, BinanceTradeSymbolInterface>();
-        this.addBaseAssetSymbolPairs(symbolsById, baseAssets);
-        if (isDefined(validSymbols)) {
-            this.addSelectedQuoteSymbolPairs(symbolsById, baseAssets, validSymbols, eligibleSoldOffBaseAssets);
-        }
-
-        return [...symbolsById.values()];
-    }
-
-    private addBaseAssetSymbolPairs(symbolsById: Map<string, BinanceTradeSymbolInterface>, baseAssets: Set<string>): void {
         for (const baseAsset of baseAssets) {
             for (const quoteAsset of BINANCE_MAJOR_QUOTE_ASSETS) {
                 if (baseAsset !== quoteAsset) {
@@ -967,20 +775,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 }
             }
         }
-    }
 
-    private addSelectedQuoteSymbolPairs(
-        symbolsById: Map<string, BinanceTradeSymbolInterface>,
-        baseAssets: Set<string>,
-        validSymbols: Set<string>,
-        eligibleSoldOffBaseAssets: Set<string>
-    ): void {
-        for (const symbol of validSymbols) {
+        for (const symbol of validSymbols ?? []) {
             const tradeSymbol = this.parseSelectedQuoteTradeSymbol(symbol, baseAssets, eligibleSoldOffBaseAssets);
             if (isDefined(tradeSymbol)) {
                 symbolsById.set(tradeSymbol.symbol, tradeSymbol);
             }
         }
+
+        return [...symbolsById.values()];
     }
 
     private parseSelectedQuoteTradeSymbol(
@@ -1001,350 +804,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return null;
     }
 
-    private async fetchSymbolTrades(
-        symbol: BinanceTradeSymbolInterface,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        return this.fetchNextSymbolTradePage({ symbol, startTimeMs, endTimeMs, fromId: null, transfers: [] });
-    }
-
-    private async fetchNextSymbolTradePage(state: {
-        readonly symbol: BinanceTradeSymbolInterface;
-        readonly startTimeMs: number;
-        readonly endTimeMs: number;
-        readonly fromId: number | null;
-        readonly transfers: BinanceTransferInterface[];
-    }): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const deadlineError = this.resolveDeadlineError();
-        if (isDefined(deadlineError)) {
-            return this.failure(deadlineError);
-        }
-
-        const pageResult = await this.fetchSymbolTradePage(state.symbol, state.fromId, state.startTimeMs, state.endTimeMs);
-        if (!pageResult.success) {
-            return pageResult;
-        }
-
-        state.transfers.push(...pageResult.data.transfers);
-
-        return isDefined(pageResult.data.nextFromId)
-            ? this.fetchNextSymbolTradePage({ ...state, fromId: pageResult.data.nextFromId })
-            : this.success(state.transfers);
-    }
-
-    private async fetchSymbolTradePage(
-        symbol: BinanceTradeSymbolInterface,
-        fromId: number | null,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null }>> {
-        const result = await this.signedRequest(MY_TRADES_ENDPOINT, 'GET', {
-            symbol: symbol.symbol,
-            ...(isDefined(fromId) ? { fromId } : { startTime: startTimeMs }),
-            limit: TRADES_PER_SYMBOL_LIMIT
-        });
-        if (!result.success) {
-            return this.handleSymbolTradePageFailure(result, symbol.symbol);
-        }
-
-        const parsed = BinanceTradeListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        const transfers = parsed.data
-            .filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs)
-            .map(trade => binanceMapper.mapTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset))
-            .filter(isDefined);
-        const lastTrade = parsed.data.at(-1);
-        const nextFromId = parsed.data.length === TRADES_PER_SYMBOL_LIMIT && isDefined(lastTrade) ? lastTrade.id + 1 : null;
-
-        return this.success({ transfers, nextFromId });
-    }
-
-    private handleSymbolTradePageFailure(
-        result: SyncResultInterface<unknown> & { success: false },
-        symbol: string
-    ): SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null }> {
-        if (this.isInvalidSymbolError(result.error)) {
-            syncLogger.log('binance:trades:unknown-symbol', { symbol });
-
-            return this.success({ transfers: [], nextFromId: null });
-        }
-
-        return result;
-    }
-
-    private isInvalidSymbolError(error: SyncErrorInterface): boolean {
-        if (error.code !== SyncErrorCodeEnum.INVALID_RESPONSE) {
-            return false;
-        }
-
-        const parsed = BinanceApiErrorCodeSchema.safeParse(error.originalError);
-
-        return parsed.success && Number(parsed.data.code) === BINANCE_INVALID_SYMBOL_CODE;
-    }
-
-    private async fetchC2cOrders(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceC2cOrderApiInterface[]>> {
-        const availableStartTimeMs = Math.max(startTimeMs, this.c2cHistoryFloorTimeMs);
-        if (availableStartTimeMs >= endTimeMs) {
-            return this.success([]);
-        }
-
-        const cacheKey = `${availableStartTimeMs}-${endTimeMs}`;
-        const cached = this.c2cOrderCache.get(cacheKey);
-        if (isDefined(cached)) {
-            return this.success(cached);
-        }
-
-        const result = await this.fetchC2cBuyAndSell(availableStartTimeMs, endTimeMs);
-        if (result.success) {
-            this.c2cOrderCache.set(cacheKey, result.data);
-        }
-
-        return result;
-    }
-
-    private async fetchC2cBuyAndSell(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceC2cOrderApiInterface[]>> {
-        const buyResult = await this.fetchC2cOrdersByType(C2C_BUY_TRADE_TYPE, startTimeMs, endTimeMs);
-        if (!buyResult.success) {
-            return buyResult;
-        }
-
-        const sellResult = await this.fetchC2cOrdersByType(C2C_SELL_TRADE_TYPE, startTimeMs, endTimeMs);
-        if (!sellResult.success) {
-            return sellResult;
-        }
-
-        return this.success([...buyResult.data, ...sellResult.data]);
-    }
-
-    private async fetchC2cOrdersByType(
-        tradeType: string,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceC2cOrderApiInterface[]>> {
-        return this.walkWindowsBackward(
-            { startTimeMs, endTimeMs, periodMs: C2C_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
-            (windowStartMs, windowEndMs) => this.fetchC2cOrderWindow(tradeType, windowStartMs, windowEndMs)
-        );
-    }
-
-    private async fetchC2cOrderWindow(
-        tradeType: string,
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceC2cOrderApiInterface[]>> {
-        return this.fetchPagedOrders(page => this.fetchC2cOrderPage(tradeType, startTimeMs, endTimeMs, page));
-    }
-
-    private async fetchC2cOrderPage(
-        tradeType: string,
-        startTimeMs: number,
-        endTimeMs: number,
-        page: number
-    ): Promise<SyncResultInterface<{ orders: BinanceC2cOrderApiInterface[]; hasMore: boolean }>> {
-        const result = await this.signedRequest(C2C_ORDERS_ENDPOINT, 'GET', {
-            tradeType,
-            startTimestamp: startTimeMs,
-            endTimestamp: endTimeMs,
-            page,
-            rows: C2C_ROWS_PER_PAGE
-        });
-        if (!result.success) {
-            return this.handleC2cFailure(result.error, tradeType);
-        }
-
-        return this.parseC2cOrderPage(result.data, tradeType);
-    }
-
-    private parseC2cOrderPage(
-        response: unknown,
-        tradeType: string
-    ): SyncResultInterface<{ orders: BinanceC2cOrderApiInterface[]; hasMore: boolean }> {
-        const parsed = BinanceC2cOrderListApiSchema.safeParse(response);
-        if (!parsed.success) {
-            const responseStatus = BinanceC2cResponseStatusApiSchema.safeParse(response);
-            if (responseStatus.success && !responseStatus.data.success) {
-                syncLogger.error('binance:c2c:api-error', {
-                    tradeType,
-                    code: responseStatus.data.code,
-                    message: responseStatus.data.message
-                });
-            } else {
-                const responseShape = BinanceC2cResponseShapeApiSchema.safeParse(response);
-                syncLogger.error('binance:c2c:invalid-response', {
-                    tradeType,
-                    issues: parsed.error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; '),
-                    firstOrderKeys:
-                        responseShape.success && isNotEmptyArray(responseShape.data.data)
-                            ? Object.keys(responseShape.data.data[0]).join(',')
-                            : ''
-                });
-            }
-
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        const orders = parsed.data.data.filter(order => order.orderStatus === C2C_COMPLETED_STATUS);
-
-        return this.success({ orders, hasMore: parsed.data.data.length === C2C_ROWS_PER_PAGE });
-    }
-
-    private handleC2cFailure(
-        error: SyncErrorInterface,
-        tradeType: string
-    ): SyncResultInterface<{ orders: BinanceC2cOrderApiInterface[]; hasMore: boolean }> {
-        if (error.code === SyncErrorCodeEnum.UNAUTHORIZED) {
-            syncLogger.log('binance:c2c:unavailable', { tradeType, message: error.message });
-
-            return this.success({ orders: [], hasMore: false });
-        }
-
-        return this.failure(error);
-    }
-
-    private fetchPagedOrders<T>(
-        fetchPage: (page: number) => Promise<SyncResultInterface<{ orders: T[]; hasMore: boolean }>>
-    ): Promise<SyncResultInterface<T[]>> {
-        const orders: T[] = [];
-
-        return this.fetchNextOrderPage(fetchPage, 1, orders);
-    }
-
-    private fetchNextOrderPage<T>(
-        fetchPage: (page: number) => Promise<SyncResultInterface<{ orders: T[]; hasMore: boolean }>>,
-        page: number,
-        orders: T[]
-    ): Promise<SyncResultInterface<T[]>> {
-        return fetchPage(page).then(pageResult => {
-            if (!pageResult.success) {
-                return pageResult;
-            }
-
-            orders.push(...pageResult.data.orders);
-
-            return pageResult.data.hasMore ? this.fetchNextOrderPage(fetchPage, page + 1, orders) : this.success(orders);
-        });
-    }
-
-    private async fetchEarnRewards(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
-        const cacheKey = `${startTimeMs}-${endTimeMs}`;
-        const cached = this.earnRewardCache.get(cacheKey);
-        if (isDefined(cached)) {
-            return this.success(cached);
-        }
-
-        const result = await this.fetchAllEarnRewardWindows(startTimeMs, endTimeMs);
-        if (result.success) {
-            this.earnRewardCache.set(cacheKey, result.data);
-        }
-
-        return result;
-    }
-
-    private async fetchAllEarnRewardWindows(
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
-        return this.walkWindowsBackward(
-            { startTimeMs, endTimeMs, periodMs: EARN_REWARD_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
-            (windowStartMs, windowEndMs) => this.fetchEarnRewardWindow(windowStartMs, windowEndMs)
-        );
-    }
-
-    private async fetchEarnRewardWindow(
-        startTimeMs: number,
-        endTimeMs: number
-    ): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
-        return this.fetchNextEarnRewardPage({ startTimeMs, endTimeMs, current: 1, rewards: [] });
-    }
-
-    private async fetchNextEarnRewardPage(state: {
-        readonly startTimeMs: number;
-        readonly endTimeMs: number;
-        readonly current: number;
-        readonly rewards: BinanceEarnRewardApiInterface[];
-    }): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
-        const deadlineError = this.resolveDeadlineError();
-        if (isDefined(deadlineError)) {
-            return this.failure(deadlineError);
-        }
-
-        const pageResult = await this.fetchEarnRewardPage(state.startTimeMs, state.endTimeMs, state.current);
-        if (!pageResult.success) {
-            return pageResult;
-        }
-
-        state.rewards.push(...pageResult.data);
-
-        return pageResult.data.length === EARN_PAGE_SIZE
-            ? this.fetchNextEarnRewardPage({ ...state, current: state.current + 1 })
-            : this.success(state.rewards);
-    }
-
-    private async fetchEarnRewardPage(
-        startTimeMs: number,
-        endTimeMs: number,
-        current: number
-    ): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
-        const result = await this.signedRequest(EARN_REWARDS_ENDPOINT, 'GET', {
-            type: EARN_REWARD_TYPE_ALL,
-            startTime: startTimeMs,
-            endTime: endTimeMs,
-            current,
-            size: EARN_PAGE_SIZE
-        });
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceEarnRewardListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        return this.success(parsed.data.rows);
-    }
-
-    private async fetchSpotBalancesWithEarn(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        const balancesResult = await this.fetchBalances(SPOT_BALANCE_ENDPOINT);
-        if (!balancesResult.success) {
-            return balancesResult;
-        }
-
-        const balanceByAsset = this.buildSpotBalanceMap(balancesResult.data);
-
-        const earnFailure = await this.foldAllEarnPositions(balanceByAsset);
-        if (isDefined(earnFailure)) {
-            return earnFailure;
-        }
-
-        return this.success(this.buildSpotAccounts(balanceByAsset));
-    }
-
-    private async foldAllEarnPositions(
-        balanceByAsset: Map<string, number | null>
-    ): Promise<SyncResultInterface<SyncAccountInterface[]> | null> {
-        const earnResult = await this.fetchEarnPositions();
-        if (!earnResult.success) {
-            return earnResult;
-        }
-
-        this.foldEarnPositions(balanceByAsset, earnResult.data);
-
-        const lockedEarnResult = await this.fetchLockedEarnPositions();
-        if (!lockedEarnResult.success) {
-            return lockedEarnResult;
-        }
-
-        this.foldLockedEarnPositions(balanceByAsset, lockedEarnResult.data);
-
-        return null;
-    }
-
-    private buildSpotBalanceMap(balances: BinanceAssetBalanceApiInterface[]): Map<string, number | null> {
+    private buildSpotBalanceMap(balances: readonly BinanceAssetBalanceApiInterface[]): Map<string, number | null> {
         const balanceByAsset = new Map<string, number | null>();
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
@@ -1358,30 +818,16 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return balanceByAsset;
     }
 
-    private foldEarnPositions(balanceByAsset: Map<string, number | null>, positions: BinanceEarnPositionApiInterface[]): void {
-        for (const position of positions) {
-            this.foldEarnPositionAmount(balanceByAsset, position.asset, position.totalAmount);
-        }
-    }
-
-    private foldLockedEarnPositions(balanceByAsset: Map<string, number | null>, positions: BinanceLockedEarnPositionApiInterface[]): void {
-        for (const position of positions) {
-            this.foldEarnPositionAmount(balanceByAsset, position.asset, position.amount);
-        }
-    }
-
     private foldEarnPositionAmount(balanceByAsset: Map<string, number | null>, asset: string, rawAmount: string): void {
         const quantity = binanceMapper.parseBinanceAmount(rawAmount);
-        if (isDefined(quantity) && quantity > 0) {
-            this.addBalanceQuantity(balanceByAsset, asset, quantity);
-        } else if (!isDefined(quantity)) {
+        if (!isDefined(quantity)) {
             balanceByAsset.set(asset, null);
-        }
-    }
 
-    private addBalanceQuantity(balanceByAsset: Map<string, number | null>, asset: string, quantity: number): void {
+            return;
+        }
+
         const currentBalance = balanceByAsset.get(asset);
-        if (!isDefined(currentBalance) && balanceByAsset.has(asset)) {
+        if (quantity <= 0 || (!isDefined(currentBalance) && balanceByAsset.has(asset))) {
             return;
         }
 
@@ -1389,106 +835,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         balanceByAsset.set(asset, nextBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : nextBalance);
     }
 
-    private buildSpotAccounts(balanceByAsset: Map<string, number | null>): SyncAccountInterface[] {
-        const accounts: SyncAccountInterface[] = [];
-        for (const [asset, total] of balanceByAsset) {
-            if (isDefined(total)) {
-                accounts.push(binanceMapper.mapBalanceToAccount(asset, BinanceWalletEnum.SPOT, total));
-            } else {
-                syncLogger.log('binance:earn:fold-overflow-park', { asset, total });
-                accounts.push(binanceMapper.mapUnrepresentableBalanceToAccount(asset, BinanceWalletEnum.SPOT));
-            }
-        }
-
-        return accounts;
-    }
-
-    private async fetchEarnPositions(): Promise<SyncResultInterface<BinanceEarnPositionApiInterface[]>> {
-        return this.fetchEarnPositionPages(current => this.fetchEarnPositionPage(current));
-    }
-
-    private async fetchEarnPositionPage(current: number): Promise<SyncResultInterface<BinanceEarnPositionApiInterface[]>> {
-        const result = await this.signedRequest(EARN_POSITION_ENDPOINT, 'GET', { current, size: EARN_PAGE_SIZE });
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceEarnPositionListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        return this.success(parsed.data.rows);
-    }
-
-    private async fetchLockedEarnPositions(): Promise<SyncResultInterface<BinanceLockedEarnPositionApiInterface[]>> {
-        return this.fetchEarnPositionPages(current => this.fetchLockedEarnPositionPage(current));
-    }
-
-    private async fetchLockedEarnPositionPage(current: number): Promise<SyncResultInterface<BinanceLockedEarnPositionApiInterface[]>> {
-        const result = await this.signedRequest(LOCKED_EARN_POSITION_ENDPOINT, 'GET', { current, size: EARN_PAGE_SIZE });
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceLockedEarnPositionListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        return this.success(parsed.data.rows);
-    }
-
-    private fetchEarnPositionPages<T>(
-        fetchPage: (current: number) => Promise<SyncResultInterface<T[]>>
-    ): Promise<SyncResultInterface<T[]>> {
-        const positions: T[] = [];
-
-        return this.fetchNextEarnPositionPage(fetchPage, 1, positions);
-    }
-
-    private fetchNextEarnPositionPage<T>(
-        fetchPage: (current: number) => Promise<SyncResultInterface<T[]>>,
-        current: number,
-        positions: T[]
-    ): Promise<SyncResultInterface<T[]>> {
-        return fetchPage(current).then(pageResult => {
-            if (!pageResult.success) {
-                return pageResult;
-            }
-
-            positions.push(...pageResult.data);
-
-            return pageResult.data.length === EARN_PAGE_SIZE
-                ? this.fetchNextEarnPositionPage(fetchPage, current + 1, positions)
-                : this.success(positions);
-        });
-    }
-
-    private async fetchWalletBalances(wallet: BinanceWalletEnum): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        const endpoint = wallet === BinanceWalletEnum.SPOT ? SPOT_BALANCE_ENDPOINT : FUNDING_BALANCE_ENDPOINT;
-        const balancesResult = await this.fetchBalances(endpoint);
-        if (!balancesResult.success) {
-            return balancesResult;
-        }
-
-        const accounts = balancesResult.data.map(balance => this.mapBalance(balance, wallet)).filter(isDefined);
-
-        return this.success(accounts);
-    }
-
-    private async fetchBalances(endpoint: string): Promise<SyncResultInterface<BinanceAssetBalanceApiInterface[]>> {
-        const result = await this.signedRequest(endpoint, 'POST');
-        if (!result.success) {
-            return result;
-        }
-
-        const parsed = BinanceAssetBalanceListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        return this.success(parsed.data);
+    private buildSpotAccounts(balanceByAsset: Map<string, number | null>) {
+        return [...balanceByAsset].map(([asset, total]) =>
+            isDefined(total)
+                ? binanceMapper.mapBalanceToAccount(asset, BinanceWalletEnum.SPOT, total)
+                : binanceMapper.mapUnrepresentableBalanceToAccount(asset, BinanceWalletEnum.SPOT)
+        );
     }
 
     private computeRawTotalBalance(balance: BinanceAssetBalanceApiInterface): number | null {
@@ -1501,124 +853,21 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return free + locked;
     }
 
-    private mapBalance(balance: BinanceAssetBalanceApiInterface, wallet: BinanceWalletEnum): SyncAccountInterface | null {
+    private mapBalance(balance: BinanceAssetBalanceApiInterface, wallet: BinanceWalletEnum) {
         const totalBalance = this.computeRawTotalBalance(balance);
-        if (!isDefined(totalBalance)) {
-            return binanceMapper.mapUnrepresentableBalanceToAccount(balance.asset, wallet);
-        }
 
-        if (totalBalance <= 0) {
+        if (isDefined(totalBalance) && totalBalance <= 0) {
             return null;
         }
 
-        if (totalBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER) {
+        if (!isDefined(totalBalance) || totalBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER) {
             return binanceMapper.mapUnrepresentableBalanceToAccount(balance.asset, wallet);
         }
 
         return binanceMapper.mapBalanceToAccount(balance.asset, wallet, totalBalance);
     }
 
-    private async signedRequest(
-        endpoint: string,
-        method: 'GET' | 'POST',
-        params: Record<string, string | number> = {}
-    ): Promise<SyncResultInterface<unknown>> {
-        const initialDeadlineError = this.resolveDeadlineError();
-        if (isDefined(initialDeadlineError)) {
-            return this.failure(initialDeadlineError);
-        }
-
-        const throttleError = await this.waitForRequestSlot();
-        if (isDefined(throttleError)) {
-            return this.failure(throttleError);
-        }
-
-        const timestampResult = await this.resolveSignedRequestTimestamp();
-        if (!timestampResult.success) {
-            return timestampResult;
-        }
-
-        return this.fetchSignedJson(endpoint, method, params, timestampResult.data);
-    }
-
-    private async waitForRequestSlot(): Promise<SyncError | null> {
-        try {
-            await this.throttle.waitIfNeeded();
-
-            return null;
-        } catch (error) {
-            if (error instanceof SyncError && error.code === SyncErrorCodeEnum.DEFERRED) {
-                return error;
-            }
-
-            throw error;
-        }
-    }
-
-    private async resolveSignedRequestTimestamp(): Promise<SyncResultInterface<number>> {
-        const delayedDeadlineError = this.resolveDeadlineError();
-        if (isDefined(delayedDeadlineError)) {
-            return this.failure(delayedDeadlineError);
-        }
-
-        const timestamp = await this.resolveTimestamp();
-        const timestampDeadlineError = this.resolveDeadlineError();
-        if (isDefined(timestampDeadlineError)) {
-            return this.failure(timestampDeadlineError);
-        }
-
-        return this.success(timestamp);
-    }
-
-    private fetchSignedJson(
-        endpoint: string,
-        method: 'GET' | 'POST',
-        params: Record<string, string | number>,
-        timestamp: number
-    ): Promise<SyncResultInterface<unknown>> {
-        const baseParams = { ...params, recvWindow: SIGNATURE_RECV_WINDOW_MS, timestamp };
-        const query = Object.entries(baseParams)
-            .map(([key, value]) => `${key}=${String(value)}`)
-            .join('&');
-        const signature = this.sign(query);
-        const signedEndpoint = `${endpoint}?${query}&signature=${signature}`;
-
-        return this.fetchJson<unknown>(signedEndpoint, { method });
-    }
-
-    private resolveDeadlineError(): SyncError | null {
-        return Date.now() >= this.deadlineAtMs ? SyncError.deferred(this.provider) : null;
-    }
-
-    private async resolveTimestamp(): Promise<number> {
-        if (!isDefined(this.serverTimeOffsetMs)) {
-            await this.syncServerTime();
-        }
-
-        return Date.now() + (this.serverTimeOffsetMs ?? 0);
-    }
-
-    private async syncServerTime(): Promise<void> {
-        const result = await this.fetchJson<unknown>(SERVER_TIME_ENDPOINT);
-        if (!result.success) {
-            this.serverTimeOffsetMs = 0;
-
-            return;
-        }
-
-        const parsed = BinanceServerTimeApiSchema.safeParse(result.data);
-        this.serverTimeOffsetMs = parsed.success ? parsed.data.serverTime - Date.now() : 0;
-    }
-
-    private sign(query: string): string {
-        return bytesToHex(hmac(sha256, utf8ToBytes(this.credentials.apiSecret), utf8ToBytes(query)));
-    }
-
-    private static parseCredentials(token: string): BinanceCredentialsInterface {
-        try {
-            return BinanceCredentialsSchema.parse(JSON.parse(token));
-        } catch (error) {
-            throw new SyncError(SyncErrorCodeEnum.INVALID_TOKEN, 'Invalid Binance credentials', SyncProviderEnum.BINANCE, error);
-        }
+    private sign(query: string, apiSecret: string): string {
+        return bytesToHex(hmac(sha256, utf8ToBytes(apiSecret), utf8ToBytes(query)));
     }
 }

@@ -1,4 +1,3 @@
-import type { RuleActionCreateEntitySchema } from '../schema/rule-action-create-entity.schema';
-import type { z } from 'zod';
+import type { RuleActionEntityInterface } from './rule-action-entity.interface';
 
-export type RuleActionCreateEntityInterface = z.infer<typeof RuleActionCreateEntitySchema>;
+export type RuleActionCreateEntityInterface = Pick<RuleActionEntityInterface, 'ruleId' | 'type' | 'categoryId' | 'tagId' | 'accountId'>;

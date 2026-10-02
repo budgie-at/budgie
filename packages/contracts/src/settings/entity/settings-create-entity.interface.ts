@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { BaseEntityKeyType } from '../../@generic/type/base-entity-key.type';
+import type { SettingsEntityInterface } from './settings-entity.interface';
 
-import { SettingsCreateEntitySchema } from '../schema/settings-create-entity.schema';
-
-export type SettingsCreateEntityInterface = z.infer<typeof SettingsCreateEntitySchema>;
+export type SettingsCreateEntityInterface = Omit<SettingsEntityInterface, BaseEntityKeyType>;

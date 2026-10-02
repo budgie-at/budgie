@@ -1,8 +1,9 @@
-import { transactionImportService } from '@app/transaction/service/transaction-import.service';
+import { TransactionImportService } from '@app/transaction/service/transaction-import.service';
 import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, seed } from '../../harness';
+import { fetchTransactionById, seed, TestLayer } from '../../harness';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
@@ -40,66 +41,81 @@ const buildImportInput = (
 });
 
 describe('import/imported-batch-idempotence', () => {
-    it('collapses exact duplicate external IDs inside one import batch', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.ERSTE });
-        const input = buildImportInput(account.id, 'erste-duplicate-id', 'ERSTE exact duplicate');
+    it.effect('collapses exact duplicate external IDs inside one import batch', () =>
+        Effect.gen(function* () {
+            const transactionImportService = yield* TransactionImportService;
+            const account = seed.account({ externalSource: ExternalSourceEnum.ERSTE });
+            const input = buildImportInput(account.id, 'erste-duplicate-id', 'ERSTE exact duplicate');
 
-        const importedTransactions = await transactionImportService.bulkUpsertImported([input, input], new Map());
+            const importedTransactions = yield* transactionImportService.bulkUpsertImported([input, input], new Map());
 
-        expect(importedTransactions).toHaveLength(1);
-        expect(importedTransactions[0].externalId).toBe('erste-duplicate-id');
-    });
+            expect(importedTransactions).toHaveLength(1);
+            expect(importedTransactions[0].externalId).toBe('erste-duplicate-id');
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('keeps same-ID collisions by assigning deterministic suffixed external IDs', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.ERSTE });
-        const firstInput = buildImportInput(account.id, 'erste-collision-id', 'FITINN MDID:MREF11065472');
-        const secondInput = buildImportInput(account.id, 'erste-collision-id', 'FITINN MDID:MREF11123384');
+    it.effect('keeps same-ID collisions by assigning deterministic suffixed external IDs', () =>
+        Effect.gen(function* () {
+            const transactionImportService = yield* TransactionImportService;
+            const account = seed.account({ externalSource: ExternalSourceEnum.ERSTE });
+            const firstInput = buildImportInput(account.id, 'erste-collision-id', 'FITINN MDID:MREF11065472');
+            const secondInput = buildImportInput(account.id, 'erste-collision-id', 'FITINN MDID:MREF11123384');
 
-        const importedTransactions = await transactionImportService.bulkUpsertImported([firstInput, secondInput], new Map());
-        const firstTransaction = fetchTransactionById(importedTransactions[0].id);
-        const secondTransaction = fetchTransactionById(importedTransactions[1].id);
-        const existingTransactionIdMap = new Map([
-            ['erste-collision-id', firstTransaction.id],
-            ['erste-collision-id:2', secondTransaction.id]
-        ]);
-        const reimportedTransactions = await transactionImportService.bulkUpsertImported(
-            [firstInput, secondInput],
-            existingTransactionIdMap
-        );
+            const importedTransactions = yield* transactionImportService.bulkUpsertImported([firstInput, secondInput], new Map());
+            const firstTransaction = fetchTransactionById(importedTransactions[0].id);
+            const secondTransaction = fetchTransactionById(importedTransactions[1].id);
+            const existingTransactionIdMap = new Map([
+                ['erste-collision-id', firstTransaction.id],
+                ['erste-collision-id:2', secondTransaction.id]
+            ]);
+            const reimportedTransactions = yield* transactionImportService.bulkUpsertImported(
+                [firstInput, secondInput],
+                existingTransactionIdMap
+            );
 
-        expect(importedTransactions).toHaveLength(2);
-        expect(firstTransaction.externalId).toBe('erste-collision-id');
-        expect(secondTransaction.externalId).toBe('erste-collision-id:2');
-        expect(reimportedTransactions.map(transaction => transaction.id)).toEqual([firstTransaction.id, secondTransaction.id]);
-    });
+            expect(importedTransactions).toHaveLength(2);
+            expect(firstTransaction.externalId).toBe('erste-collision-id');
+            expect(secondTransaction.externalId).toBe('erste-collision-id:2');
+            expect(reimportedTransactions.map(transaction => transaction.id)).toEqual([firstTransaction.id, secondTransaction.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('maps legacy aliases after assigning deterministic collision suffixes', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.ERSTE });
-        const legacyFirstInput = buildImportInput(account.id, 'erste-legacy-id-1', 'FITINN MDID:MREF11065472');
-        const legacySecondInput = buildImportInput(account.id, 'erste-legacy-id-2', 'FITINN MDID:MREF11123384');
-        const [legacyFirstTransaction, legacySecondTransaction] = await transactionImportService.bulkUpsertImported(
-            [legacyFirstInput, legacySecondInput],
-            new Map()
-        );
-        const existingTransactionIdMap = new Map([
-            ['erste-legacy-id-1', legacyFirstTransaction.id],
-            ['erste-legacy-id-2', legacySecondTransaction.id]
-        ]);
-        const firstInput = {
-            ...buildImportInput(account.id, 'erste-collision-alias-id', 'FITINN MDID:MREF11065472'),
-            externalIdAliases: ['erste-legacy-id-1']
-        };
-        const secondInput = {
-            ...buildImportInput(account.id, 'erste-collision-alias-id', 'FITINN MDID:MREF11123384'),
-            externalIdAliases: ['erste-legacy-id-2']
-        };
+    it.effect('maps legacy aliases after assigning deterministic collision suffixes', () =>
+        Effect.gen(function* () {
+            const transactionImportService = yield* TransactionImportService;
+            const account = seed.account({ externalSource: ExternalSourceEnum.ERSTE });
+            const legacyFirstInput = buildImportInput(account.id, 'erste-legacy-id-1', 'FITINN MDID:MREF11065472');
+            const legacySecondInput = buildImportInput(account.id, 'erste-legacy-id-2', 'FITINN MDID:MREF11123384');
+            const [legacyFirstTransaction, legacySecondTransaction] = yield* transactionImportService.bulkUpsertImported(
+                [legacyFirstInput, legacySecondInput],
+                new Map()
+            );
+            const existingTransactionIdMap = new Map([
+                ['erste-legacy-id-1', legacyFirstTransaction.id],
+                ['erste-legacy-id-2', legacySecondTransaction.id]
+            ]);
+            const firstInput = {
+                ...buildImportInput(account.id, 'erste-collision-alias-id', 'FITINN MDID:MREF11065472'),
+                externalIdAliases: ['erste-legacy-id-1']
+            };
+            const secondInput = {
+                ...buildImportInput(account.id, 'erste-collision-alias-id', 'FITINN MDID:MREF11123384'),
+                externalIdAliases: ['erste-legacy-id-2']
+            };
 
-        const importedTransactions = await transactionImportService.bulkUpsertImported([firstInput, secondInput], existingTransactionIdMap);
-        const firstTransaction = fetchTransactionById(importedTransactions[0].id);
-        const secondTransaction = fetchTransactionById(importedTransactions[1].id);
+            const importedTransactions = yield* transactionImportService.bulkUpsertImported(
+                [firstInput, secondInput],
+                existingTransactionIdMap
+            );
+            const firstTransaction = fetchTransactionById(importedTransactions[0].id);
+            const secondTransaction = fetchTransactionById(importedTransactions[1].id);
 
-        expect(importedTransactions.map(transaction => transaction.id)).toEqual([legacyFirstTransaction.id, legacySecondTransaction.id]);
-        expect(firstTransaction.externalId).toBe('erste-collision-alias-id');
-        expect(secondTransaction.externalId).toBe('erste-collision-alias-id:2');
-    });
+            expect(importedTransactions.map(transaction => transaction.id)).toEqual([
+                legacyFirstTransaction.id,
+                legacySecondTransaction.id
+            ]);
+            expect(firstTransaction.externalId).toBe('erste-collision-alias-id');
+            expect(secondTransaction.externalId).toBe('erste-collision-alias-id:2');
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

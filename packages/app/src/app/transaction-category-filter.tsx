@@ -8,7 +8,10 @@ import { useSearchCategoriesQuery } from '../category/query/use-search-categorie
 import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
-import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
+import {
+    useTransactionCategoryFilterModal,
+    useTransactionCategoryFilterModalParams
+} from '../transaction/context/transaction-category-filter-modal.context';
 import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
@@ -17,7 +20,8 @@ const LIST_TOP_SPACE = 88;
 
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
-    const [, resolveTransactionCategoryFilter, currentParams] = useTransactionCategoryFilterModal();
+    const [, resolveTransactionCategoryFilter] = useTransactionCategoryFilterModal();
+    const currentParams = useTransactionCategoryFilterModalParams();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;

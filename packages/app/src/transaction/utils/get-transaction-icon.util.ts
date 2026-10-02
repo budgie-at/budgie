@@ -2,12 +2,13 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
-    UserIconNameEnum
+    UserIconNameEnum,
+    UserIconType
 } from '@budgie/contracts';
 
 import { getTransactionCategoryEntries } from './get-transaction-category-entries.util';
 
-export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconNameEnum => {
+export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconType => {
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
         const [entry] = transaction.entries;
 

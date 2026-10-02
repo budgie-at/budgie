@@ -1,4 +1,4 @@
-import type { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import type { TransactionTypeEnum, UserIconType } from '@budgie/contracts';
 
 export interface TransactionPickerItemInterface {
     readonly id: number;
@@ -9,6 +9,6 @@ export interface TransactionPickerItemInterface {
     readonly accountTitle: string;
     readonly currencySymbol: string;
     readonly categoryTitle: string | null;
-    readonly categoryIcon: UserIconNameEnum | null;
+    readonly categoryIcon: UserIconType | null;
     readonly isRecommended: boolean;
 }

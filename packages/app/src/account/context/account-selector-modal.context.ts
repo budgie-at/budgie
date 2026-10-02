@@ -18,6 +18,7 @@ export interface AccountSelectorModalParams {
 
 export type AccountSelectorResult = number | null;
 
-export const [AccountSelectorModalContext, useAccountSelectorModal] = createModalContext<AccountSelectorModalParams, AccountSelectorResult>(
-    null
-);
+export const [AccountSelectorModalContext, useAccountSelectorModal, useAccountSelectorModalParams] = createModalContext<
+    AccountSelectorModalParams,
+    AccountSelectorResult
+>(null);

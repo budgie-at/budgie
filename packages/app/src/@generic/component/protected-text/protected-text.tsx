@@ -1,17 +1,14 @@
 import { Text, TextProps } from 'react-native';
 
-import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { useAppState } from '../../hook/use-app-state.hook';
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../constant/protected-amount-placeholder.constant';
+import { useIsAmountProtected } from '../../hook/use-is-amount-protected.hook';
 
 interface Props extends TextProps {
     readonly placeholderText?: string;
 }
 
-export const ProtectedText = ({ children, placeholderText = '***.**', ...rest }: Props) => {
-    const { isActive } = useAppState();
+export const ProtectedText = ({ children, placeholderText = PROTECTED_AMOUNT_PLACEHOLDER, ...rest }: Props) => {
+    const isAmountProtected = useIsAmountProtected();
 
-    const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
-    const shouldProtect = isScreenshotProtectionEnabled && !isActive;
-
-    return <Text {...rest}>{shouldProtect ? placeholderText : children}</Text>;
+    return <Text {...rest}>{isAmountProtected ? placeholderText : children}</Text>;
 };

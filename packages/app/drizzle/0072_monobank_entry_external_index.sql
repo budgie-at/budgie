@@ -1,0 +1,1 @@
+CREATE INDEX `transaction_entries_account_external_idx` ON `transaction_entries` (`account_id`,`external_id`) WHERE "transaction_entries"."external_id" IS NOT NULL AND "transaction_entries"."deleted_at" IS NULL;

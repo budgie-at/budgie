@@ -1,16 +1,4 @@
-import { disableLogging } from '@budgie/logger';
-import { disableLogging as disableBankSyncLogging } from '@budgie/sync';
-import Constants from 'expo-constants';
-
 import { RootLayoutContent } from './root-layout-content';
-
-const loggingEnabledKey = 'loggingEnabled';
-const isLoggingEnabled = __DEV__ || Constants.expoConfig?.extra?.[loggingEnabledKey] === true;
-
-if (!isLoggingEnabled) {
-    disableLogging();
-    disableBankSyncLogging();
-}
 
 const unstableSettings = {
     anchor: '(tabs)'

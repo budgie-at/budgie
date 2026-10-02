@@ -1,15 +1,16 @@
 import { RuleActionTypeEnum } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { ruleRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { enabledRulesAtom } from '../constant/enabled-rules-atom.constant';
 import { EXCLUSIVE_ACTION_TYPES } from '../constant/exclusive-action-types.constant';
 
 export const useHasConflictingRules = (actionTypes: RuleActionTypeEnum[], excludeRuleId?: number): boolean => {
-    const { data: enabledRules, updatedAt } = useDatabaseLiveQuery(ruleRepository.findEnabledWithRelations());
+    const enabledRules = AsyncResult.getOrElse(useLiveAtomValue(enabledRulesAtom), () => []);
 
-    if (!isDefined(updatedAt) || !isNotEmptyArray(enabledRules)) {
+    if (!isNotEmptyArray(enabledRules)) {
         return false;
     }
 

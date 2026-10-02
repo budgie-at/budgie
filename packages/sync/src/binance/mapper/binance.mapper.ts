@@ -1,8 +1,7 @@
 /* eslint-disable max-lines -- File owns the single BinanceMapper class; package rule mandates one mapper class per provider, splitting would fragment it -- approved by human */
-import { Log } from '@budgie/logger';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns/getUnixTime';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
@@ -34,11 +33,6 @@ const C2C_BUY_TRADE_TYPE = 'BUY';
 const EARN_DATE_PART_DIGITS = 2;
 
 class BinanceMapper {
-    @Log(
-        (asset, wallet, balance) => `enter wallet=${wallet} asset=${asset} balance=${balance}`,
-        (result, asset, wallet) => `done wallet=${wallet} asset=${asset} accountId=${result.id}`,
-        (error, asset, wallet, balance) => `throw wallet=${wallet} asset=${asset} balance=${balance} error=${getErrorMessage(error)}`
-    )
     mapBalanceToAccount(asset: string, wallet: BinanceWalletEnum, balance: number): SyncAccountInterface {
         return {
             id: encodeBinanceAccountId({ wallet, asset }),
@@ -53,11 +47,6 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        (asset, wallet) => `enter wallet=${wallet} asset=${asset}`,
-        (result, asset, wallet) => `done wallet=${wallet} asset=${asset} accountId=${result.id}`,
-        (error, asset, wallet) => `throw wallet=${wallet} asset=${asset} error=${getErrorMessage(error)}`
-    )
     mapUnrepresentableBalanceToAccount(asset: string, wallet: BinanceWalletEnum): SyncAccountInterface {
         return {
             ...this.mapBalanceToAccount(asset, wallet, 0),
@@ -65,11 +54,6 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        (deposit, accountId) => `enter accountId=${accountId} coin=${deposit.coin} amount=${deposit.amount}`,
-        (result, deposit, accountId) => `done accountId=${accountId} coin=${deposit.coin} skipped=${String(!isDefined(result))}`,
-        (error, deposit, accountId) => `throw accountId=${accountId} coin=${deposit.coin} error=${getErrorMessage(error)}`
-    )
     mapDepositToTransaction(deposit: BinanceDepositApiInterface, accountId: string): SyncTransactionInterface | null {
         const amount = this.parseBinanceAmount(deposit.amount);
         if (!isDefined(amount)) {
@@ -89,12 +73,6 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        (withdrawal, accountId) =>
-            `enter accountId=${accountId} coin=${withdrawal.coin} amount=${withdrawal.amount} fee=${withdrawal.transactionFee}`,
-        (result, withdrawal, accountId) => `done accountId=${accountId} coin=${withdrawal.coin} skipped=${String(!isDefined(result))}`,
-        (error, withdrawal, accountId) => `throw accountId=${accountId} coin=${withdrawal.coin} error=${getErrorMessage(error)}`
-    )
     mapWithdrawalToTransaction(withdrawal: BinanceWithdrawalApiInterface, accountId: string): SyncTransactionInterface | null {
         const amount = this.parseBinanceAmount(withdrawal.amount);
         const fee = this.parseBinanceAmount(withdrawal.transactionFee);
@@ -115,13 +93,6 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        (order, accountId, isDeposit) =>
-            `enter accountId=${accountId} fiatCurrency=${order.fiatCurrency} amount=${order.amount} fee=${order.totalFee} isDeposit=${String(isDeposit)}`,
-        (result, order, accountId) =>
-            `done accountId=${accountId} fiatCurrency=${order.fiatCurrency} skipped=${String(!isDefined(result))}`,
-        (error, order, accountId) => `throw accountId=${accountId} fiatCurrency=${order.fiatCurrency} error=${getErrorMessage(error)}`
-    )
     mapFiatOrderToTransaction(order: BinanceFiatOrderApiInterface, accountId: string, isDeposit: boolean): SyncTransactionInterface | null {
         const amount = this.parseBinanceAmount(order.amount);
         const fee = this.parseBinanceAmount(order.totalFee);
@@ -143,12 +114,6 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        (order, accountId) =>
-            `enter accountId=${accountId} orderNumber=${order.orderNumber} tradeType=${order.tradeType} asset=${order.asset}`,
-        (result, order, accountId) => `done accountId=${accountId} orderNumber=${order.orderNumber} skipped=${String(!isDefined(result))}`,
-        (error, order, accountId) => `throw accountId=${accountId} orderNumber=${order.orderNumber} error=${getErrorMessage(error)}`
-    )
     mapC2cOrderToTransaction(order: BinanceC2cOrderApiInterface, accountId: string): SyncTransactionInterface | null {
         const amount = this.parseBinanceAmount(order.amount);
         const quotedAmount = this.parseBinanceAmount(order.totalPrice);
@@ -175,12 +140,6 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        (trade, baseAsset, quoteAsset) =>
-            `enter symbol=${trade.symbol} base=${baseAsset} quote=${quoteAsset} tradeId=${trade.id} isBuyer=${String(trade.isBuyer)}`,
-        (result, trade) => `done tradeId=${trade.id} skipped=${String(!isDefined(result))}`,
-        (error, trade) => `throw tradeId=${trade.id} error=${getErrorMessage(error)}`
-    )
     mapTradeToTransfer(trade: BinanceTradeApiInterface, baseAsset: string, quoteAsset: string): BinanceTransferInterface | null {
         const baseAmount = this.parseBinanceAmount(trade.qty);
         const quoteAmount = this.parseBinanceAmount(trade.quoteQty);
@@ -210,11 +169,6 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        flow => `enter orderId=${flow.orderId} fromAsset=${flow.fromAsset} toAsset=${flow.toAsset}`,
-        (result, flow) => `done orderId=${flow.orderId} skipped=${String(!isDefined(result))}`,
-        (error, flow) => `throw orderId=${flow.orderId} error=${getErrorMessage(error)}`
-    )
     mapConvertToTransfer(flow: BinanceConvertFlowApiInterface): BinanceTransferInterface | null {
         const fromAmount = this.parseBinanceAmount(flow.fromAmount);
         const toAmount = this.parseBinanceAmount(flow.toAmount);
@@ -236,12 +190,11 @@ class BinanceMapper {
         };
     }
 
-    @Log(
-        (asset, accountId, rewards) => `enter accountId=${accountId} asset=${asset} rewardCount=${rewards.length}`,
-        (result, asset, accountId) => `done accountId=${accountId} asset=${asset} transactionCount=${result.length}`,
-        (error, asset, accountId) => `throw accountId=${accountId} asset=${asset} error=${getErrorMessage(error)}`
-    )
-    mapEarnRewardsToTransactions(asset: string, accountId: string, rewards: BinanceEarnRewardApiInterface[]): SyncTransactionInterface[] {
+    mapEarnRewardsToTransactions(
+        asset: string,
+        accountId: string,
+        rewards: readonly BinanceEarnRewardApiInterface[]
+    ): SyncTransactionInterface[] {
         const dailyBuckets = this.groupEarnRewardsByDay(rewards);
 
         return [...dailyBuckets.values()].map(bucket => this.mapEarnDayBucket(asset, accountId, bucket)).filter(isDefined);
@@ -263,7 +216,7 @@ class BinanceMapper {
         return Number(totalMicroUnits) / BINANCE_MICRO_UNITS_PRECISION;
     }
 
-    private groupEarnRewardsByDay(rewards: BinanceEarnRewardApiInterface[]): Map<string, BinanceEarnDayBucket> {
+    private groupEarnRewardsByDay(rewards: readonly BinanceEarnRewardApiInterface[]): Map<string, BinanceEarnDayBucket> {
         const buckets = new Map<string, BinanceEarnDayBucket>();
         for (const reward of rewards) {
             const dayKey = this.buildEarnDayKey(reward.time);

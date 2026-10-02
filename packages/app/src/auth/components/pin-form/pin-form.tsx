@@ -22,11 +22,24 @@ interface Props {
     readonly onDeletePress: EmptyFn;
     readonly onScanPress?: EmptyFn;
     readonly canScan?: boolean;
+    readonly isFaceIdAvailable?: boolean;
 }
 
 export const PinForm = (props: Props) => {
-    const { title, currentInput, description, error, isLoading, onDigitPress, onDeletePress, canScan, onScanPress = emptyFn } = props;
+    const {
+        title,
+        currentInput,
+        description,
+        error,
+        isLoading,
+        onDigitPress,
+        onDeletePress,
+        canScan,
+        isFaceIdAvailable,
+        onScanPress = emptyFn
+    } = props;
     const canDelete = isNotEmptyString(currentInput) && !isLoading;
+    const biometricIcon = isFaceIdAvailable === true ? UserIconNameEnum.ScanFace : UserIconNameEnum.Fingerprint;
 
     return (
         <View className="flex-1 justify-center" testID={PinFormSelector.Container}>
@@ -75,7 +88,7 @@ export const PinForm = (props: Props) => {
                         testID={PinFormSelector.BiometricButton}
                         className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-23"
                     >
-                        {canScan ? <Icon icon={UserIconNameEnum.ScanFace} className="text-primary" size={16} /> : null}
+                        {canScan ? <Icon icon={biometricIcon} className="text-primary" size={16} /> : null}
                     </HapticPressable>
 
                     <PinFormButton digit="0" onPress={onDigitPress} disabled={isLoading} />

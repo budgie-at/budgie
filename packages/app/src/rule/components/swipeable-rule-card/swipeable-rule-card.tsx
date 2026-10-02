@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode, useEffect, useState } from 'react';
@@ -19,9 +19,8 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
-
-const logger = getLogger('SwipeableRuleCard');
 
 const ENTRY_SPRING_CONFIG = { damping: 20, stiffness: 80 };
 const SWIPE_THRESHOLD = 80;
@@ -123,24 +122,21 @@ export const SwipeableRuleCard = (props: Props) => {
     }));
 
     const handleYesPress = async () => {
-        logger.log('handleYesPress:enter');
         setStatus('creating');
 
         try {
             await onYes();
-            logger.log('handleYesPress:onYes:done');
             setStatus('success');
             hapticNotification(NotificationFeedbackType.Success);
             setTimeout(onComplete, SUCCESS_AUTO_DISMISS_MS);
         } catch (error) {
-            logger.error('handleYesPress:onYes:throw', { errorMessage: getErrorMessage(error) });
+            appRuntime.runFork(Effect.logError('handleYesPress:onYes:throw', { errorMessage: getErrorMessage(error) }));
             setStatus('error');
             setTimeout(onDismiss, ERROR_AUTO_DISMISS_MS);
         }
     };
 
     const handleYesButtonPress = () => {
-        logger.log('handleYesButtonPress:fired');
         void handleYesPress();
     };
 

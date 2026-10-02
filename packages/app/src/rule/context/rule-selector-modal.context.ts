@@ -11,4 +11,7 @@ interface RuleSelectorModalParams {
     readonly selectedValue: string | null;
 }
 
-export const [RuleSelectorModalContext, useRuleSelectorModal] = createModalContext<RuleSelectorModalParams, string | null>(null);
+export const [RuleSelectorModalContext, useRuleSelectorModal, useRuleSelectorModalParams] = createModalContext<
+    RuleSelectorModalParams,
+    string | null
+>(null);

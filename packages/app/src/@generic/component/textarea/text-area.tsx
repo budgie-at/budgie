@@ -1,7 +1,6 @@
 import { cva } from 'class-variance-authority';
+import { cn } from 'cn';
 import { TextInput } from 'react-native';
-
-import { cn } from '../../utils/cn.util';
 
 import { TEXT_AREA_BASE_HEIGHTS } from './constant/text-area-base-heights.constant';
 import { TEXT_AREA_LINE_DELTAS } from './constant/text-area-line-deltas.constant';

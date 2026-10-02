@@ -1,7 +1,7 @@
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
 import type { ReactNode } from 'react';

@@ -11,13 +11,12 @@ import { AccountNatureEnum } from '../enum/account-nature.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
 
+import type { UserIconType } from '../../@generic/type/user-icon.type';
+
 export const AccountEntityTable = sqliteTable(
     'accounts',
     withBaseEntityTableColumns({
-        icon: text({ enum: convertEnumToDrizzleEnum(UserIconNameEnum) })
-            .$type<UserIconNameEnum>()
-            .default(UserIconNameEnum.Home)
-            .notNull(),
+        icon: text().$type<UserIconType>().default(UserIconNameEnum.Home).notNull(),
         parentId: int('parent_id', { mode: 'number' }),
         order: int({ mode: 'number' }).default(0).notNull(),
         title: text().default('').notNull(),

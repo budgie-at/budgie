@@ -1,11 +1,5 @@
-import { SettingsCreateEntityInterface } from '@budgie/contracts';
+import { Db, SettingsCreateEntityInterface, SettingsRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { settingsRepository } from '../../@generic/drizzle/db/db';
-import { databaseRefreshService } from '../../@generic/service/database-refresh.service';
-
-export const updateSettingsMutation = async (input: Partial<SettingsCreateEntityInterface>) => {
-    const settings = await settingsRepository.update(input);
-    databaseRefreshService.notifyChanged();
-
-    return settings;
-};
+export const updateSettingsMutation = (input: Partial<SettingsCreateEntityInterface>) =>
+    Db.transaction(Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.update(input)));

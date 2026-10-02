@@ -1,24 +1,23 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
+import { ClassValue, cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { IconSelectorModalSelector } from '../../../app/icon-selector-modal.selector';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { cn } from '../../utils/cn.util';
 import { typedObjectEntries } from '../../utils/typed-object-entries.util';
 import { typedObjectFromEntries } from '../../utils/typed-object-from-entries.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 interface Props {
-    readonly onSelect: (name: UserIconNameEnum) => void;
+    readonly onSelect: (icon: UserIconType) => void;
     readonly variant: ColorPaletteVariant;
-    readonly name: UserIconNameEnum;
+    readonly label: string;
     readonly isSelected: boolean;
     readonly className?: string;
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
 }
 
 const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondary-corner items-center gap-y-md', {
@@ -61,12 +60,12 @@ const nameVariants = cva('font-medium text-xxs px-lg', {
     }
 });
 
-export const IconSelectorCard = ({ className, isSelected, icon, name, onSelect, variant }: Props) => {
-    const handleSelect = () => void onSelect(name);
+export const IconSelectorCard = ({ className, isSelected, icon, label, onSelect, variant }: Props) => {
+    const handleSelect = () => void onSelect(icon);
 
     return (
         <HapticPressable
-            testID={IconSelectorModalSelector.IconCard(name)}
+            testID={IconSelectorModalSelector.IconCard(icon)}
             className={cn(selectorVariants({ isSelected }), className)}
             onPress={handleSelect}
         >
@@ -75,7 +74,7 @@ export const IconSelectorCard = ({ className, isSelected, icon, name, onSelect, 
             </View>
 
             <Text className={nameVariants({ isSelected })} ellipsizeMode="tail" numberOfLines={1}>
-                {name}
+                {label}
             </Text>
         </HapticPressable>
     );

@@ -33,6 +33,7 @@ interface Props {
     readonly downloadProgress?: number;
     readonly onPress: () => void;
     readonly disabled?: boolean;
+    readonly testID?: string;
 }
 
 const ICON_SIZE = 32;
@@ -71,7 +72,7 @@ const getIcon = (state: RecordButtonStateType): UserIconNameEnum => {
 };
 
 export const AnimatedRecordButton = (props: Props) => {
-    const { state, audioLevel = 0, downloadProgress = 0, onPress, disabled } = props;
+    const { state, audioLevel = 0, downloadProgress = 0, onPress, disabled, testID } = props;
 
     const buttonScale = useSharedValue(1);
     const confirmPulse = useSharedValue(0);
@@ -116,7 +117,7 @@ export const AnimatedRecordButton = (props: Props) => {
             {state === 'transcribing' && <SpinnerRing />}
             {state === 'thinking' && <ThinkingRing />}
 
-            <HapticPressable disabled={isDisabled} onPress={onPress}>
+            <HapticPressable disabled={isDisabled} onPress={onPress} testID={testID}>
                 <Animated.View className="items-center justify-center" style={buttonAnimatedStyle}>
                     <Icon icon={getIcon(state)} size={ICON_SIZE} className="text-white" />
                 </Animated.View>

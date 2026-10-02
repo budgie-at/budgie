@@ -8,7 +8,7 @@ export const BINANCE_WINDOW_TO = 1_707_000_000;
 
 const SERVER_TIME_URL = 'https://api.binance.com/api/v3/time';
 export const DEPOSIT_URL = 'https://api.binance.com/sapi/v1/capital/deposit/hisrec';
-export const WITHDRAW_URL = 'https://api.binance.com/sapi/v1/capital/withdraw/history';
+const WITHDRAW_URL = 'https://api.binance.com/sapi/v1/capital/withdraw/history';
 export const FIAT_ORDERS_URL = 'https://api.binance.com/sapi/v1/fiat/orders';
 const C2C_ORDERS_URL = 'https://api.binance.com/sapi/v1/c2c/orderMatch/listUserOrderHistory';
 const EARN_REWARDS_URL = 'https://api.binance.com/sapi/v1/simple-earn/flexible/history/rewardsRecord';
@@ -21,7 +21,15 @@ export const stubBinanceServerTime = (): void => {
     mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() })));
 };
 
-export const stubEmptyC2cAndEarnRewards = (): void => {
+const stubEmptyC2cAndEarnRewards = (): void => {
     mockServer.use(http.get(C2C_ORDERS_URL, () => HttpResponse.json(EMPTY_C2C_RESPONSE)));
     mockServer.use(http.get(EARN_REWARDS_URL, () => HttpResponse.json(EMPTY_EARN_REWARDS_RESPONSE)));
+};
+
+export const stubEmptyBinanceSources = (): void => {
+    stubBinanceServerTime();
+    stubEmptyC2cAndEarnRewards();
+    mockServer.use(http.get(FIAT_ORDERS_URL, () => HttpResponse.json(EMPTY_FIAT_RESPONSE)));
+    mockServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
+    mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
 };

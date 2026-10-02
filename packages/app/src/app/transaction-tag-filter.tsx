@@ -8,7 +8,10 @@ import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
-import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
+import {
+    useTransactionTagFilterModal,
+    useTransactionTagFilterModalParams
+} from '../transaction/context/transaction-tag-filter-modal.context';
 import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
@@ -17,7 +20,8 @@ const LIST_TOP_SPACE = 88;
 
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
-    const [, resolveTransactionTagFilter, currentParams] = useTransactionTagFilterModal();
+    const [, resolveTransactionTagFilter] = useTransactionTagFilterModal();
+    const currentParams = useTransactionTagFilterModalParams();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;

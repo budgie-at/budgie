@@ -90,7 +90,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:

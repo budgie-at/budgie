@@ -1,5 +1,5 @@
 import { SyncTransactionTypeEnum, binanceMapper } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 import { isDefined } from '@rnw-community/shared';
 

@@ -11,7 +11,10 @@ import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/fil
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
-import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
+import {
+    useTransactionTypeFilterModal,
+    useTransactionTypeFilterModalParams
+} from '../transaction/context/transaction-type-filter-modal.context';
 
 const TRANSACTION_TYPE_ROWS = [
     [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME],
@@ -20,7 +23,8 @@ const TRANSACTION_TYPE_ROWS = [
 
 export default function TransactionTypeFilterModal() {
     const { t } = useLingui();
-    const [, resolveTransactionTypeFilter, currentParams] = useTransactionTypeFilterModal();
+    const [, resolveTransactionTypeFilter] = useTransactionTypeFilterModal();
+    const currentParams = useTransactionTypeFilterModalParams();
 
     const [localValue, setLocalValue, localValueRef] = useStateRef<TransactionTypeEnum[] | null>(() => currentParams?.value ?? null);
 

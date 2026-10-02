@@ -4,4 +4,7 @@ interface RuleMccSelectorModalParams {
     readonly selectedMcc: string | null;
 }
 
-export const [RuleMccSelectorModalContext, useRuleMccSelectorModal] = createModalContext<RuleMccSelectorModalParams, string | null>(null);
+export const [RuleMccSelectorModalContext, useRuleMccSelectorModal, useRuleMccSelectorModalParams] = createModalContext<
+    RuleMccSelectorModalParams,
+    string | null
+>(null);

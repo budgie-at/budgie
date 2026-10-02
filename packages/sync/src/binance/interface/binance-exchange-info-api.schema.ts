@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceExchangeInfoSymbolApiSchema = z.object({
-    symbol: z.string(),
-    status: z.string()
+const BinanceExchangeInfoSymbolApiSchema = Schema.Struct({
+    symbol: Schema.String,
+    status: Schema.String
 });
 
-export const BinanceExchangeInfoApiSchema = z.object({
-    symbols: z.array(BinanceExchangeInfoSymbolApiSchema)
+export const BinanceExchangeInfoApiSchema = Schema.Struct({
+    symbols: Schema.Array(BinanceExchangeInfoSymbolApiSchema)
 });

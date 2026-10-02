@@ -1,12 +1,11 @@
-'use client';
-
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { Motion } from '../../../generic/component/motion/motion';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { FeaturePageHeading } from '../feature-page-heading/feature-page-heading';
 import { FeaturePageSection } from '../feature-page-section/feature-page-section';
 
@@ -16,7 +15,7 @@ interface Props {
 }
 
 export const FeaturePageRelatedArticles = ({ locale, slugs }: Props) => {
-    const { i18n } = useLingui();
+    const i18n = getI18nInstance(locale);
     const articles = slugs.map(slug => ARTICLE_REGISTRY.find(entry => entry.slug === slug)).filter(isDefined);
 
     if (isEmptyArray(articles)) {

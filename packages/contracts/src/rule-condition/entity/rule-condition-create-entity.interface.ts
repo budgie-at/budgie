@@ -1,4 +1,6 @@
-import type { RuleConditionCreateEntitySchema } from '../schema/rule-condition-create-entity.schema';
-import type { z } from 'zod';
+import type { RuleConditionEntityInterface } from './rule-condition-entity.interface';
 
-export type RuleConditionCreateEntityInterface = z.infer<typeof RuleConditionCreateEntitySchema>;
+export type RuleConditionCreateEntityInterface = Pick<
+    RuleConditionEntityInterface,
+    'ruleId' | 'field' | 'operator' | 'value' | 'secondaryValue'
+>;

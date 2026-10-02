@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+- runFlow: ../subflows/navigation/navigate-to-transactions.flow.yaml
+
+- tapOn:
+      id: 'TransactionsPage.Tab.Recurring'
+
+- extendedWaitUntil:
+      visible:
+          id: 'RecurringCalendar.Container'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

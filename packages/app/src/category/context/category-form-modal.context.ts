@@ -10,4 +10,7 @@ export interface CategoryFormModalParams {
 
 export type CategoryFormModalResult = CategoryFormResult | null;
 
-export const [CategoryFormModalContext, useCategoryFormModal] = createModalContext<CategoryFormModalParams, CategoryFormModalResult>(null);
+export const [CategoryFormModalContext, useCategoryFormModal, useCategoryFormModalParams] = createModalContext<
+    CategoryFormModalParams,
+    CategoryFormModalResult
+>(null);

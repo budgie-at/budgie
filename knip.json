@@ -12,10 +12,7 @@
         "packages/app/modules/apple-wallet-capture/plugin/with-apple-wallet-capture.js",
         "scripts/after-install.cjs",
         "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
-        "packages/contracts/babel.config.js",
-        "packages/ai/babel.config.js",
         "packages/sync/babel.config.js",
-        "jest.config.js",
         "metro.config.js",
         "tsconfig.json",
         "index.js",
@@ -27,14 +24,11 @@
         "packages/contracts/src/**/*.enum.ts",
         "packages/app/src/category/enum/system-category-id.enum.ts",
         "packages/app/scripts/bench-budget-spent.ts",
-        "packages/app/scripts/bench-budget-alerts.ts",
+        "packages/app/scripts/generate-social-posts.mjs",
+        "packages/app/scripts/social-posts/**/*.mjs",
+        "packages/app/scripts/generate-icons-constant.ts",
         "packages/app/scripts/bench-util.ts",
-        "packages/app/scripts/bench-queries.ts",
-        "packages/app/scripts/seed-bench-db.ts",
-        "packages/app/scripts/snapshot-monthly-patterns.ts",
-        "tests/sync-tests/src/harness/shims/**",
-        "packages/screen-chrome/src/edge-fade/utils/edge-fade-get-backdrop-filter.util.ts",
-        "packages/screen-chrome/src/edge-fade/interface/web-edge-fade-style.interface.ts"
+        "tests/sync-tests/src/harness/shims/**"
     ],
     "ignoreDependencies": [
         "husky",
@@ -43,20 +37,17 @@
         "@expo/fingerprint",
         "metro-minify-terser",
         "react-compiler-runtime",
-        "babel-jest",
         "@oxlint/migrate",
-        "@jest/globals",
         "expo-pdf-text-extract",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf"
+        "rimraf",
+        "lucide-static",
+        "emojibase-data"
     ],
     "ignoreBinaries": ["build"],
     "workspaces": {
-        "tests/consolidation-tests": {
-            "ignoreDependencies": ["better-sqlite3", "drizzle-orm", "@types/better-sqlite3"]
-        },
         "tests/sync-tests": {
             "ignoreDependencies": ["@lingui/core"]
         }

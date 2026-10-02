@@ -12,10 +12,16 @@ env:
       waitToSettleTimeoutMs: 1000
       optional: true
 
+- evalScript: ${output.settingsCardVisible = false}
 - runFlow:
       when:
-          notVisible:
+          visible:
               id: '${CARD_ID}'
+      commands:
+          - evalScript: ${output.settingsCardVisible = true}
+- runFlow:
+      when:
+          true: ${!output.settingsCardVisible}
       commands:
           - scrollUntilVisible:
                 element:
@@ -34,7 +40,9 @@ env:
 - tapOn:
       id: '${CARD_ID}'
 
+- waitForAnimationToEnd
+
 - extendedWaitUntil:
       visible:
           id: '${DESTINATION_ID}'
-      timeout: 3000
+      timeout: 8000

@@ -1,5 +1,8 @@
-import { z } from 'zod';
+import type { BaseEntityKeyType } from '../../@generic/type/base-entity-key.type';
+import type { PartialByKeysType } from '../../@generic/type/partial-by-keys.type';
+import type { InstrumentMarketDataJobEntityInterface } from './instrument-market-data-job-entity.interface';
 
-import { InstrumentMarketDataJobCreateEntitySchema } from '../schema/instrument-market-data-job-create-entity.schema';
-
-export type InstrumentMarketDataJobCreateEntityInterface = z.infer<typeof InstrumentMarketDataJobCreateEntitySchema>;
+export type InstrumentMarketDataJobCreateEntityInterface = PartialByKeysType<
+    Omit<InstrumentMarketDataJobEntityInterface, BaseEntityKeyType>,
+    'status' | 'priority' | 'attempts' | 'lockedAt' | 'completedAt' | 'lastError'
+>;

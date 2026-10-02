@@ -10,11 +10,11 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { buildBudgetCategoryLimitMetrics } from '../../utils/build-budget-category-limit-metrics.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
-import type { UserIconNameEnum } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
     readonly title: string;
-    readonly icon: UserIconNameEnum | null;
+    readonly icon: UserIconType | null;
     readonly spent: number;
     readonly limitAmount: number;
     readonly currencySymbol: string;

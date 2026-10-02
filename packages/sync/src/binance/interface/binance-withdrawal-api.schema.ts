@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceWithdrawalApiSchema = z.object({
-    id: z.string(),
-    txId: z.string().optional(),
-    amount: z.string(),
-    transactionFee: z.string(),
-    coin: z.string(),
-    applyTime: z.string()
+const BinanceWithdrawalApiSchema = Schema.Struct({
+    id: Schema.String,
+    txId: Schema.optional(Schema.String),
+    amount: Schema.String,
+    transactionFee: Schema.String,
+    coin: Schema.String,
+    applyTime: Schema.String
 });
 
-export const BinanceWithdrawalListApiSchema = z.array(BinanceWithdrawalApiSchema);
+export const BinanceWithdrawalListApiSchema = Schema.Array(BinanceWithdrawalApiSchema);
 
-export type BinanceWithdrawalApiInterface = z.infer<typeof BinanceWithdrawalApiSchema>;
+export type BinanceWithdrawalApiInterface = typeof BinanceWithdrawalApiSchema.Type;

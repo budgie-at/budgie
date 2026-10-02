@@ -11,3 +11,6 @@ appId: ${APP_ID}
     visible:
       id: 'RulesPage.Page'
     timeout: 10000
+- extendedWaitUntil:
+    visible: 'Rule applied'
+    timeout: 15000

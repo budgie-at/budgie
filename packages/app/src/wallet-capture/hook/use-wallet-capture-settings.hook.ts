@@ -1,133 +1,114 @@
+import { AccountEntityTable, AccountRepository, InstrumentEntityTable, InstrumentRepository } from '@budgie/contracts';
+import { useAtomRefresh } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useCallback, useState } from 'react';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { walletCaptureAccountMirrorService } from '../service/wallet-capture-account-mirror.service';
-import { walletCaptureImportService } from '../service/wallet-capture-import.service';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
+import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
+import { WalletCaptureAccountMirrorService } from '../service/wallet-capture-account-mirror.service';
+import { WalletCaptureImportService } from '../service/wallet-capture-import.service';
 
-import type { WalletCaptureReviewItemInterface } from '../interface/wallet-capture-review-item.interface';
+import type { AppServices } from '../../@generic/runtime/app.runtime';
 
-const loadWalletCaptureSettingsData = async () => {
-    await walletCaptureAccountMirrorService.refresh();
+const walletCaptureSettingsAtom = appAtomRuntime.factory.withReactivity([WalletCaptureReactivityKeyEnum.CAPTURES])(
+    databaseQueryAtom(
+        [AccountEntityTable, InstrumentEntityTable],
+        Effect.gen(function* () {
+            const captureImportService = yield* WalletCaptureImportService;
+            const accountRepository = yield* AccountRepository;
+            const instrumentRepository = yield* InstrumentRepository;
+            const reviewItems = yield* captureImportService.getReviewItems();
+            const accounts = yield* accountRepository.findByIds([...new Set(reviewItems.map(item => item.capture.accountId))]);
+            const accountDetails = yield* Effect.forEach(accounts, account =>
+                Effect.map(instrumentRepository.findById(account.instrumentId), instrument => ({ account, instrument }))
+            );
 
-    const reviewItems = await walletCaptureImportService.getReviewItems();
-    const accountIds = reviewItems.map(item => item.capture.accountId);
-    const uniqueAccountIds = [...new Set(accountIds)];
-    const accounts = await accountRepository.findByIds(uniqueAccountIds);
-    const accountDetails = await Promise.all(
-        accounts.map(async account => ({
-            account,
-            instrument: await instrumentRepository.findByIdAsync(account.instrumentId)
-        }))
-    );
-    const accountTitlesById = accountDetails.reduce<Record<number, string>>((result, detail) => {
-        result[detail.account.id] = detail.account.title;
-
-        return result;
-    }, {});
-    const instrumentSymbolsByAccountId = accountDetails.reduce<Record<number, string>>((result, detail) => {
-        if (isDefined(detail.instrument)) {
-            result[detail.account.id] = detail.instrument.symbol;
-        }
-
-        return result;
-    }, {});
-
-    return { reviewItems, accountTitlesById, instrumentSymbolsByAccountId };
-};
+            return { reviewItems, accountDetails };
+        })
+    )
+);
 
 export const useWalletCaptureSettings = () => {
     const { t } = useLingui();
-    const [reviewItems, setReviewItems] = useState<WalletCaptureReviewItemInterface[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const result = useLiveAtomValue(walletCaptureSettingsAtom);
+    const refreshAtom = useAtomRefresh(walletCaptureSettingsAtom);
+    const [mutationError, setMutationError] = useState<string | null>(null);
     const [mutatingCaptureIds, setMutatingCaptureIds] = useState<Record<string, boolean>>({});
-    const [accountTitlesById, setAccountTitlesById] = useState<Record<number, string>>({});
-    const [instrumentSymbolsByAccountId, setInstrumentSymbolsByAccountId] = useState<Record<number, string>>({});
+    const reviewItems = AsyncResult.isSuccess(result) ? result.value.reviewItems : [];
+    const accountDetails = AsyncResult.isSuccess(result) ? result.value.accountDetails : [];
+    const errorMessage = mutationError ?? (AsyncResult.isFailure(result) ? getErrorMessage(Cause.squash(result.cause)) : null);
 
-    const refresh = useCallback(async () => {
-        setIsLoading(true);
-        setErrorMessage(null);
+    const refresh = useCallback(() => {
+        appRuntime.runFork(
+            Effect.flatMap(WalletCaptureAccountMirrorService, service => service.refresh()).pipe(
+                Effect.tapCause(Effect.logError),
+                Effect.matchCause({
+                    onFailure: cause => void setMutationError(getErrorMessage(Cause.squash(cause))),
+                    onSuccess: refreshAtom
+                })
+            )
+        );
+    }, [refreshAtom]);
 
-        try {
-            const nextSettingsData = await loadWalletCaptureSettingsData();
+    const runCaptureMutation = (captureId: string, mutation: Effect.Effect<unknown, unknown, AppServices>) => {
+        setMutatingCaptureIds(previous => ({ ...previous, [captureId]: true }));
+        setMutationError(null);
+        appRuntime.runFork(
+            mutation.pipe(
+                Effect.tapCause(Effect.logError),
+                Effect.matchCause({
+                    onFailure: cause => void setMutationError(getErrorMessage(Cause.squash(cause))),
+                    onSuccess: refreshAtom
+                }),
+                Effect.ensuring(Effect.sync(() => void setMutatingCaptureIds(previous => ({ ...previous, [captureId]: false }))))
+            )
+        );
+    };
 
-            setReviewItems(nextSettingsData.reviewItems);
-            setAccountTitlesById(nextSettingsData.accountTitlesById);
-            setInstrumentSymbolsByAccountId(nextSettingsData.instrumentSymbolsByAccountId);
-        } catch (error) {
-            setErrorMessage(getErrorMessage(error));
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
+    const importCapture = (captureId: string) =>
+        void runCaptureMutation(
+            captureId,
+            Effect.flatMap(WalletCaptureImportService, service => service.forceImport(captureId))
+        );
 
-    const runCaptureMutation = useCallback(
-        async (captureId: string, mutation: (selectedCaptureId: string) => Promise<void>) => {
-            setMutatingCaptureIds(previous => ({ ...previous, [captureId]: true }));
+    const dismissCapture = (captureId: string) => {
+        appRuntime.runFork(
+            Effect.gen(function* () {
+                const confirmed = yield* Effect.promise(() =>
+                    confirmAlert({
+                        title: t`Dismiss Wallet capture?`,
+                        message: t`This removes the pending capture without creating a transaction.`,
+                        confirmText: t`Dismiss`,
+                        cancelText: t`Cancel`,
+                        isDestructive: true
+                    })
+                );
+                if (confirmed) {
+                    runCaptureMutation(
+                        captureId,
+                        Effect.flatMap(WalletCaptureImportService, service => service.dismiss(captureId))
+                    );
+                }
+            })
+        );
+    };
 
-            try {
-                await mutation(captureId);
-                await refresh();
-            } catch (error) {
-                setErrorMessage(getErrorMessage(error));
-            } finally {
-                setMutatingCaptureIds(previous => ({ ...previous, [captureId]: false }));
-            }
-        },
-        [refresh]
-    );
-
-    const importCapture = useCallback(
-        (captureId: string) => {
-            void runCaptureMutation(captureId, walletCaptureImportService.forceImport.bind(walletCaptureImportService));
-        },
-        [runCaptureMutation]
-    );
-
-    const dismissCapture = useCallback(
-        async (captureId: string) => {
-            const confirmed = await confirmAlert({
-                title: t`Dismiss Wallet capture?`,
-                message: t`This removes the pending capture without creating a transaction.`,
-                confirmText: t`Dismiss`,
-                cancelText: t`Cancel`,
-                isDestructive: true
-            });
-
-            if (!confirmed) {
-                return;
-            }
-
-            await runCaptureMutation(captureId, walletCaptureImportService.dismiss.bind(walletCaptureImportService));
-        },
-        [runCaptureMutation, t]
-    );
-
-    const getAccountTitle = useCallback(
-        (accountId: number, fallback: string) => {
-            const accountTitle = accountTitlesById[accountId];
-
-            return isDefined(accountTitle) ? accountTitle : fallback;
-        },
-        [accountTitlesById]
-    );
-
-    const getAccountInstrumentSymbol = useCallback(
-        (accountId: number, fallback: string) => {
-            const instrumentSymbol = instrumentSymbolsByAccountId[accountId];
-
-            return isDefined(instrumentSymbol) ? instrumentSymbol : fallback;
-        },
-        [instrumentSymbolsByAccountId]
-    );
+    const getAccountTitle = (accountId: number, fallback: string) =>
+        accountDetails.find(detail => detail.account.id === accountId)?.account.title ?? fallback;
+    const getAccountInstrumentSymbol = (accountId: number, fallback: string) =>
+        accountDetails.find(detail => detail.account.id === accountId)?.instrument?.symbol ?? fallback;
 
     return {
         reviewItems,
-        isLoading,
+        isLoading: result.waiting,
         errorMessage,
         mutatingCaptureIds,
         hasReviewItems: isNotEmptyArray(reviewItems),

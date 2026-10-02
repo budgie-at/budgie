@@ -1,15 +1,18 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
-
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
+import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { sttService } from '../service/stt.service';
+import { SttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
-import { useSttSnapshot } from './use-stt-snapshot.hook';
+import { useSttResidency } from './use-stt-residency.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -19,7 +22,7 @@ interface UseSttReturn {
     readonly partialTranscription: string;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly startStream: () => void;
+    readonly startStream: () => Promise<boolean>;
     readonly insertAudio: (samples: Float32Array) => void;
     readonly stopStream: () => Promise<string>;
     readonly cancelStream: () => void;
@@ -29,22 +32,40 @@ export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
 
-    const sttSnapshot = useSttSnapshot();
+    const sttSnapshot = useAtomValue(sttSnapshotAtom);
 
     const [status, setStatus] = useState<SttStatus>('idle');
     const [baseTranscription, setBaseTranscription] = useState('');
     const streamGenerationRef = useRef(0);
+    const { acquireSttResidency, releaseSttResidency } = useSttResidency();
 
-    const isCurrentStream = (generation: number): boolean => generation === streamGenerationRef.current;
-
-    const startStream = () => {
+    const startStream = async (): Promise<boolean> => {
         streamGenerationRef.current += 1;
+        const generation = streamGenerationRef.current;
         const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
-        sttService.streamCancel().catch(emptyFn);
-        setBaseTranscription(sttService.committedTranscription);
-        sttService.streamStart(language).catch(emptyFn);
+        if (!(await acquireSttResidency()) || generation !== streamGenerationRef.current) {
+            return false;
+        }
+
+        await appRuntime.runPromise(Effect.ignore(Effect.flatMap(SttService, sttService => sttService.stopStream(false))));
+        setBaseTranscription(appAtomRegistry.get(sttSnapshotAtom).committedTranscription);
+        const isStreaming = await appRuntime.runPromise(
+            Effect.isSuccess(Effect.flatMap(SttService, sttService => sttService.streamStart(language)))
+        );
+        const isCurrentGeneration = generation === streamGenerationRef.current;
+
+        if (!isStreaming && isCurrentGeneration) {
+            releaseSttResidency();
+        }
+
+        if (!isStreaming || !isCurrentGeneration) {
+            return false;
+        }
+
         setStatus('streaming');
+
+        return true;
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -52,7 +73,7 @@ export const useStt = (): UseSttReturn => {
             return;
         }
 
-        sttService.streamInsert(samples);
+        appRuntime.runFork(Effect.map(SttService, sttService => void sttService.streamInsert(samples)));
     };
 
     const committedTranscription = sttSnapshot.committedTranscription.startsWith(baseTranscription)
@@ -61,26 +82,32 @@ export const useStt = (): UseSttReturn => {
     const transcription = filterTranscriptionTokens(committedTranscription);
     const partialTranscription = filterTranscriptionTokens(sttSnapshot.nonCommittedTranscription);
 
-    const stopStream = async (): Promise<string> => {
+    const stopStream = (): Promise<string> => {
         const generation = streamGenerationRef.current;
 
         setStatus('processing');
 
-        try {
-            return filterTranscriptionTokens(await sttService.streamStop()).trim();
-        } catch {
-            throw new Error(t`Transcription failed`);
-        } finally {
-            if (isCurrentStream(generation)) {
-                setStatus('idle');
-            }
-        }
+        return appRuntime.runPromise(
+            Effect.flatMap(SttService, sttService => sttService.stopStream(true)).pipe(
+                Effect.map(text => filterTranscriptionTokens(text).trim()),
+                Effect.catch(() => Effect.die(new Error(t`Transcription failed`))),
+                Effect.ensuring(
+                    Effect.sync(() => {
+                        releaseSttResidency();
+                        if (generation === streamGenerationRef.current) {
+                            setStatus('idle');
+                        }
+                    })
+                )
+            )
+        );
     };
 
     const cancelStream = () => {
         streamGenerationRef.current += 1;
         setStatus('idle');
-        sttService.streamCancel().catch(emptyFn);
+        appRuntime.runFork(Effect.ignore(Effect.flatMap(SttService, sttService => sttService.stopStream(false))));
+        releaseSttResidency();
     };
 
     return {

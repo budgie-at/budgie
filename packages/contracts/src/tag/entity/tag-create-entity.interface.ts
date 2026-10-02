@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { TagEntityInterface } from './tag-entity.interface';
 
-import type { TagCreateEntitySchema } from '../schema/tag-create-entity.schema';
-
-export type TagCreateEntityInterface = z.infer<typeof TagCreateEntitySchema>;
+export type TagCreateEntityInterface = Pick<TagEntityInterface, 'title'>;

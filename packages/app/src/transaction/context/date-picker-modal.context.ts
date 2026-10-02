@@ -4,4 +4,7 @@ export interface DatePickerModalParams {
     readonly initialDate?: Date;
 }
 
-export const [DatePickerModalContext, useDatePickerModal] = createModalContext<DatePickerModalParams, Date | null>(null);
+export const [DatePickerModalContext, useDatePickerModal, useDatePickerModalParams] = createModalContext<
+    DatePickerModalParams,
+    Date | null
+>(null);

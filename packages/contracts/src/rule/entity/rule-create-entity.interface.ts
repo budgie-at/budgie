@@ -1,4 +1,3 @@
-import type { RuleCreateEntitySchema } from '../schema/rule-create-entity.schema';
-import type { z } from 'zod';
+import type { RuleEntityInterface } from './rule-entity.interface';
 
-export type RuleCreateEntityInterface = z.infer<typeof RuleCreateEntitySchema>;
+export type RuleCreateEntityInterface = Pick<RuleEntityInterface, 'enabled' | 'conditionMatchType'>;

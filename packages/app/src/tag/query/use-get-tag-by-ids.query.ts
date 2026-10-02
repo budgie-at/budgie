@@ -1,15 +1,15 @@
-import { isDefined } from '@rnw-community/shared';
+import { TagEntityTable, TagRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { tagRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const tagsByIdsAtom = databaseQueryFamily([TagEntityTable], TagRepository, (tagRepository, ids: readonly number[]) =>
+    tagRepository.findByIds([...ids])
+);
 
 export const useGetTagByIdsQuery = (ids: number[]) => {
-    const idsKey = ids.join(',');
-    const { data, updatedAt, error } = useDatabaseLiveQuery(tagRepository.findByIds(ids), [idsKey]);
+    const result = useLiveAtomValue(tagsByIdsAtom(ids));
 
-    if (!isDefined(updatedAt)) {
-        return { isLoading: true, tags: null, updatedAt: null, error };
-    }
-
-    return { tags: data, isLoading: false, updatedAt, error };
+    return { tags: AsyncResult.getOrElse(result, () => null), isLoading: AsyncResult.isInitial(result) };
 };

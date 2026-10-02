@@ -1,0 +1,40 @@
+appId: ${APP_ID}
+env:
+    CATEGORY_STATISTICS_ID: ${CATEGORY_STATISTICS_ID || 'CategoryStatisticsCard.Groceries'}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Tab.Categories'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: '${CATEGORY_STATISTICS_ID}'
+      direction: DOWN
+      speed: 20
+      centerElement: true
+
+- waitForAnimationToEnd
+
+- takeScreenshot: poster
+
+- startRecording: clip
+
+- waitForAnimationToEnd
+
+- tapOn:
+      id: '${CATEGORY_STATISTICS_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'PageHeader.BackButton'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- stopRecording

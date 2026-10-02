@@ -1,15 +1,13 @@
 /* eslint-disable max-lines, max-lines-per-function */
-import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import Link from 'next/link';
 
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
-import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
 import { BlogArticleHeading } from '../../../../blog/component/blog-article-heading/blog-article-heading';
 import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/blog-article-hero';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
 import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
+import { BlogArticlePageShell } from '../../../../blog/component/blog-article-page-shell/blog-article-page-shell';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';
 import { BlogArticleSubheading } from '../../../../blog/component/blog-article-subheading/blog-article-subheading';
@@ -18,62 +16,21 @@ import { BlogBreadcrumbLink } from '../../../../blog/component/blog-breadcrumb-l
 import { BlogBreadcrumbs } from '../../../../blog/component/blog-breadcrumbs/blog-breadcrumbs';
 import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-item';
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
-import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
-import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
-import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+import { createBlogGenerateMetadata } from '../../../../blog/util/create-blog-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 
 import { ARTICLE_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildBlogArticleMetadata({
-        author: ARTICLE_METADATA.author,
-        date: ARTICLE_METADATA.date,
-        description: i18n._(ARTICLE_METADATA.seoDescription),
-        image: ARTICLE_METADATA.image,
-        keywords: ARTICLE_METADATA.seoKeywords.join(', '),
-        locale: lang,
-        slug: ARTICLE_METADATA.slug,
-        title: i18n._(ARTICLE_METADATA.title)
-    });
-}
+export const generateMetadata = createBlogGenerateMetadata(ARTICLE_METADATA);
 
 export default async function YnabAlternativesPrivacyArticle(props: PageLangParam) {
     const { lang } = await props.params;
-    const i18n = initLingui(lang);
+    initLingui(lang);
 
     return (
-        <main className="flex-1">
-            <BlogPostingJsonLd
-                author={ARTICLE_METADATA.author}
-                blogLabel={t(i18n)`Blog`}
-                date={ARTICLE_METADATA.date}
-                description={i18n._(ARTICLE_METADATA.description)}
-                homeLabel={t(i18n)`Home`}
-                image={ARTICLE_METADATA.image}
-                keywords={ARTICLE_METADATA.seoKeywords.join(', ')}
-                locale={lang}
-                slug={ARTICLE_METADATA.slug}
-                title={i18n._(ARTICLE_METADATA.title)}
-            />
-
-            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
-                <Link
-                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-                    href={`/${lang}/blog`}
-                >
-                    <Trans>← Back to Blog</Trans>
-                </Link>
-
+        <BlogArticlePageShell article={ARTICLE_METADATA} lang={lang}>
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
@@ -408,7 +365,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Price</strong>: Free (Premium TBD)
+                                <strong>Price</strong>: Free
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1755,9 +1712,9 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         <BlogFaqItem question={<Trans>What’s the best free YNAB alternative?</Trans>}>
                             <Trans>
                                 For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with
-                                strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free
-                                tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free, there
-                                are many options, but most involve trading your data for access.
+                                strong privacy. Both are open source and can run entirely on your own hardware. Budgie is also completely
+                                free, with no paid tier. If privacy isn’t your primary concern and you just want free, there are many
+                                options, but most involve trading your data for access.
                             </Trans>
                         </BlogFaqItem>
 
@@ -1958,12 +1915,6 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
                 </BlogArticleSection>
             </BlogArticleContent>
-
-            <RelatedArticles locale={lang} slugs={ARTICLE_METADATA.relatedArticleSlugs} />
-
-            <FeaturePageRelated locale={lang} slugs={ARTICLE_METADATA.relatedFeatureSlugs} />
-
-            <BlogArticleCta locale={lang} />
-        </main>
+        </BlogArticlePageShell>
     );
 }

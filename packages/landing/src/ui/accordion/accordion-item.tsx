@@ -1,9 +1,8 @@
 'use client';
 
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { cn } from 'cn';
 import { forwardRef } from 'react';
-
-import { cn } from '../../generic/util/cn.util';
 
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
 

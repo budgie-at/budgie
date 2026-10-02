@@ -1,86 +1,76 @@
-import { Log } from '@budgie/logger';
+import { TransactionEntryRepository, TransactionRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
-import type { DB, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+export class ConsolidationEligibilityService extends Context.Service<ConsolidationEligibilityService>()(
+    '@budgie/consolidation/ConsolidationEligibilityService',
+    {
+        make: Effect.gen(function* () {
+            const transactionRepository = yield* TransactionRepository;
+            const transactionEntryRepository = yield* TransactionEntryRepository;
 
-export class ConsolidationEligibilityService {
-    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
+            const findEligibleSourceTransactions = Effect.fn('ConsolidationEligibilityService.findEligibleSourceTransactions')(function* (
+                sourceTransactionIds: number[],
+                allowedMovedSourceTransactionIds: number[] = []
+            ) {
+                const fresh = yield* transactionRepository.findByIds(sourceTransactionIds);
 
-    @Log(
-        (sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `enter check sourceIds=${sourceTransactionIds.join(',')} allowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
-        (result, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `done eligible=${String(result)} sourceIds=${sourceTransactionIds.join(',')} allowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
-        (error, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `throw check sourceIds=${sourceTransactionIds.join(',')} allowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async areCandidatesStillEligible(
-        sourceTransactionIds: number[],
-        tx: DB,
-        allowedMovedSourceTransactionIds: number[] = []
-    ): Promise<boolean> {
-        return isDefined(await this.findEligibleSourceTransactions(sourceTransactionIds, tx, allowedMovedSourceTransactionIds));
+                if (fresh.length !== sourceTransactionIds.length) {
+                    return null;
+                }
+
+                const movedEntryBlockedTransactionIds = sourceTransactionIds.filter(
+                    transactionId => !allowedMovedSourceTransactionIds.includes(transactionId)
+                );
+
+                if (yield* transactionEntryRepository.hasMovedSourceEntries(movedEntryBlockedTransactionIds)) {
+                    return null;
+                }
+
+                if (
+                    fresh.every(
+                        transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt)
+                    )
+                ) {
+                    return fresh;
+                }
+
+                return null;
+            });
+
+            const areCandidatesStillEligible = Effect.fn('ConsolidationEligibilityService.areCandidatesStillEligible')(function* (
+                sourceTransactionIds: number[],
+                allowedMovedSourceTransactionIds: number[] = []
+            ) {
+                return isDefined(yield* findEligibleSourceTransactions(sourceTransactionIds, allowedMovedSourceTransactionIds));
+            });
+
+            return {
+                areCandidatesStillEligible,
+                findEligibleSourceTransactions,
+                isExistingTransferConsolidationStillEligible: Effect.fn(
+                    'ConsolidationEligibilityService.isExistingTransferConsolidationStillEligible'
+                )(function* (sourceTransactionIds: number[], existingTransferId: number) {
+                    if (!(yield* areCandidatesStillEligible(sourceTransactionIds))) {
+                        return false;
+                    }
+
+                    const transaction = yield* transactionRepository.getByIdRaw(existingTransferId);
+
+                    return (
+                        isDefined(transaction) &&
+                        !isDefined(transaction.consolidationParentTransactionId) &&
+                        !isDefined(transaction.deletedAt)
+                    );
+                })
+            };
+        })
     }
-
-    @Log(
-        (sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `enter load ids=${sourceTransactionIds.join(',')} movedAllowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
-        (result, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `done loaded=${result?.map(transaction => transaction.id).join(',') ?? ''} ids=${sourceTransactionIds.join(',')} movedAllowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
-        (error, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `throw load ids=${sourceTransactionIds.join(',')} movedAllowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async findEligibleSourceTransactions(
-        sourceTransactionIds: number[],
-        tx: DB,
-        allowedMovedSourceTransactionIds: number[] = []
-    ): Promise<TransactionWithEntriesEntityInterface[] | null> {
-        const fresh = await this.dependencies.transactionRepository.findByIds(sourceTransactionIds, tx);
-
-        if (fresh.length !== sourceTransactionIds.length) {
-            return null;
-        }
-
-        const movedEntryBlockedTransactionIds = sourceTransactionIds.filter(
-            transactionId => !allowedMovedSourceTransactionIds.includes(transactionId)
-        );
-
-        if (await this.dependencies.transactionEntryRepository.hasMovedSourceEntries(movedEntryBlockedTransactionIds, tx)) {
-            return null;
-        }
-
-        if (fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt))) {
-            return fresh;
-        }
-
-        return null;
-    }
-
-    @Log(
-        (sourceTransactionIds, existingTransferId, tx) =>
-            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} existingTransferId=${existingTransferId} hasTx=${String(isDefined(tx))}`,
-        (result, sourceTransactionIds, existingTransferId, tx) =>
-            `done sourceTransactionIds=${sourceTransactionIds.join(',')} existingTransferId=${existingTransferId} hasTx=${String(isDefined(tx))} result=${String(result)}`,
-        (error, sourceTransactionIds, existingTransferId, tx) =>
-            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} existingTransferId=${existingTransferId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async isExistingTransferConsolidationStillEligible(
-        sourceTransactionIds: number[],
-        existingTransferId: number,
-        tx: DB
-    ): Promise<boolean> {
-        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx))) {
-            return false;
-        }
-
-        return this.isExistingTransferStillEligible(existingTransferId, tx);
-    }
-
-    private async isExistingTransferStillEligible(transactionId: number, tx: DB): Promise<boolean> {
-        const transaction = await this.dependencies.transactionRepository.getByIdRaw(transactionId, tx);
-
-        return isDefined(transaction) && !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt);
-    }
+) {
+    static readonly layer = Layer.effect(ConsolidationEligibilityService, ConsolidationEligibilityService.make).pipe(
+        Layer.provide([TransactionRepository.layer, TransactionEntryRepository.layer])
+    );
 }

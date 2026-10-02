@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'local-first-movement-developers',
     date: '2025-01-29',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 18,
     title: msg`The Local-First Movement: Why Developers Are Building Offline Apps`,
     description: msg`Explore the local-first movement, CRDTs, sync engines, and why developers are choosing offline-first architecture for privacy-sensitive applications.`,
@@ -16,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['local-first software', 'CRDTs', 'offline-first architecture', 'sync engines'],
     seoDescription: msg`Explore the local-first movement: CRDTs, sync engines, real-world examples, and why developers are building offline-first apps for better privacy and performance.`,
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'database-backup', 'data-export']
+    relatedFeatureSlugs: ['expense-tracking', 'database-backup', 'data-export']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

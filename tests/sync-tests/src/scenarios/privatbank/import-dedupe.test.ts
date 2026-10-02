@@ -1,9 +1,10 @@
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
+import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { StubFileBankSyncService, seed, testDb } from '../../harness';
+import { makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { PrivatbankRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
@@ -84,28 +85,32 @@ const fetchPrivatbankTransactions = () =>
         .all();
 
 describe('privatbank/import-dedupe', () => {
-    it('reuses transactions imported with the old parsed-date external id', async () => {
-        const accountId = seedPrivatbankAccount();
-        const client = new StubPrivatbankFileClient();
-        const syncService = new StubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
-        const [importedTransaction] = client.getTransactions(PRIVATBANK_CARD_ID);
+    it.effect('reuses transactions imported with the old parsed-date external id', () =>
+        Effect.gen(function* () {
+            const accountId = seedPrivatbankAccount();
+            const client = new StubPrivatbankFileClient();
+            const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
+            const [importedTransaction] = client.getTransactions(PRIVATBANK_CARD_ID);
 
-        seedPrivatbankParsedDateTransaction(accountId);
+            seedPrivatbankParsedDateTransaction(accountId);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+            yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-        const transactions = fetchPrivatbankTransactions();
+            const transactions = fetchPrivatbankTransactions();
 
-        expect(transactions).toHaveLength(1);
-        expect(transactions[0]).toEqual(expect.objectContaining({ externalId: importedTransaction.id }));
-    });
+            expect(transactions).toHaveLength(1);
+            expect(transactions[0]).toEqual(expect.objectContaining({ externalId: importedTransaction.id }));
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('skips import when the selected card is missing from the file', async () => {
-        const client = new StubPrivatbankFileClient();
-        const syncService = new StubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
+    it.effect('skips import when the selected card is missing from the file', () =>
+        Effect.gen(function* () {
+            const client = new StubPrivatbankFileClient();
+            const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, ['4731 **** **** 0000']);
+            yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, ['4731 **** **** 0000']);
 
-        expect(fetchPrivatbankTransactions()).toHaveLength(0);
-    });
+            expect(fetchPrivatbankTransactions()).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

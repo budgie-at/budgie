@@ -1,6 +1,6 @@
 {
     "name": "@budgie/ai",
-    "version": "6.4.2",
+    "version": "6.87.2",
     "private": true,
     "description": "AI services for transaction categorization, embedding suggestions, and voice extraction",
     "sideEffects": false,
@@ -24,15 +24,11 @@
         "lint": "oxlint --type-aware src && eslint src",
         "lint:eslint": "eslint src",
         "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
-        "test": "jest --passWithNoTests",
-        "test:cov": "jest --coverage",
-        "test:watch": "jest --watch",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
-        "@budgie/logger": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
-        "zod": "4.1.12"
+        "effect": "4.0.0-rc.118"
     }
 }

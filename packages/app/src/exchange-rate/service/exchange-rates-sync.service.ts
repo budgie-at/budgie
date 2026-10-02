@@ -1,238 +1,68 @@
-import { InstrumentPriceProviderEnum, InstrumentTypeEnum, transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, ExchangeRateRepository, InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as HttpClient from 'effect/http/HttpClient';
+import * as HttpClientResponse from 'effect/http/HttpClientResponse';
+import * as Layer from 'effect/Layer';
+import * as Schedule from 'effect/Schedule';
 import * as BackgroundTask from 'expo-background-task';
 import Constants from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
-import ky from 'ky';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { db, exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
-import { microPause } from '../../@generic/utils/micro-pause.util';
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
-import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
+import { emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
 import { CoinGeckoSimplePriceResponseSchema } from '../schema/coin-gecko-simple-price-response.schema';
 import { ExchangeRateApiResponseSchema } from '../schema/exchange-rate-api-response.schema';
 
-import { exchangeRatesService } from './exchange-rates.service';
+import { ExchangeRatesService } from './exchange-rates.service';
 
 import type { ExchangeRateCreateEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import type * as Schema from 'effect/Schema';
 
-class ExchangeRatesSyncService {
-    private static readonly APP_VARIANT_EXTRA_KEY = 'appVariant';
-    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
-    private static readonly COINGECKO_SIMPLE_PRICE_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
-    private static readonly E2E_APP_VARIANT = 'e2e';
-    private static readonly EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest';
-    private static readonly CRYPTO_RATE_SYNC_BATCH_SIZE = 40;
-    private static readonly FETCH_TIMEOUT_MS = 5000;
-    private static readonly FETCH_RETRY_LIMIT = 1;
-    private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
-    private static readonly HTTP_CLIENT = ky.create({
-        timeout: ExchangeRatesSyncService.FETCH_TIMEOUT_MS,
-        retry: {
-            limit: ExchangeRatesSyncService.FETCH_RETRY_LIMIT,
-            retryOnTimeout: true
-        }
-    });
+export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncService>()('@budgie/app/ExchangeRatesSyncService', {
+    make: Effect.gen(function* () {
+        const exchangeRateRepository = yield* ExchangeRateRepository;
+        const instrumentRepository = yield* InstrumentRepository;
+        const exchangeRatesService = yield* ExchangeRatesService;
+        const appVariantExtraKey = 'appVariant';
+        const backgroundTaskMinimumIntervalMinutes = 60;
+        const coingeckoSimplePriceApiUrl = 'https://api.coingecko.com/api/v3/simple/price';
+        const e2eAppVariant = 'e2e';
+        const exchangeRateApiUrl = 'https://api.exchangerate-api.com/v4/latest';
+        const cryptoRateSyncBatchSize = 40;
+        const fetchTimeoutMs = 5000;
+        const fetchRetryLimit = 1;
+        const fetchRetryDelayMs = 300;
+        const syncCooldownMs = 5 * 60 * 1000;
+        let isSyncing = false;
+        let lastSyncedAtMs: number | null = null;
 
-    private isSyncing = false;
-    private lastSyncedAtMs: number | null = null;
+        const isE2EApp = (): boolean => Constants.expoConfig?.extra?.[appVariantExtraKey] === e2eAppVariant;
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async registerBackgroundTask(): Promise<void> {
-        if (this.isE2EApp()) {
-            return;
-        }
+        const getCryptoPrice = (
+            prices: Partial<Record<string, Partial<Record<string, number>>>>,
+            providerInstrumentId: string | null,
+            quoteCode: string
+        ): number | null => {
+            if (!isDefined(providerInstrumentId)) {
+                return null;
+            }
 
-        if (await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)) {
-            return;
-        }
+            const price = prices[providerInstrumentId]?.[quoteCode];
 
-        await BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
-            minimumInterval: ExchangeRatesSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
-    }
+            return isDefined(price) ? price : null;
+        };
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async sync(): Promise<void> {
-        if (this.isE2EApp()) {
-            return;
-        }
-
-        if (this.isSyncing) {
-            return;
-        }
-
-        this.isSyncing = true;
-
-        try {
-            await this.syncInner();
-        } finally {
-            this.isSyncing = false;
-        }
-    }
-
-    private isE2EApp(): boolean {
-        return Constants.expoConfig?.extra?.[ExchangeRatesSyncService.APP_VARIANT_EXTRA_KEY] === ExchangeRatesSyncService.E2E_APP_VARIANT;
-    }
-
-    private async syncInner(): Promise<void> {
-        const now = Date.now();
-
-        if (isDefined(this.lastSyncedAtMs) && now - this.lastSyncedAtMs < ExchangeRatesSyncService.SYNC_COOLDOWN_MS) {
-            return;
-        }
-
-        const baseInstrument = await exchangeRatesService.getBaseInstrument();
-
-        if (!isDefined(baseInstrument)) {
-            return;
-        }
-
-        await this.syncFiatRates(baseInstrument);
-        await microPause();
-        await this.syncCryptoRates(baseInstrument);
-        this.lastSyncedAtMs = Date.now();
-    }
-
-    private async syncFiatRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
-        const apiData = await this.fetch(baseInstrument.code);
-        const instruments = await instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
-        const inputs = instruments.flatMap(instrument =>
-            instrument.code === baseInstrument.code
-                ? []
-                : this.buildInstrumentRateInputs(baseInstrument.id, instrument, apiData.rates, 'exchangerate-api.com')
-        );
-
-        await transactionAsync(db, tx => exchangeRateRepository.bulkUpsert(inputs, tx));
-    }
-
-    private async syncCryptoRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
-        const instruments = await instrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId(
-            InstrumentTypeEnum.CRYPTO,
-            InstrumentPriceProviderEnum.COINGECKO
-        );
-
-        if (!isNotEmptyArray(instruments)) {
-            return;
-        }
-
-        await processInputWithBatches(instruments, ExchangeRatesSyncService.CRYPTO_RATE_SYNC_BATCH_SIZE, async batch => {
-            await this.syncCryptoRateBatch(baseInstrument, batch);
-
-            return null;
-        });
-    }
-
-    private async syncCryptoRateBatch(baseInstrument: InstrumentEntityInterface, instruments: InstrumentEntityInterface[]): Promise<void> {
-        const providerInstrumentIds = [...new Set(instruments.map(instrument => instrument.providerInstrumentId).filter(isDefined))];
-
-        if (!isNotEmptyArray(providerInstrumentIds)) {
-            return;
-        }
-
-        const prices = await this.fetchCryptoPrices(providerInstrumentIds, baseInstrument.code);
-        const quoteCode = baseInstrument.code.toLowerCase();
-        const inputs = instruments.flatMap(instrument =>
-            this.buildCryptoInstrumentRateInputs(
-                baseInstrument.id,
-                instrument,
-                this.getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
-            )
-        );
-
-        if (!isNotEmptyArray(inputs)) {
-            return;
-        }
-
-        await transactionAsync(db, tx => exchangeRateRepository.bulkUpsert(inputs, tx));
-    }
-
-    private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
-        const payload = await this.fetchJson(`${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${code}`);
-        const result = ExchangeRateApiResponseSchema.safeParse(payload);
-
-        if (!result.success) {
-            return emptyExchangeRateApiResponse;
-        }
-
-        return result.data;
-    }
-
-    private async fetchCryptoPrices(
-        providerInstrumentIds: string[],
-        quoteCode: string
-    ): Promise<Partial<Record<string, Partial<Record<string, number>>>>> {
-        const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
-        const quote = encodeURIComponent(quoteCode.toLowerCase());
-        const payload = await this.fetchJson(
-            `${ExchangeRatesSyncService.COINGECKO_SIMPLE_PRICE_API_URL}?ids=${ids}&vs_currencies=${quote}`
-        );
-        const result = CoinGeckoSimplePriceResponseSchema.safeParse(payload);
-
-        if (!result.success) {
-            return {};
-        }
-
-        return result.data;
-    }
-
-    private async fetchJson(url: string): Promise<unknown> {
-        return ExchangeRatesSyncService.HTTP_CLIENT.get(url)
-            .json()
-            .catch(() => null);
-    }
-
-    private getCryptoPrice(
-        prices: Partial<Record<string, Partial<Record<string, number>>>>,
-        providerInstrumentId: string | null,
-        quoteCode: string
-    ): number | null {
-        if (!isDefined(providerInstrumentId)) {
-            return null;
-        }
-
-        const price = prices[providerInstrumentId]?.[quoteCode];
-
-        return isDefined(price) ? price : null;
-    }
-
-    private buildInstrumentRateInputs(
-        baseInstrumentId: number,
-        instrument: { id: number; code: string },
-        rates: Record<string, number>,
-        source: string
-    ): ExchangeRateCreateEntityInterface[] {
-        const rate = rates[instrument.code];
-
-        if (!isPositiveNumber(rate)) {
-            return [];
-        }
-
-        return this.buildRatePairInputs(baseInstrumentId, instrument.id, rate, source);
-    }
-
-    private buildCryptoInstrumentRateInputs(
-        baseInstrumentId: number,
-        instrument: InstrumentEntityInterface,
-        rate: number | null
-    ): ExchangeRateCreateEntityInterface[] {
-        if (!isPositiveNumber(rate)) {
-            return [];
-        }
-
-        return this.buildRatePairInputs(instrument.id, baseInstrumentId, rate, 'coingecko.com');
-    }
-
-    private buildRatePairInputs(
-        baseInstrumentId: number,
-        quoteInstrumentId: number,
-        rate: number,
-        source: string
-    ): ExchangeRateCreateEntityInterface[] {
-        return [
+        const buildRatePairInputs = (
+            baseInstrumentId: number,
+            quoteInstrumentId: number,
+            rate: number,
+            source: string
+        ): ExchangeRateCreateEntityInterface[] => [
             {
                 baseInstrumentId,
                 quoteInstrumentId,
@@ -246,7 +76,170 @@ class ExchangeRatesSyncService {
                 source
             }
         ];
-    }
-}
 
-export const exchangeRatesSyncService = new ExchangeRatesSyncService();
+        const buildInstrumentRateInputs = (
+            baseInstrumentId: number,
+            instrument: { id: number; code: string },
+            rates: Record<string, number>,
+            source: string
+        ): ExchangeRateCreateEntityInterface[] => {
+            const rate = rates[instrument.code];
+
+            if (!isPositiveNumber(rate)) {
+                return [];
+            }
+
+            return buildRatePairInputs(baseInstrumentId, instrument.id, rate, source);
+        };
+
+        const buildCryptoInstrumentRateInputs = (
+            baseInstrumentId: number,
+            instrument: InstrumentEntityInterface,
+            rate: number | null
+        ): ExchangeRateCreateEntityInterface[] => {
+            if (!isPositiveNumber(rate)) {
+                return [];
+            }
+
+            return buildRatePairInputs(instrument.id, baseInstrumentId, rate, 'coingecko.com');
+        };
+
+        const fetchJson = Effect.fn('ExchangeRatesSyncService.fetchJson')(function* <S extends Schema.ConstraintDecoder<unknown>>(
+            url: string,
+            schema: S,
+            fallback: S['Type']
+        ) {
+            const client = (yield* HttpClient.HttpClient).pipe(
+                HttpClient.filterStatusOk,
+                HttpClient.transformResponse(Effect.timeout(fetchTimeoutMs)),
+                HttpClient.retryTransient({
+                    retryOn: 'errors-only',
+                    times: fetchRetryLimit,
+                    schedule: Schedule.exponential(fetchRetryDelayMs)
+                })
+            );
+
+            return yield* client.get(url).pipe(
+                Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
+                Effect.orElseSucceed(() => fallback)
+            );
+        });
+
+        const syncFiatRates = Effect.fn('ExchangeRatesSyncService.syncFiatRates')(function* (baseInstrument: InstrumentEntityInterface) {
+            const apiData = yield* fetchJson(
+                `${exchangeRateApiUrl}/${baseInstrument.code}`,
+                ExchangeRateApiResponseSchema,
+                emptyExchangeRateApiResponse
+            );
+            const instruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
+            const inputs = instruments.flatMap(instrument =>
+                instrument.code === baseInstrument.code
+                    ? []
+                    : buildInstrumentRateInputs(baseInstrument.id, instrument, apiData.rates, 'exchangerate-api.com')
+            );
+
+            yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+        });
+
+        const syncCryptoRateBatch = Effect.fn('ExchangeRatesSyncService.syncCryptoRateBatch')(function* (
+            baseInstrument: InstrumentEntityInterface,
+            instruments: InstrumentEntityInterface[]
+        ) {
+            const providerInstrumentIds = [...new Set(instruments.map(instrument => instrument.providerInstrumentId).filter(isDefined))];
+
+            if (!isNotEmptyArray(providerInstrumentIds)) {
+                return;
+            }
+
+            const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
+            const quoteCode = baseInstrument.code.toLowerCase();
+            const prices = yield* fetchJson(
+                `${coingeckoSimplePriceApiUrl}?ids=${ids}&vs_currencies=${encodeURIComponent(quoteCode)}`,
+                CoinGeckoSimplePriceResponseSchema,
+                {}
+            );
+            const inputs = instruments.flatMap(instrument =>
+                buildCryptoInstrumentRateInputs(
+                    baseInstrument.id,
+                    instrument,
+                    getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
+                )
+            );
+
+            if (!isNotEmptyArray(inputs)) {
+                return;
+            }
+
+            yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+        });
+
+        const syncCryptoRates = Effect.fn('ExchangeRatesSyncService.syncCryptoRates')(function* (
+            baseInstrument: InstrumentEntityInterface
+        ) {
+            const instruments = yield* instrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId(
+                InstrumentTypeEnum.CRYPTO,
+                InstrumentPriceProviderEnum.COINGECKO
+            );
+
+            if (!isNotEmptyArray(instruments)) {
+                return;
+            }
+
+            yield* processInputWithBatches(instruments, cryptoRateSyncBatchSize, batch =>
+                syncCryptoRateBatch(baseInstrument, batch).pipe(Effect.as(null))
+            );
+        });
+
+        const syncInner = Effect.fn('ExchangeRatesSyncService.syncInner')(function* () {
+            if (isDefined(lastSyncedAtMs) && Date.now() - lastSyncedAtMs < syncCooldownMs) {
+                return;
+            }
+
+            const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
+
+            if (!isDefined(baseInstrument)) {
+                return;
+            }
+
+            yield* syncFiatRates(baseInstrument);
+            yield* YIELD_TO_UI;
+            yield* syncCryptoRates(baseInstrument);
+            yield* Effect.sync(() => {
+                lastSyncedAtMs = Date.now();
+            });
+        });
+
+        return {
+            registerBackgroundTask: Effect.fn('ExchangeRatesSyncService.registerBackgroundTask')(function* () {
+                if (isE2EApp() || (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)))) {
+                    return;
+                }
+
+                yield* Effect.promise(() =>
+                    BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
+                        minimumInterval: backgroundTaskMinimumIntervalMinutes
+                    })
+                );
+            }),
+            sync: Effect.fn('ExchangeRatesSyncService.sync')(function* () {
+                if (isE2EApp() || isSyncing) {
+                    return;
+                }
+
+                isSyncing = true;
+
+                yield* syncInner().pipe(
+                    Effect.ensuring(
+                        Effect.sync(() => {
+                            isSyncing = false;
+                        })
+                    )
+                );
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(ExchangeRatesSyncService, ExchangeRatesSyncService.make).pipe(
+        Layer.provide([ExchangeRateRepository.layer, InstrumentRepository.layer, ExchangeRatesService.layer])
+    );
+}

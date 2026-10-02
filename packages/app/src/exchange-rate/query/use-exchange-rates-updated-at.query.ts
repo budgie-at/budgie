@@ -1,8 +1,14 @@
-import { exchangeRateRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { ExchangeRateEntityTable, ExchangeRateRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-export const useExchangeRatesUpdatedAtQuery = () => {
-    const { data } = useDatabaseLiveQuery(exchangeRateRepository.getLatestUpdatedAt(), []);
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
-    return data.at(0)?.updatedAt;
-};
+const exchangeRatesUpdatedAtAtom = databaseQueryAtom(
+    [ExchangeRateEntityTable],
+    Effect.flatMap(ExchangeRateRepository, exchangeRateRepository => exchangeRateRepository.getLatestUpdatedAt())
+);
+
+export const useExchangeRatesUpdatedAtQuery = () =>
+    AsyncResult.getOrElse(useLiveAtomValue(exchangeRatesUpdatedAtAtom), () => []).at(0)?.updatedAt;

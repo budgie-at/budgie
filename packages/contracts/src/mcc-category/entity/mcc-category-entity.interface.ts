@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { MccCategoryEntityTable } from '../table/mcc-category-entity.table';
 
-import type { MccCategoryEntitySchema } from '../schema/mcc-category-entity.schema';
-
-export type MccCategoryEntityInterface = z.infer<typeof MccCategoryEntitySchema>;
+export type MccCategoryEntityInterface = typeof MccCategoryEntityTable.$inferSelect;

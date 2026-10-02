@@ -1,5 +1,6 @@
 // This file is required for Expo/React Native SQLite migrations - https://orm.drizzle.team/quick-sqlite/expo
 
+import journal from './meta/_journal.json';
 import m0000 from './0000_normal_dragon_man.sql';
 import m0001 from './0001_late_red_wolf.sql';
 import m0002 from './0002_dark_prima.sql';
@@ -46,56 +47,104 @@ import m0042 from './0042_backfill_file_import_integrations.sql';
 import m0043 from './0043_update_default_account_icons.sql';
 import m0044 from './0044_categorize_debt_settlement_expenses.sql';
 import m0045 from './0045_add_transaction_entry_quote.sql';
-import journal from './meta/_journal.json';
+import m0046 from './0046_repoint_debt_event_entries.sql';
+import m0047 from './0047_repair_double_counted_manual_debt_events.sql';
+import m0048 from './0048_repair_cross_instrument_debt_events.sql';
+import m0049 from './0049_add_bank_sync_backward_limit.sql';
+import m0050 from './0050_add_onboarding_completed.sql';
+import m0051 from './0051_add_onboarding_step_and_ai_consent.sql';
+import m0052 from './0052_soft_cerebro.sql';
+import m0053 from './0053_backfill_ai_consent_for_existing_installs.sql';
+import m0054 from './0054_drop_runway_widget_setting.sql';
+import m0055 from './0055_add_runway_settings.sql';
+import m0056 from './0056_marvelous_menace.sql';
+import m0057 from './0057_add_debt_system_categories.sql';
+import m0060 from './0060_debt_v2_money_legs.sql';
+import m0062 from './0062_add_monobank_setup_balance.sql';
+import m0063 from './0063_round_debt_event_micro_units.sql';
+import m0064 from './0064_round_transfer_micro_units.sql';
+import m0065 from './0065_backfill_monobank_atm_mcc.sql';
+import m0066 from './0066_fix_transfer_and_debt_leg_categories.sql';
+import m0067 from './0067_revert_backfilled_atm_consolidations.sql';
+import m0068 from './0068_replace_needs_embedding_index.sql';
+import m0069 from './0069_live_account_created_index.sql';
+import m0070 from './0070_repair_orphaned_consolidation_children.sql';
+import m0071 from './0071_seed_tracked_cash_withdrawal_category.sql';
+import m0072 from './0072_monobank_entry_external_index.sql';
 
-export default {
+  export default {
     journal,
     migrations: {
-        m0000,
-        m0001,
-        m0002,
-        m0003,
-        m0004,
-        m0005,
-        m0006,
-        m0007,
-        m0008,
-        m0009,
-        m0010,
-        m0011,
-        m0012,
-        m0013,
-        m0014,
-        m0015,
-        m0016,
-        m0017,
-        m0018,
-        m0019,
-        m0020,
-        m0021,
-        m0022,
-        m0023,
-        m0024,
-        m0025,
-        m0026,
-        m0027,
-        m0028,
-        m0029,
-        m0030,
-        m0031,
-        m0032,
-        m0033,
-        m0034,
-        m0035,
-        m0036,
-        m0037,
-        m0038,
-        m0039,
-        m0040,
-        m0041,
-        m0042,
-        m0043,
-        m0044,
-        m0045
+      m0000,
+m0001,
+m0002,
+m0003,
+m0004,
+m0005,
+m0006,
+m0007,
+m0008,
+m0009,
+m0010,
+m0011,
+m0012,
+m0013,
+m0014,
+m0015,
+m0016,
+m0017,
+m0018,
+m0019,
+m0020,
+m0021,
+m0022,
+m0023,
+m0024,
+m0025,
+m0026,
+m0027,
+m0028,
+m0029,
+m0030,
+m0031,
+m0032,
+m0033,
+m0034,
+m0035,
+m0036,
+m0037,
+m0038,
+m0039,
+m0040,
+m0041,
+m0042,
+m0043,
+m0044,
+m0045,
+m0046,
+m0047,
+m0048,
+m0049,
+m0050,
+m0051,
+m0052,
+m0053,
+m0054,
+m0055,
+m0056,
+m0057,
+m0060,
+m0062,
+m0063,
+m0064,
+m0065,
+m0066,
+m0067,
+m0068,
+m0069,
+m0070,
+m0071,
+m0072
     }
-};
+  }
+  

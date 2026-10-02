@@ -1,9 +1,11 @@
+import * as Effect from 'effect/Effect';
+
 import { runConsolidation } from './run-consolidation';
 import { testSeedService } from './test-context';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
-export const runRefundScenario = async (input: {
+export const runRefundScenario = Effect.fnUntraced(function* (input: {
     readonly beforeConsolidation?: (fixture: {
         readonly account: AccountEntityInterface;
         readonly expense: TransactionEntityInterface;
@@ -20,18 +22,13 @@ export const runRefundScenario = async (input: {
     readonly refundTitle?: string;
     readonly refundTitles?: readonly string[];
     readonly title?: string;
-}): Promise<{
-    readonly account: AccountEntityInterface;
-    readonly consolidated: number;
-    readonly expense: TransactionEntityInterface;
-    readonly refunds: TransactionEntityInterface[];
-}> => {
+}) {
     const account = testSeedService.account({ externalId: 'mono-card' });
     const { expense, refunds } = testSeedService.refundedExpense({ ...input, accountId: account.id });
 
     input.beforeConsolidation?.({ account, expense, refunds });
 
-    const result = await runConsolidation();
+    const result = yield* runConsolidation();
 
     return { account, consolidated: result.consolidated, expense, refunds };
-};
+});

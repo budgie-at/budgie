@@ -6,16 +6,17 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
+import { TransactionFeePillSelector } from './transaction-fee-pill.selector';
+
 interface Props {
     readonly amount: number;
     readonly currencySymbol: string;
     readonly instrumentType?: InstrumentTypeEnum;
     readonly showEmptyState?: boolean;
     readonly onPress?: () => void;
-    readonly testID?: string;
 }
 
-export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, showEmptyState = false, onPress, testID }: Props) => {
+export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, showEmptyState = false, onPress }: Props) => {
     const formatInstrumentAmount = useFormatInstrumentAmount();
     const hasFee = isPositiveNumber(amount);
 
@@ -26,5 +27,5 @@ export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, sho
     const formattedAmount = formatInstrumentAmount(amount, currencySymbol, instrumentType ?? null);
     const label = hasFee ? t`Fee ${formattedAmount}` : t`Set fee`;
 
-    return <TransactionMetaPill label={label} onPress={onPress} testID={testID} />;
+    return <TransactionMetaPill label={label} onPress={onPress} testID={TransactionFeePillSelector.Pill} />;
 };

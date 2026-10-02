@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { TransactionEntryCreateInputSchema } from '../schema/transaction-entry-create-input.schema';
+import type { Mutable } from 'effect/Types';
 
-import { TransactionEntryCreateInputSchema } from '../schema/transaction-entry-create-input.schema';
-
-export type TransactionEntryCreateInputInterface = z.infer<typeof TransactionEntryCreateInputSchema>;
+export type TransactionEntryCreateInputInterface = Mutable<typeof TransactionEntryCreateInputSchema.Type>;

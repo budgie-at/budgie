@@ -12,8 +12,10 @@ export const PRIVACY_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
         msg`no account budget app`,
         msg`no telemetry finance app`,
         msg`on-device expense tracker`,
-        msg`no cloud budget app`
+        msg`no cloud budget app`,
+        msg`private alternative cloud budget app`,
+        msg`budget app without bank login`
     ],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07'
+    updatedAt: '2026-09-26'
 };

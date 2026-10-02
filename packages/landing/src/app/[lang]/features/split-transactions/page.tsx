@@ -5,68 +5,29 @@ import { Trans } from '@lingui/react/macro';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageBreadcrumbsJsonLd } from '../../../../feature/component/feature-page-breadcrumbs-json-ld/feature-page-breadcrumbs-json-ld';
-import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
-import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
-import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
-import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildFeaturePageMetadata({
-        locale: lang,
-        slug: FEATURE_METADATA.slug,
-        title: i18n._(FEATURE_METADATA.metaTitle),
-        description: i18n._(FEATURE_METADATA.metaDescription),
-        keywords: FEATURE_METADATA.seoKeywords.join(', '),
-        publishedAt: FEATURE_METADATA.publishedAt,
-        updatedAt: FEATURE_METADATA.updatedAt
-    });
-}
+export const generateMetadata = createFeatureGenerateMetadata(FEATURE_METADATA);
 
 export default async function SplitTransactionsFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
-    const title = i18n._(FEATURE_METADATA.metaTitle);
-    const homePath = `/${lang}`;
-    const featuresPath = `/${lang}/features`;
-    const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
 
     return (
-        <main className="flex-1">
-            <FeaturePageBreadcrumbsJsonLd locale={lang} slug={FEATURE_METADATA.slug}>
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={homePath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={featuresPath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={featureName} path={featurePath} />
-            </FeaturePageBreadcrumbsJsonLd>
-            <FeaturePageWebPageJsonLd
-                description={description}
-                featureName={featureName}
-                locale={lang}
-                publishedAt={FEATURE_METADATA.publishedAt}
-                slug={FEATURE_METADATA.slug}
-                title={title}
-                updatedAt={FEATURE_METADATA.updatedAt}
-            />
+        <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Split a Transaction Across Categories</Trans>}
@@ -78,6 +39,58 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Receipts rarely fit one category</Trans>}>
+                    <Trans>
+                        A supermarket run can carry groceries, a phone charger and a light fixture. Budgie splits the one transaction across
+                        as many category rows as the receipt needs.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One receipt, three categories</Trans>}>
+                    <Trans>
+                        Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="split-transactions-1"
+                    slug="split-transactions"
+                >
+                    <FeatureStory.Callout y={0.721}>
+                        <Trans>Each split, its own category</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.908}>
+                        <Trans>Confirm once it adds up</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>The remainder counts down</Trans>}>
+                    <Trans>Use Add item to add another row; the label under the rows shows how much is still left to assign.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label`}
+                    index={1}
+                    locale={lang}
+                    scene="split-transactions-2"
+                    slug="split-transactions"
+                >
+                    <FeatureStory.Callout y={0.852}>
+                        <Trans>Add another category row</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.908}>
+                        <Trans>What is left to assign</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -91,8 +104,9 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The remaining-budget pill shows what&apos;s left to allocate as you go. Save with Done; the original transaction
-                        becomes a parent with linked split entries underneath.
+                        The footer button doubles as your running total — it reads &quot;$X left to assign&quot; until the split is fully
+                        allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split entries
+                        underneath.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -106,7 +120,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                         <Trans>Unlimited splits per transaction — every category gets its accurate share</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Remaining-budget pill shows what&apos;s left to allocate as you build the split</Trans>
+                        <Trans>The footer button tracks what&apos;s left to allocate, then turns into Confirm Split once it adds up</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Each split row keeps its own tags and comment — fully independent</Trans>
@@ -118,18 +132,6 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                         <Trans>Analytics counts each split toward its own category — no double-counting</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Inside expense or income entry, switch to split mode. Add rows of (category, amount). The system enforces total =
-                        transaction amount. Each split keeps its own tags and comment.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -157,11 +159,6 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                     }
                 />
             </FeaturePageFaqSection>
-
-            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
-            <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
-
-            <FeaturePageCta locale={lang} />
-        </main>
+        </FeaturePageShell>
     );
 }

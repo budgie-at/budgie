@@ -1,4 +1,3 @@
-import type { BudgetCategoryLimitCreateEntitySchema } from '../schema/budget-category-limit-create-entity.schema';
-import type { z } from 'zod';
+import type { BudgetCategoryLimitEntityInterface } from './budget-category-limit-entity.interface';
 
-export type BudgetCategoryLimitCreateEntityInterface = z.infer<typeof BudgetCategoryLimitCreateEntitySchema>;
+export type BudgetCategoryLimitCreateEntityInterface = Pick<BudgetCategoryLimitEntityInterface, 'budgetId' | 'categoryId' | 'limitAmount'>;

@@ -1,70 +1,39 @@
-import { getLogger } from '@budgie/logger';
+import { CategoryRepository, TagRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { emptyFn, getErrorMessage } from '@rnw-community/shared';
+import { translationProgressSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 
-import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
+import { ProgressStore } from './progress.store';
 
-const logger = getLogger('translationProgressStore');
+export class TranslationProgressStore extends Context.Service<TranslationProgressStore>()('@budgie/app/TranslationProgressStore', {
+    make: Effect.gen(function* () {
+        const categoryRepository = yield* CategoryRepository;
+        const tagRepository = yield* TagRepository;
 
-interface TranslationProgressSnapshotInterface {
-    readonly percent: number;
-    readonly total: number;
-    readonly pending: number;
-    readonly isTranslating: boolean;
+        return new ProgressStore(
+            translationProgressSnapshotAtom,
+            Effect.all(
+                [
+                    categoryRepository.countAll(),
+                    tagRepository.countAll(),
+                    categoryRepository.countUntranslated(),
+                    tagRepository.countUntranslated()
+                ],
+                {
+                    concurrency: 'unbounded'
+                }
+            ).pipe(
+                Effect.map(
+                    ([categoryAll, tagAll, categoryPending, tagPending]) => [categoryAll + tagAll, categoryPending + tagPending] as const
+                )
+            ),
+            0
+        );
+    })
+}) {
+    static readonly layer = Layer.effect(TranslationProgressStore, TranslationProgressStore.make).pipe(
+        Layer.provide([CategoryRepository.layer, TagRepository.layer])
+    );
 }
-
-const FULL_PERCENT = 100;
-
-let snapshot: TranslationProgressSnapshotInterface = { percent: 0, total: 0, pending: 0, isTranslating: false };
-const listeners = new Set<() => void>();
-
-const notify = (): void => {
-    listeners.forEach(listener => {
-        listener();
-    });
-};
-
-export const translationProgressStore = {
-    subscribe(listener: () => void): () => void {
-        listeners.add(listener);
-
-        return () => {
-            listeners.delete(listener);
-        };
-    },
-    getSnapshot(): TranslationProgressSnapshotInterface {
-        return snapshot;
-    },
-    async refresh(): Promise<void> {
-        try {
-            const [categoryPending, tagPending, categoryAll, tagAll] = await Promise.all([
-                categoryRepository.countUntranslated(),
-                tagRepository.countUntranslated(),
-                categoryRepository.countAll(),
-                tagRepository.countAll()
-            ]);
-            const total = categoryAll + tagAll;
-            const pending = categoryPending + tagPending;
-            const percent = total === 0 ? FULL_PERCENT : Math.round(((total - pending) / total) * FULL_PERCENT);
-            const next: TranslationProgressSnapshotInterface = {
-                percent,
-                total,
-                pending,
-                isTranslating: pending > 0
-            };
-            if (
-                next.percent !== snapshot.percent ||
-                next.total !== snapshot.total ||
-                next.pending !== snapshot.pending ||
-                next.isTranslating !== snapshot.isTranslating
-            ) {
-                snapshot = next;
-                logger.log('translation:progress:refresh', { total, pending, percent, isTranslating: next.isTranslating });
-                notify();
-            }
-        } catch (error: unknown) {
-            logger.error('translation:progress:refresh:throw', { errorMessage: getErrorMessage(error) });
-            emptyFn();
-        }
-    }
-};

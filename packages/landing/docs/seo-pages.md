@@ -28,6 +28,8 @@ Do not put visible body copy in registries, keyed content objects, static string
 
 Use `<Trans>` for JSX text and `t(i18n)` for string props. Do not build fixed static JSX lists by mapping over arrays of strings just to reduce file length.
 
+Visible copy states user outcomes and never names libraries, runtimes, models, database engines, frameworks, file formats, or vendor SDKs — see `AGENTS.md` → "No implementation details in user-facing copy".
+
 ### 3. Registries are enumeration and metadata sources only
 
 Registries may exist for listing pages, sitemap generation, related links, and metadata lookup. They must not carry visible body copy, FAQ body copy, hero bullet copy, long-form prose, or per-page rendered content.
@@ -140,6 +142,36 @@ Listing pages are the legitimate consumers of family registries:
 
 Do not rebuild page body content from registries in listing components.
 
+### 11. OG image on every SEO route
+
+Every `page.tsx` SEO route (feature page, blog article, hub) must ship a sibling `opengraph-image.tsx`. Build it with the shared OG image builders (`createFeatureOgImage` / `createBlogOgImage`) instead of hand-rolling a new OG renderer; both render the single `OgCard` composition in `src/generic/component/og-card`, which composites a locale-matched dark device plate from `resolveOgPlate(mediaSlug, lang)` and falls back to the text-only card when the slug has no capture. OG images are for social sharing only: on-site blog artwork (card thumbnails and the article hero) is rendered by `BlogCover`, which derives a deterministic accent hue, motif family, and composition from the article slug and tags, and peeks a framed product still resolved from `relatedFeatureSlugs` through `resolveArticleShot`. Never point an on-site `<Image>` at an `opengraph-image` route.
+
+The metadata builders never set `openGraph.images` / `twitter.images` — config-based images override file-based conventions, and the file must own `og:image`. When a route has no file yet, the root layout's static fallback applies.
+
+App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`. Never commit binary icon variants next to them.
+
+### 12. Feature-page scroll stories
+
+A feature page carries at most one `FeatureStory`, with **2–5 steps** (steps variant) or **one shot plus 2–4 points** (basic variant). Step titles, value copy, and callout labels are inline `<Trans>` in the route page; `alt` uses `t(i18n)`. Passing steps as `steps={[…]}`, as a registry field, or as any array of copy is prohibited — it is the same violation as §2 and §6.
+
+Prefer staged stills over motion: build a step out of `FeatureStory.Shot` scenes the scroll swaps whenever the manifest carries stills for the scene, and reach for `FeatureStory.Clip` only when the interaction cannot be told in framed screenshots. Stills carry the device frame baked in by `compose-web-media.sh`; clip media is screen-only and the site draws the same frame around it at render time through `.device-frame`, so `compose-web-clips.sh` must never bake a frame into clip media — MP4 has no alpha channel to carry the frame's transparent surround.
+
+Scene ids, `slug`, `locale`, and callout coordinates are page-local literals. They never enter `metadata.ts` or the feature registry; the allowed registry field list is unchanged.
+
+A callout is a numbered dot on the screenshot plus a label rendered **outside** the frame — never a band or pill over app pixels. `y` is the dot's vertical centre as a fraction of the framed screenshot height; the optional `x` is the same fraction horizontally and defaults to the device's right edge, so the dot marks a row without covering content. Keep labels to six words: they sit beside the frame on desktop (alternating sides from 1280px, right-hand side below that, joined by a hairline leader drawn outside the device bounds) and in a numbered caption rail under the frame on mobile. Numbering is a CSS counter, so callout order in the page is the only source of truth. Never use pixel coordinates.
+
+The stage is pinned on every viewport: sticky and top-aligned under the header on mobile with the step copy scrolling in the band beneath it, sticky beside the copy column on desktop. Shots crossfade per active step, parallax and the progress rail run on `animation-timeline` where supported and on one passive scroll listener writing `--story-progress` where it is not, and `prefers-reduced-motion` keeps the crossfade only.
+
+The story renders a server compound root; only its inner observer island is `"use client"`, it renders `{children}`, and it holds no translatable text, so every step string stays server-rendered in the SSG'd HTML for all five locales. `FeaturePageMedia` is retained only for a supplementary single shot; a page with a story does not also open with a `FeaturePageMedia` hero shot, and it drops its "How it works" prose section.
+
+Reference implementation: `src/app/[lang]/features/net-worth-tracker/page.tsx`.
+
+i18n authoring contract, callout anchor measurement across locales, and the locale QA checklist to run before merging a story page: `docs/feature-story-i18n-qa.md`.
+
+### 13. Metadata char budgets
+
+Titles must fit 60 characters including the ` | Budgie` template suffix; descriptions must fit 160 characters. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in `metadata.ts` sidecars may be longer — the builder clamps it. Do not add per-page clamping logic.
+
 ---
 
 ## Canonical page shapes
@@ -191,7 +223,7 @@ export default async function SomeArticlePage(props: PageLangParam) {
                 slug={meta.slug}
                 title={i18n._(meta.title)}
             />
-            <BlogArticleHero image={meta.image} imageAlt={t(i18n)`Article image`}>
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
@@ -399,7 +431,7 @@ Check this list before authoring a new SEO component.
 
 | Concern                              | Primitive                                                                                          |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Article hero block                   | `BlogArticleHero image imageAlt` + children                                                        |
+| Article hero block                   | `BlogArticleHero article locale` + children                                                        |
 | Breadcrumb trail                     | `BlogBreadcrumbs` + `BlogBreadcrumbLink href position` + `BlogBreadcrumbCurrent position` children |
 | Article metadata                     | `BlogArticleMeta date author locale readingTimeMinutes tags`                                       |
 | Content wrapper                      | `BlogArticleContent`                                                                               |
@@ -430,6 +462,13 @@ Check this list before authoring a new SEO component.
 | Related feature cards       | `FeaturePageRelated features locale`                                    |
 | Related blog articles       | `FeaturePageRelatedArticles locale slugs`                               |
 | Bottom CTA                  | `FeaturePageCta locale`                                                 |
+| Scroll story wrapper        | `FeatureStory` (compound root; the observer island carries no strings)  |
+| Story heading + lede        | `FeatureStory.Intro heading` + children                                 |
+| Narration step              | `FeatureStory.Step index title` + children                              |
+| Sticky screenshot           | `FeatureStory.Shot index slug scene locale alt priority` + callouts     |
+| Sticky motion clip          | `FeatureStory.Clip index slug scene locale alt` + callouts              |
+| Screenshot highlight        | `FeatureStory.Callout y x index` + children                             |
+| Basic-variant bullet        | `FeatureStory.Point index` + children                                   |
 
 ### Generic primitives
 
@@ -444,7 +483,7 @@ Check this list before authoring a new SEO component.
 ## When extending
 
 - Adding a new blog article: create `src/app/[lang]/blog/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the article registry/index aggregator, and optionally add `opengraph-image.tsx`.
-- Adding a new feature page: create `src/app/[lang]/features/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the feature registry/index aggregator, and optionally add `opengraph-image.tsx`.
+- Adding a new feature page: create `src/app/[lang]/features/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the feature registry/index aggregator, compose a `FeatureStory` with 2–5 steps referencing only scene ids present in the generated media manifest, and optionally add `opengraph-image.tsx`.
 - Adding a new pillar hub: create `src/app/[lang]/<slug>/page.tsx`, create sibling metadata if the family is enumerated, and keep visible hub copy in the page or a page-owned explicit JSX component.
 - Adding a new legal page: create `src/app/[lang]/legal/<slug>/page.tsx`; do not add it to a registry or sitemap.
 - Adding a new SEO concern: build a primitive component and have pages compose it as children. Do not bolt body-copy prop bags onto existing wrappers.

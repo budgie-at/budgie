@@ -1,11 +1,11 @@
 import { cva } from 'class-variance-authority';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';

@@ -6,7 +6,5 @@ export interface TransactionCategoryFilterModalParams {
 
 export type TransactionCategoryFilterResult = { readonly value: number[] | null };
 
-export const [TransactionCategoryFilterModalContext, useTransactionCategoryFilterModal] = createModalContext<
-    TransactionCategoryFilterModalParams,
-    TransactionCategoryFilterResult | null
->(null);
+export const [TransactionCategoryFilterModalContext, useTransactionCategoryFilterModal, useTransactionCategoryFilterModalParams] =
+    createModalContext<TransactionCategoryFilterModalParams, TransactionCategoryFilterResult | null>(null);

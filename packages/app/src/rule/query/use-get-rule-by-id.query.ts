@@ -1,14 +1,17 @@
-import { isDefined } from '@rnw-community/shared';
+import { RuleActionEntityTable, RuleConditionEntityTable, RuleEntityTable, RuleRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { ruleRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const ruleByIdAtom = databaseQueryFamily(
+    [RuleEntityTable, RuleConditionEntityTable, RuleActionEntityTable],
+    RuleRepository,
+    (ruleRepository, id: number) => ruleRepository.findByIdWithRelations(id)
+);
 
 export const useGetRuleByIdQuery = (id: number) => {
-    const { data, error, updatedAt } = useDatabaseLiveQuery(ruleRepository.findByIdWithRelations(id), [id]);
+    const result = useLiveAtomValue(ruleByIdAtom(id));
 
-    if (!isDefined(updatedAt)) {
-        return { isLoading: true, rule: null, error, updatedAt: null };
-    }
-
-    return { rule: data ?? null, isLoading: false, error, updatedAt };
+    return { rule: AsyncResult.getOrElse(result, () => null) ?? null, isLoading: AsyncResult.isInitial(result) };
 };

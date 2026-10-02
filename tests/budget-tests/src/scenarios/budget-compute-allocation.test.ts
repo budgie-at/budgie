@@ -1,4 +1,5 @@
 import { budgetComputeAllocation } from '@budgie/budget';
+import { describe, expect, it } from '@effect/vitest';
 
 describe('budgetComputeAllocation', () => {
     it('includes synthetic other in planned allocation', () => {

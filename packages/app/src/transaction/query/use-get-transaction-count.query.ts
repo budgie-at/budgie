@@ -1,18 +1,21 @@
-import { TransactionFilterInterface } from '@budgie/contracts';
+import { TransactionFilterInterface, TransactionViewRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined } from '@rnw-community/shared';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
-import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
+const transactionCountAtom = databaseQueryFamily(
+    TRANSACTION_LIST_TABLES,
+    TransactionViewRepository,
+    (transactionViewRepository, filters: TransactionFilterInterface) => transactionViewRepository.countAll(filters)
+);
 
 export const useGetTransactionCountQuery = (filters: TransactionFilterInterface) => {
-    const filterKey = buildTransactionFilterKey(filters);
-    const { data, error, updatedAt } = useDatabaseLiveQuery(transactionRepository.countAll(filters), [filterKey]);
+    const result = useLiveAtomValue(transactionCountAtom(filters));
 
     return {
-        count: data.at(0)?.value ?? 0,
-        error: error ?? null,
-        isLoading: !isDefined(updatedAt)
+        count: AsyncResult.getOrElse(result, () => []).at(0)?.value ?? 0,
+        isLoading: AsyncResult.isInitial(result)
     };
 };

@@ -15,17 +15,16 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
-import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
-import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
-import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
-import { AiSystemUmbrellaStateEnum } from '../../../ai/enum/ai-system-umbrella-state.enum';
-import { useAiSystemUmbrella } from '../../../ai/hook/use-ai-system-umbrella.hook';
+import { AiSettingsSection } from '../../../ai/component/ai-settings-section/ai-settings-section';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
+import { RunwaySettingsSection } from '../../../runway/component/runway-settings-section/runway-settings-section';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
 import { BudgetManagementCard } from '../../../settings/components/budget-management-card/budget-management-card';
 import { BudgetPushToggle } from '../../../settings/components/budget-push-toggle/budget-push-toggle';
@@ -52,7 +51,7 @@ export default function SettingsPage() {
     const { t } = useLingui();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
-    const isAiDisabled = useAiSystemUmbrella().state === AiSystemUmbrellaStateEnum.DISABLED;
+    const isAiBuildDisabled = !isAiEnabled();
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -67,10 +66,10 @@ export default function SettingsPage() {
         });
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
-        await updateSettingsMutation({ [key]: checked });
+        await appRuntime.runPromise(updateSettingsMutation({ [key]: checked }));
     };
     const handleToggleShowCents = () =>
-        void updateSettingsMutation({ showCents: !showCents }).catch((error: unknown) => {
+        void appRuntime.runPromise(updateSettingsMutation({ showCents: !showCents })).catch((error: unknown) => {
             Toast.show({ type: 'error', text1: t`Could not update settings`, text2: getErrorMessage(error) });
         });
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
@@ -122,13 +121,11 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                {isAiDisabled ? null : (
+                {isAiBuildDisabled ? null : (
                     <View {...anchorLayout('ai')}>
                         <SettingsGroup title={t`AI`}>
                             <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                                <AiSystemStatusBanner />
-                                <AiTranslationStatusCard />
-                                <AiEmbeddingStatusCard />
+                                <AiSettingsSection />
                             </Animated.View>
                         </SettingsGroup>
                     </View>
@@ -187,6 +184,14 @@ export default function SettingsPage() {
                             <BudgetManagementCard />
                             <BudgetWidgetToggle />
                             <BudgetPushToggle />
+                        </Animated.View>
+                    </SettingsGroup>
+                </View>
+
+                <View {...anchorLayout('runway')}>
+                    <SettingsGroup title={t`Runway`}>
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('runway')}>
+                            <RunwaySettingsSection />
                         </Animated.View>
                     </SettingsGroup>
                 </View>

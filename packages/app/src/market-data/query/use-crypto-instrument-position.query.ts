@@ -1,12 +1,26 @@
-import { TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryPositionRepository,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { transactionEntryPositionRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
 import type { CryptoPositionEntryRowInterface } from '@budgie/contracts';
+
+const cryptoPositionEntriesAtom = databaseQueryFamily(
+    [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable],
+    TransactionEntryPositionRepository,
+    (transactionEntryPositionRepository, [instrumentId, baseInstrumentId]: readonly [number, number]) =>
+        transactionEntryPositionRepository.findCryptoPositionEntries(instrumentId, baseInstrumentId)
+);
 
 const consumeLots = (lots: { amount: number; baseAmount: number | null }[], amount: number): void => {
     let remainingAmount = amount;
@@ -61,11 +75,7 @@ const calculatePosition = (entries: CryptoPositionEntryRowInterface[]) => {
 };
 
 export const useCryptoInstrumentPositionQuery = (instrumentId: number, baseInstrumentId: number) => {
-    const dependencies = [instrumentId, baseInstrumentId];
-    const { data } = useDatabaseLiveQuery(
-        transactionEntryPositionRepository.findCryptoPositionEntries(instrumentId, baseInstrumentId),
-        dependencies
-    );
+    const result = useLiveAtomValue(cryptoPositionEntriesAtom([instrumentId, baseInstrumentId]));
 
-    return calculatePosition(data);
+    return calculatePosition(AsyncResult.getOrElse(result, () => []));
 };

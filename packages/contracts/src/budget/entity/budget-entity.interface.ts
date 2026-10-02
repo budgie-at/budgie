@@ -1,4 +1,3 @@
-import type { BudgetEntitySchema } from '../schema/budget-entity.schema';
-import type { z } from 'zod';
+import type { BudgetEntityTable } from '../table/budget-entity.table';
 
-export type BudgetEntityInterface = z.infer<typeof BudgetEntitySchema>;
+export type BudgetEntityInterface = typeof BudgetEntityTable.$inferSelect;

@@ -1,4 +1,3 @@
-import type { BudgetCategoryLimitEntitySchema } from '../schema/budget-category-limit-entity.schema';
-import type { z } from 'zod';
+import type { BudgetCategoryLimitEntityTable } from '../table/budget-category-limit-entity.table';
 
-export type BudgetCategoryLimitEntityInterface = z.infer<typeof BudgetCategoryLimitEntitySchema>;
+export type BudgetCategoryLimitEntityInterface = typeof BudgetCategoryLimitEntityTable.$inferSelect;

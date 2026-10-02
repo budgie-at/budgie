@@ -1,10 +1,11 @@
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
+import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb } from '../../harness';
+import { expectFileImportConsolidationEnqueued, seed, makeStubFileBankSyncService, testDb, TestLayer } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
@@ -14,8 +15,6 @@ const PRIVATBANK_STATEMENT_URI = 'privatbank-statement.xlsx';
 const PRIVATBANK_TRANSFER_CATEGORY = 'Зарахування переказу';
 const TRANSFER_AMOUNT = 250;
 const UAH_CURRENCY_CODE_NUMERIC = 980;
-
-const enqueueSpy = vi.spyOn(transferConsolidationDrainerService, 'enqueue');
 
 const buildPrivatbankBankAccount = (): SyncAccountInterface => ({
     id: PRIVATBANK_CARD_ID,
@@ -55,8 +54,8 @@ class StubPrivatbankFileClient implements FileBasedSyncClientInterface {
     }
 }
 
-const buildPrivatbankSyncService = (transactions: SyncTransactionInterface[]): StubFileBankSyncService =>
-    new StubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, new StubPrivatbankFileClient(transactions));
+const buildPrivatbankSyncService = (transactions: SyncTransactionInterface[]) =>
+    makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, new StubPrivatbankFileClient(transactions));
 
 const seedPrivatbankAccount = (): void => {
     seed.account({
@@ -67,34 +66,36 @@ const seedPrivatbankAccount = (): void => {
 };
 
 describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
-    beforeEach(() => {
-        enqueueSpy.mockClear();
-    });
+    it.effect('enqueues consolidation after a Privatbank file import introduces new transactions', () =>
+        Effect.gen(function* () {
+            seedPrivatbankAccount();
+            const syncService = yield* buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
-    it('enqueues consolidation after a Privatbank file import introduces new transactions', async () => {
-        seedPrivatbankAccount();
-        const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
+            yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+            const transaction = testDb
+                .select()
+                .from(TransactionEntityTable)
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK))
+                .get();
 
-        const transaction = testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK))
-            .get();
+            yield* expectFileImportConsolidationEnqueued(transaction?.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expectFileImportConsolidationEnqueued(transaction?.id);
-    });
+    it.effect('does not enqueue consolidation after a re-import with no new transactions', () =>
+        Effect.gen(function* () {
+            const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
+            const enqueue = vi.mocked(transferConsolidationDrainerService.enqueue);
+            seedPrivatbankAccount();
+            const syncService = yield* buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
-    it('does not enqueue consolidation after a re-import with no new transactions', async () => {
-        seedPrivatbankAccount();
-        const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
+            yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+            enqueue.mockClear();
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
-        enqueueSpy.mockClear();
+            yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
-
-        expect(enqueueSpy).not.toHaveBeenCalled();
-    });
+            expect(enqueue).not.toHaveBeenCalled();
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

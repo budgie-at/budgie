@@ -2,12 +2,7 @@ import { AiSubsystemCardStateEnum } from '../enum/ai-subsystem-card-state.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { AiSubsystemStatusSnapshotInterface } from '../interface/ai-subsystem-status-snapshot.interface';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
-
-interface ProgressLikeInterface {
-    readonly percent: number;
-    readonly pending: number;
-    readonly total: number;
-}
+import { ProgressSnapshotInterface } from '../interface/progress-snapshot.interface';
 
 interface Labels {
     readonly boosting: string;
@@ -17,7 +12,7 @@ interface Labels {
 
 export const buildSubsystemSnapshot = (
     drainer: DrainerSnapshotInterface,
-    progress: ProgressLikeInterface,
+    progress: ProgressSnapshotInterface,
     labels: Labels
 ): AiSubsystemStatusSnapshotInterface => {
     const base = { percent: progress.percent, pending: progress.pending, total: progress.total };

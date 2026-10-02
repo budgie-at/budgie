@@ -1,5 +1,6 @@
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 
+import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
@@ -84,7 +85,7 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     canonical_tx.type = '${TransactionTypeEnum.TRANSFER}'
                     AND canonical_tx.deleted_at IS NULL
                     AND canonical_tx.consolidation_parent_transaction_id IS NULL
-                    AND canonical_tx.consolidation_type IN ('${TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER}', '${TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER}')
+                    AND canonical_tx.consolidation_type IN (${IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL})
                     AND canonical_tx.from_account_id = source_account.id
                     AND canonical_tx.to_account_id = target_account.id
                     AND canonical_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}

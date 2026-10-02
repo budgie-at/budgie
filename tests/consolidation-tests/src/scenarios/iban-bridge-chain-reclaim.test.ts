@@ -1,5 +1,6 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     CHAIN_RECLAIM_ONE_CENT_AMOUNT,
@@ -8,78 +9,77 @@ import {
     seedNestedChainReclaimFixture
 } from '../harness/chain-reclaim-fixture';
 import { expectConsolidationParent, expectSourcesRestored, fetchMovedSourceIds } from '../harness/consolidation-revert-audit';
+import { expectConsolidationResult } from '../harness/expect-consolidation-result';
 import { IBAN_BRIDGE_EUR_AMOUNT } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService } from '../harness/test-context';
+import { testQueryService, TestLayer } from '../harness/test-context';
 
 const byTransactionId = (left: number, right: number): number => left - right;
 
-describe('consolidation/iban-bridge-chain-reclaim', () => {
-    it('reclaims late bridge legs into an existing generated transfer pair', async () => {
-        const { bridgeExpense, bridgeIncome, directTransfer } = seedChainReclaimFixture({
-            consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR
-        });
+layer(TestLayer)('consolidation/iban-bridge-chain-reclaim', it => {
+    it.effect('reclaims late bridge legs into an existing generated transfer pair', () =>
+        Effect.gen(function* () {
+            const { bridgeExpense, bridgeIncome, directTransfer } = seedChainReclaimFixture({
+                consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR
+            });
 
-        const result = await runConsolidation();
+            yield* expectConsolidationResult({ found: 1, consolidated: 1 });
+            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+            expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
+            expect(fetchMovedSourceIds(directTransfer.id)).toEqual([bridgeIncome.id, bridgeExpense.id].sort(byTransactionId));
+        })
+    );
 
-        expect(result.found).toBe(1);
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
-        expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
-        expect(fetchMovedSourceIds(directTransfer.id)).toEqual([bridgeIncome.id, bridgeExpense.id].sort(byTransactionId));
-    });
+    it.effect('preserves original moved source rows when reclaiming bridge legs into an existing generated transfer pair', () =>
+        Effect.gen(function* () {
+            const { bridgeExpense, bridgeIncome, directTransfer, sourceExpense, targetIncome } = seedNestedChainReclaimFixture();
 
-    it('preserves original moved source rows when reclaiming bridge legs into an existing generated transfer pair', async () => {
-        const { bridgeExpense, bridgeIncome, directTransfer, sourceExpense, targetIncome } = await seedNestedChainReclaimFixture();
+            yield* expectConsolidationResult({ found: 1, consolidated: 1 });
+            expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
+            expectConsolidationParent(sourceExpense.id, directTransfer.id);
+            expectConsolidationParent(targetIncome.id, directTransfer.id);
+            expect(fetchMovedSourceIds(directTransfer.id)).toEqual(
+                [sourceExpense.id, targetIncome.id, bridgeIncome.id, bridgeExpense.id].sort(byTransactionId)
+            );
+        })
+    );
 
-        const result = await runConsolidation();
+    it.effect('does not reclaim or duplicate bridge legs when the direct transfer is source-less', () =>
+        Effect.gen(function* () {
+            const { bridgeIncome, bridgeExpense, directTransfer } = seedChainReclaimFixture({ consolidationType: null });
 
-        expect(result.found).toBe(1);
-        expect(result.consolidated).toBe(1);
-        expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
-        expectConsolidationParent(sourceExpense.id, directTransfer.id);
-        expectConsolidationParent(targetIncome.id, directTransfer.id);
-        expect(fetchMovedSourceIds(directTransfer.id)).toEqual(
-            [sourceExpense.id, targetIncome.id, bridgeIncome.id, bridgeExpense.id].sort(byTransactionId)
-        );
-    });
+            yield* expectConsolidationResult({ found: 0, consolidated: 0 });
+            expect(testQueryService.fetchTransactionById(directTransfer.id).consolidationType).toBeNull();
+            expectSourcesRestored([bridgeIncome.id, bridgeExpense.id]);
+        })
+    );
 
-    it('does not reclaim or duplicate bridge legs when the direct transfer is source-less', async () => {
-        const { bridgeIncome, bridgeExpense, directTransfer } = seedChainReclaimFixture({ consolidationType: null });
+    it.effect('reclaims an off-by-cents chain instead of creating a duplicate bridge canonical', () =>
+        Effect.gen(function* () {
+            const { bridgeExpense, bridgeIncome, directTransfer } = seedChainReclaimFixture({
+                consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+                directSourceAmount: IBAN_BRIDGE_EUR_AMOUNT + CHAIN_RECLAIM_ONE_CENT_AMOUNT
+            });
 
-        const result = await runConsolidation();
+            yield* expectConsolidationResult({ found: 1, consolidated: 1 });
+            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)).toHaveLength(0);
+            expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
+        })
+    );
 
-        expect(result.found).toBe(0);
-        expect(result.consolidated).toBe(0);
-        expect(testQueryService.fetchTransactionById(directTransfer.id).consolidationType).toBeNull();
-        expectSourcesRestored([bridgeIncome.id, bridgeExpense.id]);
-    });
+    it.effect('leaves an already reclaimed chain untouched on a repeated consolidation run', () =>
+        Effect.gen(function* () {
+            const { bridgeExpense, bridgeIncome, directTransfer } = seedChainReclaimFixture({
+                consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+                directSourceAmount: IBAN_BRIDGE_EUR_AMOUNT + CHAIN_RECLAIM_ONE_CENT_AMOUNT
+            });
 
-    it('reclaims an off-by-cents chain instead of creating a duplicate bridge canonical', async () => {
-        const { bridgeExpense, bridgeIncome, directTransfer } = seedChainReclaimFixture({
-            consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
-            directSourceAmount: IBAN_BRIDGE_EUR_AMOUNT + CHAIN_RECLAIM_ONE_CENT_AMOUNT
-        });
+            yield* runConsolidation();
+            const repeatedResult = yield* runConsolidation();
 
-        const result = await runConsolidation();
-
-        expect(result.found).toBe(1);
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)).toHaveLength(0);
-        expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
-    });
-
-    it('leaves an already reclaimed chain untouched on a repeated consolidation run', async () => {
-        const { bridgeExpense, bridgeIncome, directTransfer } = seedChainReclaimFixture({
-            consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
-            directSourceAmount: IBAN_BRIDGE_EUR_AMOUNT + CHAIN_RECLAIM_ONE_CENT_AMOUNT
-        });
-
-        await runConsolidation();
-        const repeatedResult = await runConsolidation();
-
-        expect(repeatedResult.found).toBe(0);
-        expect(repeatedResult.consolidated).toBe(0);
-        expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
-    });
+            expect(repeatedResult.found).toBe(0);
+            expect(repeatedResult.consolidated).toBe(0);
+            expectAbsorbedIntoExistingTransfer(directTransfer.id, bridgeIncome.id, bridgeExpense.id);
+        })
+    );
 });

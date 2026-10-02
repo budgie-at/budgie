@@ -1,0 +1,32 @@
+import { isDefined } from '@rnw-community/shared';
+
+import { MediaKindEnum } from '../../enum/media-kind.enum';
+import { resolveMediaAsset } from '../../util/resolve-media-asset.util';
+
+import { AppClipMedia } from './app-clip-media';
+
+import type { ReactNode } from 'react';
+
+interface Props {
+    slug: string;
+    scene: string;
+    locale: string;
+    alt: string;
+    fallback?: ReactNode;
+    priority?: boolean;
+}
+
+export const AppClip = ({ slug, scene, locale, alt, fallback, priority = false }: Props) => {
+    const { light: lightAsset, dark: darkAsset } = resolveMediaAsset(slug, scene, locale, MediaKindEnum.MOTION);
+
+    if (!isDefined(lightAsset) || !isDefined(darkAsset)) {
+        return fallback;
+    }
+
+    return (
+        <>
+            <AppClipMedia alt={alt} asset={lightAsset} className="block dark:hidden" priority={priority} />
+            <AppClipMedia alt={alt} asset={darkAsset} className="hidden dark:block" priority={priority} />
+        </>
+    );
+};

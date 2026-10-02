@@ -6,6 +6,10 @@
 #   SETTLE_SECONDS  post-boot settle wait per device (default 180)
 set -euo pipefail
 
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/mobile-ci-slim-simulator.sh"
+
 DEVICE_TYPE='com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro'
 DEVICE_NAME='iPhone 17 Pro'
 SETTLE_SECONDS="${SETTLE_SECONDS:-180}"
@@ -43,6 +47,7 @@ settle_device() {
     echo "Prewarming $udid (settle ${SETTLE_SECONDS}s)"
     xcrun simctl boot "$udid" 2>/dev/null || true
     xcrun simctl bootstatus "$udid" -b
+    slim_simulator "$udid"
     sleep "$SETTLE_SECONDS"
     xcrun simctl shutdown "$udid"
 }

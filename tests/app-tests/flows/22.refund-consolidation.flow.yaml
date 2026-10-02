@@ -87,7 +87,6 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Localized'
     direction: DOWN
-    visibilityPercentage: 30
     centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Localized'
@@ -95,7 +94,6 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Partial'
     direction: DOWN
-    visibilityPercentage: 30
     centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Partial'
@@ -103,7 +101,6 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Full'
     direction: DOWN
-    visibilityPercentage: 30
     centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Full'
@@ -111,7 +108,6 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
     direction: DOWN
-    visibilityPercentage: 30
     centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
@@ -134,7 +130,6 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Localized'
     direction: UP
-    visibilityPercentage: 30
     centerElement: true
 - assertVisible:
     text: 'E2E Refund Localized, Refunded.*'
@@ -146,7 +141,6 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.RefundedPill.4'
     direction: DOWN
-    visibilityPercentage: 30
     centerElement: true
 - assertVisible:
     id: 'TransactionCard.RefundedPill.4'
@@ -158,7 +152,6 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
     direction: DOWN
-    visibilityPercentage: 30
     centerElement: true
 - assertVisible:
     id: 'TransactionCard.Amount.8'
