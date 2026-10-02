@@ -131,5 +131,15 @@
         "lucide-static": "1.49.0",
         "postcss": "^8.5.28",
         "tailwindcss": "^4.3.3"
+    },
+    "expo": {
+        "autolinking": {
+            "ios": {
+                "buildFromSource": [
+                    "expo-contacts",
+                    "expo-file-system"
+                ]
+            }
+        }
     }
 }
