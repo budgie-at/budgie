@@ -1,5 +1,3 @@
-import { RuleMatcherService } from '@app/rule/service/rule-matcher.service';
-import { extractRuleActionOutcomes } from '@app/rule/util/extract-rule-action-outcomes.util';
 import {
     CommentEmbeddingRepository,
     EMBEDDING_VEC_DISTANCE_THRESHOLD,
@@ -12,14 +10,14 @@ import {
 import {
     CategoryEntityTable,
     CategorySourceEnum,
-    RuleRepository,
     SettingsRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryKindEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { afterAll, describe, expect, it } from '@effect/vitest';
+import { RuleMatcherService, RuleRepository, extractRuleActionOutcomes } from '@budgie/rules';
+import { describe, expect, it } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
@@ -174,8 +172,6 @@ const formatTagRows = (
     });
 
 describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-eval', () => {
-    afterAll(() => testDb.$client.closeAsync());
-
     it.effect(
         'prints top-1/top-3 accuracy and tag precision/recall on user-set categories of a real backup',
         () =>
@@ -292,41 +288,40 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
         Effect.gen(function* () {
             const merchantEmbeddingRepository = yield* MerchantEmbeddingRepository;
             const commentEmbeddingRepository = yield* CommentEmbeddingRepository;
-            const [mccSystemCategory, userCategory] = testDb
+            const [mccSystemCategory, userCategory] = yield* testDb
                 .insert(CategoryEntityTable)
                 .values([
                     { title: 'Default Dining', titleEn: 'Default Dining', icon: UserIconNameEnum.Wallet, isSystemCategory: true },
                     { title: 'User Dining', titleEn: 'User Dining', icon: UserIconNameEnum.Wallet, isSystemCategory: false }
                 ])
-                .returning()
-                .all();
-            const account = testSeedService.account();
-            const mccMerchant = testSeedService.bankPairExpense(
+                .returning();
+            const account = yield* testSeedService.account();
+            const mccMerchant = yield* testSeedService.bankPairExpense(
                 { externalId: 'eval-mcc-merchant', operatedAt: new Date('2026-01-03T09:00:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
-            const userMerchant = testSeedService.bankPairExpense(
+            const userMerchant = yield* testSeedService.bankPairExpense(
                 { externalId: 'eval-user-merchant', operatedAt: new Date('2026-01-03T09:30:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
-            const userTarget = testSeedService.bankPairExpense(
+            const userTarget = yield* testSeedService.bankPairExpense(
                 { externalId: 'eval-user-target', operatedAt: new Date('2026-01-03T12:00:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
-            const mccComment = testSeedService.bankPairExpense(
+            const mccComment = yield* testSeedService.bankPairExpense(
                 { externalId: 'eval-mcc-comment', operatedAt: new Date('2026-01-03T08:00:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
-            const equalTimestamp = testSeedService.bankPairExpense(
+            const equalTimestamp = yield* testSeedService.bankPairExpense(
                 { externalId: 'eval-equal-timestamp', operatedAt: userTarget.operatedAt },
                 { accountId: account.id, amount: 1_000 }
             );
-            const future = testSeedService.bankPairExpense(
+            const future = yield* testSeedService.bankPairExpense(
                 { externalId: 'eval-future', operatedAt: new Date('2026-01-03T13:00:00Z') },
                 { accountId: account.id, amount: 1_000 }
             );
 
-            [mccMerchant, userMerchant, userTarget, mccComment, equalTimestamp, future].forEach((transaction, index) => {
+            yield* Effect.forEach([mccMerchant, userMerchant, userTarget, mccComment, equalTimestamp, future], (transaction, index) =>
                 testDb
                     .update(TransactionEntityTable)
                     .set({
@@ -335,9 +330,8 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
                         needsEmbedding: true
                     })
                     .where(eq(TransactionEntityTable.id, transaction.id))
-                    .run();
-            });
-            [mccMerchant, mccComment].forEach(transaction => {
+            );
+            yield* Effect.forEach([mccMerchant, mccComment], transaction =>
                 testDb
                     .update(TransactionEntryEntityTable)
                     .set({ categoryId: mccSystemCategory.id, categorySource: CategorySourceEnum.MCC_DEFAULT })
@@ -347,9 +341,8 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
                             eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY)
                         )
                     )
-                    .run();
-            });
-            [userMerchant, userTarget, equalTimestamp, future].forEach(transaction => {
+            );
+            yield* Effect.forEach([userMerchant, userTarget, equalTimestamp, future], transaction =>
                 testDb
                     .update(TransactionEntryEntityTable)
                     .set({ categoryId: userCategory.id, categorySource: CategorySourceEnum.USER })
@@ -359,8 +352,7 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
                             eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY)
                         )
                     )
-                    .run();
-            });
+            );
 
             const { entries } = yield* fetchCategorizationEvalEntries();
             const mccMerchantEntry = entries.find(entry => entry.transactionId === mccMerchant.id);

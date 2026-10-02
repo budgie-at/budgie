@@ -2,7 +2,6 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
-import { Storage } from '@op-engineering/op-sqlite';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -15,7 +14,7 @@ import { isSupportedMigrationCreatedAt } from '../../@generic/drizzle/utils/is-s
 import { openSqliteClient } from '../../@generic/drizzle/utils/open-sqlite-client.util';
 import { readLastMigrationCreatedAt } from '../../@generic/drizzle/utils/read-last-migration-created-at.util';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
-import { EMBEDDING_MODEL_STORAGE_KEY } from '../../ai/constant/embedding-model-storage-key.constant';
+import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
 
@@ -23,6 +22,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
     make: Effect.gen(function* () {
         const databaseLifecycleService = yield* DatabaseLifecycleService;
         const aiStorageReplacementService = yield* AiStorageReplacementService;
+        const aiEmbeddingStatusService = yield* AiEmbeddingStatusService;
         const authService = yield* AuthService;
         const probeDatabaseName = 'import-probe.db';
 
@@ -111,7 +111,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
             yield* authService.persistPin(backupPin);
             yield* replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin).pipe(Effect.orDie)));
-            yield* Effect.promise(() => Storage.removeItem(EMBEDDING_MODEL_STORAGE_KEY));
+            yield* aiEmbeddingStatusService.forgetModel();
             yield* Effect.promise(() => reloadApp());
         });
 
@@ -138,6 +138,11 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
     })
 }) {
     static readonly layer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
-        Layer.provide([DatabaseLifecycleService.layer, AiStorageReplacementService.layer, AuthService.layer])
+        Layer.provide([
+            DatabaseLifecycleService.layer,
+            AiStorageReplacementService.layer,
+            AiEmbeddingStatusService.layer,
+            AuthService.layer
+        ])
     );
 }

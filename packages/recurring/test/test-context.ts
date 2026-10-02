@@ -3,7 +3,9 @@ import * as Layer from 'effect/Layer';
 
 import { RecurringService } from '../src/index';
 
-export const testDb = buildTestDb();
+export const testDbHandle = await buildTestDb();
+
+export const testDb = testDbHandle.database;
 
 export const testSeedService = new TestSeedService(testDb);
 

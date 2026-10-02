@@ -17,31 +17,31 @@
     "react-native": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "scripts": {
-        "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
+        "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.build.json",
         "build:watch": "pnpm build --watch",
         "clear": "rimraf dist node_modules/.cache .turbo",
         "eval:categorization": "sh -c 'set -e; if [ \"$1\" = -- ]; then shift; fi; test -f \"$1\"; mkdir -p \"$HOME/.cache\" && BUDGIE_BACKUP_DB=\"$(realpath \"$1\")\" TMPDIR=\"$HOME/.cache\" vitest run test/categorization-eval.test.ts' eval-categorization",
-        "format": "oxfmt --write src",
+        "format": "oxfmt --write src test",
         "lint": "oxlint --type-aware src && eslint src",
         "lint:eslint": "eslint src",
         "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
         "test": "vitest run",
         "test:watch": "vitest",
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p . && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.test.json"
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json"
     },
     "dependencies": {
         "@budgie/ai": "workspace:^",
         "@budgie/contracts": "workspace:^",
         "@rnw-community/shared": "^2.2.0",
-        "drizzle-orm": "^0.45.2",
-        "effect": "4.0.0-rc.118"
+        "drizzle-orm": "1.0.0-rc.4",
+        "effect": "4.0.0"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/vitest": "4.0.0-rc.118",
-        "@types/better-sqlite3": "^7.6.13",
+        "@budgie/rules": "workspace:*",
+        "@effect/sql-sqlite-node": "4.0.0",
+        "@effect/vitest": "4.0.0",
         "@types/node": "22.20.1",
-        "better-sqlite3": "^12.10.0",
         "node-llama-cpp": "3.22.1",
         "typescript": "npm:@typescript/typescript6@6.0.2",
         "vitest": "^5.0.2"

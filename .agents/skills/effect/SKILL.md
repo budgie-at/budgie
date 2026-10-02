@@ -29,7 +29,7 @@ Every effectful line is Effect. No Promise/async logic, `try`/`throw`, `new Prom
 - Background work: `Workload` (`packages/app/src/@generic/service/workload.service.ts`) serializes work on one lane with `run` (background), `runUser`, `runForeground`, `schedule`/`cancelScheduled`, `block`/`unblock`, `interruptBackground`. Route long imports, consolidation and sync through it.
 - Long loops: process in batches and `yield* YIELD_TO_UI` (`@generic/constant/yield-to-ui.constant.ts`, a 1 ms `Effect.sleep`) so the UI can paint.
 - Logging: `makeLoggerLayer` from `@budgie/logger` is the only sink; use `Effect.logDebug`/`logError` and `Effect.tapCause(Effect.logError)` at edges. Never `console.*`.
-- Tests: `@effect/vitest` with `it.effect` (and `it.layer` for shared layers) in `tests/*`, never `async` test bodies or `runPromise` inside a test. Provide `Db` and other services as layers via `tests/test-kit`. Production packages host no test files.
+- Tests: `@effect/vitest` with `it.effect` (and `it.layer` for shared layers) in `tests/*` and domain-package `test/` suites, never `async` test bodies or `runPromise` inside a test. Provide `Db` and other services as layers via `tests/test-kit`. `app` and `landing` host no test files.
 
 ## Before finishing
 

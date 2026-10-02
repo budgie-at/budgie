@@ -32,30 +32,29 @@ interface FakeDocumentInterface {
 }
 
 const seedCategory = (title: string) =>
-    testDb
-        .insert(CategoryEntityTable)
-        .values({ title, titleEn: title, icon: UserIconNameEnum.Wallet, isSystemCategory: false })
-        .returning()
-        .get();
+    Effect.map(
+        testDb
+            .insert(CategoryEntityTable)
+            .values({ title, titleEn: title, icon: UserIconNameEnum.Wallet, isSystemCategory: false })
+            .returning(),
+        ([category]) => category
+    );
 
-const seedExpense = (accountId: number, externalId: string, title: string, categoryId: number | null) => {
-    const transaction = testSeedService.bankPairExpense(
+const seedExpense = Effect.fnUntraced(function* (accountId: number, externalId: string, title: string, categoryId: number | null) {
+    const transaction = yield* testSeedService.bankPairExpense(
         { externalId, operatedAt: new Date('2026-01-03T09:00:00Z') },
         { accountId, amount: 1_000 }
     );
 
-    testSeedService.updateTransaction(transaction.id, { title });
+    yield* testSeedService.updateTransaction(transaction.id, { title });
 
     if (isDefined(categoryId)) {
-        testDb
+        yield* testDb
             .update(TransactionEntryEntityTable)
             .set({ categoryId, categorySource: CategorySourceEnum.USER })
-            .where(eq(TransactionEntryEntityTable.transactionId, transaction.id))
-            .run();
+            .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
     }
-
-    return transaction;
-};
+});
 
 const makeSuggestionLayer = (documents: readonly FakeDocumentInterface[]) => {
     const merchantRepository = Layer.effect(
@@ -98,12 +97,12 @@ describe('categorization/suggestion', () => {
     it.effect('suggests the category a merchant was categorized with twice before', () =>
         Effect.gen(function* () {
             const inboxRepository = yield* TransactionCategorizeInboxRepository;
-            const account = testSeedService.account();
-            const coffee = seedCategory('Coffee');
+            const account = yield* testSeedService.account();
+            const coffee = yield* seedCategory('Coffee');
 
-            seedExpense(account.id, 'history-1', 'Blue Bottle', coffee.id);
-            seedExpense(account.id, 'history-2', 'Blue Bottle', coffee.id);
-            seedExpense(account.id, 'pending', 'Blue Bottle', null);
+            yield* seedExpense(account.id, 'history-1', 'Blue Bottle', coffee.id);
+            yield* seedExpense(account.id, 'history-2', 'Blue Bottle', coffee.id);
+            yield* seedExpense(account.id, 'pending', 'Blue Bottle', null);
 
             const evidence = yield* inboxRepository.findCategoryEvidence();
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
@@ -118,8 +117,8 @@ describe('categorization/suggestion', () => {
 
     it.effect('suggests the category of the nearest embedded neighbour', () =>
         Effect.gen(function* () {
-            const coffee = seedCategory('Coffee');
-            const groceries = seedCategory('Groceries');
+            const coffee = yield* seedCategory('Coffee');
+            const groceries = yield* seedCategory('Groceries');
             const suggestions = yield* Effect.flatMap(EmbeddingSuggestionService, embeddingSuggestionService =>
                 embeddingSuggestionService.suggestCategories([coffee, groceries], 'Blue Bottle', null, '', '', null)
             ).pipe(
@@ -139,12 +138,12 @@ describe('categorization/suggestion', () => {
         Effect.gen(function* () {
             const inboxRepository = yield* TransactionCategorizeInboxRepository;
             const categorizeInboxService = yield* CategorizeInboxService;
-            const account = testSeedService.account();
-            const groceries = seedCategory('Groceries');
+            const account = yield* testSeedService.account();
+            const groceries = yield* seedCategory('Groceries');
 
-            seedExpense(account.id, 'cluster-1', 'Corner Shop', null);
-            seedExpense(account.id, 'cluster-2', 'Corner Shop', null);
-            seedExpense(account.id, 'cluster-3', 'Corner Shop', null);
+            yield* seedExpense(account.id, 'cluster-1', 'Corner Shop', null);
+            yield* seedExpense(account.id, 'cluster-2', 'Corner Shop', null);
+            yield* seedExpense(account.id, 'cluster-3', 'Corner Shop', null);
 
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
             const [cluster] = categorizeInboxEngineService.buildClusters(
@@ -162,7 +161,7 @@ describe('categorization/suggestion', () => {
                 }
             ]);
 
-            const entries = testDb.select().from(TransactionEntryEntityTable).all();
+            const entries = yield* testDb.select().from(TransactionEntryEntityTable);
 
             expect(cluster.rows).toHaveLength(3);
             expect(

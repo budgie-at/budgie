@@ -1,14 +1,16 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
-        "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
-        "rootDir": "./src",
         "lib": ["esnext"],
-        "outDir": "dist/esm",
         "module": "esnext",
-        "noEmit": false
+        "moduleResolution": "bundler",
+        "noEmit": true,
+        "allowJs": true,
+        "types": ["node", "vitest/globals"],
+        "paths": {
+            "@app/*": ["../app/src/*"]
+        }
     },
-    "include": ["src"],
+    "include": ["src", "test", "vitest.config.ts", "../../tests/test-kit/src/vitest/sql-module.d.ts"],
     "exclude": ["node_modules", "dist"]
 }

@@ -44,8 +44,8 @@ import {
     InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobRepository
 } from '@budgie/market';
-import { RuleMatcherService, RuleRepository, TransactionRuleRepository } from '@budgie/rules';
 import { RecurringService } from '@budgie/recurring';
+import { RuleMatcherService, RuleRepository, TransactionRuleRepository } from '@budgie/rules';
 import * as Layer from 'effect/Layer';
 
 import { AccountArchiveService } from '../../account/service/account-archive.service';

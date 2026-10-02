@@ -1,30 +1,32 @@
+import { resetTestDb } from '@budgie-at/test-kit';
 import { PRECISION } from '@budgie/contracts';
-import { expect, layer } from '@effect/vitest';
+import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { RecurringService } from '../src/index';
 
-import { TestLayer, testSeedService } from './test-context';
+import { TestLayer, testDb, testDbHandle, testSeedService } from './test-context';
 
 const NOW = new Date(2026, 5, 15, 12);
 const JUNE = 5;
 const JULY = 6;
 const DEFAULT_INSTRUMENT_ID = 1;
 
-const seedCharges = () => {
-    const { id: accountId } = testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID });
+const seedCharges = Effect.fnUntraced(function* () {
+    const { id: accountId } = yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID });
     let sequence = 0;
 
-    return (title: string, monthsAgo: number, day: number, amount: number, isIncome = false) => {
+    return Effect.fnUntraced(function* (title: string, monthsAgo: number, day: number, amount: number, isIncome = false) {
         const operatedAt = new Date(2026, JUNE - monthsAgo, day, 12);
         sequence += 1;
-        const seed = isIncome
-            ? testSeedService.bankPairIncome.bind(testSeedService)
-            : testSeedService.bankPairExpense.bind(testSeedService);
-        const transaction = seed({ externalId: `${title}-${sequence}`, operatedAt }, { accountId, amount: amount * PRECISION });
-        testSeedService.updateTransaction(transaction.id, { title });
-    };
-};
+        const transaction = { externalId: `${title}-${sequence}`, operatedAt };
+        const entry = { accountId, amount: amount * PRECISION };
+        const { id } = yield* isIncome
+            ? testSeedService.bankPairIncome(transaction, entry)
+            : testSeedService.bankPairExpense(transaction, entry);
+        yield* testSeedService.updateTransaction(id, { title });
+    });
+});
 
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
 
@@ -33,11 +35,15 @@ const forecastedAmounts = (
     day: number
 ) => (data.forecastedEntriesByDay.get(day) ?? []).map(entry => entry.latestAmount).sort((first, second) => first - second);
 
+beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
+
+afterAll(() => testDbHandle.dispose());
+
 layer(TestLayer)('recurringService', it => {
     it.effect('forecasts an active monthly subscription into the next month', () =>
         Effect.gen(function* () {
-            const seed = seedCharges();
-            [6, 5, 4, 3, 2, 1].forEach(monthsAgo => seed('NETFLIX', monthsAgo, 20, 12.99));
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('NETFLIX', monthsAgo, 20, 12.99), { discard: true });
 
             const data = yield* calendar(JULY);
 
@@ -48,8 +54,8 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('shows an ended subscription as history without forecasting it', () =>
         Effect.gen(function* () {
-            const seed = seedCharges();
-            [10, 9, 8, 7, 6, 5, 4].forEach(monthsAgo => seed('GYM', monthsAgo, 20, 30));
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([10, 9, 8, 7, 6, 5, 4], monthsAgo => seed('GYM', monthsAgo, 20, 30), { discard: true });
 
             const history = yield* calendar(1);
             const current = yield* calendar(JUNE);
@@ -63,11 +69,12 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('detects monthly salary separately and keeps it out of the expense total', () =>
         Effect.gen(function* () {
-            const seed = seedCharges();
-            [6, 5, 4, 3, 2, 1].forEach(monthsAgo => {
-                seed('ACME SALARY', monthsAgo, 1, 3000, true);
-                seed('SPOTIFY', monthsAgo, 20, 10);
-            });
+            const seed = yield* seedCharges();
+            yield* Effect.forEach(
+                [6, 5, 4, 3, 2, 1],
+                monthsAgo => Effect.andThen(seed('ACME SALARY', monthsAgo, 1, 3000, true), seed('SPOTIFY', monthsAgo, 20, 10)),
+                { discard: true }
+            );
 
             const data = yield* calendar(JULY);
 
@@ -79,11 +86,11 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('merges renamed merchant variants into one series', () =>
         Effect.gen(function* () {
-            const seed = seedCharges();
-            seed('AREALIS WIEN MDID:123456', 4, 20, 50);
-            seed('AREALIS WIEN FILIALE', 3, 20, 50);
-            seed('AREALIS WIEN MDID:789012', 2, 20, 50);
-            seed('AREALIS WIEN FILIALE', 1, 20, 50);
+            const seed = yield* seedCharges();
+            yield* seed('AREALIS WIEN MDID:123456', 4, 20, 50);
+            yield* seed('AREALIS WIEN FILIALE', 3, 20, 50);
+            yield* seed('AREALIS WIEN MDID:789012', 2, 20, 50);
+            yield* seed('AREALIS WIEN FILIALE', 1, 20, 50);
 
             const data = yield* calendar(JUNE);
 
@@ -93,11 +100,12 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('detects two subscriptions at one merchant with different prices', () =>
         Effect.gen(function* () {
-            const seed = seedCharges();
-            [6, 5, 4, 3, 2, 1].forEach(monthsAgo => {
-                seed('APPLE.COM/BILL', monthsAgo, 10, 4.99);
-                seed('APPLE.COM/BILL', monthsAgo, 10, 12.99);
-            });
+            const seed = yield* seedCharges();
+            yield* Effect.forEach(
+                [4.99, 12.99],
+                amount => Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('APPLE.COM/BILL', monthsAgo, 10, amount)),
+                { discard: true }
+            );
 
             const data = yield* calendar(JULY);
 
@@ -107,13 +115,17 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('ignores irregular shopping visits', () =>
         Effect.gen(function* () {
-            const seed = seedCharges();
-            [
-                [4, 2],
-                [4, 7],
-                [3, 28],
-                [2, 1]
-            ].forEach(([monthsAgo, day]) => seed('SPAR WIEN', monthsAgo, day, 23.4));
+            const seed = yield* seedCharges();
+            yield* Effect.forEach(
+                [
+                    [4, 2],
+                    [4, 7],
+                    [3, 28],
+                    [2, 1]
+                ],
+                ([monthsAgo, day]) => seed('SPAR WIEN', monthsAgo, day, 23.4),
+                { discard: true }
+            );
 
             const months = yield* Effect.forEach([2, 3, 4, JUNE, JULY], calendar);
 
@@ -123,13 +135,17 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('keeps a variable bi-monthly utility as one series', () =>
         Effect.gen(function* () {
-            const seed = seedCharges();
-            [
-                [7, 80],
-                [5, 95],
-                [3, 110],
-                [1, 120]
-            ].forEach(([monthsAgo, amount]) => seed('STADTWERKE WIEN', monthsAgo, 20, amount));
+            const seed = yield* seedCharges();
+            yield* Effect.forEach(
+                [
+                    [7, 80],
+                    [5, 95],
+                    [3, 110],
+                    [1, 120]
+                ],
+                ([monthsAgo, amount]) => seed('STADTWERKE WIEN', monthsAgo, 20, amount),
+                { discard: true }
+            );
 
             const june = yield* calendar(JUNE);
             const july = yield* calendar(JULY);

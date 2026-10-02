@@ -242,6 +242,7 @@ export { TransactionViewRepository } from './transaction/repository/transaction-
 export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
+export { insertTransactionTag } from './transaction-tags/util/insert-transaction-tag.util';
 
 export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
 export type { TransactionTagsWithTagEntityInterface } from './transaction-tags/entity/transaction-tags-with-tag-entity.interface';

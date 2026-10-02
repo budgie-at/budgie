@@ -13,9 +13,6 @@ export const testSeedService = new TestSeedService(testDb);
 const ruleHostLayer = Layer.succeed(
     RuleHost,
     RuleHost.of({
-        convertAmount: (_fromInstrumentId, _toInstrumentId, amountInMicroUnits) =>
-            Effect.succeed({ amount: amountInMicroUnits, exchangeRate: 1 }),
-        valueEntry: () => Effect.succeed({ baseInstrumentId: null, baseExchangeRate: null, baseAmount: null }),
         refreshBalances: Effect.void,
         assertTransferAccountsAllowed: () => Effect.void
     })

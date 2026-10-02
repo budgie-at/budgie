@@ -8,13 +8,12 @@ import {
     TransactionRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { RuleHost } from '../port/rule-host.port';
 
 export class RuleTransferConversionService extends Context.Service<RuleTransferConversionService>()(
     '@budgie/rules/RuleTransferConversionService',
@@ -23,7 +22,8 @@ export class RuleTransferConversionService extends Context.Service<RuleTransferC
             const accountRepository = yield* AccountRepository;
             const transactionEntryRepository = yield* TransactionEntryRepository;
             const transactionRepository = yield* TransactionRepository;
-            const ruleHost = yield* RuleHost;
+            const exchangeRatesService = yield* ExchangeRatesService;
+            const entryBaseValuationService = yield* EntryBaseValuationService;
 
             return {
                 convertTransactionToTransfer: Effect.fn('RuleTransferConversionService.convertTransactionToTransfer')(function* (
@@ -56,11 +56,25 @@ export class RuleTransferConversionService extends Context.Service<RuleTransferC
                         return false;
                     }
 
-                    const converted = yield* ruleHost.convertAmount(fromAccount.instrumentId, toAccount.instrumentId, originalEntry.amount);
+                    const converted = yield* exchangeRatesService.convert(
+                        fromAccount.instrumentId,
+                        toAccount.instrumentId,
+                        originalEntry.amount
+                    );
                     const [creditValuation, debitValuation] = yield* Effect.all(
                         [
-                            ruleHost.valueEntry(fromAccountId, originalEntry.amount, transaction.operatedAt),
-                            ruleHost.valueEntry(toAccountId, converted.amount, transaction.operatedAt)
+                            entryBaseValuationService.valueMicroUnitEntry({
+                                accountId: fromAccountId,
+                                amount: originalEntry.amount,
+                                operatedAt: transaction.operatedAt,
+                                externalSource: null
+                            }),
+                            entryBaseValuationService.valueMicroUnitEntry({
+                                accountId: toAccountId,
+                                amount: converted.amount,
+                                operatedAt: transaction.operatedAt,
+                                externalSource: null
+                            })
                         ],
                         { concurrency: 'unbounded' }
                     );
@@ -106,6 +120,12 @@ export class RuleTransferConversionService extends Context.Service<RuleTransferC
     }
 ) {
     static readonly layer = Layer.effect(RuleTransferConversionService, RuleTransferConversionService.make).pipe(
-        Layer.provide([AccountRepository.layer, TransactionEntryRepository.layer, TransactionRepository.layer])
+        Layer.provide([
+            AccountRepository.layer,
+            TransactionEntryRepository.layer,
+            TransactionRepository.layer,
+            ExchangeRatesService.layer,
+            EntryBaseValuationService.layer
+        ])
     );
 }
