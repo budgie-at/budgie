@@ -1,5 +1,5 @@
 import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { CategorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
+import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
 import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountBalanceRepository, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -25,7 +25,7 @@ describe('database/revert-backfilled-atm-consolidations-migration', () => {
         Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-            const categorizeInboxService = yield* CategorizeInboxService;
+            const categorizeInboxService = yield* CategorizeInboxCashService;
             const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, cashAccount } = seedBankAndCashAccounts();
             const historicalAtm = seedBankPair.expense(

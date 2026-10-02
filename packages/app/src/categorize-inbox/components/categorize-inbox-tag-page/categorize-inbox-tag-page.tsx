@@ -1,3 +1,4 @@
+import { CategorizeInboxLabelKindEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -7,7 +8,6 @@ import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
 import { UNTAGGED_TAG_ID_PARAM } from '../../../transaction/constant/untagged-tag-id-param.constant';
 import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
 import { tagEvidenceAtom, untaggedRowsAtom } from '../../constant/categorize-inbox-atoms.constant';
-import { CategorizeInboxLabelKindEnum } from '../../enum/categorize-inbox-label-kind.enum';
 import { useCategorizeInboxLabels } from '../../hook/use-categorize-inbox-labels.hook';
 import { CategorizeInboxPage } from '../categorize-inbox-page/categorize-inbox-page';
 

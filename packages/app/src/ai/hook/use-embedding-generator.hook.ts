@@ -1,4 +1,4 @@
-import { TransactionEmbeddingRepository } from '@budgie/contracts';
+import { TransactionEmbeddingRepository } from '@budgie/categorization';
 import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';

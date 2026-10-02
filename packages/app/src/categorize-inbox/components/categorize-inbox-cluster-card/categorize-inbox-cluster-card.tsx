@@ -1,3 +1,4 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -13,14 +14,13 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 import { CategorizeInboxCashWithdrawalChips } from '../categorize-inbox-cash-withdrawal-chips/categorize-inbox-cash-withdrawal-chips';
 import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
 import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
 
 import { CategorizeInboxClusterCardSelector } from './categorize-inbox-cluster-card.selector';
 
-import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;

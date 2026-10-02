@@ -46,6 +46,9 @@
     ],
     "ignoreBinaries": ["build"],
     "workspaces": {
+        "packages/categorization": {
+            "tsconfig": ["tsconfig.json", "tsconfig.test.json"]
+        },
         "tests/sync-tests": {
             "ignoreDependencies": ["@lingui/core"]
         }

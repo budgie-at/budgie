@@ -1,4 +1,5 @@
-import { TransactionEmbeddingRepository, TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionEmbeddingRepository } from '@budgie/categorization';
+import { TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

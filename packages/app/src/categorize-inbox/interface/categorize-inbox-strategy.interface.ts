@@ -1,8 +1,7 @@
 import type { RulePrefillDataInterface } from '../../rule/interface/rule-prefill-data.interface';
 import type { categoryEvidenceAtom, uncategorizedRowsAtom } from '../constant/categorize-inbox-atoms.constant';
-import type { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
-import type { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
 import type { CategorizeInboxLabelInterface } from './categorize-inbox-label.interface';
+import type { CategorizeInboxAssignmentInterface, CategorizeInboxLabelKindEnum } from '@budgie/categorization';
 import type { TransactionFilterInterface } from '@budgie/contracts';
 import type { UnknownInputParams } from 'expo-router';
 

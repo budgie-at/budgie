@@ -1,4 +1,5 @@
 import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
@@ -8,7 +9,6 @@ import {
     LanguageEnum,
     PRECISION,
     StatisticsRepository,
-    TransactionCategorizeInboxRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,

@@ -1,4 +1,4 @@
-import { EmbeddingSuggestionService, TranslationLlmService, VoiceLlmService } from '@budgie/ai';
+import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
 import {
     BudgetAlertThresholdService,
     BudgetCategoryLimitRepository,
@@ -8,11 +8,18 @@ import {
     BudgetTemplateService
 } from '@budgie/budget';
 import {
+    CategorizeInboxService,
+    CommentEmbeddingRepository,
+    EmbeddingSuggestionService,
+    MerchantEmbeddingRepository,
+    TransactionCategorizeInboxRepository,
+    TransactionEmbeddingRepository
+} from '@budgie/categorization';
+import {
     AccountBalanceRepository,
     AccountRepository,
     BankIntegrationRepository,
     CategoryRepository,
-    CommentEmbeddingRepository,
     DebtEventRepository,
     ExchangeRateRepository,
     HistoricalExchangeRateRepository,
@@ -20,17 +27,14 @@ import {
     InstrumentMarketDataJobRepository,
     InstrumentRepository,
     MccCategoryRepository,
-    MerchantEmbeddingRepository,
     RuleActionRepository,
     RuleConditionRepository,
     RuleRepository,
     SettingsRepository,
     SyncRepository,
     TagRepository,
-    TransactionCategorizeInboxRepository,
     MccGroupRepository,
     StatisticsRepository,
-    TransactionEmbeddingRepository,
     TransactionEntryPositionRepository,
     TransactionEntryRepository,
     TransactionPatternRepository,
@@ -64,7 +68,7 @@ import { EmbeddingProgressStore } from '../../ai/store/embedding-progress.store'
 import { TranslationProgressStore } from '../../ai/store/translation-progress.store';
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
-import { CategorizeInboxService } from '../../categorize-inbox/service/categorize-inbox.service';
+import { CategorizeInboxCashService } from '../../categorize-inbox/service/categorize-inbox-cash.service';
 import { CategoryService } from '../../category/service/category.service';
 import { ExchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
@@ -167,6 +171,7 @@ export const appServicesLayer = Layer.mergeAll(
     RuleApplicationDrainerService.layer,
     TransactionCategorizeInboxRepository.layer,
     CategorizeInboxService.layer,
+    CategorizeInboxCashService.layer,
     ChatService.layer,
     LocalEmbeddingService.layer,
     WhisperModelService.layer,

@@ -1,4 +1,4 @@
-import { CommentEmbeddingRepository, MerchantEmbeddingRepository, TransactionEmbeddingRepository } from '@budgie/contracts';
+import { CommentEmbeddingRepository, MerchantEmbeddingRepository, TransactionEmbeddingRepository } from '@budgie/categorization';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
