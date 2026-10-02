@@ -1,7 +1,7 @@
+import { SyncAccountPreviewInterface } from '@budgie/sync';
 import { useState } from 'react';
 
 import { AccountSelectionInterface } from '../interface/account-selection.interface';
-import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { toggleSetItem } from '../util/toggle-set-item.util';
 
 export const useAccountSelection = (): AccountSelectionInterface => {

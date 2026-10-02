@@ -1,4 +1,3 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -8,7 +7,7 @@ import {
     InstrumentTypeEnum,
     PRECISION
 } from '@budgie/contracts';
-import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { BinanceSyncService, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import {} from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

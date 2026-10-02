@@ -1,10 +1,17 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { TransactionEntityTable } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import {
+    buildMonobank,
+    fetchExpenseEntries,
+    monobankStub,
+    MonobankSyncService,
+    setupMonobankFixture,
+    testDb,
+    TestLayer
+} from '../../harness';
 
 describe('monobank/cross-currency-exchange-rate', () => {
     it.effect('computes exchangeRate as amount/operationAmount when currencies differ', () =>
@@ -27,10 +34,7 @@ describe('monobank/cross-currency-exchange-rate', () => {
                 .select()
                 .from(TransactionEntityTable)
                 .where(eq(TransactionEntityTable.externalId, 'tx-fx')))[0];
-            const entry = (yield* testDb
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-fx')))[0];
+            const [entry] = yield* fetchExpenseEntries(transaction.id);
 
             expect(transaction.exchangeRate).toBe(41);
             expect(entry.exchangeRate).toBe(41);

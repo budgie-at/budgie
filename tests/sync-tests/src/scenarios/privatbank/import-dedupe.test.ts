@@ -6,8 +6,7 @@ import * as Effect from 'effect/Effect';
 
 import { makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
 
-import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
-import type { PrivatbankRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
+import type { FileBasedSyncClientInterface, PrivatbankRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const PRIVATBANK_CARD_ID = '4731 **** **** 5524';
 const PRIVATBANK_STATEMENT_URI = 'privatbank-statement.xlsx';

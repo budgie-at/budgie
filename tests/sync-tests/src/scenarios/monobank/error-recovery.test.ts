@@ -1,9 +1,15 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { describe, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { http, HttpResponse } from 'msw';
 
-import { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases, setupMonobankFixture, TestLayer } from '../../harness';
+import {
+    expectSyncFailedAndDisabled,
+    httpFailureCases,
+    MonobankSyncService,
+    setupMonobankFixture,
+    SYNC_ERROR_THRESHOLD,
+    TestLayer
+} from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 describe('monobank/error-recovery', () => {

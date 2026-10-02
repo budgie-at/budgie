@@ -1,13 +1,12 @@
 import { DatabaseSync } from 'node:sqlite';
 
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { Db, PRECISION, SyncRepository, TransactionEntryEntityTable } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { like } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 const SMALL_PAGE_SIZE = 5;
 const LARGE_PAGE_SIZE = 20;

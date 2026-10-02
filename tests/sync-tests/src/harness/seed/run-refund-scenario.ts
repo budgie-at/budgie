@@ -1,4 +1,4 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransferConsolidationService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 
 import { seed } from './seed';

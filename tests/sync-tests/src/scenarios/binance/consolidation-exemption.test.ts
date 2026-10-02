@@ -1,6 +1,6 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { TransferPairRepository } from '@budgie/consolidation';
 import { PRECISION, TransactionTypeEnum } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';

@@ -1,3 +1,4 @@
+import { SyncAccountPreviewInterface } from '@budgie/sync';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -5,7 +6,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 
 import { BankAccountPreviewCardSelector } from './bank-account-preview-card.selector';
 

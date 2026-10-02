@@ -1,6 +1,6 @@
 import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 

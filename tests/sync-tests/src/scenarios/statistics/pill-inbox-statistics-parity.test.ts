@@ -1,4 +1,3 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
     AccountTypeEnum,
@@ -16,6 +15,7 @@ import {
     TransactionViewRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

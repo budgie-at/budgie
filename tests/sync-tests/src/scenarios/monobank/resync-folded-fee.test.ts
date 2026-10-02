@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     AccountBalanceRepository,
     BANK_FEE_CATEGORY_ID,
@@ -12,7 +11,16 @@ import { describe, expect, it, vi } from '@effect/vitest';
 import { like } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, findMccByCode, monobankStub, seed, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import {
+    buildMonobank,
+    findMccByCode,
+    monobankStub,
+    MonobankSyncService,
+    seed,
+    setupMonobankFixture,
+    testDb,
+    TestLayer
+} from '../../harness';
 
 const atmWithdrawal = buildMonobank.transaction({
     id: 'tx-atm',

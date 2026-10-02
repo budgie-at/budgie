@@ -1,3 +1,4 @@
+import { BinanceSyncService, MonobankSyncService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import * as BackgroundTask from 'expo-background-task';
@@ -13,10 +14,8 @@ import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
+import { TRANSFER_CONSOLIDATION_TASK } from '../../sync/constant/transfer-consolidation-task.constant';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
-import { BinanceSyncService } from '../../sync/service/binance-sync.service';
-import { MonobankSyncService } from '../../sync/service/monobank-sync.service';
-import { TransferConsolidationService } from '../../sync/service/transfer-consolidation.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { appRuntime } from '../runtime/app.runtime';
 import { Workload } from '../service/workload.service';
@@ -26,23 +25,19 @@ import { waitForIdle } from '../utils/wait-for-idle.util';
 const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
 const ACCOUNT_BALANCE_INCREMENTAL_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
+const TRANSFER_CONSOLIDATION_TASK_MINIMUM_INTERVAL_MINUTES = 30;
 
-const registerAccountBalanceIncrementalTask = Effect.gen(function* () {
-    if (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK))) {
+const registerTaskOnce = Effect.fnUntraced(function* (taskName: string, minimumInterval: number) {
+    if (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(taskName))) {
         return;
     }
 
-    yield* Effect.promise(() =>
-        BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
-            minimumInterval: ACCOUNT_BALANCE_INCREMENTAL_TASK_MINIMUM_INTERVAL_MINUTES
-        })
-    );
+    yield* Effect.promise(() => BackgroundTask.registerTaskAsync(taskName, { minimumInterval }));
 });
 
 const registerBackgroundTasks = Effect.gen(function* () {
     const authService = yield* AuthService;
     const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
-    const transferConsolidationService = yield* TransferConsolidationService;
     const monobankSyncService = yield* MonobankSyncService;
     const binanceSyncService = yield* BinanceSyncService;
     const budgetAlertMonitorService = yield* BudgetAlertMonitorService;
@@ -52,8 +47,8 @@ const registerBackgroundTasks = Effect.gen(function* () {
         [
             authService.ensurePinBackgroundAccessibility(),
             exchangeRateBackgroundService.registerBackgroundTask(),
-            registerAccountBalanceIncrementalTask,
-            transferConsolidationService.registerBackgroundTask(),
+            registerTaskOnce(ACCOUNT_BALANCE_INCREMENTAL_TASK, ACCOUNT_BALANCE_INCREMENTAL_TASK_MINIMUM_INTERVAL_MINUTES),
+            registerTaskOnce(TRANSFER_CONSOLIDATION_TASK, TRANSFER_CONSOLIDATION_TASK_MINIMUM_INTERVAL_MINUTES),
             monobankSyncService.registerBackgroundTask(),
             binanceSyncService.registerBackgroundTask(),
             budgetAlertMonitorService.registerBackgroundTask(),

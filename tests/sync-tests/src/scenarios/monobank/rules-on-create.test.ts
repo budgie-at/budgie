@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     CategoryEntityTable,
     ExternalSourceEnum,
@@ -17,7 +16,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/rules-on-create', () => {
     it.effect('persists matching rule category and tag when inserting new synced transactions', () =>

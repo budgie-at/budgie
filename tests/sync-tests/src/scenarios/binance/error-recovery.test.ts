@@ -1,5 +1,5 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';

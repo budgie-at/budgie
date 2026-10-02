@@ -1,4 +1,3 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     DEFAULT_TRANSACTION_FILTER,
     LanguageEnum,
@@ -7,6 +6,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

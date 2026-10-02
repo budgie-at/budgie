@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     AccountTypeEnum,
     ExternalSourceEnum,
@@ -13,7 +12,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, seed, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, seed, testDb, TestLayer } from '../../harness';
 
 describe('monobank/consolidation-survives-resync', () => {
     it.effect('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', () =>

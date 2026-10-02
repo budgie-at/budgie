@@ -1,4 +1,3 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import {
     CurrencyEnum,
@@ -9,7 +8,7 @@ import {
     SyncWarningEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { BinanceSignedClient, BinanceSyncService, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

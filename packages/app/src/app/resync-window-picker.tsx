@@ -1,3 +1,4 @@
+import { ResyncService } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { ScrollView, Text, View } from 'react-native';
@@ -13,7 +14,6 @@ import { appRuntime } from '../@generic/runtime/app.runtime';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
 import { useResyncWindowPickerModal, useResyncWindowPickerModalParams } from '../sync/context/resync-window-picker-modal.context';
-import { ResyncService } from '../sync/service/resync.service';
 
 import { ResyncWindowPickerSelector } from './resync-window-picker.selector';
 

@@ -1,3 +1,4 @@
+import { BinanceSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
@@ -6,14 +7,14 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
-import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
-import { BinanceSyncService } from '../../service/binance-sync.service';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
 import { KeySecretInputStep } from '../key-secret-input-step/key-secret-input-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 
 import { CreateBinanceAccountSelector } from './create-binance-account.selector';
+
+import type { SyncAccountPreviewInterface } from '@budgie/sync';
 
 type SetupStep = 'credentials' | 'accounts';
 

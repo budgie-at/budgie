@@ -13,12 +13,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. js-lingui-explicit-id
-#: src/sync/layer/consolidation-coordinator.layer.ts
+#: src/sync/layer/p2p-transfer-title-resolver.layer.ts
 msgid "Binance P2P buy {assetCode}"
 msgstr "Compra P2P de {assetCode} en Binance"
 
 #. js-lingui-explicit-id
-#: src/sync/layer/consolidation-coordinator.layer.ts
+#: src/sync/layer/p2p-transfer-title-resolver.layer.ts
 msgid "Binance P2P sell {assetCode}"
 msgstr "Venta P2P de {assetCode} en Binance"
 

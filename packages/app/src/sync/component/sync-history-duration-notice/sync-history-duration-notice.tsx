@@ -1,11 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { SyncHistoryDepthEnum } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
 
 interface Props {
     readonly depth: SyncHistoryDepthEnum;

@@ -1,4 +1,5 @@
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { BinanceSyncService, MonobankSyncService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -6,9 +7,6 @@ import * as Layer from 'effect/Layer';
 import { Workload } from '../../@generic/service/workload.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
-
-import { BinanceSyncService } from './binance-sync.service';
-import { MonobankSyncService } from './monobank-sync.service';
 
 export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@budgie/app/AppDataSyncService', {
     make: Effect.gen(function* () {

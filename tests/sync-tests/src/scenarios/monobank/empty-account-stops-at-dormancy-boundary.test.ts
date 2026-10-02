@@ -1,10 +1,15 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
 
-import { fetchPersistedMonobankTransactions, fetchSyncById, setupBackwardSweepFixture, TestLayer } from '../../harness';
+import {
+    fetchPersistedMonobankTransactions,
+    fetchSyncById,
+    MonobankSyncService,
+    setupBackwardSweepFixture,
+    TestLayer
+} from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const EXPECTED_DORMANCY_BOUNDARY_REQUESTS = 4;

@@ -1,9 +1,8 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { expectForwardSyncWithoutHistory, seed, stubEmptyStatements, TestLayer } from '../../harness';
+import { expectForwardSyncWithoutHistory, MonobankSyncService, seed, stubEmptyStatements, TestLayer } from '../../harness';
 
 describe('monobank/new-only-history-skips-backward', () => {
     it.effect('completes the backward sweep with zero statement requests when backwardSyncFromAt equals backwardSyncLimitAt', () =>

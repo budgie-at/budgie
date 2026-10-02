@@ -1,4 +1,3 @@
-import { UnpairedOwnCardTransferRepairService } from '@app/sync/service/unpaired-own-card-transfer-repair.service';
 import {
     AccountBalanceRepository,
     AccountEntityTable,
@@ -9,6 +8,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { AccountArchiveService, TransactionTransferService } from '@budgie/ledger';
+import { UnpairedOwnCardTransferRepairService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';

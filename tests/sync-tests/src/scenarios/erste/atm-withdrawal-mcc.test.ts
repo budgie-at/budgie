@@ -1,6 +1,5 @@
-import { ErsteSyncService } from '@app/sync/service/erste-sync.service';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { ersteMapper } from '@budgie/sync';
+import { ersteMapper, ErsteSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -51,21 +50,19 @@ vi.mock('@app/sync/util/extract-pdf-text-items.util', () => ({
     extractPdfTextItems: vi.fn(() => Promise.resolve([]))
 }));
 
-vi.mock('@budgie/sync', async importOriginal => {
-    const actual = await importOriginal<typeof import('@budgie/sync')>();
+vi.mock('../../../../../packages/sync/dist/esm/erste/client/erste-file.client.js', async () => {
     const { void: effectVoid } = await import('effect/Effect');
 
     return {
-        ...actual,
         ErsteFileClient: class {
             parse = () => effectVoid;
 
             getAccounts() {
-                return [actual.ersteMapper.mapAccount(erste.account)];
+                return [ersteMapper.mapAccount(erste.account)];
             }
 
             getTransactions() {
-                return [erste.atmRow, ...erste.nonAtmRows].map(row => actual.ersteMapper.mapTransaction(row, erste.account.iban));
+                return [erste.atmRow, ...erste.nonAtmRows].map(row => ersteMapper.mapTransaction(row, erste.account.iban));
             }
         }
     };

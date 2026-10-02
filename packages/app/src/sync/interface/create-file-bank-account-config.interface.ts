@@ -1,5 +1,5 @@
-import type { SyncAccountPreviewInterface } from './sync-account-preview.interface';
 import type { UserIconNameEnum } from '@budgie/contracts';
+import type { SyncAccountPreviewInterface } from '@budgie/sync';
 
 export interface CreateFileBankAccountConfigInterface {
     readonly mimeType: string;

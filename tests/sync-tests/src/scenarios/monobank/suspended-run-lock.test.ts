@@ -1,5 +1,4 @@
 import { Workload } from '@app/@generic/service/workload.service';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
@@ -7,7 +6,7 @@ import * as Fiber from 'effect/Fiber';
 import * as FiberSet from 'effect/FiberSet';
 import { HttpResponse, http } from 'msw';
 
-import { buildMonobank, fetchPersistedMonobankTransactions, inWorkload, TestLayer } from '../../harness';
+import { buildMonobank, fetchPersistedMonobankTransactions, inWorkload, MonobankSyncService, TestLayer } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 

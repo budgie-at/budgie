@@ -1,5 +1,3 @@
-import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '@app/sync/constant/privatbank-duplicate-candidate-sql.constant';
-import { SyncRepairService } from '@app/sync/service/sync-repair.service';
 import {
     ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
@@ -9,6 +7,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL, SyncRepairService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -16,12 +15,12 @@ import * as Effect from 'effect/Effect';
 import { seed, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
-import type { SyncDuplicateCandidateRowInterface } from '@app/sync/interface/sync-duplicate-candidate-row.interface';
 import type {
     TransactionCreateEntityInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface
 } from '@budgie/contracts';
+import type { SyncDuplicateCandidateRowInterface } from '@budgie/sync';
 
 const PRIVATBANK_DUPLICATE_TITLE = "Зарплата, СУПЕРМАШ. Коментар: Zarobitna plata-Za kviten' 2026";
 const PRIVATBANK_DUPLICATE_AMOUNT = 1_780_860_000;

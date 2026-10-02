@@ -1,9 +1,8 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountIntegrationToken, fetchSyncById, seed, TestLayer } from '../../harness';
+import { fetchAccountIntegrationToken, fetchSyncById, MonobankSyncService, seed, TestLayer } from '../../harness';
 
 import type { SyncEntityInterface } from '@budgie/contracts';
 

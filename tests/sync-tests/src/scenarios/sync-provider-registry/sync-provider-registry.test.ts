@@ -1,8 +1,6 @@
 import { SYNC_PROVIDER_CAPABILITIES } from '@app/sync/constant/sync-provider-capabilities.constant';
-import { ErsteSyncService } from '@app/sync/service/erste-sync.service';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { SyncProviderRegistryService } from '@app/sync/service/sync-provider-registry.service';
 import { ExternalSourceEnum } from '@budgie/contracts';
+import { ErsteSyncService, MonobankSyncService, SyncProviderRegistryService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

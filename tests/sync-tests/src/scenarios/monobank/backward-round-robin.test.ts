@@ -1,10 +1,9 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncEntityTable, SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { monobankStub, seed, testDb, TestLayer } from '../../harness';
+import { monobankStub, MonobankSyncService, seed, testDb, TestLayer } from '../../harness';
 
 const seedBackwardSyncs = () =>
     Effect.forEach(['mono-a', 'mono-b', 'mono-c'], externalId =>
