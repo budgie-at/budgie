@@ -52,6 +52,7 @@ export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: n
                 vecLimit,
                 distanceThreshold,
                 categoryId,
+                categoryId,
                 tagLimit
             ])
         ),

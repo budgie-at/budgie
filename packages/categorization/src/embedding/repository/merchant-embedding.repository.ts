@@ -36,7 +36,7 @@ const SIMILAR_TAGS_QUERY = `
     FROM ${buildVecNeighboursSql('merchant_embedding_vec')} vec
     JOIN merchant_embeddings me ON me.id = vec.rowid
     JOIN merchant_embedding_tags met ON met.merchant_embedding_id = me.id
-    WHERE me.deleted_at IS NULL AND vec.distance < ? AND me.category_id = ?
+    WHERE me.deleted_at IS NULL AND vec.distance < ? AND (? IS NULL OR me.category_id = ?)
     GROUP BY met.tag_id
     ORDER BY score DESC
     LIMIT ?

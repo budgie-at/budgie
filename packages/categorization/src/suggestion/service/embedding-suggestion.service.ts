@@ -11,6 +11,7 @@ import {
     EMBEDDING_QUERY_PREFIX,
     EMBEDDING_TAG_SUGGESTION_LIMIT,
     EMBEDDING_VEC_DISTANCE_THRESHOLD,
+    EMBEDDING_CROSS_CATEGORY_TAG_DISTANCE_THRESHOLD,
     EMBEDDING_VEC_OVERSAMPLE_LIMIT,
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../embedding/constant/embedding.constant';
@@ -139,31 +140,39 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
                     return [];
                 }
 
-                const tagParams = {
-                    vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                    distanceThreshold: resolved.distanceThreshold,
-                    categoryId,
-                    tagLimit: EMBEDDING_TAG_SUGGESTION_LIMIT
+                const findTagScores = (tagCategoryId: number | null, distanceThreshold: number) => {
+                    const tagParams = {
+                        vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                        distanceThreshold,
+                        categoryId: tagCategoryId,
+                        tagLimit: EMBEDDING_TAG_SUGGESTION_LIMIT
+                    };
+
+                    return Effect.map(
+                        Effect.all(
+                            [
+                                merchantEmbeddingRepository.findSimilarTags(resolved.serialized, tagParams),
+                                commentEmbeddingRepository.findSimilarTags(resolved.serialized, tagParams)
+                            ],
+                            { concurrency: 'unbounded' }
+                        ),
+                        results =>
+                            rankIds(
+                                addScores(
+                                    new Map<number, number>(),
+                                    results.flat().map(row => [row.tagId, row.score])
+                                ),
+                                EMBEDDING_TAG_SUGGESTION_LIMIT
+                            )
+                    );
                 };
-                const [merchantResults, commentResults] = yield* Effect.all(
-                    [
-                        merchantEmbeddingRepository.findSimilarTags(resolved.serialized, tagParams),
-                        commentEmbeddingRepository.findSimilarTags(resolved.serialized, tagParams)
-                    ],
-                    { concurrency: 'unbounded' }
-                );
-                const scores = new Map<number, number>();
+                const [categoryTagIds, nearTagIds] = yield* Effect.all([
+                    findTagScores(categoryId, resolved.distanceThreshold),
+                    findTagScores(null, EMBEDDING_CROSS_CATEGORY_TAG_DISTANCE_THRESHOLD)
+                ]);
 
-                addScores(
-                    scores,
-                    merchantResults.map(row => [row.tagId, row.score])
-                );
-                addScores(
-                    scores,
-                    commentResults.map(row => [row.tagId, row.score])
-                );
-
-                return rankIds(scores, EMBEDDING_TAG_SUGGESTION_LIMIT)
+                return [...new Set([...categoryTagIds, ...nearTagIds])]
+                    .slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT)
                     .map(tagId => allTags.find(tag => tag.id === tagId))
                     .filter(isDefined);
             });

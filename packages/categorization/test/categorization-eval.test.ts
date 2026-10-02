@@ -2,6 +2,7 @@ import {
     CommentEmbeddingRepository,
     EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
     EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE,
+    EMBEDDING_CROSS_CATEGORY_TAG_DISTANCE_THRESHOLD,
     EMBEDDING_VEC_DISTANCE_THRESHOLD,
     MerchantEmbeddingRepository,
     buildCommentContext,
@@ -146,9 +147,10 @@ const scoreKnn = (
 const rankKnn = (
     query: Float32Array | undefined,
     indexes: readonly (readonly KnnDocument[])[],
+    distanceThreshold: number,
     labelsOf: (document: KnnDocument) => readonly number[]
 ): number[] =>
-    scoreKnn(query, indexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, labelsOf)
+    scoreKnn(query, indexes, distanceThreshold, labelsOf)
         .slice(0, TOP_K)
         .map(([labelId]) => labelId);
 
@@ -278,9 +280,14 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                     const mccDefaultCategoryIds = isDefined(evalEntry.mccDefaultCategoryId) ? [evalEntry.mccDefaultCategoryId] : [];
                     const historyTagIds = categorizeInboxEngineService.suggestLabelIds([evalEntry], tagContext);
                     const queryVector = queryVectors.get(buildKnnQueryText(evalEntry));
-                    const knnCategoryIds = rankKnn(queryVector, knnIndexes, document => [document.categoryId]);
-                    const knnTagIds = rankKnn(queryVector, knnIndexes, document =>
-                        document.categoryId === evalEntry.categoryId ? [...document.tagIds] : []
+                    const knnCategoryIds = rankKnn(queryVector, knnIndexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, document => [
+                        document.categoryId
+                    ]);
+                    const knnTagIds = mergeRanked(
+                        rankKnn(queryVector, knnIndexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, document =>
+                            document.categoryId === evalEntry.categoryId ? [...document.tagIds] : []
+                        ),
+                        rankKnn(queryVector, knnIndexes, EMBEDDING_CROSS_CATEGORY_TAG_DISTANCE_THRESHOLD, document => [...document.tagIds])
                     );
 
                     return {
@@ -449,7 +456,9 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
             expect(commentContexts.some(context => context.categoryId === mccSystemCategory.id && context.comment === 'Cafe receipt')).toBe(
                 true
             );
-            expect(rankKnn(queryVector, knnIndexes, document => [document.categoryId])[0]).toBe(mccSystemCategory.id);
+            expect(rankKnn(queryVector, knnIndexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, document => [document.categoryId])[0]).toBe(
+                mccSystemCategory.id
+            );
         }).pipe(Effect.provide(TestLayer))
     );
 });
