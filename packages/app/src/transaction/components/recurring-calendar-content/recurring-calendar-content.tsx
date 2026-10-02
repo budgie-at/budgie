@@ -12,13 +12,14 @@ import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/recurring-calendar-day-detail';
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
 
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
+
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 

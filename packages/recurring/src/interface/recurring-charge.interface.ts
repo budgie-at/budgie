@@ -1,6 +1,6 @@
-import type { UserIconType } from '../../@generic/type/user-icon.type';
+import type { UserIconType } from '@budgie/contracts';
 
-export interface RecurringChargeCandidateInterface {
+export interface RecurringChargeInterface {
     readonly transactionId: number;
     readonly operatedAt: Date;
     readonly title: string;

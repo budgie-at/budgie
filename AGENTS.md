@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, market, consolidation, and logger packages.
+Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, market, recurring, rules, categorization, consolidation, and logger packages.
 
 ## Commands
 
@@ -77,6 +77,9 @@ Use the repo package scopes without the npm namespace prefix:
 - `sync`
 - `budget`
 - `market`
+- `recurring`
+- `rules`
+- `categorization`
 - `consolidation`
 - `logger`
 
@@ -134,6 +137,9 @@ packages/
 ├── ai/                 # Pure TypeScript AI/LLM services
 ├── budget/             # Budget domain logic
 ├── market/             # Exchange rates, market data, base valuation
+├── recurring/          # Recurring charge detection and calendar projection
+├── rules/              # Rules engine: matching, application, transfer conversion
+├── categorization/     # Embeddings, category and tag suggestions, categorize inbox
 ├── consolidation/      # Transaction consolidation
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 16 marketing site
@@ -180,7 +186,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `sync`, `budget`, `market`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`; `packages/market/test` hosts the market package integration tests. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Domain packages (`recurring`, `categorization`, `rules`, `market`, `budget`, `consolidation`, `sync`, `contracts`, `ai`, `logger`) MAY host colocated `test/` suites using `@effect/vitest` + `tests/test-kit`, excluded from the package build; `app` and `landing` host no Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Cross-package scenario suites, real-backup checks and money-safety invariants live in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`; domain-package suites live in `packages/<name>/test/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.

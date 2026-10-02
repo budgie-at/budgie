@@ -11,9 +11,9 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
-import { getRecurringEntryKey } from '../../utils/get-recurring-entry-key.util';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
+
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 const ANIMATION_STAGGER = 50;
 const MAX_STAGGER_INDEX = 8;
@@ -38,7 +38,6 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     const description = t`${formattedAmount} · ${category}`;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
     const animationDelay = Math.min(index, MAX_STAGGER_INDEX) * ANIMATION_STAGGER;
-    const key = getRecurringEntryKey(entry);
     let handlePress = onPress;
 
     if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
@@ -57,7 +56,7 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     ) : null;
 
     return (
-        <Animated.View key={key} entering={FadeInDown.delay(animationDelay).duration(200)}>
+        <Animated.View key={entry.key} entering={FadeInDown.delay(animationDelay).duration(200)}>
             <SimpleHorizontalCell
                 testID={RecurringCalendarSelector.Row(entry.title)}
                 left={<CircleIcon icon={icon} variant="destructive" />}
