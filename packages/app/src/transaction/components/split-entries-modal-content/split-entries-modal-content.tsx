@@ -12,6 +12,8 @@ import { ListItemSeparator } from '../../../@generic/component/list-item-separat
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -55,10 +57,12 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const previouslyFullySplitRef = useRef(false);
 
-    const entriesTotal = sumEntryAmounts(entries);
-    const remainingAmount = totalAmount - entriesTotal;
-    const isFullySplit = remainingAmount === 0 && entriesTotal > 0;
-    const isOverBudget = remainingAmount < 0;
+    const entriesTotalMicroUnits = convertToMicroUnits(sumEntryAmounts(entries));
+    const totalAmountMicroUnits = convertToMicroUnits(totalAmount);
+    const remainingAmountMicroUnits = totalAmountMicroUnits - entriesTotalMicroUnits;
+    const remainingAmount = convertFromMicroUnits(remainingAmountMicroUnits);
+    const isFullySplit = remainingAmountMicroUnits === 0 && entriesTotalMicroUnits > 0;
+    const isOverBudget = remainingAmountMicroUnits < 0;
     const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
     const canDelete = entries.length > 1;
     const canRemoveSplit = initialEntries.length > 1 || entries.length > 1;
@@ -66,7 +70,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && isPositiveNumber(entry.amount));
     const allEntriesHaveAmount = entries.every(entry => isPositiveNumber(entry.amount));
     const hasMissingCategories = isFullySplit && !allEntriesValid;
-    const canAddEntry = remainingAmount > 0 && allEntriesHaveAmount;
+    const canAddEntry = remainingAmountMicroUnits > 0 && allEntriesHaveAmount;
     const canConfirm = isFullySplit && allEntriesValid;
 
     useEffect(() => {

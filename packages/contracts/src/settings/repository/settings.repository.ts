@@ -1,36 +1,35 @@
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+
 import { isDefined } from '@rnw-community/shared';
 
+import { Db } from '../../@generic/service/db.service';
 import { SettingsEntityTable } from '../../schema';
 import { SettingsAssociationEnum } from '../enum/settings-association.enum';
 
-import type { DB } from '../../@generic/type/db.type';
-import type * as schema from '../../schema';
 import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity.interface';
-import type { SettingsEntityInterface } from '../entity/settings-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
-export class SettingsRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+export class SettingsRepository extends Context.Service<SettingsRepository>()('@budgie/contracts/SettingsRepository', {
+    make: Effect.succeed({
+        getSettings: Effect.fn('SettingsRepository.getSettings')(function* () {
+            const settings = yield* Db.query(db => db.query.SettingsEntityTable.findFirst());
 
-    async update(input: Partial<SettingsCreateEntityInterface>, tx?: DB): Promise<SettingsEntityInterface> {
-        const [settings] = await (tx ?? this.db).update(SettingsEntityTable).set(input).returning();
+            if (!isDefined(settings)) {
+                return yield* Effect.die(new Error('Settings not found'));
+            }
 
-        return settings;
-    }
-
-    async getSettings(tx?: DB): Promise<SettingsEntityInterface> {
-        const settings = await (tx ?? this.db).query.SettingsEntityTable.findFirst();
-
-        if (!isDefined(settings)) {
-            throw new Error('Settings not found');
-        }
-
-        return settings;
-    }
-
-    findSettings() {
-        return this.db.query.SettingsEntityTable.findFirst({
-            with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true, [SettingsAssociationEnum.DEFAULT_ACCOUNT]: true }
-        });
-    }
+            return settings;
+        }),
+        update: (input: Partial<SettingsCreateEntityInterface>) =>
+            Db.query(db => db.update(SettingsEntityTable).set(input).returning()).pipe(Effect.map(([settings]) => settings)),
+        findSettings: () =>
+            Db.query(db =>
+                db.query.SettingsEntityTable.findFirst({
+                    with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true, [SettingsAssociationEnum.DEFAULT_ACCOUNT]: true }
+                })
+            )
+    })
+}) {
+    static readonly layer = Layer.effect(SettingsRepository, SettingsRepository.make);
 }

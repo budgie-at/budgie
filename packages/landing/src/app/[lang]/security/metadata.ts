@@ -6,7 +6,7 @@ export const SECURITY_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     slug: 'security',
     title: msg`Encrypted Budget App — Lock Down Your Financial Data`,
     metaTitle: msg`Encrypted Budget App — Biometric Lock — Budgie`,
-    metaDescription: msg`Budgie protects your finances with AES-256 encrypted SQLite, biometric and PIN lock, screenshot blur, and encrypted cloud backups. No server ever sees your data.`,
+    metaDescription: msg`Budgie protects your finances with on-device encryption once you set a PIN, biometric and PIN lock, screenshot blur, and backup files you keep yourself. No server ever sees your data.`,
     seoKeywords: [
         msg`encrypted budget app`,
         msg`secure expense tracker`,

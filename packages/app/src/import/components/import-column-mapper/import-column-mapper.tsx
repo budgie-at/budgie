@@ -13,9 +13,10 @@ interface Props {
     readonly onSelect: (header: string) => void;
     readonly hasError?: boolean;
     readonly onClear: () => void;
+    readonly testID?: string;
 }
 
-export const ImportColumnMapper = ({ value, headers, selectedHeaders, fieldLabel, onSelect, onClear, hasError = false }: Props) => {
+export const ImportColumnMapper = ({ value, headers, selectedHeaders, fieldLabel, onSelect, onClear, hasError = false, testID }: Props) => {
     const { t } = useLingui();
     const [openImportColumnMapper] = useImportColumnMapperModal();
 
@@ -40,5 +41,7 @@ export const ImportColumnMapper = ({ value, headers, selectedHeaders, fieldLabel
     const title = hasValue ? value : '';
     const description = hasValue ? '' : t`Select column...`;
 
-    return <SimpleHorizontalCell size="md" variant={variant} onPress={handleOpen} title={title} description={description} />;
+    return (
+        <SimpleHorizontalCell size="md" variant={variant} onPress={handleOpen} title={title} description={description} testID={testID} />
+    );
 };

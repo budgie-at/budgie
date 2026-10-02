@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
@@ -9,7 +10,6 @@ import { AmountInput } from '../../../@generic/component/amount-input/amount-inp
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 

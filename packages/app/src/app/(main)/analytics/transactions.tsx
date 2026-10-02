@@ -39,6 +39,18 @@ const getTransactionTypes = (value: string | string[] | undefined): TransactionT
 
 const getNumberParams = (value: string | string[] | undefined): number[] => getRouteParamValues(value).map(Number).filter(Number.isFinite);
 
+const getNumberParam = (value: string | string[] | undefined): number | null => {
+    const rawValue = getRouteParam(value);
+
+    if (!isNotEmptyString(rawValue)) {
+        return null;
+    }
+
+    const numberValue = Number(rawValue);
+
+    return Number.isFinite(numberValue) ? numberValue : null;
+};
+
 const getAnalyticsMode = (value: string | null): AnalyticsTransactionsModeEnum | null => {
     if (value === AnalyticsTransactionsModeEnum.BUDGET_OTHER) {
         return AnalyticsTransactionsModeEnum.BUDGET_OTHER;
@@ -46,6 +58,14 @@ const getAnalyticsMode = (value: string | null): AnalyticsTransactionsModeEnum |
 
     if (value === AnalyticsTransactionsModeEnum.UNCATEGORIZED) {
         return AnalyticsTransactionsModeEnum.UNCATEGORIZED;
+    }
+
+    if (value === AnalyticsTransactionsModeEnum.CATEGORIZE) {
+        return AnalyticsTransactionsModeEnum.CATEGORIZE;
+    }
+
+    if (value === AnalyticsTransactionsModeEnum.TAG_INBOX) {
+        return AnalyticsTransactionsModeEnum.TAG_INBOX;
     }
 
     return null;
@@ -61,8 +81,11 @@ export default function AnalyticsTransactionsPage() {
         readonly type?: string | string[];
         readonly types?: string | string[];
         readonly accountIds?: string | string[];
+        readonly categoryIds?: string | string[];
         readonly excludedCategoryIds?: string | string[];
         readonly tagIds?: string | string[];
+        readonly amountFrom?: string | string[];
+        readonly amountTo?: string | string[];
     }>();
     const mode = getAnalyticsMode(getRouteParam(searchParams.mode));
     const startDate = getRouteParam(searchParams.startDate);
@@ -71,9 +94,14 @@ export default function AnalyticsTransactionsPage() {
     const tagId = getRouteParam(searchParams.tagId);
     const type = getTransactionType(getRouteParam(searchParams.type));
     const types = getTransactionTypes(searchParams.types);
-    const accountIds = getNumberParams(searchParams.accountIds);
-    const excludedCategoryIds = getNumberParams(searchParams.excludedCategoryIds);
-    const tagIds = getNumberParams(searchParams.tagIds);
+    const [accountIds, categoryIds, excludedCategoryIds, tagIds] = [
+        searchParams.accountIds,
+        searchParams.categoryIds,
+        searchParams.excludedCategoryIds,
+        searchParams.tagIds
+    ].map(getNumberParams);
+    const amountFrom = getNumberParam(searchParams.amountFrom);
+    const amountTo = getNumberParam(searchParams.amountTo);
     const params: AnalyticsTransactionsRouteParamsInterface = {
         ...(isDefined(mode) && { mode }),
         ...(isDefined(startDate) && { startDate }),
@@ -83,8 +111,11 @@ export default function AnalyticsTransactionsPage() {
         ...(isDefined(type) && { type }),
         ...(isNotEmptyArray(types) && { types }),
         ...(isNotEmptyArray(accountIds) && { accountIds }),
+        ...(isNotEmptyArray(categoryIds) && { categoryIds }),
         ...(isNotEmptyArray(excludedCategoryIds) && { excludedCategoryIds }),
-        ...(isNotEmptyArray(tagIds) && { tagIds })
+        ...(isNotEmptyArray(tagIds) && { tagIds }),
+        ...(isDefined(amountFrom) && { amountFrom }),
+        ...(isDefined(amountTo) && { amountTo })
     };
 
     return <AnalyticsTransactionsRoute params={params} />;

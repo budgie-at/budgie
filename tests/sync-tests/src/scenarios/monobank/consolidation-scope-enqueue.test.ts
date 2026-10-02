@@ -1,48 +1,47 @@
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/consolidation-scope-enqueue', () => {
-    beforeEach(() => {
-        vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
-    });
+    it.effect('enqueues consolidation with the changed transaction scope after sync creates a transaction', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
+            setupMonobankFixture();
+            monobankStub.statement([
+                buildMonobank.transaction({
+                    id: 'tx-scoped-sync',
+                    amount: -2500,
+                    hold: false,
+                    time: Math.floor(new Date('2026-01-13T09:42:53.000Z').getTime() / 1000)
+                })
+            ]);
 
-    it('enqueues consolidation with the changed transaction scope after sync creates a transaction', async () => {
-        setupMonobankFixture();
-        monobankStub.statement([
-            buildMonobank.transaction({
-                id: 'tx-scoped-sync',
-                amount: -2500,
-                hold: false,
-                time: Math.floor(new Date('2026-01-13T09:42:53.000Z').getTime() / 1000)
-            })
-        ]);
+            yield* monobankSyncService.sync();
 
-        await monobankSyncService.sync();
+            const transaction = testDb
+                .select()
+                .from(TransactionEntityTable)
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.MONOBANK))
+                .get();
 
-        const transaction = testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.MONOBANK))
-            .get();
+            expect(transaction).toBeDefined();
+            if (!isDefined(transaction)) {
+                return;
+            }
 
-        expect(transaction).toBeDefined();
-        if (!isDefined(transaction)) {
-            return;
-        }
-
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(
-            TransferConsolidationDrainReasonEnum.MONOBANK_SYNC,
-            expect.objectContaining({
-                transactionIds: [transaction.id]
-            })
-        );
-    });
+            expect(vi.mocked(transferConsolidationDrainerService.enqueue)).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    transactionIds: [transaction.id]
+                })
+            );
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

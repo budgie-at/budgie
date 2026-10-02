@@ -7,19 +7,18 @@ import {
     SILENCE_TIMEOUT_MS,
     calculateRMS
 } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { AudioRecorder } from 'react-native-audio-api';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 
 import { useAudioManager } from './use-audio-manager.hook';
 
+import type * as Fiber from 'effect/Fiber';
 import type { AudioBuffer } from 'react-native-audio-api';
-
-const logger = getLogger('useRecording');
-
-const AUDIO_LOG_INTERVAL_MS = 1000;
 
 type RecordingStatus = 'idle' | 'recording';
 
@@ -36,7 +35,7 @@ interface UseRecordingReturn {
     readonly cancel: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Hook orchestrates recorder lifecycle, silence detection, and audio buffer logging
+// eslint-disable-next-line max-lines-per-function, max-statements -- Hook orchestrates recorder lifecycle and silence detection
 export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingReturn => {
     useAudioManager();
 
@@ -44,102 +43,49 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
     const [audioLevel, setAudioLevel] = useState(0);
 
     const recorderRef = useRef<AudioRecorder | null>(null);
-    const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const recorderInitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const silenceTimeoutRef = useRef<Fiber.Fiber<void> | null>(null);
+    const recorderInitTimeoutRef = useRef<Fiber.Fiber<void> | null>(null);
     const sessionIdRef = useRef(0);
     const callbacksRef = useRef(callbacks);
-    const audioBufferCountRef = useRef(0);
-    const voicedBufferCountRef = useRef(0);
-    const invalidBufferCountRef = useRef(0);
-    const lastAudioLogAtRef = useRef(0);
-    const wasAboveThresholdRef = useRef(false);
 
     useLayoutEffect(() => {
         callbacksRef.current = callbacks;
     }, [callbacks]);
 
+    const runAfter = (delayMs: number, callback: () => void): Fiber.Fiber<void> =>
+        appRuntime.runFork(Effect.delay(Effect.sync(callback), delayMs));
+
     const clearTimeouts = () => {
-        if (isDefined(silenceTimeoutRef.current)) {
-            clearTimeout(silenceTimeoutRef.current);
-            silenceTimeoutRef.current = null;
-        }
-        if (isDefined(recorderInitTimeoutRef.current)) {
-            clearTimeout(recorderInitTimeoutRef.current);
-            recorderInitTimeoutRef.current = null;
-        }
+        silenceTimeoutRef.current?.interruptUnsafe();
+        silenceTimeoutRef.current = null;
+        recorderInitTimeoutRef.current?.interruptUnsafe();
+        recorderInitTimeoutRef.current = null;
     };
 
     const stopRecorder = () => {
-        try {
-            recorderRef.current?.stop();
-        } finally {
-            recorderRef.current = null;
-        }
+        const recorder = recorderRef.current;
+        recorderRef.current = null;
+        recorder?.stop().catch((error: unknown) => {
+            appRuntime.runFork(Effect.logError('recorder:stop', { errorMessage: getErrorMessage(error) }));
+        });
     };
 
-    const resetState = () => {
+    const cleanup = () => {
+        clearTimeouts();
+        stopRecorder();
         setStatus('idle');
         setAudioLevel(0);
     };
 
-    const cleanup = () => {
-        logger.log('cleanup', {
-            sessionId: sessionIdRef.current,
-            audioBufferCount: audioBufferCountRef.current,
-            voicedBufferCount: voicedBufferCountRef.current,
-            invalidBufferCount: invalidBufferCountRef.current
-        });
-        clearTimeouts();
-        stopRecorder();
-        resetState();
-    };
-
     const resetSilenceTimeout = (sessionId: number) => {
-        if (isDefined(silenceTimeoutRef.current)) {
-            clearTimeout(silenceTimeoutRef.current);
-        }
-        silenceTimeoutRef.current = setTimeout(() => {
+        silenceTimeoutRef.current?.interruptUnsafe();
+        silenceTimeoutRef.current = runAfter(SILENCE_TIMEOUT_MS, () => {
             if (sessionId !== sessionIdRef.current) {
                 return;
             }
-            logger.log('silence:detected', {
-                sessionId,
-                audioBufferCount: audioBufferCountRef.current,
-                voicedBufferCount: voicedBufferCountRef.current
-            });
             cleanup();
             callbacksRef.current.onSilenceDetected?.();
-        }, SILENCE_TIMEOUT_MS);
-    };
-
-    const logThresholdChange = (sessionId: number, isAboveThreshold: boolean, rms: number) => {
-        if (isAboveThreshold === wasAboveThresholdRef.current) {
-            return;
-        }
-        logger.log('voice:threshold', {
-            sessionId,
-            isAboveThreshold,
-            rms: rms.toFixed(5),
-            threshold: SILENCE_THRESHOLD
         });
-        wasAboveThresholdRef.current = isAboveThreshold;
-    };
-
-    const logAudioSummary = (sessionId: number, isAboveThreshold: boolean, rms: number, level: number) => {
-        const currentTime = Date.now();
-
-        if (currentTime - lastAudioLogAtRef.current < AUDIO_LOG_INTERVAL_MS) {
-            return;
-        }
-        logger.log('audio:summary', {
-            sessionId,
-            audioBufferCount: audioBufferCountRef.current,
-            voicedBufferCount: voicedBufferCountRef.current,
-            rms: rms.toFixed(5),
-            audioLevel: level.toFixed(3),
-            isAboveThreshold
-        });
-        lastAudioLogAtRef.current = currentTime;
     };
 
     const handleAudioBuffer = (samples: Float32Array, sessionId: number) => {
@@ -148,33 +94,17 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
         }
 
         const rms = calculateRMS(samples);
-        const level = Math.min(rms * AUDIO_LEVEL_MULTIPLIER, 1);
-        const isAboveThreshold = rms > SILENCE_THRESHOLD;
-        audioBufferCountRef.current += 1;
-        setAudioLevel(level);
+        setAudioLevel(Math.min(rms * AUDIO_LEVEL_MULTIPLIER, 1));
 
         callbacksRef.current.onAudioBuffer?.(samples);
 
-        if (isAboveThreshold) {
-            voicedBufferCountRef.current += 1;
+        if (rms > SILENCE_THRESHOLD) {
             resetSilenceTimeout(sessionId);
         }
-        logThresholdChange(sessionId, isAboveThreshold, rms);
-        logAudioSummary(sessionId, isAboveThreshold, rms, level);
     };
 
     const getRecorderSamples = (buffer: AudioBuffer): Float32Array | null => {
         if (buffer.sampleRate !== SAMPLE_RATE || !isPositiveNumber(buffer.numberOfChannels)) {
-            invalidBufferCountRef.current += 1;
-            if (invalidBufferCountRef.current <= 3 || invalidBufferCountRef.current % 10 === 0) {
-                logger.log('audio:invalid-buffer', {
-                    invalidBufferCount: invalidBufferCountRef.current,
-                    sampleRate: buffer.sampleRate,
-                    expectedSampleRate: SAMPLE_RATE,
-                    numberOfChannels: buffer.numberOfChannels
-                });
-            }
-
             return null;
         }
         if (buffer.numberOfChannels === 1) {
@@ -201,18 +131,11 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
     };
 
     const initializeRecorder = (sessionId: number) => {
-        recorderInitTimeoutRef.current = setTimeout(() => {
+        recorderInitTimeoutRef.current = runAfter(RECORDER_INIT_DELAY_MS, () => {
             if (sessionId !== sessionIdRef.current) {
                 return;
             }
 
-            logger.log('recorder:init', {
-                sessionId,
-                sampleRate: SAMPLE_RATE,
-                bufferLength: BUFFER_LENGTH,
-                silenceTimeoutMs: SILENCE_TIMEOUT_MS,
-                silenceThreshold: SILENCE_THRESHOLD
-            });
             const recorder = new AudioRecorder();
             recorderRef.current = recorder;
             recorder.onAudioReady({ sampleRate: SAMPLE_RATE, bufferLength: BUFFER_LENGTH, channelCount: 1 }, ({ buffer }) => {
@@ -225,54 +148,31 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                     handleAudioBuffer(samples, sessionId);
                 }
             });
-            recorder.start();
-            logger.log('recorder:start', { sessionId });
+            recorder.start().catch((error: unknown) => {
+                appRuntime.runFork(Effect.logError('recorder:start', { errorMessage: getErrorMessage(error) }));
+
+                if (sessionId === sessionIdRef.current) {
+                    cleanup();
+                }
+            });
+
             resetSilenceTimeout(sessionId);
-        }, RECORDER_INIT_DELAY_MS);
+        });
     };
 
     const start = () => {
         cleanup();
 
         sessionIdRef.current += 1;
-        const sessionId = sessionIdRef.current;
-
-        audioBufferCountRef.current = 0;
-        voicedBufferCountRef.current = 0;
-        invalidBufferCountRef.current = 0;
-        lastAudioLogAtRef.current = 0;
-        wasAboveThresholdRef.current = false;
-        logger.log('start', {
-            sessionId,
-            recorderInitDelayMs: RECORDER_INIT_DELAY_MS
-        });
         setStatus('recording');
-        initializeRecorder(sessionId);
-    };
-
-    const stop = () => {
-        logger.log('stop', {
-            sessionId: sessionIdRef.current,
-            audioBufferCount: audioBufferCountRef.current,
-            voicedBufferCount: voicedBufferCountRef.current
-        });
-        cleanup();
-    };
-
-    const cancel = () => {
-        logger.log('cancel', {
-            sessionId: sessionIdRef.current,
-            audioBufferCount: audioBufferCountRef.current,
-            voicedBufferCount: voicedBufferCountRef.current
-        });
-        cleanup();
+        initializeRecorder(sessionIdRef.current);
     };
 
     return {
         status,
         audioLevel,
         start,
-        stop,
-        cancel
+        stop: cleanup,
+        cancel: cleanup
     };
 };

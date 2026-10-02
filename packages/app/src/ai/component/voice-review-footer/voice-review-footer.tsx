@@ -10,6 +10,8 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
+import { VoiceReviewFooterSelector } from './voice-review-footer.selector';
+
 const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
 
 interface Props {
@@ -52,19 +54,33 @@ export const VoiceReviewFooter = (props: Props) => {
             ) : null}
 
             <View className="flex-row gap-x-md">
-                <Button variant="ghost" content={t`Cancel`} onPress={onCancel} className="flex-1" />
+                <Button
+                    variant="ghost"
+                    content={t`Cancel`}
+                    onPress={onCancel}
+                    className="flex-1"
+                    testID={VoiceReviewFooterSelector.CancelButton}
+                />
                 <Button
                     variant="secondary"
                     leftIcon={UserIconNameEnum.RefreshCw}
                     content={t`Re-record`}
                     onPress={onReRecord}
                     className="flex-1"
+                    testID={VoiceReviewFooterSelector.ReRecordButton}
                 />
             </View>
 
             {isPositiveNumber(count) ? (
                 <View className="mt-md">
-                    <Button variant={saveVariant} content={saveLabel} onPress={onSave} disabled={isSaveDisabled} isLoading={isSaving} />
+                    <Button
+                        variant={saveVariant}
+                        content={saveLabel}
+                        onPress={onSave}
+                        disabled={isSaveDisabled}
+                        isLoading={isSaving}
+                        testID={VoiceReviewFooterSelector.SaveButton}
+                    />
                 </View>
             ) : null}
         </View>

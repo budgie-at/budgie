@@ -11,14 +11,12 @@ interface Props {
     readonly testID?: string;
 }
 
-const IS_IOS = Platform.OS === 'ios';
-
-const handleNavigate = () => void router.push('/settings/apple-pay-capture');
-
 export const ApplePayCaptureSettingsCard = ({ testID = ApplePayCaptureSettingsCardSelector.Card }: Props) => {
     const { t } = useLingui();
 
-    if (!IS_IOS) {
+    const handleNavigate = () => void router.push('/settings/apple-pay-capture');
+
+    if (Platform.OS !== 'ios') {
         return null;
     }
 

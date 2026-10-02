@@ -15,6 +15,7 @@ interface SetupBinanceFixtureOptions {
     readonly forwardSyncFromAt?: Date;
     readonly forwardSyncedAt?: Date;
     readonly instrumentType?: InstrumentTypeEnum;
+    readonly binanceTradeCursor?: string;
 }
 
 export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) => {
@@ -40,7 +41,8 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
         backwardSyncFromAt: options.backwardSyncFromAt ?? new Date(),
         backwardSyncedAt: null,
         forwardSyncFromAt: options.forwardSyncFromAt ?? new Date(),
-        forwardSyncedAt: options.forwardSyncedAt ?? null
+        forwardSyncedAt: options.forwardSyncedAt ?? null,
+        binanceTradeCursor: options.binanceTradeCursor ?? null
     });
 
     binanceStub.serverTime();

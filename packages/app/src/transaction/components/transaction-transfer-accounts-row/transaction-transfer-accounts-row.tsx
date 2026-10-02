@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -46,6 +46,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
         const selectedAccountId = await openAccountSelector({
             initialAccountId: fromAccountId,
             excludeAccountId: toAccountId,
+            excludeAccountTypes: [AccountTypeEnum.DEBT],
             onlyActive: false
         });
 
@@ -58,6 +59,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
         const selectedAccountId = await openAccountSelector({
             initialAccountId: toAccountId,
             excludeAccountId: fromAccountId,
+            excludeAccountTypes: [AccountTypeEnum.DEBT],
             onlyActive: false,
             ...(isDefined(toCreateAction) && { createAction: toCreateAction })
         });

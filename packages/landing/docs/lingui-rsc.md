@@ -24,7 +24,7 @@ initLingui(lang); // src/i18n/init-lingui.ts
 
 **Why per-page?** Next.js renders each route segment in its own React cache scope. The `setI18n(...)` call in `layout.tsx` does NOT propagate into nested `page.tsx` files. Every page that uses `<Trans>` or resolves `msg` descriptors must call `initLingui` (or `getI18nInstance` + `setI18n`) itself.
 
-**Layout (already done):** `src/app/[lang]/layout.tsx` calls `initLingui(lang)` and passes `allMessages[lang]` to `LinguiClientProvider`. Do not change this setup.
+**Layout (already done):** `src/app/[lang]/layout.tsx` calls `initLingui(lang)` and passes `clientMessages[lang]` to `LinguiClientProvider`. Do not change this setup.
 
 **`error.tsx` is a client component** — it reads translations via `useLingui()` through the client `LinguiClientProvider`. No `initLingui` needed.
 
@@ -90,10 +90,14 @@ Registries are only for route enumeration, relationships, or aggregator metadata
 Client components receive translations through `LinguiClientProvider` which is mounted in `layout.tsx`:
 
 ```tsx
-<LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
+<LinguiClientProvider initialLocale={lang} initialMessages={clientMessages[lang]}>
     {children}
 </LinguiClientProvider>
 ```
+
+`clientMessages` is the **client subset** of the catalog, not `allMessages`. The full catalog is ~430 KB per locale; serializing it into the RSC payload put it in the HTML of every page. `scripts/i18n-client-catalog.mjs` walks the transitive relative-import closure of every `'use client'` file, keeps only the `.po` entries whose `#:` origins fall inside that closure, and writes `src/i18n/locales/{locale}/client-messages.ts`. It runs as part of `pnpm i18n:compile`, so `pnpm i18n:sync` and `pnpm i18n:check` keep it in step with the source catalogs, and both files are committed.
+
+Server rendering still uses the full `allMessages` catalog through `getI18nInstance`. Only the client bundle sees the subset. `MessageDescriptor` objects passed from a server component into a client component (registry `title` / `description` sidecars) resolve on the client, so the closure deliberately follows type-only imports too — being over-inclusive costs bytes, being under-inclusive costs a translation.
 
 Inside any `'use client'` component, read translations via `useLingui()`:
 
@@ -141,7 +145,7 @@ pnpm i18n:sync        # = pnpm i18n:extract && pnpm i18n:compile
 ```
 
 - `pnpm i18n:extract` — scans `src/` for `<Trans>`, `t\`…\``, `msg\`…\``macros and writes/updates all`.po`files (overwrites; cleans stale entries with`--clean`).
-- `pnpm i18n:compile` — compiles `.po` → `.ts` (TypeScript message maps) for each locale.
+- `pnpm i18n:compile` — compiles `.po` → `.ts` (TypeScript message maps) for each locale, then regenerates `client-messages.ts` for each locale.
 
 **Both `.po` and `.ts` files must be committed.** The `.ts` files are required at runtime; omitting them breaks the build.
 

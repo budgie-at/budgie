@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { cn } from 'cn';
 import { ComponentProps } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -8,7 +9,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { useThemeContext } from '../../../theme/context/theme.context';
 import { dark, light } from '../../../theme/provider/theme.provider';
-import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
 interface Props extends ComponentProps<typeof TextInput> {

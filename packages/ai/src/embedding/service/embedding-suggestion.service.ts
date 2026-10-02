@@ -1,14 +1,9 @@
-/* eslint-disable @typescript-eslint/max-params -- Existing suggestion APIs and Log hooks intentionally keep positional arguments */
-import {
-    CategoryEntityInterface,
-    CategoryScoreResultInterface,
-    SimilarTagsParamsInterface,
-    TagEntityInterface,
-    TagScoreResultInterface
-} from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { CommentEmbeddingRepository, MerchantEmbeddingRepository, TransactionRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
@@ -19,253 +14,227 @@ import {
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
-import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
-import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { EmbeddingService } from './embedding.service';
 
-import type { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
 import type { SuggestionContextInterface } from '../interface/suggestion-context.interface';
+import type {
+    CategoryEntityInterface,
+    CategoryScoreResultInterface,
+    SimilarTagsParamsInterface,
+    TagEntityInterface,
+    TagScoreResultInterface
+} from '@budgie/contracts';
 
-export class EmbeddingSuggestionService {
-    private static readonly MCC_BLEND_WEIGHT = 7 / 10;
+export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggestionService>()('@budgie/ai/EmbeddingSuggestionService', {
+    make: Effect.gen(function* () {
+        const merchantEmbeddingRepository = yield* MerchantEmbeddingRepository;
 
-    constructor(
-        private readonly repositories: EmbeddingSuggestionRepositoriesInterface,
-        private readonly embedding: EmbeddingInvokerInterface,
-        private readonly getMccCategorySuggestions: (
-            mccCategoryId: number,
-            limit: number
-        ) => Promise<{ categoryId: number; count: number }[]>
-    ) {}
+        const commentEmbeddingRepository = yield* CommentEmbeddingRepository;
 
-    @Log(
-        (categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
-            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryIds=${categories.map(category => category.id).join(',')}`,
-        (result, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
-            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} resolvedIds=${result.map(category => category.id).join(',')}`,
-        (error, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
-            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} error=${getErrorMessage(error)}`
-    )
-    async suggestCategories(
-        categories: CategoryEntityInterface[],
-        transactionTitle: string,
-        mccDescription: string | null,
-        comment: string,
-        aiContext: string,
-        mccCategoryId: number | null = null
-    ): Promise<CategoryEntityInterface[]> {
-        const resolved = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
-        if (!isDefined(resolved)) {
-            return [];
-        }
+        const transactionRepository = yield* TransactionRepository;
 
-        const mccLookup = isDefined(mccCategoryId)
-            ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
-            : Promise.resolve([]);
+        const embeddingService = yield* EmbeddingService;
 
-        const [merchantResults, commentResults, mccRows] = await Promise.all([
-            this.repositories.merchant.findSimilarCategories(
-                resolved.serialized,
-                EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                resolved.distanceThreshold,
-                EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-            ),
-            this.repositories.comment.findSimilarCategories(
-                resolved.serialized,
-                EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                resolved.distanceThreshold,
-                EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-            ),
-            mccLookup
-        ]);
+        const MCC_BLEND_WEIGHT = 7 / 10;
 
-        return this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
-    }
+        const resolveSuggestionContext = (
+            transactionTitle: string,
+            mccDescription: string | null,
+            comment: string,
+            aiContext: string
+        ): SuggestionContextInterface => {
+            const hasVoiceContext = isNotEmptyString(aiContext);
+            const context = hasVoiceContext ? aiContext : buildTransactionContext({ title: transactionTitle, mccDescription, comment });
+            const distanceThreshold = hasVoiceContext ? EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD : EMBEDDING_VEC_DISTANCE_THRESHOLD;
 
-    @Log(
-        (allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagIds=${allTags.map(tag => tag.id).join(',')}`,
-        (result, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} resolvedIds=${result.map(tag => tag.id).join(',')}`,
-        (error, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} error=${getErrorMessage(error)}`
-    )
-    async suggestTags(
-        allTags: TagEntityInterface[],
-        categoryId: number,
-        transactionTitle: string,
-        mccDescription: string | null,
-        comment: string,
-        aiContext: string
-    ): Promise<TagEntityInterface[]> {
-        const resolved = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
-        if (!isDefined(resolved)) {
-            return [];
-        }
-
-        const tagParams: SimilarTagsParamsInterface = {
-            vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-            distanceThreshold: resolved.distanceThreshold,
-            categoryId,
-            tagLimit: EMBEDDING_TAG_SUGGESTION_LIMIT
+            return { context, distanceThreshold };
         };
 
-        const [merchantResults, commentResults] = await Promise.all([
-            this.repositories.merchant.findSimilarTags(resolved.serialized, tagParams),
-            this.repositories.comment.findSimilarTags(resolved.serialized, tagParams)
-        ]);
+        const prepareSuggestion = Effect.fn('EmbeddingSuggestionService.prepareSuggestion')(function* (
+            transactionTitle: string,
+            mccDescription: string | null,
+            comment: string,
+            aiContext: string
+        ) {
+            const { context, distanceThreshold } = resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
+            const queryEmbedding = yield* embeddingService.generateEmbedding(context);
 
-        const merged = this.mergeTagScores(merchantResults, commentResults);
-        const topTags = merged.slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
+            if (!isDefined(queryEmbedding) || !isPositiveNumber(queryEmbedding.length)) {
+                return null;
+            }
 
-        return topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
-    }
-
-    @Log(
-        (categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `enter categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}"`,
-        (result, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `done categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" count=${result.length}`,
-        (error, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `throw categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" error=${getErrorMessage(error)}`
-    )
-    async suggestComments(
-        categoryId: number,
-        transactionTitle: string,
-        mccDescription: string | null,
-        comment: string,
-        aiContext: string
-    ): Promise<string[]> {
-        const resolved = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
-        if (!isDefined(resolved)) {
-            return [];
-        }
-
-        const commentResults = await this.repositories.merchant.findSimilarComments(resolved.serialized, {
-            vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-            distanceThreshold: resolved.distanceThreshold,
-            categoryId,
-            commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
+            return { serialized: serializeEmbedding(queryEmbedding), distanceThreshold };
         });
 
-        return commentResults.map(row => row.comment).filter(isNotEmptyString);
-    }
+        const buildCategoryScoreMap = (
+            merchantResults: CategoryScoreResultInterface[],
+            commentResults: CategoryScoreResultInterface[]
+        ): Map<number, number> => {
+            const scoreMap = new Map<number, number>();
 
-    @Log(
-        context => `enter context="${context}"`,
-        (result, context) => `done context="${context}" resolved=${String(isDefined(result))}`,
-        (error, context) => `throw context="${context}" error=${getErrorMessage(error)}`
-    )
-    private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
-        const service = new EmbeddingService(this.embedding);
-        const queryEmbedding = await service.generateEmbedding(context);
+            for (const row of merchantResults) {
+                scoreMap.set(row.categoryId, (scoreMap.get(row.categoryId) ?? 0) + row.score);
+            }
 
-        // eslint-disable-next-line no-restricted-syntax -- Float32Array; isEmptyArray uses Array.isArray which is false for typed arrays
-        if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
-            return null;
-        }
+            for (const row of commentResults) {
+                scoreMap.set(row.categoryId, (scoreMap.get(row.categoryId) ?? 0) + row.score);
+            }
 
-        return serializeEmbedding(queryEmbedding);
-    }
+            return scoreMap;
+        };
 
-    private async prepareSuggestion(
-        transactionTitle: string,
-        mccDescription: string | null,
-        comment: string,
-        aiContext: string
-    ): Promise<SerializedEmbeddingResultInterface | null> {
-        const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
+        const blendMccScores = (scoreMap: Map<number, number>, mccRows: { categoryId: number; count: number }[]): void => {
+            if (isEmptyArray(mccRows)) {
+                return;
+            }
+            const mccMaxCount = Math.max(...mccRows.map(row => row.count));
+            for (const { categoryId, count } of mccRows) {
+                const mccNormalizedScore = (count / mccMaxCount) * MCC_BLEND_WEIGHT;
+                scoreMap.set(categoryId, (scoreMap.get(categoryId) ?? 0) + mccNormalizedScore);
+            }
+        };
 
-        return this.resolveSerializedEmbedding(suggestionContext);
-    }
+        const resolveTopCategories = (
+            categories: CategoryEntityInterface[],
+            merchantResults: CategoryScoreResultInterface[],
+            commentResults: CategoryScoreResultInterface[],
+            mccRows: { categoryId: number; count: number }[]
+        ): CategoryEntityInterface[] => {
+            const scoreMap = buildCategoryScoreMap(merchantResults, commentResults);
+            blendMccScores(scoreMap, mccRows);
+            const sorted = [...scoreMap.entries()]
+                .map(([categoryId, score]) => ({ categoryId, score }))
+                .sort((first, second) => second.score - first.score);
 
-    private async resolveSerializedEmbedding(
-        suggestionContext: SuggestionContextInterface
-    ): Promise<SerializedEmbeddingResultInterface | null> {
-        const serialized = await this.generateSerializedEmbedding(suggestionContext.context);
+            return sorted
+                .slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
+                .map(row => categories.find(category => category.id === row.categoryId))
+                .filter(isDefined);
+        };
 
-        if (!isDefined(serialized)) {
-            return null;
-        }
+        // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
+        const suggestCategories = Effect.fn('EmbeddingSuggestionService.suggestCategories')(function* (
+            categories: CategoryEntityInterface[],
+            transactionTitle: string,
+            mccDescription: string | null,
+            comment: string,
+            aiContext: string,
+            mccCategoryId: number | null = null
+        ) {
+            const resolved = yield* prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+            if (!isDefined(resolved)) {
+                return [];
+            }
 
-        return { serialized, distanceThreshold: suggestionContext.distanceThreshold };
-    }
+            const [merchantResults, commentResults, mccRows] = yield* Effect.all(
+                [
+                    merchantEmbeddingRepository.findSimilarCategories(
+                        resolved.serialized,
+                        EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                        resolved.distanceThreshold,
+                        EMBEDDING_CATEGORY_SUGGESTION_LIMIT
+                    ),
+                    commentEmbeddingRepository.findSimilarCategories(
+                        resolved.serialized,
+                        EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                        resolved.distanceThreshold,
+                        EMBEDDING_CATEGORY_SUGGESTION_LIMIT
+                    ),
+                    isDefined(mccCategoryId)
+                        ? transactionRepository.findMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
+                        : Effect.succeed([])
+                ],
+                { concurrency: 'unbounded' }
+            );
 
-    private resolveSuggestionContext(
-        transactionTitle: string,
-        mccDescription: string | null,
-        comment: string,
-        aiContext: string
-    ): SuggestionContextInterface {
-        const hasVoiceContext = isNotEmptyString(aiContext);
-        const context = hasVoiceContext ? aiContext : buildTransactionContext({ title: transactionTitle, mccDescription, comment });
-        const distanceThreshold = hasVoiceContext ? EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD : EMBEDDING_VEC_DISTANCE_THRESHOLD;
+            return resolveTopCategories(categories, merchantResults, commentResults, mccRows);
+        });
 
-        return { context, distanceThreshold };
-    }
+        const mergeTagScores = (
+            merchantResults: TagScoreResultInterface[],
+            commentResults: TagScoreResultInterface[]
+        ): TagScoreResultInterface[] => {
+            const scoreMap = new Map<number, number>();
 
-    private buildCategoryScoreMap(
-        merchantResults: CategoryScoreResultInterface[],
-        commentResults: CategoryScoreResultInterface[]
-    ): Map<number, number> {
-        const scoreMap = new Map<number, number>();
+            for (const row of merchantResults) {
+                scoreMap.set(row.tagId, (scoreMap.get(row.tagId) ?? 0) + row.score);
+            }
 
-        for (const row of merchantResults) {
-            scoreMap.set(row.categoryId, (scoreMap.get(row.categoryId) ?? 0) + row.score);
-        }
+            for (const row of commentResults) {
+                scoreMap.set(row.tagId, (scoreMap.get(row.tagId) ?? 0) + row.score);
+            }
 
-        for (const row of commentResults) {
-            scoreMap.set(row.categoryId, (scoreMap.get(row.categoryId) ?? 0) + row.score);
-        }
+            return [...scoreMap.entries()].map(([tagId, score]) => ({ tagId, score })).sort((first, second) => second.score - first.score);
+        };
 
-        return scoreMap;
-    }
+        // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
+        const suggestTags = Effect.fn('EmbeddingSuggestionService.suggestTags')(function* (
+            allTags: TagEntityInterface[],
+            categoryId: number,
+            transactionTitle: string,
+            mccDescription: string | null,
+            comment: string,
+            aiContext: string
+        ) {
+            const resolved = yield* prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
 
-    private resolveTopCategories(
-        categories: CategoryEntityInterface[],
-        merchantResults: CategoryScoreResultInterface[],
-        commentResults: CategoryScoreResultInterface[],
-        mccRows: { categoryId: number; count: number }[]
-    ): CategoryEntityInterface[] {
-        const scoreMap = this.buildCategoryScoreMap(merchantResults, commentResults);
-        this.blendMccScores(scoreMap, mccRows);
-        const sorted = [...scoreMap.entries()]
-            .map(([categoryId, score]) => ({ categoryId, score }))
-            .sort((first, second) => second.score - first.score);
+            if (!isDefined(resolved)) {
+                return [];
+            }
 
-        return sorted
-            .slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
-            .map(row => categories.find(category => category.id === row.categoryId))
-            .filter(isDefined);
-    }
+            const tagParams: SimilarTagsParamsInterface = {
+                vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                distanceThreshold: resolved.distanceThreshold,
+                categoryId,
+                tagLimit: EMBEDDING_TAG_SUGGESTION_LIMIT
+            };
 
-    private blendMccScores(scoreMap: Map<number, number>, mccRows: { categoryId: number; count: number }[]): void {
-        if (isEmptyArray(mccRows)) {
-            return;
-        }
-        const mccMaxCount = Math.max(...mccRows.map(row => row.count));
-        for (const { categoryId, count } of mccRows) {
-            const mccNormalizedScore = (count / mccMaxCount) * EmbeddingSuggestionService.MCC_BLEND_WEIGHT;
-            scoreMap.set(categoryId, (scoreMap.get(categoryId) ?? 0) + mccNormalizedScore);
-        }
-    }
+            const [merchantResults, commentResults] = yield* Effect.all(
+                [
+                    merchantEmbeddingRepository.findSimilarTags(resolved.serialized, tagParams),
+                    commentEmbeddingRepository.findSimilarTags(resolved.serialized, tagParams)
+                ],
+                { concurrency: 'unbounded' }
+            );
 
-    private mergeTagScores(
-        merchantResults: TagScoreResultInterface[],
-        commentResults: TagScoreResultInterface[]
-    ): TagScoreResultInterface[] {
-        const scoreMap = new Map<number, number>();
+            const merged = mergeTagScores(merchantResults, commentResults);
+            const topTags = merged.slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
 
-        for (const row of merchantResults) {
-            scoreMap.set(row.tagId, (scoreMap.get(row.tagId) ?? 0) + row.score);
-        }
+            return topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
+        });
 
-        for (const row of commentResults) {
-            scoreMap.set(row.tagId, (scoreMap.get(row.tagId) ?? 0) + row.score);
-        }
+        // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
+        const suggestComments = Effect.fn('EmbeddingSuggestionService.suggestComments')(function* (
+            categoryId: number,
+            transactionTitle: string,
+            mccDescription: string | null,
+            comment: string,
+            aiContext: string
+        ) {
+            const resolved = yield* prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+            const commentResults = isDefined(resolved)
+                ? yield* merchantEmbeddingRepository.findSimilarComments(resolved.serialized, {
+                      vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                      distanceThreshold: resolved.distanceThreshold,
+                      categoryId,
+                      commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
+                  })
+                : [];
 
-        return [...scoreMap.entries()].map(([tagId, score]) => ({ tagId, score })).sort((first, second) => second.score - first.score);
-    }
+            return commentResults.map(row => row.comment).filter(isNotEmptyString);
+        });
+
+        return { suggestCategories, suggestTags, suggestComments };
+    })
+}) {
+    static readonly layer = Layer.effect(EmbeddingSuggestionService, EmbeddingSuggestionService.make).pipe(
+        Layer.provide([
+            MerchantEmbeddingRepository.layer,
+            CommentEmbeddingRepository.layer,
+            TransactionRepository.layer,
+            EmbeddingService.layer
+        ])
+    );
 }

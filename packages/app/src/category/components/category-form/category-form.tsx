@@ -1,5 +1,6 @@
-import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryCreateEntityInterface, CategoryEntityInterface, CategoryRepository, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
@@ -12,8 +13,8 @@ import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
-import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -21,7 +22,8 @@ import { useNoteInputModal } from '../../../transaction/context/note-input-modal
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
-import { categoryService } from '../../service/category.service';
+import { CategoryService } from '../../service/category.service';
+import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
@@ -84,14 +86,15 @@ export const CategoryForm = (props: Props) => {
     };
     /* jscpd:ignore-end */
 
-    const handleIconPress = async () => {
-        const keywordSource = [titleEn, titleTags].filter(isNotEmptyString).join(' ');
-        const keywords = keywordSource.split(/[,\s]+/u).filter(isNotEmptyString);
+    const iconTerms = getCategoryIconTerms({ title, titleEn, titleTags });
 
-        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords });
+    const handleIconSelect = (selectedIcon: UserIconType) => void setValue('icon', selectedIcon);
+
+    const handleIconPress = async () => {
+        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords: iconTerms });
 
         if (isDefined(selectedIcon)) {
-            setValue('icon', selectedIcon);
+            handleIconSelect(selectedIcon);
         }
     };
 
@@ -115,8 +118,16 @@ export const CategoryForm = (props: Props) => {
         }
 
         try {
-            const [targetCategory] = await categoryRepository.findById(targetCategoryId, language);
-            await categoryService.mergeInto(category.id, targetCategoryId);
+            const targetCategory = await appRuntime.runPromise(
+                Effect.gen(function* () {
+                    const categoryRepository = yield* CategoryRepository;
+                    const categoryService = yield* CategoryService;
+                    const [foundCategory] = yield* categoryRepository.findById(targetCategoryId, language);
+                    yield* categoryService.mergeInto(category.id, targetCategoryId);
+
+                    return foundCategory;
+                })
+            );
 
             if (isDefined(targetCategory)) {
                 onSuccess({ category: targetCategory, action: 'merged' });
@@ -129,29 +140,41 @@ export const CategoryForm = (props: Props) => {
     const saveCategoryTranslation = async (categoryId: number): Promise<void> => {
         const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
 
-        if (hasTranslationData) {
-            await categoryRepository.updateTranslation(categoryId, titleEn, titleTags);
-        } else {
-            await categoryRepository.clearTranslation(categoryId);
-        }
+        await appRuntime.runPromise(
+            Effect.flatMap(CategoryRepository, categoryRepository =>
+                hasTranslationData
+                    ? categoryRepository.updateTranslation(categoryId, titleEn, titleTags)
+                    : categoryRepository.clearTranslation(categoryId)
+            )
+        );
     };
 
     const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {
-        await categoryRepository.updateById(categoryId, values);
+        await appRuntime.runPromise(
+            Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.updateById(categoryId, values))
+        );
         await saveCategoryTranslation(categoryId);
 
-        const [savedCategory] = await categoryRepository.findById(categoryId, language);
+        const [savedCategory] = await appRuntime.runPromise(
+            Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.findById(categoryId, language))
+        );
 
         onSuccess({ category: savedCategory, action: 'updated' });
     };
 
     const handleCreateSubmit = async (values: CategoryCreateEntityInterface): Promise<void> => {
-        const savedCategory = await categoryRepository.create(values);
-        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
+        const savedCategory = await appRuntime.runPromise(
+            Effect.gen(function* () {
+                const categoryRepository = yield* CategoryRepository;
+                const createdCategory = yield* categoryRepository.create(values);
 
-        if (hasTranslationData) {
-            await categoryRepository.updateTranslation(savedCategory.id, titleEn, titleTags);
-        }
+                if (isNotEmptyString(titleEn) && isNotEmptyString(titleTags)) {
+                    yield* categoryRepository.updateTranslation(createdCategory.id, titleEn, titleTags);
+                }
+
+                return createdCategory;
+            })
+        );
 
         onSuccess({ category: savedCategory, action: 'created' });
     };

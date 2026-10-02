@@ -3,8 +3,8 @@
 import { Trans } from '@lingui/react/macro';
 import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo } from 'react';
 
+import { getCurrentYear } from '../../util/get-current-year.util';
 import { Logo } from '../logo/logo';
 
 interface Props {
@@ -12,13 +12,13 @@ interface Props {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export const Footer = ({ lang }: Props) => {
-    const date = useMemo(() => new Date().getFullYear(), []);
+export const Footer = async ({ lang }: Props) => {
+    const year = await getCurrentYear();
 
     return (
         <footer className="w-full border-t bg-background/95 backdrop-blur-xs">
             <div className="container flex flex-col gap-8 px-4 py-10 md:px-6 lg:py-16">
-                <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-5">
+                <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
                     <div className="space-y-4">
                         <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
                             <Logo />
@@ -30,7 +30,7 @@ export const Footer = ({ lang }: Props) => {
 
                         <p className="text-sm text-muted-foreground">
                             <Trans>
-                                The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device.
+                                The privacy-first expense tracker that keeps your financial data exactly where it belongs, on your device.
                             </Trans>
                         </p>
 
@@ -70,9 +70,9 @@ export const Footer = ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>App</Trans>
-                        </h4>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -94,15 +94,15 @@ export const Footer = ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>Features</Trans>
-                        </h4>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/features/offline-first-expense-tracker`}
+                                    href={`/${lang}/offline-first`}
                                 >
                                     <Trans>Offline-First</Trans>
                                 </Link>
@@ -148,9 +148,9 @@ export const Footer = ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>Resources</Trans>
-                        </h4>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -194,9 +194,9 @@ export const Footer = ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>Legal</Trans>
-                        </h4>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -229,10 +229,10 @@ export const Footer = ({ lang }: Props) => {
 
                 <div className="flex flex-col gap-4 sm:flex-row justify-between items-center border-t border-border/40 pt-8">
                     <p className="text-xs text-muted-foreground">
-                        <Trans>&copy; {date} Budgie. All rights reserved.</Trans>
+                        <Trans>&copy; {year} Budgie. All rights reserved.</Trans>
                     </p>
 
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
                         <Link
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             href={`/${lang}/legal/privacy-policy`}

@@ -23,6 +23,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['spending-analytics', 'ai-auto-categorization', 'date-filter-presets', 'expense-tracking'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2026-02-22',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-16',
     ogTags: ['recurring', 'subscriptions', 'calendar']
 } satisfies FeatureRegistryEntryInterface;

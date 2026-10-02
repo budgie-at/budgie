@@ -2,59 +2,44 @@
 import type { FaqSectionJsonLdParamsInterface } from '../interface/faq-section-json-ld-params.interface';
 
 export const buildFaqSectionJsonLd = ({
-    privacyQuestion,
-    privacyAnswer,
-    bankSyncQuestion,
-    bankSyncAnswer,
-    assetsQuestion,
-    assetsAnswer,
-    multiDeviceQuestion,
-    multiDeviceAnswer,
-    licenseQuestion,
-    licenseAnswer
+    storageQuestion,
+    storageAnswer,
+    offlineQuestion,
+    offlineAnswer,
+    bankLoginQuestion,
+    bankLoginAnswer,
+    openSourceQuestion,
+    openSourceAnswer,
+    subscriptionQuestion,
+    subscriptionAnswer
 }: FaqSectionJsonLdParamsInterface): Record<string, unknown> => ({
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
         {
             '@type': 'Question',
-            name: privacyQuestion,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: privacyAnswer
-            }
+            name: storageQuestion,
+            acceptedAnswer: { '@type': 'Answer', text: storageAnswer }
         },
         {
             '@type': 'Question',
-            name: bankSyncQuestion,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: bankSyncAnswer
-            }
+            name: offlineQuestion,
+            acceptedAnswer: { '@type': 'Answer', text: offlineAnswer }
         },
         {
             '@type': 'Question',
-            name: assetsQuestion,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: assetsAnswer
-            }
+            name: bankLoginQuestion,
+            acceptedAnswer: { '@type': 'Answer', text: bankLoginAnswer }
         },
         {
             '@type': 'Question',
-            name: multiDeviceQuestion,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: multiDeviceAnswer
-            }
+            name: openSourceQuestion,
+            acceptedAnswer: { '@type': 'Answer', text: openSourceAnswer }
         },
         {
             '@type': 'Question',
-            name: licenseQuestion,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: licenseAnswer
-            }
+            name: subscriptionQuestion,
+            acceptedAnswer: { '@type': 'Answer', text: subscriptionAnswer }
         }
     ]
 });

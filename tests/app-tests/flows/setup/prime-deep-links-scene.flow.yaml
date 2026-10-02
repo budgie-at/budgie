@@ -1,0 +1,13 @@
+appId: ${APP_ID}
+---
+# Store-screenshot scene wrapper around prime-deep-links.flow.yaml.
+#
+# mobile-ci's capture-screenshots-ios collects exactly one takeScreenshot PNG per
+# flow-backed scene and fails the cell with a zero-screenshot error otherwise, so
+# the shared E2E prime flow is wrapped here instead of gaining a takeScreenshot
+# the Maestro suite has no use for. The resulting 00-prime.png is deleted by
+# .github/workflows/store-screenshots.yml's post-capture-command before the raw
+# artifact is uploaded, and is never part of the composed store set.
+
+- runFlow: prime-deep-links.flow.yaml
+- takeScreenshot: 00-prime

@@ -1,93 +1,88 @@
 import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { ruleEngineService } from '../../rule/service/rule-engine.service';
-import { transactionService } from '../../transaction/service/transaction.service';
+import { RuleEngineService } from '../../rule/service/rule-engine.service';
+import { TransactionService } from '../../transaction/service/transaction.service';
 
 import type { WalletCaptureNativeRecordInterface } from '../interface/wallet-capture-native-record.interface';
-import type { TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
+import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
-class WalletCaptureTransactionService {
-    @Log(
-        record => `enter captureId="${record.captureId}" accountId=${record.accountId}`,
-        (result, record) =>
-            `done captureId="${record.captureId}" accountId=${record.accountId} transactionIds=${result.map(row => row.id).join(',')}`,
-        (error, record) => `throw captureId="${record.captureId}" accountId=${record.accountId} error=${getErrorMessage(error)}`
-    )
-    async createCaptureTransaction(record: WalletCaptureNativeRecordInterface): Promise<TransactionEntityInterface[]> {
-        const input = this.mapCaptureToTransactionInput(record);
-        const prepared = await ruleEngineService.prepareCreateInputsForRules([input]);
-        const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
+export class WalletCaptureTransactionService extends Context.Service<WalletCaptureTransactionService>()(
+    '@budgie/app/WalletCaptureTransactionService',
+    {
+        make: Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const transactionService = yield* TransactionService;
 
-        const ruleApplicationPromises = prepared.postCreateIndexes.map(async postCreateIndex => {
-            const createdTransactionId = createdTransactions[postCreateIndex]?.id;
-            const postCreateTransactionInput = prepared.transactionInputs[postCreateIndex];
+            const mapCaptureToTransactionInput = (record: WalletCaptureNativeRecordInterface): TransactionCreateInputInterface => ({
+                amount: record.amount,
+                title: isNotEmptyString(record.merchant.trim()) ? record.merchant.trim() : i18n._(msg`Apple Pay purchase`),
+                comment: '',
+                type: TransactionTypeEnum.EXPENSE,
+                exchangeRate: 1,
+                operatedAt: new Date(record.capturedAt),
+                externalId: record.captureId,
+                updatedBy: null,
+                externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
+                fromAccountId: record.accountId,
+                toAccountId: null,
+                tagIds: [],
+                entries: [
+                    {
+                        accountId: record.accountId,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        amount: record.amount,
+                        categoryId: null,
+                        categorySource: CategorySourceEnum.USER,
+                        mccCategoryId: null,
+                        externalId: record.captureId,
+                        exchangeRate: 1,
+                        toIban: null
+                    }
+                ]
+            });
 
-            if (isDefined(createdTransactionId) && isDefined(postCreateTransactionInput)) {
-                await ruleEngineService.applyRulesToTransactions([createdTransactionId], [postCreateTransactionInput]);
-            }
-        });
+            return {
+                createCaptureTransaction: Effect.fn('WalletCaptureTransactionService.createCaptureTransaction')(function* (
+                    record: WalletCaptureNativeRecordInterface
+                ) {
+                    const prepared = yield* ruleEngineService.prepareCreateInputsForRules([mapCaptureToTransactionInput(record)]);
+                    const createdTransactions = yield* transactionService.bulkCreate(prepared.transactionInputs);
 
-        await Promise.all(ruleApplicationPromises);
+                    for (const postCreateIndex of prepared.postCreateIndexes) {
+                        const createdTransactionId = createdTransactions[postCreateIndex]?.id;
+                        const transactionInput = prepared.transactionInputs[postCreateIndex];
 
-        return createdTransactions;
+                        if (isDefined(createdTransactionId) && isDefined(transactionInput)) {
+                            yield* ruleEngineService.applyRulesToTransactions([createdTransactionId], [transactionInput]);
+                        }
+                    }
+
+                    return createdTransactions;
+                }),
+                applyRulesToExistingCaptureTransaction: Effect.fn('WalletCaptureTransactionService.applyRulesToExistingCaptureTransaction')(
+                    function* (record: WalletCaptureNativeRecordInterface, transactionId: number) {
+                        const prepared = yield* ruleEngineService.prepareCreateInputsForRules([mapCaptureToTransactionInput(record)]);
+
+                        if (isNotEmptyArray(prepared.postCreateIndexes)) {
+                            yield* ruleEngineService.applyRulesToTransactions(
+                                prepared.postCreateIndexes.map(() => transactionId),
+                                prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined)
+                            );
+                        }
+                    }
+                )
+            };
+        })
     }
-
-    @Log(
-        (record, transactionId) =>
-            `enter existingCaptureId="${record.captureId}" status=${record.status} merchant="${record.merchant}" transactionId=${transactionId}`,
-        (_result, record, transactionId) =>
-            `done existingCaptureId="${record.captureId}" status=${record.status} merchant="${record.merchant}" transactionId=${transactionId}`,
-        (error, record, transactionId) =>
-            `throw existingCaptureId="${record.captureId}" status=${record.status} merchant="${record.merchant}" transactionId=${transactionId} error=${getErrorMessage(error)}`
-    )
-    async applyRulesToExistingCaptureTransaction(record: WalletCaptureNativeRecordInterface, transactionId: number): Promise<void> {
-        const input = this.mapCaptureToTransactionInput(record);
-        const prepared = await ruleEngineService.prepareCreateInputsForRules([input]);
-        const postCreateTransactionIds = prepared.postCreateIndexes.map(() => transactionId);
-        const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
-
-        if (isNotEmptyArray(postCreateTransactionIds)) {
-            await ruleEngineService.applyRulesToTransactions(postCreateTransactionIds, postCreateTransactionInputs);
-        }
-    }
-
-    private mapCaptureToTransactionInput(record: WalletCaptureNativeRecordInterface): TransactionCreateInputInterface {
-        const trimmedMerchant = record.merchant.trim();
-        const title = isNotEmptyString(trimmedMerchant) ? trimmedMerchant : i18n._(msg`Apple Pay purchase`);
-
-        return {
-            amount: record.amount,
-            title,
-            comment: '',
-            type: TransactionTypeEnum.EXPENSE,
-            exchangeRate: 1,
-            operatedAt: new Date(record.capturedAt),
-            externalId: record.captureId,
-            updatedBy: null,
-            externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
-            fromAccountId: record.accountId,
-            toAccountId: null,
-            tagIds: [],
-            entries: [
-                {
-                    accountId: record.accountId,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    amount: record.amount,
-                    categoryId: null,
-                    categorySource: CategorySourceEnum.USER,
-                    mccCategoryId: null,
-                    externalId: record.captureId,
-                    exchangeRate: 1,
-                    toIban: null
-                }
-            ]
-        };
-    }
+) {
+    static readonly layer = Layer.effect(WalletCaptureTransactionService, WalletCaptureTransactionService.make).pipe(
+        Layer.provide([RuleEngineService.layer, TransactionService.layer])
+    );
 }
-
-export const walletCaptureTransactionService = new WalletCaptureTransactionService();

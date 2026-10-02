@@ -9,14 +9,14 @@ import { TransactionConvertMenuItem } from '../transaction-convert-menu-item/tra
 
 import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
 
-interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated'> {
-    readonly onRevert?: () => void;
+interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated' | 'onRevert'> {
     readonly onFeePress?: () => void;
     readonly feeActionLabel?: string;
     readonly onAttachDebtSettlement?: () => void;
     readonly attachDebtSettlementLabel?: string;
     readonly onConvertToRefund?: () => void;
     readonly onConvertToTransfer?: () => void;
+    readonly onStartDeposit?: () => void;
     readonly onDetachDebtSettlement?: () => void;
 }
 
@@ -30,6 +30,7 @@ export const UpdateTransactionActionsMenu = ({
     attachDebtSettlementLabel,
     onConvertToRefund,
     onConvertToTransfer,
+    onStartDeposit,
     onDetachDebtSettlement
 }: Props) => {
     const { t } = useLingui();
@@ -37,6 +38,7 @@ export const UpdateTransactionActionsMenu = ({
     const showAttachDebtSettlement = isDefined(onAttachDebtSettlement);
     const showConvertToRefund = isDefined(onConvertToRefund);
     const showConvertToTransfer = isDefined(onConvertToTransfer);
+    const showStartDeposit = isDefined(onStartDeposit);
     const showDetachDebtSettlement = isDefined(onDetachDebtSettlement);
 
     return (
@@ -79,6 +81,14 @@ export const UpdateTransactionActionsMenu = ({
                     label={t`Convert to Transfer`}
                     onConvert={onConvertToTransfer}
                     testID={TransactionActionsMenuSelector.ConvertToTransferButton}
+                />
+            ) : null}
+            {showStartDeposit ? (
+                <TransactionConvertMenuItem
+                    icon={UserIconNameEnum.Landmark}
+                    label={t`Start Deposit`}
+                    onConvert={onStartDeposit}
+                    testID={TransactionActionsMenuSelector.StartDepositButton}
                 />
             ) : null}
         </TransactionActionsMenu>

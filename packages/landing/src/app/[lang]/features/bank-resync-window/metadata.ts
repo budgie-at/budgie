@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'edited transaction conflict',
         'bank statement diff'
     ],
-    relatedFeatureSlugs: ['monobank-sync', 'csv-import', 'account-transfers', 'transfer-pair-detection'],
+    relatedFeatureSlugs: ['sync-data-repairs', 'monobank-sync', 'csv-import', 'account-transfers', 'transfer-pair-detection'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
     publishedAt: '2026-05-02',
     updatedAt: '2026-05-03',

@@ -1,10 +1,9 @@
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { useSQLiteContext } from 'expo-sqlite';
+
+import { expoDb } from '../../drizzle/db/db';
 
 export const DrizzleStudioController = () => {
-    const db = useSQLiteContext();
-
-    useDrizzleStudio(db);
+    useDrizzleStudio(expoDb);
 
     return null;
 };

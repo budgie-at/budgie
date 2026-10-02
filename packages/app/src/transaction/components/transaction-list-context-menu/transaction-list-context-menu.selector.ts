@@ -3,6 +3,7 @@ export const TransactionListContextMenuSelector = {
     AttachDebtSettlementButton: 'TransactionContextMenu.AttachDebtSettlementButton',
     ConvertToRefundButton: 'TransactionContextMenu.ConvertToRefundButton',
     ConvertToTransferButton: 'TransactionContextMenu.ConvertToTransferButton',
+    StartDepositButton: 'TransactionContextMenu.StartDepositButton',
     RevertButton: 'TransactionContextMenu.RevertButton',
     DeleteButton: 'TransactionContextMenu.DeleteButton'
 } as const;

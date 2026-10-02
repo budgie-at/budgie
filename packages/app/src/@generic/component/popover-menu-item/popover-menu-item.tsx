@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
+import { ClassValue } from 'cn';
 import { Text } from 'react-native';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';

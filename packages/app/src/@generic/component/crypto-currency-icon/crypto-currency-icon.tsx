@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { CryptoIcon, getSupportedSymbols } from '@vnaidin/react-native-cryptocurrency-icons';
+import { cn } from 'cn';
 import { View } from 'react-native';
 
-import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
 interface Props {

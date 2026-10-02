@@ -142,7 +142,15 @@ export const buildTestDb = (sourceDatabasePath: string | null = null): DB => {
                     throw new Error('Test database was not initialized');
                 }
 
-                await callback(expoSqlite);
+                sqlite.exec('BEGIN IMMEDIATE');
+
+                try {
+                    await callback(expoSqlite);
+                    sqlite.exec('COMMIT');
+                } catch (error) {
+                    sqlite.exec('ROLLBACK');
+                    throw error;
+                }
             }
         };
 

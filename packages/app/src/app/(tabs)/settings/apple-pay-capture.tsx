@@ -1,5 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
 import { useEffect } from 'react';
 import { Linking, ScrollView, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -10,9 +12,11 @@ import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { ApplePayCaptureHistoryNotice } from '../../../wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice';
 import { ApplePayCaptureOpenShortcutsButton } from '../../../wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button';
 import { ApplePayCaptureSetupCard } from '../../../wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card';
 import { ApplePayCaptureTroubleshootingCard } from '../../../wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card';
@@ -42,15 +46,18 @@ export default function ApplePayCaptureSettingsPage() {
         void refresh();
     }, [refresh]);
 
-    const handleOpenInstructionsGuide = async () => {
-        try {
-            await Linking.openURL(`https://budgie.at/${language}/blog/apple-pay-shortcuts-instructions`);
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Could not open instructions`, text2: getErrorMessage(error) });
-        }
+    const handlePressInstructionsGuide = () => {
+        appRuntime.runFork(
+            Effect.promise(() => Linking.openURL(`https://budgie.at/${language}/blog/apple-pay-shortcuts-instructions`)).pipe(
+                Effect.tapCause(Effect.logError),
+                Effect.catchCause(cause =>
+                    Effect.sync(() => {
+                        Toast.show({ type: 'error', text1: t`Could not open instructions`, text2: getErrorMessage(Cause.squash(cause)) });
+                    })
+                )
+            )
+        );
     };
-
-    const handlePressInstructionsGuide = () => void handleOpenInstructionsGuide();
 
     return (
         <Page
@@ -58,16 +65,7 @@ export default function ApplePayCaptureSettingsPage() {
             header={<PageHeader title={t`Apple Pay capture`} onGoBack={handleGoBack} />}
         >
             <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
-                <Card variant="dark-warning" className="gap-y-sm">
-                    <Text className="text-primary text-base font-semibold">
-                        <Trans>Wallet history is not available</Trans>
-                    </Text>
-                    <Text className="text-secondary-foreground text-sm">
-                        <Trans>
-                            Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes.
-                        </Trans>
-                    </Text>
-                </Card>
+                <ApplePayCaptureHistoryNotice />
 
                 {errorMessage ? (
                     <Card testID={ApplePayCaptureSettingsSelector.ErrorCard} variant="destructive" className="gap-y-sm">

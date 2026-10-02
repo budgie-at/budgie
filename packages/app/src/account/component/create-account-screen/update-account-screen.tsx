@@ -28,6 +28,7 @@ interface Props<T extends FieldValues> {
     readonly account: AccountEntityInterface;
     readonly instrumentSymbol: string;
     readonly allowNegativeBalance?: boolean;
+    readonly balanceFieldLabel?: string;
     readonly children?: ReactNode;
     readonly control: Control<T>;
     readonly onSubmit: EmptyFn;
@@ -35,7 +36,7 @@ interface Props<T extends FieldValues> {
 }
 
 export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
-    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance, isSubmitting } = props;
+    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance, balanceFieldLabel, isSubmitting } = props;
     const { t } = useLingui();
 
     const variant = ACCOUNT_COLOR[account.type];
@@ -68,6 +69,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 variant={variant}
                 instrumentSymbol={instrumentSymbol}
                 control={control}
+                label={balanceFieldLabel}
                 allowNegative={allowNegativeBalance}
                 minimumDecimalPlaces={minimumDecimalPlaces}
                 showInstrumentAfterAmount={showInstrumentAfterAmount}

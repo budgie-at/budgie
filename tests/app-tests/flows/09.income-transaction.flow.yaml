@@ -77,7 +77,8 @@ appId: ${APP_ID}
     id: 'TransactionInfo.Row.Account'
 - assertVisible:
     id: 'TransactionInfo.Row.Category'
-- assertNotVisible: '^Set fee$'
+- assertNotVisible:
+      id: 'TransactionFeePill'
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
@@ -92,13 +93,16 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - assertNotVisible:
+    id: 'TransactionActionsMenu.StartDepositButton'
+- assertNotVisible:
     id: 'TransactionActionsMenu.RevertButton'
 - tapOn:
     id: 'TransactionActionsMenu.FeeButton'
 - extendedWaitUntil:
     visible:
       id: 'SplitEntryRow.Amount.0'
-- assertVisible: 'Save fee'
+- assertVisible:
+      id: 'TransactionFeeModal.SaveButton'
 - swipe:
     direction: DOWN
 - extendedWaitUntil:
@@ -117,6 +121,8 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToRefundButton'
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertNotVisible:
+    id: 'TransactionActionsMenu.StartDepositButton'
 - assertNotVisible:
     id: 'TransactionActionsMenu.RevertButton'
 - tapOn:

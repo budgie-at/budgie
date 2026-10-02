@@ -13,18 +13,36 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. js-lingui-explicit-id
-#: src/sync/service/consolidation-coordinator.service.ts
+#: src/sync/layer/consolidation-coordinator.layer.ts
 msgid "Binance P2P buy {assetCode}"
 msgstr "P2P-купівля {assetCode} на Binance"
 
 #. js-lingui-explicit-id
-#: src/sync/service/consolidation-coordinator.service.ts
+#: src/sync/layer/consolidation-coordinator.layer.ts
 msgid "Binance P2P sell {assetCode}"
 msgstr "P2P-продаж {assetCode} на Binance"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid " • {embeddingPending} tx queued"
-msgstr " • {embeddingPending} транзакц. у черзі"
+#. placeholder {0}: accounts.length
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "{0, plural, one {# account created} other {# accounts created}}"
+msgstr "{0, plural, one {# рахунок створено} few {# рахунки створено} many {# рахунків створено} other {# рахунка створено}}"
+
+#. placeholder {0}: labels.length
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "{0, plural, one {# tag} other {# tags}}"
+msgstr "{0, plural, one {# тег} few {# теги} many {# тегів} other {# тегів}}"
+
+#. placeholder {0}: movedToCashTransactionIds.length
+#. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "{0, plural, one {# transaction} other {# transactions}}"
+msgstr "{0, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#. placeholder {0}: transactionIds.length
+#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+msgid "{0, plural, one {Move # withdrawal to cash} other {Move # withdrawals to cash}}"
+msgstr "{0, plural, one {Перенести # зняття в готівку} few {Перенести # зняття в готівку} many {Перенести # знять у готівку} other {Перенести # зняття в готівку}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
@@ -43,6 +61,10 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
+msgstr "{applied, plural, one {# відповідну транзакцію оновлено} other {# відповідних транзакцій оновлено}}"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 msgstr "{approxTransactions, plural, one {~# транзакція} few {~# транзакції} many {~# транзакцій} other {~# транзакції}}"
@@ -55,6 +77,14 @@ msgstr "{availableCount, plural, one {# стовпець доступний} few
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# категорія} few {# категорії} many {# категорій} other {# категорії}}"
 
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
+msgstr "{categorizedCount, plural, one {# категоризовано за цей сеанс} few {# категоризовано за цей сеанс} many {# категоризовано за цей сеанс} other {# категоризовано за цей сеанс}}"
+
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "{categorizedCount, plural, one {# done} other {# done}}"
+msgstr "{categorizedCount, plural, one {# готово} few {# готово} many {# готово} other {# готово}}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% витрачено"
@@ -63,6 +93,10 @@ msgstr "{categoryName}: {threshold}% витрачено"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
+msgstr "{count, plural, one {# категорія має типову іконку} few {# категорії мають типову іконку} many {# категорій мають типову іконку} other {# категорії мають типову іконку}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
@@ -70,10 +104,6 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
 msgstr "{count, plural, one {# відсутня категорія} few {# відсутні категорії} many {# відсутніх категорій} other {# відсутньої категорії}}"
-
-#: src/settings/hooks/use-sync-repairs-action.hook.ts
-msgid "{count, plural, one {# sync item repaired} other {# sync items repaired}}"
-msgstr "{count, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
 
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
@@ -87,9 +117,17 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
+msgstr "{daysRemaining, plural, one {Залишився # день} few {Залишилося # дні} many {Залишилося # днів} other {Залишилося # дня}}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "{formattedAmount} / mo"
+msgstr "{formattedAmount} / міс."
 
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
@@ -138,6 +176,30 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "{remainingCount, plural, one {# left} other {# left}}"
+msgstr "{remainingCount, plural, one {Залишилася #} few {Залишилося #} many {Залишилося #} other {Залишилося #}}"
+
+#: src/settings/hooks/use-sync-repairs-action.hook.ts
+msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
+msgstr "{repairedTransactionCount, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
+
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
+msgstr "{rowCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
+msgstr "{rowCount, plural, one {Прийняти # пропозицію} few {Прийняти # пропозиції} many {Прийняти # пропозицій} other {Прийняти # пропозиції}}"
+
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
+msgstr "{rowCount, plural, one {Категоризовано # транзакцію} few {Категоризовано # транзакції} many {Категоризовано # транзакцій} other {Категоризовано # транзакції}}"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
+msgstr "{rowCount, plural, one {Тег додано до # транзакції} few {Тег додано до # транзакцій} many {Тег додано до # транзакцій} other {Тег додано до # транзакції}}"
+
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
 msgstr "{selectedCount, plural, =0 {Показати всі рахунки} one {Показати # рахунок} few {Показати # рахунки} many {Показати # рахунків} other {Показати # рахунка}}"
@@ -154,21 +216,34 @@ msgstr "{selectedCount, plural, =0 {Показати всі теги} one {По�
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# схожа транзакція} other {# схожих транзакцій}}"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
+msgstr "{skippedCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
+
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "{source} failed: {message}"
-msgstr "Не вдалося виконати {source}: {message}"
+#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
+msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцінки взято типовий місяць."
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
+msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#: src/runway/component/runway-pill/runway-pill.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "+{formattedNet} / mo"
+msgstr "+{formattedNet} / міс."
 
 #: src/budget/components/budget-widget-category-list/budget-widget-category-list.tsx
 msgid "+{hiddenCategoryCount} more"
@@ -181,6 +256,11 @@ msgstr "<"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid ">"
 msgstr ">"
+
+#: src/runway/component/runway-pill/runway-pill.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "≈ {formattedMonths} mo"
+msgstr "≈ {formattedMonths} міс."
 
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -198,9 +278,17 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "100% on-device"
+msgstr "100% локально"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
 msgstr "Збалансований стартовий бюджет із поширеними категоріями"
+
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "A rule matches incoming bank transactions and applies a category and tags for you."
+msgstr "Правило визначає вхідні банківські транзакції та автоматично призначає категорію і теги."
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
@@ -209,6 +297,22 @@ msgstr "Правило з такими ж умовами вже існує."
 #: src/app/(tabs)/settings/index.tsx
 msgid "About"
 msgstr "Про застосунок"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 12 minutes"
+msgstr "Близько 12 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 3 minutes"
+msgstr "Близько 3 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 6 minutes"
+msgstr "Близько 6 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About a minute"
+msgstr "Близько хвилини"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -223,13 +327,17 @@ msgstr "Рахунок"
 msgid "Account {accountId}"
 msgstr "Рахунок {accountId}"
 
-#: src/money-data/service/entry-base-valuation.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Рахунок {accountId} не знайдено"
 
 #: src/account/service/account-debt-opening.service.ts
 msgid "Account {id} not found"
 msgstr "Рахунок {id} не знайдено"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Account actions"
+msgstr "Дії з рахунком"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Account is archived"
@@ -240,7 +348,7 @@ msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
 #. js-lingui-explicit-id
-#: src/transaction/service/transaction.service.ts
+#: src/transaction/service/transfer-creation.service.ts
 msgid "transaction.accountNotFound"
 msgstr "Рахунок не знайдено"
 
@@ -313,6 +421,10 @@ msgstr "Додати нотатку..."
 msgid "Add a per-category cap"
 msgstr "Додати ліміт для категорії"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Add a transaction"
+msgstr "Додати транзакцію"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
 msgstr "Додати рахунок"
@@ -334,7 +446,7 @@ msgstr "Додайте дію Budgie «Зберегти транзакцію App
 msgid "Add category"
 msgstr "Додати категорію"
 
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Add deposit"
 msgstr "Додати депозит"
 
@@ -342,17 +454,29 @@ msgstr "Додати депозит"
 msgid "Add item"
 msgstr "Додати запис"
 
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "Add my first expense"
+msgstr "Додати мою першу витрату"
+
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
 msgstr "Додати тег"
 
-#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
-msgid "Add transactions to see how your spending breaks down by category."
-msgstr "Додайте транзакції, щоб побачити, як ваші витрати розподіляються за категоріями."
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Add tags"
+msgstr "Додати теги"
+
+#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
+msgid "Add tags to these transactions"
+msgstr "Додати теги до цих транзакцій"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
+
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "Add your first expense"
+msgstr "Додайте свою першу витрату"
 
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Adjustment"
@@ -362,16 +486,7 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "AI disabled"
-msgstr "ШІ вимкнено"
-
-#: src/ai/service/ai-system-status.service.ts
-#: src/ai/service/ai-umbrella-status.service.ts
-msgid "AI idle"
-msgstr "ШІ неактивний"
-
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "ШІ вимкнено"
 
@@ -391,17 +506,25 @@ msgstr "Усі"
 msgid "All accounts already added"
 msgstr "Усі рахунки вже додано"
 
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "All categories have icons"
+msgstr "Усі категорії мають іконки"
+
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "All caught up"
+msgstr "Усе оброблено"
+
 #: src/app/import-column-mapper.tsx
 msgid "All columns have been assigned"
 msgstr "Усі стовпці було призначено"
 
+#: src/app/icon-selector.tsx
+msgid "All icons"
+msgstr "Усі іконки"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "Усі регулярні"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "All set"
-msgstr "Усе готово"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
@@ -415,9 +538,23 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 msgid "Allocated"
 msgstr "Розподілено"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Already repaid"
+msgstr "Вже погашено"
+
+#: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Already returned"
+msgstr "Вже повернуто"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Вже синхронізується"
+
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Already tracked"
+msgstr "Уже враховано"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -426,10 +563,9 @@ msgstr "Вже синхронізується"
 msgid "Amount"
 msgstr "Сума"
 
-#: src/app/(main)/create-transaction/transfer.tsx
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
-msgid "Amount exceeds debt account balance"
-msgstr "Сума перевищує баланс боргового рахунку"
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "Amount first. Budgie picks the account and guesses the category."
+msgstr "Спочатку сума. Budgie обере рахунок і вгадає категорію."
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
@@ -447,6 +583,11 @@ msgstr "API токен"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "App Lock"
 msgstr "Блокування додатка"
+
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "App locked and encrypted"
+msgstr "Застосунок заблоковано і зашифровано"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "App Version"
@@ -483,11 +624,12 @@ msgstr "Застосовувати типові категорії на осно
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
 msgstr "Архівувати"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
@@ -544,6 +686,10 @@ msgstr "Середнє"
 msgid "Avg cost"
 msgstr "Сер. ціна"
 
+#: src/app/import-backup-pin.tsx
+msgid "Backup PIN"
+msgstr "PIN резервної копії"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
 msgstr "Баланс"
@@ -554,9 +700,21 @@ msgstr "Баланс"
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Balance forecast"
+msgstr "Прогноз балансу"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Bank"
 msgstr "Банк"
+
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Bank account"
+msgstr "Банківський рахунок"
+
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "Bank connected"
+msgstr "Банк підключено"
 
 #: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
@@ -579,9 +737,17 @@ msgstr "Базова валюта"
 msgid "Base instrument not found"
 msgstr "Базову валюту не знайдено"
 
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Based on your last {monthsUsed} months"
+msgstr "За останні {monthsUsed} місяців"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Based on your recent spending"
 msgstr "На основі ваших нещодавніх витрат"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Best on Wi-Fi"
+msgstr "Найкраще через Wi-Fi"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -599,6 +765,10 @@ msgstr "Дати списання"
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
 msgstr "Binance"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
+msgstr "Ордери Binance P2P недоступні: API-ключу бракує дозволу на читання P2P."
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Bind Amount to Shortcut Input → Amount."
@@ -627,6 +797,7 @@ msgid "Borrowed debt account expected"
 msgstr "Очікувався рахунок позиченого боргу"
 
 #: src/app/(tabs)/settings/index.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
 msgstr "Бюджет"
 
@@ -650,6 +821,10 @@ msgstr "Budgie"
 msgid "Budgie action is missing"
 msgstr "Дія Budgie відсутня"
 
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Budgie can categorise transactions, suggest tags and transcribe voice notes — all on this device. Nothing is sent anywhere."
+msgstr "Budgie вміє категоризувати транзакції, пропонувати теги та розшифровувати голосові нотатки — і все це на пристрої. Нічого нікуди не надсилається."
+
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
@@ -657,6 +832,14 @@ msgstr "Budgie може знайти дублікати імпортів бан�
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie зіткнувся з неочікуваною проблемою. Ви можете перезапустити застосунок або повідомити про проблему, щоб ми її дослідили."
+
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "Budgie is ready to go. You can revisit any of these steps later from Settings."
+msgstr "Budgie готовий до роботи. Ви можете повернутися до будь-якого з цих кроків пізніше в Налаштуваннях."
+
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+msgid "Budgie warns you before you cross it, and shows what's left right on the home screen."
+msgstr "Budgie попереджає вас, перш ніж ви її перевищите, і показує залишок прямо на головному екрані."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -674,12 +857,24 @@ msgstr "Budgie повідомить, коли імпорт завершитьс�
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
 
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Burning"
+msgstr "Спадає"
+
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Can run for hours on old accounts, and much slower while the app is closed."
+msgstr "Може тривати годинами для старих рахунків і значно повільніше, коли застосунок закрито."
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Can take hours"
+msgstr "Може тривати годинами"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
-#: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -706,7 +901,7 @@ msgstr "Budgie позначить як видалені такі записи: {
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
 msgid "Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
 msgstr "Зберігає нові відповідні оплати через Apple Pay. Історію Wallet та остаточні зміни банківського розрахунку імпортувати неможливо."
 
@@ -715,11 +910,17 @@ msgid "Card: {cardNameText}"
 msgstr "Картка: {cardNameText}"
 
 #: src/account/constant/account-type.constant.ts
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Cash"
 msgstr "Готівка"
 
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Cash withdrawals"
+msgstr "Зняття готівки"
+
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
+#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx
 #: src/transaction/components/transaction-list/transaction-list.tsx
@@ -730,18 +931,43 @@ msgstr "Категорії"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Categories break your spending down automatically. Add a transaction, or widen the period to see earlier ones."
+msgstr "Категорії автоматично розподіляють ваші витрати. Додайте транзакцію або розширте період, щоб побачити попередні."
+
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Categorise imports automatically"
+msgstr "Автоматична категоризація імпортів"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
+msgstr "Категоризує транзакції, пропонує теги та розшифровує голосові нотатки просто на цьому пристрої. Один раз завантажує близько 2,5 ГБ моделей — краще через Wi-Fi."
+
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "Categorize"
+msgstr "Категоризувати"
+
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "Categorize as {categoryTitle}"
+msgstr "Категоризувати як {categoryTitle}"
+
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category"
 msgstr "Категорія"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Category → {categoryTitle}"
 msgstr "Категорія → {categoryTitle}"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Category Icons"
+msgstr "Іконки категорій"
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -752,10 +978,15 @@ msgstr "Ліміти за категоріями"
 msgid "Category Name"
 msgstr "Назва категорії"
 
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Змінити"
+
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Change currency"
+msgstr "Змінити валюту"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Change PIN"
@@ -769,6 +1000,10 @@ msgstr "Перевірка"
 #: src/app/(main)/create-account/index.tsx
 msgid "Checking Account"
 msgstr "Поточний рахунок"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
+msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
 
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
@@ -849,10 +1084,19 @@ msgstr "Підтвердити розділення"
 msgid "Confirm tag selection"
 msgstr "Підтвердити вибір тегів"
 
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Connect a bank"
+msgstr "Підключити банк"
+
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Connect a bank or import a statement first, then rules can categorise and tag every transaction as it arrives."
+msgstr "Спершу підключіть банк або імпортуйте виписку, щоб правила могли категоризувати та позначати тегами кожну транзакцію одразу після надходження."
+
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Connect Binance"
 msgstr "Підключити Binance"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
@@ -882,6 +1126,14 @@ msgid "Contains"
 msgstr "Містить"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
 msgstr "Продовжити"
 
@@ -931,7 +1183,11 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not add accounts"
 msgstr "Не вдалося додати рахунки"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Could not apply rule to existing transactions"
+msgstr "Не вдалося застосувати правило до наявних транзакцій"
+
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
@@ -940,6 +1196,10 @@ msgstr "Не вдалося архівувати рахунок"
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Could not attach debt"
 msgstr "Не вдалося прив’язати борг"
+
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "Could not categorize transactions"
+msgstr "Не вдалося категоризувати транзакції"
 
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Could not check sync data"
@@ -1023,14 +1283,17 @@ msgstr "Не вдалося експортувати CSV"
 msgid "Could not export database"
 msgstr "Не вдалося експортувати базу даних"
 
-#: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not fetch accounts"
 msgstr "Не вдалося отримати рахунки"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Could not load accounts"
+msgstr "Не вдалося завантажити рахунки"
 
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Could not load accounts from the bank"
@@ -1047,6 +1310,10 @@ msgstr "Не вдалося об'єднати категорію"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not merge tag"
 msgstr "Не вдалося об'єднати тег"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
+msgid "Could not move withdrawals to cash"
+msgstr "Не вдалося перенести зняття в готівку"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Could not open GitHub"
@@ -1120,19 +1387,40 @@ msgstr "Не вдалося вибрати резервну копію бази 
 msgid "Could not set up sync"
 msgstr "Не вдалося налаштувати синхронізацію"
 
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "Could not tag transactions"
+msgstr "Не вдалося додати теги до транзакцій"
+
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
 msgstr "Не вдалося розконсолідувати транзакцію."
 
+#: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
+msgid "Could not undo the move to cash"
+msgstr "Не вдалося скасувати перенесення в готівку"
+
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+msgid "Could not update category icon"
+msgstr "Не вдалося оновити іконку категорії"
+
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Не вдалося оновити сповіщення"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Could not update on-device AI"
+msgstr "Не вдалося оновити ШІ на пристрої"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Could not update rule"
 msgstr "Не вдалося оновити правило"
+
+#: src/settings/hook/use-setting-toggle.hook.ts
+msgid "Could not update setting"
+msgstr "Не вдалося оновити налаштування"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Could not update settings"
@@ -1148,13 +1436,25 @@ msgstr "Не вдалося оновити токен"
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
-#: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
-msgid "Could not update widget setting"
-msgstr "Не вдалося оновити налаштування віджета"
-
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Count this account in your net worth calculation"
 msgstr "Враховувати цей рахунок у розрахунку чистої вартості"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Counts crypto at today's market value"
+msgstr "Враховує криптовалюту за сьогоднішньою ринковою вартістю"
+
+#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
+msgid "Counts irregular costs like insurance or holidays as a monthly expense."
+msgstr "Враховує нерегулярні витрати, як-от страхування чи відпустку, як щомісячні."
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Covered by {coverMonths} months of expenses"
+msgstr "Покрито {coverMonths} місяцями витрат"
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Covered by your liquid balance"
+msgstr "Покрито вашим ліквідним балансом"
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
@@ -1176,6 +1476,15 @@ msgstr "Створити PIN-код"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
 msgstr "Створіть API-ключ і секрет лише для читання"
+
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Create a rule"
+msgstr "Створити правило"
+
+#: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
+msgid "Create a tag"
+msgstr "Створити тег"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
@@ -1215,17 +1524,9 @@ msgstr "Створіть один, щоб розпочати."
 msgid "Create Rule"
 msgstr "Створити правило"
 
-#: src/rule/components/rule-empty-state/rule-empty-state.tsx
-msgid "Create rules to automatically categorize and tag your bank transactions"
-msgstr "Створюйте правила для автоматичної категоризації та тегування банківських транзакцій"
-
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Створити тег"
-
-#: src/tag/components/tag-empty-state/tag-empty-state.tsx
-msgid "Create tags to organize your transactions"
-msgstr "Створюйте теги для організації транзакцій"
 
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Create your budget"
@@ -1241,6 +1542,7 @@ msgid "Credentials required"
 msgstr "Потрібні облікові дані"
 
 #: src/account/constant/account-type.constant.ts
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Crypto"
 msgstr "Криптовалюта"
 
@@ -1323,6 +1625,14 @@ msgstr "Борговий рахунок не може збігатися з ра
 msgid "Debt account not found"
 msgstr "Борговий рахунок не знайдено"
 
+#: src/transaction/error/debt-transfer-not-allowed.error.ts
+msgid "Debt accounts cannot take part in transfers"
+msgstr "Боргові рахунки не можуть брати участь у переказах"
+
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Debts & loans"
+msgstr "Борги та кредити"
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
@@ -1380,7 +1690,7 @@ msgid "transaction.depositExpenseDisallowed"
 msgstr "Депозитні рахунки не можуть фінансувати витрати"
 
 #. js-lingui-explicit-id
-#: src/account/service/account-balance-incremental.service.ts
+#: src/account/error/deposit-negative-balance.error.ts
 msgid "account.depositNegativeBalanceDisallowed"
 msgstr "Баланс депозиту не може стати відʼємним"
 
@@ -1391,6 +1701,10 @@ msgstr "Скасувати вибір"
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Detach debt"
 msgstr "Відкріпити борг"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Details"
+msgstr "Деталі"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
@@ -1409,7 +1723,16 @@ msgstr "Відхилити запис із Wallet?"
 msgid "Display the budget card on the home screen"
 msgstr "Показувати картку бюджету на головному екрані"
 
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Display the runway pill next to your total balance"
+msgstr "Показувати індикатор запасу поруч із загальним балансом"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Do not sync history"
+msgstr "Не синхронізувати історію"
+
 #: src/app/import-column-mapper.tsx
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -1423,13 +1746,13 @@ msgstr "Готово ({count})"
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Downloading models"
-msgstr "Завантаження моделей"
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Downloads about 2.5 GB of models once"
+msgstr "Одноразово завантажує близько 2.5 GB моделей"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
@@ -1464,6 +1787,7 @@ msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Edit"
 msgstr "Редагувати"
 
@@ -1532,6 +1856,10 @@ msgstr "Увімкнути біометричне розблокування?"
 msgid "Enable Face ID unlock?"
 msgstr "Увімкнути розблокування Face ID?"
 
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Enable on-device AI"
+msgstr "Увімкнути локальний ШІ"
+
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Enable them in device settings to receive budget alerts."
 msgstr "Увімкніть їх у налаштуваннях пристрою, щоб отримувати сповіщення про бюджет."
@@ -1569,6 +1897,10 @@ msgstr "Введіть усі суми"
 msgid "Enter amount..."
 msgstr "Введіть суму..."
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Enter balances by hand"
+msgstr "Ввести баланси вручну"
+
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Введіть поточний PIN-код"
@@ -1584,6 +1916,10 @@ msgstr "Введіть новий PIN-код"
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Enter new token"
 msgstr "Введіть новий токен"
+
+#: src/app/import-backup-pin.tsx
+msgid "Enter the PIN this backup was created with. It becomes your app PIN after the restore."
+msgstr "Введіть PIN, з яким було створено цю резервну копію. Після відновлення він стане PIN-кодом застосунку."
 
 #: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
 msgid "Enter value..."
@@ -1642,6 +1978,14 @@ msgstr "Erste Bank"
 msgid "Every account from this bank is already linked."
 msgstr "Усі рахунки цього банку вже прив'язано."
 
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "Every transaction has a category."
+msgstr "Кожна транзакція має категорію."
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Every transaction has a tag."
+msgstr "Кожна транзакція має тег."
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
@@ -1654,9 +1998,17 @@ msgstr "Обмінний курс"
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Exchange rate not found"
+msgstr "Курс обміну не знайдено"
+
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Excluded from file imports"
+msgstr "Виключено з імпортів файлів"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Expected maturity date"
@@ -1676,9 +2028,11 @@ msgstr "Очікувана дата повернення (Необов'язко�
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Expense"
 msgstr "Витрата"
 
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Expenses"
 msgstr "Витрати"
@@ -1694,10 +2048,6 @@ msgstr "Експортувати CSV"
 #: src/export/components/export-database/export-database.tsx
 msgid "Export Database"
 msgstr "Експортувати базу даних"
-
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Export your transactions to Excel"
-msgstr "Експортуйте транзакції в Excel"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
@@ -1719,10 +2069,6 @@ msgstr "Не вдалося завантажити контакти."
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Fast-indexing {done} of {total} • tap to pause"
-msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
@@ -1765,6 +2111,10 @@ msgstr "Фільтрувати категорії"
 msgid "Filter tags"
 msgstr "Фільтрувати теги"
 
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "First expense added"
+msgstr "Першу витрату додано"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Виправити помилки"
@@ -1798,7 +2148,7 @@ msgstr "З"
 msgid "From {fromText}"
 msgstr "Від {fromText}"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "З рахунку"
@@ -1855,9 +2205,21 @@ msgstr "Назад"
 msgid "Greater Than"
 msgstr "Більше ніж"
 
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Growing"
+msgstr "Зростає"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Hidden from Home"
+msgstr "Приховано з Головної"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
+
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+msgid "Hide transactions for {displayTitle}"
+msgstr "Сховати транзакції {displayTitle}"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Historical valuation failed"
@@ -1879,13 +2241,28 @@ msgstr "Як налаштувати"
 msgid "How to export"
 msgstr "Як експортувати"
 
+#: src/@generic/component/icon/icon.tsx
+msgid "Icon importer not found: {icon}"
+msgstr "Імпортер значків не знайдено: {icon}"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
+msgstr "Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Import"
+msgstr "Імпортувати"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Import a statement"
+msgstr "Імпортувати виписку"
+
 #: src/app/(main)/create-account/index.tsx
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Імпорт рахунків та транзакцій з PDF-виписки Erste Bank"
 
 #: src/app/(main)/create-account/index.tsx
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Імпорт рахунків та транзакцій з XLSX-експорту Приватбанку"
 
@@ -1947,14 +2324,41 @@ msgstr "Неактивний"
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Include crypto"
+msgstr "Включити криптовалюту"
+
+#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
+msgid "Include in bulk action"
+msgstr "Включити в масову дію"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Include in file imports"
+msgstr "Враховувати в імпортах файлів"
+
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
+#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
+msgid "Include one-offs"
+msgstr "Включити разові витрати"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Included in file imports"
+msgstr "Враховується в імпортах файлів"
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Includes crypto"
+msgstr "Включно з криптовалютою"
+
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Дохід"
 
@@ -1970,14 +2374,11 @@ msgstr "Доходи за категоріями"
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
+#: src/app/import-backup-pin.tsx
 #: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Indexing {done} of {total}"
-msgstr "Індексування {done} з {total}"
 
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
@@ -2007,6 +2408,10 @@ msgstr "Італійська (Італія)"
 msgid "Jars"
 msgstr "Банки"
 
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Keep as already tracked cash, not spending"
+msgstr "Залишити як уже враховану готівку, не витрату"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
@@ -2015,9 +2420,21 @@ msgstr "Залиште увімкненим лише \"Дозволити чит
 msgid "Language"
 msgstr "Мова"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 1 month"
+msgstr "Останній 1 місяць"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 3 months"
+msgstr "Останні 3 місяці"
+
 #: src/app/resync-window-picker.tsx
 msgid "Last 30 days"
 msgstr "Останні 30 днів"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 6 months"
+msgstr "Останні 6 місяців"
 
 #: src/app/resync-window-picker.tsx
 msgid "Last 7 days"
@@ -2043,17 +2460,25 @@ msgstr "Остання синхронізація"
 msgid "Last Week"
 msgstr "Минулий тиждень"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last year"
+msgstr "Останній рік"
+
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "Learning"
 msgstr "Навчання"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Learning transactions"
 msgstr "Навчання на транзакціях"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Learning up to date"
 msgstr "Навчання актуальне"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "left"
+msgstr "лишилось"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
@@ -2061,23 +2486,9 @@ msgid "Left"
 msgstr "Залишилось"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Left to receive"
-msgstr "Залишилось отримати"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Left to repay"
-msgstr "Залишилось повернути"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Позичено"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Lent debt account expected"
-msgstr "Очікувався рахунок наданого боргу"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
@@ -2099,17 +2510,21 @@ msgstr "Модель ШІ не готова"
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Loading debt progress"
+msgstr "Завантаження прогресу боргу"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Завантаження історії ринку"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Loading models"
-msgstr "Завантаження моделей"
-
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
 msgstr "Завантаження..."
+
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "Lock it down"
+msgstr "Заблокуйте це"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
@@ -2237,15 +2652,27 @@ msgstr "Без категорій"
 msgid "Missing rate"
 msgstr "Курс відсутній"
 
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
+msgid "Money in"
+msgstr "Надходження"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Money lent or borrowed"
 msgstr "Позичені або надані гроші"
+
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
+msgid "Money out"
+msgstr "Витрати"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Монобанк"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Monobank sends about one month of history per minute, for each account you selected."
+msgstr "Monobank надсилає близько одного місяця історії за хвилину для кожного вибраного рахунку."
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
@@ -2256,25 +2683,63 @@ msgstr "Місячний бюджет"
 msgid "Monthly Budget"
 msgstr "Місячний бюджет"
 
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "Monthly budget set"
+msgstr "Місячний бюджет встановлено"
+
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Monthly Costs"
 msgstr "Місячні витрати"
+
+#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+msgid "Monthly history"
+msgstr "Місячна історія"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
 
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "months left"
+msgstr "місяців залишилось"
+
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "More categories"
+msgstr "Інші категорії"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "More tags"
+msgstr "Інші теги"
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Most likely balance"
+msgstr "Найімовірніший баланс"
+
+#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+msgid "Move to cash"
+msgstr "У готівку"
+
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "Moved to cash"
+msgstr "Перенесено в готівку"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Navigate to Menu → Statements"
-msgstr "Перейдіть до Меню → Виписки"
-
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Needs review"
-msgstr "Потребує перевірки"
+msgstr "Потребують перевірки"
+
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
+msgid "Net"
+msgstr "Чистий"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Net worth"
+msgstr "Чисті активи"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
@@ -2300,10 +2765,18 @@ msgstr "Новий дохід"
 msgid "New Transfer"
 msgstr "Новий переказ"
 
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "No account. No sign-up. Everything lives in an encrypted database on this device."
+msgstr "Без акаунту. Без реєстрації. Усе зберігається в зашифрованій базі даних на цьому пристрої."
+
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/transaction-account-filter.tsx
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "No accounts in this integration yet"
+msgstr "У цій інтеграції ще немає рахунків"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
@@ -2313,6 +2786,10 @@ msgstr "Ще немає рахунків"
 #: src/app/transaction-account-filter.tsx
 msgid "No Accounts Yet"
 msgstr "Ще немає рахунків"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "No active budget"
+msgstr "Немає активного бюджету"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No Archived Accounts"
@@ -2325,10 +2802,6 @@ msgstr "Жоден архівований рахунок не відповіда
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Категорій не знайдено"
-
-#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
-msgid "No categories in this period"
-msgstr "Немає категорій за цей період"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
@@ -2362,6 +2835,10 @@ msgstr "Не знайдено жодної валюти"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
+
+#: src/account/component/debt-account-card-empty/debt-account-card-empty.tsx
+msgid "No debt yet"
+msgstr "Боргу немає"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
@@ -2425,13 +2902,17 @@ msgstr "Повторювані платежі не виявлено"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/rule/components/rule-empty-state/rule-empty-state.tsx
-msgid "No Rules Yet"
-msgstr "Правил ще немає"
-
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
+
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "No spending in this period"
+msgstr "Немає витрат за цей період"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "No spending in this window."
+msgstr "Немає витрат за цей період."
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
@@ -2441,21 +2922,21 @@ msgstr "Виправлень синхронізації не знайдено."
 msgid "No tags found"
 msgstr "Тегів не знайдено"
 
-#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "No tags in this period"
-msgstr "Немає тегів за цей період"
-
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No tags match your search"
 msgstr "Жоден тег не відповідає вашому пошуку"
 
-#: src/tag/components/tag-empty-state/tag-empty-state.tsx
-msgid "No Tags Yet"
-msgstr "Ще немає тегів"
-
 #: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx
 msgid "No title"
 msgstr "Без назви"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "No tracking"
+msgstr "Без трекінгу"
+
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "No transactions matched"
+msgstr "Жодна транзакція не відповідає"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "No transactions yet"
@@ -2472,6 +2953,10 @@ msgstr "не містить"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Not Contains"
 msgstr "Не містить"
+
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Not enough history yet"
+msgstr "Ще недостатньо історії"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "not equals"
@@ -2493,6 +2978,48 @@ msgstr "не встановлено"
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Нотатка"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Nothing from the past is imported"
+msgstr "Нічого з минулого не імпортується"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Nothing to fix here"
+msgstr "Тут нічого виправляти"
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-meter/runway-meter.tsx
+msgid "now"
+msgstr "зараз"
+
+#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
+msgid "of"
+msgstr "з"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "On-device AI"
+msgstr "ШІ на пристрої"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "On-device AI enabled"
+msgstr "Локальний ШІ увімкнено"
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "One-off"
+msgstr "Разово"
+
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
+msgid "One-off spike"
+msgstr "Разовий стрибок"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "One-offs"
+msgstr "Разові витрати"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
+msgstr "Одноразовий імпорт виписки з Приват24 — це не постійна синхронізація, і кожен експорт охоплює лише одну картку чи рахунок"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
@@ -2524,9 +3051,17 @@ msgstr "Відкрийте Binance, щоб отримати API-ключ"
 msgid "Open Budgie once after updating, then return to Shortcuts and search for Budgie again."
 msgstr "Після оновлення один раз відкрийте Budgie, потім поверніться до Shortcuts і знову знайдіть Budgie."
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Open Budgie to see your finances"
+msgstr "Відкрийте Budgie, щоб побачити свої фінанси"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open its statement and choose a date range that covers your full history"
+msgstr "Відкрийте виписку та оберіть період, що охоплює всю вашу історію"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Monobank to get your token"
@@ -2535,6 +3070,10 @@ msgstr "Відкрийте Монобанк, щоб отримати токен"
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Open possible duplicate"
 msgstr "Відкрити можливий дублікат"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open Privat24 and select the card or account you want to import"
+msgstr "Відкрийте Приват24 і виберіть картку або рахунок, який хочете імпортувати"
 
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
@@ -2548,17 +3087,21 @@ msgstr "Відкрити Shortcuts"
 msgid "Open Shortcuts and create a personal automation."
 msgstr "Відкрийте Shortcuts і створіть особисту автоматизацію."
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Open the Privatbank24 app"
-msgstr "Відкрийте додаток Приват24"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Оператор"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+msgid "Optional — without it the amount stays manual"
+msgstr "Необов’язково — без нього сума залишається ручною"
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "або"
+
+#: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
+msgid "Organise spending your own way"
+msgstr "Організуйте витрати по-своєму"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organization"
@@ -2578,6 +3121,10 @@ msgstr "Початкова транзакція"
 msgid "Other"
 msgstr "Інше"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "Other · {foldedDriverCount}"
+msgstr "Інше · {foldedDriverCount}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Бюджет «Інше»: використано {threshold}%"
@@ -2585,6 +3132,10 @@ msgstr "Бюджет «Інше»: використано {threshold}%"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: limit reached"
 msgstr "Бюджет «Інше»: ліміт досягнуто"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "over"
+msgstr "перевитрата"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
@@ -2602,6 +3153,10 @@ msgstr "Загальний бюджет: {threshold}% витрачено"
 #: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
 msgid "Overall monthly limit"
 msgstr "Загальний місячний ліміт"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Overpaid"
+msgstr "Переплачено"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Overview"
@@ -2637,9 +3192,21 @@ msgstr "Вставте свій API-секрет Binance:"
 msgid "PDF statement"
 msgstr "PDF-виписка"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "per day"
+msgstr "на день"
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "per month"
+msgstr "на місяць"
+
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
+
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "Pick a category for this transaction"
+msgstr "Вибрати категорію для цієї транзакції"
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Pick a category to set a limit"
@@ -2649,9 +3216,13 @@ msgstr "Оберіть категорію для встановлення лім
 msgid "Pick a window. Existing data is preserved."
 msgstr "Виберіть період. Наявні дані зберігаються."
 
-#: src/auth/hook/use-pin-setup.hook.tsx
-msgid "PIN must be {PIN_LENGTH} digits"
-msgstr "PIN-код має бути {PIN_LENGTH} цифр"
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Pick any. We'll create the accounts for you — rename or remove them later."
+msgstr "Виберіть будь-які. Ми створимо рахунки за вас — перейменуйте або видаліть їх пізніше."
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Pick tags for this transaction"
+msgstr "Вибрати теги для цієї транзакції"
 
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
@@ -2678,6 +3249,7 @@ msgstr "Будь ласка, спробуйте ще раз"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/category/components/category-form/category-form.tsx
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
@@ -2727,6 +3299,10 @@ msgstr "Push-сповіщення вимкнено"
 msgid "Quick rule"
 msgstr "Швидке правило"
 
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Range across better and worse months"
+msgstr "Діапазон кращих і гірших місяців"
+
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
@@ -2763,6 +3339,10 @@ msgstr "Повторна синхронізація останніх 90 днів
 msgid "Re-sync transactions"
 msgstr "Повторно синхронізувати транзакції"
 
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Ready to accept"
+msgstr "Готові прийняти"
+
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 msgid "Rebuild"
 msgstr "Перебудувати"
@@ -2775,11 +3355,11 @@ msgstr "Перебудувати навчання"
 msgid "Rebuild translations"
 msgstr "Перебудувати переклади"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Rebuilding learning"
 msgstr "Перебудова навчання"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Rebuilding translations"
 msgstr "Перебудова перекладів"
 
@@ -2848,7 +3428,7 @@ msgstr "Прибрати розділення"
 msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Погашено"
 
@@ -2890,12 +3470,11 @@ msgstr "Відновити з файлу резервної копії"
 msgid "Restore the account or choose another active account in the automation before importing the capture."
 msgstr "Відновіть рахунок або виберіть інший активний рахунок в автоматизації перед імпортом запису."
 
-#: src/ai/service/ai-system-status.service.ts
-#: src/ai/service/ai-umbrella-status.service.ts
-msgid "Resuming AI…"
-msgstr "Відновлення ШІ…"
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Return to Budgie and select the saved XLSX file below"
+msgstr "Поверніться до Budgie і виберіть нижче збережений файл XLSX"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
 msgstr "Повернено"
 
@@ -2919,9 +3498,17 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Правило"
 
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Rule applied"
+msgstr "Правило застосовано"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Rule created"
 msgstr "Правило створено"
+
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Rule partially applied"
+msgstr "Правило застосовано частково"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Rule updated"
@@ -2930,6 +3517,28 @@ msgstr "Правило оновлено"
 #: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Rules"
 msgstr "Правила"
+
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Rules work on imported transactions"
+msgstr "Правила працюють з імпортованими транзакціями"
+
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Runs in the background, and much slower while the app is closed."
+msgstr "Виконується у фоновому режимі й значно повільніше, коли застосунок закрито."
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Runs out around {runOutDate}"
+msgstr "Закінчиться близько {runOutDate}"
+
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx
+#: src/app/(tabs)/settings/index.tsx
+#: src/runway/component/runway-pill/runway-pill.tsx
+msgid "Runway"
+msgstr "Запас"
+
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
+msgstr "Запас потребує щонайменше 3 повних місяців транзакцій. У вас {monthsUsed}."
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -2997,8 +3606,8 @@ msgid "Search expenses refunded by this income"
 msgstr "Пошук витрат для цього повернення"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons (e.g., money, travel, food)..."
-msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
+msgid "Search icons and emoji in any language..."
+msgstr "Шукайте іконки та емодзі будь-якою мовою..."
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search inactive accounts..."
@@ -3034,6 +3643,10 @@ msgstr "Захистіть свій додаток за допомогою PIN-�
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
 msgstr "Безпека"
+
+#: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
+msgid "See spending by context, not just category"
+msgstr "Дивіться витрати за контекстом, а не лише за категорією"
 
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select"
@@ -3086,6 +3699,7 @@ msgstr "Вибрати всі"
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Обрати категорію"
@@ -3138,6 +3752,10 @@ msgstr "Вибрати джерело"
 msgid "Select Tag"
 msgstr "Вибрати тег"
 
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Select tags"
+msgstr "Вибрати теги"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
 msgstr "Оберіть завантажений PDF-файл"
@@ -3170,9 +3788,17 @@ msgstr "Вибрано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+msgid "Set a budget"
+msgstr "Встановити бюджет"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
+
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+msgid "Set a monthly ceiling"
+msgstr "Встановіть місячну межу"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Set a monthly limit and track spending"
@@ -3181,6 +3807,10 @@ msgstr "Встановіть місячний ліміт та відстежуй
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Set a monthly limit and track your spending"
 msgstr "Встановіть місячний ліміт та відстежуйте свої витрати"
+
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "Set a PIN"
+msgstr "Встановити PIN-код"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
@@ -3198,6 +3828,10 @@ msgstr "Встановити дату погашення"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Set up Budgie"
+msgstr "Налаштувати Budgie"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
@@ -3231,6 +3865,14 @@ msgstr "Показувати бюджет на головній"
 msgid "Show Cents"
 msgstr "Показати копійки"
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "Show list"
+msgstr "Показати список"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Show on home"
+msgstr "Показувати на головній"
+
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
@@ -3240,6 +3882,10 @@ msgstr "Показати вибраний діапазон"
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
 
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+msgid "Show transactions for {displayTitle}"
+msgstr "Показати транзакції {displayTitle}"
+
 #: src/app/transaction-amount-filter.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Показувати транзакції, коли будь-яка основна сума потрапляє в цей діапазон, незалежно від валюти."
@@ -3248,9 +3894,14 @@ msgstr "Показувати транзакції, коли будь-яка ос
 msgid "Similar transactions"
 msgstr "Схожі транзакції"
 
+#: src/onboarding/component/onboarding-step-header/onboarding-step-header.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Пропустити"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Smarter, without the cloud"
+msgstr "Розумніше, без хмари"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
@@ -3306,6 +3957,16 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
+#: src/app/convert-to-transfer.tsx
+#: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Start Deposit"
+msgstr "Розпочати депозит"
+
+#: src/app/convert-to-transfer.tsx
+msgid "Start Deposit?"
+msgstr "Розпочати депозит?"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Start from scratch and set every limit yourself"
 msgstr "Почніть з нуля та задайте кожен ліміт самостійно"
@@ -3324,7 +3985,15 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "Start using Budgie"
+msgstr "Почати користуватися Budgie"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Start with a blank canvas"
+msgstr "Почати з чистого аркуша"
+
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
 
@@ -3340,9 +4009,10 @@ msgstr "Відправити"
 msgid "Subscriptions"
 msgstr "Підписки"
 
+#: src/app/icon-selector.tsx
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Suggested"
-msgstr "Запропонований"
+msgstr "Запропоновані"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"
@@ -3362,12 +4032,17 @@ msgid "Switch between light and dark themes"
 msgstr "Перемикайтеся між світлою та темною темами"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync"
 msgstr "Синхронізація"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Sync crypto balances and transactions from Binance with a read-only API key"
 msgstr "Синхронізуйте криптобаланси та транзакції з Binance за допомогою API-ключа лише для читання"
+
+#: src/settings/hooks/use-sync-repairs-action.hook.ts
+msgid "Sync data repaired"
+msgstr "Дані синхронізації виправлено"
 
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Sync data repairs"
@@ -3376,6 +4051,10 @@ msgstr "Виправлення даних синхронізації"
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync paused"
+msgstr "Синхронізацію призупинено"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync Repairs"
@@ -3402,16 +4081,21 @@ msgstr "Тег"
 msgid "Tag → {tagTitle}"
 msgstr "Тег → {tagTitle}"
 
+#: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
+msgid "Tag a transaction"
+msgstr "Позначити транзакцію"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Tag as {tagTitle}"
+msgstr "Додати тег {tagTitle}"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag Name"
 msgstr "Назва тегу"
 
-#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "Tag transactions to see how your spending breaks down by context."
-msgstr "Позначайте транзакції тегами, щоб побачити, як ваші витрати розподіляються за контекстом."
-
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
@@ -3422,6 +4106,11 @@ msgstr "Теги"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Теги ({selectedTagsCount})"
 
+#: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
+#: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
+msgid "Tags cut across categories — track a trip, a project or a person and see the true total."
+msgstr "Теги перетинають категорії — відстежуйте подорож, проєкт або людину та бачте справжню суму."
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Key\" above and sign in to Binance"
 msgstr "Натисніть \"Отримати API-ключ\" вгорі та увійдіть у Binance"
@@ -3429,6 +4118,10 @@ msgstr "Натисніть \"Отримати API-ключ\" вгорі та у�
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above and log in to Monobank"
 msgstr "Натисніть \"Отримати API-токен\" вгорі та увійдіть у Монобанк"
+
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "Tap a suggestion to accept it"
+msgstr "Натисніть пропозицію, щоб прийняти її"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"
@@ -3447,7 +4140,19 @@ msgstr "Торкніться для вибору"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "The rule was saved but no existing transactions needed updating."
+msgstr "Правило збережено, але жодна наявна транзакція не потребувала оновлення."
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "The selected Budgie account is archived or no longer exists."
+msgstr ""
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "The Wallet automation did not provide a usable amount or merchant."
+msgstr ""
+
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "Цей рахунок буде приховано з головного екрану і не враховуватиметься в загальних підсумках. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 
@@ -3458,9 +4163,21 @@ msgstr "Цей рахунок буде приховано з головного 
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
+msgstr "Ця резервна копія захищена PIN-кодом. Імпорт замінить усі поточні дані, а її PIN стане PIN-кодом застосунку. Після імпорту застосунок перезапуститься. Цю дію не можна скасувати."
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "This capture looks similar to an existing transaction."
+msgstr ""
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "This month"
+msgstr "Цього місяця"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
@@ -3493,6 +4210,10 @@ msgstr "Це конвертує витрату у переказ між раху
 #: src/app/convert-to-transfer.tsx
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
+
+#: src/app/convert-to-transfer.tsx
+msgid "This will create a new deposit account and convert this expense into a transfer into it."
+msgstr "Це створить новий депозитний рахунок і перетворить цю витрату на переказ на нього."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
@@ -3540,6 +4261,7 @@ msgstr "На"
 msgid "To {toText}"
 msgstr "До {toText}"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "На рахунок"
@@ -3552,6 +4274,14 @@ msgstr "На рахунок"
 msgid "To Currency"
 msgstr "Валюта на"
 
+#: src/account/constant/debt-remaining-label.constant.ts
+msgid "To receive"
+msgstr "До отримання"
+
+#: src/account/constant/debt-remaining-label.constant.ts
+msgid "To repay"
+msgstr "До сплати"
+
 #: src/@generic/constant/date-period.constant.ts
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Today"
@@ -3561,12 +4291,13 @@ msgstr "Сьогодні"
 msgid "Token required"
 msgstr "Потрібен токен"
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Загалом"
 
-#: src/@generic/component/collapsible-header/collapsible-header.tsx
+#: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Загальний баланс"
 
@@ -3582,6 +4313,10 @@ msgstr "Усього надано в борг"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Tracking in {defaultInstrumentCode}"
+msgstr "Облік у {defaultInstrumentCode}"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
@@ -3624,6 +4359,7 @@ msgstr "Помилка транскрипції"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Переказ"
 
@@ -3643,11 +4379,7 @@ msgstr "Переказ з рахунку"
 msgid "Transfer To Account"
 msgstr "Переказ на рахунок"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Translating {translationPending} of {total}{trailer}"
-msgstr "Переклад {translationPending} з {total}{trailer}"
-
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translating categories and tags"
 msgstr "Переклад категорій і тегів"
 
@@ -3655,7 +4387,7 @@ msgstr "Переклад категорій і тегів"
 msgid "Translation"
 msgstr "Переклад"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translations ready"
 msgstr "Переклади готові"
 
@@ -3706,12 +4438,17 @@ msgstr "Тип"
 msgid "Type ({selectedTypesCount})"
 msgstr "Тип ({selectedTypesCount})"
 
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
+msgid "typical month {amount}"
+msgstr "типовий місяць {amount}"
+
 #: src/i18n/constant/languages.constant.ts
 #: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Українська"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -3722,6 +4459,10 @@ msgstr "Розконсолідувати"
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Unconsolidate transaction?"
 msgstr "Розконсолідувати транзакцію?"
+
+#: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
+msgid "Undo"
+msgstr "Скасувати"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
 msgid "Unknown"
@@ -3735,6 +4476,7 @@ msgstr "Невідома картка"
 msgid "Unrealized P&L"
 msgstr "Нереаліз. приб./збиток"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Untagged"
@@ -3759,6 +4501,10 @@ msgstr "Оновити?"
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Update the token from any account already syncing with this integration, then try again."
 msgstr "Оновіть токен через будь-який рахунок, який уже синхронізується з цією інтеграцією, а потім спробуйте ще раз."
+
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Updated {applied} of {total} transactions."
+msgstr "Оновлено {applied} з {total} транзакцій."
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Updated {formattedDate}"
@@ -3833,13 +4579,25 @@ msgstr "Обсяг"
 msgid "Waiting"
 msgstr "Очікування"
 
-#: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
 msgid "Wallet history is not available"
 msgstr "Історія Wallet недоступна"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Warning"
+msgstr "Попередження"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "Ми повторимо спробу у фоновому режимі."
+
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "What do you want to track?"
+msgstr "Що ви хочете відстежувати?"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "What's driving it"
+msgstr "Що на це впливає"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "When does the deposit mature?"
@@ -3861,9 +4619,17 @@ msgstr "Кому ви винні?"
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Whole period"
+msgstr "Увесь період"
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Works offline"
+msgstr "Працює офлайн"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "XLSX export"
@@ -3872,6 +4638,14 @@ msgstr "XLSX-експорт"
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Yesterday"
 msgstr "Вчора"
+
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "You can always finish these steps later. Budgie's ready whenever you are."
+msgstr "Ви завжди можете завершити ці кроки пізніше. Budgie готовий, коли готові ви."
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "You can turn this on later in Settings"
+msgstr "Ви можете увімкнути це пізніше в Налаштуваннях"
 
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
@@ -3898,6 +4672,14 @@ msgstr "Ви винні"
 msgid "You received money"
 msgstr "Ви отримали гроші"
 
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "You're all set"
+msgstr "Усе готово"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Your bank, with nobody in between"
+msgstr "Ваш банк, без посередників"
+
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
 msgstr "Ваша резервна копія бази даних готова до поширення."
@@ -3905,6 +4687,22 @@ msgstr "Ваша резервна копія бази даних готова д
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"
 msgstr "Ваші активи"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Your money. Your phone. Nobody else's server."
+msgstr "Ваші гроші. Ваш телефон. Жодного чужого сервера."
+
+#: src/onboarding/component/onboarding-done/onboarding-done.tsx
+msgid "YOUR NET WORTH"
+msgstr "ВАША ЧИСТА ВАРТІСТЬ"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Your own token talks to the bank directly. No Plaid, no aggregator, no third party holding your data."
+msgstr "Ваш власний токен напряму спілкується з банком. Жодного Plaid, жодного агрегатора, жодної третьої сторони, що зберігає ваші дані."
+
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "Your PIN unlocks the database itself — it is the encryption key. Without it the file is unreadable, even to us."
+msgstr "Ваш PIN-код розблоковує саму базу даних — це ключ шифрування. Без нього файл нечитабельний навіть для нас."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Your token is stored securely in the database. Sync continues in the background."

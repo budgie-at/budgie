@@ -16,18 +16,6 @@ import { WalletCaptureReviewCardSelector } from './wallet-capture-review-card.se
 
 import type { WalletCaptureReviewItemInterface } from '../../interface/wallet-capture-review-item.interface';
 
-const getReasonText = (reason: WalletCaptureReviewReasonEnum, t: ReturnType<typeof useLingui>['t']) => {
-    switch (reason) {
-        case WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE:
-            return t`The selected Budgie account is archived or no longer exists.`;
-        case WalletCaptureReviewReasonEnum.DUPLICATE:
-            return t`This capture looks similar to an existing transaction.`;
-        case WalletCaptureReviewReasonEnum.INVALID_PAYLOAD:
-        default:
-            return t`The Wallet automation did not provide a usable amount or merchant.`;
-    }
-};
-
 interface Props {
     readonly item: WalletCaptureReviewItemInterface;
     readonly accountTitle: string;
@@ -43,11 +31,22 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
     const formatDigits = useFormatDigits(decimalPlaces);
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
+    const getReasonText = (reason: WalletCaptureReviewReasonEnum) => {
+        switch (reason) {
+            case WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE:
+                return t`The selected Budgie account is archived or no longer exists.`;
+            case WalletCaptureReviewReasonEnum.DUPLICATE:
+                return t`This capture looks similar to an existing transaction.`;
+            case WalletCaptureReviewReasonEnum.INVALID_PAYLOAD:
+            default:
+                return t`The Wallet automation did not provide a usable amount or merchant.`;
+        }
+    };
+
     const { capture, duplicateTransactionId, reason } = item;
     const merchant = isNotEmptyString(capture.merchant.trim()) ? capture.merchant.trim() : t`Apple Pay purchase`;
     const amount = formatDigits(capture.amount, instrumentSymbol);
-    const capturedAt = formatDayAndMonthAndYearWithTime(capture.capturedAt);
-    const reasonText = getReasonText(reason, t);
+    const reasonText = getReasonText(reason);
     const cardNameText = isNotEmptyString(capture.cardName) ? capture.cardName : t`Unknown card`;
     const canImportCapture = reason !== WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE;
 
@@ -64,7 +63,7 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
             <View className="gap-y-xs">
                 <Text className="text-primary text-base font-semibold">{merchant}</Text>
                 <Text className="text-primary text-xl font-semibold">{amount}</Text>
-                <Text className="text-secondary-foreground text-sm">{capturedAt}</Text>
+                <Text className="text-secondary-foreground text-sm">{formatDayAndMonthAndYearWithTime(capture.capturedAt)}</Text>
             </View>
 
             <View className="gap-y-xs">

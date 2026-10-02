@@ -1,12 +1,14 @@
-import { binanceSyncService } from '@app/sync/service/binance-sync.service';
+import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import {
     ExternalSourceEnum,
     InstrumentTypeEnum,
+    SyncModeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { testDb } from '../scenario/setup';
@@ -27,6 +29,15 @@ export const fetchBinanceEntriesByExternalId = (externalId: string) =>
     testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId)).all();
 
 export const seedCryptoInstrument = (code: string) => seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
+
+export const setupAdaUsdtFixture = (mode: SyncModeEnum, forwardSyncedAt?: Date, binanceTradeCursor?: string) => {
+    const fixture = setupBinanceFixture({ asset: 'USDT', mode, forwardSyncedAt, binanceTradeCursor });
+
+    binanceStub.exchangeInfo(['ADAUSDT']);
+    binanceStub.spotBalances([buildBinance.balance({ asset: 'ADA', free: '200' }), buildBinance.balance({ asset: 'USDT', free: '100' })]);
+
+    return fixture;
+};
 
 export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string): void => {
     setupBinanceFixture({ asset: 'USDT' });
@@ -59,16 +70,17 @@ export const stubEmptyBinanceBalances = (): void => {
 };
 
 export const resetBinanceSyncForResync = (): void => {
-    Object.assign(binanceSyncService, { isRunning: false });
     binanceStub.serverTime();
 };
 
-export const expectNoDuplicateAfterResync = async (restubForResync: () => void): Promise<void> => {
+export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubForResync: () => void) {
+    const binanceSyncService = yield* BinanceSyncService;
+
     expect(fetchBinanceTransactions()).toHaveLength(1);
 
     resetBinanceSyncForResync();
     restubForResync();
-    await binanceSyncService.sync();
+    yield* binanceSyncService.sync();
 
     expect(fetchBinanceTransactions()).toHaveLength(1);
-};
+});

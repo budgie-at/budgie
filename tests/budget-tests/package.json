@@ -5,17 +5,22 @@
     "type": "module",
     "scripts": {
         "test": "vitest run",
-        "test:coverage": "vitest run",
         "test:watch": "vitest",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc --noEmit"
     },
     "dependencies": {
+        "@budgie-at/test-kit": "workspace:*",
         "@budgie/budget": "workspace:*",
-        "@rnw-community/shared": "^2.2.0",
-        "vitest": "^4.1.7"
+        "@budgie/contracts": "workspace:^",
+        "@effect/vitest": "4.0.0-rc.118",
+        "better-sqlite3": "^12.10.0",
+        "drizzle-orm": "^0.45.2",
+        "vitest": "^5.0.2"
     },
     "devDependencies": {
+        "@types/better-sqlite3": "^7.6.13",
         "@types/node": "22.20.1",
+        "effect": "4.0.0-rc.118",
         "typescript": "npm:@typescript/typescript6@6.0.2"
     }
 }

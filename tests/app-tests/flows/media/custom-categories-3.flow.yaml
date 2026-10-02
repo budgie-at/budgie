@@ -1,0 +1,32 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/categories'
+
+- extendedWaitUntil:
+      visible:
+          id: '^CategoryCard[.][^.]+$'
+      timeout: 15000
+
+- tapOn:
+      id: '^CategoryCard[.][^.]+$'
+      index: 0
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryForm.Merge'
+      timeout: 10000
+
+- tapOn:
+      id: 'CategoryForm.Merge'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

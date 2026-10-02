@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+env:
+    MERCHANT_TITLE: ${MERCHANT_TITLE || 'Whole Foods Market'}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.CommentInput'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: poster
+
+- startRecording: clip
+
+- tapOn:
+      id: 'TransactionForm.CommentInput'
+- inputText: ${MERCHANT_TITLE}
+- pressKey: enter
+
+- waitForAnimationToEnd
+
+- stopRecording

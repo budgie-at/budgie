@@ -46,7 +46,21 @@ cat > "$STUB_BIN/defaults" <<EOF
 printf 'defaults %s\n' "\$*" >> "${WORK_DIR}/xcrun.log"
 exit 0
 EOF
-chmod +x "$STUB_BIN/xcrun" "$STUB_BIN/defaults"
+cat > "$STUB_BIN/simslim" <<EOF
+#!/bin/bash
+printf 'simslim %s\n' "\$*" >> "${WORK_DIR}/xcrun.log"
+[ "\$1" = 'verify' ] && exit 1
+exit 0
+EOF
+chmod +x "$STUB_BIN/xcrun" "$STUB_BIN/defaults" "$STUB_BIN/simslim"
+
+export MOBILE_CI_SLIM_HELPER="$WORK_DIR/slim-simulator.sh"
+cat > "$MOBILE_CI_SLIM_HELPER" <<'EOF'
+slim_simulator() {
+    simslim verify "$1" --profile stub >/dev/null 2>&1 && return 0
+    simslim on "$1" --no-reboot --profile stub
+}
+EOF
 
 HOME="$WORK_DIR/home" SETTLE_SECONDS=0 PATH="$STUB_BIN:$PATH" \
     bash "$SCRIPT_DIR/prewarm-ios-simulators.sh"
@@ -65,6 +79,10 @@ grep -q "simctl shutdown $CREATED" "$LOG" \
     || { echo 'FAIL: created device was not shut down after settling' >&2; exit 1; }
 grep -q 'defaults write com.apple.iphonesimulator PasteboardAutomaticSync -bool false' "$LOG" \
     || { echo 'FAIL: pasteboard sync was not disabled' >&2; exit 1; }
+grep -q "simslim on $EXISTING --no-reboot --profile" "$LOG" \
+    || { echo 'FAIL: existing device was not slimmed after boot' >&2; exit 1; }
+grep -q "simslim on $CREATED --no-reboot --profile" "$LOG" \
+    || { echo 'FAIL: created device was not slimmed after boot' >&2; exit 1; }
 
 RECORD="$WORK_DIR/home/.budgie-ci/simulators.json"
 [ -f "$RECORD" ] || { echo 'FAIL: simulators.json was not written' >&2; exit 1; }

@@ -1,4 +1,3 @@
-import type { RuleUpdateEntitySchema } from '../schema/rule-update-entity.schema';
-import type { z } from 'zod';
+import type { RuleCreateEntityInterface } from './rule-create-entity.interface';
 
-export type RuleUpdateEntityInterface = z.infer<typeof RuleUpdateEntitySchema>;
+export type RuleUpdateEntityInterface = Partial<RuleCreateEntityInterface>;

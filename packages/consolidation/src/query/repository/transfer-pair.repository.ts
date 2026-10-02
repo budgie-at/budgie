@@ -1,6 +1,12 @@
+import { Db } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+
 import { buildP2pFiatAtomicCandidateSql } from './sql-factory/p2p-fiat-atomic-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeCandidateSql } from './sql-factory/p2p-fiat-authoritative-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeRepairCandidateSql } from './sql-factory/p2p-fiat-authoritative-repair-candidate-sql.factory';
+import { BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL } from './sql-factory/transfer-pair-bridge-claim-repair-sql.factory';
 import {
     buildTransferPairCandidatesSql,
     buildTransferPairManualReviewCandidatesSql
@@ -10,44 +16,29 @@ import type { P2pFiatAtomicCandidateInterface } from '../interface/p2p-fiat-atom
 import type { P2pFiatAuthoritativeCandidateInterface } from '../interface/p2p-fiat-authoritative-candidate.interface';
 import type { P2pFiatAuthoritativeRepairCandidateInterface } from '../interface/p2p-fiat-authoritative-repair-candidate.interface';
 import type {
+    BridgeClaimRepairCandidateInterface,
     ConsolidationScanScopeInterface,
-    DB,
     TransferPairCandidateInterface,
     TransferPairReviewCandidateInterface
 } from '@budgie/contracts';
 
-export class TransferPairRepository {
-    constructor(private db: DB) {}
-
-    async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<TransferPairCandidateInterface[]> {
-        const sql = buildTransferPairCandidatesSql(scope);
-
-        return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
-    }
-
-    async findP2pFiatAtomicCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<P2pFiatAtomicCandidateInterface[]> {
-        const sql = buildP2pFiatAtomicCandidateSql(scope);
-
-        return this.db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(sql);
-    }
-
-    async findP2pFiatAuthoritativeCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<P2pFiatAuthoritativeCandidateInterface[]> {
-        return this.db.$client.getAllAsync<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope));
-    }
-
-    async findP2pFiatAuthoritativeRepairCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<P2pFiatAuthoritativeRepairCandidateInterface[]> {
-        return this.db.$client.getAllAsync<P2pFiatAuthoritativeRepairCandidateInterface>(
-            buildP2pFiatAuthoritativeRepairCandidateSql(scope)
-        );
-    }
-
-    async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {
-        const sql = buildTransferPairManualReviewCandidatesSql();
-
-        return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
-    }
+export class TransferPairRepository extends Context.Service<TransferPairRepository>()('@budgie/consolidation/TransferPairRepository', {
+    make: Effect.succeed({
+        findCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+            Db.query(db => db.$client.getAllAsync<TransferPairCandidateInterface>(buildTransferPairCandidatesSql(scope))),
+        findBridgeClaimedRepairCandidates: () =>
+            Db.query(db => db.$client.getAllAsync<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL)),
+        findP2pFiatAtomicCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+            Db.query(db => db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(buildP2pFiatAtomicCandidateSql(scope))),
+        findP2pFiatAuthoritativeCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+            Db.query(db => db.$client.getAllAsync<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope))),
+        findP2pFiatAuthoritativeRepairCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+            Db.query(db =>
+                db.$client.getAllAsync<P2pFiatAuthoritativeRepairCandidateInterface>(buildP2pFiatAuthoritativeRepairCandidateSql(scope))
+            ),
+        findManualReviewCandidates: () =>
+            Db.query(db => db.$client.getAllAsync<TransferPairReviewCandidateInterface>(buildTransferPairManualReviewCandidatesSql()))
+    })
+}) {
+    static readonly layer = Layer.effect(TransferPairRepository, TransferPairRepository.make);
 }

@@ -1,6 +1,6 @@
 # App Package (React Native)
 
-Main mobile application built with Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, and Lingui 6.5.
+Main mobile application built with Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, and Lingui 6.5.
 
 ## Commands
 
@@ -19,6 +19,8 @@ pnpm i18n:sync                # Extract & compile i18n translations
 pnpm i18n:sync
 ```
 
+Before `pnpm ios` against a simulator you booted yourself, slim it: `. ../../tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`. Every simulator this repo touches runs slim — see root `AGENTS.md`, "Simulator Dev Testing".
+
 ## Structure
 
 ```
@@ -32,7 +34,7 @@ src/
 │   ├── provider/             # Context providers
 │   ├── service/              # App service
 │   ├── type/                 # Type definitions
-│   └── utils/                # Utility functions (cn, date, etc.)
+│   └── utils/                # Utility functions (date, etc.)
 ├── app/                      # Expo Router screens (30 routes)
 │   ├── _layout.tsx           # Root layout with providers
 │   ├── (tabs)/               # Tab navigation (main screens)
@@ -46,9 +48,9 @@ src/
 
 ## Code Quality Rules (from PR reviews)
 
-### Use `useDatabaseLiveQuery` for database-backed UI
+### Live database reads are atoms
 
-Import `useDatabaseLiveQuery` from `src/@generic/hook/use-database-live-query.hook` instead of importing Drizzle's `useLiveQuery` directly. The wrapper wires `databaseRefreshService.notifyChanged()` into every live query, so database imports refresh visible screens without duplicated hook dependencies.
+Database-backed UI reads use `databaseQueryAtom([Tables...], Effect.flatMap(Repo, repo => repo.x(args)))` (`src/@generic/utils/database-query-atom.util.ts`), or `databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` (`database-query-family.util.ts`) when parametrised, and read with `useLiveAtomValue`. Never import Drizzle's `useLiveQuery`. List every table the SQL reads; the expo change listener invalidates them after each write.
 
 ### Use `isDefined` for null checks in context hooks
 
@@ -160,16 +162,14 @@ useLongPressHold({ onPress: handlePress, onLongPressComplete: handleLongPressCom
 ### Simplify return-from-transaction patterns
 
 ```typescript
-// Good - return directly
-async updateById(id: number, input: Input): Promise<Entity> {
-    return await db.transaction(async tx => { ... });
-}
+// Good - return the transaction effect directly
+readonly updateById = Effect.fn('X.updateById')(function* (id: number, input: Input) {
+    return yield* Db.transaction(Effect.gen(function* () { ... }));
+});
 
 // Bad - unnecessary intermediate variable
-async updateById(id: number, input: Input): Promise<Entity> {
-    const result = await db.transaction(async tx => { ... });
-    return result;
-}
+const result = yield* Db.transaction(Effect.gen(function* () { ... }));
+return result;
 ```
 
 ### Use shared utility functions for common operations
@@ -438,10 +438,10 @@ Available variants: `default`, `destructive`, `warning`, `dark-warning`, `positi
 
 ### Utility Function
 
-Use `cn()` from `@generic/utils/` for combining classes:
+Use `cn()` from the `cn` package for combining classes:
 
 ```typescript
-import { cn } from '../../utils/cn/cn';
+import { cn } from 'cn';
 className={cn('base-classes', classNameFromProps)}
 ```
 
@@ -478,7 +478,16 @@ Wrap JSX only (not logic) in jscpd markers for similar form structures:
 {/* jscpd:ignore-end */}
 ```
 
-## Forms (React Hook Form + Zod)
+## Forms (React Hook Form + Effect Schema)
+
+Forms validate with an Effect Schema through the Standard Schema resolver. Form value types are `Mutable<typeof Schema.Type>` (or `Encoded` when the form holds encoded values).
+
+```typescript
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import * as Schema from 'effect/Schema';
+
+const form = useForm({ resolver: standardSchemaResolver(Schema.toStandardSchemaV1(TagCreateEntitySchema)), defaultValues });
+```
 
 ### Form Pattern
 
@@ -525,34 +534,32 @@ pnpm i18n:sync
 
 ## Data Layer
 
-### Repository Singletons
+### Services and repositories
 
-Import from `@generic/drizzle/db/db.ts`:
+Every repository and stateful or dependent service is a `Context.Service` with a `static readonly layer` (see `src/tag/**`). Dependencies are resolved once in `make` with `yield* X`; every layer is listed in `src/@generic/runtime/app-services.layer.ts`. Edges call them through the runtime:
 
 ```typescript
-import { accountRepository, transactionRepository } from '../@generic/drizzle/db/db';
+await appRuntime.runPromise(Effect.flatMap(TagService, tagService => tagService.mergeInto(id, targetTagId)));
 ```
 
 ### Live Queries
 
-Use `useLiveQuery` for reactive data:
-
 ```typescript
-const { data, error, updatedAt } = useLiveQuery(accountRepository.findById(id), [id]);
+const accountAtom = databaseQueryFamily([AccountEntityTable], AccountRepository, (accountRepository, id: number) =>
+    accountRepository.findById(id)
+);
+const result = useLiveAtomValue(accountAtom(id));
 ```
 
-**`useLiveQuery` deps must be primitive-stable.** Passing an object literal (e.g. a `filters` prop reconstructed each render) makes the dep change every render, which re-runs the query and returns a new `data` array reference each render. Downstream consumers like `LegendList` see a new `sections` reference every render and their internal reconciliation (`state.props.data`, `totalSize`, `isEndReached`) silently breaks — pages "load" but the scroll boundary doesn't grow.
+Family keys are structural, so pass filter objects directly.
 
-```typescript
-// Bad — filters is a fresh object each render → query re-runs every render
-useLiveQuery(repo.find(filters, limit), [limit, filters]);
+### Effects and transactions
 
-// Good — derive a stable key (string or primitive) from filters
-const filterKey = JSON.stringify(filters); // or a dedicated buildXxxFilterKey util
-useLiveQuery(repo.find(filters, limit), [limit, filterKey]);
-```
-
-If a filter shape exists in `@budgie/contracts` and is paginated, prefer adding a `buildXxxFilterKey` util alongside it (mirrors `buildTransactionFilterKey`) so callers can't forget.
+- Service IO methods are `Effect.fn('Owner.method')` fields in the object returned by `make`. Repository methods are Effects over `Db.query(db => builder)`; atomic work uses `Db.transaction(effect)`; nested transactions reuse the outer one, so there are no `tx` parameters.
+- Writes carry no reactivity keys: the expo change listener (`databaseChangeReactivityLayer`) invalidates the changed tables after each transaction. Only writes it cannot see (virtual tables, `WITHOUT ROWID`, truncate-optimised deletes) use `Reactivity.mutation([tableName], effect)`.
+- Long-lived fibers owned by a service are forked in `make` (`Effect.forkScoped`, `FiberSet`), never with `appRuntime.runFork` inside a service.
+- Resources that must close on failure (temp SQLite handles, attached databases) use `Effect.acquireUseRelease` / `Effect.ensuring`.
+- `appRuntime` (`@generic/runtime/app.runtime.ts`) provides `Db`, `HttpClient`, the logger layer, `Reactivity` and every service layer. HTTP calls use `HttpClient` with `retryTransient` + `Schedule`, a per-attempt `Effect.timeout` and `HttpClientResponse.schemaBodyJson`.
 
 ### Drizzle ORM
 
@@ -561,6 +568,9 @@ If a filter shape exists in `@budgie/contracts` and is paginated, prefer adding 
 - **Upserts**: Use `.onConflictDoUpdate()`
 
 ## Error Handling
+
+- Services never `throw`/`try`. Expected failures are `Schema.TaggedError` classes in the module `/error` folder, only when a caller branches on them. Foreign Promise APIs (SecureStore, expo-file-system, expo-sqlite, native modules) are wrapped with `Effect.promise` (a failure is a defect that keeps the original message) or `Effect.tryPromise` when a caller needs the typed error.
+- Edges (hooks, components, routes, tasks, boot) run effects with `appRuntime.runPromise(effect)`; the rejection is the original error, so `getErrorMessage(error)` toasts keep working.
 
 Use Toast for user-facing errors:
 
@@ -576,23 +586,22 @@ Toast.show({
 
 ## Provider Architecture
 
-Root layout has 15 nested providers in this order:
+Root layout has 14 nested providers in this order (settings are not a provider: `useSettingsContext` reads `settingsContextAtom`, so screens frozen by `react-native-screens` still see setting changes on reveal). The outermost element is `RegistryContext.Provider` with `appAtomRegistry` (`@generic/constant/app-atom-registry.constant.ts`): the whole tree and the services that write atoms share one registry. Never provide a second registry for a subtree, because every atom read inside it gets its own node and starts from `Initial` again:
 
 1. SafeAreaProvider
 2. SQLiteProvider
-3. SettingsProvider
-4. I18nProvider
-5. KeyboardProvider
-6. ThemeProvider
-7. ScreenChromeThemeProvider
-8. GestureHandlerRootView
-9. AuthProvider
-10. AuthGuard
-11. CreateActionProvider
-12. AiProviderWrapper
-13. AiEmbeddingProgressProvider
-14. AiStatusProvider
-15. ModalProvider (wraps all 20 modal providers internally)
+3. I18nProvider
+4. KeyboardProvider
+5. ThemeProvider
+6. ScreenChromeThemeProvider
+7. GestureHandlerRootView
+8. AuthProvider
+9. AuthGuard
+10. CreateActionProvider
+11. AiProviderWrapper
+12. AiEmbeddingProgressProvider
+13. AiStatusProvider
+14. ModalProvider (wraps all 20 modal providers internally)
 
 ## AI/LLM Module Patterns
 
@@ -644,39 +653,44 @@ export const AiTranslationFieldsHeaderRight = (props: Props) => {
 const getHeaderRight = (params: Params): ReactNode => { ... };
 ```
 
-### Async Functions in useEffect
+### Effects in useEffect
 
-Keep async functions defined inside `useEffect` (not extracted outside) to avoid `react-hooks/set-state-in-effect` lint errors:
+Run effects at the edge with `appRuntime.runPromise` / `appRuntime.runFork`, defined inside `useEffect`, and log failures with `Effect.tapCause(Effect.logError)`:
 
 ```typescript
-// Good - suggest defined inside useEffect
+// Good
 useEffect(() => {
     if (!isReady) return;
-    const suggest = async (): Promise<void> => {
-        setStatus('loading');
-        // ...
+    setStatus('loading');
+    const fiber = appRuntime.runFork(
+        Effect.flatMap(SuggestService, suggestService => suggestService.suggest(id)).pipe(Effect.tapCause(Effect.logError))
+    );
+
+    return () => void appRuntime.runPromise(Fiber.interrupt(fiber));
+}, [isReady]);
+
+// Bad - async function with try/catch
+useEffect(() => {
+    const suggest = async () => {
+        try {
+            await suggestService.suggest(id);
+        } catch (e) {
+            logger.error(e);
+        }
     };
     void suggest();
 }, [isReady]);
-
-// Bad - suggest defined outside useEffect
-const suggest = async () => { setStatus('loading'); ... };
-useEffect(() => { void suggest(); }, [isReady]);
 ```
 
 ## Background Tasks
 
-Register tasks in `_layout.tsx` after migrations:
+`useAppInitialization` runs one startup Effect after the migrations: a 1s `Effect.sleep`, an idle wait (`waitForIdle`), then background-task registration and the startup sync. Each step is wrapped in `Effect.ignoreCause({ log: 'Error' })`, so a failure is logged once and never stops the next step.
 
-- Exchange rate sync (hourly)
-- Balance updates (weekly)
-- Monobank sync
-
-Task files use `.task.ts` suffix and are defined in `[module]/task/` folders.
+Task files use the `.task.ts` suffix, live in `[module]/task/`, and call `appRuntime.runPromise(...)` inside `TaskManager.defineTask`, mapping a rejection to `BackgroundTaskResult.Failed`.
 
 ### Long-running work must yield to the UI
 
-Any loop or multi-step process that can run long (valuing thousands of rows, bulk imports, batch consolidations) must yield to the JS event loop so the UI thread can paint — otherwise progress bars freeze at 0% and the app feels hung even when the work is succeeding. Process in batches, commit each batch in its own short transaction (never hold a write transaction open across a yield), publish progress, then `await microPause()` from `@generic/utils/micro-pause.util` before the next batch. Mirror the rule-engine batch pattern (`RULE_BATCH_SIZE` + per-batch transaction + yield).
+Any loop or multi-step process that can run long (valuing thousands of rows, bulk imports, batch consolidations) must yield to the JS event loop so the UI thread can paint — otherwise progress bars freeze at 0% and the app feels hung even when the work is succeeding. Process in batches (`processInputWithBatches` from `@generic/utils`), commit each batch in its own short `Db.transaction` (never hold a write transaction open across a yield), publish progress, then `yield* Effect.promise(() => microPause())` before the next batch.
 
 ### `emptySnapshot()` returns fresh objects
 
@@ -696,51 +710,7 @@ protected emptySnapshot(): AiSystemSnapshotInterface {
 
 ## Logging
 
-The library auto-derives `logContext = ClassName::methodName` for decorated methods, so there is no namespace argument. The transport prefixes every line as `[logContext]`.
-
-### Class methods — `@Log` decorator
-
-Every public service/repository method that warrants observability is decorated with the full lifecycle: `pre` (entry), `post` (success), `error` (catch). No inline `logger.log(...)` inside decorated method bodies.
-
-```ts
-import { Log } from '@budgie/logger';
-import { getErrorMessage } from '@rnw-community/shared';
-
-class SomeService {
-    @Log(
-        input => `enter input=${input}`,
-        (result, input) => `done input=${input} result=${result}`,
-        (error, input) => `throw input=${input} error=${getErrorMessage(error)}`
-    )
-    async doThing(input: string): Promise<number> {
-        // pure business logic
-    }
-}
-```
-
-Output:
-
-```
-[SomeService::doThing] enter input=hello
-[SomeService::doThing] done input=hello result=42
-```
-
-If a method has multiple log points today, extract each phase into a private method and decorate each. The outer method's `@Log` covers the outer lifecycle.
-
-### Free-function / hook / component — `getLogger`
-
-```ts
-import { getLogger } from '@budgie/logger';
-
-const logger = getLogger('useSomething');
-
-export const useSomething = () => {
-    logger.log('fired', { foo, bar });
-    logger.error('failed', { errorMessage });
-};
-```
-
-Free-form `context: string`. Convention: hook/file/component name. No enum.
+`Effect.fn('Owner.method')` spans are the service logging mechanism. Services do not log their own failures: the edge that runs the effect logs the cause once, and fire-and-forget effects end in `Effect.ignoreCause({ log: 'Error' })`. Use `Effect.logError` / `Effect.logDebug` only for a real debugging handle (for example the CSV importer's per-row parse errors). The `makeLoggerLayer` layer in `appRuntime` is the only sink.
 
 ### Build-time gate
 
@@ -753,7 +723,3 @@ APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true pnpm start --port 8082
 ```
 
 Also verify the foreground bundle is the dev app (`com.vitalyiegorov.budgie.dev` on iOS), not the E2E app. The E2E build (`com.vitalyiegorov.budgie.e2e`) has `EXPO_PUBLIC_LOGGING_DISABLE=true` baked in, so Metro cannot re-enable service logs for that installed binary. If the wrong app is foreground, launch/reinstall the dev build or rebuild the target variant with logging enabled before debugging logs.
-
-### `packages/sync` exception
-
-`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.

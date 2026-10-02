@@ -46,7 +46,6 @@ export const TransactionEntityTable = sqliteTable(
             .notNull()
     }),
     table => [
-        index('transactions_needs_embedding_idx').on(table.needsEmbedding, table.deletedAt),
         index('transactions_operated_at_idx')
             .on(table.operatedAt)
             .where(sql`${table.deletedAt} IS NULL`),
@@ -92,6 +91,9 @@ export const TransactionEntityTable = sqliteTable(
             .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} != ''`),
         index('transactions_pending_comment_idx')
             .on(sql`${table.operatedAt} DESC`)
-            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} = '' AND ${table.comment} != ''`)
+            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} = '' AND ${table.comment} != ''`),
+        index('transactions_pending_embedding_idx')
+            .on(table.id)
+            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL`)
     ]
 );

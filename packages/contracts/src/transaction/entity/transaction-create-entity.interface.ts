@@ -1,5 +1,8 @@
-import { z } from 'zod';
+import type { BaseEntityKeyType } from '../../@generic/type/base-entity-key.type';
+import type { PartialByKeysType } from '../../@generic/type/partial-by-keys.type';
+import type { TransactionEntityInterface } from './transaction-entity.interface';
 
-import type { TransactionCreateEntitySchema } from '../schema/transaction-create-entity.schema';
-
-export type TransactionCreateEntityInterface = z.infer<typeof TransactionCreateEntitySchema>;
+export type TransactionCreateEntityInterface = PartialByKeysType<
+    Omit<TransactionEntityInterface, BaseEntityKeyType | 'operatedWeekday' | 'operatedMinuteOfDay'>,
+    'consolidationParentTransactionId' | 'consolidationType' | 'needsEmbedding'
+>;

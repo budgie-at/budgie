@@ -1,17 +1,18 @@
-import { isDefined } from '@rnw-community/shared';
+import { ExchangeRateEntityTable, ExchangeRateRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { exchangeRateRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const rateByBaseAndQuoteIdsAtom = databaseQueryFamily(
+    [ExchangeRateEntityTable],
+    ExchangeRateRepository,
+    (exchangeRateRepository, [baseInstrumentId, quoteInstrumentId]: readonly [number, number]) =>
+        exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId)
+);
 
 export const useGetRatesByBaseAndQuoteIdsQuery = (baseInstrumentId: number, quoteInstrumentId: number) => {
-    const {
-        data: rate,
-        updatedAt,
-        error
-    } = useDatabaseLiveQuery(exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId), [
-        baseInstrumentId,
-        quoteInstrumentId
-    ]);
+    const result = useLiveAtomValue(rateByBaseAndQuoteIdsAtom([baseInstrumentId, quoteInstrumentId]));
 
-    return isDefined(updatedAt) ? { rate, updatedAt, error, loading: false } : { rate: null, updatedAt: null, error, loading: true };
+    return { rate: AsyncResult.getOrElse(result, () => null) ?? null, loading: AsyncResult.isInitial(result) };
 };

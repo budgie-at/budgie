@@ -2,16 +2,52 @@ name: Build and Publish to Stores
 
 on:
   workflow_dispatch:
+    inputs:
+      push_screenshots:
+        description: 'Also upload the committed store screenshots'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 jobs:
-  publish:
-    name: iOS build and publish
+  assert-ai:
+    name: Assert AI is enabled
+    runs-on: [self-hosted, trf-linux-amd64-2x4]
+    timeout-minutes: 10
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.10.0 # v1.10.0
+    env:
+      APP_VARIANT: production
+      EAS_BUILD_PROFILE: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.22.1
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Assert AI is enabled
+        run: bash .github/scripts/assert-ai-enabled.sh
+
+  publish:
+    name: iOS build and publish
+    needs: assert-ai
+    permissions:
+      contents: read
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v3.1.0 # v3.1.0
     with:
       enable-ios: true
       enable-android: false
@@ -20,7 +56,9 @@ jobs:
       build-profile: production
       submit-profile: production
       asc-key-path: asc_api_key.p8
+      google-key-path: google-service-account.json
       install-command: pnpm install --frozen-lockfile
+      package-manager: pnpm
       publish-env: |
         EXPO_NO_TELEMETRY=1
         APP_VARIANT=production
@@ -29,8 +67,32 @@ jobs:
         EXPO_USE_PRECOMPILED_MODULES=1
         RCT_USE_PREBUILT_RNCORE=1
         RCT_USE_RN_DEP=1
+        PUSH_SCREENSHOTS=${{ inputs.push_screenshots }}
+      ios-pre-submit-command: |
+        export PATH="$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+        fastlane store_preflight
+      ios-post-submit-command: |
+        export PATH="$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+        export EXPO_ASC_API_KEY_PATH="$PWD/asc_api_key.p8"
+        pnpm store:notes -- --check
+        fastlane ios ios_metadata
+        if [ "$PUSH_SCREENSHOTS" = 'true' ]; then
+          fastlane ios ios_screenshots
+        fi
+      android-pre-submit-command: |
+        export PATH="$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+        fastlane store_preflight
+      android-post-submit-command: |
+        export PATH="$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+        export GOOGLE_SERVICE_ACCOUNT_KEY_PATH="$PWD/google-service-account.json"
+        pnpm store:notes -- --check
+        fastlane android android_metadata
+        if [ "$PUSH_SCREENSHOTS" = 'true' ]; then
+          fastlane android android_screenshots
+        fi
     secrets:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
       ASC_KEY_ID: ${{ secrets.EXPO_IOS_ASC_KEY_ID }}
       ASC_ISSUER_ID: ${{ secrets.EXPO_IOS_ASC_ISSUER_ID }}
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}

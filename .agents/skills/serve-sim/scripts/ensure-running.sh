@@ -6,6 +6,21 @@
 
 set -u
 
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../../.." && pwd)
+# shellcheck disable=SC1091
+. "$REPO_ROOT/tests/app-tests/scripts/mobile-ci-slim-simulator.sh"
+
+if [[ -z "$(booted_simulator_udids)" ]]; then
+  echo "ensure-running: no booted simulator to attach a helper to. Boot one with Xcode > Simulator or 'xcrun simctl boot <UDID>', then re-run so it is slimmed first." >&2
+  exit 1
+fi
+
+if ! slim_booted_simulators; then
+  echo "ensure-running: every simulator must run slim before serve-sim drives it." >&2
+  exit 1
+fi
+
 DEVICE="${1:-}"
 
 # If a helper is already running for any device, return it

@@ -1,6 +1,12 @@
-import { TransactionCreateInputInterface, TransactionEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import {
+    TransactionCreateInputInterface,
+    TransactionCreateInputSchema,
+    TransactionEntityInterface,
+    TransactionTypeEnum
+} from '@budgie/contracts';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -8,20 +14,18 @@ import Toast from 'react-native-toast-message';
 import { buildExpenseEntry } from '../utils/build-expense-entry.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 
-import type { ZodType } from 'zod';
-
-interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
+interface UseTransactionFormConfig {
     readonly onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;
     readonly fromAccountId: number | null;
     readonly toAccountId: number | null;
     readonly type: TransactionTypeEnum;
-    readonly schema: ZodType<T, T>;
+    readonly schema: typeof TransactionCreateInputSchema;
     readonly categoryId?: number;
     readonly comment?: string;
     readonly amount?: number;
 }
 
-export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
+export const useCreateTransactionForm = ({
     type,
     schema,
     onSubmit,
@@ -30,12 +34,12 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
     amount = 0,
     categoryId = 0,
     comment = ''
-}: UseTransactionFormConfig<T>) => {
+}: UseTransactionFormConfig) => {
     const { t } = useLingui();
 
     const form = useForm({
         mode: 'onSubmit',
-        resolver: zodResolver<TransactionCreateInputInterface, unknown, TransactionCreateInputInterface>(schema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schema)),
         defaultValues: createTransactionInput({
             exchangeRate: 1,
             fromAccountId,

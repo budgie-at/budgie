@@ -1,5 +1,5 @@
 import { privatbankTransactionMapper } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 const INITIAL_END_BALANCE = 12_345.67;
 const CHANGED_END_BALANCE = 54_321.01;

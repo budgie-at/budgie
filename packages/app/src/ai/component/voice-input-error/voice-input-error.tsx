@@ -6,6 +6,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { VoiceInputOverlaySelector } from '../voice-input-overlay/voice-input-overlay.selector';
 
 interface Props {
     readonly message: string;
@@ -30,7 +31,7 @@ export const VoiceInputError = ({ message, onDismiss }: Props) => (
                 </Text>
                 <Text className="text-secondary-foreground text-base text-center">{message}</Text>
             </View>
-            <Button variant="primary" onPress={onDismiss} content={t`Try Again`} />
+            <Button variant="primary" onPress={onDismiss} content={t`Try Again`} testID={VoiceInputOverlaySelector.ErrorRetryButton} />
         </View>
     </Animated.View>
 );

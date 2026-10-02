@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'csv-import',
     tier: FeatureTierEnum.CORE,
     title: msg`CSV Bank Statement Import`,
-    tagline: msg`Any bank, any column order — set it up once per source, then it's two taps from there.`,
+    tagline: msg`Any bank, any column order — map it on one screen or start from a built-in preset.`,
     metaTitle: msg`CSV Import for Bank Statements & Transactions — Budgie`,
-    metaDescription: msg`Import any bank's CSV with flexible column mapping, save the mapping as a preset, and re-import safely with deduplication. Universal escape hatch for banks without an API.`,
+    metaDescription: msg`Import any bank's CSV with flexible column mapping, or start from a built-in Budgie, SmartBudget or FinEye preset. Re-importing rebuilds your ledger from the file. Universal escape hatch for banks without an API.`,
     primaryKeyword: 'import bank statement CSV',
     seoKeywords: [
         'import bank statement CSV',

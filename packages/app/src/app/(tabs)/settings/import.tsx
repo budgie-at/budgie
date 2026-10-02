@@ -1,27 +1,31 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import {
+    AccountBalanceRepository,
+    AccountRepository,
+    CategoryRepository,
+    TransactionEntryRepository,
+    TransactionRepository,
+    TransactionTagsRepository,
+    UserIconNameEnum
+} from '@budgie/contracts';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
+import { File } from 'expo-file-system';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, Text, View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
-import {
-    accountBalanceRepository,
-    accountRepository,
-    categoryRepository,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../../@generic/drizzle/db/db';
-import { microPause } from '../../../@generic/utils/micro-pause.util';
-import { readTextFileFromUri } from '../../../@generic/utils/read-text-file-from-uri.util';
-import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
+import { YIELD_TO_UI } from '../../../@generic/constant/yield-to-ui.constant';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { AccountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
 import { IMPORT_PRESETS } from '../../../import/constant/import-presets.constant';
@@ -47,14 +51,13 @@ export default function ImportScreen() {
 
     const headersSet = new Set(headers);
 
-    const schemaWithHeaders = ImportColumnMapSchema.refine(data => headersSet.has(data.toAccount), {
-        message: t`Select a valid column`,
-        path: ['toAccount']
-    })
-        .refine(data => headersSet.has(data.category), { message: t`Select a valid column`, path: ['category'] })
-        .refine(data => headersSet.has(data.operatedAt), { message: t`Select a valid column`, path: ['operatedAt'] })
-        .refine(data => headersSet.has(data.toAmount), { message: t`Select a valid column`, path: ['toAmount'] })
-        .refine(data => headersSet.has(data.toCurrency), { message: t`Select a valid column`, path: ['toCurrency'] });
+    const schemaWithHeaders = ImportColumnMapSchema.check(
+        Schema.makeFilter(data =>
+            (['toAccount', 'category', 'operatedAt', 'toAmount', 'toCurrency'] as const)
+                .filter(column => !headersSet.has(data[column]))
+                .map(column => ({ path: [column], issue: t`Select a valid column` }))
+        )
+    );
 
     const {
         control,
@@ -62,7 +65,7 @@ export default function ImportScreen() {
         reset,
         formState: { errors }
     } = useForm<ImportColumnMapFormValues>({
-        resolver: zodResolver(schemaWithHeaders),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schemaWithHeaders)),
         defaultValues: {
             toAccount: '',
             category: '',
@@ -89,56 +92,65 @@ export default function ImportScreen() {
     };
 
     useEffect(() => {
-        const loadFile = async () => {
-            if (!isNotEmptyString(fileUri)) {
-                return;
-            }
+        if (!isNotEmptyString(fileUri)) {
+            return;
+        }
 
-            setIsLoading(true);
-
-            try {
-                const text = await readTextFileFromUri(fileUri);
-                const [parsedHeaders, count] = await Promise.all([parseCsvHeaders(text), countCsvRows(text)]);
+        appRuntime.runFork(
+            Effect.gen(function* () {
+                setIsLoading(true);
+                const text = yield* Effect.promise(() => new File(fileUri).text());
+                const [parsedHeaders, count] = yield* Effect.all([parseCsvHeaders(text), countCsvRows(text)]);
 
                 setCsvText(text);
                 setHeaders(parsedHeaders);
                 setRowCount(count);
-            } catch (error) {
-                Toast.show({ type: 'error', text1: t`Could not read CSV file`, text2: getErrorMessage(error) });
-                router.back();
-            }
-
-            setIsLoading(false);
-        };
-
-        void loadFile();
+            }).pipe(
+                Effect.catchCause(cause =>
+                    Effect.sync(() => {
+                        showErrorToast(t`Could not read CSV file`, getErrorMessage(Cause.squash(cause)));
+                        router.back();
+                    })
+                ),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+            )
+        );
     }, [fileUri, t]);
 
-    const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
+    const handleStartImport = (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 
-        await microPause();
+        return appRuntime.runPromise(
+            Effect.gen(function* () {
+                const accountRepository = yield* AccountRepository;
+                const categoryRepository = yield* CategoryRepository;
+                const transactionTagsRepository = yield* TransactionTagsRepository;
+                const transactionEntryRepository = yield* TransactionEntryRepository;
+                const transactionRepository = yield* TransactionRepository;
+                const accountBalanceRepository = yield* AccountBalanceRepository;
+                const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
 
-        const importer = new ImporterService(columnMap);
+                yield* YIELD_TO_UI;
+                yield* Effect.all(
+                    [
+                        accountRepository.truncate(),
+                        categoryRepository.truncate(false),
+                        transactionTagsRepository.truncate(),
+                        transactionEntryRepository.truncate(),
+                        transactionRepository.truncate(),
+                        accountBalanceRepository.truncate()
+                    ],
+                    { discard: true }
+                );
+                yield* Effect.flatMap(ImporterService, importerService => importerService.process(columnMap, csvText, rowCount));
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
 
-        try {
-            await accountRepository.truncate();
-            await categoryRepository.truncate(false);
-            await transactionTagsRepository.truncate();
-            await transactionEntryRepository.truncate();
-            await transactionRepository.truncate();
-            await accountBalanceRepository.truncate();
-
-            await importer.process(csvText, rowCount);
-
-            await accountBalanceIncrementalService.updateAllBalances(true);
-
-            router.back();
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Could not import CSV file`, text2: getErrorMessage(error) });
-        }
-
-        setIsLoading(false);
+                router.back();
+            }).pipe(
+                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not import CSV file`, getErrorMessage(error)))),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+            )
+        );
     };
     const handleCancel = () => void router.back();
 
@@ -158,7 +170,7 @@ export default function ImportScreen() {
             trailing={rowCountBadge}
             contentClassName="gap-y-xl"
             footer={
-                <View className="flex-row gap-x-md">
+                <View className="flex-row gap-x-md px-5xl">
                     <View className="flex-1">
                         <Button content={t`Cancel`} variant="ghost" onPress={handleCancel} />
                     </View>

@@ -1,10 +1,11 @@
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { DEFAULT_TRANSACTION_FILTER, DebtEventDirectionEnum, LanguageEnum } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, DebtEventDirectionEnum, LanguageEnum, TransactionViewRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { TransactionRepository, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export class DebtMigrationTransactionAssertions {
     private static readonly DEBT_ACCOUNT_ID = Number('101');
@@ -13,20 +14,21 @@ export class DebtMigrationTransactionAssertions {
     private static readonly FIRST_TRANSACTION_ID = Number('1001');
     private static readonly UAH_INSTRUMENT_ID = 33;
 
-    constructor(private readonly repository: TransactionRepository) {}
+    assert() {
+        return Effect.gen({ self: this }, function* () {
+            const transactionViewRepository = yield* TransactionViewRepository;
+            const transactions = yield* transactionViewRepository.getAll(
+                DebtMigrationTransactionAssertions.EXPECTED_TRANSACTION_IDS.length + 1,
+                {
+                    ...DEFAULT_TRANSACTION_FILTER,
+                    accountIds: [DebtMigrationTransactionAssertions.DEBT_ACCOUNT_ID]
+                },
+                LanguageEnum.EN
+            );
 
-    async assert(): Promise<void> {
-        const transactions = await this.repository.getAll(
-            DebtMigrationTransactionAssertions.EXPECTED_TRANSACTION_IDS.length + 1,
-            {
-                ...DEFAULT_TRANSACTION_FILTER,
-                accountIds: [DebtMigrationTransactionAssertions.DEBT_ACCOUNT_ID]
-            },
-            LanguageEnum.EN
-        );
-
-        this.assertRows(transactions);
-        this.assertFirstTransaction(transactions);
+            this.assertRows(transactions);
+            this.assertFirstTransaction(transactions);
+        });
     }
 
     private assertRows(transactions: TransactionWithRelationsEntityInterface[]): void {

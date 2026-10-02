@@ -1,45 +1,63 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import {
+    TransactionConsolidationTypeEnum,
+    TransactionEntryRepository,
+    TransactionRepository,
+    TransactionConsolidationRepository,
+    TransactionTagsRepository
+} from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import type { UnconsolidationDependenciesInterface } from '../interface/unconsolidation-dependencies.interface';
-import type { DB, TransactionEntityInterface } from '@budgie/contracts';
+import type { TransactionEntityInterface } from '@budgie/contracts';
 
-export class UnconsolidationService {
-    constructor(private readonly dependencies: UnconsolidationDependenciesInterface) {}
+export class UnconsolidationService extends Context.Service<UnconsolidationService>()('@budgie/consolidation/UnconsolidationService', {
+    make: Effect.gen(function* () {
+        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const transactionRepository = yield* TransactionRepository;
+        const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
+        const transactionTagsRepository = yield* TransactionTagsRepository;
 
-    @Log(
-        (transactionId, tx) => `enter transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
-        (result, transactionId, tx) => `done result=${String(result)} transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
-        (error, transactionId, tx) => `throw transactionId=${transactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async unconsolidateById(transactionId: number, tx: DB): Promise<void> {
-        const canonical = await this.dependencies.transactionRepository.getByIdRaw(transactionId, tx);
+        const isPreExistingCanonical = (transaction: TransactionEntityInterface | undefined): boolean => {
+            if (!isDefined(transaction)) {
+                return false;
+            }
 
-        await this.dependencies.transactionEntryRepository.moveBackToOriginalTransactions(transactionId, tx);
-        await this.dependencies.transactionRepository.clearConsolidationParent(transactionId, tx);
+            return (
+                transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
+                isDefined(transaction.externalId) ||
+                isDefined(transaction.externalSource)
+            );
+        };
 
-        if (this.isPreExistingCanonical(canonical)) {
-            await this.dependencies.transactionRepository.setConsolidationType(transactionId, null, tx);
+        return {
+            unconsolidateById: Effect.fn('UnconsolidationService.unconsolidateById')(function* (transactionId: number) {
+                const canonical = yield* transactionRepository.getByIdRaw(transactionId);
 
-            return;
-        }
+                yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
+                yield* transactionConsolidationRepository.clearConsolidationParent(transactionId);
 
-        await this.dependencies.transactionTagsRepository.deleteByTransactionId(transactionId, tx);
-        await this.dependencies.transactionEntryRepository.deleteLedgerByTransactionId(transactionId, tx);
-        await this.dependencies.transactionRepository.deleteById(transactionId, tx);
-    }
+                if (isPreExistingCanonical(canonical)) {
+                    yield* transactionConsolidationRepository.setConsolidationType(transactionId, null);
 
-    private isPreExistingCanonical(transaction: TransactionEntityInterface | undefined): boolean {
-        if (!isDefined(transaction)) {
-            return false;
-        }
+                    return;
+                }
 
-        return (
-            transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
-            isDefined(transaction.externalId) ||
-            isDefined(transaction.externalSource)
-        );
-    }
+                yield* transactionTagsRepository.deleteByTransactionId(transactionId);
+                yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
+                yield* transactionRepository.deleteById(transactionId);
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(UnconsolidationService, UnconsolidationService.make).pipe(
+        Layer.provide([
+            TransactionEntryRepository.layer,
+            TransactionRepository.layer,
+            TransactionConsolidationRepository.layer,
+            TransactionTagsRepository.layer
+        ])
+    );
 }

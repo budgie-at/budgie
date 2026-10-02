@@ -1,0 +1,1 @@
+export const LENDING_CATEGORY_ID = 100000;

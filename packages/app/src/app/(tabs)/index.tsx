@@ -1,13 +1,13 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import { Redirect } from 'expo-router';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
-import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
+import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-collapsible-header/net-worth-collapsible-header';
 import { HomeSectionKindEnum } from '../../account/enum/home-section-kind.enum';
 import { BankProviderGroupInterface } from '../../account/interface/bank-provider-group.interface';
 import { CryptoCurrencyGroupInterface } from '../../account/interface/crypto-currency-group.interface';
@@ -18,7 +18,7 @@ import { buildIntegrationProviderMap } from '../../account/utils/build-integrati
 import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
-import { useSetting } from '../../settings/hook/use-setting.hook';
+import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 
 const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: Value): void => {
     const groupValues = groups.get(key);
@@ -140,22 +140,24 @@ export default function HomePage() {
     const { accounts, balanceSummary } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const scrollY = useSharedValue(0);
-    const language = useSetting('language');
-    const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
-    const focusKey = useFocusKey();
+    const onboardingHref = useOnboardingRedirect();
+
+    if (isDefined(onboardingHref)) {
+        return <Redirect href={onboardingHref} />;
+    }
+
     const activeAccounts = accounts.filter(account => account.isActive);
     const integrationProviders = buildIntegrationProviderMap(accounts);
     const sections = buildHomePageSections(activeAccounts, integrationProviders);
-    const budgetWidgetRemountKey = `${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`;
     const listHeaderComponent = (
-        <View className="mb-3xl">
-            <BudgetWidget key={budgetWidgetRemountKey} />
+        <View className="mb-3xl gap-y-3xl">
+            <BudgetWidget />
         </View>
     );
 
     return (
         <View className="flex-1 bg-background">
-            <CollapsibleHeader
+            <NetWorthCollapsibleHeader
                 scrollY={scrollY}
                 netWorth={balanceSummary.netWorth}
                 fiatTotal={balanceSummary.fiatTotal}

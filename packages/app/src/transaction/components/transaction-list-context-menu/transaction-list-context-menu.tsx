@@ -11,6 +11,7 @@ import { TransactionListConvertToTransferMenuItem } from '../transaction-list-co
 import { TransactionListDeleteMenuItem } from '../transaction-list-delete-menu-item/transaction-list-delete-menu-item';
 import { TransactionListEditMenuItem } from '../transaction-list-edit-menu-item/transaction-list-edit-menu-item';
 import { TransactionListRevertMenuItem } from '../transaction-list-revert-menu-item/transaction-list-revert-menu-item';
+import { TransactionListStartDepositMenuItem } from '../transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item';
 
 import type { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -40,6 +41,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
                     <TransactionListEditMenuItem />
                     <TransactionListConvertToRefundMenuItem />
                     <TransactionListConvertToTransferMenuItem />
+                    <TransactionListStartDepositMenuItem />
                     <TransactionListAttachDebtMenuItem />
                     <TransactionListDeleteMenuItem />
                     <TransactionListRevertMenuItem />

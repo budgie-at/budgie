@@ -5,69 +5,30 @@ import { Trans } from '@lingui/react/macro';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageBreadcrumbsJsonLd } from '../../../../feature/component/feature-page-breadcrumbs-json-ld/feature-page-breadcrumbs-json-ld';
 import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
-import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
-import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
-import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
-import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildFeaturePageMetadata({
-        locale: lang,
-        slug: FEATURE_METADATA.slug,
-        title: i18n._(FEATURE_METADATA.metaTitle),
-        description: i18n._(FEATURE_METADATA.metaDescription),
-        keywords: FEATURE_METADATA.seoKeywords.join(', '),
-        publishedAt: FEATURE_METADATA.publishedAt,
-        updatedAt: FEATURE_METADATA.updatedAt
-    });
-}
+export const generateMetadata = createFeatureGenerateMetadata(FEATURE_METADATA);
 
 export default async function MonobankSyncFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
-    const title = i18n._(FEATURE_METADATA.metaTitle);
-    const homePath = `/${lang}`;
-    const featuresPath = `/${lang}/features`;
-    const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
 
     return (
-        <main className="flex-1">
-            <FeaturePageBreadcrumbsJsonLd locale={lang} slug={FEATURE_METADATA.slug}>
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={homePath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={featuresPath} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={featureName} path={featurePath} />
-            </FeaturePageBreadcrumbsJsonLd>
-            <FeaturePageWebPageJsonLd
-                description={description}
-                featureName={featureName}
-                locale={lang}
-                publishedAt={FEATURE_METADATA.publishedAt}
-                slug={FEATURE_METADATA.slug}
-                title={title}
-                updatedAt={FEATURE_METADATA.updatedAt}
-            />
+        <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={featureName}
@@ -80,6 +41,60 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>From one token to your home screen</Trans>}>
+                    <Trans>Three screens: paste a personal token, pick the cards and jars you want, and watch them land on Home.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Paste one personal token</Trans>}>
+                    <Trans>Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Connect Monobank screen with the Get API Token row and the token field`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="no-bank-login-budget-app-1"
+                    slug="no-bank-login-budget-app"
+                >
+                    <FeatureStory.Callout y={0.22}>
+                        <Trans>Generate it in Monobank</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.506}>
+                        <Trans>Kept in your local database</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Cards and jars arrive</Trans>}>
+                    <Trans>Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch`}
+                    index={1}
+                    locale={lang}
+                    scene="monobank-sync-1"
+                    slug="monobank-sync"
+                >
+                    <FeatureStory.Callout y={0.218}>
+                        <Trans>Each card with its balance</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.387}>
+                        <Trans>Jars come across too</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Grouped under the bank</Trans>}>
+                    <Trans>Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Clip
+                    alt={t(i18n)`Screen recording of the Monobank group on the Budgie home screen opening its synced accounts`}
+                    index={2}
+                    locale={lang}
+                    scene="monobank-sync-clip-1"
+                    slug="monobank-sync"
+                />
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why direct API matters more than convenience</Trans>
@@ -87,7 +102,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no
-                        data broker. Every transaction lands in your local SQLite database the moment it arrives.
+                        data broker. Every transaction lands on your phone the moment it arrives.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -128,6 +143,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>Imported commissions become bank-fee entries, so fees stay in analytics after transfer consolidation</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
+                        <Trans>Jars sync next to your cards, each one selectable on its own, with top-ups merged into transfers</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -145,22 +163,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        When you transfer between two banks, both legs are automatically detected via counter-IBAN and exchange-rate
-                        matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup
-                        needed.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Generate a personal API token from the Monobank app, paste it into Budgie, choose which Monobank accounts to import,
-                        and select an initial sync window. A background task syncs every 30 minutes when you&apos;re online; you control the
-                        cadence and can pause anytime.
+                        The same matching runs between two banks and between a card and one of your jars: both legs are detected via
+                        counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your
+                        spending stats, no manual cleanup needed.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -171,7 +176,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageComparisonTable rivalLabel={<Trans>Plaid-based app</Trans>}>
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Your token, in your keystore</Trans>}
+                        budgie={<Trans>Your token, in your local database</Trans>}
                         concern={<Trans>Token control</Trans>}
                         rival={<Trans>Plaid-managed credential vault</Trans>}
                     />
@@ -212,14 +217,24 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>Where does my Monobank token live?</Trans>}
                     answer={
                         <Trans>
-                            In your platform&apos;s secure keystore (iOS Keychain / Android Keystore), never in plaintext or our servers (we
-                            have none).
+                            On your device. When you set a PIN, that PIN is held in your platform&apos;s keystore and is what your data is
+                            encrypted with; the token itself is never sent to a Budgie server (we have none).
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I use multiple Monobank accounts?</Trans>}
                     answer={<Trans>Yes — one token grants access to all your Monobank accounts. Pick which to import per account.</Trans>}
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Do jars sync as well?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Jars are fetched alongside your cards and listed in their own section during setup, so you choose them one
+                            by one. Topping a jar up from a card is detected as a transfer between your own accounts rather than counted as
+                            spending.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>What if Monobank&apos;s API changes?</Trans>}
@@ -231,11 +246,6 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     }
                 />
             </FeaturePageFaqSection>
-
-            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
-            <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
-
-            <FeaturePageCta locale={lang} />
-        </main>
+        </FeaturePageShell>
     );
 }

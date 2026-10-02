@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
@@ -13,7 +14,7 @@ export const AutoAssignMccCategory = () => {
     const applyMccDefaultCategory = useSetting('applyMccDefaultCategory');
 
     const handleToggle = (value: boolean) => {
-        void updateSettingsMutation({ applyMccDefaultCategory: value });
+        void appRuntime.runPromise(updateSettingsMutation({ applyMccDefaultCategory: value }));
     };
 
     return (

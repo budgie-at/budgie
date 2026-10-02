@@ -1,11 +1,13 @@
 import { PRECISION } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
 import { useEffect, useRef, useState } from 'react';
 
-import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 interface ConversionState {
     readonly destinationAmount: number;
@@ -24,20 +26,13 @@ interface UseCurrencyConversionResult {
 }
 
 const INITIAL_STATE: ConversionState = { destinationAmount: 0, exchangeRate: 1, isManualRate: false };
-const UNMOUNTED_REQUEST_ID = -1;
-const logger = getLogger('useCurrencyConversion');
 
 export const useCurrencyConversion = (): UseCurrencyConversionResult => {
     const [state, setState] = useState<ConversionState>(INITIAL_STATE);
     const [isCrossCurrency, setIsCrossCurrency] = useState(false);
-    const latestRequestId = useRef(0);
+    const conversionFiberRef = useRef<Fiber.Fiber<void> | null>(null);
 
-    useEffect(
-        () => () => {
-            latestRequestId.current = UNMOUNTED_REQUEST_ID;
-        },
-        []
-    );
+    useEffect(() => () => conversionFiberRef.current?.interruptUnsafe(), []);
 
     const convert = (sourceAmount: number, sourceInstrumentId: number, destinationInstrumentId: number) => {
         if (sourceInstrumentId === destinationInstrumentId || sourceInstrumentId === 0 || destinationInstrumentId === 0) {
@@ -55,28 +50,27 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
             return;
         }
 
-        latestRequestId.current += 1;
-        const requestId = latestRequestId.current;
-        const sourceAmountInMicroUnits = convertToMicroUnits(sourceAmount);
-
-        void exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, sourceAmountInMicroUnits).then(
-            result => {
-                if (requestId !== latestRequestId.current || latestRequestId.current === UNMOUNTED_REQUEST_ID) {
-                    return result;
-                }
-
-                setState({ destinationAmount: result.amount / PRECISION, exchangeRate: result.exchangeRate, isManualRate: false });
-
-                return result;
-            },
-            (error: unknown) => {
-                logger.error('convert:failed', { errorMessage: getErrorMessage(error) });
-            }
+        conversionFiberRef.current?.interruptUnsafe();
+        conversionFiberRef.current = appRuntime.runFork(
+            Effect.flatMap(ExchangeRatesService, exchangeRatesService =>
+                exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, convertToMicroUnits(sourceAmount))
+            ).pipe(
+                Effect.map(
+                    result =>
+                        void setState({
+                            destinationAmount: result.amount / PRECISION,
+                            exchangeRate: result.exchangeRate,
+                            isManualRate: false
+                        })
+                ),
+                Effect.tapError(Effect.logError),
+                Effect.ignore
+            )
         );
     };
 
     const setManualDestinationAmount = (sourceAmount: number, destinationAmount: number) => {
-        latestRequestId.current += 1;
+        conversionFiberRef.current?.interruptUnsafe();
         const manualRate = isPositiveNumber(sourceAmount) && isPositiveNumber(destinationAmount) ? sourceAmount / destinationAmount : 1;
 
         setIsCrossCurrency(true);
@@ -86,7 +80,7 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
     const reset = () => {
         setState(INITIAL_STATE);
         setIsCrossCurrency(false);
-        latestRequestId.current += 1;
+        conversionFiberRef.current?.interruptUnsafe();
     };
 
     return {

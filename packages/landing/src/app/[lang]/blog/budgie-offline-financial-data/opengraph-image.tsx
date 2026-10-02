@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createBlogOgImage } from '../../../../blog/component/blog-og-image/blog-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'How Budgie Keeps Your Financial Data Off the Cloud';
@@ -12,11 +13,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(t(i18n)`How Budgie Keeps Your Financial Data Off the Cloud`, [
-        t(i18n)`privacy`,
-        t(i18n)`security`,
-        t(i18n)`architecture`
-    ]);
+    return createBlogOgImage(
+        t(i18n)`How Budgie Keeps Your Financial Data Off the Cloud`,
+        [t(i18n)`privacy`, t(i18n)`security`, t(i18n)`architecture`],
+        resolveOgPlate('database-backup', lang)
+    );
 };
 
 export default OgImage;

@@ -1,12 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
+import { aiUmbrellaStatusAtom } from '../../constant/ai-umbrella-status-atom.constant';
 import { AiSystemUmbrellaStateEnum } from '../../enum/ai-system-umbrella-state.enum';
-import { useAiSystemUmbrella } from '../../hook/use-ai-system-umbrella.hook';
 
 const ICON_SIZE = 14;
 
@@ -14,24 +15,20 @@ const BANNER_ICON: Record<AiSystemUmbrellaStateEnum, UserIconNameEnum | null> = 
     [AiSystemUmbrellaStateEnum.DISABLED]: UserIconNameEnum.CircleAlert,
     [AiSystemUmbrellaStateEnum.DOWNLOADING]: UserIconNameEnum.LoaderCircle,
     [AiSystemUmbrellaStateEnum.HEALTHY]: null,
-    [AiSystemUmbrellaStateEnum.IDLE]: UserIconNameEnum.LoaderCircle,
     [AiSystemUmbrellaStateEnum.INITIALIZING]: UserIconNameEnum.LoaderCircle,
-    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: UserIconNameEnum.TriangleAlert,
-    [AiSystemUmbrellaStateEnum.SUSPENDED]: UserIconNameEnum.LoaderCircle
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: UserIconNameEnum.TriangleAlert
 };
 
 const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
     [AiSystemUmbrellaStateEnum.DISABLED]: 'text-secondary-foreground',
     [AiSystemUmbrellaStateEnum.DOWNLOADING]: 'text-primary',
     [AiSystemUmbrellaStateEnum.HEALTHY]: 'text-secondary-foreground',
-    [AiSystemUmbrellaStateEnum.IDLE]: 'text-secondary-foreground',
     [AiSystemUmbrellaStateEnum.INITIALIZING]: 'text-warning-foreground',
-    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: 'text-destructive-foreground',
-    [AiSystemUmbrellaStateEnum.SUSPENDED]: 'text-warning-foreground'
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: 'text-destructive-foreground'
 };
 
 export const AiSystemStatusBanner = () => {
-    const umbrella = useAiSystemUmbrella();
+    const umbrella = useAtomValue(aiUmbrellaStatusAtom);
     const isHidden = umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY || umbrella.state === AiSystemUmbrellaStateEnum.DISABLED;
 
     if (isHidden) {

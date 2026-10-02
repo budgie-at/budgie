@@ -29,6 +29,7 @@ const getUniqueIdentifier = isAndroid => {
 };
 
 const getWalletCaptureAppGroupIdentifier = () => `group.${getUniqueIdentifier(false)}.wallet-capture`;
+const getAppGroup = () => `group.${getUniqueIdentifier(false)}`;
 
 const getAppName = () => {
     if (IS_DEV) {
@@ -54,7 +55,6 @@ export default ({ config }) => ({
     version: rootPkg.version,
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
-    assetBundlePatterns: ['**/*'],
     ios: {
         supportsTablet: true,
         bundleIdentifier: getUniqueIdentifier(false),
@@ -67,7 +67,8 @@ export default ({ config }) => ({
         },
         entitlements: {
             'com.apple.developer.kernel.extended-virtual-addressing': true,
-            'com.apple.developer.kernel.increased-memory-limit': true
+            'com.apple.developer.kernel.increased-memory-limit': true,
+            'com.apple.security.application-groups': [getAppGroup()]
         },
         icon: {
             dark: './assets/icons/ios-dark.png',
@@ -113,7 +114,8 @@ export default ({ config }) => ({
     updates: {
         enabled: !IS_E2E,
         url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36',
-        enableBsdiffPatchSupport: true
+        enableBsdiffPatchSupport: true,
+        assetPatternsToBeBundled: ['assets/icons/*']
     },
     plugins: [
         [
@@ -129,6 +131,33 @@ export default ({ config }) => ({
         ],
         ['./modules/apple-wallet-capture/app.plugin.js', { appGroupIdentifier: getWalletCaptureAppGroupIdentifier() }],
         './plugins/with-vec-xcframework-fix',
+        [
+            'expo-widgets',
+            {
+                bundleIdentifier: `${getUniqueIdentifier(false)}.BudgieWidgets`,
+                groupIdentifier: getAppGroup(),
+                widgets: [
+                    {
+                        name: 'NetWorth',
+                        displayName: 'Net worth',
+                        description: 'Your total balance, and whether you are growing or burning.',
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'Budget',
+                        displayName: 'Budget',
+                        description: "How much of this period's budget is left.",
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'QuickAdd',
+                        displayName: 'Quick add',
+                        description: 'Expense, income and transfer in one tap.',
+                        ios: { supportedFamilies: ['systemMedium'] }
+                    }
+                ]
+            }
+        ],
         'expo-asset',
         'expo-image',
         [
@@ -222,79 +251,7 @@ export default ({ config }) => ({
                       }
                   ]
               ]
-            : []),
-        [
-            'expo-font',
-            {
-                fonts: [
-                    './assets/fonts/FixelDisplay-Regular.ttf',
-                    './assets/fonts/FixelDisplay-RegularItalic.ttf',
-                    './assets/fonts/FixelDisplay-Medium.ttf',
-                    './assets/fonts/FixelDisplay-MediumItalic.ttf',
-                    './assets/fonts/FixelDisplay-SemiBold.ttf',
-                    './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
-                    './assets/fonts/FixelDisplay-Bold.ttf',
-                    './assets/fonts/FixelDisplay-BoldItalic.ttf'
-                ],
-                android: {
-                    fonts: [
-                        {
-                            fontFamily: 'FixelDisplay',
-                            fontDefinitions: [
-                                {
-                                    path: './assets/fonts/FixelDisplay-Regular.ttf',
-                                    weight: 400
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-RegularItalic.ttf',
-                                    weight: 400,
-                                    style: 'italic'
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-Medium.ttf',
-                                    weight: 500
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-MediumItalic.ttf',
-                                    weight: 500,
-                                    style: 'italic'
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-SemiBold.ttf',
-                                    weight: 600
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
-                                    weight: 600,
-                                    style: 'italic'
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-Bold.ttf',
-                                    weight: 700
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-BoldItalic.ttf',
-                                    weight: 700,
-                                    style: 'italic'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                ios: {
-                    fonts: [
-                        './assets/fonts/FixelDisplay-Regular.ttf',
-                        './assets/fonts/FixelDisplay-RegularItalic.ttf',
-                        './assets/fonts/FixelDisplay-Medium.ttf',
-                        './assets/fonts/FixelDisplay-MediumItalic.ttf',
-                        './assets/fonts/FixelDisplay-SemiBold.ttf',
-                        './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
-                        './assets/fonts/FixelDisplay-Bold.ttf',
-                        './assets/fonts/FixelDisplay-BoldItalic.ttf'
-                    ]
-                }
-            }
-        ]
+            : [])
     ],
     experiments: {
         typedRoutes: true,

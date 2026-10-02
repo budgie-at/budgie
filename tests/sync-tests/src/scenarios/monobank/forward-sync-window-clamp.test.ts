@@ -1,10 +1,11 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
 import { MONOBANK_MAX_PERIOD_SECONDS } from '@budgie/sync';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
-import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, fetchSyncById, fetchPersistedMonobankTransactions, seed } from '../../harness';
+import { buildMonobank, fetchSyncById, fetchPersistedMonobankTransactions, seed, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
@@ -60,47 +61,55 @@ const expectForwardSyncCompleted = (bankSyncId: number, expectedTransactionCount
 };
 
 describe('monobank/forward-sync-window-clamp', () => {
-    it('bounds each forward statement request to maxPeriodSeconds and advances the cursor chunk by chunk to now for a stale window', async () => {
-        const now = new Date();
-        const staleForwardSyncFromAt = new Date(now.getTime() - STALE_GAP_DAYS * SECONDS_PER_DAY * MS_PER_SECOND);
-        const account = seed.account({ externalId: 'mono-acc-stale', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-        const bankSync = seed.sync({
-            accountId: account.id,
-            mode: SyncModeEnum.FORWARD,
-            forwardSyncFromAt: staleForwardSyncFromAt
-        });
-        const requestedWindows = stubStatementCapturingWindows();
+    it.effect(
+        'bounds each forward statement request to maxPeriodSeconds and advances the cursor chunk by chunk to now for a stale window',
+        () =>
+            Effect.gen(function* () {
+                const monobankSyncService = yield* MonobankSyncService;
+                const now = new Date();
+                const staleForwardSyncFromAt = new Date(now.getTime() - STALE_GAP_DAYS * SECONDS_PER_DAY * MS_PER_SECOND);
+                const account = seed.account({ externalId: 'mono-acc-stale', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+                const bankSync = seed.sync({
+                    accountId: account.id,
+                    mode: SyncModeEnum.FORWARD,
+                    forwardSyncFromAt: staleForwardSyncFromAt
+                });
+                const requestedWindows = stubStatementCapturingWindows();
 
-        await monobankSyncService.sync();
+                yield* monobankSyncService.sync();
 
-        expect(requestedWindows).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
-        expectWindowsAreBoundedAndContiguous(requestedWindows);
-        expect(fetchPersistedMonobankTransactions()).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
-        expectForwardSyncCompleted(bankSync.id, EXPECTED_STALE_CHUNK_COUNT);
-    });
+                expect(requestedWindows).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
+                expectWindowsAreBoundedAndContiguous(requestedWindows);
+                expect(fetchPersistedMonobankTransactions()).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
+                expectForwardSyncCompleted(bankSync.id, EXPECTED_STALE_CHUNK_COUNT);
+            }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('issues a single statement request and completes immediately for a fresh forwardSyncFromAt', async () => {
-        const now = new Date();
-        const freshForwardSyncFromAt = new Date(now.getTime() - FRESH_GAP_DAYS * SECONDS_PER_DAY * MS_PER_SECOND);
-        const account = seed.account({ externalId: 'mono-acc-fresh', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-        const bankSync = seed.sync({
-            accountId: account.id,
-            mode: SyncModeEnum.FORWARD,
-            forwardSyncFromAt: freshForwardSyncFromAt
-        });
-        let requestCount = 0;
-        mockServer.use(
-            http.get(STATEMENT_ENDPOINT, () => {
-                requestCount += 1;
+    it.effect('issues a single statement request and completes immediately for a fresh forwardSyncFromAt', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const now = new Date();
+            const freshForwardSyncFromAt = new Date(now.getTime() - FRESH_GAP_DAYS * SECONDS_PER_DAY * MS_PER_SECOND);
+            const account = seed.account({ externalId: 'mono-acc-fresh', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+            const bankSync = seed.sync({
+                accountId: account.id,
+                mode: SyncModeEnum.FORWARD,
+                forwardSyncFromAt: freshForwardSyncFromAt
+            });
+            let requestCount = 0;
+            mockServer.use(
+                http.get(STATEMENT_ENDPOINT, () => {
+                    requestCount += 1;
 
-                return HttpResponse.json([buildMonobank.transaction({ id: 'tx-fresh-1', amount: -50, hold: false })]);
-            })
-        );
+                    return HttpResponse.json([buildMonobank.transaction({ id: 'tx-fresh-1', amount: -50, hold: false })]);
+                })
+            );
 
-        await monobankSyncService.sync();
+            yield* monobankSyncService.sync();
 
-        expect(requestCount).toBe(1);
-        expect(fetchPersistedMonobankTransactions()).toHaveLength(1);
-        expectForwardSyncCompleted(bankSync.id, 1);
-    });
+            expect(requestCount).toBe(1);
+            expect(fetchPersistedMonobankTransactions()).toHaveLength(1);
+            expectForwardSyncCompleted(bankSync.id, 1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

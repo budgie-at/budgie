@@ -1,0 +1,44 @@
+import { cn } from 'cn';
+
+import { MEDIA_ASSET_HEIGHT, MEDIA_ASSET_WIDTH } from '../../constant/media-size.constant';
+import { resolveMediaAssetPath } from '../../util/resolve-media-asset-path.util';
+
+import { AppClipVideo } from './app-clip-video';
+
+import type { MediaAssetInterface } from '../../interface/media-asset.interface';
+
+interface Props {
+    asset: MediaAssetInterface;
+    alt: string;
+    className: string;
+    priority: boolean;
+}
+
+export const AppClipMedia = ({ asset, alt, className, priority }: Props) => {
+    const basePath = resolveMediaAssetPath(asset);
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
+    const colorScheme = `(prefers-color-scheme: ${asset.theme})`;
+    const posterSrc = `${basePath}-poster.webp`;
+    const fetchPriority = priority ? 'high' : 'auto';
+
+    return (
+        <div className={cn('device-frame', className)}>
+            {priority ? <link as="image" fetchPriority="high" href={posterSrc} media={colorScheme} rel="preload" /> : null}
+
+            <div className="device-frame-screen">
+                <img
+                    alt={alt}
+                    className="size-full"
+                    decoding="async"
+                    fetchPriority={fetchPriority}
+                    height={MEDIA_ASSET_HEIGHT}
+                    loading="lazy"
+                    src={posterSrc}
+                    width={MEDIA_ASSET_WIDTH}
+                />
+
+                <AppClipVideo srcMp4={`${basePath}.mp4`} srcWebm={`${basePath}.webm`} theme={asset.theme} />
+            </div>
+        </div>
+    );
+};

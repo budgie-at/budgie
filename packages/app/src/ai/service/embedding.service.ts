@@ -1,74 +1,61 @@
-import { Log } from '@budgie/logger';
+import { AiInvokeError, EmbeddingInvoker } from '@budgie/ai';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Option from 'effect/Option';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
-import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
-import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
+import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL } from '../util/ai-constants.util';
 
-import { BaseLlamaSubsystemService } from './base-subsystem.service';
+import { LlamaModelService } from './llama-model.service';
 
-import type { EmbeddingInvokerInterface } from '@budgie/ai';
-
-class LocalEmbeddingService
-    extends BaseLlamaSubsystemService
-    implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, EmbeddingInvokerInterface
-{
-    constructor() {
-        super(AiSubsystemNameEnum.EMBEDDING);
-    }
-
-    @Log(
-        text => `enter text="${text}"`,
-        result => `done dimensions=${result.length}`,
-        (error, text) => `throw text="${text}" error=${getErrorMessage(error)}`
-    )
-    async embed(text: string): Promise<number[]> {
-        if (!this.isReady || !isDefined(this.context)) {
-            return [];
-        }
-        const result = await this.context.embedding(text);
-
-        return result.embedding;
-    }
-
-    @Log(
-        texts => `enter texts=${texts.join(',')}`,
-        result => `done resolvedKeys=${[...result.keys()].join(',')}`,
-        (error, texts) => `throw texts=${texts.join(',')} error=${getErrorMessage(error)}`
-    )
-    async batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {
-        // eslint-disable-next-line no-restricted-syntax -- readonly string[] isn't assignable to isEmptyArray's string[]
-        if (!this.isReady || !isDefined(this.context) || texts.length === 0) {
-            return new Map();
-        }
-        const results = new Map<string, number[]>();
-        /* eslint-disable no-await-in-loop -- Sequential batch embedding to avoid Metal thrash */
-        for (const text of texts) {
-            try {
-                const result = await this.context.embedding(text);
-                if (isNotEmptyArray(result.embedding)) {
-                    results.set(text, result.embedding);
-                }
-            } catch {
-                emptyFn();
-            }
-        }
-        /* eslint-enable no-await-in-loop */
-
-        return results;
-    }
-
-    protected getLlamaConfig() {
-        return {
+export class LocalEmbeddingService extends Context.Service<LocalEmbeddingService>()('@budgie/app/LocalEmbeddingService', {
+    make: Effect.sync(() => {
+        const model = new LlamaModelService({
             modelUrl: EMBEDDING_MODEL_URL,
             modelFilename: EMBEDDING_MODEL_FILENAME,
             contextSize: EMBEDDING_CONTEXT_SIZE,
             embedding: true,
-            poolingType: 'mean' as const
-        };
-    }
-}
+            poolingType: 'mean',
+            snapshot: embeddingModelSnapshotAtom
+        });
 
-export const embeddingService = new LocalEmbeddingService();
+        return {
+            model,
+            get isReady(): boolean {
+                return model.isReady;
+            },
+            embed: (text: string): Effect.Effect<number[], AiInvokeError> => {
+                const { context } = model;
+                if (!model.isReady || !isDefined(context)) {
+                    return Effect.succeed([]);
+                }
+
+                return Effect.tryPromise({
+                    try: () => context.embedding(text),
+                    catch: cause => new AiInvokeError({ cause })
+                }).pipe(Effect.map(result => result.embedding));
+            },
+            batchEmbed: (texts: readonly string[]): Effect.Effect<Map<string, number[]>, AiInvokeError> => {
+                const { context } = model;
+                if (!model.isReady || !isDefined(context)) {
+                    return Effect.succeed(new Map<string, number[]>());
+                }
+
+                return Effect.forEach(texts, text =>
+                    Effect.option(
+                        Effect.tryPromise(() => context.embedding(text)).pipe(Effect.map(result => [text, result.embedding] as const))
+                    )
+                ).pipe(
+                    Effect.map(entries => new Map(entries.flatMap(Option.toArray).filter(([, embedding]) => isNotEmptyArray(embedding))))
+                );
+            }
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(LocalEmbeddingService, LocalEmbeddingService.make);
+
+    static readonly invokerLayer = Layer.effect(EmbeddingInvoker, LocalEmbeddingService).pipe(Layer.provide(LocalEmbeddingService.layer));
+}

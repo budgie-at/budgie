@@ -1,0 +1,24 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/transfer?accountId=1&toAccountId=5'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionKeypad.Digit.1'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.2'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.5'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

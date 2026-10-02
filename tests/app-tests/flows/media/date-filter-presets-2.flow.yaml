@@ -1,0 +1,37 @@
+appId: ${APP_ID}
+---
+- runFlow: ../subflows/navigation/navigate-to-transactions.flow.yaml
+
+- scrollUntilVisible:
+      element:
+          id: 'TransactionFilters.DateChip'
+      direction: LEFT
+      speed: 20
+
+- tapOn:
+      id: 'TransactionFilters.DateChip'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.DatePeriod.LAST_MONTH'
+      timeout: 10000
+
+- tapOn:
+      id: 'TransactionFilters.DatePeriod.LAST_MONTH'
+
+- tapOn:
+      id: 'TransactionFilters.DateApplyButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.DateChipActive'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: '^TransactionCard[.]Label[.].+$'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

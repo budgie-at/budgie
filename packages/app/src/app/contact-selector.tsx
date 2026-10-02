@@ -1,17 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ContactSelectorCard } from '../@generic/component/contact-selector-card/contact-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
-import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { useContactSelectorModal } from '../@generic/context/contact-selector-modal.context';
+import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
+import { useContactSelectorModal, useContactSelectorModalParams } from '../@generic/context/contact-selector-modal.context';
 import { Contact, useContacts } from '../@generic/hook/use-contacts.hook';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 
 const keyExtractor = (item: Contact) => item.id;
 
@@ -26,14 +23,12 @@ const filterContacts = (contacts: Contact[], search: string): Contact[] =>
 
 export default function ContactSelectorModal() {
     const { t } = useLingui();
-    const [, resolveContactSelector, currentParams] = useContactSelectorModal();
-    const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
+    const [, resolveContactSelector] = useContactSelectorModal();
     const [search, setSearch] = useState('');
     const { contacts } = useContacts();
 
-    const selectedContactId = currentParams?.selectedContactId;
+    const selectedContactId = useContactSelectorModalParams()?.selectedContactId;
     const data = filterContacts(contacts, search);
-    const containerStyle = { flex: 1, backgroundColor };
     const isSearching = isNotEmptyString(search);
     const emptyIcon = isSearching ? UserIconNameEnum.Search : UserIconNameEnum.User;
     const emptyTitle = isSearching ? t`No contacts found` : t`No contacts yet`;
@@ -55,29 +50,15 @@ export default function ContactSelectorModal() {
         );
     };
 
-    /* jscpd:ignore-start */
-    const listEmptyComponent = (
-        <View className="flex-1 justify-center">
-            <EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />
-        </View>
-    );
-
     return (
-        <View style={containerStyle}>
-            <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search contacts...`} />
-
-            <FlatList
-                style={flatListStyle}
-                data={data}
-                keyExtractor={keyExtractor}
-                renderItem={renderItem}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={contentContainerStyle}
-                ItemSeparatorComponent={ListItemSeparator}
-                ListEmptyComponent={listEmptyComponent}
-            />
-        </View>
+        <SearchableSelectorList
+            search={search}
+            onSearchChange={setSearch}
+            searchPlaceholder={t`Search contacts...`}
+            data={data}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            emptyState={<EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />}
+        />
     );
-    /* jscpd:ignore-end */
 }

@@ -1,6 +1,8 @@
-import { Log } from '@budgie/logger';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
 
@@ -9,86 +11,87 @@ import type { BudgetCategoryLimitInputInterface } from '../../template/interface
 import type { BudgetAlertBudgetInterface } from '../interface/budget-alert-budget.interface';
 import type { BudgetAlertTriggerInterface } from '../interface/budget-alert-trigger.interface';
 
-class BudgetAlertThresholdService {
-    private static readonly BUDGET_ALERT_THRESHOLDS = [80, 100] as const;
+export class BudgetAlertThresholdService extends Context.Service<BudgetAlertThresholdService>()(
+    '@budgie/budget/BudgetAlertThresholdService',
+    {
+        make: Effect.sync(() => {
+            const budgetAlertThresholds = [80, 100] as const;
 
-    @Log(
-        (budget, spent, categoryLimits) =>
-            `enter overallLimit=${budget.overallLimit} otherLimit=${budget.otherLimit} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.map(entry => `${entry.categoryId}:${entry.spent}`).join(',')} categoryLimits=${categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')}`,
-        (result, budget, spent, categoryLimits) =>
-            `done overallLimit=${budget.overallLimit} otherLimit=${budget.otherLimit} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.map(entry => `${entry.categoryId}:${entry.spent}`).join(',')} categoryLimits=${categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')} triggers=${result.map(trigger => `${trigger.scope}:${isDefined(trigger.categoryId) ? trigger.categoryId : ''}:${trigger.threshold}`).join(',')}`,
-        (error, budget, spent, categoryLimits) =>
-            `throw overallLimit=${budget.overallLimit} otherLimit=${budget.otherLimit} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.map(entry => `${entry.categoryId}:${entry.spent}`).join(',')} categoryLimits=${categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')} error=${getErrorMessage(error)}`
-    )
-    computeTriggers(
-        budget: BudgetAlertBudgetInterface,
-        spent: BudgetSpentInterface,
-        categoryLimits: readonly BudgetCategoryLimitInputInterface[]
-    ): BudgetAlertTriggerInterface[] {
-        const overallTriggers = this.computeOverallTriggers(budget, spent);
-        const categoryTriggers = this.computeCategoryTriggers(spent, categoryLimits);
-        const otherTriggers = this.computeOtherTriggers(budget, spent, categoryLimits);
+            const crossesThreshold = (spent: number, limit: number, thresholdPercent: number): boolean =>
+                isPositiveNumber(limit) && spent * 100 >= limit * thresholdPercent;
 
-        return [...overallTriggers, ...categoryTriggers, ...otherTriggers];
+            const computeOverallTriggers = (
+                budget: BudgetAlertBudgetInterface,
+                spent: BudgetSpentInterface
+            ): BudgetAlertTriggerInterface[] =>
+                budgetAlertThresholds
+                    .filter(threshold => crossesThreshold(spent.spentOverall, budget.overallLimit, threshold))
+                    .map(threshold => ({ scope: BudgetAlertScopeEnum.OVERALL, categoryId: null, threshold }));
+
+            const computeCategoryTriggers = (
+                spent: BudgetSpentInterface,
+                categoryLimits: readonly BudgetCategoryLimitInputInterface[]
+            ): BudgetAlertTriggerInterface[] => {
+                const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
+
+                return categoryLimits.flatMap(limit => {
+                    if (!isPositiveNumber(limit.limitAmount)) {
+                        return [];
+                    }
+
+                    const categorySpent = spentByCategoryMap.get(limit.categoryId);
+                    const spentAmount = isDefined(categorySpent) ? categorySpent : 0;
+
+                    return budgetAlertThresholds
+                        .filter(threshold => crossesThreshold(spentAmount, limit.limitAmount, threshold))
+                        .map(threshold => ({ scope: BudgetAlertScopeEnum.CATEGORY, categoryId: limit.categoryId, threshold }));
+                });
+            };
+
+            const computeLimitedCategorySpent = (
+                spent: BudgetSpentInterface,
+                categoryLimits: readonly BudgetCategoryLimitInputInterface[]
+            ): number => {
+                const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
+
+                return categoryLimits.reduce((sum, limit) => {
+                    const categorySpent = spentByCategoryMap.get(limit.categoryId);
+                    const spentAmount = isDefined(categorySpent) ? categorySpent : 0;
+
+                    return sum + spentAmount;
+                }, 0);
+            };
+
+            const computeOtherTriggers = (
+                budget: BudgetAlertBudgetInterface,
+                spent: BudgetSpentInterface,
+                categoryLimits: readonly BudgetCategoryLimitInputInterface[]
+            ): BudgetAlertTriggerInterface[] => {
+                if (!isPositiveNumber(budget.otherLimit)) {
+                    return [];
+                }
+
+                const limitedCategorySpent = computeLimitedCategorySpent(spent, categoryLimits);
+                const otherSpent = Math.max(0, spent.spentOverall - limitedCategorySpent);
+
+                return budgetAlertThresholds
+                    .filter(threshold => crossesThreshold(otherSpent, budget.otherLimit, threshold))
+                    .map(threshold => ({ scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold }));
+            };
+
+            return {
+                computeTriggers: (
+                    budget: BudgetAlertBudgetInterface,
+                    spent: BudgetSpentInterface,
+                    categoryLimits: readonly BudgetCategoryLimitInputInterface[]
+                ): BudgetAlertTriggerInterface[] => [
+                    ...computeOverallTriggers(budget, spent),
+                    ...computeCategoryTriggers(spent, categoryLimits),
+                    ...computeOtherTriggers(budget, spent, categoryLimits)
+                ]
+            };
+        })
     }
-
-    private computeOverallTriggers(budget: BudgetAlertBudgetInterface, spent: BudgetSpentInterface): BudgetAlertTriggerInterface[] {
-        return BudgetAlertThresholdService.BUDGET_ALERT_THRESHOLDS.filter(threshold =>
-            this.crossesThreshold(spent.spentOverall, budget.overallLimit, threshold)
-        ).map(threshold => ({ scope: BudgetAlertScopeEnum.OVERALL, categoryId: null, threshold }));
-    }
-
-    private computeCategoryTriggers(
-        spent: BudgetSpentInterface,
-        categoryLimits: readonly BudgetCategoryLimitInputInterface[]
-    ): BudgetAlertTriggerInterface[] {
-        const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
-
-        return categoryLimits.flatMap(limit => {
-            if (!isPositiveNumber(limit.limitAmount)) {
-                return [];
-            }
-
-            const categorySpent = spentByCategoryMap.get(limit.categoryId);
-            const spentAmount = isDefined(categorySpent) ? categorySpent : 0;
-
-            return BudgetAlertThresholdService.BUDGET_ALERT_THRESHOLDS.filter(threshold =>
-                this.crossesThreshold(spentAmount, limit.limitAmount, threshold)
-            ).map(threshold => ({ scope: BudgetAlertScopeEnum.CATEGORY, categoryId: limit.categoryId, threshold }));
-        });
-    }
-
-    private computeOtherTriggers(
-        budget: BudgetAlertBudgetInterface,
-        spent: BudgetSpentInterface,
-        categoryLimits: readonly BudgetCategoryLimitInputInterface[]
-    ): BudgetAlertTriggerInterface[] {
-        if (!isPositiveNumber(budget.otherLimit)) {
-            return [];
-        }
-
-        const limitedCategorySpent = this.computeLimitedCategorySpent(spent, categoryLimits);
-        const otherSpent = Math.max(0, spent.spentOverall - limitedCategorySpent);
-
-        return BudgetAlertThresholdService.BUDGET_ALERT_THRESHOLDS.filter(threshold =>
-            this.crossesThreshold(otherSpent, budget.otherLimit, threshold)
-        ).map(threshold => ({ scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold }));
-    }
-
-    private computeLimitedCategorySpent(spent: BudgetSpentInterface, categoryLimits: readonly BudgetCategoryLimitInputInterface[]): number {
-        const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
-
-        return categoryLimits.reduce((sum, limit) => {
-            const categorySpent = spentByCategoryMap.get(limit.categoryId);
-            const spentAmount = isDefined(categorySpent) ? categorySpent : 0;
-
-            return sum + spentAmount;
-        }, 0);
-    }
-
-    private crossesThreshold(spent: number, limit: number, thresholdPercent: number): boolean {
-        return isPositiveNumber(limit) && spent * 100 >= limit * thresholdPercent;
-    }
+) {
+    static readonly layer = Layer.effect(BudgetAlertThresholdService, BudgetAlertThresholdService.make);
 }
-
-export const budgetAlertThresholdService = new BudgetAlertThresholdService();

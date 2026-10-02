@@ -9,6 +9,7 @@ export interface CreateFileBankAccountConfigInterface {
     readonly fileIcon: UserIconNameEnum;
     readonly fileTypeLabel: string;
     readonly selectFileText: string;
+    readonly ctaLabel?: string;
     readonly importPreview: (uri: string) => Promise<SyncAccountPreviewInterface[]>;
     readonly executeImportForSelectedAccounts: (uri: string, selectedAccountIds: string[]) => Promise<void>;
 }

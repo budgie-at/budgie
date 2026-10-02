@@ -1,6 +1,9 @@
-import { requireNativeModule } from 'expo';
+import * as Effect from 'effect/Effect';
+import { requireOptionalNativeModule } from 'expo';
+import { Platform } from 'react-native';
 
 import type { WalletCaptureNativeModuleInterface } from '../../../src/wallet-capture/interface/wallet-capture-native-module.interface';
 
-// eslint-disable-next-line lingui/no-unlocalized-strings -- Native module identifier registered by AppleWalletCaptureModule
-export const appleWalletCaptureNativeModule = requireNativeModule<WalletCaptureNativeModuleInterface>('AppleWalletCapture');
+export const appleWalletCaptureNativeModule = Effect.sync(() =>
+    Platform.OS === 'ios' ? requireOptionalNativeModule<WalletCaptureNativeModuleInterface>('AppleWalletCapture') : null
+);

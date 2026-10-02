@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/transactions/open-convert-to-refund-picker.flow.yaml
+      env:
+          TRANSACTION_ID: '2200'
+          CANDIDATE_ROW_ID: 'ConvertToRefund.CandidateRow.157'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

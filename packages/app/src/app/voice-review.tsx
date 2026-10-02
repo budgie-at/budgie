@@ -8,12 +8,14 @@ import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rn
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
-import { useVoiceReviewModal } from '../ai/context/voice-review-modal.context';
+import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { useSettingsContext } from '../settings/context/settings.context';
 import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
+
+import { VoiceReviewSelector } from './voice-review.selector';
 
 const SCROLL_BOTTOM_PADDING = 16;
 const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
@@ -46,7 +48,8 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 export default function VoiceReviewModal() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const [, resolveVoiceReview, currentParams] = useVoiceReviewModal();
+    const [, resolveVoiceReview] = useVoiceReviewModal();
+    const currentParams = useVoiceReviewModalParams();
     const [openCategorySelector] = useCategorySelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
 
@@ -104,7 +107,7 @@ export default function VoiceReviewModal() {
     const containerStyle = { flex: 1, backgroundColor };
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View style={containerStyle} collapsable={false} testID={VoiceReviewSelector.Page}>
             {isNotEmptyString(originalText) ? (
                 <View className="mx-lg mb-lg mt-2xl flex-row gap-x-md rounded-2xl bg-secondary-background px-lg py-md">
                     <View className="w-[2px] rounded-full bg-secondary-foreground/30" />

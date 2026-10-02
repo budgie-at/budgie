@@ -1,10 +1,12 @@
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
+import { fetchRankedRefundCandidates } from '../harness/fetch-ranked-refund-candidates';
 import { runConsolidation } from '../harness/run-consolidation';
-import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
-import type { RefundCandidateInterface, RefundReviewCandidateInterface, TransactionEntityInterface } from '@budgie/contracts';
+import type { TransactionEntityInterface } from '@budgie/contracts';
 
 const CROSS_BUCKET_YEAR = 2026;
 const CROSS_BUCKET_REFUND_DELAY_SECONDS = 2 * 60 * 60;
@@ -71,114 +73,117 @@ const seedShadowedRefund = (input: {
     return { shadowExpense, matchedExpense: matched.expense, refunds: matched.refunds };
 };
 
-const fetchRankedCandidates = async (): Promise<{
-    readonly auto: RefundCandidateInterface[];
-    readonly review: RefundReviewCandidateInterface[];
-}> => ({ auto: await refundPairRepository.findCandidates(), review: await refundPairRepository.findReviewCandidates() });
+layer(TestLayer)('consolidation/refund-pair-cross-bucket-rank', it => {
+    it.effect('auto-consolidates the unique localized exact-amount match shadowed by an exact-title candidate of another expense', () =>
+        Effect.gen(function* () {
+            const account = testSeedService.account({ externalId: 'mono-card' });
+            const { matchedExpense, refunds, shadowExpense } = seedShadowedRefund({
+                accountId: account.id,
+                shadowTitle: UBER_REVERSAL_TITLE,
+                shadowAmount: UBER_SHADOW_AMOUNT,
+                shadowOperatedAt: UBER_SHADOW_EXPENSE_OPERATED_AT,
+                matchedTitle: UBER_TITLE,
+                matchedAmount: UBER_REFUND_AMOUNT,
+                matchedOperatedAt: UBER_MATCHED_EXPENSE_OPERATED_AT,
+                refundTitle: UBER_REVERSAL_TITLE
+            });
 
-describe('consolidation/refund-pair-cross-bucket-rank', () => {
-    it('auto-consolidates the unique localized exact-amount match shadowed by an exact-title candidate of another expense', async () => {
-        const account = testSeedService.account({ externalId: 'mono-card' });
-        const { matchedExpense, refunds, shadowExpense } = seedShadowedRefund({
-            accountId: account.id,
-            shadowTitle: UBER_REVERSAL_TITLE,
-            shadowAmount: UBER_SHADOW_AMOUNT,
-            shadowOperatedAt: UBER_SHADOW_EXPENSE_OPERATED_AT,
-            matchedTitle: UBER_TITLE,
-            matchedAmount: UBER_REFUND_AMOUNT,
-            matchedOperatedAt: UBER_MATCHED_EXPENSE_OPERATED_AT,
-            refundTitle: UBER_REVERSAL_TITLE
-        });
+            const { auto, review } = yield* fetchRankedRefundCandidates();
 
-        const { auto, review } = await fetchRankedCandidates();
+            expect(auto).toEqual([
+                expect.objectContaining({
+                    confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+                    expenseTransactionId: matchedExpense.id,
+                    refundIncomeTransactionIds: [refunds[0].id],
+                    refundsTotal: UBER_REFUND_AMOUNT
+                })
+            ]);
+            expect(review).toHaveLength(0);
 
-        expect(auto).toEqual([
-            expect.objectContaining({
-                confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-                expenseTransactionId: matchedExpense.id,
-                refundIncomeTransactionIds: [refunds[0].id],
-                refundsTotal: UBER_REFUND_AMOUNT
-            })
-        ]);
-        expect(review).toHaveLength(0);
+            const result = yield* runConsolidation();
 
-        const result = await runConsolidation();
+            expect(result.consolidated).toBe(1);
+            expect(testQueryService.fetchTransactionById(matchedExpense.id).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
+            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(matchedExpense.id);
+            expect(testQueryService.fetchTransactionById(shadowExpense.id).consolidationType).toBeNull();
+        })
+    );
 
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(matchedExpense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(matchedExpense.id);
-        expect(testQueryService.fetchTransactionById(shadowExpense.id).consolidationType).toBeNull();
-    });
+    it.effect('surfaces an ambiguous localized candidate for review instead of dropping the refund behind an exact-title shadow', () =>
+        Effect.gen(function* () {
+            const account = testSeedService.account({ externalId: 'mono-card' });
+            testSeedService.refundedExpense({
+                accountId: account.id,
+                title: LIME_TITLE,
+                expenseAmount: LIME_REFUND_AMOUNT,
+                refundAmounts: [],
+                expenseOperatedAt: LIME_TWIN_EXPENSE_OPERATED_AT,
+                externalIdPrefix: 'lime-twin'
+            });
+            const { matchedExpense, refunds } = seedShadowedRefund({
+                accountId: account.id,
+                shadowTitle: LIME_REVERSAL_TITLE,
+                shadowAmount: LIME_SHADOW_AMOUNT,
+                shadowOperatedAt: LIME_SHADOW_EXPENSE_OPERATED_AT,
+                matchedTitle: LIME_TITLE,
+                matchedAmount: LIME_REFUND_AMOUNT,
+                matchedOperatedAt: LIME_MATCHED_EXPENSE_OPERATED_AT,
+                refundTitle: LIME_REVERSAL_TITLE
+            });
 
-    it('surfaces an ambiguous localized candidate for review instead of dropping the refund behind an exact-title shadow', async () => {
-        const account = testSeedService.account({ externalId: 'mono-card' });
-        testSeedService.refundedExpense({
-            accountId: account.id,
-            title: LIME_TITLE,
-            expenseAmount: LIME_REFUND_AMOUNT,
-            refundAmounts: [],
-            expenseOperatedAt: LIME_TWIN_EXPENSE_OPERATED_AT,
-            externalIdPrefix: 'lime-twin'
-        });
-        const { matchedExpense, refunds } = seedShadowedRefund({
-            accountId: account.id,
-            shadowTitle: LIME_REVERSAL_TITLE,
-            shadowAmount: LIME_SHADOW_AMOUNT,
-            shadowOperatedAt: LIME_SHADOW_EXPENSE_OPERATED_AT,
-            matchedTitle: LIME_TITLE,
-            matchedAmount: LIME_REFUND_AMOUNT,
-            matchedOperatedAt: LIME_MATCHED_EXPENSE_OPERATED_AT,
-            refundTitle: LIME_REVERSAL_TITLE
-        });
+            const { auto, review } = yield* fetchRankedRefundCandidates();
 
-        const { auto, review } = await fetchRankedCandidates();
+            expect(auto).toHaveLength(0);
+            expect(review).toEqual([
+                expect.objectContaining({
+                    confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+                    expenseTransactionId: matchedExpense.id,
+                    refundIncomeTransactionIds: [refunds[0].id],
+                    refundsTotal: LIME_REFUND_AMOUNT
+                })
+            ]);
 
-        expect(auto).toHaveLength(0);
-        expect(review).toEqual([
-            expect.objectContaining({
-                confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-                expenseTransactionId: matchedExpense.id,
-                refundIncomeTransactionIds: [refunds[0].id],
-                refundsTotal: LIME_REFUND_AMOUNT
-            })
-        ]);
+            const result = yield* runConsolidation();
 
-        const result = await runConsolidation();
-
-        expect(result.consolidated).toBe(0);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
-    });
+            expect(result.consolidated).toBe(0);
+            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
+        })
+    );
 });
 
-describe('consolidation/refund-pair-cross-bucket-rank exact-title precedence', () => {
-    it('keeps an equally exact-amount exact-title candidate ahead of a localized alternative', async () => {
-        const account = testSeedService.account({ externalId: 'mono-card' });
-        const { matchedExpense, refunds, shadowExpense } = seedShadowedRefund({
-            accountId: account.id,
-            shadowTitle: SPOTIFY_REVERSAL_TITLE,
-            shadowAmount: SPOTIFY_AMOUNT,
-            shadowOperatedAt: SPOTIFY_SHADOW_EXPENSE_OPERATED_AT,
-            matchedTitle: SPOTIFY_TITLE,
-            matchedAmount: SPOTIFY_AMOUNT,
-            matchedOperatedAt: SPOTIFY_MATCHED_EXPENSE_OPERATED_AT,
-            refundTitle: SPOTIFY_TITLE
-        });
+layer(TestLayer)('consolidation/refund-pair-cross-bucket-rank exact-title precedence', it => {
+    it.effect('keeps an equally exact-amount exact-title candidate ahead of a localized alternative', () =>
+        Effect.gen(function* () {
+            const account = testSeedService.account({ externalId: 'mono-card' });
+            const { matchedExpense, refunds, shadowExpense } = seedShadowedRefund({
+                accountId: account.id,
+                shadowTitle: SPOTIFY_REVERSAL_TITLE,
+                shadowAmount: SPOTIFY_AMOUNT,
+                shadowOperatedAt: SPOTIFY_SHADOW_EXPENSE_OPERATED_AT,
+                matchedTitle: SPOTIFY_TITLE,
+                matchedAmount: SPOTIFY_AMOUNT,
+                matchedOperatedAt: SPOTIFY_MATCHED_EXPENSE_OPERATED_AT,
+                refundTitle: SPOTIFY_TITLE
+            });
 
-        const { auto, review } = await fetchRankedCandidates();
+            const { auto, review } = yield* fetchRankedRefundCandidates();
 
-        expect(auto).toHaveLength(0);
-        expect(review).toEqual([
-            expect.objectContaining({
-                confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
-                expenseTransactionId: matchedExpense.id,
-                refundIncomeTransactionIds: [refunds[0].id]
-            })
-        ]);
+            expect(auto).toHaveLength(0);
+            expect(review).toEqual([
+                expect.objectContaining({
+                    confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
+                    expenseTransactionId: matchedExpense.id,
+                    refundIncomeTransactionIds: [refunds[0].id]
+                })
+            ]);
 
-        const result = await runConsolidation();
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(0);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
-        expect(testQueryService.fetchTransactionById(shadowExpense.id).consolidationType).toBeNull();
-    });
+            expect(result.consolidated).toBe(0);
+            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
+            expect(testQueryService.fetchTransactionById(shadowExpense.id).consolidationType).toBeNull();
+        })
+    );
 });

@@ -1,18 +1,18 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-export const IosDevReleaseSchema = z.object({
-    tag_name: z.string(),
-    name: z.string(),
-    body: z.string(),
-    draft: z.boolean(),
-    created_at: z.string(),
-    published_at: z.string(),
-    assets: z.array(
-        z.object({
-            name: z.string(),
-            browser_download_url: z.string()
+export const IosDevReleaseSchema = Schema.Struct({
+    tag_name: Schema.String,
+    name: Schema.String,
+    body: Schema.String,
+    draft: Schema.Boolean,
+    created_at: Schema.String,
+    published_at: Schema.String,
+    assets: Schema.Array(
+        Schema.Struct({
+            name: Schema.String,
+            browser_download_url: Schema.String
         })
     )
 });
 
-export type IosDevRelease = z.infer<typeof IosDevReleaseSchema>;
+export type IosDevRelease = typeof IosDevReleaseSchema.Type;

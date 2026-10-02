@@ -1,8 +1,8 @@
-import type { UserIconNameEnum } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 import type { ReactNode } from 'react';
 
 export interface TransactionInfoRowPropsInterface {
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
     readonly label: string;
     readonly value?: string | null;
     readonly description?: string | null;

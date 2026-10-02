@@ -1,22 +1,22 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceConvertFlowApiSchema = z.object({
-    quoteId: z.string(),
-    orderId: z.number(),
-    orderStatus: z.string(),
-    fromAsset: z.string(),
-    fromAmount: z.string(),
-    toAsset: z.string(),
-    toAmount: z.string(),
-    createTime: z.number()
+const BinanceConvertFlowApiSchema = Schema.Struct({
+    quoteId: Schema.String,
+    orderId: Schema.Number,
+    orderStatus: Schema.String,
+    fromAsset: Schema.String,
+    fromAmount: Schema.String,
+    toAsset: Schema.String,
+    toAmount: Schema.String,
+    createTime: Schema.Number
 });
 
-export const BinanceConvertTradeFlowApiSchema = z.object({
-    list: z.array(BinanceConvertFlowApiSchema),
-    startTime: z.number(),
-    endTime: z.number(),
-    limit: z.number(),
-    moreData: z.boolean()
+export const BinanceConvertTradeFlowApiSchema = Schema.Struct({
+    list: Schema.Array(BinanceConvertFlowApiSchema),
+    startTime: Schema.Number,
+    endTime: Schema.Number,
+    limit: Schema.Number,
+    moreData: Schema.Boolean
 });
 
-export type BinanceConvertFlowApiInterface = z.infer<typeof BinanceConvertFlowApiSchema>;
+export type BinanceConvertFlowApiInterface = typeof BinanceConvertFlowApiSchema.Type;

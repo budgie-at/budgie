@@ -1,5 +1,7 @@
 import { BinanceCredentialsSchema } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -27,28 +29,10 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
     const { isSaving, saveAccountSyncToken } = useSyncTokenUpdate();
 
     const handleEdit = () => {
-        try {
-            const parsedToken: unknown = JSON.parse(token);
-            const credentialsResult = BinanceCredentialsSchema.safeParse(parsedToken);
+        const credentials = Option.getOrNull(Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema))(token));
 
-            if (credentialsResult.success) {
-                setApiKey(credentialsResult.data.apiKey);
-                setApiSecret(credentialsResult.data.apiSecret);
-
-                setIsEditing(true);
-
-                return;
-            }
-        } catch {
-            setApiKey('');
-            setApiSecret('');
-            setIsEditing(true);
-
-            return;
-        }
-
-        setApiKey('');
-        setApiSecret('');
+        setApiKey(credentials?.apiKey ?? '');
+        setApiSecret(credentials?.apiSecret ?? '');
         setIsEditing(true);
     };
 

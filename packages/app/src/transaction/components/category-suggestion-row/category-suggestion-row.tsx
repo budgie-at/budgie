@@ -1,7 +1,8 @@
-import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 
 import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
+import { IconTitleSuggestionRowSelector } from '../icon-title-suggestion-row/icon-title-suggestion-row.selector';
 
 interface Props {
     readonly transactionTitle: string;
@@ -13,7 +14,7 @@ interface Props {
 }
 
 const getCategoryKey = (category: CategoryEntityInterface): number => category.id;
-const getCategoryIcon = (category: CategoryEntityInterface): UserIconNameEnum => category.icon;
+const getCategoryIcon = (category: CategoryEntityInterface): UserIconType => category.icon;
 const getCategoryTitle = (category: CategoryEntityInterface): string => category.title;
 
 export const CategorySuggestionRow = (props: Props) => {
@@ -40,6 +41,7 @@ export const CategorySuggestionRow = (props: Props) => {
             getKey={getCategoryKey}
             getIcon={getCategoryIcon}
             getTitle={getCategoryTitle}
+            testIDPrefix={IconTitleSuggestionRowSelector.Category}
         />
     );
 };

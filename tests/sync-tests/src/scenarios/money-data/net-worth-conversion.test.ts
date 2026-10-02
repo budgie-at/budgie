@@ -1,16 +1,16 @@
-import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
-import { exchangeRatesService } from '@app/exchange-rate/service/exchange-rates.service';
+import { ExchangeRatesService } from '@app/exchange-rate/service/exchange-rates.service';
 import {
-    AccountBalanceEntityTable,
+    AccountBalanceRepository,
     AccountTypeEnum,
     CurrencyEnum,
     ExchangeRateEntityTable,
     PRECISION,
     SettingsEntityTable
 } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { requireInstrument, seedBitcoinCryptoAccount } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, seedLedgerBalance, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -19,19 +19,19 @@ const BITCOIN_EURO_RATE = 50_000;
 const CRYPTO_BALANCE_UNITS = 100;
 const LIVE_CRYPTO_TOTAL = BITCOIN_EURO_RATE * CRYPTO_BALANCE_UNITS * PRECISION;
 
-const seedHryvniaCashWithBalance = async (balance: number) => {
-    const euro = await requireInstrument(CurrencyEnum.EUR);
-    const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+const seedHryvniaCashWithBalance = Effect.fnUntraced(function* (balance: number) {
+    const euro = yield* requireInstrument(CurrencyEnum.EUR);
+    const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
     const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.CASH });
 
-    await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
-    insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: balance });
+    testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+    yield* seedLedgerBalance(account.id, balance);
 
     return euro;
-};
+});
 
-const seedBitcoinCryptoWithLiveRate = async (balance: number) => {
-    const result = await seedBitcoinCryptoAccount(balance);
+const seedBitcoinCryptoWithLiveRate = Effect.fnUntraced(function* (balance: number) {
+    const result = yield* seedBitcoinCryptoAccount(balance);
 
     insertOne(ExchangeRateEntityTable, {
         source: 'test',
@@ -41,55 +41,68 @@ const seedBitcoinCryptoWithLiveRate = async (balance: number) => {
     });
 
     return result;
-};
+});
 
-const expectCryptoTotals = (defaultInstrumentId: number, expectedTotal: number) => {
-    const cryptoTotal = accountBalanceRepository.getTotalByAccountType(defaultInstrumentId, AccountTypeEnum.CRYPTO).get();
-    const assetClassTotals = accountBalanceRepository.getAssetClassTotals(defaultInstrumentId).get();
+const expectCryptoTotals = Effect.fnUntraced(function* (defaultInstrumentId: number, expectedTotal: number) {
+    const accountBalanceRepository = yield* AccountBalanceRepository;
+    const cryptoTotal = (yield* accountBalanceRepository.getTotalByAccountType(defaultInstrumentId, AccountTypeEnum.CRYPTO)).at(0);
+    const assetClassTotals = (yield* accountBalanceRepository.getAssetClassTotals(defaultInstrumentId)).at(0);
 
     expect(cryptoTotal?.total).toBe(expectedTotal);
     expect(assetClassTotals?.cryptoTotal).toBe(expectedTotal);
-};
+});
 
 describe('net worth currency conversion', () => {
-    it('converts a foreign balance using the live rate when present', async () => {
-        const euro = await seedHryvniaCashWithBalance(1000 * PRECISION);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+    it.effect('converts a foreign balance using the live rate when present', () =>
+        Effect.gen(function* () {
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const euro = yield* seedHryvniaCashWithBalance(1000 * PRECISION);
+            const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
 
-        insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: hryvnia.id, quoteInstrumentId: euro.id, rate: 0.02 });
+            insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: hryvnia.id, quoteInstrumentId: euro.id, rate: 0.02 });
 
-        const netWorth = accountBalanceRepository.getNetWorth(euro.id).get();
+            const netWorth = (yield* accountBalanceRepository.getNetWorth(euro.id)).at(0);
 
-        expect(netWorth?.netWorth).toBe(20 * PRECISION);
-    });
+            expect(netWorth?.netWorth).toBe(20 * PRECISION);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('falls back to the historical rate instead of 1:1 when no live rate exists', async () => {
-        const euro = await seedHryvniaCashWithBalance(1000 * PRECISION);
+    it.effect('falls back to the historical rate instead of 1:1 when no live rate exists', () =>
+        Effect.gen(function* () {
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const euro = yield* seedHryvniaCashWithBalance(1000 * PRECISION);
 
-        const netWorth = accountBalanceRepository.getNetWorth(euro.id).get();
-        const cashTotal = accountBalanceRepository.getTotalByAccountType(euro.id, AccountTypeEnum.CASH).get();
+            const netWorth = (yield* accountBalanceRepository.getNetWorth(euro.id)).at(0);
+            const cashTotal = (yield* accountBalanceRepository.getTotalByAccountType(euro.id, AccountTypeEnum.CASH)).at(0);
 
-        expect(netWorth?.netWorth).toBeLessThan(50 * PRECISION);
-        expect(netWorth?.netWorth).toBeGreaterThan(5 * PRECISION);
-        expect(cashTotal?.total).toBe(netWorth?.netWorth);
-    });
+            expect(netWorth?.netWorth).toBeLessThan(50 * PRECISION);
+            expect(netWorth?.netWorth).toBeGreaterThan(5 * PRECISION);
+            expect(cashTotal?.total).toBe(netWorth?.netWorth);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('does not value crypto totals or display amounts with fiat fallback when the live rate is missing', async () => {
-        const { bitcoin, euro } = await seedBitcoinCryptoAccount(100 * PRECISION);
+    it.effect('does not value crypto totals or display amounts with fiat fallback when the live rate is missing', () =>
+        Effect.gen(function* () {
+            const exchangeRatesService = yield* ExchangeRatesService;
+            const { bitcoin, euro } = yield* seedBitcoinCryptoAccount(100 * PRECISION);
 
-        const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
+            const conversion = yield* exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
 
-        expectCryptoTotals(euro.id, 0);
-        expect(conversion).toBeNull();
-    });
+            yield* expectCryptoTotals(euro.id, 0);
+            expect(conversion).toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('converts crypto display amounts with the live rate when present', async () => {
-        const { bitcoin, euro } = await seedBitcoinCryptoWithLiveRate(100 * PRECISION);
+    it.effect('converts crypto display amounts with the live rate when present', () =>
+        Effect.gen(function* () {
+            const exchangeRatesService = yield* ExchangeRatesService;
+            const { bitcoin, euro } = yield* seedBitcoinCryptoWithLiveRate(100 * PRECISION);
 
-        const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
+            const conversion = yield* exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
 
-        expectCryptoTotals(euro.id, LIVE_CRYPTO_TOTAL);
-        expect(conversion?.amount).toBe(LIVE_CRYPTO_TOTAL);
-        expect(conversion?.exchangeRate).toBe(BITCOIN_EURO_RATE);
-    });
+            yield* expectCryptoTotals(euro.id, LIVE_CRYPTO_TOTAL);
+            expect(conversion?.amount).toBe(LIVE_CRYPTO_TOTAL);
+            expect(conversion?.exchangeRate).toBe(BITCOIN_EURO_RATE);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

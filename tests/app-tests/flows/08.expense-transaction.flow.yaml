@@ -58,7 +58,7 @@ appId: ${APP_ID}
           id: 'TagPickerBottomSheet.Input'
 - tapOn:
       id: 'TagPickerBottomSheet.Input'
-- eraseText: 80
+- eraseText: 20
 - inputText: 'E2E Txn Primary Tag'
 - tapOn:
       id: 'TagPickerBottomSheet.CreateButton'
@@ -120,7 +120,8 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionInfo.Page'
       timeout: 5000
-- assertNotVisible: '^Set fee$'
+- assertNotVisible:
+      id: 'TransactionFeePill'
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
@@ -132,6 +133,8 @@ appId: ${APP_ID}
       id: 'TransactionActionsMenu.AttachDebtSettlementButton'
 - assertVisible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertVisible:
+      id: 'TransactionActionsMenu.StartDepositButton'
 - assertNotVisible:
       id: 'TransactionActionsMenu.ConvertToRefundButton'
 - assertNotVisible:
@@ -141,7 +144,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'SplitEntryRow.Amount.0'
-- assertVisible: 'Save fee'
+- assertVisible:
+      id: 'TransactionFeeModal.SaveButton'
 - swipe:
       direction: DOWN
 - extendedWaitUntil:
@@ -158,6 +162,8 @@ appId: ${APP_ID}
       id: 'TransactionActionsMenu.AttachDebtSettlementButton'
 - assertVisible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertVisible:
+      id: 'TransactionActionsMenu.StartDepositButton'
 - assertNotVisible:
       id: 'TransactionActionsMenu.ConvertToRefundButton'
 - assertNotVisible:

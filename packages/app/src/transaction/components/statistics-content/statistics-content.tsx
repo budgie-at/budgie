@@ -7,6 +7,7 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
+import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { StatisticsCategoriesActivityContent } from '../statistics-categories-activity-content/statistics-categories-activity-content';
@@ -29,50 +30,59 @@ export const StatisticsContent = ({ activeTab }: Props) => {
     const netWorth = useNetWorthQuery();
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
+    const isRunwayTab = activeTab === 'runway';
     const isCategoriesTab = activeTab === 'categories';
     const categoriesActivityMode = isCategoriesTab ? 'visible' : 'hidden';
     const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
 
-    return (
-        <>
-            <View className="pb-2xl">
-                <TransactionFilters
-                    accountId={null}
-                    filters={filters}
-                    onChange={setFilters}
-                    showTypeFilter={false}
-                    hasFiltersSelected={hasFiltersSelected}
-                />
+    const content = isRunwayTab ? (
+        <RunwayContent />
+    ) : (
+        <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
+            <View className="gap-y-lg">
+                <Text className="uppercase text-secondary-foreground text-xs">
+                    <Trans>Overview</Trans>
+                </Text>
+
+                <View className="flex-row gap-x-xl">
+                    <TransactionAnalyticsCard
+                        amount={expense}
+                        label={t`Spent`}
+                        icon={UserIconNameEnum.TrendingDown}
+                        variant="destructive"
+                    />
+                    <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
+                    <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
+                </View>
             </View>
 
-            <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
-                <View className="gap-y-lg">
-                    <Text className="uppercase text-secondary-foreground text-xs">
-                        <Trans>Overview</Trans>
-                    </Text>
+            <Activity mode={categoriesActivityMode}>
+                <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
+            </Activity>
 
-                    <View className="flex-row gap-x-xl">
-                        <TransactionAnalyticsCard
-                            amount={expense}
-                            label={t`Spent`}
-                            icon={UserIconNameEnum.TrendingDown}
-                            variant="destructive"
-                        />
-                        <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
-                        <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
-                    </View>
+            <Activity mode={tagsActivityMode}>
+                <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
+            </Activity>
+
+            <MenuSpacer />
+        </ScrollView>
+    );
+
+    return (
+        <>
+            {!isRunwayTab && (
+                <View className="pb-2xl">
+                    <TransactionFilters
+                        accountId={null}
+                        filters={filters}
+                        onChange={setFilters}
+                        showTypeFilter={false}
+                        hasFiltersSelected={hasFiltersSelected}
+                    />
                 </View>
+            )}
 
-                <Activity mode={categoriesActivityMode}>
-                    <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
-                </Activity>
-
-                <Activity mode={tagsActivityMode}>
-                    <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
-                </Activity>
-
-                <MenuSpacer />
-            </ScrollView>
+            {content}
         </>
     );
 };

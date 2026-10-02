@@ -1,47 +1,45 @@
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { AccountTypeEnum, ExternalSourceEnum, MccCategoryRepository, SettingsRepository, UserIconNameEnum } from '@budgie/contracts';
+import { ErsteFileClient } from '@budgie/sync';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
+import { fileSyncDependenciesLayer } from '../layer/file-sync-dependencies.layer';
 import { extractPdfTextItems } from '../util/extract-pdf-text-items.util';
+import { generateDefaultSyncAccountTitle } from '../util/generate-default-sync-account-title.util';
+import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
+import { makeFileSyncService } from '../util/make-file-sync-service.util';
 
-import { AbstractFileSyncService } from './abstract-file-sync.service';
+export class ErsteSyncService extends Context.Service<ErsteSyncService>()('@budgie/app/ErsteSyncService', {
+    make: Effect.gen(function* () {
+        const mccCategoryRepository = yield* MccCategoryRepository;
+        const settingsRepository = yield* SettingsRepository;
 
-import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
-import type { MccCategoryLookupInterface } from '@budgie/contracts';
+        return yield* makeFileSyncService({
+            provider: ExternalSourceEnum.ERSTE,
+            accountType: AccountTypeEnum.BANK_SYNC,
+            // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
+            generateAccountTitle: account => generateDefaultSyncAccountTitle('Erste', account),
+            accountIcon: () => UserIconNameEnum.Landmark,
+            parseFile: Effect.fn('ErsteSyncService.parseFile')(function* (uri: string) {
+                const items = yield* Effect.promise(() => extractPdfTextItems(uri));
+                const ersteClient = new ErsteFileClient();
+                yield* ersteClient.parse(items);
 
-class ErsteSyncService extends AbstractFileSyncService {
-    protected readonly provider = ExternalSourceEnum.ERSTE;
-    // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
-    protected readonly providerTitle = 'Erste';
-    protected readonly accountType = AccountTypeEnum.BANK_SYNC;
-
-    @Log(
-        uri => `enter uri=${uri}`,
-        (result, uri) =>
-            `done uri=${uri} bankAccountIds=${result.bankAccounts.map(account => account.id).join(',')} bankAccountCount=${result.bankAccounts.length}`,
-        (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
-    )
-    protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
-        const items = await extractPdfTextItems(uri);
-        const module = await import('@budgie/sync');
-        const ersteClient = new module.ErsteFileClient();
-        ersteClient.parse(items);
-
-        return {
-            client: {
-                getAccounts: () => ersteClient.getAccounts(),
-                getTransactions: () => ersteClient.getTransactions()
-            },
-            bankAccounts: ersteClient.getAccounts()
-        };
-    }
-
-    protected async resolveMccCategoryIdMap(): Promise<Map<string, MccCategoryLookupInterface | null>> {
-        return new Map();
-    }
+                return {
+                    client: {
+                        getAccounts: () => ersteClient.getAccounts(),
+                        getTransactions: () => ersteClient.getTransactions()
+                    },
+                    bankAccounts: ersteClient.getAccounts()
+                };
+            }),
+            resolveMccCategoryIdMap: () => loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository),
+            resolveMccCategoryLookupKey: transaction => String(transaction.mcc)
+        });
+    })
+}) {
+    static readonly layer = Layer.effect(ErsteSyncService, ErsteSyncService.make).pipe(
+        Layer.provide([fileSyncDependenciesLayer, MccCategoryRepository.layer, SettingsRepository.layer])
+    );
 }
-
-export const ersteSyncService = new ErsteSyncService();
-
-export const ersteSyncQuickImportFromUri = ersteSyncService.quickImport.bind(ersteSyncService);

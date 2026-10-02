@@ -14,7 +14,7 @@ import { CreateTransactionMenuSelector } from '../create-transaction-menu/create
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { UserIconNameEnum } from '@budgie/contracts';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 
 interface Props {
     readonly icon: UserIconNameEnum;

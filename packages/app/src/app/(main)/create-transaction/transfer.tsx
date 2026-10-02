@@ -1,23 +1,21 @@
 /* jscpd:ignore-start */
-import { AccountTypeEnum, TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
-import { FormProvider, useWatch } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
-import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
-import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
-import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
-import { transactionService } from '../../../transaction/service/transaction.service';
+import { TransferCreationService } from '../../../transaction/service/transfer-creation.service';
 
 import type { Edge } from 'react-native-safe-area-context';
 /* jscpd:ignore-end */
@@ -35,35 +33,18 @@ export default function CreateTransferTransactionPage() {
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
-            const result = await transactionService.createInternalTransfer(data);
+            const result = await appRuntime.runPromise(
+                Effect.flatMap(TransferCreationService, transferCreationService => transferCreationService.createInternalTransfer(data))
+            );
             markForEmbedding(result.id);
 
             return result;
         },
-        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
         fromAccountId: parsedAccountId ?? 0,
         toAccountId: parsedToAccountId ?? 0
     });
-
-    const [fromAccountId, amount] = useWatch({
-        control: form.control,
-        name: ['fromAccountId', 'amount']
-    });
-    const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
-    const { balance } = useAccountBalanceQuery(fromAccountId ?? 0);
-
-    const isDebtAccount = account?.type === AccountTypeEnum.DEBT;
-    const exceedsDebtBalance = isDebtAccount && amount > balance;
-
-    useEffect(() => {
-        if (exceedsDebtBalance) {
-            form.setError('amount', { type: 'custom', message: t`Amount exceeds debt account balance` });
-        } else {
-            form.clearErrors('amount');
-        }
-    }, [exceedsDebtBalance, form, t]);
 
     const handleGoBack = () => void goBackOrReplace('/');
 

@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
 
-import { ExchangeRateEntitySchema } from '../schema/exchange-rate-entity.schema';
-
-export type ExchangeRateEntityInterface = z.infer<typeof ExchangeRateEntitySchema>;
+export type ExchangeRateEntityInterface = typeof ExchangeRateEntityTable.$inferSelect;

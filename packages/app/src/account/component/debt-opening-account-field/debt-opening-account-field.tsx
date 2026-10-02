@@ -1,5 +1,5 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { type GestureResponderEvent, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,11 +16,12 @@ import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-v
 
 interface Props {
     readonly accountId: number | null;
+    readonly label: string;
     readonly variant: ColorPaletteVariant;
     readonly onChange: (accountId: number | null) => void;
 }
 
-export const DebtOpeningAccountField = ({ accountId, variant, onChange }: Props) => {
+export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }: Props) => {
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
     const { icon, selectedAccount, formattedBalance } = useAccountSelector({
@@ -45,7 +46,6 @@ export const DebtOpeningAccountField = ({ accountId, variant, onChange }: Props)
         onChange(null);
     };
 
-    const label = t`From account`;
     const selectedAccountTitle = selectedAccount?.title ?? t`Select account`;
     const isInactiveAccount = isDefined(selectedAccount) && !selectedAccount.isActive;
 
@@ -72,9 +72,17 @@ export const DebtOpeningAccountField = ({ accountId, variant, onChange }: Props)
                 >
                     {selectedAccountTitle}
                 </Text>
-                {isDefined(selectedAccount) && (
+                {isDefined(selectedAccount) ? (
                     <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
                         {formattedBalance}
+                    </Text>
+                ) : (
+                    <Text
+                        className="text-xs text-secondary-foreground"
+                        numberOfLines={1}
+                        testID={CreateAccountScreenSelector.ManualOpeningHint}
+                    >
+                        <Trans>Optional — without it the amount stays manual</Trans>
                     </Text>
                 )}
             </View>

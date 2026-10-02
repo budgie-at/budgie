@@ -1,5 +1,9 @@
+import * as Effect from 'effect/Effect';
+
 import { isDefined } from '@rnw-community/shared';
 
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
+import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { ersteMapper } from '../mapper/erste.mapper';
 import { ersteParser } from '../parser/erste.parser';
 
@@ -10,11 +14,13 @@ import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.in
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
 export class ErsteFileClient {
-    private parsedData: ErsteParsedDataInterface | null = null;
+    readonly parse = Effect.fn('ErsteFileClient.parse')(function* (this: ErsteFileClient, items: PdfTextItemInterface[]) {
+        this.parsedData = yield* Effect.fromResult(ersteParser.parse(items)).pipe(
+            Effect.mapError(message => new SyncInvalidResponseError({ provider: SyncProviderEnum.ERSTE, message }))
+        );
+    });
 
-    parse(items: PdfTextItemInterface[]): void {
-        this.parsedData = ersteParser.parse(items);
-    }
+    private parsedData: ErsteParsedDataInterface | null = null;
 
     getAccounts(): SyncAccountInterface[] {
         if (!isDefined(this.parsedData)) {

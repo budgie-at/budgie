@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'mint-alternatives-developers',
     date: '2025-02-05',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 18,
     title: msg`Mint Shutdown: Where Developers Are Moving Their Finances`,
     description: msg`A comprehensive developer's guide to Mint alternatives after the shutdown. Detailed comparison of Budgie, Actual Budget, Firefly III, Lunch Money, YNAB, and more.`,
@@ -16,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['Mint alternatives', 'developer budget app', 'Mint shutdown replacement'],
     seoDescription: msg`Comprehensive developer's guide to Mint alternatives: detailed comparison of privacy-focused budget apps including Budgie, Actual Budget, Firefly III, and more.`,
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'csv-import', 'monobank-sync', 'multi-currency']
+    relatedFeatureSlugs: ['expense-tracking', 'csv-import', 'monobank-sync', 'multi-currency']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

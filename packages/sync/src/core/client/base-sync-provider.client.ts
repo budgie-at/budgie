@@ -1,183 +1,110 @@
-import ky, { HTTPError, TimeoutError } from 'ky';
-import { z } from 'zod';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
+import * as HttpClient from 'effect/http/HttpClient';
+import * as HttpClientRequest from 'effect/http/HttpClientRequest';
+import * as HttpClientResponse from 'effect/http/HttpClientResponse';
+import * as Option from 'effect/Option';
+import * as Schedule from 'effect/Schedule';
+import * as Schema from 'effect/Schema';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { SyncErrorCodeEnum } from '../enum/sync-error-code.enum';
-import { SyncError } from '../error/sync.error';
-import { syncLogger } from '../util/sync-logger.util';
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_TOO_MANY_REQUESTS, HTTP_STATUS_UNAUTHORIZED } from '../constant/http-status.constant';
+import { SYNC_RETRY_STATUS_CODES } from '../constant/sync-retry-status-codes.constant';
+import { SYNC_TIMEOUT_MS } from '../constant/sync-timeout-ms.constant';
+import { SyncInvalidResponseError } from '../error/sync-invalid-response.error';
+import { SyncNetworkError } from '../error/sync-network.error';
+import { SyncRateLimitedError } from '../error/sync-rate-limited.error';
+import { SyncUnauthorizedError } from '../error/sync-unauthorized.error';
 
 import type { SyncProviderEnum } from '../enum/sync-provider.enum';
-import type { SyncAccountInterface } from '../interface/sync-account.interface';
-import type { SyncClientInfoInterface } from '../interface/sync-client-info.interface';
-import type { SyncErrorInterface } from '../interface/sync-error.interface';
-import type { SyncProviderClientInterface } from '../interface/sync-provider-client.interface';
-import type { SyncResultInterface } from '../interface/sync-result.type';
-import type { SyncTransactionInterface } from '../interface/sync-transaction.interface';
+import type * as Headers from 'effect/http/Headers';
+import type * as HttpClientError from 'effect/http/HttpClientError';
+import type { HttpMethod } from 'effect/http/HttpMethod';
 
-const HTTP_STATUS_BAD_REQUEST = 400;
-
-const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_FORBIDDEN = 403;
-const HTTP_STATUS_REQUEST_TIMEOUT = 408;
-const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
-const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
-const HTTP_STATUS_BAD_GATEWAY = 502;
-const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
-const HTTP_STATUS_GATEWAY_TIMEOUT = 504;
 
-export const DEFAULT_RETRY_STATUS_CODES = [
-    HTTP_STATUS_REQUEST_TIMEOUT,
-    HTTP_STATUS_INTERNAL_SERVER_ERROR,
-    HTTP_STATUS_BAD_GATEWAY,
-    HTTP_STATUS_SERVICE_UNAVAILABLE,
-    HTTP_STATUS_GATEWAY_TIMEOUT
-];
+export abstract class BaseSyncProviderClient {
+    private static readonly RETRY_LIMIT = 3;
+    private static readonly RETRY_BASE_DELAY = '300 millis';
 
-const DEFAULT_RETRY_METHODS = ['get'];
-const DEFAULT_RETRY_LIMIT = 3;
-const DEFAULT_TIMEOUT_MS = 30000;
+    private static readonly ApiErrorSchema = Schema.Struct({
+        code: Schema.optional(Schema.Union([Schema.String, Schema.Number])),
+        message: Schema.optional(Schema.String),
+        msg: Schema.optional(Schema.String)
+    });
 
-const SyncProviderApiErrorSchema = z.object({
-    code: z.union([z.string(), z.number()]).optional(),
-    message: z.string().optional(),
-    msg: z.string().optional()
-});
+    protected readonly retryStatusCodes: readonly number[] = SYNC_RETRY_STATUS_CODES;
+    protected readonly retryMethods: readonly HttpMethod[] = ['GET'];
 
-const SyncProviderHttpErrorDataSchema = z.object({
-    data: SyncProviderApiErrorSchema
-});
+    private readonly execute = Effect.fn('BaseSyncProviderClient.execute')(
+        function* (this: BaseSyncProviderClient, endpoint: string, method: HttpMethod) {
+            const client = (yield* HttpClient.HttpClient).pipe(
+                HttpClient.tap(response =>
+                    Effect.sync(() => {
+                        this.onResponseHeaders(response.headers);
+                    })
+                ),
+                HttpClient.filterStatusOk,
+                HttpClient.retry({
+                    times: this.retryMethods.includes(method) ? BaseSyncProviderClient.RETRY_LIMIT : 0,
+                    schedule: Schedule.exponential(BaseSyncProviderClient.RETRY_BASE_DELAY),
+                    while: error => !isDefined(error.response) || this.retryStatusCodes.includes(error.response.status)
+                })
+            );
 
-export abstract class BaseSyncProviderClient implements SyncProviderClientInterface {
-    protected readonly retryLimit: number;
-    protected readonly timeoutMs: number;
-    protected readonly retryStatusCodes: number[];
-    protected readonly retryMethods: string[];
+            return yield* client.execute(HttpClientRequest.make(method)(`${this.baseUrl}${endpoint}`, { headers: this.headers }));
+        },
+        Effect.timeout(SYNC_TIMEOUT_MS),
+        effect => effect.pipe(Effect.catch(error => this.toSyncError(error)))
+    );
+
+    private readonly toSyncError = Effect.fn('BaseSyncProviderClient.toSyncError')(function* (
+        this: BaseSyncProviderClient,
+        error: HttpClientError.HttpClientError | Cause.TimeoutError
+    ) {
+        const { provider } = this;
+
+        if (Cause.isTimeoutError(error) || !isDefined(error.response)) {
+            return yield* new SyncNetworkError({ provider, message: 'Network error' });
+        }
+
+        const { response } = error;
+        const apiError = Option.getOrUndefined(
+            yield* HttpClientResponse.schemaBodyJson(BaseSyncProviderClient.ApiErrorSchema)(response).pipe(Effect.option)
+        );
+        const message = apiError?.msg ?? apiError?.message ?? `HTTP ${response.status}`;
+
+        switch (response.status) {
+            case HTTP_STATUS_UNAUTHORIZED:
+            case HTTP_STATUS_FORBIDDEN:
+                return yield* new SyncUnauthorizedError({ provider, message });
+            case HTTP_STATUS_TOO_MANY_REQUESTS:
+                return yield* new SyncRateLimitedError({ provider, message });
+            case HTTP_STATUS_BAD_REQUEST:
+                return yield* new SyncInvalidResponseError({ provider, message, apiCode: apiError?.code });
+            default:
+                return yield* new SyncNetworkError({ provider, message });
+        }
+    });
 
     protected abstract readonly provider: SyncProviderEnum;
     protected abstract readonly baseUrl: string;
+    protected abstract readonly headers: Record<string, string>;
 
-    constructor(
-        protected readonly token: string,
-        options?: {
-            readonly retryLimit?: number;
-            readonly timeoutMs?: number;
-            readonly retryStatusCodes?: number[];
-            readonly retryMethods?: string[];
-        }
-    ) {
-        this.retryLimit = options?.retryLimit ?? DEFAULT_RETRY_LIMIT;
-        this.timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-        this.retryStatusCodes = options?.retryStatusCodes ?? DEFAULT_RETRY_STATUS_CODES;
-        this.retryMethods = options?.retryMethods ?? DEFAULT_RETRY_METHODS;
+    protected fetchJson<S extends Schema.ConstraintDecoder<unknown>>(schema: S, endpoint: string, method: HttpMethod = 'GET') {
+        return this.execute(endpoint, method).pipe(
+            Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
+            Effect.catchTag('SchemaError', error =>
+                Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: error.message }))
+            ),
+            Effect.catchTag('HttpClientError', () =>
+                Effect.fail(new SyncNetworkError({ provider: this.provider, message: 'Network error' }))
+            )
+        );
     }
 
-    protected success<T>(data: T): SyncResultInterface<T> {
-        return { success: true, data };
-    }
-
-    protected failure<T>(error: SyncErrorInterface): SyncResultInterface<T> {
-        return { success: false, error };
-    }
-
-    protected async fetchJson<T>(endpoint: string, options?: RequestInit): Promise<SyncResultInterface<T>> {
-        const url = `${this.baseUrl}${endpoint}`;
-        const loggedEndpoint = endpoint.replace(/([?&]signature=)[^&]*/u, '$1[REDACTED]');
-        syncLogger.log('http:request', { provider: this.provider, endpoint: loggedEndpoint });
-        try {
-            const data = await ky(url, {
-                ...options,
-                headers: {
-                    ...this.getDefaultHeaders(),
-                    // eslint-disable-next-line @typescript-eslint/no-misused-spread
-                    ...options?.headers
-                },
-                timeout: this.timeoutMs,
-                retry: {
-                    limit: this.retryLimit,
-                    methods: this.retryMethods,
-                    statusCodes: this.retryStatusCodes
-                },
-                hooks: {
-                    afterResponse: [state => void this.onResponseHeaders(state.response.headers)]
-                }
-            }).json<T>();
-            syncLogger.log('http:response:ok', {
-                provider: this.provider,
-                endpoint: loggedEndpoint,
-                isArray: Array.isArray(data),
-                ...(Array.isArray(data) && { size: data.length })
-            });
-
-            return this.success(data);
-        } catch (error) {
-            return this.handleError<T>(error, loggedEndpoint);
-        }
-    }
-
-    protected onResponseHeaders(_headers: Headers): void {
+    protected onResponseHeaders(_headers: Headers.Headers): void {
         return void 0;
     }
-
-    // eslint-disable-next-line max-statements -- Instrumented with diagnostic logs (temporary)
-    private async handleError<T>(caughtError: unknown, endpoint: string): Promise<SyncResultInterface<T>> {
-        if (caughtError instanceof HTTPError) {
-            const { status, statusText } = caughtError.response;
-            const responseBody: unknown = caughtError.response.bodyUsed
-                ? null
-                : await caughtError.response
-                      .clone()
-                      .json()
-                      .catch(() => null);
-            const responseApiError = SyncProviderApiErrorSchema.safeParse(responseBody);
-            const caughtApiError = SyncProviderHttpErrorDataSchema.safeParse(caughtError);
-            let apiError: z.infer<typeof SyncProviderApiErrorSchema> | null = null;
-            if (responseApiError.success) {
-                apiError = responseApiError.data;
-            } else if (caughtApiError.success) {
-                apiError = caughtApiError.data.data;
-            }
-            syncLogger.error('http:response:httpError', {
-                provider: this.provider,
-                endpoint,
-                status,
-                statusText,
-                ...(isDefined(apiError) && isDefined(apiError.code) && { apiCode: apiError.code }),
-                ...(isDefined(apiError) && isDefined(apiError.message) && { apiMessage: apiError.message }),
-                ...(isDefined(apiError) && isDefined(apiError.msg) && { apiMessage: apiError.msg })
-            });
-
-            if (status === HTTP_STATUS_UNAUTHORIZED || status === HTTP_STATUS_FORBIDDEN) {
-                return this.failure(SyncError.unauthorized(this.provider, apiError ?? caughtError));
-            }
-
-            if (status === HTTP_STATUS_TOO_MANY_REQUESTS) {
-                return this.failure(SyncError.rateLimited(this.provider, apiError ?? caughtError));
-            }
-
-            if (status === HTTP_STATUS_BAD_REQUEST) {
-                return this.failure(SyncError.invalidResponse(this.provider, apiError ?? caughtError));
-            }
-
-            return this.failure(
-                new SyncError(SyncErrorCodeEnum.UNKNOWN, `HTTP ${status}: ${statusText}`, this.provider, apiError ?? caughtError)
-            );
-        }
-
-        if (caughtError instanceof TimeoutError) {
-            syncLogger.error('http:response:timeout', { provider: this.provider, endpoint });
-
-            return this.failure(new SyncError(SyncErrorCodeEnum.NETWORK_ERROR, 'Request timeout', this.provider));
-        }
-
-        syncLogger.error('http:response:networkError', { provider: this.provider, endpoint, error: getErrorMessage(caughtError) });
-
-        return this.failure(SyncError.networkError(this.provider, caughtError));
-    }
-
-    abstract getClientInfo(): Promise<SyncResultInterface<SyncClientInfoInterface>>;
-    abstract getAccounts(): Promise<SyncResultInterface<SyncAccountInterface[]>>;
-    abstract getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>>;
-
-    protected abstract getDefaultHeaders(): Record<string, string>;
 }

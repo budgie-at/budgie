@@ -11,11 +11,12 @@ interface Props {
     readonly isFileStep: boolean;
     readonly isLoading: boolean;
     readonly hasSelectedAccounts: boolean;
+    readonly ctaLabel?: string;
     readonly onSelectFile: EmptyFn;
     readonly onSetupSync: EmptyFn;
 }
 
-export const CreateFileBankAccountFooter = ({ isFileStep, isLoading, hasSelectedAccounts, onSelectFile, onSetupSync }: Props) => {
+export const CreateFileBankAccountFooter = ({ isFileStep, isLoading, hasSelectedAccounts, ctaLabel, onSelectFile, onSetupSync }: Props) => {
     const { t } = useLingui();
 
     const footerProps = isFileStep
@@ -29,7 +30,7 @@ export const CreateFileBankAccountFooter = ({ isFileStep, isLoading, hasSelected
         : {
               onPress: onSetupSync,
               disabled: isLoading || !hasSelectedAccounts,
-              content: t`Start Sync`,
+              content: ctaLabel ?? t`Start Sync`,
               testID: CreateFileBankAccountSelector.StartSyncButton
           };
 

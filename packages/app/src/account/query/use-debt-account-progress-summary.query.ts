@@ -1,49 +1,48 @@
+import { AccountBalanceRepository, AccountEntityTable, DebtEventEntityTable } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+
 import { isDefined } from '@rnw-community/shared';
 
-import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
-import type { DebtAccountProgressSummaryInterface } from '../interface/debt-account-progress-summary.interface';
+import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
 const EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY: DebtAccountProgressSummaryInterface = {
-    closedAmount: 0,
-    creditAmount: 0,
-    debitAmount: 0,
-    openedAmount: 0,
     outstandingAmount: 0,
+    overpaidAmount: 0,
     paidAmount: 0,
     percentage: 0,
     totalAmount: 0
 };
 
-export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccountProgressSummaryInterface => {
-    const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
-    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getDebtAccountProgressByAccountId(accountId), [
-        accountId,
-        accountBalancesUpdatedAt
-    ]);
-    const row = data.at(0);
-    const closedAmount = useCachedMicroUnitQuery(row?.closedAmount);
-    const creditAmount = useCachedMicroUnitQuery(row?.creditAmount);
-    const debitAmount = useCachedMicroUnitQuery(row?.debitAmount);
-    const openedAmount = useCachedMicroUnitQuery(row?.openedAmount);
+const debtAccountProgressAtom = databaseQueryFamily(
+    [AccountEntityTable, DebtEventEntityTable],
+    AccountBalanceRepository,
+    (accountBalanceRepository, accountId: number) => accountBalanceRepository.getDebtAccountProgressByAccountId(accountId)
+);
+
+export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccountProgressSummaryInterface | null => {
+    const result = useLiveAtomValue(debtAccountProgressAtom(accountId));
+    const row = AsyncResult.getOrElse(result, () => []).at(0);
     const outstandingAmount = useCachedMicroUnitQuery(row?.outstandingAmount);
+    const overpaidAmount = useCachedMicroUnitQuery(row?.overpaidAmount);
     const paidAmount = useCachedMicroUnitQuery(row?.paidAmount);
     const totalAmount = useCachedMicroUnitQuery(row?.totalAmount);
+
+    if (AsyncResult.isInitial(result)) {
+        return null;
+    }
 
     if (!isDefined(row)) {
         return EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY;
     }
 
     return {
-        closedAmount,
-        creditAmount,
-        debitAmount,
-        openedAmount,
         outstandingAmount,
+        overpaidAmount,
         paidAmount,
         percentage: row.percentage,
         totalAmount

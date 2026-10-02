@@ -1,14 +1,15 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { useEffect, useState } from 'react';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../../@generic/drizzle/db/db';
+import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { refundsTotalAtom } from '../../constant/refunds-total-atom.constant';
 import { RefundedSummaryKindEnum } from '../../enum/refunded-summary-kind.enum';
 import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
@@ -21,43 +22,13 @@ interface Props {
     readonly testID?: string;
 }
 
-const logger = getLogger('RefundedPill');
-
 export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
+    const language = useSetting('language');
     const formatDigits = useFormatDigits(decimalPlaces);
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
-    const [refundsTotal, setRefundsTotal] = useState<number | null>(null);
-
-    useEffect(() => {
-        let isActive = true;
-
-        const fetchRefundsTotal = async (): Promise<void> => {
-            const sources = await transactionRepository.findConsolidationSources(transaction.id);
-            const total = sources
-                .filter(source => source.entryType === TransactionEntryTypeEnum.DEBIT)
-                .reduce((sum, source) => sum + source.amount, 0);
-
-            if (isActive) {
-                setRefundsTotal(total);
-            }
-        };
-
-        const handleError = (error: unknown) => {
-            logger.error('failed', { transactionId: transaction.id, errorMessage: getErrorMessage(error) });
-            if (isActive) {
-                setRefundsTotal(null);
-            }
-        };
-
-        if (isRefund) {
-            void fetchRefundsTotal().catch(handleError);
-        }
-
-        return () => {
-            isActive = false;
-        };
-    }, [isRefund, transaction.id]);
+    const result = useLiveAtomValue(refundsTotalAtom([isRefund ? transaction.id : null, language]));
+    const refundsTotal = AsyncResult.isSuccess(result) ? result.value : null;
 
     const summary = isRefund && isDefined(refundsTotal) ? computeRefundedSummary(transaction, refundsTotal) : null;
     const currencySymbol = transaction.entries[0]?.account.instrument.symbol;

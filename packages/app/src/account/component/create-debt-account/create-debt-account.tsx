@@ -1,18 +1,20 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 // jscpd:ignore-start
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
-import { accountDebtOpeningService } from '../../service/account-debt-opening.service';
-import { accountService } from '../../service/account.service';
+import { AccountDebtOpeningService } from '../../service/account-debt-opening.service';
+import { DebtAccountService } from '../../service/debt-account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
@@ -41,44 +43,43 @@ export const CreateDebtAccount = () => {
         instrumentId: defaultInstrument.id
     };
 
-    const { control, handleSubmit, instrument, debtType, setValue, getValues, isSubmitting } = useDebtAccountForm(
-        initialValues,
-        async values => {
-            const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
-
-            if (isDefined(effectiveOpeningAccountId)) {
-                return accountDebtOpeningService.createLentDebtFromTransfer(
-                    { ...values, targetBalance: values.currentBalance },
-                    effectiveOpeningAccountId
-                );
-            }
-
-            return accountService.createDebt(values);
+    const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, async values => {
+        if (isDefined(openingAccountId)) {
+            return appRuntime.runPromise(
+                Effect.flatMap(AccountDebtOpeningService, accountDebtOpeningService =>
+                    accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId)
+                )
+            );
         }
-    );
+
+        return appRuntime.runPromise(Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.createDebt(values)));
+    });
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
-    const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
     const variant = ACCOUNT_COLOR.DEBT;
     const stickyInstrument = useStickyDefinedValue(instrument);
-
-    const handleCreateDebtAccountSubmit = () => {
-        if (isOpeningFromAccount) {
-            setValue('targetBalance', getValues('currentBalance'), { shouldDirty: false, shouldValidate: false });
-        }
-
-        return handleSubmit();
-    };
+    const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
+    const openingAccountLabel = isLentDebt ? t`From account` : t`To account`;
 
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     return (
-        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit} isSubmitting={isSubmitting}>
-            <CreateAccountCoreFields variant={variant} control={control} instrumentSymbol={stickyInstrument.symbol}>
-                {isLentDebt && <DebtOpeningAccountField accountId={openingAccountId} variant={variant} onChange={setOpeningAccountId} />}
+        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+            <CreateAccountCoreFields
+                variant={variant}
+                control={control}
+                instrumentSymbol={stickyInstrument.symbol}
+                balanceFieldLabel={balanceFieldLabel}
+            >
+                <DebtOpeningAccountField
+                    accountId={openingAccountId}
+                    label={openingAccountLabel}
+                    variant={variant}
+                    onChange={setOpeningAccountId}
+                />
 
-                {!isOpeningFromAccount && <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />}
+                <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />
 
                 <DebtAccountTypeField control={control} />
 

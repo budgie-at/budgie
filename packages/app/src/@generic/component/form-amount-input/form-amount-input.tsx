@@ -1,4 +1,5 @@
 import { cva } from 'class-variance-authority';
+import { cn } from 'cn';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -7,7 +8,6 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { useAutoScaleFont } from '../../hook/use-auto-scale-font.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { cn } from '../../utils/cn.util';
 import { AmountInput } from '../amount-input/amount-input';
 import { SignTogglePill } from '../sign-toggle-pill/sign-toggle-pill';
 

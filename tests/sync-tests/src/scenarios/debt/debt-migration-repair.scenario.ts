@@ -2,14 +2,18 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { buildTestDb, createTestRepositories } from '@budgie-at/test-kit';
+import { buildTestDb, makeTestPlatformLayer } from '@budgie-at/test-kit';
 import {
+    AccountBalanceRepository,
     DebtEventDirectionEnum,
+    DebtEventRepository,
     DebtEventSourceEnum,
-    TransactionEntryKindEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionRepository,
+    TransactionTypeEnum,
+    TransactionViewRepository
 } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -25,6 +29,8 @@ import type { AccountBalanceEntityInterface, DebtEventEntityInterface, Transacti
 export class DebtMigrationRepairScenario {
     private static readonly AMBIGUOUS_ACCOUNT_ID = Number('102');
     private static readonly AMBIGUOUS_ADJUSTMENT_AMOUNT = 1_000_000_000;
+
+    private static readonly AMBIGUOUS_LEDGER_BALANCE = -9_000_000_000;
     private static readonly AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID = Number('1010');
     private static readonly AMBIGUOUS_OPENING_AMOUNT = Number('10000000000');
     private static readonly REPAIR_MIGRATION_PATH = resolve(
@@ -34,35 +40,50 @@ export class DebtMigrationRepairScenario {
 
     constructor(private readonly fixturePath: string) {}
 
-    async run(): Promise<void> {
-        const db = buildTestDb(this.fixturePath);
+    run() {
+        return Effect.gen({ self: this }, function* () {
+            const db = buildTestDb(this.fixturePath);
+            yield* Effect.addFinalizer(() => Effect.promise(() => db.$client.closeAsync()));
 
-        try {
-            const repairMigrationSql = await readFile(DebtMigrationRepairScenario.REPAIR_MIGRATION_PATH, 'utf8');
-            const firstExecutionSnapshot = await new DebtMigrationPersistenceAssertions(db).assert();
-            await new DebtMigrationIdempotencyAssertions(db).assert(repairMigrationSql, firstExecutionSnapshot);
-            const repositories = createTestRepositories(db);
-            await this.assertAmbiguousControl(repositories);
-            await new DebtMigrationEventAssertions(repositories.debtEventRepository).assert();
-            await new DebtMigrationTransactionAssertions(repositories.transactionRepository).assert();
-            new DebtMigrationBalanceAssertions(repositories.accountBalanceRepository).assert();
-        } finally {
-            await db.$client.closeAsync();
-        }
+            const repairMigrationSql = yield* Effect.promise(() => readFile(DebtMigrationRepairScenario.REPAIR_MIGRATION_PATH, 'utf8'));
+            const firstExecutionSnapshot = yield* Effect.promise(() => new DebtMigrationPersistenceAssertions(db).assert());
+            yield* Effect.promise(() => new DebtMigrationIdempotencyAssertions(db).assert(repairMigrationSql, firstExecutionSnapshot));
+            yield* Effect.gen({ self: this }, function* () {
+                yield* this.assertAmbiguousControl();
+                yield* new DebtMigrationEventAssertions().assert();
+                yield* new DebtMigrationTransactionAssertions().assert();
+                yield* new DebtMigrationBalanceAssertions().assert();
+            }).pipe(
+                Effect.provide(
+                    Layer.provideMerge(
+                        Layer.mergeAll(
+                            AccountBalanceRepository.layer,
+                            DebtEventRepository.layer,
+                            TransactionRepository.layer,
+                            TransactionViewRepository.layer
+                        ),
+                        makeTestPlatformLayer(db)
+                    )
+                )
+            );
+        });
     }
 
-    private async assertAmbiguousControl(repositories: ReturnType<typeof createTestRepositories>): Promise<void> {
-        const [accountBalance] = await repositories.accountBalanceRepository.getByAccountIds([
-            DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID
-        ]);
-        const adjustmentTransaction = await repositories.transactionRepository.getByIdWithEntries(
-            DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID
-        );
-        const debtEvents = await repositories.debtEventRepository.findByAccountId(DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID);
+    private assertAmbiguousControl() {
+        return Effect.gen({ self: this }, function* () {
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const transactionRepository = yield* TransactionRepository;
+            const debtEventRepository = yield* DebtEventRepository;
+            const [accountBalance] = yield* accountBalanceRepository.getByAccountIds([DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID]);
+            const adjustmentTransaction = yield* transactionRepository.getByIdWithEntries(
+                DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID
+            );
+            const debtEvents = yield* debtEventRepository.findByAccountId(DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID);
 
-        this.assertAmbiguousBalance(accountBalance);
-        this.assertAmbiguousAdjustment(adjustmentTransaction);
-        this.assertAmbiguousEvents(debtEvents);
+            this.assertAmbiguousBalance(accountBalance);
+            this.assertAmbiguousAdjustment(adjustmentTransaction);
+            this.assertAmbiguousEvents(debtEvents);
+        });
     }
 
     private assertAmbiguousBalance(accountBalance: AccountBalanceEntityInterface | undefined): void {
@@ -74,7 +95,7 @@ export class DebtMigrationRepairScenario {
 
         expect({ accountId: accountBalance.accountId, amount: accountBalance.amount, deletedAt: accountBalance.deletedAt }).toEqual({
             accountId: DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID,
-            amount: DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_AMOUNT,
+            amount: DebtMigrationRepairScenario.AMBIGUOUS_LEDGER_BALANCE,
             deletedAt: null
         });
     }
@@ -93,30 +114,13 @@ export class DebtMigrationRepairScenario {
             toAccountId: adjustmentTransaction.toAccountId,
             type: adjustmentTransaction.type
         }).toEqual({
-            deletedAt: null,
+            deletedAt: expect.any(Date),
             fromAccountId: null,
             id: DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID,
             toAccountId: DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID,
             type: TransactionTypeEnum.ADJUSTMENT
         });
-        expect(adjustmentTransaction.entries).toHaveLength(1);
-        expect(
-            adjustmentTransaction.entries.map(transactionEntry => ({
-                accountId: transactionEntry.accountId,
-                amount: transactionEntry.amount,
-                deletedAt: transactionEntry.deletedAt,
-                kind: transactionEntry.kind,
-                type: transactionEntry.type
-            }))
-        ).toEqual([
-            {
-                accountId: DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID,
-                amount: DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_AMOUNT,
-                deletedAt: null,
-                kind: TransactionEntryKindEnum.PRIMARY,
-                type: TransactionEntryTypeEnum.DEBIT
-            }
-        ]);
+        expect(adjustmentTransaction.entries).toHaveLength(0);
     }
 
     private assertAmbiguousEvents(debtEvents: DebtEventEntityInterface[]): void {

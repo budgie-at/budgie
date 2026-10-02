@@ -1,70 +1,54 @@
-import { useEffect, useRef, useState } from 'react';
+import { LanguageEnum, TransactionPatternRepository } from '@budgie/contracts';
+import { isSameDay } from 'date-fns/isSameDay';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { useState } from 'react';
 
-import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
+import { useAppState } from '../../@generic/hook/use-app-state.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
-import { recurringCalendarService } from '../service/recurring-calendar.service';
+import { detectRecurringSeries } from '../utils/detect-recurring-series.util';
+import { projectRecurringMonth } from '../utils/project-recurring-month.util';
+
+const RECURRING_WINDOW_MONTHS = 24;
+
+const recurringChargeCandidatesAtom = databaseQueryFamily(
+    STATISTICS_TABLES,
+    TransactionPatternRepository,
+    (transactionPatternRepository, [defaultInstrumentId, language, sinceTime]: readonly [number, LanguageEnum, number]) =>
+        transactionPatternRepository.findRecurringChargeCandidates({ defaultInstrumentId, language, since: new Date(sinceTime) })
+);
 
 interface UseRecurringCalendarReturnInterface {
-    readonly data: RecurringCalendarDataInterface | undefined;
-    readonly isLoading: boolean;
+    readonly data?: RecurringCalendarDataInterface;
 }
-
-const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, never[]> = new Map();
 
 export const useRecurringCalendar = (displayYear: number, displayMonth: number): UseRecurringCalendarReturnInterface => {
     const { defaultInstrument } = useSettingsContext();
     const language = useSetting('language');
-    const focusKey = useFocusKey();
-    const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
-    const [isLoading, setIsLoading] = useState(false);
-    const hasLoadedRef = useRef(false);
+    const [now, setNow] = useState(() => new Date());
+    useAppState(isActive => {
+        if (isActive) {
+            setNow(current => {
+                const next = new Date();
 
-    useEffect(() => {
-        let cancelled = false;
-
-        if (!hasLoadedRef.current) {
-            setIsLoading(true);
+                return isSameDay(current, next) ? current : next;
+            });
         }
+    });
+    const since = new Date(now.getFullYear(), now.getMonth() - RECURRING_WINDOW_MONTHS, now.getDate());
 
-        const fetchData = async (): Promise<void> => {
-            try {
-                const result = await recurringCalendarService.getMonthlyRecurringPayments(
-                    defaultInstrument.id,
-                    displayYear,
-                    displayMonth,
-                    language
-                );
+    const result = useLiveAtomValue(recurringChargeCandidatesAtom([defaultInstrument.id, language, since.getTime()]));
 
-                if (!cancelled) {
-                    hasLoadedRef.current = true;
-                    setData(result);
-                }
-            } catch {
-                if (!cancelled) {
-                    const emptyData = {
-                        entriesByDay: EMPTY_ENTRIES_BY_DAY,
-                        forecastedEntriesByDay: EMPTY_ENTRIES_BY_DAY,
-                        totalAmount: 0,
-                        forecastedTotalAmount: 0
-                    };
-                    hasLoadedRef.current = true;
-                    setData(emptyData);
-                }
-            } finally {
-                if (!cancelled) {
-                    setIsLoading(false);
-                }
-            }
-        };
+    const calendarData = projectRecurringMonth(
+        detectRecurringSeries(AsyncResult.getOrElse(result, () => [])),
+        displayYear,
+        displayMonth,
+        now
+    );
 
-        void fetchData();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [focusKey, defaultInstrument.id, displayYear, displayMonth, language]);
-
-    return { data, isLoading };
+    return { ...(!AsyncResult.isInitial(result) && { data: calendarData }) };
 };

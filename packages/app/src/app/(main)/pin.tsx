@@ -6,7 +6,7 @@ import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { usePinAuthentication } from '../../auth/hook/use-pin-authentication.hook';
 
 export default function PinScreen() {
-    const { addDigit, canUseBiometric, deleteDigit, description, error, handleBiometricAuth, input, isLoading, title } =
+    const { addDigit, canUseBiometric, deleteDigit, description, error, handleBiometricAuth, input, isFaceIdAvailable, isLoading, title } =
         usePinAuthentication();
 
     return (
@@ -22,6 +22,7 @@ export default function PinScreen() {
                     onDeletePress={deleteDigit}
                     onScanPress={handleBiometricAuth}
                     canScan={canUseBiometric}
+                    isFaceIdAvailable={isFaceIdAvailable}
                 />
 
                 {isLoading ? <LoadingOverlay /> : null}

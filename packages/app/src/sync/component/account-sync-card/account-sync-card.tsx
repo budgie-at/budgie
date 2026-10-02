@@ -1,15 +1,18 @@
-import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
+import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { SYNC_PROVIDER_CAPABILITIES } from '../../constant/sync-provider-capabilities.constant';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
-import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
+import { SyncProviderRegistryService } from '../../service/sync-provider-registry.service';
 import { buildSyncStatusLabel } from '../../utils/build-sync-status-label.util';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
@@ -46,13 +49,20 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     const statusLabel = buildSyncStatusLabel({ status: sync.status, isForwardMode, isSyncing });
 
     const handleToggle = (enabled: boolean) => {
-        void syncProviderRegistryService
-            .getServiceForAccount(accountId)
-            .then(service => service?.setAccountSyncEnabled(accountId, enabled));
+        void appRuntime.runPromise(
+            Effect.flatMap(SyncProviderRegistryService, syncProviderRegistryService =>
+                Effect.flatMap(syncProviderRegistryService.getServiceForAccount(accountId), service =>
+                    isDefined(service) ? service.setAccountSyncEnabled(accountId, enabled) : Effect.void
+                )
+            )
+        );
     };
 
-    const providerService = syncProviderRegistryService.getServiceForProvider(sync.provider);
-    const supportsTokenAuth = providerService?.supportsTokenAuth === true;
+    const { supportsTokenAuth, supportsFileImport } = SYNC_PROVIDER_CAPABILITIES[sync.provider];
+    const syncLabel = supportsFileImport ? t`Include in file imports` : t`Sync`;
+    const warningLabels: Record<SyncWarningEnum, string> = {
+        [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`
+    };
     const tokenSection =
         sync.provider === ExternalSourceEnum.BINANCE ? (
             <BinanceSyncTokenSection accountId={accountId} />
@@ -63,15 +73,18 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     return (
         <Card className="p-4xl gap-y-lg">
             <View className="flex-row items-center justify-between gap-2">
-                <ResyncAccount accountId={accountId} />
+                <ResyncAccount accountId={accountId} testID={AccountSyncCardSelector.ResyncButton} />
                 <View className="content-center items-center">
-                    <Text className="text-primary font-semibold text-base">
-                        <Trans>Sync</Trans>
-                    </Text>
+                    <Text className="text-primary font-semibold text-base">{syncLabel}</Text>
                     <Text className={statusTextVariants({ status: sync.status })}>{statusLabel}</Text>
                 </View>
                 <View className="content-center">
-                    <ThemedSwitch value={sync.enabled} onValueChange={handleToggle} testID={AccountSyncCardSelector.Switch} />
+                    <ThemedSwitch
+                        value={sync.enabled}
+                        onValueChange={handleToggle}
+                        accessibilityLabel={syncLabel}
+                        testID={AccountSyncCardSelector.Switch}
+                    />
                 </View>
             </View>
 
@@ -100,6 +113,17 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                             </View>
                         )}
                     </>
+                )}
+
+                {isDefined(sync.lastWarning) && (
+                    <View className="gap-y-xs">
+                        <Text className="text-xs text-secondary-foreground">
+                            <Trans>Warning</Trans>
+                        </Text>
+                        <Text className="text-warning-foreground text-xs" numberOfLines={2}>
+                            {warningLabels[sync.lastWarning]}
+                        </Text>
+                    </View>
                 )}
 
                 {supportsTokenAuth ? tokenSection : null}

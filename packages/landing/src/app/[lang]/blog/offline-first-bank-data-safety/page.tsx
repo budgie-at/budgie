@@ -1,7 +1,6 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import Link from 'next/link';
 
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
 import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
@@ -20,8 +19,8 @@ import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-i
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
+import { buildPageMetadata } from '../../../../generic/util/build-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
@@ -35,14 +34,13 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
 
-    return buildBlogArticleMetadata({
+    return buildPageMetadata({
         author: ARTICLE_METADATA.author,
-        date: ARTICLE_METADATA.date,
         description: i18n._(ARTICLE_METADATA.seoDescription),
-        image: ARTICLE_METADATA.image,
         keywords: t(i18n)`offline-first finance, bank data safety, Plaid alternative, no bank login budget app`,
         locale: lang,
-        slug: ARTICLE_METADATA.slug,
+        path: `/blog/${ARTICLE_METADATA.slug}`,
+        publishedAt: ARTICLE_METADATA.date,
         title: i18n._(ARTICLE_METADATA.title)
     });
 }
@@ -59,21 +57,14 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                 date={ARTICLE_METADATA.date}
                 description={i18n._(ARTICLE_METADATA.description)}
                 homeLabel={t(i18n)`Home`}
-                image={ARTICLE_METADATA.image}
+                image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`}
                 keywords={t(i18n)`offline-first finance, bank data safety, Plaid alternative, no bank login budget app`}
                 locale={lang}
                 slug={ARTICLE_METADATA.slug}
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
-                <Link
-                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-                    href={`/${lang}/blog`}
-                >
-                    <Trans>← Back to Blog</Trans>
-                </Link>
-
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
@@ -399,9 +390,9 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in the
-                            encrypted local database. The sync runs on your device; Budgie servers are not involved in the data flow.
-                            Transaction data is written directly to the local SQLite database.
+                            For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in your
+                            local database, encrypted if you have a PIN set. The sync runs on your device; Budgie servers are not involved
+                            in the data flow. Transaction data is written directly to that local database.
                         </Trans>
                     </BlogArticleProse>
 
@@ -418,26 +409,27 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Encrypted Local Storage</Trans>
+                        <Trans>Local Storage, Encrypted With Your PIN</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Whether data arrives via direct sync or manual import, it is stored in the same AES-256 encrypted SQLite
-                            database. The database is protected by your device PIN, biometric authentication, or a dedicated app lock. No
-                            transaction data is stored on Budgie servers at any point.
+                            Whether data arrives via direct sync or manual import, it is stored in the same local database. Set a PIN and
+                            that PIN becomes the key your data is encrypted with; biometric unlock is just a faster way past the lock
+                            screen, and your PIN stays the key either way. No transaction data is stored on Budgie servers at any point.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Encrypted Backup</Trans>
+                        <Trans>Backup, Encrypted With Your PIN</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            When you create a backup, the encrypted database file is exported to your chosen destination — iCloud, Google
-                            Drive, a local network share, or a USB-connected device. Budgie does not receive or store the backup.
-                            Restoration reads the file from the same destination and decrypts it locally.
+                            When you create a backup, the database file — encrypted if you have a PIN set — is exported to your chosen
+                            destination — iCloud, Google Drive, a local network share, or a USB-connected device. Budgie does not receive or
+                            store the backup. Restoring it later reads the file back from wherever you put it and asks for that
+                            backup&apos;s PIN if it was encrypted.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -475,10 +467,9 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                         <BlogFaqItem question={<Trans>How does Budgie handle OAuth tokens for direct sync?</Trans>}>
                             <Trans>
-                                OAuth tokens for direct bank sync are stored in the encrypted local database on your device alongside your
-                                transaction data. They are protected by the same AES-256 encryption and device authentication as your
-                                financial records. Revoking a token from your bank portal immediately terminates all sync access without
-                                requiring any action inside Budgie.
+                                OAuth tokens for direct bank sync are stored in your local database on your device alongside your
+                                transaction data, protected the same way — encrypted with your PIN if you have one set. Revoking a token
+                                from your bank portal immediately terminates all sync access without requiring any action inside Budgie.
                             </Trans>
                         </BlogFaqItem>
 

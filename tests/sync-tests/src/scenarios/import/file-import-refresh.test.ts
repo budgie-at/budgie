@@ -1,9 +1,10 @@
-import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
-import { StubFileBankSyncService, seed } from '../../harness';
+import { makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
@@ -55,20 +56,18 @@ class RefreshFileClient implements FileBasedSyncClientInterface {
 }
 
 describe('import/file-import-refresh', () => {
-    it('bumps the app database refresh version after quick import writes transactions', async () => {
-        const account = seed.account({ title: 'Refresh Bank', externalId: BANK_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
-        seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
-        const syncService = new StubFileBankSyncService(ExternalSourceEnum.ERSTE, new RefreshFileClient());
-        const initialVersion = databaseRefreshService.getSnapshot();
-        let notificationCount = 0;
-        const unsubscribe = databaseRefreshService.subscribe(() => {
-            notificationCount += 1;
-        });
+    it.effect('persists the imported transaction and reports it as new after quick import', () =>
+        Effect.gen(function* () {
+            const account = seed.account({ title: 'Refresh Bank', externalId: BANK_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
+            seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
+            const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.ERSTE, new RefreshFileClient());
 
-        await syncService.quickImport(STATEMENT_URI);
-        unsubscribe();
+            const result = yield* syncService.quickImport(STATEMENT_URI);
 
-        expect(databaseRefreshService.getSnapshot()).toBe(initialVersion + 1);
-        expect(notificationCount).toBe(1);
-    });
+            expect(result.newTransactionCount).toBe(1);
+            expect(
+                testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'refresh-transaction-1')).all()
+            ).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

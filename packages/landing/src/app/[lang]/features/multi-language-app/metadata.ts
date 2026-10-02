@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'i18n budget app',
         'language switcher expense app'
     ],
-    relatedFeatureSlugs: ['ai-merchant-translation', 'dark-mode'],
+    relatedFeatureSlugs: ['ai-category-translation', 'dark-mode'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-05-03',

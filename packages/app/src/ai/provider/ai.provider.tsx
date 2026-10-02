@@ -1,36 +1,26 @@
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { ReactNode, useEffect } from 'react';
 
-import { aiCoordinatorService } from '../service/ai-coordinator.service';
-import { aiEmbeddingStatusService } from '../service/ai-embedding-status.service';
-import { aiSystemStatusService } from '../service/ai-system-status.service';
-import { aiTranslationStatusService } from '../service/ai-translation-status.service';
-import { aiUmbrellaStatusService } from '../service/ai-umbrella-status.service';
-
-const logger = getLogger('AiProvider');
+import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { useSetting } from '../../settings/hook/use-setting.hook';
+import { AiCoordinatorService } from '../service/ai-coordinator.service';
 
 interface Props {
     readonly children: ReactNode;
 }
 
 export const AiProvider = ({ children }: Props) => {
+    const isAiEnabled = useSetting('isAiEnabled');
+
     useEffect(() => {
-        logger.log('provider:mount');
-        aiCoordinatorService.start();
-        aiSystemStatusService.start();
-        aiUmbrellaStatusService.start();
-        aiTranslationStatusService.start();
-        aiEmbeddingStatusService.start();
+        if (isAiEnabled) {
+            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.start()));
+        }
 
         return () => {
-            logger.log('provider:unmount');
-            aiEmbeddingStatusService.stop();
-            aiTranslationStatusService.stop();
-            aiUmbrellaStatusService.stop();
-            aiSystemStatusService.stop();
-            aiCoordinatorService.stop();
+            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.stop()));
         };
-    }, []);
+    }, [isAiEnabled]);
 
-    return <>{children}</>;
+    return children;
 };

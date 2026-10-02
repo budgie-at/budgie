@@ -3,6 +3,7 @@ import { ViewStyle } from 'react-native';
 import { IdInterface } from '../interface/id.interface';
 
 export const LEGEND_LIST_STYLE: ViewStyle = { flex: 1 };
+/** Vertical gap between legend-list rows, in points. */
 export const LEGEND_LIST_CONTENT_GAP = 12;
 export const LEGEND_LIST_HEADER_HEIGHT = 80;
 

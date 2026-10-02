@@ -1,6 +1,6 @@
-import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
+import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '@app/sync/constant/privatbank-duplicate-candidate-sql.constant';
-import { syncRepairService } from '@app/sync/service/sync-repair.service';
+import { SyncRepairService } from '@app/sync/service/sync-repair.service';
 import {
     ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
@@ -9,10 +9,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it, vi } from '@effect/vitest';
 import { sql } from 'drizzle-orm';
-import { describe, expect, it, vi } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type { SyncDuplicateCandidateRowInterface } from '@app/sync/interface/sync-duplicate-candidate-row.interface';
@@ -26,14 +27,14 @@ const PRIVATBANK_DUPLICATE_TITLE = "Зарплата, СУПЕРМАШ. Коме
 const PRIVATBANK_DUPLICATE_AMOUNT = 1_780_860_000;
 const PRIVATBANK_DUPLICATE_OPERATED_AT = new Date('2026-05-07T08:46:37.000Z');
 
-const fetchPrivatbankDuplicateCandidates = async (): Promise<SyncDuplicateCandidateRowInterface[]> =>
+const fetchPrivatbankDuplicateCandidates = (): SyncDuplicateCandidateRowInterface[] =>
     testDb.all<SyncDuplicateCandidateRowInterface>(sql.raw(PRIVATBANK_DUPLICATE_CANDIDATE_SQL));
 
-const expectTransferPairDuplicate = async (
+const expectTransferPairDuplicate = (
     keptTransaction: TransactionEntityInterface,
     duplicateTransaction: TransactionEntityInterface
-): Promise<void> => {
-    const candidates = await fetchPrivatbankDuplicateCandidates();
+): void => {
+    const candidates = fetchPrivatbankDuplicateCandidates();
 
     expect(candidates).toEqual([
         expect.objectContaining({
@@ -364,142 +365,178 @@ const seedPrivatbankCanonicalTransferPair = ({
     return transaction;
 };
 
+const expectVisibleDuplicate = (duplicateTransactionId: number, keptTransactionId: number): void => {
+    expect(fetchPrivatbankDuplicateCandidates()).toEqual([
+        expect.objectContaining({ duplicateTransactionId, keptTransactionId, reason: 'visible_duplicate' })
+    ]);
+};
+
 describe('privatbank/duplicate-repair', () => {
-    it('detects visible duplicates imported with the exact same operated timestamp', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
-        const keptTransaction = seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
-        const duplicateTransaction = seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
+    it.effect('detects visible duplicates imported with the exact same operated timestamp', () =>
+        Effect.gen(function* () {
+            const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+            const keptTransaction = seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
+            const duplicateTransaction = seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
 
-        const candidates = await fetchPrivatbankDuplicateCandidates();
+            expectVisibleDuplicate(duplicateTransaction.id, keptTransaction.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expect(candidates).toEqual([
-            expect.objectContaining({
-                duplicateTransactionId: duplicateTransaction.id,
-                keptTransactionId: keptTransaction.id,
-                reason: 'visible_duplicate'
-            })
-        ]);
-    });
+    it.effect('detects exact duplicates when the kept source transaction has already been consolidated', () =>
+        Effect.gen(function* () {
+            const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+            const canonicalTransaction = seedCanonicalTransfer(account.id);
+            const keptTransaction = seedPrivatbankIncome({
+                accountId: account.id,
+                externalId: 'privatbank-consolidated-kept',
+                consolidationParentTransactionId: canonicalTransaction.id
+            });
+            const duplicateTransaction = seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-consolidated-duplicate' });
 
-    it('detects exact duplicates when the kept source transaction has already been consolidated', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
-        const canonicalTransaction = seedCanonicalTransfer(account.id);
-        const keptTransaction = seedPrivatbankIncome({
-            accountId: account.id,
-            externalId: 'privatbank-consolidated-kept',
-            consolidationParentTransactionId: canonicalTransaction.id
-        });
-        const duplicateTransaction = seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-consolidated-duplicate' });
+            seedMovedEntry(canonicalTransaction.id, keptTransaction.id, account.id, 'privatbank-consolidated-kept');
 
-        seedMovedEntry(canonicalTransaction.id, keptTransaction.id, account.id, 'privatbank-consolidated-kept');
+            const candidates = fetchPrivatbankDuplicateCandidates();
 
-        const candidates = await fetchPrivatbankDuplicateCandidates();
+            expect(candidates).toEqual([
+                expect.objectContaining({
+                    duplicateTransactionId: duplicateTransaction.id,
+                    keptTransactionId: keptTransaction.id,
+                    reason: 'hidden_source_duplicate'
+                })
+            ]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expect(candidates).toEqual([
-            expect.objectContaining({
-                duplicateTransactionId: duplicateTransaction.id,
-                keptTransactionId: keptTransaction.id,
-                reason: 'hidden_source_duplicate'
-            })
-        ]);
-    });
+    it.effect('rebuilds balances after duplicate soft deletes leave the write transaction', () =>
+        Effect.gen(function* () {
+            const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+            const syncRepairService = yield* SyncRepairService;
+            const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
 
-    it('rebuilds balances after duplicate soft deletes leave the write transaction', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+            seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
+            seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
 
-        seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
-        seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
+            const updateAllBalancesSpy = vi.spyOn(accountBalanceIncrementalService, 'updateAllBalances').mockReturnValue(Effect.void);
+            yield* Effect.addFinalizer(() => Effect.sync(() => updateAllBalancesSpy.mockRestore()));
 
-        const updateAllBalancesSpy = vi.spyOn(accountBalanceIncrementalService, 'updateAllBalances').mockResolvedValue(undefined);
-
-        try {
-            const result = await syncRepairService.removeDuplicates();
+            const result = yield* syncRepairService.removeDuplicates();
 
             expect(result.repairedTransactionCount).toBe(1);
             expect(updateAllBalancesSpy).toHaveBeenCalledTimes(1);
             expect(updateAllBalancesSpy).toHaveBeenCalledWith(true);
-        } finally {
-            updateAllBalancesSpy.mockRestore();
-        }
-    });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('detects a duplicate when the kept transaction was converted to a debt payment', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
-        const debtAccount = seed.account({ title: 'Віладжіо' });
-        const expenseMccCategory = seed.mccCategory({ mcc: '0779' });
-        const keptTransaction = seedPrivatbankDebtPayment(account.id, debtAccount.id);
-        const duplicateTransaction = seedPrivatbankExpense(account.id, expenseMccCategory.id);
+    it.effect('detects a duplicate when the kept transaction was converted to a debt payment', () =>
+        Effect.gen(function* () {
+            const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+            const debtAccount = seed.account({ title: 'Віладжіо' });
+            const expenseMccCategory = seed.mccCategory({ mcc: '0779' });
+            const keptTransaction = seedPrivatbankDebtPayment(account.id, debtAccount.id);
+            const duplicateTransaction = seedPrivatbankExpense(account.id, expenseMccCategory.id);
 
-        const candidates = await fetchPrivatbankDuplicateCandidates();
+            expectVisibleDuplicate(duplicateTransaction.id, keptTransaction.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expect(candidates).toEqual([
-            expect.objectContaining({
-                duplicateTransactionId: duplicateTransaction.id,
-                keptTransactionId: keptTransaction.id,
-                reason: 'visible_duplicate'
-            })
-        ]);
-    });
+    it.effect('ignores cross-type rows outside the debt-payment conversion case', () =>
+        Effect.gen(function* () {
+            const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+            const targetAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
 
-    it('ignores cross-type rows outside the debt-payment conversion case', async () => {
-        const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
-        const targetAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
+            seedPrivatbankExpense(account.id);
+            seedPrivatbankTransferWithMatchingExpenseLeg(account.id, targetAccount.id);
 
-        seedPrivatbankExpense(account.id);
-        seedPrivatbankTransferWithMatchingExpenseLeg(account.id, targetAccount.id);
+            const candidates = fetchPrivatbankDuplicateCandidates();
 
-        const candidates = await fetchPrivatbankDuplicateCandidates();
+            expect(candidates).toEqual([]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expect(candidates).toEqual([]);
-    });
+    it.effect('detects duplicate PrivatBank transfer-pair canonicals with a one-hour shifted timestamp', () =>
+        Effect.gen(function* () {
+            const fromAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+            const toAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
+            const keptTransaction = seedPrivatbankCanonicalTransferPair({
+                amount: 10_000_000_000,
+                fromAccountId: fromAccount.id,
+                operatedAt: new Date('2026-01-24T10:44:38.000Z'),
+                sourceExternalIdPrefix: 'privatbank-transfer-kept',
+                title: 'На свою картку *0356',
+                toAccountId: toAccount.id
+            });
+            const duplicateTransaction = seedPrivatbankCanonicalTransferPair({
+                amount: 10_000_000_000,
+                fromAccountId: fromAccount.id,
+                operatedAt: new Date('2026-01-24T11:44:38.000Z'),
+                sourceExternalIdPrefix: 'privatbank-transfer-duplicate',
+                title: 'На свою картку *0356',
+                toAccountId: toAccount.id
+            });
 
-    it('detects duplicate PrivatBank transfer-pair canonicals with a one-hour shifted timestamp', async () => {
-        const fromAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
-        const toAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
-        const keptTransaction = seedPrivatbankCanonicalTransferPair({
-            amount: 10_000_000_000,
-            fromAccountId: fromAccount.id,
-            operatedAt: new Date('2026-01-24T10:44:38.000Z'),
-            sourceExternalIdPrefix: 'privatbank-transfer-kept',
-            title: 'На свою картку *0356',
-            toAccountId: toAccount.id
-        });
-        const duplicateTransaction = seedPrivatbankCanonicalTransferPair({
-            amount: 10_000_000_000,
-            fromAccountId: fromAccount.id,
-            operatedAt: new Date('2026-01-24T11:44:38.000Z'),
-            sourceExternalIdPrefix: 'privatbank-transfer-duplicate',
-            title: 'На свою картку *0356',
-            toAccountId: toAccount.id
-        });
+            expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
-    });
+    it.effect('detects duplicate PrivatBank same-bank fee transfer canonicals', () =>
+        Effect.gen(function* () {
+            const fromAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
+            const toAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-5524' });
+            const keptTransaction = seedPrivatbankCanonicalTransferPair({
+                amount: 10_000_000_000,
+                consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
+                creditAmount: 10_300_000_000,
+                fromAccountId: fromAccount.id,
+                operatedAt: new Date('2026-05-14T09:30:38.000Z'),
+                sourceExternalIdPrefix: 'privatbank-fee-transfer-kept',
+                title: 'На свою картку *5524',
+                toAccountId: toAccount.id
+            });
+            const duplicateTransaction = seedPrivatbankCanonicalTransferPair({
+                amount: 10_000_000_000,
+                consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
+                creditAmount: 10_300_000_000,
+                fromAccountId: fromAccount.id,
+                operatedAt: new Date('2026-05-14T09:30:38.000Z'),
+                sourceExternalIdPrefix: 'privatbank-fee-transfer-duplicate',
+                title: 'На свою картку *5524',
+                toAccountId: toAccount.id
+            });
 
-    it('detects duplicate PrivatBank same-bank fee transfer canonicals', async () => {
-        const fromAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
-        const toAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-5524' });
-        const keptTransaction = seedPrivatbankCanonicalTransferPair({
-            amount: 10_000_000_000,
-            consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
-            creditAmount: 10_300_000_000,
-            fromAccountId: fromAccount.id,
-            operatedAt: new Date('2026-05-14T09:30:38.000Z'),
-            sourceExternalIdPrefix: 'privatbank-fee-transfer-kept',
-            title: 'На свою картку *5524',
-            toAccountId: toAccount.id
-        });
-        const duplicateTransaction = seedPrivatbankCanonicalTransferPair({
-            amount: 10_000_000_000,
-            consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
-            creditAmount: 10_300_000_000,
-            fromAccountId: fromAccount.id,
-            operatedAt: new Date('2026-05-14T09:30:38.000Z'),
-            sourceExternalIdPrefix: 'privatbank-fee-transfer-duplicate',
-            title: 'На свою картку *5524',
-            toAccountId: toAccount.id
-        });
+            expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
-    });
+    it.effect('soft-deletes the consolidation children of a removed duplicate transfer-pair canonical', () =>
+        Effect.gen(function* () {
+            const syncRepairService = yield* SyncRepairService;
+            const fromAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+            const toAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
+            const transferPair = {
+                amount: 10_000_000_000,
+                fromAccountId: fromAccount.id,
+                title: 'На свою картку *0356',
+                toAccountId: toAccount.id
+            };
+            seedPrivatbankCanonicalTransferPair({
+                ...transferPair,
+                operatedAt: new Date('2026-01-24T10:44:38.000Z'),
+                sourceExternalIdPrefix: 'privatbank-transfer-kept'
+            });
+            seedPrivatbankCanonicalTransferPair({
+                ...transferPair,
+                operatedAt: new Date('2026-01-24T11:44:38.000Z'),
+                sourceExternalIdPrefix: 'privatbank-transfer-duplicate'
+            });
+
+            yield* syncRepairService.removeDuplicates();
+
+            expect(
+                testDb.all(
+                    sql`SELECT child.id FROM transactions child INNER JOIN transactions parent ON parent.id = child.consolidation_parent_transaction_id WHERE child.deleted_at IS NULL AND parent.deleted_at IS NOT NULL`
+                )
+            ).toEqual([]);
+            expect(testDb.all(sql`SELECT id FROM transactions WHERE deleted_at IS NULL`)).toHaveLength(3);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

@@ -3,6 +3,8 @@
     "version": "1.18.0",
     "private": true,
     "scripts": {
+        "screenshots:capture": "bash ./scripts/capture-store-screenshots.sh",
+        "screenshots:compose": "bash ../../packages/app/fastlane/screenshots/design/compose-screenshots.sh",
         "selectors:check": "sh ./scripts/validate-maestro-selectors.sh && sh ./scripts/validate-shards.sh",
         "test:android": "sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e",
         "test:ios": "sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e"

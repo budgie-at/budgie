@@ -1,17 +1,23 @@
-import { ColorSchemeEnum, ScreenChromeProvider } from '@budgie/screen-chrome';
+import { ScreenChromeProvider } from '@rnw-community/react-native-screen-chrome';
 
 import { useThemeContext } from '../../theme/context/theme.context';
+import { SCREEN_CHROME_CONFIG } from '../constant/screen-chrome-config.constant';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly children: ReactNode;
+    readonly syncNativeScrollOffset?: boolean;
 }
 
-export const ScreenChromeThemeProvider = ({ children }: Props) => {
+export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset }: Props) => {
     const { isDarkColorSchema } = useThemeContext();
 
-    const colorScheme = isDarkColorSchema ? ColorSchemeEnum.DARK : ColorSchemeEnum.LIGHT;
+    const colorScheme = isDarkColorSchema ? 'dark' : 'light';
 
-    return <ScreenChromeProvider colorScheme={colorScheme}>{children}</ScreenChromeProvider>;
+    return (
+        <ScreenChromeProvider colorScheme={colorScheme} config={SCREEN_CHROME_CONFIG} syncNativeScrollOffset={syncNativeScrollOffset}>
+            {children}
+        </ScreenChromeProvider>
+    );
 };

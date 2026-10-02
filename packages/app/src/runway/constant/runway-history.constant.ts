@@ -1,0 +1,4 @@
+export const RUNWAY_HISTORY_BAR_AREA_HEIGHT = 76;
+export const RUNWAY_HISTORY_BAR_GAP = 2;
+export const RUNWAY_HISTORY_CHART_WIDTH = 300;
+export const RUNWAY_HISTORY_PLOT_TOP = 16;

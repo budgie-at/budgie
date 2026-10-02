@@ -1,11 +1,8 @@
-import { Log } from '@budgie/logger';
-import { isValid } from 'date-fns';
+import { isValid } from 'date-fns/isValid';
+import * as Result from 'effect/Result';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { SyncErrorCodeEnum } from '../../core/enum/sync-error-code.enum';
-import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { SyncError } from '../../core/error/sync.error';
 import { ERSTE_CURRENCY_ALPHA_EUR, ERSTE_LAYOUT_Y_ROW_TOLERANCE } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 
@@ -19,34 +16,35 @@ const STATEMENT_FOOTER_REGEX = /^AT\d{18,20}\s+(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2
 const AMOUNT_ONLY_REGEX = /^(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
 
 class ErsteAccountInfoExtractor {
-    @Log(
-        items => `enter itemCount=${items.length}`,
-        (result, items) =>
-            `done itemCount=${items.length} iban=${result.iban} oldBalance=${result.oldBalance} newBalance=${result.newBalance}`,
-        (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
-    )
-    extract(items: PdfTextItemInterface[]): ErsteAccountInfoInterface {
-        return {
-            iban: this.findIban(items),
+    extract(items: PdfTextItemInterface[]): Result.Result<ErsteAccountInfoInterface, string> {
+        const iban = this.findIban(items);
+        const statementDate = this.findStatementDate(items);
+
+        if (!isDefined(iban)) {
+            return Result.fail('Could not find IBAN in Erste PDF');
+        }
+
+        if (!isDefined(statementDate)) {
+            return Result.fail('Could not find statement date in Erste PDF');
+        }
+
+        return Result.succeed({
+            iban,
             accountNumber: '',
             currency: ERSTE_CURRENCY_ALPHA_EUR,
             oldBalance: this.findOldBalance(items),
             newBalance: this.findNewBalance(items),
-            statementDate: this.findStatementDate(items)
-        };
+            statementDate
+        });
     }
 
-    private findIban(items: PdfTextItemInterface[]): string {
+    private findIban(items: PdfTextItemInterface[]): string | null {
         const ibanItem = items.find(item => item.text.startsWith(IBAN_LABEL_PREFIX));
 
-        if (!ibanItem) {
-            throw new SyncError(SyncErrorCodeEnum.INVALID_RESPONSE, 'Could not find IBAN in Erste PDF', SyncProviderEnum.ERSTE);
-        }
-
-        return ibanItem.text.slice(IBAN_LABEL_PREFIX.length).trim();
+        return ibanItem ? ibanItem.text.slice(IBAN_LABEL_PREFIX.length).trim() : null;
     }
 
-    private findStatementDate(items: PdfTextItemInterface[]): Date {
+    private findStatementDate(items: PdfTextItemInterface[]): Date | null {
         for (const item of items) {
             const match = STATEMENT_FOOTER_REGEX.exec(item.text);
 
@@ -66,7 +64,7 @@ class ErsteAccountInfoExtractor {
             }
         }
 
-        throw new SyncError(SyncErrorCodeEnum.INVALID_RESPONSE, 'Could not find statement date in Erste PDF', SyncProviderEnum.ERSTE);
+        return null;
     }
 
     private findOldBalance(items: PdfTextItemInterface[]): number {

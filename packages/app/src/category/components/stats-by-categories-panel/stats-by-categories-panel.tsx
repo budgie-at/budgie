@@ -1,12 +1,11 @@
-import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionFilterInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
 import { CategoryStatInterface } from '../../interface/category-stat.interface';
+import { CategoriesFeatureIntro } from '../categories-feature-intro/categories-feature-intro';
 import { StatsByCategories } from '../stats-by-categories/stats-by-categories';
 
 interface Props {
@@ -24,14 +23,7 @@ export const StatsByCategoriesPanel = ({ filters, income, expense, incomeByCateg
     const hasExpenseStats = isNotEmptyArray(expenseByCategory);
 
     if (!hasIncomeStats && !hasExpenseStats) {
-        return (
-            <EmptyState
-                testID={AnalyticsPageSelector.CategoriesEmptyState}
-                circleIcon={UserIconNameEnum.Folder}
-                title={t`No categories in this period`}
-                description={t`Add transactions to see how your spending breaks down by category.`}
-            />
-        );
+        return <CategoriesFeatureIntro />;
     }
 
     return (

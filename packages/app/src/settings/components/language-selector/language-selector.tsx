@@ -1,19 +1,22 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CountryFlag } from '../../../@generic/component/country-flag/country-flag';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../../../i18n/context/language-selector-modal.context';
+import { i18nEnsureLanguageActivated } from '../../../i18n/util/i18n.util';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const LanguageSelector = () => {
     const language = useSetting('language');
-    const { i18n, t } = useLingui();
+    const { t } = useLingui();
     const [openLanguageSelector] = useLanguageSelectorModal();
 
     const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
@@ -21,8 +24,9 @@ export const LanguageSelector = () => {
     const handleOpen = async () => {
         const result = await openLanguageSelector({ selectedLanguage: language });
         if (isDefined(result)) {
-            await updateSettingsMutation({ language: result });
-            i18n.activate(result);
+            await appRuntime.runPromise(
+                updateSettingsMutation({ language: result }).pipe(Effect.andThen(i18nEnsureLanguageActivated(result)))
+            );
         }
     };
 

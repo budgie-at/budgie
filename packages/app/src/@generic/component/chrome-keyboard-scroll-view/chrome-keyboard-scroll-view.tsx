@@ -1,9 +1,11 @@
-import { mergeRefs, mergeScrollContentInset, useScreenChrome, useScreenChromeScrollHandler } from '@budgie/screen-chrome';
-import { ComponentProps, ReactNode, Ref } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
+import { addScrollContentInset, mergeRefs, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+
+import type { ComponentProps, ReactNode, Ref } from 'react';
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
 
 interface Props extends ComponentProps<typeof KeyboardAwareScrollView> {
@@ -22,11 +24,11 @@ export const ChromeKeyboardScrollView = ({
     ref,
     ...scrollViewProps
 }: Props): ReactNode => {
-    const { config, scrollRef } = useScreenChrome();
+    const { config } = useScreenChrome();
+    const { onScroll, scrollRef } = useCollapsibleHeaderScroll();
     const insets = useSafeAreaInsets();
-    const onScroll = useScreenChromeScrollHandler();
     const mergedRef = mergeRefs(scrollRef, ref);
-    const mergedContentContainerStyle = mergeScrollContentInset(insets, contentInsetTop, contentInsetBottom, contentContainerStyle);
+    const mergedContentContainerStyle = addScrollContentInset(insets, contentInsetTop, contentInsetBottom, contentContainerStyle);
 
     return (
         <AnimatedKeyboardAwareScrollView

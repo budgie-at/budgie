@@ -1,0 +1,22 @@
+appId: ${APP_ID}
+env:
+    TRANSACTION_ID: ${TRANSACTION_ID}
+    LAST_ROW_ID: ${LAST_ROW_ID}
+---
+- runFlow:
+      file: ../navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${TRANSACTION_ID}/expense/edit'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFieldIcon.Split'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionFieldIcon.Split'
+
+- extendedWaitUntil:
+      visible:
+          id: '${LAST_ROW_ID}'
+      timeout: 10000

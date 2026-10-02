@@ -23,5 +23,5 @@
         "sortSideEffects": false
     },
     "sortPackageJson": false,
-    "ignorePatterns": [".agents/**", "packages/app/src/i18n/locales/*/messages.ts", "packages/landing/src/i18n/locales/*/messages.ts"]
+    "ignorePatterns": [".agents/**", "packages/app/src/i18n/locales/*/messages.ts", "packages/landing/src/i18n/locales/*/messages.ts", "packages/landing/src/i18n/locales/*/client-messages.ts"]
 }

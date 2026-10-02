@@ -1,7 +1,9 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-      file: ../navigation/navigate-to-settings.flow.yaml
+      file: ../navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=data'
 
 # The scroll-driven blur chrome keeps invalidating the iOS 26 AX snapshot;
 # settle animations first and re-query after the scroll instead of trusting

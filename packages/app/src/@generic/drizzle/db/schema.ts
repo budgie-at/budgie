@@ -52,4 +52,4 @@ export {
     BudgetEntityRelations,
     BudgetCategoryLimitEntityTable,
     BudgetCategoryLimitEntityRelations
-} from '@budgie/contracts';
+} from '@budgie/contracts/schema';

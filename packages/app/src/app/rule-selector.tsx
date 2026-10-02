@@ -3,10 +3,11 @@ import { Text, View } from 'react-native';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { RuleFormSelector } from '../rule/components/rule-form-layout/rule-form-layout.selector';
 import { RuleSelectorOptionRow } from '../rule/components/rule-selector-option-row/rule-selector-option-row';
-import { useRuleSelectorModal } from '../rule/context/rule-selector-modal.context';
+import { useRuleSelectorModal, useRuleSelectorModalParams } from '../rule/context/rule-selector-modal.context';
 
 export default function RuleSelectorModal() {
-    const [, resolveRuleSelector, currentParams] = useRuleSelectorModal();
+    const [, resolveRuleSelector] = useRuleSelectorModal();
+    const currentParams = useRuleSelectorModalParams();
     const { backgroundColor } = useFormsheetListStyles();
 
     const options = currentParams?.options ?? [];

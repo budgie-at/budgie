@@ -48,9 +48,11 @@ export const RecurringCalendarContent = () => {
     const hasSelectedEntries = isNotEmptyArray(selectedEntries);
 
     const allForecastedEntries = [...forecastedEntriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
-    const allActualEntries = [...entriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
+    const allMonthlyEntries = [...entriesByDay.values(), ...forecastedEntriesByDay.values()]
+        .flat()
+        .sort((left, right) => left.dayOfMonth - right.dayOfMonth);
     const showUpcomingList = !isDefined(selectedDay) && isCurrentMonth && isNotEmptyArray(allForecastedEntries);
-    const showMonthlyList = !isDefined(selectedDay) && !isCurrentMonth && isNotEmptyArray(allActualEntries);
+    const showMonthlyList = !isDefined(selectedDay) && !isCurrentMonth && isNotEmptyArray(allMonthlyEntries);
 
     const handleSelectDay = (day: number) => {
         setSelectedDay(current => (current === day ? undefined : day)); // eslint-disable-line no-undefined -- Toggle selection
@@ -67,7 +69,6 @@ export const RecurringCalendarContent = () => {
     const selectedDayTotal = hasSelectedEntries ? selectedEntries.reduce((sum, entry) => sum + entry.latestAmount, 0) : 0;
     const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
-    const formattedTotalAmount = formatDigits(totalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
 
     if (isDefined(data) && !hasEntries) {
@@ -143,8 +144,8 @@ export const RecurringCalendarContent = () => {
                 <RecurringCalendarEntryList
                     headerTestID={RecurringCalendarSelector.AllRecurringHeader}
                     title={<Trans>All Recurring</Trans>}
-                    formattedTotal={formattedTotalAmount}
-                    entries={allActualEntries}
+                    formattedTotal={formatDigits(displayedTotal, defaultInstrument.symbol)}
+                    entries={allMonthlyEntries}
                     displayMonth={displayMonth}
                     displayYear={displayYear}
                 />

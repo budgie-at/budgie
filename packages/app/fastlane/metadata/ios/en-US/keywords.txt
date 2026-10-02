@@ -1,0 +1,1 @@
+money,finance,spending,savings,bills,receipts,cash,crypto,debt,runway,voice,currency,planner,balance

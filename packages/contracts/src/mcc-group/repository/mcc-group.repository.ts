@@ -1,56 +1,43 @@
 import { eq } from 'drizzle-orm';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { DB } from '../../@generic/type/db.type';
+import { Db } from '../../@generic/service/db.service';
 import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity.interface';
 import { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
-import type * as schema from '../../schema';
-import type { MccGroupEntityInterface } from '../entity/mcc-group-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+export class MccGroupRepository extends Context.Service<MccGroupRepository>()('@budgie/contracts/MccGroupRepository', {
+    make: Effect.sync(() => {
+        const bulkCreate = (inputs: MccGroupCreateEntityInterface[]) =>
+            Db.query(db => db.insert(MccGroupEntityTable).values(inputs).returning());
 
-export class MccGroupRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+        return {
+            bulkCreate,
+            create: Effect.fn('MccGroupRepository.create')(function* (input: MccGroupCreateEntityInterface) {
+                const [mccGroup] = yield* bulkCreate([input]);
 
-    findAll() {
-        return this.db.query.MccGroupEntityTable.findMany();
-    }
-
-    findByType(type: string) {
-        return this.db.query.MccGroupEntityTable.findFirst({
-            where: eq(MccGroupEntityTable.type, type)
-        });
-    }
-
-    async create(input: MccGroupCreateEntityInterface, tx?: DB): Promise<MccGroupEntityInterface> {
-        const [mccGroup] = await this.bulkCreate([input], tx);
-
-        return mccGroup;
-    }
-
-    async bulkCreate(inputs: MccGroupCreateEntityInterface[], tx?: DB): Promise<MccGroupEntityInterface[]> {
-        return await (tx ?? this.db).insert(MccGroupEntityTable).values(inputs).returning();
-    }
-
-    async upsert(input: MccGroupCreateEntityInterface, tx?: DB): Promise<MccGroupEntityInterface> {
-        const [mccGroup] = await (tx ?? this.db)
-            .insert(MccGroupEntityTable)
-            .values(input)
-            .onConflictDoUpdate({
-                target: MccGroupEntityTable.type,
-                set: {
-                    description: input.description
-                }
-            })
-            .returning();
-
-        return mccGroup;
-    }
-
-    async deleteByType(type: string): Promise<void> {
-        await this.db.delete(MccGroupEntityTable).where(eq(MccGroupEntityTable.type, type));
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(MccGroupEntityTable);
-    }
+                return mccGroup;
+            }),
+            upsert: (input: MccGroupCreateEntityInterface) =>
+                Db.query(db =>
+                    db
+                        .insert(MccGroupEntityTable)
+                        .values(input)
+                        .onConflictDoUpdate({
+                            target: MccGroupEntityTable.type,
+                            set: {
+                                description: input.description
+                            }
+                        })
+                        .returning()
+                ).pipe(Effect.map(([mccGroup]) => mccGroup)),
+            truncate: () => Db.query(db => db.delete(MccGroupEntityTable)),
+            findAll: () => Db.query(db => db.query.MccGroupEntityTable.findMany()),
+            findByType: (type: string) =>
+                Db.query(db => db.query.MccGroupEntityTable.findFirst({ where: eq(MccGroupEntityTable.type, type) }))
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(MccGroupRepository, MccGroupRepository.make);
 }
