@@ -11,7 +11,6 @@ export class SyncWorkload extends Context.Service<
         readonly runUser: <A, E, R>(effect: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>;
         readonly hasQueuedWork: Effect.Effect<boolean>;
         readonly awaitQueuedUserWork: Effect.Effect<void>;
-        readonly registerBackgroundTask: (taskName: string) => Effect.Effect<void>;
         readonly enqueueRuleApplication: (
             transactionIds: number[],
             transactionInputs: TransactionCreateInputInterface[]

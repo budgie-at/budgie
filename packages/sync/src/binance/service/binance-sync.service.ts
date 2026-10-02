@@ -24,7 +24,6 @@ import { BinanceSignedClient } from '../client/binance-signed.client';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
 import { BINANCE_RATE_LIMIT_MS } from '../constant/binance-rate-limit-ms.constant';
-import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
 import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lookback-years.constant';
 import { BinanceTransferInputMapper } from '../mapper/binance-transfer-input.mapper';
 
@@ -349,7 +348,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const pollingSyncService = yield* makePollingSyncService({
             ...BINANCE_ACCOUNT_DEFINITION,
             rateLimitMs: BINANCE_RATE_LIMIT_MS,
-            backgroundTaskName: BINANCE_SYNC_TASK,
             executeSyncBatch: Effect.fn('AppBinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 const externalAccountId = account?.externalId ?? null;
@@ -436,7 +434,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 }
 
                 if (isNotEmptyArray(resolvableAccounts)) {
-                    yield* Effect.forkDetach(pollingSyncService.registerBackgroundTask().pipe(Effect.ignoreCause({ log: true })));
                     yield* pollingSyncService.requestSync();
                 }
 

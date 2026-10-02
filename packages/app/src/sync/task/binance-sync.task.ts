@@ -1,9 +1,10 @@
-import { BINANCE_SYNC_TASK, BinanceSyncService } from '@budgie/sync';
+import { BinanceSyncService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { Workload } from '../../@generic/service/workload.service';
+import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
 import { runBackgroundTask } from '../utils/run-background-task.util';
 
 const BACKGROUND_RUN_BUDGET_MS = 25 * 1000;

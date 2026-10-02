@@ -212,7 +212,6 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         ...syncService,
         sync,
         requestSync,
-        registerBackgroundTask: () => syncWorkload.registerBackgroundTask(definition.backgroundTaskName),
         updateAccountToken: Effect.fn('AbstractPollingSyncService.updateAccountToken')(function* (accountId: number, token: string) {
             yield* (definition.validateToken ?? (() => Effect.void))(token);
             yield* syncIntegrationTokenService.updateAccountToken(definition.provider, accountId, token);

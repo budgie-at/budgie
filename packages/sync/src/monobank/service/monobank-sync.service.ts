@@ -34,7 +34,6 @@ import { mapBankTransactionToCreateInput } from '../../core/util/map-bank-transa
 import { resolveSyncProgressUpdate } from '../../core/util/resolve-sync-progress-update.util';
 import { MonobankClient } from '../client/monobank.client';
 import { MONOBANK_RATE_LIMIT_MS } from '../constant/monobank-rate-limit-ms.constant';
-import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 
 import { MonobankTransactionSyncService } from './monobank-transaction-sync.service';
 
@@ -202,7 +201,6 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             provider,
             accountType: AccountTypeEnum.BANK_SYNC,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
-            backgroundTaskName: MONOBANK_SYNC_TASK,
             shouldRequestSyncWhenEnabled: true,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
@@ -257,7 +255,6 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     }
                 }
 
-                yield* Effect.forkDetach(pollingSyncService.registerBackgroundTask().pipe(Effect.ignoreCause({ log: true })));
                 yield* pollingSyncService.requestSync();
             }),
             fetchSetupBalance: Effect.fn('AppMonobankSyncService.fetchSetupBalance')(function* (accountId: number) {

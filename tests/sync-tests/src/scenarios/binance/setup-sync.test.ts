@@ -6,14 +6,6 @@ import { vi } from 'vitest';
 import { BINANCE_TEST_TOKEN, binanceStub, buildBinance, seedCryptoInstrument, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
-const { registerTaskAsync } = vi.hoisted(() => ({ registerTaskAsync: vi.fn(() => Promise.resolve()) }));
-
-vi.mock('expo-background-task', () => ({
-    BackgroundTaskResult: Object.freeze({ Success: 'success', Failed: 'failed' }),
-    registerTaskAsync,
-    unregisterTaskAsync: () => Promise.resolve()
-}));
-
 const SYNC_ONLY_PATH = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
 
 const stubSelectedBtcAccount = () =>
@@ -38,18 +30,12 @@ describe('binance/setup-sync', () => {
                 requestedPaths.push(new URL(request.url).pathname);
             });
 
-            yield* Effect.addFinalizer(() =>
-                Effect.sync(() => {
-                    registerTaskAsync.mockClear();
-                    mockServer.events.removeAllListeners();
-                })
-            );
+            yield* Effect.addFinalizer(() => Effect.sync(() => void mockServer.events.removeAllListeners()));
 
             yield* binanceSyncService.setupAccountSyncBatch(BINANCE_TEST_TOKEN, ['SPOT:BTC']);
 
             yield* Effect.promise(() =>
                 vi.waitFor(() => {
-                    expect(registerTaskAsync).toHaveBeenCalledTimes(1);
                     expect(requestedPaths).toContain(SYNC_ONLY_PATH);
                 })
             );

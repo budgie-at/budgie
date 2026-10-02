@@ -17,7 +17,6 @@ export type { SyncBatchResultInterface } from './core/interface/sync-batch-resul
 export { MonobankClient } from './monobank/client/monobank.client';
 export { MonobankTransactionSyncService } from './monobank/service/monobank-transaction-sync.service';
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
-export { MONOBANK_SYNC_TASK } from './monobank/constant/monobank-sync-task.constant';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
@@ -79,7 +78,6 @@ export type { SyncDuplicateRepairPreviewInterface } from './core/interface/sync-
 export type { SyncDuplicateRepairSourcePreviewInterface } from './core/interface/sync-duplicate-repair-source-preview.interface';
 
 export { BinanceSyncService } from './binance/service/binance-sync.service';
-export { BINANCE_SYNC_TASK } from './binance/constant/binance-sync-task.constant';
 
 export { ErsteSyncService } from './erste/service/erste-sync.service';
 
