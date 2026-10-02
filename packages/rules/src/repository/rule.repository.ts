@@ -1,17 +1,12 @@
+import { Db, RuleEntityTable, buildTranslatedCategoryRelation } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { Db } from '../../@generic/service/db.service';
-import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
-import { RuleCreateEntityInterface } from '../entity/rule-create-entity.interface';
-import { RuleUpdateEntityInterface } from '../entity/rule-update-entity.interface';
-import { RuleAssociationEnum } from '../enum/rule-association.enum';
-import { RuleEntityTable } from '../table/rule-entity.table';
+import type { LanguageEnum, RuleCreateEntityInterface, RuleUpdateEntityInterface } from '@budgie/contracts';
 
-export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/contracts/RuleRepository', {
+export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/rules/RuleRepository', {
     make: Effect.succeed({
         findAllWithConditions: () =>
             Db.query(db =>
@@ -19,7 +14,7 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
                     where: { deletedAt: { isNull: true } },
                     orderBy: { id: 'asc' },
                     with: {
-                        [RuleAssociationEnum.CONDITIONS]: true
+                        conditions: true
                     }
                 })
             ),
@@ -31,22 +26,14 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
             ),
         archiveById: (id: number) =>
             Db.query(db => db.update(RuleEntityTable).set({ deletedAt: new Date() }).where(eq(RuleEntityTable.id, id))),
-        truncate: () => Db.query(db => db.delete(RuleEntityTable)),
-        findAll: () =>
-            Db.query(db =>
-                db.query.RuleEntityTable.findMany({
-                    where: { deletedAt: { isNull: true } },
-                    orderBy: { id: 'asc' }
-                })
-            ),
         findEnabledWithRelations: () =>
             Db.query(db =>
                 db.query.RuleEntityTable.findMany({
                     where: { enabled: true, deletedAt: { isNull: true } },
                     orderBy: { id: 'asc' },
                     with: {
-                        [RuleAssociationEnum.CONDITIONS]: true,
-                        [RuleAssociationEnum.ACTIONS]: true
+                        conditions: true,
+                        actions: true
                     }
                 })
             ),
@@ -55,8 +42,8 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
                 db.query.RuleEntityTable.findFirst({
                     where: { id, deletedAt: { isNull: true } },
                     with: {
-                        [RuleAssociationEnum.CONDITIONS]: true,
-                        [RuleAssociationEnum.ACTIONS]: true
+                        conditions: true,
+                        actions: true
                     }
                 })
             ),
@@ -66,8 +53,8 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
                     where: { deletedAt: { isNull: true } },
                     orderBy: { id: 'asc' },
                     with: {
-                        [RuleAssociationEnum.CONDITIONS]: true,
-                        [RuleAssociationEnum.ACTIONS]: {
+                        conditions: true,
+                        actions: {
                             with: {
                                 category: buildTranslatedCategoryRelation(language),
                                 tag: true,

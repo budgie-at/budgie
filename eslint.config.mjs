@@ -366,7 +366,7 @@ export default defineConfig(
     },
     {
         files: [
-            'packages/{contracts,sync,consolidation,budget,ai}/src/**/*.ts',
+            'packages/{contracts,sync,consolidation,budget,rules,ai}/src/**/*.ts',
             'packages/app/src/**/service/**/*.ts',
             'packages/app/src/**/repository/**/*.ts',
             'packages/app/src/**/*.task.ts',

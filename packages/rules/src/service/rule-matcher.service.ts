@@ -1,6 +1,5 @@
 import {
     MccCategoryEntityTable,
-    RuleConditionCreateInputInterface,
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
@@ -10,8 +9,8 @@ import {
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionRepository,
-    TransactionRuleRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    PRECISION
 } from '@budgie/contracts';
 import { SQL, and, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -20,28 +19,20 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
 import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
+import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
 import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
-import type { RuleWithRelationsEntityInterface, TransactionWithEntriesMccCategoryEntityInterface } from '@budgie/contracts';
+import type {
+    RuleCreateInputInterface,
+    RuleWithRelationsEntityInterface,
+    TransactionWithEntriesMccCategoryEntityInterface
+} from '@budgie/contracts';
 import type { Column } from 'drizzle-orm';
 
-type BuildRuleConditionsWhereResultType = {
-    readonly sqlWhere: SQL | null;
-    readonly fallbackConditions: RuleConditionInputInterface[];
-};
-
-type CountConditionsParamsType = {
-    readonly conditions: RuleConditionCreateInputInterface[];
-    readonly conditionMatchType: RuleConditionMatchTypeEnum;
-};
-
-export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@budgie/app/RuleMatcherService', {
+export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@budgie/rules/RuleMatcherService', {
     make: Effect.gen(function* () {
         const transactionRepository = yield* TransactionRepository;
 
@@ -49,26 +40,27 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
         const UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
 
+        const sumEntryAmountsOfType = (
+            entries: TransactionWithEntriesMccCategoryEntityInterface['entries'],
+            type: TransactionEntryTypeEnum
+        ): number => entries.filter(entry => entry.type === type).reduce((sum, entry) => sum + entry.amount, 0);
+
         const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntriesMccCategoryEntityInterface): number => {
             const entries = transaction[TransactionAssociationEnum.ENTRIES];
 
-            if (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.TRANSFER) {
-                return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
+            switch (transaction.type) {
+                case TransactionTypeEnum.EXPENSE:
+                case TransactionTypeEnum.TRANSFER:
+                    return sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
+                case TransactionTypeEnum.INCOME:
+                    return sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT);
+                case TransactionTypeEnum.ADJUSTMENT:
+                    return entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
+                        ? sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT)
+                        : sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
+                default:
+                    return 0;
             }
-
-            if (transaction.type === TransactionTypeEnum.INCOME) {
-                return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT));
-            }
-
-            if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
-                const hasDebit = entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
-
-                return hasDebit
-                    ? sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT))
-                    : sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
-            }
-
-            return 0;
         };
 
         const convertTransactionForRuleEvaluation = (
@@ -78,13 +70,13 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
             return {
                 ...transaction,
-                amount: convertFromMicroUnits(calculateAmountForRuleEvaluation(transaction)),
+                amount: calculateAmountForRuleEvaluation(transaction) / PRECISION,
                 tagIds: [],
                 entries: entries.map(entry => ({
                     type: entry.type,
                     categoryId: entry.categoryId,
                     accountId: entry.accountId,
-                    amount: convertFromMicroUnits(entry.amount),
+                    amount: entry.amount / PRECISION,
                     mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
                     mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
                 }))
@@ -133,7 +125,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             let hasMore = true;
 
             while (hasMore) {
-                yield* YIELD_TO_UI;
+                yield* Effect.sleep(1);
 
                 const transactions = yield* transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
 
@@ -261,10 +253,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             return buildOperatorSql(column, condition.operator, condition.value, condition.secondaryValue);
         };
 
-        const buildRuleConditionsWhere = (
-            conditions: RuleConditionInputInterface[],
-            conditionMatchType: RuleConditionMatchTypeEnum
-        ): BuildRuleConditionsWhereResultType => {
+        const buildRuleConditionsWhere = (conditions: RuleConditionInputInterface[], conditionMatchType: RuleConditionMatchTypeEnum) => {
             const sqlConditions: SQL[] = [];
             const fallbackConditions: RuleConditionInputInterface[] = [];
 
@@ -304,7 +293,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
         });
 
         const countMatchingTransactions = Effect.fn('RuleMatcherService.countMatchingTransactions')(function* (
-            params: CountConditionsParamsType
+            params: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>
         ) {
             const { conditions, conditionMatchType } = params;
 

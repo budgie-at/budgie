@@ -1,16 +1,19 @@
-import { SQL, and, eq, inArray, ne, sql } from 'drizzle-orm';
+import {
+    BaseTransactionFilterRepository,
+    CategorySourceEnum,
+    Db,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTypeEnum
+} from '@budgie/contracts';
+import { and, eq, inArray, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
-import { Db } from '../../@generic/service/db.service';
-import { CategorySourceEnum } from '../../transaction-entry/enum/category-source.enum';
-import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionTypeEnum } from '../enum/transaction-type.enum';
-import { TransactionEntityTable } from '../table/transaction-entity.table';
+import type { SQL } from 'drizzle-orm';
 
-export class TransactionRuleRepository extends Context.Service<TransactionRuleRepository>()('@budgie/contracts/TransactionRuleRepository', {
+export class TransactionRuleRepository extends Context.Service<TransactionRuleRepository>()('@budgie/rules/TransactionRuleRepository', {
     make: Effect.sync(() => {
         const transactionFilters = new BaseTransactionFilterRepository();
         const buildRuleConditionsWhere = (where: SQL): SQL | undefined =>

@@ -20,6 +20,7 @@ export type { SimilarTagsParamsInterface } from './@generic/interface/similar-ta
 export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
 
 export { BaseTransactionFilterRepository } from './@generic/repository/base-transaction-filter.repository';
+export { buildTranslatedCategoryRelation } from './@generic/util/build-translated-category-relation.util';
 
 export type { DB, DbConnectionType } from './@generic/type/db.type';
 export type { EffectSqliteClientOptionsInterface } from './@generic/interface/effect-sqlite-client-options.interface';
@@ -274,7 +275,6 @@ export type { LabelEvidenceRowInterface } from './transaction/interface/label-ev
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
-export { TransactionRuleRepository } from './transaction/repository/transaction-rule.repository';
 
 export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfer-pair-auto-confidence-bucket.enum';
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
@@ -404,14 +404,11 @@ export type { RuleWithActionsRelationsEntityInterface } from './rule/entity/rule
 export type { RuleCreateInputInterface } from './rule/input/rule-create-input.interface';
 export type { RuleUpdateInputInterface } from './rule/input/rule-update-input.interface';
 
-export { RuleRepository } from './rule/repository/rule.repository';
-
 export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-entity.table';
 export { RuleConditionCreateInputSchema } from './rule-condition/schema/rule-condition-create-input.schema';
 export type { RuleConditionEntityInterface } from './rule-condition/entity/rule-condition-entity.interface';
 export type { RuleConditionCreateEntityInterface } from './rule-condition/entity/rule-condition-create-entity.interface';
 export type { RuleConditionCreateInputInterface } from './rule-condition/input/rule-condition-create-input.interface';
-export { RuleConditionRepository } from './rule-condition/repository/rule-condition.repository';
 
 export { RuleActionAssociationEnum } from './rule-action/enum/rule-action-association.enum';
 export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
@@ -420,7 +417,6 @@ export type { RuleActionEntityInterface } from './rule-action/entity/rule-action
 export type { RuleActionWithRelationsEntityInterface } from './rule-action/entity/rule-action-with-relations-entity.interface';
 export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-action-create-entity.interface';
 export type { RuleActionCreateInputInterface } from './rule-action/input/rule-action-create-input.interface';
-export { RuleActionRepository } from './rule-action/repository/rule-action.repository';
 
 export { BudgetPeriodEnum } from './budget/enum/budget-period.enum';
 export { BudgetEntityTable } from './budget/table/budget-entity.table';

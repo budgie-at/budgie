@@ -1,4 +1,5 @@
-import { LanguageEnum, RuleActionTypeEnum, RuleRepository } from '@budgie/contracts';
+import { LanguageEnum, RuleActionTypeEnum } from '@budgie/contracts';
+import { RuleRepository, RuleService } from '@budgie/rules';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -9,7 +10,6 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
-import { RuleService } from '../../service/rule.service';
 import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 

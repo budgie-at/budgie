@@ -3,9 +3,9 @@ import {
     RuleAssociationEnum,
     RuleConditionMatchTypeEnum,
     RuleCreateInputInterface,
-    RuleRepository,
     RuleWithRelationsEntityInterface
 } from '@budgie/contracts';
+import { RuleConditionInputInterface, RuleRepository, RuleService, SuggestRuleDataInterface, selectSuggestConditions } from '@budgie/rules';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -15,11 +15,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
-import { RuleConditionInputInterface } from '../../interface/rule-condition-input.interface';
-import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
-import { RuleService } from '../../service/rule.service';
-import { selectSuggestConditions } from '../../util/select-suggest-condition.util';
 import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 

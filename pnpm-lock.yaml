@@ -198,6 +198,9 @@ importers:
       '@budgie/logger':
         specifier: workspace:*
         version: link:../logger
+      '@budgie/rules':
+        specifier: workspace:*
+        version: link:../rules
       '@budgie/sync':
         specifier: workspace:*
         version: link:../sync
@@ -633,6 +636,40 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
 
+  packages/rules:
+    dependencies:
+      '@budgie/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@rnw-community/shared':
+        specifier: ^2.2.0
+        version: 2.15.0
+      drizzle-orm:
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4(patch_hash=793e8ddeeefa9deacc42a0f266feba15c226019990829f2eab8997ec36c21c60)(@effect/sql-sqlite-node@4.0.0(effect@4.0.0))(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.1)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+      effect:
+        specifier: 4.0.0
+        version: 4.0.0
+    devDependencies:
+      '@budgie-at/test-kit':
+        specifier: workspace:*
+        version: link:../../tests/test-kit
+      '@effect/sql-sqlite-node':
+        specifier: 4.0.0
+        version: 4.0.0(effect@4.0.0)
+      '@effect/vitest':
+        specifier: 4.0.0
+        version: 4.0.0(effect@4.0.0)(vitest@5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(@typescript/typescript6@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))
+      '@types/node':
+        specifier: 22.20.1
+        version: 22.20.1
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(@typescript/typescript6@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
   packages/sync:
     dependencies:
       '@liaugust/monobank-sdk':
@@ -741,6 +778,9 @@ importers:
       '@budgie/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
+      '@budgie/rules':
+        specifier: workspace:*
+        version: link:../../packages/rules
       '@budgie/sync':
         specifier: workspace:*
         version: link:../../packages/sync

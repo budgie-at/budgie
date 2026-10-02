@@ -5,9 +5,9 @@ import {
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
+import { RuleEvaluationInputInterface } from '@budgie/rules';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { RuleEvaluationInputInterface } from '../../rule/interface/rule-evaluation-input.interface';
 
 import { sortTransactionTagsByPrimary } from './sort-transaction-tags-by-primary.util';
 
