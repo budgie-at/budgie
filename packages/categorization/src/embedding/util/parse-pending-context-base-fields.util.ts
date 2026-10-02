@@ -7,6 +7,5 @@ export const parsePendingContextBaseFields = (row: PendingContextBaseRowInterfac
     transactionIds: row.transactionIdsCsv.split(',').map(Number),
     tagIds: isDefined(row.tagIdsCsv) ? row.tagIdsCsv.split(',').map(Number) : [],
     existingEmbeddingId: row.existingEmbeddingId,
-    categoryId: row.categoryId,
-    categoryTitleEn: row.categoryTitleEn
+    categoryId: row.categoryId
 });

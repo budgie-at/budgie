@@ -1,8 +1,7 @@
 import { buildContextParts } from './build-context-parts.util';
 
-export const buildMerchantContext = (title: string, mccDescription: string, categoryTitle: string | null): string =>
+export const buildMerchantContext = (title: string, mccDescription: string): string =>
     buildContextParts([
         { label: 'Transaction', value: title },
-        { label: 'Type', value: mccDescription },
-        { label: 'Category', value: categoryTitle }
+        { label: 'Type', value: mccDescription }
     ]);

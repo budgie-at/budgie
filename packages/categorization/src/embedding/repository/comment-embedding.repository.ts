@@ -1,8 +1,10 @@
-import { CommentEmbeddingEntityTable, CommentEmbeddingTagEntityTable, Db } from '@budgie/contracts';
+import { CommentEmbeddingEntityTable, CommentEmbeddingTagEntityTable, Db, TransactionEntityTable } from '@budgie/contracts';
+import { and, eq } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { buildVecNeighboursSql } from '../util/build-vec-neighbours-sql.util';
 import { makeEmbeddingRepository } from '../util/make-embedding-repository.util';
 import { parsePendingContextBaseFields } from '../util/parse-pending-context-base-fields.util';
 
@@ -10,9 +12,8 @@ import type { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-
 
 const SIMILAR_CATEGORIES_QUERY = `
     SELECT ce.category_id as categoryId,
-           SUM(1.0 / (vec.distance + 0.01)) as score
-    FROM (SELECT rowid, distance FROM comment_embedding_vec
-          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+           SUM(vec.weight) as score
+    FROM ${buildVecNeighboursSql('comment_embedding_vec')} vec
     JOIN comment_embeddings ce ON ce.id = vec.rowid
     WHERE ce.deleted_at IS NULL AND vec.distance < ?
     GROUP BY ce.category_id
@@ -22,9 +23,8 @@ const SIMILAR_CATEGORIES_QUERY = `
 
 const SIMILAR_TAGS_QUERY = `
     SELECT cet.tag_id as tagId,
-           SUM(1.0 / (vec.distance + 0.01)) as score
-    FROM (SELECT rowid, distance FROM comment_embedding_vec
-          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+           SUM(vec.weight) as score
+    FROM ${buildVecNeighboursSql('comment_embedding_vec')} vec
     JOIN comment_embeddings ce ON ce.id = vec.rowid
     JOIN comment_embedding_tags cet ON cet.comment_embedding_id = ce.id
     WHERE ce.deleted_at IS NULL AND vec.distance < ? AND ce.category_id = ?
@@ -37,13 +37,11 @@ const PENDING_COMMENT_CONTEXTS_BASE = `
     SELECT
         t.comment AS comment,
         te.category_id AS categoryId,
-        MAX(COALESCE(cat.title_en, cat.title)) AS categoryTitleEn,
         GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
         GROUP_CONCAT(DISTINCT tt.tag_id) AS tagIdsCsv,
         MAX(t.operated_at) AS maxOperatedAt
     FROM transactions t
     INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
-    LEFT JOIN categories cat ON cat.id = te.category_id
     LEFT JOIN transaction_tags tt ON tt.transaction_id = t.id
     WHERE t.deleted_at IS NULL
       AND t.needs_embedding = 1
@@ -58,7 +56,6 @@ const PENDING_COMMENT_CONTEXTS_QUERY = `
     SELECT
         pc.comment AS comment,
         pc.categoryId AS categoryId,
-        pc.categoryTitleEn AS categoryTitleEn,
         pc.transactionIdsCsv AS transactionIdsCsv,
         pc.tagIdsCsv AS tagIdsCsv,
         ce.id AS existingEmbeddingId
@@ -79,6 +76,12 @@ export class CommentEmbeddingRepository extends Context.Service<CommentEmbedding
                 similarTagsQuery: SIMILAR_TAGS_QUERY,
                 vecTableName: 'comment_embedding_vec',
                 embeddingTable: CommentEmbeddingEntityTable,
+                idColumn: CommentEmbeddingEntityTable.id,
+                categoryColumn: CommentEmbeddingEntityTable.categoryId,
+                transactionMatchCondition: and(
+                    eq(TransactionEntityTable.title, ''),
+                    eq(CommentEmbeddingEntityTable.comment, TransactionEntityTable.comment)
+                ),
                 deletedAtColumn: CommentEmbeddingEntityTable.deletedAt,
                 tagTable: CommentEmbeddingTagEntityTable,
                 foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
@@ -98,7 +101,6 @@ export class CommentEmbeddingRepository extends Context.Service<CommentEmbedding
                     db.$client.unsafe<{
                         comment: string;
                         categoryId: number;
-                        categoryTitleEn: string | null;
                         transactionIdsCsv: string;
                         tagIdsCsv: string | null;
                         existingEmbeddingId: number | null;

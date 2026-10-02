@@ -1,6 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- Model prompt prefixes are not user-facing strings */
 export const EMBEDDING_DOCUMENT_PREFIX = 'title: none | text: ';
 export const EMBEDDING_QUERY_PREFIX = 'task: search result | query: ';
+export const EMBEDDING_DOCUMENT_FORMAT = 'merchant-text';
 export const EMBEDDING_CATEGORY_SUGGESTION_LIMIT = 3;
 export const EMBEDDING_TAG_SUGGESTION_LIMIT = 3;
 export const EMBEDDING_COMMENT_SUGGESTION_LIMIT = 3;

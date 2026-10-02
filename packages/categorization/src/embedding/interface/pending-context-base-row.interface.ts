@@ -3,5 +3,4 @@ export interface PendingContextBaseRowInterface {
     readonly tagIdsCsv: string | null;
     readonly existingEmbeddingId: number | null;
     readonly categoryId: number;
-    readonly categoryTitleEn: string | null;
 }

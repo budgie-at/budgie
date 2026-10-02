@@ -38,6 +38,7 @@ const subtractMonths = (date: Date, months: number): Date =>
 const EVAL_TIMEOUT_MS = 600_000;
 const EVAL_WINDOW_MONTHS = 6;
 const TOP_K = 3;
+const KNN_KERNEL_POWER = 8;
 const KNN_OVERSAMPLE_LIMIT = 50;
 
 const isCategoryEvidence = (entry: EvalEntry): entry is EvalEntry & { readonly categoryId: number } =>
@@ -69,9 +70,7 @@ const addEvidence = (evidence: Map<string, LabelEvidenceRowInterface>, entry: Ev
 };
 
 const buildKnnDocumentText = (entry: EvalEntry): string =>
-    isNotEmptyString(entry.title)
-        ? buildMerchantContext(entry.title, entry.mccDescription ?? '', entry.categoryTitleEn ?? entry.categoryTitle)
-        : buildCommentContext(entry.comment, entry.categoryTitleEn ?? entry.categoryTitle);
+    isNotEmptyString(entry.title) ? buildMerchantContext(entry.title, entry.mccDescription ?? '') : buildCommentContext(entry.comment);
 
 const buildKnnQueryText = (entry: EvalEntry): string => buildTransactionContext(entry.title, entry.mccDescription, entry.comment);
 
@@ -109,14 +108,15 @@ const sumScores = (scored: readonly (readonly [number, number])[]): [number, num
 
     scored.forEach(([labelId, score]) => scores.set(labelId, (scores.get(labelId) ?? 0) + score));
 
-    return [...scores].sort((first, second) => second[1] - first[1]).slice(0, TOP_K);
+    return [...scores].sort((first, second) => second[1] - first[1]);
 };
 
-const rankKnn = (
+const scoreKnn = (
     query: Float32Array | undefined,
     indexes: readonly (readonly KnnDocument[])[],
+    distanceThreshold: number,
     labelsOf: (document: KnnDocument) => readonly number[]
-): number[] =>
+): [number, number][] =>
     isDefined(query)
         ? sumScores(
               indexes.flatMap(documents =>
@@ -130,14 +130,25 @@ const rankKnn = (
                           }))
                           .sort((first, second) => first.distance - second.distance)
                           .slice(0, KNN_OVERSAMPLE_LIMIT)
-                          .filter(neighbour => neighbour.distance < EMBEDDING_VEC_DISTANCE_THRESHOLD)
+                          .filter(neighbour => neighbour.distance < distanceThreshold)
                           .flatMap(neighbour =>
-                              labelsOf(neighbour.document).map(labelId => [labelId, 1 / (neighbour.distance + 0.01)] as const)
+                              labelsOf(neighbour.document).map(
+                                  labelId => [labelId, 1 / (neighbour.distance + 0.01) ** KNN_KERNEL_POWER] as const
+                              )
                           )
-                  )
+                  ).slice(0, TOP_K)
               )
-          ).map(([labelId]) => labelId)
+          )
         : [];
+
+const rankKnn = (
+    query: Float32Array | undefined,
+    indexes: readonly (readonly KnnDocument[])[],
+    labelsOf: (document: KnnDocument) => readonly number[]
+): number[] =>
+    scoreKnn(query, indexes, EMBEDDING_VEC_DISTANCE_THRESHOLD, labelsOf)
+        .slice(0, TOP_K)
+        .map(([labelId]) => labelId);
 
 const mergeRanked = (...rankings: (readonly number[])[]): number[] => [...new Set(rankings.flat())].slice(0, TOP_K);
 
@@ -374,11 +385,12 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
             entries.forEach(entry => {
                 documentVectors.set(
                     buildKnnDocumentText(entry),
-                    entry.transactionId === mccMerchant.id
-                        ? mccDocumentVector
-                        : entry.transactionId === userMerchant.id
-                          ? userDocumentVector
-                          : otherDocumentVector
+                    documentVectors.get(buildKnnDocumentText(entry)) ??
+                        (entry.transactionId === mccMerchant.id
+                            ? mccDocumentVector
+                            : entry.transactionId === userMerchant.id
+                              ? userDocumentVector
+                              : otherDocumentVector)
                 );
             });
 

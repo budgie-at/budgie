@@ -10,6 +10,7 @@ import {
 import {
     CategorizeInboxService,
     CommentEmbeddingRepository,
+    EmbeddingIndexService,
     EmbeddingSuggestionService,
     MerchantEmbeddingRepository,
     TransactionCategorizeInboxRepository,
@@ -185,6 +186,7 @@ export const appServicesLayer = Layer.mergeAll(
     TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     VoiceLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     EmbeddingSuggestionService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
+    EmbeddingIndexService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
     SyncRepository.layer,
     BankIntegrationRepository.layer,
     ExchangeRateRepository.layer,

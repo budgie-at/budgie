@@ -13,12 +13,13 @@ import {
     CategoryEntityTable,
     CategorySourceEnum,
     DEFAULT_TRANSACTION_FILTER,
+    MerchantEmbeddingEntityTable,
     TransactionEntryEntityTable,
     TransactionRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -54,6 +55,8 @@ const seedExpense = Effect.fnUntraced(function* (accountId: number, externalId: 
             .set({ categoryId, categorySource: CategorySourceEnum.USER })
             .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
     }
+
+    return transaction;
 });
 
 const makeSuggestionLayer = (documents: readonly FakeDocumentInterface[]) => {
@@ -131,6 +134,33 @@ describe('categorization/suggestion', () => {
             );
 
             expect(suggestions.map(category => category.id)).toEqual([coffee.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('a category correction forgets the merchant embedding of the previous category', () =>
+        Effect.gen(function* () {
+            const merchantEmbeddingRepository = yield* MerchantEmbeddingRepository;
+            const account = yield* testSeedService.account();
+            const coffee = yield* seedCategory('Coffee');
+            const groceries = yield* seedCategory('Groceries');
+            const transaction = yield* seedExpense(account.id, 'corrected', 'Blue Bottle', coffee.id);
+
+            yield* testDb.run(sql`CREATE TABLE IF NOT EXISTS merchant_embedding_vec (rowid INTEGER PRIMARY KEY, embedding BLOB)`);
+            yield* testDb.insert(MerchantEmbeddingEntityTable).values(
+                [coffee.id, groceries.id].map(categoryId => ({
+                    title: 'Blue Bottle',
+                    mccDescription: '',
+                    categoryId,
+                    comment: '',
+                    embedding: new Uint8Array(4),
+                    dimensions: 1
+                }))
+            );
+            yield* merchantEmbeddingRepository.deleteStaleCategories(transaction.id, [groceries.id, coffee.id]);
+
+            const embeddings = yield* testDb.select().from(MerchantEmbeddingEntityTable);
+
+            expect(embeddings.map(embedding => embedding.categoryId)).toEqual([coffee.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 

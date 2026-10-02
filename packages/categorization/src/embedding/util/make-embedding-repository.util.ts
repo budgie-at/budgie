@@ -1,8 +1,14 @@
-import { Db } from '@budgie/contracts';
-import { eq, getTableName, isNull, sql } from 'drizzle-orm';
+import {
+    BaseTransactionFilterRepository,
+    Db,
+    MccCategoryEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable
+} from '@budgie/contracts';
+import { and, eq, getTableName, inArray, isNull, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding.constant';
 
@@ -12,6 +18,29 @@ import type { CategoryScoreResultInterface } from '../interface/category-score-r
 import type { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
 import type { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
 import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
+
+const selectStaleIds = <TUpsert>(config: EmbeddingQueryConfigInterface<TUpsert>, transactionId: number, previousCategoryIds: number[]) =>
+    Db.query(db =>
+        db
+            .select({ id: config.idColumn })
+            .from(config.embeddingTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, transactionId))
+            .innerJoin(
+                TransactionEntryEntityTable,
+                and(
+                    eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+                    new BaseTransactionFilterRepository().buildCategorizableEntryCondition()
+                )
+            )
+            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
+            .where(
+                and(
+                    config.transactionMatchCondition,
+                    inArray(config.categoryColumn, previousCategoryIds),
+                    sql`${config.categoryColumn} IS NOT ${TransactionEntryEntityTable.categoryId}`
+                )
+            )
+    );
 
 export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: number }>(
     config: EmbeddingQueryConfigInterface<TUpsert>
@@ -59,6 +88,26 @@ export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: n
         if (isNotEmptyArray(tagIds)) {
             yield* Db.query(db => db.insert(config.tagTable).values(tagIds.map(tagId => config.createTagRow(embeddingId, tagId))));
         }
+    }),
+    deleteStaleCategories: Effect.fn('EmbeddingRepository.deleteStaleCategories')(function* (
+        transactionId: number,
+        previousCategoryIds: number[]
+    ) {
+        if (isEmptyArray(previousCategoryIds)) {
+            return;
+        }
+
+        const ids = (yield* selectStaleIds(config, transactionId, previousCategoryIds)).map(row => row.id);
+
+        if (isEmptyArray(ids)) {
+            return;
+        }
+
+        yield* Db.query(db => db.delete(config.tagTable).where(inArray(config.foreignKeyColumn, ids)));
+        yield* Db.query(db => db.delete(config.embeddingTable).where(inArray(config.idColumn, ids)));
+        yield* Db.query(
+            db => db.$client.unsafe(`DELETE FROM ${config.vecTableName} WHERE rowid IN (${ids.map(() => '?').join(', ')})`, ids).raw
+        );
     }),
     countAll: () =>
         Db.query(db =>

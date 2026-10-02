@@ -73,7 +73,7 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
             merchant: makeIndex({
                 fetchPending: limit => merchantEmbeddingRepository.findPendingMerchantContexts(limit),
                 countPending: merchantEmbeddingRepository.countPendingMerchantContexts(),
-                buildPrompt: context => buildMerchantContext(context.title, context.mccDescription, context.categoryTitleEn),
+                buildPrompt: context => buildMerchantContext(context.title, context.mccDescription),
                 upsert: (context, embedding, dimensions) =>
                     merchantEmbeddingRepository.upsert({
                         title: context.title,
@@ -88,12 +88,20 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
             comment: makeIndex({
                 fetchPending: limit => commentEmbeddingRepository.findPendingCommentContexts(limit),
                 countPending: commentEmbeddingRepository.countPendingCommentContexts(),
-                buildPrompt: context => buildCommentContext(context.comment, context.categoryTitleEn),
+                buildPrompt: context => buildCommentContext(context.comment),
                 upsert: (context, embedding, dimensions) =>
                     commentEmbeddingRepository.upsert({ comment: context.comment, categoryId: context.categoryId, embedding, dimensions }),
                 replaceTags: (embeddingId, tagIds) => commentEmbeddingRepository.replaceTags(embeddingId, tagIds)
             }),
-            clearStaleFlags: transactionEmbeddingRepository.clearStaleFlags()
+            clearStaleFlags: transactionEmbeddingRepository.clearStaleFlags(),
+            learnCorrection: Effect.fn('EmbeddingIndexService.learnCorrection')(
+                function* (transactionId: number, previousCategoryIds: number[]) {
+                    yield* merchantEmbeddingRepository.deleteStaleCategories(transactionId, previousCategoryIds);
+                    yield* commentEmbeddingRepository.deleteStaleCategories(transactionId, previousCategoryIds);
+                    yield* transactionEmbeddingRepository.markForEmbeddingByIds([transactionId]);
+                },
+                effect => Db.transaction(effect)
+            )
         };
     })
 }) {
