@@ -8,6 +8,7 @@ import {
     RuleConditionFieldEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -15,7 +16,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE, RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
-import { RuleHost } from '../port/rule-host.port';
 import { RuleRepository } from '../repository/rule.repository';
 import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
@@ -40,7 +40,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 
         const transactionTagsRepository = yield* TransactionTagsRepository;
 
-        const ruleHost = yield* RuleHost;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
 
         const ruleMatcherService = yield* RuleMatcherService;
 
@@ -167,7 +167,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 }
 
                 if (convertedAny) {
-                    yield* ruleHost.refreshBalances;
+                    yield* accountBalanceIncrementalService.updateAllBalances(true);
                 }
             },
             effect => Db.transaction(effect)
@@ -336,7 +336,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             }
 
             if (convertedAny) {
-                yield* ruleHost.refreshBalances;
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
             }
         });
 
@@ -422,7 +422,8 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             TransactionRuleRepository.layer,
             TransactionTagsRepository.layer,
             RuleMatcherService.layer,
-            RuleTransferConversionService.layer
+            RuleTransferConversionService.layer,
+            AccountBalanceIncrementalService.layer
         ])
     );
 }

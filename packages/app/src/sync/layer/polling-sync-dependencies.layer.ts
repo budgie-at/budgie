@@ -5,11 +5,10 @@ import {
     SyncRepository,
     TransactionRepository
 } from '@budgie/contracts';
+import { AccountService, TransactionService } from '@budgie/ledger';
 import * as Layer from 'effect/Layer';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { AccountService } from '../../account/service/account.service';
-import { TransactionService } from '../../transaction/service/transaction.service';
 import { SyncIntegrationTokenService } from '../service/sync-integration-token.service';
 import { TransferConsolidationDrainerService } from '../service/transfer-consolidation-drainer.service';
 

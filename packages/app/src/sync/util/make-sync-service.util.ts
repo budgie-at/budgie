@@ -1,9 +1,8 @@
 import { AccountRepository, Db, InstrumentRepository, SyncRepository } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
-
-import { AccountService } from '../../account/service/account.service';
 
 import { mapSyncAccountToCreateInput } from './map-sync-account-to-create-input.util';
 

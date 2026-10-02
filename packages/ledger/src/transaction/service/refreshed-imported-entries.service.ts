@@ -5,8 +5,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
-import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 
 import type { BuildRefreshedImportedEntriesInputInterface } from '../interface/build-refreshed-imported-entries-input.interface';
 import type {
@@ -17,7 +17,7 @@ import type {
 } from '@budgie/contracts';
 
 export class RefreshedImportedEntriesService extends Context.Service<RefreshedImportedEntriesService>()(
-    '@budgie/app/RefreshedImportedEntriesService',
+    '@budgie/ledger/RefreshedImportedEntriesService',
     {
         make: Effect.gen(function* () {
             const entryBaseValuationService = yield* EntryBaseValuationService;

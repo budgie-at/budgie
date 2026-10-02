@@ -1,4 +1,5 @@
 import { AccountRepository, SyncModeEnum, SyncRepository, SyncStatusEnum } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import { subMonths } from 'date-fns/subMonths';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
@@ -8,7 +9,6 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { TransactionService } from '../../transaction/service/transaction.service';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';

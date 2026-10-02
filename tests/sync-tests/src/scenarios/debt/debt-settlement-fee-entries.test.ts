@@ -1,6 +1,4 @@
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
-import { TransactionService } from '@app/transaction/service/transaction.service';
 import {
     AccountBalanceRepository,
     AccountDebtTypeEnum,
@@ -19,6 +17,7 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { TransactionDebtSettlementService, TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

@@ -1,6 +1,6 @@
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
-import { TransactionImportService } from '@app/transaction/service/transaction-import.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { TransactionImportService } from '@budgie/ledger';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum, ersteMapper } from '@budgie/sync';
 import { beforeEach, describe, expect, it, vi } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';

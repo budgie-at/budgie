@@ -1,4 +1,3 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '@app/sync/constant/privatbank-duplicate-candidate-sql.constant';
 import { SyncRepairService } from '@app/sync/service/sync-repair.service';
 import {
@@ -9,6 +8,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

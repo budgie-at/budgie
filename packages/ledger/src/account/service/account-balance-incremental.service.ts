@@ -2,23 +2,19 @@ import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, Db, getDe
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
 import { DepositNegativeBalanceError } from '../error/deposit-negative-balance.error';
 
 import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, AccountEntityInterface } from '@budgie/contracts';
 
 export class AccountBalanceIncrementalService extends Context.Service<AccountBalanceIncrementalService>()(
-    '@budgie/app/AccountBalanceIncrementalService',
+    '@budgie/ledger/AccountBalanceIncrementalService',
     {
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const backgroundTaskMinimumIntervalMinutes = 7 * 24 * 60;
 
             const buildBalancesMap = (balances: AccountBalanceEntityInterface[]) =>
                 balances.reduce((map, { accountId, amount }) => {
@@ -150,19 +146,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                         yield* upsertLatestBalances(accounts, false, previousDepositBalances);
                     },
                     effect => Db.transaction(effect)
-                ),
-                registerBackgroundTask: Effect.fn('AccountBalanceIncrementalService.registerBackgroundTask')(function* () {
-                    const isRegistered = yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK));
-                    if (isRegistered) {
-                        return;
-                    }
-
-                    yield* Effect.promise(() =>
-                        BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
-                            minimumInterval: backgroundTaskMinimumIntervalMinutes
-                        })
-                    );
-                })
+                )
             };
         })
     }

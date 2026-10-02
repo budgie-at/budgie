@@ -19,7 +19,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertFromMicroUnits } from '../../@generic/util/convert-from-micro-units.util';
 import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
 import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -27,12 +27,12 @@ import { AccountService } from '../../account/service/account.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
-import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
-import { buildTransferEntries } from '../utils/build-transfer-entries.util';
-import { createTransactionInput } from '../utils/create-transaction-input.util';
-import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
-import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
-import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
+import { assertTransferAccountsAreNotDebt } from '../util/assert-transfer-accounts-are-not-debt.util';
+import { buildTransferEntries } from '../util/build-transfer-entries.util';
+import { createTransactionInput } from '../util/create-transaction-input.util';
+import { getTransactionCategoryEntries } from '../util/get-transaction-category-entries.util';
+import { getTransactionFeeEntries } from '../util/get-transaction-fee-entries.util';
+import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
 
 import { TransferCreationService } from './transfer-creation.service';
 
@@ -40,7 +40,7 @@ import type { ConvertToTransferParamsInterface } from '../interface/convert-to-t
 import type { TransactionEntryEntityInterface } from '@budgie/contracts';
 import type { EntryBaseValuationInterface } from '@budgie/market';
 
-export class TransactionTransferService extends Context.Service<TransactionTransferService>()('@budgie/app/TransactionTransferService', {
+export class TransactionTransferService extends Context.Service<TransactionTransferService>()('@budgie/ledger/TransactionTransferService', {
     make: Effect.gen(function* () {
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const debtEventRepository = yield* DebtEventRepository;

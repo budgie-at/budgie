@@ -5,7 +5,7 @@ import * as Layer from 'effect/Layer';
 
 import type { CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 
-export class CategoryService extends Context.Service<CategoryService>()('@budgie/app/CategoryService', {
+export class CategoryService extends Context.Service<CategoryService>()('@budgie/ledger/CategoryService', {
     make: Effect.gen(function* () {
         const categoryRepository = yield* CategoryRepository;
 

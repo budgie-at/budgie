@@ -1,4 +1,3 @@
-import { AccountArchiveService } from '@app/account/service/account-archive.service';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -8,6 +7,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { AccountArchiveService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

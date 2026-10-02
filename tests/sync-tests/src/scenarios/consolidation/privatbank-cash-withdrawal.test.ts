@@ -1,7 +1,7 @@
 import { PrivatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
-import { TransactionImportService } from '@app/transaction/service/transaction-import.service';
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { TransactionImportService } from '@budgie/ledger';
 import { privatbankTransactionMapper } from '@budgie/sync';
 import { afterEach, describe, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';

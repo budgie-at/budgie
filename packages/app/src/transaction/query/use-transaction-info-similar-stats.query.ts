@@ -1,4 +1,5 @@
 import { TransactionViewRepository, TransactionTypeEnum } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
@@ -8,7 +9,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
-import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type {
     SimilarTransactionMonthRowInterface,

@@ -12,13 +12,13 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
+import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 import { TransactionService } from '../../transaction/service/transaction.service';
 
 import type { AccountEntityInterface, DepositAccountCreateInputInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
-export class AccountService extends Context.Service<AccountService>()('@budgie/app/AccountService', {
+export class AccountService extends Context.Service<AccountService>()('@budgie/ledger/AccountService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;

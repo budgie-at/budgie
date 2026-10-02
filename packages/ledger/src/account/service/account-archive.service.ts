@@ -13,13 +13,13 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
-import { Workload } from '../../@generic/service/workload.service';
-import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
+import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 
 import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
 import { AccountTransferConversionService } from './account-transfer-conversion.service';
 
-export class AccountArchiveService extends Context.Service<AccountArchiveService>()('@budgie/app/AccountArchiveService', {
+export class AccountArchiveService extends Context.Service<AccountArchiveService>()('@budgie/ledger/AccountArchiveService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const debtEventRepository = yield* DebtEventRepository;
@@ -30,7 +30,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const accountTransferConversionService = yield* AccountTransferConversionService;
         const unconsolidationService = yield* UnconsolidationService;
-        const workload = yield* Workload;
+        const ledgerWorkload = yield* LedgerWorkload;
         const unconsolidationBatchSize = 25;
 
         const unconsolidateActiveAutoByAccountId = Effect.fn('AccountArchiveService.unconsolidateActiveAutoByAccountId')(function* (
@@ -63,7 +63,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
             archiveById: Effect.fn('AccountArchiveService.archiveById')(function* (id: number) {
                 yield* YIELD_TO_UI;
 
-                yield* workload.runForeground(Db.transaction(archiveByIdInTransaction(id)));
+                yield* ledgerWorkload.runForeground(Db.transaction(archiveByIdInTransaction(id)));
             }),
             restoreById: Effect.fn('AccountArchiveService.restoreById')(function* (id: number) {
                 yield* YIELD_TO_UI;
@@ -109,8 +109,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
             TransactionConsolidationRepository.layer,
             AccountBalanceIncrementalService.layer,
             AccountTransferConversionService.layer,
-            UnconsolidationService.layer,
-            Workload.layer
+            UnconsolidationService.layer
         ])
     );
 }

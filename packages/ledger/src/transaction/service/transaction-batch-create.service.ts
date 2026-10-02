@@ -20,13 +20,13 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
-import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
+import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
+import { transactionMapTagIdsToCreateEntities } from '../util/transaction-map-tag-ids-to-create-entities.util';
 
 import type { AccountEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
 export class TransactionBatchCreateService extends Context.Service<TransactionBatchCreateService>()(
-    '@budgie/app/TransactionBatchCreateService',
+    '@budgie/ledger/TransactionBatchCreateService',
     {
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;

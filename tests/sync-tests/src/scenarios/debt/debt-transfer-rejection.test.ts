@@ -1,7 +1,3 @@
-import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
-import { TransactionTransferService } from '@app/transaction/service/transaction-transfer.service';
-import { TransactionService } from '@app/transaction/service/transaction.service';
-import { TransferCreationService } from '@app/transaction/service/transfer-creation.service';
 import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
@@ -15,6 +11,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { TransactionDebtSettlementService, TransactionService, TransactionTransferService, TransferCreationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

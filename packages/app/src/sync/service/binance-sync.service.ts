@@ -1,5 +1,6 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountRepository, SyncModeEnum, TransactionRepository } from '@budgie/contracts';
+import { ImportedTransactionEntryUpdateService, TransactionService, TransferCreationService } from '@budgie/ledger';
 import {
     BINANCE_RATE_LIMIT_MS,
     BinanceCredentialsSchema,
@@ -19,9 +20,6 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { ImportedTransactionEntryUpdateService } from '../../transaction/service/imported-transaction-entry-update.service';
-import { TransactionService } from '../../transaction/service/transaction.service';
-import { TransferCreationService } from '../../transaction/service/transfer-creation.service';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
 import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lookback-years.constant';

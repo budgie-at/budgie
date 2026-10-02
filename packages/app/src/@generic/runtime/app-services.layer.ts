@@ -37,6 +37,24 @@ import {
     TransactionTagsRepository
 } from '@budgie/contracts';
 import {
+    AccountArchiveService,
+    AccountBalanceIncrementalService,
+    AccountService,
+    AccountTransferConversionService,
+    CategoryService,
+    ImportedBatchNormalizerService,
+    ImportedTransactionEntryUpdateService,
+    RefreshedImportedEntriesService,
+    TransactionBatchCreateService,
+    TransactionDebtSettlementService,
+    TransactionDepositSafetyService,
+    TransactionImportService,
+    TransactionService,
+    TransactionTransferService,
+    TransferCreationService,
+    LedgerWorkload
+} from '@budgie/ledger';
+import {
     EntryBaseValuationService,
     ExchangeRateRepository,
     ExchangeRatesService,
@@ -45,14 +63,11 @@ import {
     InstrumentMarketDataJobRepository
 } from '@budgie/market';
 import { RecurringService } from '@budgie/recurring';
-import { RuleMatcherService, RuleRepository, TransactionRuleRepository } from '@budgie/rules';
+import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
+import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { AccountArchiveService } from '../../account/service/account-archive.service';
-import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AccountDebtOpeningService } from '../../account/service/account-debt-opening.service';
-import { AccountTransferConversionService } from '../../account/service/account-transfer-conversion.service';
-import { AccountService } from '../../account/service/account.service';
 import { DebtAccountService } from '../../account/service/debt-account.service';
 import { AiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
@@ -71,7 +86,6 @@ import { TranslationProgressStore } from '../../ai/store/translation-progress.st
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategorizeInboxCashService } from '../../categorize-inbox/service/categorize-inbox-cash.service';
-import { CategoryService } from '../../category/service/category.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { ExporterService } from '../../export/service/exporter.service';
@@ -80,7 +94,6 @@ import { ImporterService } from '../../import/service/importer.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
-import { rulesLayer } from '../../rule/layer/rules.layer';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { consolidationCoordinatorLayer } from '../../sync/layer/consolidation-coordinator.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
@@ -102,19 +115,9 @@ import { TransferConsolidationDrainerService } from '../../sync/service/transfer
 import { TransferConsolidationService } from '../../sync/service/transfer-consolidation.service';
 import { UnpairedOwnCardTransferRepairService } from '../../sync/service/unpaired-own-card-transfer-repair.service';
 import { TagService } from '../../tag/service/tag.service';
-import { ImportedBatchNormalizerService } from '../../transaction/service/imported-batch-normalizer.service';
-import { ImportedTransactionEntryUpdateService } from '../../transaction/service/imported-transaction-entry-update.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
-import { RefreshedImportedEntriesService } from '../../transaction/service/refreshed-imported-entries.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
-import { TransactionBatchCreateService } from '../../transaction/service/transaction-batch-create.service';
-import { TransactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
-import { TransactionDepositSafetyService } from '../../transaction/service/transaction-deposit-safety.service';
-import { TransactionImportService } from '../../transaction/service/transaction-import.service';
 import { TransactionRefundService } from '../../transaction/service/transaction-refund.service';
-import { TransactionTransferService } from '../../transaction/service/transaction-transfer.service';
-import { TransactionService } from '../../transaction/service/transaction.service';
-import { TransferCreationService } from '../../transaction/service/transfer-creation.service';
 import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
@@ -122,6 +125,11 @@ import { DatabaseMigrationService } from '../drizzle/service/database-migration.
 import { DatabaseRekeyService } from '../drizzle/service/database-rekey.service';
 import { AppResetService } from '../service/app-reset.service';
 import { Workload } from '../service/workload.service';
+
+const ledgerWorkloadLayer = Layer.effect(
+    LedgerWorkload,
+    Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
+).pipe(Layer.provide(Workload.layer));
 
 export const appServicesLayer = Layer.mergeAll(
     AccountRepository.layer,
@@ -163,7 +171,8 @@ export const appServicesLayer = Layer.mergeAll(
     RuleRepository.layer,
     TransactionRuleRepository.layer,
     RuleMatcherService.layer,
-    rulesLayer,
+    RuleEngineService.layer,
+    RuleService.layer,
     RuleApplicationDrainerService.layer,
     TransactionCategorizeInboxRepository.layer,
     CategorizeInboxService.layer,
@@ -241,4 +250,4 @@ export const appServicesLayer = Layer.mergeAll(
     TransactionTransferService.layer,
     TransferCreationService.layer,
     TransactionService.layer
-);
+).pipe(Layer.provide(ledgerWorkloadLayer));

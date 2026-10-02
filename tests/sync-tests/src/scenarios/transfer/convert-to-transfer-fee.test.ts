@@ -1,4 +1,3 @@
-import { TransactionTransferService } from '@app/transaction/service/transaction-transfer.service';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -8,6 +7,7 @@ import {
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
+import { TransactionTransferService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

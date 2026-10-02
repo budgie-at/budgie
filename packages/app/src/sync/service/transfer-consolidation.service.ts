@@ -1,4 +1,5 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -9,7 +10,6 @@ import * as TaskManager from 'expo-task-manager';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
 import { consolidationCoordinatorLayer } from '../layer/consolidation-coordinator.layer';
 

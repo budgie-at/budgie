@@ -9,7 +9,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
-import { rulesLayer } from '../layer/rules.layer';
 
 import type { PendingRuleApplicationInterface } from '../interface/pending-rule-application.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
@@ -119,6 +118,6 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
     }
 ) {
     static readonly layer = Layer.effect(RuleApplicationDrainerService, RuleApplicationDrainerService.make).pipe(
-        Layer.provide([Workload.layer, rulesLayer])
+        Layer.provide([Workload.layer, RuleEngineService.layer])
     );
 }

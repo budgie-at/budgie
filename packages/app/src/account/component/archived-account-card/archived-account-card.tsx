@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Alert, View } from 'react-native';
@@ -14,7 +15,6 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
-import { AccountArchiveService } from '../../service/account-archive.service';
 
 import { ArchivedAccountCardSelector } from './archived-account-card.selector';
 /* jscpd:ignore-end */

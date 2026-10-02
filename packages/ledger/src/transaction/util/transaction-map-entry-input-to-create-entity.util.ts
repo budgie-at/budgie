@@ -1,4 +1,4 @@
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 
 import type { TransactionEntryCreateEntityInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 import type { EntryBaseValuationInterface } from '@budgie/market';

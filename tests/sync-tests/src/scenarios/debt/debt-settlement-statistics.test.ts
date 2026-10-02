@@ -2,7 +2,6 @@ import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-un
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { DebtAccountService } from '@app/account/service/debt-account.service';
-import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
     AccountBalanceRepository,
     AccountEntityTable,
@@ -30,6 +29,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -1030,7 +1030,7 @@ const setupUsdDebtExchangeRateScenario = Effect.fnUntraced(function* () {
             rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
         }
     ]);
-    vi.useFakeTimers({ now: new Date(`${HISTORICAL_USD_TO_EUR_RATE_DATE}T12:00:00.000Z`) });
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date(`${HISTORICAL_USD_TO_EUR_RATE_DATE}T12:00:00.000Z`) });
 
     return { euroInstrument, usdInstrument };
 });

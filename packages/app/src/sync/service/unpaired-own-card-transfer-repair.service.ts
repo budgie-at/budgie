@@ -1,11 +1,10 @@
 import { Db, PRECISION, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionRepository, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTransferService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { TransactionTransferService } from '../../transaction/service/transaction-transfer.service';
 
 import type { UnpairedOwnCardTransferCandidateInterface } from '../interface/unpaired-own-card-transfer-candidate.interface';
 
