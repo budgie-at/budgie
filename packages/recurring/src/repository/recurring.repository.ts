@@ -6,15 +6,18 @@ import {
     Db,
     ExchangeRateEntityTable,
     LanguageEnum,
+    RecurringSeriesEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { and, eq, gt, gte, ne, or, sql } from 'drizzle-orm';
+import { and, eq, gt, gte, isNull, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import type { RecurringSeriesCreateEntityInterface } from '@budgie/contracts';
 
 export class RecurringRepository extends Context.Service<RecurringRepository>()('@budgie/recurring/RecurringRepository', {
     make: Effect.sync(() => {
@@ -83,7 +86,19 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                                 or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))
                             )
                         );
-                })
+                }),
+            findSeries: () =>
+                Db.query(db => db.select().from(RecurringSeriesEntityTable).where(isNull(RecurringSeriesEntityTable.deletedAt))),
+            createSeries: (input: RecurringSeriesCreateEntityInterface) =>
+                Db.query(db => db.insert(RecurringSeriesEntityTable).values([input]).returning()).pipe(Effect.map(([series]) => series)),
+            updateSeries: (id: number, input: Partial<RecurringSeriesCreateEntityInterface>) =>
+                Db.query(db =>
+                    db
+                        .update(RecurringSeriesEntityTable)
+                        .set({ ...input, updatedAt: new Date() })
+                        .where(eq(RecurringSeriesEntityTable.id, id))
+                        .returning()
+                ).pipe(Effect.map(([series]) => series))
         };
     })
 }) {

@@ -26,5 +26,6 @@ export {
     RuleConditionEntityTable,
     RuleActionEntityTable,
     BudgetEntityTable,
-    BudgetCategoryLimitEntityTable
+    BudgetCategoryLimitEntityTable,
+    RecurringSeriesEntityTable
 } from '@budgie/contracts/schema';

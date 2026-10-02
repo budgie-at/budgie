@@ -1,16 +1,11 @@
-import { PRECISION } from '@budgie/contracts';
-import { getDaysInMonth } from 'date-fns/getDaysInMonth';
-
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import type { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
-import type { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 
-const DAY_MS = 86_400_000;
-const DAYS_PER_MONTH = 30.44;
+export const DAY_MS = 86_400_000;
+export const DAYS_PER_MONTH = 30.44;
 const MONTHS_PER_YEAR = 12;
 const MAD_SCALE = 1.4826;
 
@@ -22,6 +17,7 @@ const SAME_EVENT_WINDOW_DAYS = 3;
 const MONTHLY_MAX_GAP_DAYS = 45;
 const MIN_MONTH_PRESENCE = 0.75;
 const RECENT_AMOUNT_COUNT = 3;
+const PRICE_CHANGE_RATIO = 0.05;
 const PERIOD_TOLERANCE = 0.2;
 const MONTHLY_DAYS = 30;
 const BIMONTHLY_DAYS = 61;
@@ -45,7 +41,6 @@ const IBAN_PATTERN = /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){2,}\b/giu;
 const NUMERIC_TOKEN_PATTERN = /^\d+$|\d{3,}/u;
 const STOP_TOKENS: ReadonlySet<string> = new Set('GMBH AG KG CO INC LTD LLC OG ФОП ТОВ ПП ПАТ АТ ВІД'.split(' '));
 
-const PROJECTION_SUPPRESSION_RATIO = 0.4;
 const ACTIVE_PERIOD_RATIO = 1.5;
 const ACTIVE_GRACE_DAYS = 5;
 
@@ -56,7 +51,7 @@ const median = (values: readonly number[]): number => {
     return sorted.length % 2 === 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 };
 
-const monthIndex = (timestamp: number): number => {
+export const monthIndex = (timestamp: number): number => {
     const date = new Date(timestamp);
 
     return date.getFullYear() * MONTHS_PER_YEAR + date.getMonth();
@@ -72,6 +67,8 @@ const cleanTokens = (charge: RecurringChargeInterface): string[] => {
         .split(/[^\p{L}\p{N}]+/u)
         .filter(token => isNotEmptyString(token) && !NUMERIC_TOKEN_PATTERN.test(token) && !STOP_TOKENS.has(token.toUpperCase()));
 };
+
+const chargeLabel = (charge: RecurringChargeInterface): string => cleanTokens(charge).join(' ').toUpperCase();
 
 const bigrams = (label: string): Set<string> => {
     const compact = label.replace(/ /gu, '');
@@ -97,7 +94,7 @@ const areSimilarLabels = (first: string, second: string): boolean => {
 const groupSimilarLabels = (charges: readonly RecurringChargeInterface[]): RecurringChargeInterface[][] => {
     const chargesByLabel = new Map<string, RecurringChargeInterface[]>();
     for (const charge of charges) {
-        const label = cleanTokens(charge).join(' ').toUpperCase();
+        const label = chargeLabel(charge);
         if (isNotEmptyString(label)) {
             chargesByLabel.set(label, [...(chargesByLabel.get(label) ?? []), charge]);
         }
@@ -161,6 +158,29 @@ const measureMedianGap = (events: readonly RecurringSeriesEventInterface[]): num
     return isRegular ? medianGap : null;
 };
 
+const isStableAmount = (amounts: readonly number[]): boolean =>
+    Math.max(...amounts.map(Math.abs)) <= Math.min(...amounts.map(Math.abs)) * (1 + PRICE_CHANGE_RATIO);
+
+const findPriceStepIndex = (events: readonly RecurringSeriesEventInterface[]): number | null => {
+    const amounts = events.map(event => event.amount);
+    const index = amounts.findLastIndex(
+        (amount, position) =>
+            position > 0 && Math.abs(amount - amounts[position - 1]) > Math.abs(amounts[position - 1]) * PRICE_CHANGE_RATIO
+    );
+
+    return index > 0 &&
+        isStableAmount(amounts.slice(index)) &&
+        isStableAmount(amounts.slice(Math.max(index - RECENT_AMOUNT_COUNT, 0), index))
+        ? index
+        : null;
+};
+
+const findMerchantKey = (labels: readonly string[]): string => {
+    const counts = labels.reduce((result, label) => result.set(label, (result.get(label) ?? 0) + 1), new Map<string, number>());
+
+    return [...counts.entries()].reduce((best, entry) => (entry[1] > best[1] ? entry : best))[0];
+};
+
 const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface | null => {
     const events = toEvents(charges);
     const medianGap = events.length < MIN_EVENTS ? null : measureMedianGap(events);
@@ -170,8 +190,13 @@ const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSer
 
     const latest = charges.reduce((current, charge) => (charge.operatedAt.getTime() > current.operatedAt.getTime() ? charge : current));
     const period = PERIOD_DAYS_BY_MONTHS.find(([, days]) => Math.abs(medianGap - days) <= days * PERIOD_TOLERANCE);
+    const labels = charges.map(chargeLabel);
+    const stepIndex = findPriceStepIndex(events);
+    const recentEvents = events.slice(Math.max(stepIndex ?? 0, events.length - RECENT_AMOUNT_COUNT));
 
     return {
+        merchantKey: findMerchantKey(labels),
+        labels: [...new Set(labels)],
         title: cleanTokens(latest).slice(0, DISPLAY_TOKEN_COUNT).join(' '),
         categoryId: latest.categoryId,
         categoryTitle: latest.categoryTitle,
@@ -180,7 +205,8 @@ const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSer
         periodMonths: period?.[0] ?? null,
         periodDays: medianGap,
         anchorTimestamp: events[events.length - 1].timestamp,
-        predictedAmount: Math.round(median(events.slice(-RECENT_AMOUNT_COUNT).map(event => event.amount))),
+        predictedAmount: Math.round(median(recentEvents.map(event => event.amount))),
+        priceChangedAt: isDefined(stepIndex) ? events[stepIndex].timestamp : null,
         events
     };
 };
@@ -193,7 +219,16 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
         .filter(series => series.periodMonths === 1);
 
     if (monthlyBands.length > 1 || (!isDefined(whole) && isNotEmptyArray(monthlyBands))) {
-        return monthlyBands;
+        return monthlyBands.map(series => {
+            const startTimestamp = series.events[0].timestamp;
+            const hasPredecessor = monthlyBands.some(
+                other =>
+                    other.anchorTimestamp < startTimestamp &&
+                    startTimestamp - other.anchorTimestamp <= other.periodDays * ACTIVE_PERIOD_RATIO * DAY_MS
+            );
+
+            return hasPredecessor ? { ...series, priceChangedAt: series.priceChangedAt ?? startTimestamp } : series;
+        });
     }
 
     return isDefined(whole) ? [whole] : [];
@@ -204,90 +239,5 @@ export const detectRecurringSeries = (charges: readonly RecurringChargeInterface
         groupSimilarLabels(sideCharges).flatMap(detectMerchantSeries)
     );
 
-const expectedDays = (series: RecurringSeriesInterface, year: number, month: number): number[] => {
-    if (isDefined(series.periodMonths)) {
-        const monthsFromAnchor = year * MONTHS_PER_YEAR + month - monthIndex(series.anchorTimestamp);
-
-        return monthsFromAnchor < 0 || monthsFromAnchor % series.periodMonths !== 0
-            ? []
-            : [Math.min(new Date(series.anchorTimestamp).getDate(), getDaysInMonth(new Date(year, month, 1)))];
-    }
-
-    const stepMs = series.periodDays * DAY_MS;
-    const firstStep = Math.max(Math.ceil((new Date(year, month, 1).getTime() - series.anchorTimestamp) / stepMs), 1);
-    const lastStep = Math.floor((new Date(year, month + 1, 1).getTime() - 1 - series.anchorTimestamp) / stepMs);
-
-    return Array.from({ length: Math.max(lastStep - firstStep + 1, 0) }, (_, index) =>
-        new Date(series.anchorTimestamp + (firstStep + index) * stepMs).getDate()
-    );
-};
-
-const toEntry = (
-    series: RecurringSeriesInterface,
-    dayOfMonth: number,
-    latestAmount: number,
-    latestTransactionId: number | null
-): RecurringCalendarEntryInterface => {
-    const isForecast = !isDefined(latestTransactionId);
-
-    return {
-        key: `${series.categoryId}-${series.accountId}-${series.title}-${latestAmount}-${isForecast ? 'f' : 'a'}-${dayOfMonth}`,
-        title: series.title,
-        categoryId: series.categoryId,
-        categoryTitle: series.categoryTitle,
-        categoryIcon: series.categoryIcon,
-        accountId: series.accountId,
-        latestAmount,
-        latestTransactionId,
-        dayOfMonth,
-        isForecast
-    };
-};
-
-const projectSeries = (series: RecurringSeriesInterface, year: number, month: number, now: Date): RecurringCalendarEntryInterface[] => {
-    const monthStart = new Date(year, month, 1).getTime();
-    const monthEnd = new Date(year, month + 1, 1).getTime();
-    const monthsFromNow = year * MONTHS_PER_YEAR + month - monthIndex(now.getTime());
-    const actuals = series.events
-        .filter(event => event.timestamp >= monthStart && event.timestamp < monthEnd)
-        .map(event => toEntry(series, new Date(event.timestamp).getDate(), event.amount, event.transactionId));
-    const isActive = now.getTime() - series.anchorTimestamp <= (series.periodDays * ACTIVE_PERIOD_RATIO + ACTIVE_GRACE_DAYS) * DAY_MS;
-    const forecasts =
-        monthsFromNow >= 0 && isActive
-            ? expectedDays(series, year, month)
-                  .filter(day => monthsFromNow > 0 || day > now.getDate())
-                  .filter(day =>
-                      actuals.every(actual => Math.abs(actual.dayOfMonth - day) > series.periodDays * PROJECTION_SUPPRESSION_RATIO)
-                  )
-                  .map(day => toEntry(series, day, series.predictedAmount, null))
-            : [];
-
-    return [...actuals, ...forecasts];
-};
-
-const groupByDay = (entries: readonly RecurringCalendarEntryInterface[]): Map<number, RecurringCalendarEntryInterface[]> =>
-    entries.reduce(
-        (groups, entry) => groups.set(entry.dayOfMonth, [...(groups.get(entry.dayOfMonth) ?? []), entry]),
-        new Map<number, RecurringCalendarEntryInterface[]>()
-    );
-
-const sumExpenses = (entries: readonly RecurringCalendarEntryInterface[]): number =>
-    entries.reduce((total, entry) => total + Math.max(entry.latestAmount, 0), 0) / PRECISION;
-
-export const projectRecurringMonth = (
-    series: readonly RecurringSeriesInterface[],
-    year: number,
-    month: number,
-    now: Date
-): RecurringCalendarDataInterface => {
-    const entries = series.flatMap(item => projectSeries(item, year, month, now));
-    const actuals = entries.filter(entry => !entry.isForecast);
-    const forecasts = entries.filter(entry => entry.isForecast);
-
-    return {
-        entriesByDay: groupByDay(actuals),
-        forecastedEntriesByDay: groupByDay(forecasts),
-        totalAmount: sumExpenses(actuals),
-        forecastedTotalAmount: sumExpenses(forecasts)
-    };
-};
+export const isSeriesActive = (series: RecurringSeriesInterface, now: Date): boolean =>
+    now.getTime() - series.anchorTimestamp <= (series.periodDays * ACTIVE_PERIOD_RATIO + ACTIVE_GRACE_DAYS) * DAY_MS;

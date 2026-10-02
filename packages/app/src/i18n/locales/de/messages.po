@@ -122,8 +122,8 @@ msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "{formattedAmount} · {category}"
-msgstr "{formattedAmount} · {category}"
+msgid "{formattedAmount} · {detail}"
+msgstr "{formattedAmount} · {detail}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{formattedAmount} / mo"
@@ -840,6 +840,7 @@ msgstr "Kann Stunden dauern"
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -1004,6 +1005,10 @@ msgstr "Cold Wallets und Exchange-Guthaben"
 msgid "Comment"
 msgstr "Kommentar"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Committed {committedExpense} per month · income {committedIncome}"
+msgstr "Fixkosten {committedExpense} pro Monat · Einnahmen {committedIncome}"
+
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Condition"
 msgstr "Bedingung"
@@ -1011,6 +1016,10 @@ msgstr "Bedingung"
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
 msgid "Conditions"
 msgstr "Bedingungen"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Confirm"
+msgstr "Bestätigen"
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Confirm PIN"
@@ -1275,6 +1284,10 @@ msgstr "Tag konnte nicht neu zugewiesen werden"
 msgid "Could not recalculate balances"
 msgstr "Salden konnten nicht neu berechnet werden"
 
+#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+msgid "Could not rename recurring payment."
+msgstr "Wiederkehrende Zahlung konnte nicht umbenannt werden."
+
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Could not repair sync data"
 msgstr "Synchronisationsdaten konnten nicht repariert werden"
@@ -1339,6 +1352,10 @@ msgstr "Benachrichtigungen konnten nicht aktualisiert werden"
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 msgid "Could not update on-device AI"
 msgstr "On-Device-KI konnte nicht aktualisiert werden"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Could not update recurring payment."
+msgstr "Wiederkehrende Zahlung konnte nicht aktualisiert werden."
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -1637,6 +1654,14 @@ msgstr "Details"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Dismiss"
+msgstr "Ausblenden"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Dismiss recurring payment?"
+msgstr "Wiederkehrende Zahlung ausblenden?"
 
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Display the budget card on the home screen"
@@ -2306,6 +2331,10 @@ msgstr "Ungültige Datei"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Is Planned"
 msgstr "Ist geplant"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "It will no longer appear in the calendar."
+msgstr "Sie wird nicht mehr im Kalender angezeigt."
 
 #: src/i18n/constant/locales.constant.ts
 msgid "Italian (Italy)"
@@ -3040,6 +3069,10 @@ msgstr "Gesamtbudget: {threshold}% ausgegeben"
 msgid "Overall monthly limit"
 msgstr "Monatliches Gesamtlimit"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Overdue"
+msgstr "Überfällig"
+
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Overpaid"
 msgstr "Überzahlt"
@@ -3159,6 +3192,10 @@ msgstr "Vorlage angewendet. Passen Sie die Spalten bei Bedarf unten an."
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Press to re-evaluate transactions"
 msgstr "Drücken, um Transaktionen neu zu bewerten"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Price changed"
+msgstr "Preis geändert"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Prices fill in quietly while you use the app."
@@ -3313,6 +3350,10 @@ msgstr "Aufteilung entfernen"
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split?"
 msgstr "Aufteilung entfernen?"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Rename"
+msgstr "Umbenennen"
 
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
@@ -3876,6 +3917,10 @@ msgstr "Konten tauschen"
 #: src/tag/components/tag-card/tag-card.tsx
 msgid "Swipe left"
 msgstr "Nach links wischen"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Swipe left to dismiss this recurring payment."
+msgstr "Nach links wischen, um diese wiederkehrende Zahlung auszublenden."
 
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
