@@ -25,8 +25,8 @@ export default function TabsLayout() {
 
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
     const isBackdropVisible = isMenuOpen || isVoiceInputOpen;
-    const isTabBarVisible = !isOnboardingActive;
-    const tabBarWrapperStyle = { zIndex: isBackdropVisible ? 0 : TAB_BAR_Z_INDEX };
+    const isTabBarVisible = !isOnboardingActive && !isBackdropVisible;
+    const tabBarWrapperStyle = { zIndex: TAB_BAR_Z_INDEX };
 
     const handleBackdropClose = () => {
         if (isVoiceInputOpen) {
@@ -50,7 +50,7 @@ export default function TabsLayout() {
 
                 {isTabBarVisible ? (
                     <>
-                        {isBackdropVisible ? null : <EdgeFade position="bottom" />}
+                        <EdgeFade position="bottom" />
                         <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={tabBarWrapperStyle}>
                             <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
                                 <TabButtons />
