@@ -122,8 +122,8 @@ msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "{formattedAmount} · {category}"
-msgstr "{formattedAmount} · {category}"
+msgid "{formattedAmount} · {detail}"
+msgstr "{formattedAmount} · {detail}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{formattedAmount} / mo"
@@ -1004,6 +1004,10 @@ msgstr "Cold Wallets und Exchange-Guthaben"
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Comment"
 msgstr "Kommentar"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Committed {committedExpense} per month · income {committedIncome}"
+msgstr "Fixkosten {committedExpense} pro Monat · Einnahmen {committedIncome}"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Condition"
@@ -3065,6 +3069,10 @@ msgstr "Gesamtbudget: {threshold}% ausgegeben"
 msgid "Overall monthly limit"
 msgstr "Monatliches Gesamtlimit"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Overdue"
+msgstr "Überfällig"
+
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Overpaid"
 msgstr "Überzahlt"
@@ -3184,6 +3192,10 @@ msgstr "Vorlage angewendet. Passen Sie die Spalten bei Bedarf unten an."
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Press to re-evaluate transactions"
 msgstr "Drücken, um Transaktionen neu zu bewerten"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Price changed"
+msgstr "Preis geändert"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Prices fill in quietly while you use the app."

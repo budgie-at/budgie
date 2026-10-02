@@ -13,5 +13,6 @@ export interface RecurringSeriesInterface {
     readonly periodDays: number;
     readonly anchorTimestamp: number;
     readonly predictedAmount: number;
+    readonly priceChangedAt: number | null;
     readonly events: readonly RecurringSeriesEventInterface[];
 }

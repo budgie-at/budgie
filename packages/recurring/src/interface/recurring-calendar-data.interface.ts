@@ -5,4 +5,6 @@ export interface RecurringCalendarDataInterface {
     readonly forecastedEntriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly totalAmount: number;
     readonly forecastedTotalAmount: number;
+    readonly committedMonthlyExpense: number;
+    readonly committedMonthlyIncome: number;
 }

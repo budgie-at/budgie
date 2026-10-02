@@ -5,7 +5,7 @@ import type { RecurringSeriesEventInterface } from '../interface/recurring-serie
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 
 export const DAY_MS = 86_400_000;
-const DAYS_PER_MONTH = 30.44;
+export const DAYS_PER_MONTH = 30.44;
 const MONTHS_PER_YEAR = 12;
 const MAD_SCALE = 1.4826;
 
@@ -17,6 +17,7 @@ const SAME_EVENT_WINDOW_DAYS = 3;
 const MONTHLY_MAX_GAP_DAYS = 45;
 const MIN_MONTH_PRESENCE = 0.75;
 const RECENT_AMOUNT_COUNT = 3;
+const PRICE_CHANGE_RATIO = 0.05;
 const PERIOD_TOLERANCE = 0.2;
 const MONTHLY_DAYS = 30;
 const BIMONTHLY_DAYS = 61;
@@ -157,6 +158,23 @@ const measureMedianGap = (events: readonly RecurringSeriesEventInterface[]): num
     return isRegular ? medianGap : null;
 };
 
+const isStableAmount = (amounts: readonly number[]): boolean =>
+    Math.max(...amounts.map(Math.abs)) <= Math.min(...amounts.map(Math.abs)) * (1 + PRICE_CHANGE_RATIO);
+
+const findPriceStepIndex = (events: readonly RecurringSeriesEventInterface[]): number | null => {
+    const amounts = events.map(event => event.amount);
+    const index = amounts.findLastIndex(
+        (amount, position) =>
+            position > 0 && Math.abs(amount - amounts[position - 1]) > Math.abs(amounts[position - 1]) * PRICE_CHANGE_RATIO
+    );
+
+    return index > 0 &&
+        isStableAmount(amounts.slice(index)) &&
+        isStableAmount(amounts.slice(Math.max(index - RECENT_AMOUNT_COUNT, 0), index))
+        ? index
+        : null;
+};
+
 const findMerchantKey = (labels: readonly string[]): string => {
     const counts = labels.reduce((result, label) => result.set(label, (result.get(label) ?? 0) + 1), new Map<string, number>());
 
@@ -173,6 +191,8 @@ const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSer
     const latest = charges.reduce((current, charge) => (charge.operatedAt.getTime() > current.operatedAt.getTime() ? charge : current));
     const period = PERIOD_DAYS_BY_MONTHS.find(([, days]) => Math.abs(medianGap - days) <= days * PERIOD_TOLERANCE);
     const labels = charges.map(chargeLabel);
+    const stepIndex = findPriceStepIndex(events);
+    const recentEvents = events.slice(Math.max(stepIndex ?? 0, events.length - RECENT_AMOUNT_COUNT));
 
     return {
         merchantKey: findMerchantKey(labels),
@@ -185,7 +205,8 @@ const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSer
         periodMonths: period?.[0] ?? null,
         periodDays: medianGap,
         anchorTimestamp: events[events.length - 1].timestamp,
-        predictedAmount: Math.round(median(events.slice(-RECENT_AMOUNT_COUNT).map(event => event.amount))),
+        predictedAmount: Math.round(median(recentEvents.map(event => event.amount))),
+        priceChangedAt: isDefined(stepIndex) ? events[stepIndex].timestamp : null,
         events
     };
 };
@@ -198,7 +219,16 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
         .filter(series => series.periodMonths === 1);
 
     if (monthlyBands.length > 1 || (!isDefined(whole) && isNotEmptyArray(monthlyBands))) {
-        return monthlyBands;
+        return monthlyBands.map(series => {
+            const startTimestamp = series.events[0].timestamp;
+            const hasPredecessor = monthlyBands.some(
+                other =>
+                    other.anchorTimestamp < startTimestamp &&
+                    startTimestamp - other.anchorTimestamp <= other.periodDays * ACTIVE_PERIOD_RATIO * DAY_MS
+            );
+
+            return hasPredecessor ? { ...series, priceChangedAt: series.priceChangedAt ?? startTimestamp } : series;
+        });
     }
 
     return isDefined(whole) ? [whole] : [];

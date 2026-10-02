@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -25,6 +25,7 @@ const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryI
 
 // eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
+    const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
@@ -71,6 +72,8 @@ export const RecurringCalendarContent = () => {
     const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
+    const committedExpense = formatDigits(data?.committedMonthlyExpense ?? 0, defaultInstrument.symbol);
+    const committedIncome = formatDigits(data?.committedMonthlyIncome ?? 0, defaultInstrument.symbol);
 
     if (isDefined(data) && !hasEntries) {
         return (
@@ -90,6 +93,9 @@ export const RecurringCalendarContent = () => {
                     <Text className="font-medium text-xs uppercase text-secondary-foreground">
                         <Trans>Monthly Total</Trans>
                     </Text>
+                    <ProtectedText className="text-xs text-secondary-foreground">
+                        {t`Committed ${committedExpense} per month · income ${committedIncome}`}
+                    </ProtectedText>
                 </View>
 
                 <RecurringCalendarGrid

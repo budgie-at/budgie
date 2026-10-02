@@ -3,7 +3,7 @@ import { PRECISION, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { RecurringService } from '../src/index';
+import { RecurringAlertEnum, RecurringService } from '../src/index';
 
 import { TestLayer, testDb, testDbHandle, testSeedService } from './test-context';
 
@@ -195,6 +195,60 @@ layer(TestLayer)('recurringService', it => {
             expect(allEntries(yield* calendar(JULY)).map(item => [item.seriesId, item.title, item.userState])).toEqual([
                 [entry.seriesId, 'Music', RecurringSeriesUserStateEnum.CONFIRMED]
             ]);
+        })
+    );
+
+    it.effect('flags an expected charge that did not arrive as overdue', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 5, 12.99);
+
+            const data = yield* calendar(JUNE);
+
+            expect(data.forecastedEntriesByDay.get(5)?.map(entry => entry.alert)).toEqual([RecurringAlertEnum.OVERDUE]);
+        })
+    );
+
+    it.effect('flags a price step above five percent and forecasts the new price', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4, 3, 2], monthsAgo => seed('WIENER LINIEN', monthsAgo, 20, 33), { discard: true });
+            yield* seed('WIENER LINIEN', 1, 20, 41.7);
+
+            const data = yield* calendar(JULY);
+
+            expect(data.forecastedEntriesByDay.get(20)?.map(entry => [entry.latestAmount, entry.alert])).toEqual([
+                [41.7 * PRECISION, RecurringAlertEnum.PRICE_CHANGE]
+            ]);
+        })
+    );
+
+    it.effect('flags a fare that moved to a new amount band months ago', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([9, 8, 7, 6, 5], monthsAgo => seed('WIENER LINIEN', monthsAgo, 5, 33), { discard: true });
+            yield* Effect.forEach([4, 3, 2, 1], monthsAgo => seed('WIENER LINIEN', monthsAgo, 5, 41.7), { discard: true });
+
+            const data = yield* calendar(JULY);
+
+            expect(data.forecastedEntriesByDay.get(5)?.map(entry => [entry.latestAmount, entry.alert])).toEqual([
+                [41.7 * PRECISION, RecurringAlertEnum.PRICE_CHANGE]
+            ]);
+        })
+    );
+
+    it.effect('sums committed monthly expense and income of active series', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            yield* Effect.forEach([9, 6, 3], monthsAgo => seed('INSURANCE CO', monthsAgo, 20, 30), { discard: true });
+            yield* Effect.forEach([10, 9, 8, 7, 6, 5], monthsAgo => seed('OLD GYM', monthsAgo, 20, 40), { discard: true });
+
+            const data = yield* calendar(JULY);
+
+            expect(data.committedMonthlyExpense).toBeCloseTo(22);
+            expect(data.committedMonthlyIncome).toBeCloseTo(3000);
         })
     );
 });
