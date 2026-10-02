@@ -1,5 +1,5 @@
 import { resetTestDb } from '@budgie-at/test-kit';
-import { PRECISION } from '@budgie/contracts';
+import { PRECISION, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -30,7 +30,13 @@ const seedCharges = Effect.fnUntraced(function* () {
     });
 });
 
+const seedMonthly = (seed: Effect.Success<ReturnType<typeof seedCharges>>, title: string, day: number, amount: number) =>
+    Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed(title, monthsAgo, day, amount), { discard: true });
+
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
+
+const allEntries = (data: RecurringCalendarDataInterface) =>
+    [...data.entriesByDay.values(), ...data.forecastedEntriesByDay.values()].flat();
 
 const forecastedAmounts = (data: RecurringCalendarDataInterface, day: number) =>
     (data.forecastedEntriesByDay.get(day) ?? []).map(entry => entry.latestAmount).sort((first, second) => first - second);
@@ -152,6 +158,43 @@ layer(TestLayer)('recurringService', it => {
 
             expect(june.forecastedEntriesByDay.size).toBe(0);
             expect(forecastedAmounts(july, 20)).toEqual([110 * PRECISION]);
+        })
+    );
+
+    it.effect('keeps a dismissed series dismissed across detection runs', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12.99);
+            const [entry] = allEntries(yield* calendar(JULY));
+
+            yield* Effect.flatMap(RecurringService, service =>
+                service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.DISMISSED)
+            );
+            yield* seed('NETFLIX', 0, 14, 12.99);
+
+            expect(allEntries(yield* calendar(JUNE))).toEqual([]);
+            expect(allEntries(yield* calendar(JULY))).toEqual([]);
+        })
+    );
+
+    it.effect('keeps a renamed and confirmed series across detection runs', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'SPOTIFY AB', 20, 10);
+            const [entry] = allEntries(yield* calendar(JULY));
+
+            yield* Effect.flatMap(RecurringService, service =>
+                Effect.andThen(
+                    service.rename(entry.seriesId, 'Music'),
+                    service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.CONFIRMED)
+                )
+            );
+            yield* seed('SPOTIFY AB', 0, 14, 10);
+
+            expect(entry.userState).toBe(RecurringSeriesUserStateEnum.SUGGESTED);
+            expect(allEntries(yield* calendar(JULY)).map(item => [item.seriesId, item.title, item.userState])).toEqual([
+                [entry.seriesId, 'Music', RecurringSeriesUserStateEnum.CONFIRMED]
+            ]);
         })
     );
 });

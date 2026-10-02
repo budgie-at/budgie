@@ -19,7 +19,8 @@ const MUTABLE_TABLES = [
     'merchant_embeddings',
     'merchant_embedding_tags',
     'comment_embeddings',
-    'comment_embedding_tags'
+    'comment_embedding_tags',
+    'recurring_series'
 ] as const;
 
 export const resetTestDb = (database: DB) =>

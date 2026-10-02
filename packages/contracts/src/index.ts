@@ -399,6 +399,13 @@ export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category
 export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
 export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';
 
+export { RecurringSeriesKindEnum } from './recurring-series/enum/recurring-series-kind.enum';
+export { RecurringSeriesStatusEnum } from './recurring-series/enum/recurring-series-status.enum';
+export { RecurringSeriesUserStateEnum } from './recurring-series/enum/recurring-series-user-state.enum';
+export { RecurringSeriesEntityTable } from './recurring-series/table/recurring-series-entity.table';
+export type { RecurringSeriesEntityInterface } from './recurring-series/entity/recurring-series-entity.interface';
+export type { RecurringSeriesCreateEntityInterface } from './recurring-series/entity/recurring-series-create-entity.interface';
+
 export { RUNWAY_IRREGULAR_CV_THRESHOLD } from './runway/constant/runway.constant';
 export { RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD } from './runway/constant/runway.constant';
 export { RUNWAY_MAX_MONTHS } from './runway/constant/runway.constant';

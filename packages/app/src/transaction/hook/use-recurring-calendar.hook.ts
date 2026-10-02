@@ -1,4 +1,4 @@
-import { SettingsEntityTable } from '@budgie/contracts';
+import { RecurringSeriesEntityTable, SettingsEntityTable } from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
 import { isSameDay } from 'date-fns/isSameDay';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -12,7 +12,7 @@ import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 import type { RecurringCalendarDataInterface } from '@budgie/recurring';
 
 const recurringCalendarAtom = databaseQueryFamily(
-    [...STATISTICS_TABLES, SettingsEntityTable],
+    [...STATISTICS_TABLES, SettingsEntityTable, RecurringSeriesEntityTable],
     RecurringService,
     (recurringService, [year, month, nowTime]: readonly [number, number, number]) =>
         recurringService.calendar(year, month, new Date(nowTime))
