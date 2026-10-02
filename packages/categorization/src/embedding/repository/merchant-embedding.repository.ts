@@ -3,7 +3,6 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { EMBEDDING_DIMENSIONS } from '../constant/embedding.constant';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 import { makeEmbeddingRepository } from '../util/make-embedding-repository.util';
 import { parsePendingContextBaseFields } from '../util/parse-pending-context-base-fields.util';
@@ -103,32 +102,11 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
                 deletedAtColumn: MerchantEmbeddingEntityTable.deletedAt,
                 tagTable: MerchantEmbeddingTagEntityTable,
                 foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
-                createTagRow: (embeddingId, tagId) => ({ merchantEmbeddingId: embeddingId, tagId })
-            }),
-            findSimilarComments: Effect.fn('MerchantEmbeddingRepository.findSimilarComments')(function* (
-                queryEmbedding: Uint8Array,
-                params: SimilarCommentsParamsInterface
-            ) {
-                const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
-
-                return yield* Db.query(db =>
-                    db.$client.unsafe<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
-                        convertEmbeddingToJson(queryEmbedding),
-                        vecLimit,
-                        distanceThreshold,
-                        categoryId,
-                        commentLimit
-                    ])
-                );
-            }),
-            upsert: Effect.fn('MerchantEmbeddingRepository.upsert')(function* (params: UpsertMerchantEmbeddingParamsInterface) {
-                const { title, mccDescription, categoryId, comment, embedding, dimensions } = params;
-
-                if (dimensions !== EMBEDDING_DIMENSIONS) {
-                    return null;
-                }
-
-                const [row] = yield* Db.query(db =>
+                createTagRow: (embeddingId, tagId) => ({ merchantEmbeddingId: embeddingId, tagId }),
+                upsertRow: (
+                    db,
+                    { title, mccDescription, categoryId, comment, embedding, dimensions }: UpsertMerchantEmbeddingParamsInterface
+                ) =>
                     db
                         .insert(MerchantEmbeddingEntityTable)
                         .values({ title, mccDescription, categoryId, comment, embedding, dimensions })
@@ -141,19 +119,20 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
                             set: { comment, embedding, dimensions, updatedAt: new Date() }
                         })
                         .returning({ id: MerchantEmbeddingEntityTable.id })
-                );
-
-                yield* Db.query(db => db.$client.unsafe('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]).raw);
-                yield* Db.query(
-                    db =>
-                        db.$client.unsafe(
-                            'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
-                            [row.id]
-                        ).raw
-                );
-
-                return row.id;
             }),
+            findSimilarComments: (
+                queryEmbedding: Uint8Array,
+                { vecLimit, distanceThreshold, categoryId, commentLimit }: SimilarCommentsParamsInterface
+            ) =>
+                Db.query(db =>
+                    db.$client.unsafe<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+                        convertEmbeddingToJson(queryEmbedding),
+                        vecLimit,
+                        distanceThreshold,
+                        categoryId,
+                        commentLimit
+                    ])
+                ),
             findPendingMerchantContexts: Effect.fn('MerchantEmbeddingRepository.findPendingMerchantContexts')(function* (limit: number) {
                 const rows = yield* Db.query(db =>
                     db.$client.unsafe<{

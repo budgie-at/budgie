@@ -7,6 +7,8 @@ import { RecurringService } from '../src/index';
 
 import { TestLayer, testDb, testDbHandle, testSeedService } from './test-context';
 
+import type { RecurringCalendarDataInterface } from '../src/index';
+
 const NOW = new Date(2026, 5, 15, 12);
 const JUNE = 5;
 const JULY = 6;
@@ -30,10 +32,8 @@ const seedCharges = Effect.fnUntraced(function* () {
 
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
 
-const forecastedAmounts = (
-    data: { readonly forecastedEntriesByDay: ReadonlyMap<number, readonly { readonly latestAmount: number }[]> },
-    day: number
-) => (data.forecastedEntriesByDay.get(day) ?? []).map(entry => entry.latestAmount).sort((first, second) => first - second);
+const forecastedAmounts = (data: RecurringCalendarDataInterface, day: number) =>
+    (data.forecastedEntriesByDay.get(day) ?? []).map(entry => entry.latestAmount).sort((first, second) => first - second);
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 

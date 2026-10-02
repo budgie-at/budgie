@@ -89,7 +89,7 @@ describe('rule/rule-application-drainer', () => {
             yield* ruleApplicationDrainerService.enqueueRuleApplication(7, onSettled);
             yield* advanceScheduledDrain(drainDelayMs);
 
-            expect(applyRule).toHaveBeenCalledWith(7, null);
+            expect(applyRule).toHaveBeenCalledWith(7);
             expect(onSettled).toHaveBeenCalledWith({ applied: 3, failed: 0, total: 3 }, null);
         }).pipe(Effect.provide(TestClockLayer))
     );

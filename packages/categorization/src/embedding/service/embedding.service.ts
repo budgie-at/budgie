@@ -26,9 +26,7 @@ export class EmbeddingService extends Context.Service<EmbeddingService>()('@budg
         );
 
         return {
-            generateEmbedding: Effect.fn('EmbeddingService.generateEmbedding')(function* (text: string) {
-                return yield* Cache.get(embeddingCache, text);
-            })
+            generateEmbedding: (text: string) => Cache.get(embeddingCache, text)
         };
     })
 }) {

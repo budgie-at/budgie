@@ -3,7 +3,6 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { EMBEDDING_DIMENSIONS } from '../constant/embedding.constant';
 import { makeEmbeddingRepository } from '../util/make-embedding-repository.util';
 import { parsePendingContextBaseFields } from '../util/parse-pending-context-base-fields.util';
 
@@ -83,16 +82,8 @@ export class CommentEmbeddingRepository extends Context.Service<CommentEmbedding
                 deletedAtColumn: CommentEmbeddingEntityTable.deletedAt,
                 tagTable: CommentEmbeddingTagEntityTable,
                 foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
-                createTagRow: (embeddingId, tagId) => ({ commentEmbeddingId: embeddingId, tagId })
-            }),
-            upsert: Effect.fn('CommentEmbeddingRepository.upsert')(function* (params: UpsertCommentEmbeddingParamsInterface) {
-                const { comment, categoryId, embedding, dimensions } = params;
-
-                if (dimensions !== EMBEDDING_DIMENSIONS) {
-                    return null;
-                }
-
-                const [row] = yield* Db.query(db =>
+                createTagRow: (embeddingId, tagId) => ({ commentEmbeddingId: embeddingId, tagId }),
+                upsertRow: (db, { comment, categoryId, embedding, dimensions }: UpsertCommentEmbeddingParamsInterface) =>
                     db
                         .insert(CommentEmbeddingEntityTable)
                         .values({ comment, categoryId, embedding, dimensions })
@@ -101,18 +92,6 @@ export class CommentEmbeddingRepository extends Context.Service<CommentEmbedding
                             set: { embedding, dimensions, updatedAt: new Date() }
                         })
                         .returning({ id: CommentEmbeddingEntityTable.id })
-                );
-
-                yield* Db.query(db => db.$client.unsafe('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]).raw);
-                yield* Db.query(
-                    db =>
-                        db.$client.unsafe(
-                            'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
-                            [row.id]
-                        ).raw
-                );
-
-                return row.id;
             }),
             findPendingCommentContexts: Effect.fn('CommentEmbeddingRepository.findPendingCommentContexts')(function* (limit: number) {
                 const rows = yield* Db.query(db =>

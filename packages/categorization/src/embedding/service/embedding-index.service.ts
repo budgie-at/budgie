@@ -93,13 +93,7 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
                     commentEmbeddingRepository.upsert({ comment: context.comment, categoryId: context.categoryId, embedding, dimensions }),
                 replaceTags: (embeddingId, tagIds) => commentEmbeddingRepository.replaceTags(embeddingId, tagIds)
             }),
-            clearStaleFlags: Db.transaction(
-                Effect.all([
-                    transactionEmbeddingRepository.clearNonIndexableFlags(),
-                    transactionEmbeddingRepository.clearAlreadyIndexedMerchantFlags(),
-                    transactionEmbeddingRepository.clearAlreadyIndexedCommentFlags()
-                ])
-            )
+            clearStaleFlags: transactionEmbeddingRepository.clearStaleFlags()
         };
     })
 }) {

@@ -375,37 +375,23 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 
             return yield* applyRuleActionsToTransactionBatch(batchIds, actions).pipe(
                 Effect.as(0),
-                Effect.tapCause(Effect.logError),
-                Effect.catchCause(() => Effect.succeed(batchIds.length))
+                Effect.catchCause(cause => Effect.as(Effect.logError(cause), batchIds.length))
             );
         });
 
         const applyRuleToMatchingTransactionBatches = Effect.fn('RuleEngineService.applyRuleToMatchingTransactionBatches')(function* (
             matchingIds: number[],
-            actions: RuleActionEntityInterface[],
-            onProgress: ((processed: number, total: number) => void) | null
+            actions: RuleActionEntityInterface[]
         ) {
-            let processed = 0;
-            let failed = 0;
-            const total = matchingIds.length;
             const batchSize = hasConvertToTransferAction(actions) ? RULE_BATCH_SIZE : RULE_SET_BATCH_SIZE;
+            const failedCounts = yield* Effect.forEach(getBatchStarts(matchingIds.length, batchSize), batchStart =>
+                applyRuleToMatchingTransactionBatch(matchingIds.slice(batchStart, batchStart + batchSize), actions)
+            );
 
-            for (const batchStart of getBatchStarts(total, batchSize)) {
-                const batchIds = matchingIds.slice(batchStart, batchStart + batchSize);
-                const batchFailed = yield* applyRuleToMatchingTransactionBatch(batchIds, actions);
-
-                failed += batchFailed;
-                processed += batchIds.length;
-                onProgress?.(processed, total);
-            }
-
-            return failed;
+            return failedCounts.reduce((total, failed) => total + failed, 0);
         });
 
-        const applyRuleToMatchingTransactions = Effect.fn('RuleEngineService.applyRuleToMatchingTransactions')(function* (
-            ruleId: number,
-            onProgress: ((processed: number, total: number) => void) | null
-        ) {
+        const applyRuleToMatchingTransactions = Effect.fn('RuleEngineService.applyRuleToMatchingTransactions')(function* (ruleId: number) {
             const rule = yield* ruleRepository.findByIdWithRelations(ruleId);
             const emptyResult: ApplyRuleResultInterface = { applied: 0, failed: 0, total: 0 };
 
@@ -420,7 +406,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             }
 
             const total = matchingIds.length;
-            const failed = yield* applyRuleToMatchingTransactionBatches(matchingIds, rule.actions, onProgress);
+            const failed = yield* applyRuleToMatchingTransactionBatches(matchingIds, rule.actions);
 
             return { applied: total - failed, failed, total } satisfies ApplyRuleResultInterface;
         });

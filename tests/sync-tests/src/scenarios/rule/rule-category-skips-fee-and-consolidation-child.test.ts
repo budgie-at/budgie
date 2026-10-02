@@ -68,7 +68,7 @@ describe('rule/rule-category-skips-fee-and-consolidation-child', () => {
                 .where(eq(TransactionEntityTable.id, child.id));
             const rule = yield* seedCategoryRule(category.id);
 
-            const result = yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id, null);
+            const result = yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id);
             const directlyCategorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds([child.id], category.id);
             const entries = yield* testDb
                 .select()

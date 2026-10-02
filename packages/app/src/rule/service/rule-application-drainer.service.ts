@@ -57,7 +57,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
 
                 const { ruleId, onSettled } = pending;
 
-                yield* workload.run(ruleEngineService.applyRuleToMatchingTransactions(ruleId, null)).pipe(
+                yield* workload.run(ruleEngineService.applyRuleToMatchingTransactions(ruleId)).pipe(
                     Effect.matchCause({
                         onSuccess: result => {
                             onSettled?.(result, null);

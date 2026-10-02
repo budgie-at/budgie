@@ -23,7 +23,9 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
         const embeddingIndexService = yield* EmbeddingIndexService;
         const embeddingProgressStore = yield* EmbeddingProgressStore;
         const aiModelResidencyService = yield* AiModelResidencyService;
-        let residueCleared = false;
+        const clearStaleFlagsOnce = yield* Effect.cached(
+            Effect.forkDetach(Effect.ignore(embeddingIndexService.clearStaleFlags, { log: true }))
+        );
 
         const createDrainer = (
             index: typeof embeddingIndexService.merchant,
@@ -53,11 +55,7 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
             start: Effect.fn('EmbeddingDrainerService.start')(function* () {
                 yield* merchant.start();
                 yield* comment.start();
-                if (residueCleared) {
-                    return;
-                }
-                residueCleared = true;
-                yield* Effect.forkDetach(Effect.ignore(embeddingIndexService.clearStaleFlags));
+                yield* clearStaleFlagsOnce;
             }),
             boost: Effect.fn('EmbeddingDrainerService.boost')(function* () {
                 yield* merchant.boost();
