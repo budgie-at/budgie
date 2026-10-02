@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.88.4](https://github.com/budgie-at/budgie/compare/v6.88.3...v6.88.4) (2026-10-02)
+
+
+### Bug Fixes
+
+* **app:** redesign debt tiles as full-width rows with a progress line ([8530380](https://github.com/budgie-at/budgie/commit/853038026b6519b0cb7d9e3783e46ded5a440ce3))
+
+
+
+
+
 ## [6.88.3](https://github.com/budgie-at/budgie/compare/v6.88.2...v6.88.3) (2026-10-02)
 
 
