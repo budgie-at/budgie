@@ -695,7 +695,6 @@ msgstr "Bank sync reset"
 msgid "Base currency"
 msgstr "Base currency"
 
-#: src/money-data/service/entry-base-valuation.service.ts
 #: src/money-data/service/money-data-upgrade.service.ts
 msgid "Base instrument not found"
 msgstr "Base instrument not found"
@@ -1915,10 +1914,6 @@ msgstr "Everyday transactions and spending"
 msgid "Exchange rate"
 msgstr "Exchange rate"
 
-#: src/money-data/service/entry-base-valuation.service.ts
-msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
-msgstr "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
-
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Exchange rate not found"
 msgstr "Exchange rate not found"
@@ -2297,10 +2292,6 @@ msgstr "Income by Tag"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Instrument not found"
-msgstr "Instrument not found"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
 msgstr "Interest Rate"
@@ -2475,10 +2466,6 @@ msgstr "Map CSV Columns"
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
 msgstr "Market cap"
-
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Market data prices missing"
-msgstr "Market data prices missing"
 
 #: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
 msgid "Market history is loading quietly."

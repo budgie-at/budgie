@@ -694,7 +694,6 @@ msgstr "Синхронізацію з банком скинуто"
 msgid "Base currency"
 msgstr "Базова валюта"
 
-#: src/money-data/service/entry-base-valuation.service.ts
 #: src/money-data/service/money-data-upgrade.service.ts
 msgid "Base instrument not found"
 msgstr "Базову валюту не знайдено"
@@ -1914,10 +1913,6 @@ msgstr "Щоденні транзакції та витрати"
 msgid "Exchange rate"
 msgstr "Обмінний курс"
 
-#: src/money-data/service/entry-base-valuation.service.ts
-msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
-msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
-
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Exchange rate not found"
 msgstr "Курс обміну не знайдено"
@@ -2296,10 +2291,6 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Instrument not found"
-msgstr "Інструмент не знайдено"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
 msgstr "Відсоткова ставка"
@@ -2474,10 +2465,6 @@ msgstr "Зіставлення стовпців CSV"
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
 msgstr "Ринкова капіталізація"
-
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Market data prices missing"
-msgstr "Ціни ринкових даних відсутні"
 
 #: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
 msgid "Market history is loading quietly."
