@@ -1,6 +1,6 @@
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
-import { TransferCreationService } from '@app/transaction/service/transfer-creation.service';
 import { AccountDebtTypeEnum, AccountTypeEnum, CurrencyEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransferCreationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

@@ -1,7 +1,5 @@
 export { RuleDetectionModeEnum } from './enum/rule-detection-mode.enum';
 
-export { RuleHost } from './port/rule-host.port';
-
 export { RuleRepository } from './repository/rule.repository';
 export { TransactionRuleRepository } from './repository/transaction-rule.repository';
 

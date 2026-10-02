@@ -1,4 +1,3 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import {
     AccountDebtTypeEnum,
@@ -16,6 +15,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

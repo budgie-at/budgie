@@ -1,3 +1,4 @@
+import { TransactionService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import Toast from 'react-native-toast-message';
 
@@ -5,7 +6,6 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { TransactionService } from '../service/transaction.service';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 

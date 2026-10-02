@@ -1,6 +1,3 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { TransactionService } from '@app/transaction/service/transaction.service';
-import { TransferCreationService } from '@app/transaction/service/transfer-creation.service';
 import {
     AccountBalanceEntityTable,
     AccountBalanceRepository,
@@ -14,6 +11,7 @@ import {
     TransactionRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService, TransactionService, TransferCreationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';

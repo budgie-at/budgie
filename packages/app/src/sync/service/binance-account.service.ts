@@ -1,4 +1,5 @@
 import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, InstrumentRepository } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import { SyncAccountBalanceStateEnum, binanceMapper, decodeBinanceAccountId } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -7,7 +8,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { AccountService } from '../../account/service/account.service';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { mapSyncAccountToCreateInput } from '../util/map-sync-account-to-create-input.util';
 

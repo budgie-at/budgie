@@ -1,5 +1,5 @@
-import { TransactionImportService } from '@app/transaction/service/transaction-import.service';
 import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionImportService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

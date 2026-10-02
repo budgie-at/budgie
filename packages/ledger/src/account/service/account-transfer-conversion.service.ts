@@ -12,7 +12,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 export class AccountTransferConversionService extends Context.Service<AccountTransferConversionService>()(
-    '@budgie/app/AccountTransferConversionService',
+    '@budgie/ledger/AccountTransferConversionService',
     {
         make: Effect.gen(function* () {
             const transactionEntryRepository = yield* TransactionEntryRepository;

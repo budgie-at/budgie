@@ -1,8 +1,8 @@
 import { DatabaseSync } from 'node:sqlite';
 
 import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { TransactionService } from '@app/transaction/service/transaction.service';
 import { Db, PRECISION, SyncRepository, TransactionEntryEntityTable } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { like } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

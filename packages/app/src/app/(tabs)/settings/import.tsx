@@ -7,6 +7,7 @@ import {
     TransactionTagsRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
@@ -25,7 +26,6 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { YIELD_TO_UI } from '../../../@generic/constant/yield-to-ui.constant';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { AccountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
 import { IMPORT_PRESETS } from '../../../import/constant/import-presets.constant';

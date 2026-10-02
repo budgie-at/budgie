@@ -1,11 +1,13 @@
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
+import * as BackgroundTask from 'expo-background-task';
 import * as SplashScreen from 'expo-splash-screen';
+import * as TaskManager from 'expo-task-manager';
 import { useEffect } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../../account/constant/account-balance-incremental-task.constant';
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
@@ -23,11 +25,23 @@ import { waitForIdle } from '../utils/wait-for-idle.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
+const ACCOUNT_BALANCE_INCREMENTAL_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
+
+const registerAccountBalanceIncrementalTask = Effect.gen(function* () {
+    if (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK))) {
+        return;
+    }
+
+    yield* Effect.promise(() =>
+        BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
+            minimumInterval: ACCOUNT_BALANCE_INCREMENTAL_TASK_MINIMUM_INTERVAL_MINUTES
+        })
+    );
+});
 
 const registerBackgroundTasks = Effect.gen(function* () {
     const authService = yield* AuthService;
     const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
-    const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
     const transferConsolidationService = yield* TransferConsolidationService;
     const monobankSyncService = yield* MonobankSyncService;
     const binanceSyncService = yield* BinanceSyncService;
@@ -38,7 +52,7 @@ const registerBackgroundTasks = Effect.gen(function* () {
         [
             authService.ensurePinBackgroundAccessibility(),
             exchangeRateBackgroundService.registerBackgroundTask(),
-            accountBalanceIncrementalService.registerBackgroundTask(),
+            registerAccountBalanceIncrementalTask,
             transferConsolidationService.registerBackgroundTask(),
             monobankSyncService.registerBackgroundTask(),
             binanceSyncService.registerBackgroundTask(),

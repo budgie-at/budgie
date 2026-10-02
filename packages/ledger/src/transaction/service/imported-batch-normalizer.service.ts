@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 export class ImportedBatchNormalizerService extends Context.Service<ImportedBatchNormalizerService>()(
-    '@budgie/app/ImportedBatchNormalizerService',
+    '@budgie/ledger/ImportedBatchNormalizerService',
     {
         make: Effect.sync(() => {
             const externalIdCollisionSeparator = ':';

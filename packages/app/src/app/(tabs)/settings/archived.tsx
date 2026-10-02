@@ -1,4 +1,5 @@
 import { AccountEntityTable, AccountRepository, AccountWithInstrumentEntityInterface, InstrumentEntityTable } from '@budgie/contracts';
+import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -12,7 +13,6 @@ import { databaseQueryAtom } from '../../../@generic/utils/database-query-atom.u
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ArchivedAccountCard } from '../../../account/component/archived-account-card/archived-account-card';
 import { ArchivedAccountsEmptyState } from '../../../account/component/archived-accounts-empty-state/archived-accounts-empty-state';
-import { AccountArchiveService } from '../../../account/service/account-archive.service';
 import { filterAccountsBySearchQuery } from '../../../account/utils/filter-accounts-by-search-query.util';
 
 import { ArchivedAccountsPageSelector } from './archived-accounts-page.selector';

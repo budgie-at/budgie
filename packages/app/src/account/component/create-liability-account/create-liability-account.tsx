@@ -1,5 +1,6 @@
 // jscpd:ignore-start
 import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -17,7 +18,6 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useAccountForm } from '../../hooks/use-account-form.hook';
-import { AccountService } from '../../service/account.service';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';

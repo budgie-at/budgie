@@ -1,4 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -9,7 +10,6 @@ import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { ACCOUNT_ICON } from '../constant/account-icon.constant';
 import { useGetAccountByIdQuery } from '../query/use-get-account-by-id.query';
-import { AccountService } from '../service/account.service';
 
 import type { AccountSelectorCreateActionInterface } from '../interface/account-selector-create-action.interface';
 

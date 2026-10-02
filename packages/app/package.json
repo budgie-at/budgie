@@ -32,6 +32,7 @@
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
+        "@budgie/ledger": "workspace:*",
         "@budgie/market": "workspace:*",
         "@budgie/recurring": "workspace:*",
         "@budgie/rules": "workspace:*",

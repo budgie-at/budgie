@@ -19,13 +19,13 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
-import { getEntryAccountIds } from '../utils/get-entry-account-ids.util';
-import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
-import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
-import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
+import { getEntryAccountIds } from '../util/get-entry-account-ids.util';
+import { stampForDeferredEmbedding } from '../util/stamp-for-deferred-embedding.util';
+import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
+import { transactionMapTagIdsToCreateEntities } from '../util/transaction-map-tag-ids-to-create-entities.util';
 
 import { ImportedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { TransactionBatchCreateService } from './transaction-batch-create.service';
@@ -34,7 +34,7 @@ import { TransactionDepositSafetyService } from './transaction-deposit-safety.se
 
 import type { UpsertTransactionEntriesAndTagsInputInterface } from '../interface/upsert-transaction-entries-and-tags-input.interface';
 
-export class TransactionService extends Context.Service<TransactionService>()('@budgie/app/TransactionService', {
+export class TransactionService extends Context.Service<TransactionService>()('@budgie/ledger/TransactionService', {
     make: Effect.gen(function* () {
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionRepository = yield* TransactionRepository;

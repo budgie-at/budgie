@@ -16,7 +16,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 export class TransactionDepositSafetyService extends Context.Service<TransactionDepositSafetyService>()(
-    '@budgie/app/TransactionDepositSafetyService',
+    '@budgie/ledger/TransactionDepositSafetyService',
     {
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;

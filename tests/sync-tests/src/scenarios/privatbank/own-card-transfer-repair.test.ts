@@ -1,6 +1,4 @@
-import { AccountArchiveService } from '@app/account/service/account-archive.service';
 import { UnpairedOwnCardTransferRepairService } from '@app/sync/service/unpaired-own-card-transfer-repair.service';
-import { TransactionTransferService } from '@app/transaction/service/transaction-transfer.service';
 import {
     AccountBalanceRepository,
     AccountEntityTable,
@@ -10,6 +8,7 @@ import {
     TransactionEntryEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { AccountArchiveService, TransactionTransferService } from '@budgie/ledger';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';

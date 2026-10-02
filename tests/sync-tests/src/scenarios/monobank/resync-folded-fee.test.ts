@@ -1,6 +1,4 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { TransactionService } from '@app/transaction/service/transaction.service';
 import {
     AccountBalanceRepository,
     BANK_FEE_CATEGORY_ID,
@@ -9,6 +7,7 @@ import {
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { like } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

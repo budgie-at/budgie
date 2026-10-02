@@ -14,6 +14,7 @@
         "@budgie/categorization": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
+        "@budgie/ledger": "workspace:*",
         "@budgie/market": "workspace:*",
         "@budgie/rules": "workspace:*",
         "@budgie/sync": "workspace:*",

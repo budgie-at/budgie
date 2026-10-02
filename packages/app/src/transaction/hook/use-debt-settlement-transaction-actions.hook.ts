@@ -1,4 +1,5 @@
 import { AccountTypeEnum, DebtEventAssociationEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountService, TransactionDebtSettlementService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -8,8 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
-import { AccountService } from '../../account/service/account.service';
-import { TransactionDebtSettlementService } from '../service/transaction-debt-settlement.service';
 
 import type { DebtSettlementTransactionActionsParamsInterface } from '../interface/debt-settlement-transaction-actions-params.interface';
 

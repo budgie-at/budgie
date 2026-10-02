@@ -1,5 +1,5 @@
-import { TransactionImportService } from '@app/transaction/service/transaction-import.service';
 import * as Contracts from '@budgie/contracts';
+import { TransactionImportService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
@@ -8,7 +8,7 @@ import * as Effect from 'effect/Effect';
 import { fetchCachedBalanceAmount, seed, seedLedgerBalance, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
-import type { ImportedBatchPreparationInterface } from '@app/transaction/interface/imported-batch-preparation.interface';
+import type { ImportedBatchPreparationInterface } from '@budgie/ledger';
 
 const OPERATED_AT_YEAR = 2026;
 const DEPOSIT_EXPENSE_ERROR = 'Deposit accounts cannot fund expenses';

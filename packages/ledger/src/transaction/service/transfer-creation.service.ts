@@ -20,16 +20,16 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
-import { buildAdditionalTransferEntries } from '../utils/build-additional-transfer-entries.util';
-import { getEntryAccountIds } from '../utils/get-entry-account-ids.util';
-import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
+import { assertTransferAccountsAreNotDebt } from '../util/assert-transfer-accounts-are-not-debt.util';
+import { buildAdditionalTransferEntries } from '../util/build-additional-transfer-entries.util';
+import { getEntryAccountIds } from '../util/get-entry-account-ids.util';
+import { transactionMapTagIdsToCreateEntities } from '../util/transaction-map-tag-ids-to-create-entities.util';
 
 import type { EntryBaseValuationInterface } from '@budgie/market';
 
-export class TransferCreationService extends Context.Service<TransferCreationService>()('@budgie/app/TransferCreationService', {
+export class TransferCreationService extends Context.Service<TransferCreationService>()('@budgie/ledger/TransferCreationService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
@@ -142,7 +142,6 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             );
 
             if (!isDefined(fromEntry) || !isDefined(toEntry)) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
                 return yield* Effect.die(new Error('Transfer must have exactly two entries'));
             }
 
@@ -197,7 +196,6 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             createSyncedTransfers: Effect.fn('TransferCreationService.createSyncedTransfers')(
                 function* (inputs: TransactionCreateInputInterface[]) {
                     if (inputs.some(input => input.exchangeRate !== 1)) {
-                        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal invariant
                         return yield* Effect.die(new Error('Synced transfer exchange rate must be equal to 1'));
                     }
 

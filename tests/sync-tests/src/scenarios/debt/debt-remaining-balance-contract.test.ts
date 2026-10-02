@@ -1,7 +1,6 @@
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
-import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
     AccountBalanceRepository,
     AccountDebtTypeEnum,
@@ -18,6 +17,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

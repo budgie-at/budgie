@@ -6,8 +6,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
+import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
 
 import { TransactionDepositSafetyService } from './transaction-deposit-safety.service';
 
@@ -20,7 +20,7 @@ import type {
 } from '@budgie/contracts';
 
 export class ImportedTransactionEntryUpdateService extends Context.Service<ImportedTransactionEntryUpdateService>()(
-    '@budgie/app/ImportedTransactionEntryUpdateService',
+    '@budgie/ledger/ImportedTransactionEntryUpdateService',
     {
         make: Effect.gen(function* () {
             const transactionEntryRepository = yield* TransactionEntryRepository;

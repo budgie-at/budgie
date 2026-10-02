@@ -1,11 +1,11 @@
 import { AccountRepository, Db, RuleActionTypeEnum } from '@budgie/contracts';
+import { assertTransferAccountsAreNotDebt } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { RuleHost } from '../port/rule-host.port';
 import { RuleActionRepository } from '../repository/rule-action.repository';
 import { RuleConditionRepository } from '../repository/rule-condition.repository';
 import { RuleRepository } from '../repository/rule.repository';
@@ -15,8 +15,6 @@ import type { RuleCreateInputInterface, RuleUpdateInputInterface } from '@budgie
 export class RuleService extends Context.Service<RuleService>()('@budgie/rules/RuleService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
-
-        const ruleHost = yield* RuleHost;
 
         const ruleActionRepository = yield* RuleActionRepository;
 
@@ -40,7 +38,7 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
                 { concurrency: 'unbounded' }
             );
 
-            yield* ruleHost.assertTransferAccountsAllowed(accounts.filter(isDefined));
+            yield* assertTransferAccountsAreNotDebt(accounts.filter(isDefined));
         });
 
         const create = Effect.fn('RuleService.create')(

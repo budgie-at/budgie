@@ -1,6 +1,6 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountBalanceRepository } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

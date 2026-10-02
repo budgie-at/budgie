@@ -1,5 +1,6 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -8,7 +9,6 @@ import * as Semaphore from 'effect/Semaphore';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ERSTE_DUPLICATE_CANDIDATE_SQL } from '../constant/erste-duplicate-candidate-sql.constant';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../constant/privatbank-duplicate-candidate-sql.constant';
 import { consolidationCoordinatorLayer } from '../layer/consolidation-coordinator.layer';
