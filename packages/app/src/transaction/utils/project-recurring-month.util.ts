@@ -8,6 +8,8 @@ import { RecurringCalendarAccumulator } from '../service/recurring-calendar-accu
 
 const DAY_MS = 86_400_000;
 const PROJECTION_SUPPRESSION_RATIO = 0.4;
+const ACTIVE_PERIOD_RATIO = 1.5;
+const ACTIVE_GRACE_DAYS = 5;
 
 const buildExpectedDays = (series: RecurringSeriesInterface, year: number, month: number, daysInMonth: number): number[] => {
     if (isDefined(series.periodMonths)) {
@@ -43,6 +45,7 @@ const projectSeries = (
         readonly isPastMonth: boolean;
         readonly isCurrentMonth: boolean;
         readonly today: number;
+        readonly nowTimestamp: number;
     }
 ): void => {
     const actuals = item.events.filter(event => event.timestamp >= context.monthStart && event.timestamp < context.monthEnd);
@@ -50,7 +53,8 @@ const projectSeries = (
         accumulator.addActual(item, actual);
     }
 
-    if (context.isPastMonth) {
+    const isActive = context.nowTimestamp - item.anchorTimestamp <= (item.periodDays * ACTIVE_PERIOD_RATIO + ACTIVE_GRACE_DAYS) * DAY_MS;
+    if (context.isPastMonth || !isActive) {
         return;
     }
 
@@ -79,7 +83,8 @@ export const projectRecurringMonth = (
         monthEnd: new Date(year, month + 1, 1).getTime(),
         isPastMonth: targetMonthIndex < currentMonthIndex,
         isCurrentMonth: targetMonthIndex === currentMonthIndex,
-        today: now.getDate()
+        today: now.getDate(),
+        nowTimestamp: now.getTime()
     };
 
     const accumulator = new RecurringCalendarAccumulator();
