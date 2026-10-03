@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, notExists, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -10,6 +10,7 @@ import { BaseTransactionFilterRepository } from '../../@generic/repository/base-
 import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -19,6 +20,7 @@ import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
+import type { PotentialExpenseDuplicateInputInterface } from '../interface/potential-expense-duplicate-input.interface';
 
 export class TransactionRepository extends Context.Service<TransactionRepository>()('@budgie/contracts/TransactionRepository', {
     make: Effect.sync(() => {
@@ -85,6 +87,36 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
         return {
             bulkCreate,
+            findPotentialExpenseDuplicate: Effect.fn('TransactionRepository.findPotentialExpenseDuplicate')(function* (
+                input: PotentialExpenseDuplicateInputInterface
+            ) {
+                const candidates = yield* Db.query(db =>
+                    db
+                        .select({ id: TransactionEntityTable.id, title: TransactionEntityTable.title })
+                        .from(TransactionEntityTable)
+                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .where(
+                            and(
+                                filters.buildVisibleTransactionCondition(),
+                                filters.buildLedgerEntryCondition(),
+                                inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.DEBT]),
+                                eq(TransactionEntryEntityTable.accountId, input.accountId),
+                                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
+                                eq(TransactionEntryEntityTable.amount, input.amountInMicroUnits),
+                                gte(
+                                    TransactionEntityTable.operatedAt,
+                                    new Date(input.operatedAt.getTime() - input.timeWindowSeconds * 1000)
+                                ),
+                                lte(
+                                    TransactionEntityTable.operatedAt,
+                                    new Date(input.operatedAt.getTime() + input.timeWindowSeconds * 1000)
+                                )
+                            )
+                        )
+                );
+
+                return candidates.find(candidate => candidate.title.trim().toLocaleLowerCase() === input.normalizedTitle)?.id ?? null;
+            }),
 
             touchUpdatedByIds: Effect.fn('TransactionRepository.touchUpdatedByIds')(function* (
                 ids: number[],

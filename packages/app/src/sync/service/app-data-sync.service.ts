@@ -7,6 +7,8 @@ import * as Layer from 'effect/Layer';
 import { Workload } from '../../@generic/service/workload.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
+import { WalletCaptureAccountMirrorService } from '../../wallet-capture/service/wallet-capture-account-mirror.service';
+import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 
 export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@budgie/app/AppDataSyncService', {
     make: Effect.gen(function* () {
@@ -15,6 +17,8 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
         const monobankSyncService = yield* MonobankSyncService;
         const binanceSyncService = yield* BinanceSyncService;
+        const walletCaptureAccountMirrorService = yield* WalletCaptureAccountMirrorService;
+        const walletCaptureImportService = yield* WalletCaptureImportService;
 
         return {
             sync: Effect.fn('AppDataSyncService.sync')(function* () {
@@ -31,6 +35,9 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
 
                 yield* logAndContinue(binanceSyncService.sync());
 
+                yield* logAndContinue(walletCaptureAccountMirrorService.refresh());
+                yield* logAndContinue(walletCaptureImportService.drain());
+
                 return true;
             })
         };
@@ -42,7 +49,9 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
             AccountBalanceIncrementalService.layer,
             ExchangeRateBackgroundService.layer,
             MonobankSyncService.layer,
-            BinanceSyncService.layer
+            BinanceSyncService.layer,
+            WalletCaptureAccountMirrorService.layer,
+            WalletCaptureImportService.layer
         ])
     );
 }
