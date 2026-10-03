@@ -1,4 +1,5 @@
 import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { RuleService } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -12,7 +13,6 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';
-import { RuleService } from '../service/rule.service';
 
 export const useRulesListPageActions = () => {
     const { t } = useLingui();

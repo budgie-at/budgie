@@ -39,12 +39,17 @@ const LucidePackageSchema = Schema.Struct({
     exports: Schema.Record(Schema.String, Schema.Unknown)
 });
 
-const LucideTagsSchema = z.record(z.string(), z.array(z.string()));
+const LucideTagsSchema = Schema.Record(Schema.String, Schema.Array(Schema.String));
 
-const WordTranslationsSchema = z.record(z.string(), z.array(z.string()));
+const WordTranslationsSchema = Schema.Record(Schema.String, Schema.Array(Schema.String));
 
-const EmojibaseDataSchema = z.array(
-    z.object({ emoji: z.string(), label: z.string(), tags: z.array(z.string()).optional(), group: z.number().optional() })
+const EmojibaseDataSchema = Schema.Array(
+    Schema.Struct({
+        emoji: Schema.String,
+        label: Schema.String,
+        tags: Schema.optional(Schema.Array(Schema.String)),
+        group: Schema.optional(Schema.Number)
+    })
 );
 
 const parseEnumValues = (enumFile: string): string[] => {
@@ -203,13 +208,13 @@ const readWordTranslations = (): Record<string, string[]>[] =>
               .map(fileName => {
                   console.log(`Using word translations ${fileName}`);
 
-                  return WordTranslationsSchema.parse(JSON.parse(readFileSync(join(KEYWORDS_DIR, fileName), 'utf8')));
+                  return Schema.decodeUnknownSync(WordTranslationsSchema)(JSON.parse(readFileSync(join(KEYWORDS_DIR, fileName), 'utf8')));
               })
         : [];
 
 const buildLucideIndex = (iconEntries: readonly IconEntryInterface[]): [string, string][] => {
-    const tagsByFileName = LucideTagsSchema.parse(JSON.parse(readFileSync(LUCIDE_TAGS_FILE, 'utf8')));
-    const extraTagsByName = LucideTagsSchema.parse(JSON.parse(readFileSync(EXTRA_TAGS_FILE, 'utf8')));
+    const tagsByFileName = Schema.decodeUnknownSync(LucideTagsSchema)(JSON.parse(readFileSync(LUCIDE_TAGS_FILE, 'utf8')));
+    const extraTagsByName = Schema.decodeUnknownSync(LucideTagsSchema)(JSON.parse(readFileSync(EXTRA_TAGS_FILE, 'utf8')));
 
     return iconEntries.map(entry => [
         entry.pascalName,
@@ -234,10 +239,12 @@ const buildWordIndex = (lucideIndex: readonly [string, string][]): Record<string
 };
 
 const buildEmojiIndex = (): [string, string][] => {
-    const itemsByEmoji = new Map<string, z.infer<typeof EmojibaseDataSchema>>();
+    const itemsByEmoji = new Map<string, typeof EmojibaseDataSchema.Type>();
 
     for (const language of EMOJI_LANGUAGES) {
-        for (const item of EmojibaseDataSchema.parse(JSON.parse(readFileSync(join(EMOJIBASE_DIR, language, 'data.json'), 'utf8')))) {
+        for (const item of Schema.decodeUnknownSync(EmojibaseDataSchema)(
+            JSON.parse(readFileSync(join(EMOJIBASE_DIR, language, 'data.json'), 'utf8'))
+        )) {
             if (isDefined(item.group) && item.group !== EMOJI_COMPONENT_GROUP) {
                 itemsByEmoji.set(item.emoji, [...(itemsByEmoji.get(item.emoji) ?? []), item]);
             }

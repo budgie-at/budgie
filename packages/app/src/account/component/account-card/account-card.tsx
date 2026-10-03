@@ -2,19 +2,12 @@ import { AccountTypeEnum, AccountWithSyncEntityInterface, SyncEntityInterface } 
 
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { CryptoAccountCard } from '../crypto-account-card/crypto-account-card';
-import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 import { SyncAccountCard } from '../sync-account-card/sync-account-card';
 
-import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
-
-interface Props extends Pick<
-    AccountWithSyncEntityInterface,
-    'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'externalId' | 'debtType' | 'targetBalance' | 'deadline'
-> {
+interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'type' | 'icon' | 'externalId' | 'targetBalance'> {
     readonly balance: number;
     readonly sync: SyncEntityInterface | null;
     readonly className?: string;
-    readonly debtProgressSummary: DebtAccountProgressSummaryInterface | null;
     readonly instrumentId: number;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;
@@ -22,10 +15,6 @@ interface Props extends Pick<
 
 export const AccountCard = (props: Props) => {
     const { type } = props;
-
-    if (type === AccountTypeEnum.DEBT) {
-        return <DebtAccountCard {...props} />;
-    }
 
     if (type === AccountTypeEnum.BANK_SYNC) {
         return <SyncAccountCard {...props} />;

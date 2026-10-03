@@ -32,10 +32,9 @@ import type { TransactionEntryCreateEntityInterface, TransactionEntryEntityInter
 
 const BANK_FEE_AMOUNT = 50 * PRECISION;
 
-const seedFeeEntry = (transactionId: number, accountId: number): void => {
-    testDb
-        .insert(TransactionEntryEntityTable)
-        .values({
+const seedFeeEntry = (transactionId: number, accountId: number) =>
+    Effect.gen(function* () {
+        yield* testDb.insert(TransactionEntryEntityTable).values({
             transactionId,
             accountId,
             type: TransactionEntryTypeEnum.FEE,
@@ -49,9 +48,8 @@ const seedFeeEntry = (transactionId: number, accountId: number): void => {
             categoryId: null,
             mccCategoryId: null,
             originalTransactionId: null
-        } satisfies TransactionEntryCreateEntityInterface)
-        .run();
-};
+        } satisfies TransactionEntryCreateEntityInterface);
+    });
 
 const fetchBankBalance = Effect.fnUntraced(function* (accountId: number) {
     const accountBalanceRepository = yield* AccountBalanceRepository;
@@ -69,15 +67,16 @@ const fetchTotalExpense = Effect.fnUntraced(function* () {
     }).expense;
 });
 
-const seedP2pBuyWithFee = (accountTitle: string) => {
-    const bankAccount = testSeedService.bankSyncAccount(accountTitle, ExternalSourceEnum.MONOBANK, null);
-    const bankExpense = seedP2pBankBuyExpense(bankAccount.id);
+const seedP2pBuyWithFee = (accountTitle: string) =>
+    Effect.gen(function* () {
+        const bankAccount = yield* testSeedService.bankSyncAccount(accountTitle, ExternalSourceEnum.MONOBANK, null);
+        const bankExpense = yield* seedP2pBankBuyExpense(bankAccount.id);
 
-    seedFeeEntry(bankExpense.id, bankAccount.id);
-    seedP2pBuy(bankAccount);
+        yield* seedFeeEntry(bankExpense.id, bankAccount.id);
+        yield* seedP2pBuy(bankAccount);
 
-    return { bankAccount, bankExpense };
-};
+        return { bankAccount, bankExpense };
+    });
 
 const runScopedBankRepair = (bankExpenseId: number) =>
     runConsolidation({
@@ -98,52 +97,51 @@ const expectFeeAggregates = Effect.fnUntraced(function* (bankAccountId: number) 
 layer(TestLayer)('consolidation/p2p-fiat-transfer fee handling', it => {
     it.effect('preserves fee rows while matching the primary bank expense entry', () =>
         Effect.gen(function* () {
-            const { bankAccount, bankExpense } = seedP2pBuyWithFee('Monobank P2P');
+            const { bankAccount, bankExpense } = yield* seedP2pBuyWithFee('Monobank P2P');
 
             const result = yield* runConsolidation();
-            const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
 
             expect(result.consolidated).toBe(1);
-            expectLiveCanonicalFeeEntry(testQueryService.fetchEntriesByTransactionId(canonical.id));
+            expectLiveCanonicalFeeEntry(yield* testQueryService.fetchEntriesByTransactionId(canonical.id));
             expect(
-                testQueryService.fetchEntriesByTransactionId(canonical.id).filter(entry => entry.originalTransactionId === bankExpense.id)
+                (yield* testQueryService.fetchEntriesByTransactionId(canonical.id)).filter(
+                    entry => entry.originalTransactionId === bankExpense.id
+                )
             ).toHaveLength(2);
             yield* expectFeeAggregates(bankAccount.id);
 
             const repairResult = yield* runScopedBankRepair(bankExpense.id);
-            const [repairedCanonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+            const [repairedCanonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
 
             expect(repairResult.consolidated).toBe(0);
-            expectLiveCanonicalFeeEntry(testQueryService.fetchEntriesByTransactionId(repairedCanonical.id));
+            expectLiveCanonicalFeeEntry(yield* testQueryService.fetchEntriesByTransactionId(repairedCanonical.id));
         })
     );
 
     it.effect('ignores non-primary bank entries when checking scoped P2P repair candidates', () =>
         Effect.gen(function* () {
-            const { bankAccount, bankExpense } = seedP2pBuyWithFee('Monobank P2P repair');
+            const { bankAccount, bankExpense } = yield* seedP2pBuyWithFee('Monobank P2P repair');
 
             const result = yield* runConsolidation();
-            const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
 
-            testDb
-                .insert(TransactionEntryEntityTable)
-                .values({
-                    transactionId: canonical.id,
-                    accountId: bankAccount.id,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
-                    amount: 1,
-                    externalId: 'mono-p2p-repair-non-primary-bank-entry',
-                    exchangeRate: 1,
-                    baseInstrumentId: 1,
-                    baseExchangeRate: 1,
-                    baseAmount: 1,
-                    toIban: null,
-                    categoryId: null,
-                    mccCategoryId: null,
-                    originalTransactionId: bankExpense.id
-                } satisfies TransactionEntryCreateEntityInterface)
-                .run();
+            yield* testDb.insert(TransactionEntryEntityTable).values({
+                transactionId: canonical.id,
+                accountId: bankAccount.id,
+                type: TransactionEntryTypeEnum.CREDIT,
+                kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
+                amount: 1,
+                externalId: 'mono-p2p-repair-non-primary-bank-entry',
+                exchangeRate: 1,
+                baseInstrumentId: 1,
+                baseExchangeRate: 1,
+                baseAmount: 1,
+                toIban: null,
+                categoryId: null,
+                mccCategoryId: null,
+                originalTransactionId: bankExpense.id
+            } satisfies TransactionEntryCreateEntityInterface);
 
             const repairResult = yield* runScopedBankRepair(bankExpense.id);
 
@@ -156,36 +154,33 @@ layer(TestLayer)('consolidation/p2p-fiat-transfer fee handling', it => {
 layer(TestLayer)('consolidation/p2p-fiat-transfer bank candidate constraints', it => {
     it.effect('rejects buy combinations that reuse the same bank transaction id', () =>
         Effect.gen(function* () {
-            const bankAccount = testSeedService.bankSyncAccount('Monobank split entry P2P', ExternalSourceEnum.MONOBANK, null);
-            const bankExpense = testSeedService.bankPairExpense(
+            const bankAccount = yield* testSeedService.bankSyncAccount('Monobank split entry P2P', ExternalSourceEnum.MONOBANK, null);
+            const bankExpense = yield* testSeedService.bankPairExpense(
                 { externalId: 'mono-p2p-split-expense', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: P2P_SPLIT_BANK_PRIMARY_AMOUNT }
             );
 
-            testDb
-                .insert(TransactionEntryEntityTable)
-                .values({
-                    transactionId: bankExpense.id,
-                    accountId: bankAccount.id,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    amount: P2P_SPLIT_BANK_EXTRA_AMOUNT,
-                    externalId: 'mono-p2p-split-expense-extra',
-                    exchangeRate: 1,
-                    baseInstrumentId: 1,
-                    baseExchangeRate: 1,
-                    baseAmount: P2P_SPLIT_BANK_EXTRA_AMOUNT,
-                    toIban: null,
-                    categoryId: null,
-                    mccCategoryId: null,
-                    originalTransactionId: null
-                } satisfies TransactionEntryCreateEntityInterface)
-                .run();
-            seedP2pBuy(bankAccount);
+            yield* testDb.insert(TransactionEntryEntityTable).values({
+                transactionId: bankExpense.id,
+                accountId: bankAccount.id,
+                type: TransactionEntryTypeEnum.CREDIT,
+                amount: P2P_SPLIT_BANK_EXTRA_AMOUNT,
+                externalId: 'mono-p2p-split-expense-extra',
+                exchangeRate: 1,
+                baseInstrumentId: 1,
+                baseExchangeRate: 1,
+                baseAmount: P2P_SPLIT_BANK_EXTRA_AMOUNT,
+                toIban: null,
+                categoryId: null,
+                mccCategoryId: null,
+                originalTransactionId: null
+            } satisfies TransactionEntryCreateEntityInterface);
+            yield* seedP2pBuy(bankAccount);
 
             const result = yield* runConsolidation();
 
             expect(result.consolidated).toBe(0);
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
         })
     );
 
@@ -194,16 +189,16 @@ layer(TestLayer)('consolidation/p2p-fiat-transfer bank candidate constraints', i
         accountType =>
             Effect.gen(function* () {
                 const instrument =
-                    accountType === AccountTypeEnum.STOCKS ? testSeedService.instrument(seedP2pFiatInstrument('AAPL')) : null;
-                const account = seedP2pAccount(accountType, instrument?.id ?? 1);
+                    accountType === AccountTypeEnum.STOCKS ? yield* testSeedService.instrument(seedP2pFiatInstrument('AAPL')) : null;
+                const account = yield* seedP2pAccount(accountType, instrument?.id ?? 1);
 
-                seedP2pBankBuyExpense(account.id);
-                seedP2pBuy(account);
+                yield* seedP2pBankBuyExpense(account.id);
+                yield* seedP2pBuy(account);
 
                 const result = yield* runConsolidation();
 
                 expect(result.consolidated).toBe(0);
-                expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+                expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
             })
     );
 });

@@ -24,38 +24,38 @@ layer(TestLayer)('consolidation/unconsolidate-refund-restores-sources', it => {
                 refundAmounts: [40 * PRECISION]
             });
 
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
 
             yield* unconsolidateById(expense.id);
 
-            const restoredExpense = testQueryService.fetchTransactionById(expense.id);
+            const restoredExpense = yield* testQueryService.fetchTransactionById(expense.id);
             expect(restoredExpense.consolidationType).toBeNull();
 
-            const restoredRefund = testQueryService.fetchTransactionById(refunds[0].id);
+            const restoredRefund = yield* testQueryService.fetchTransactionById(refunds[0].id);
             expect(restoredRefund.consolidationParentTransactionId).toBeNull();
         })
     );
 
     it.effect('keeps tags copied from the refund income on the expense after unconsolidating a refund', () =>
         Effect.gen(function* () {
-            const tag = testSeedService.tag('Refunded order');
+            const tag = yield* testSeedService.tag('Refunded order');
             const { account, expense, refunds } = yield* runRefundScenario({
-                beforeConsolidation: ({ refunds }) => {
-                    testSeedService.transactionTag(refunds[0].id, tag.id);
-                },
+                beforeConsolidation: ({ refunds }) => testSeedService.transactionTag(refunds[0].id, tag.id),
                 expenseAmount: STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION,
                 externalIdPrefix: 'refund-tag-revert',
                 refundAmounts: [STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION]
             });
             const balancesAfterConsolidation = yield* fetchLedgerBalances([account.id]);
 
-            expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
+            expect(yield* testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
 
             yield* unconsolidateById(expense.id);
 
-            expectSourcesRestored([refunds[0].id]);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
-            expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
+            yield* expectSourcesRestored([refunds[0].id]);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBeNull();
+            expect(yield* testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
             expect(yield* fetchLedgerBalances([account.id])).toEqual(balancesAfterConsolidation);
         })
     );
@@ -64,9 +64,9 @@ layer(TestLayer)('consolidation/unconsolidate-refund-restores-sources', it => {
         'restores both refund incomes and their original DEBIT entries after unconsolidating a two-income rejected-payment expense',
         () =>
             Effect.gen(function* () {
-                const account = testSeedService.account({ externalId: 'privat-card' });
+                const account = yield* testSeedService.account({ externalId: 'privat-card' });
                 const externalIdPrefix = 'rejected-payment-unconsolidate';
-                const { expense, refunds } = testSeedService.refundedExpense({
+                const { expense, refunds } = yield* testSeedService.refundedExpense({
                     accountId: account.id,
                     title: 'FOP TESTOVYI PRODUCTS',
                     expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
@@ -83,12 +83,13 @@ layer(TestLayer)('consolidation/unconsolidate-refund-restores-sources', it => {
 
                 yield* unconsolidateById(expense.id);
 
-                expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
-                expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([
-                    null,
-                    null
-                ]);
-                const restoredDebitEntries = refunds.map((_refund, index) =>
+                expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBeNull();
+                expect(
+                    (yield* Effect.forEach(refunds, refund => testQueryService.fetchTransactionById(refund.id))).map(
+                        refund => refund.consolidationParentTransactionId
+                    )
+                ).toEqual([null, null]);
+                const restoredDebitEntries = yield* Effect.forEach(refunds, (_refund, index) =>
                     testQueryService.fetchEntryByExternalId(`${externalIdPrefix}-refund-${index}`)
                 );
 

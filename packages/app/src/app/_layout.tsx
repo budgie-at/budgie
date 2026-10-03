@@ -1,3 +1,7 @@
+import { RegistryContext } from '@effect/atom-react/RegistryContext';
+
+import { appAtomRegistry } from '../@generic/constant/app-atom-registry.constant';
+
 import { RootLayoutContent } from './root-layout-content';
 
 const unstableSettings = {
@@ -7,5 +11,9 @@ const unstableSettings = {
 export { unstableSettings as 'unstable_settings' };
 
 export default function RootLayout() {
-    return <RootLayoutContent />;
+    return (
+        <RegistryContext.Provider value={appAtomRegistry}>
+            <RootLayoutContent />
+        </RegistryContext.Provider>
+    );
 }

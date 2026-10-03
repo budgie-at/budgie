@@ -129,7 +129,7 @@ jobs:
         run: pnpm install
 
       - name: Build internal workspace packages
-        run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/logger
+        run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/market --filter=@budgie/ledger --filter=@budgie/rules --filter=@budgie/recurring --filter=@budgie/categorization --filter=@budgie/import-export --filter=@budgie/logger
 
       - name: Assert AI is enabled
         run: bash .github/scripts/assert-ai-enabled.sh

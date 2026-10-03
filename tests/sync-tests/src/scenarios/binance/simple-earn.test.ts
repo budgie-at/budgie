@@ -1,6 +1,5 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { SyncModeEnum } from '@budgie/contracts';
-import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { BinanceSignedClient, BinanceSyncService, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -83,7 +82,7 @@ describe('binance/simple-earn', () => {
             const monthStart = recentDayInMonthsAgo(1);
             const firstReward = monthStart;
             const lastReward = monthStart + 5 * DAY_MS;
-            setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
+            yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
             binanceStub.earnRewards([
                 buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: firstReward }),
                 buildBinance.earnReward({ asset: 'USDT', rewards: '0.25', time: lastReward })
@@ -91,9 +90,7 @@ describe('binance/simple-earn', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = fetchBinanceTransactions()
-                .map(transaction => transaction.externalId)
-                .sort();
+            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
             expect(externalIds).toStrictEqual(
                 [`binance:earn:USDT:${buildEarnDayKey(firstReward)}`, `binance:earn:USDT:${buildEarnDayKey(lastReward)}`].sort()
             );
@@ -106,7 +103,7 @@ describe('binance/simple-earn', () => {
 
             const previousMonth = recentDayInMonthsAgo(1);
             const currentMonth = recentDayInMonthsAgo(0);
-            setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
+            yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
             binanceStub.earnRewards([
                 buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: previousMonth }),
                 buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: previousMonth + 5 * DAY_MS }),
@@ -115,7 +112,7 @@ describe('binance/simple-earn', () => {
 
             yield* binanceSyncService.sync();
 
-            const transactions = fetchBinanceTransactions();
+            const transactions = yield* fetchBinanceTransactions();
             const externalIds = transactions.map(transaction => transaction.externalId).sort();
             expect(externalIds).toStrictEqual(
                 [
@@ -132,17 +129,17 @@ describe('binance/simple-earn', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             const rewardTime = recentDayInMonthsAgo(0);
-            setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
+            yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
             binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: rewardTime })]);
 
             yield* binanceSyncService.sync();
-            expect(fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
 
             resetBinanceSyncForResync();
             binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: rewardTime })]);
             yield* binanceSyncService.sync();
 
-            expect(fetchBinanceTransactions()).toHaveLength(1);
+            expect(yield* fetchBinanceTransactions()).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

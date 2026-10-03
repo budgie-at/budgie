@@ -1,5 +1,6 @@
 import { SyncEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { testDb } from './setup';
@@ -11,11 +12,12 @@ export const httpFailureCases = [
     { label: '429 rate limited', status: 429 }
 ] as const;
 
-export const expectSyncFailedAndDisabled = (syncId: number, minimumErrorCount = SYNC_ERROR_THRESHOLD): void => {
-    const [finalSync] = testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, syncId)).all();
+export const expectSyncFailedAndDisabled = (syncId: number, minimumErrorCount = SYNC_ERROR_THRESHOLD) =>
+    Effect.gen(function* () {
+        const [finalSync] = yield* testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, syncId));
 
-    expect(finalSync.errorCount).toBeGreaterThanOrEqual(minimumErrorCount);
-    expect(finalSync.enabled).toBe(false);
-    expect(finalSync.status).toBe('FAILED');
-    expect(finalSync.lastError).not.toBeNull();
-};
+        expect(finalSync.errorCount).toBeGreaterThanOrEqual(minimumErrorCount);
+        expect(finalSync.enabled).toBe(false);
+        expect(finalSync.status).toBe('FAILED');
+        expect(finalSync.lastError).not.toBeNull();
+    });

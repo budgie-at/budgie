@@ -1,4 +1,5 @@
 import { TransactionCreateInputInterface, TransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -12,7 +13,6 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
-import { TransactionService } from '../service/transaction.service';
 
 interface UseTransactionFormConfig {
     readonly schema: typeof TransactionCreateInputSchema;

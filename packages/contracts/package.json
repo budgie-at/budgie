@@ -1,6 +1,6 @@
 {
     "name": "@budgie/contracts",
-    "version": "6.87.2",
+    "version": "6.88.2",
     "private": true,
     "description": "Contracts",
     "sideEffects": false,
@@ -34,8 +34,7 @@
     },
     "dependencies": {
         "@rnw-community/shared": "^2.2.0",
-        "drizzle-orm": "^0.45.2",
-        "effect": "4.0.0-rc.118",
-        "expo-sqlite": "~57.0.2"
+        "drizzle-orm": "1.0.0-rc.4",
+        "effect": "4.0.0"
     }
 }

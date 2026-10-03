@@ -8,6 +8,8 @@ import {
     DebtEventSourceEnum,
     getDebtClosedAmount
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -15,9 +17,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
-
-import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
 
 import type { AccountEntityInterface, DebtAccountCreateInputInterface, DebtEventEntityInterface } from '@budgie/contracts';
 
@@ -49,8 +48,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: account.id,
                 amount: account.targetBalance,
-                operatedAt,
-                externalSource: null
+                operatedAt
             });
 
             return yield* accountRepository.updateById(account.id, {

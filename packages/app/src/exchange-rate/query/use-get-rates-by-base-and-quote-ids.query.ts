@@ -1,4 +1,5 @@
-import { ExchangeRateEntityTable, ExchangeRateRepository } from '@budgie/contracts';
+import { ExchangeRateEntityTable } from '@budgie/contracts';
+import { ExchangeRateRepository } from '@budgie/market';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';

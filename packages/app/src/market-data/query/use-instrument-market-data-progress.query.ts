@@ -1,10 +1,9 @@
 import {
     InstrumentDailyMarketPriceEntityTable,
-    InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobEntityTable,
-    InstrumentMarketDataJobRepository,
     InstrumentMarketDataJobStatusEnum
 } from '@budgie/contracts';
+import { InstrumentDailyMarketPriceRepository, InstrumentMarketDataJobRepository } from '@budgie/market';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { parseISO } from 'date-fns/parseISO';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';

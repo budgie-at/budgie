@@ -1,4 +1,3 @@
-import { EntryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
 import {
     CategoryEntityTable,
     CurrencyEnum,
@@ -13,10 +12,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { EntryBaseValuationService } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { requireInstrument, seedBitcoinCryptoAccount, TestLayer } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, seedEuroBaseUahAccount, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -25,24 +25,16 @@ import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInte
 
 const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_419_222;
 
-const setDefaultInstrument = (defaultInstrumentId: number): void => {
-    testDb.update(SettingsEntityTable).set({ defaultInstrumentId }).run();
-};
-
-const expectHistoricalUahValuation = Effect.fnUntraced(function* (externalSource: ExternalSourceEnum | null) {
-    const entryBaseValuationService = yield* EntryBaseValuationService;
-    const euro = yield* requireInstrument(CurrencyEnum.EUR);
-    const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-    const account = seed.account({ instrumentId: hryvnia.id });
-
-    setDefaultInstrument(euro.id);
-
-    const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
-        accountId: account.id,
-        amount: 50 * PRECISION,
-        operatedAt: new Date('2011-05-25T12:00:00.000Z'),
-        externalSource
+const setDefaultInstrument = (defaultInstrumentId: number) =>
+    Effect.gen(function* () {
+        yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
     });
+
+const expectSeededUahValuation = Effect.fnUntraced(function* (operatedAt: Date) {
+    const entryBaseValuationService = yield* EntryBaseValuationService;
+    const { euro, account } = yield* seedEuroBaseUahAccount();
+
+    const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({ accountId: account.id, amount: 50 * PRECISION, operatedAt });
 
     expect(valuation).toStrictEqual({
         baseInstrumentId: euro.id,
@@ -51,11 +43,14 @@ const expectHistoricalUahValuation = Effect.fnUntraced(function* (externalSource
     });
 });
 
-const dbCategories = () => testDb.select().from(CategoryEntityTable).all();
+const dbCategories = () =>
+    Effect.gen(function* () {
+        return yield* testDb.select().from(CategoryEntityTable);
+    });
 
 const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, categoryId: number, operatedAt: Date) {
     const entryBaseValuationService = yield* EntryBaseValuationService;
-    const transaction = insertOne(TransactionEntityTable, {
+    const transaction = yield* insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.EXPENSE,
         title: 'Historical UAH expense',
         operatedAt,
@@ -70,11 +65,10 @@ const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, 
     const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
         accountId,
         amount: 50 * PRECISION,
-        operatedAt,
-        externalSource: ExternalSourceEnum.CSV
+        operatedAt
     });
 
-    insertOne(TransactionEntryEntityTable, {
+    yield* insertOne(TransactionEntryEntityTable, {
         transactionId: transaction.id,
         accountId,
         type: TransactionEntryTypeEnum.CREDIT,
@@ -91,16 +85,12 @@ const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, 
 });
 
 describe('base valuation', () => {
-    it.effect('values imported UAH entries with seeded historical NBU rates', () =>
-        Effect.gen(function* () {
-            yield* expectHistoricalUahValuation(ExternalSourceEnum.CSV);
-        }).pipe(Effect.provide(TestLayer))
+    it.effect('values a back-dated UAH entry with the seeded historical NBU rate, not the current one', () =>
+        expectSeededUahValuation(new Date('2011-05-25T12:00:00.000Z')).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('values a manually back-dated UAH entry with the historical rate, not the current one', () =>
-        Effect.gen(function* () {
-            yield* expectHistoricalUahValuation(null);
-        }).pipe(Effect.provide(TestLayer))
+    it.effect('values a transaction older than the seeded range using the oldest available historical rate', () =>
+        expectSeededUahValuation(new Date('2009-01-01T12:00:00.000Z')).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('allows manual crypto entries to remain unvalued when no live crypto rate exists', () =>
@@ -111,8 +101,7 @@ describe('base valuation', () => {
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: account.id,
                 amount: 100 * PRECISION,
-                operatedAt: new Date('2026-06-04T15:35:37.321Z'),
-                externalSource: null
+                operatedAt: new Date('2026-06-04T15:35:37.321Z')
             });
 
             expect(valuation).toStrictEqual({
@@ -128,10 +117,10 @@ describe('base valuation', () => {
             const statisticsRepository = yield* StatisticsRepository;
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-            const [category] = dbCategories();
-            const account = seed.account({ instrumentId: hryvnia.id });
+            const [category] = yield* dbCategories();
+            const account = yield* seed.account({ instrumentId: hryvnia.id });
 
-            setDefaultInstrument(euro.id);
+            yield* setDefaultInstrument(euro.id);
             yield* createHistoricalExpense(account.id, category.id, new Date('2011-05-25T12:00:00.000Z'));
             yield* createHistoricalExpense(account.id, category.id, new Date('2026-05-25T12:00:00.000Z'));
 

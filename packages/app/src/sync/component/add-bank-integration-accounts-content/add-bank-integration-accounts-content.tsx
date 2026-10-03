@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { SyncAccountPreviewInterface } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ActivityIndicator, Text, View } from 'react-native';
 
@@ -7,7 +8,6 @@ import { EmptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 
 import { AddBankIntegrationAccountsContentSelector } from './add-bank-integration-accounts-content.selector';

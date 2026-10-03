@@ -1,4 +1,4 @@
-import { cn } from 'cn';
+import { ClassValue, cn } from 'cn';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -8,6 +8,7 @@ import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook
 interface Props {
     readonly percentage: number;
     readonly className?: string;
+    readonly fillClassName?: ClassValue;
 }
 
 const FILL_DURATION = 400;
@@ -17,7 +18,7 @@ const FILL_EASING_X2 = 0.175;
 const FILL_EASING_Y2 = 1;
 const FILL_EASING = Easing.bezier(FILL_EASING_X1, FILL_EASING_Y1, FILL_EASING_X2, FILL_EASING_Y2);
 
-export const DebtProgressTrack = ({ percentage, className }: Props) => {
+export const DebtProgressTrack = ({ percentage, className, fillClassName = 'bg-primary' }: Props) => {
     const reducedMotion = useReducedMotion();
     const width = useSharedValue(percentage);
 
@@ -29,7 +30,7 @@ export const DebtProgressTrack = ({ percentage, className }: Props) => {
 
     return (
         <View className={cn('overflow-hidden rounded-full bg-secondary-background', className)}>
-            <Animated.View className="h-full rounded-full bg-primary" style={fillStyle} />
+            <Animated.View className={cn('h-full rounded-full', fillClassName)} style={fillStyle} />
         </View>
     );
 };

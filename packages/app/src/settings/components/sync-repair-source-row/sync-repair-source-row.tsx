@@ -8,7 +8,7 @@ import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-tit
 import { SyncRepairsPageSelector } from '../../../app/(tabs)/settings/sync-repairs-page.selector';
 import { getSyncRepairText } from '../../utils/get-sync-repair-text.util';
 
-import type { SyncDuplicateRepairSourcePreviewInterface } from '../../../sync/interface/sync-duplicate-repair-source-preview.interface';
+import type { SyncDuplicateRepairSourcePreviewInterface } from '@budgie/sync';
 
 export const SyncRepairSourceRow = ({ duplicateTransactionCount, externalSource }: SyncDuplicateRepairSourcePreviewInterface) => {
     const { t } = useLingui();

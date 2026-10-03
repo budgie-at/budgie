@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-
-import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
+import { SyncHistoryDepthEnum } from '@budgie/sync';
 
 import type { SyncHistoryDepthOptionInterface } from '../interface/sync-history-depth-option.interface';
 
@@ -12,3 +11,5 @@ export const SYNC_HISTORY_DEPTH_OPTIONS: readonly SyncHistoryDepthOptionInterfac
     { depth: SyncHistoryDepthEnum.FULL, icon: UserIconNameEnum.Infinity },
     { depth: SyncHistoryDepthEnum.NEW_ONLY, icon: UserIconNameEnum.Clock }
 ];
+
+export const DEFAULT_SYNC_HISTORY_DEPTH = SyncHistoryDepthEnum.MONTHS_3;

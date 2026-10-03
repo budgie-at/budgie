@@ -1,5 +1,5 @@
 import { DateRangeInterface } from '@budgie/contracts';
-import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { DateType } from 'react-native-ui-datepicker';
 
 import { isDefined } from '@rnw-community/shared';

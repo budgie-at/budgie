@@ -1,5 +1,5 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
@@ -19,35 +19,44 @@ const RETRY_EXHAUSTION_TIMEOUT_MS = 30000;
 const HTTP_BAD_REQUEST_STATUS = 400;
 const ILLEGAL_PARAMETER_ERROR = { code: -1100, msg: 'Illegal characters found in parameter.' };
 
-const expectSyncFailedAndEnabled = (syncId: number): void => {
-    const sync = fetchSyncById(syncId);
+const expectSyncFailedAndEnabled = (syncId: number) =>
+    Effect.gen(function* () {
+        const sync = yield* fetchSyncById(syncId);
 
-    expect(sync).toMatchObject({
-        enabled: true,
-        status: SyncStatusEnum.FAILED
+        expect(sync).toMatchObject({
+            enabled: true,
+            status: SyncStatusEnum.FAILED
+        });
+        expect(sync.lastError).not.toBeNull();
     });
-    expect(sync.lastError).not.toBeNull();
-};
 
-const setupBtcAndEthFixtures = (depositResponse: () => Response) => {
-    const btcFixture = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD });
-    const ethFixture = setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
-    mockServer.use(http.get(DEPOSIT_URL, depositResponse));
+const setupBtcAndEthFixtures = (depositResponse: () => Response) =>
+    Effect.gen(function* () {
+        const btcFixture = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD });
+        const ethFixture = yield* setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
+        mockServer.use(http.get(DEPOSIT_URL, depositResponse));
 
-    return { btcFixture, ethFixture };
-};
+        return { btcFixture, ethFixture };
+    });
+
+const setupForwardSyncWithDepositResponse = (respond: () => Response) =>
+    Effect.gen(function* () {
+        const { sync } = yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
+        mockServer.use(http.get(DEPOSIT_URL, respond));
+
+        return sync;
+    });
 
 describe('binance/error-recovery', () => {
     it.effect('immediately disables a sync after an unauthorized Binance response', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-            mockServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status: 401 })));
+            const sync = yield* setupForwardSyncWithDepositResponse(() => new HttpResponse(null, { status: 401 }));
 
             yield* binanceSyncService.sync();
 
-            expectSyncFailedAndDisabled(sync.id, 0);
+            yield* expectSyncFailedAndDisabled(sync.id, 0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -55,12 +64,12 @@ describe('binance/error-recovery', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { btcFixture, ethFixture } = setupBtcAndEthFixtures(() => new HttpResponse(null, { status: 401 }));
+            const { btcFixture, ethFixture } = yield* setupBtcAndEthFixtures(() => new HttpResponse(null, { status: 401 }));
 
             yield* binanceSyncService.sync();
 
-            expectSyncFailedAndDisabled(btcFixture.sync.id, 0);
-            expectSyncFailedAndDisabled(ethFixture.sync.id, 0);
+            yield* expectSyncFailedAndDisabled(btcFixture.sync.id, 0);
+            yield* expectSyncFailedAndDisabled(ethFixture.sync.id, 0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -70,13 +79,12 @@ describe('binance/error-recovery', () => {
             Effect.gen(function* () {
                 const binanceSyncService = yield* BinanceSyncService;
 
-                const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-                mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json({ unexpected: true })));
+                const sync = yield* setupForwardSyncWithDepositResponse(() => HttpResponse.json({ unexpected: true }));
 
                 yield* binanceSyncService.sync();
 
-                expectSyncFailedAndEnabled(sync.id);
-                expect(fetchSyncById(sync.id).forwardSyncedAt).toBeNull();
+                yield* expectSyncFailedAndEnabled(sync.id);
+                expect((yield* fetchSyncById(sync.id)).forwardSyncedAt).toBeNull();
             }).pipe(Effect.provide(TestLayer)),
         RETRY_EXHAUSTION_TIMEOUT_MS
     );
@@ -87,12 +95,12 @@ describe('binance/error-recovery', () => {
             Effect.gen(function* () {
                 const binanceSyncService = yield* BinanceSyncService;
 
-                const { btcFixture, ethFixture } = setupBtcAndEthFixtures(() => HttpResponse.json({ unexpected: true }));
+                const { btcFixture, ethFixture } = yield* setupBtcAndEthFixtures(() => HttpResponse.json({ unexpected: true }));
 
                 yield* binanceSyncService.sync();
 
-                expectSyncFailedAndEnabled(btcFixture.sync.id);
-                expectSyncFailedAndEnabled(ethFixture.sync.id);
+                yield* expectSyncFailedAndEnabled(btcFixture.sync.id);
+                yield* expectSyncFailedAndEnabled(ethFixture.sync.id);
             }).pipe(Effect.provide(TestLayer)),
         RETRY_EXHAUSTION_TIMEOUT_MS
     );
@@ -103,8 +111,8 @@ describe('binance/error-recovery', () => {
             Effect.gen(function* () {
                 const binanceSyncService = yield* BinanceSyncService;
 
-                const usdtFixture = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
-                const ethFixture = setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
+                const usdtFixture = yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
+                const ethFixture = yield* setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
                 binanceStub.spotBalances([
                     buildBinance.balance({ asset: 'USDT', free: '100' }),
                     buildBinance.balance({ asset: 'ADA', free: '200' })
@@ -114,8 +122,8 @@ describe('binance/error-recovery', () => {
 
                 yield* binanceSyncService.sync();
 
-                expectSyncFailedAndDisabled(usdtFixture.sync.id, 0);
-                expect(fetchSyncById(ethFixture.sync.id)).toMatchObject({
+                yield* expectSyncFailedAndDisabled(usdtFixture.sync.id, 0);
+                expect(yield* fetchSyncById(ethFixture.sync.id)).toMatchObject({
                     enabled: true,
                     status: SyncStatusEnum.SYNCING,
                     lastError: null

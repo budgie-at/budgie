@@ -9,6 +9,7 @@ import { isCryptoCurrencyGroup } from '../../type-guard/is-crypto-currency-group
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
 import { AccountGridRow } from '../account-grid-row/account-grid-row';
 import { CryptoCurrencyGroupCard } from '../crypto-currency-group-card/crypto-currency-group-card';
+import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 
 interface Props {
     readonly item: AccountRowInterface | CryptoCurrencyGroupInterface;
@@ -38,11 +39,13 @@ export const HomeSectionItem = ({ item, section, balanceSummary }: Props) => {
     }
 
     if (isDebtSection(section)) {
+        const debtProgressSummary = balanceSummary.balancesByAccountId.get(item.left.id)?.debtProgressSummary ?? null;
+
         return (
-            <AccountGridRow
-                row={item}
-                accountType={AccountTypeEnum.DEBT}
-                balancesByAccountId={balanceSummary.balancesByAccountId}
+            <DebtAccountCard
+                account={item.left}
+                instrumentSymbol={item.left.instrument.symbol}
+                debtProgressSummary={debtProgressSummary}
                 className="mb-3"
             />
         );

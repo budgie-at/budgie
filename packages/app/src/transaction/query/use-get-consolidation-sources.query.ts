@@ -12,7 +12,7 @@ import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.con
 
 import type { ConsolidationSourceRowInterface, LanguageEnum } from '@budgie/contracts';
 
-const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[] => {
+const orderSourcesByTransferChain = (rows: readonly ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[] => {
     const sendingAccounts = new Set(rows.filter(row => row.entryType === TransactionEntryTypeEnum.CREDIT).map(row => row.accountId));
     const receivingAccounts = new Set(rows.filter(row => row.entryType === TransactionEntryTypeEnum.DEBIT).map(row => row.accountId));
     const accounts = [...new Set(rows.map(row => row.accountId))];

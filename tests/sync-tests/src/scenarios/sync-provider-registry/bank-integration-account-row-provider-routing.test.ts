@@ -1,8 +1,4 @@
 import { BankIntegrationAccountRow } from '@app/sync/component/bank-integration-account-row/bank-integration-account-row';
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { PrivatbankSyncService } from '@app/sync/service/privatbank-sync.service';
-import { SyncProviderRegistryService } from '@app/sync/service/sync-provider-registry.service';
 import {
     AccountAssociationEnum,
     ExternalSourceEnum,
@@ -11,6 +7,7 @@ import {
     SyncStatusEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { BinanceSyncService, MonobankSyncService, PrivatbankSyncService, SyncProviderRegistryService } from '@budgie/sync';
 import { beforeEach, describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { vi } from 'vitest';

@@ -67,17 +67,13 @@ export class DebtEventRepository extends Context.Service<DebtEventRepository>()(
         findByAccountId: (accountId: number) =>
             Db.query(db =>
                 db.query.DebtEventEntityTable.findMany({
-                    where: and(eq(DebtEventEntityTable.debtAccountId, accountId), isNull(DebtEventEntityTable.deletedAt))
+                    where: { debtAccountId: accountId, deletedAt: { isNull: true } }
                 })
             ),
         findByAccountIdAndSource: (accountId: number, source: DebtEventSourceEnum) =>
             Db.query(db =>
                 db.query.DebtEventEntityTable.findMany({
-                    where: and(
-                        eq(DebtEventEntityTable.debtAccountId, accountId),
-                        eq(DebtEventEntityTable.source, source),
-                        isNull(DebtEventEntityTable.deletedAt)
-                    )
+                    where: { debtAccountId: accountId, source, deletedAt: { isNull: true } }
                 })
             ),
         updateById: (

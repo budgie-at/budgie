@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import React, { useEffect, useEffectEvent, useState } from 'react';
 import { View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { GoBackButton } from '../@generic/component/go-back-button/go-back-button';
 import { LoadingOverlay } from '../@generic/component/loading-overlay/loading-overlay';
@@ -30,20 +30,25 @@ export default function ImportBackupPinModal() {
 
         setIsLoading(true);
 
-        const canOpenBackup = await appRuntime.runPromise(
-            Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(sourceUri, pin))
+        const backupError = await appRuntime.runPromise(
+            Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(sourceUri, pin)).pipe(
+                Effect.map(canOpenBackup => (canOpenBackup ? null : t`Incorrect PIN`)),
+                Effect.catchTags({
+                    UnsupportedBackupError: () => Effect.succeed(t`This backup was made by an older Budgie version and cannot be imported.`)
+                })
+            )
         );
 
         setIsLoading(false);
 
-        if (canOpenBackup) {
+        if (!isDefined(backupError)) {
             resolveImportBackupPin(pin);
 
             return;
         }
 
         setInput('');
-        setError(t`Incorrect PIN`);
+        setError(backupError);
     };
 
     const addDigit = (digit: string) => {

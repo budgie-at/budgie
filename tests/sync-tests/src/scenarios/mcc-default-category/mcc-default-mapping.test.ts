@@ -1,4 +1,3 @@
-import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import {
     BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
@@ -6,7 +5,7 @@ import {
     MCC_DEFAULT_CATEGORY_SEED,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
-import { SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
+import { mapBankTransactionToCreateInput, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 
 import type { MccCategoryLookupInterface } from '@budgie/contracts';

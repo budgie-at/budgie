@@ -1,6 +1,6 @@
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
-import { TransferCreationService } from '@app/transaction/service/transfer-creation.service';
 import { AccountDebtTypeEnum, AccountTypeEnum, CurrencyEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransferCreationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -9,16 +9,14 @@ import { buildTransferInput, seed, testDb, TestLayer, upsertCurrencyRate } from 
 const NON_TERMINATING_RATE = 3;
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
 
-const countFractionalMicroUnitRows = Effect.promise(
-    async () =>
-        (
-            await testDb.$client.getFirstAsync<{ count: number }>(
-                `SELECT
+const countFractionalMicroUnitRows = Effect.map(
+    testDb.$client.unsafe<{ count: number }>(
+        `SELECT
                 (SELECT count(*) FROM debt_events WHERE typeof(amount) = 'real' OR typeof(base_amount) = 'real')
                 + (SELECT count(*) FROM transaction_entries WHERE typeof(amount) = 'real' OR typeof(base_amount) = 'real')
                 + (SELECT count(*) FROM account_balances WHERE typeof(amount) = 'real') AS count`
-            )
-        )?.count
+    ),
+    rows => rows[0]?.count
 );
 
 const arrange = Effect.gen(function* () {
@@ -29,8 +27,8 @@ const arrange = Effect.gen(function* () {
     );
 
     return {
-        usdAccount: seed.account({ title: 'Dollar card', type: AccountTypeEnum.BANK_SYNC, instrumentId: usdInstrument.id }),
-        eurAccount: seed.account({ title: 'Euro card', type: AccountTypeEnum.BANK_SYNC, instrumentId: eurInstrument.id })
+        usdAccount: yield* seed.account({ title: 'Dollar card', type: AccountTypeEnum.BANK_SYNC, instrumentId: usdInstrument.id }),
+        eurAccount: yield* seed.account({ title: 'Euro card', type: AccountTypeEnum.BANK_SYNC, instrumentId: eurInstrument.id })
     };
 });
 

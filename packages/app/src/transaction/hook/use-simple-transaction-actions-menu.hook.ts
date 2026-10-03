@@ -1,11 +1,11 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';
-import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
 import { useOpenRefundConvert } from './use-open-refund-convert.hook';

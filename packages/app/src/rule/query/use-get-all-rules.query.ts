@@ -5,9 +5,9 @@ import {
     RuleActionEntityTable,
     RuleConditionEntityTable,
     RuleEntityTable,
-    RuleRepository,
     TagEntityTable
 } from '@budgie/contracts';
+import { RuleRepository } from '@budgie/rules';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';

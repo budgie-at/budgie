@@ -1,9 +1,10 @@
+import { RuleDetectionModeEnum } from '@budgie/rules';
+
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
 import { RuleSuggestionCard } from '../../../rule/components/rule-suggestion-card/rule-suggestion-card';
 import { RuleUpdateCard } from '../../../rule/components/rule-update-card/rule-update-card';
-import { RuleDetectionModeEnum } from '../../../rule/enum/rule-detection-mode.enum';
 
 import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
 

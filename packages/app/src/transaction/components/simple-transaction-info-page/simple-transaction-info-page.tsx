@@ -1,11 +1,11 @@
 import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
-import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';

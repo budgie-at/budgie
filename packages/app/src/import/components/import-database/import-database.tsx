@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { UnsupportedBackupError } from '../../../@generic/drizzle/error/unsupported-backup.error';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -67,7 +68,12 @@ export const ImportDatabase = () => {
                 Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin))
             );
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: getErrorMessage(error) });
+            const errorMessage =
+                error instanceof UnsupportedBackupError
+                    ? t`This backup was made by an older Budgie version and cannot be imported.`
+                    : getErrorMessage(error);
+
+            Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: errorMessage });
         } finally {
             setIsLoading(false);
         }

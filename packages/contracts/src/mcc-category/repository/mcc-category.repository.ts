@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -21,8 +20,7 @@ export class MccCategoryRepository extends Context.Service<MccCategoryRepository
             }),
             truncate: () => Db.query(db => db.delete(MccCategoryEntityTable)),
             findAll: () => Db.query(db => db.query.MccCategoryEntityTable.findMany()),
-            findById: (id: number) =>
-                Db.query(db => db.query.MccCategoryEntityTable.findFirst({ where: eq(MccCategoryEntityTable.id, id) }))
+            findById: (id: number) => Db.query(db => db.query.MccCategoryEntityTable.findFirst({ where: { id } }))
         };
     })
 }) {

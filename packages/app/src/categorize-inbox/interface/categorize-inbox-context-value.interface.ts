@@ -1,7 +1,5 @@
-import { CategorizeInboxRowInterface } from '@budgie/contracts';
+import { CategorizeInboxAssignmentInterface, CategorizeInboxClusterInterface, CategorizeInboxRowInterface } from '@budgie/categorization';
 
-import { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
-import { CategorizeInboxClusterInterface } from './categorize-inbox-cluster.interface';
 import { CategorizeInboxStrategyInterface } from './categorize-inbox-strategy.interface';
 import { CategorizeInboxVisibilityInterface } from './categorize-inbox-visibility.interface';
 

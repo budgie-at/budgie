@@ -22,23 +22,15 @@ These `ExternalSourceEnum` members exist but have no service yet:
 
 ### Composition
 
-Each provider is a `Context.Service` whose `make` spreads a family factory from `util/`:
-
-```
-makeSyncService (identity: provider + accountType + generateAccountTitle + accountIcon; setAccountSyncEnabled,
-                 mapAccountsToPreview, getOrCreateSyncAccount)
-  ├── makePollingSyncService (loop, hooks, token, background task)
-  │     ├── MonobankSyncService  — polling-with-history (forward/backward paging, jar/card titles + jar icon)
-  │     └── BinanceSyncService   — polling-with-snapshot (balance anchor, sources+transfers, CRYPTO_SYNC + Bitcoin icon)
-  └── makeFileSyncService   (importPreview, executeImportForSelectedAccounts, quickImport)
-        ├── ErsteSyncService
-        └── PrivatbankSyncService
-```
-
-Registry: `SyncProviderRegistryService` in `service/sync-provider-registry.service.ts`; static per-provider capabilities live in
-`constant/sync-provider-capabilities.constant.ts`.
+The sync services, family factories (`makeSyncService`, `makePollingSyncService`, `makeFileSyncService`),
+`SyncProviderRegistryService`, resync, repair and transfer consolidation live in `@budgie/sync` (see
+`packages/sync/AGENTS.md`). This module keeps the UI, the `.task.ts` registrations, the rule and
+transfer-consolidation drainers, `AppDataSyncService`, and the port adapters in `layer/`:
+`syncWorkloadLayer` (`SyncWorkload` over `Workload`, the drainers and expo background tasks),
+`syncFileReaderLayer` (`SyncFileReader` over the native PDF extractor and `expo-file-system`) and
+`p2pTransferTitleResolverLayer` (Lingui titles for Binance P2P transfers). `appServicesLayer` provides them.
 
 ### Adding a provider
 
-Create a `Context.Service` whose `make` returns the matching family factory with the identity fields and hooks, add its
-capabilities row, register it in `SyncProviderRegistryService`, and add its layer to `appServicesLayer`.
+Add the provider service in `@budgie/sync` and register it in `SyncProviderRegistryService`, add its row to
+`constant/sync-provider-capabilities.constant.ts`, and add its layer to `appServicesLayer`.

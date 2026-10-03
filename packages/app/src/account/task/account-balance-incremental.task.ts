@@ -1,3 +1,4 @@
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
@@ -5,7 +6,6 @@ import * as TaskManager from 'expo-task-manager';
 import { Workload } from '../../@generic/service/workload.service';
 import { runBackgroundTask } from '../../sync/utils/run-background-task.util';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
-import { AccountBalanceIncrementalService } from '../service/account-balance-incremental.service';
 
 TaskManager.defineTask(ACCOUNT_BALANCE_INCREMENTAL_TASK, () =>
     runBackgroundTask(

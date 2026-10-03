@@ -1,3 +1,4 @@
+import { SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -6,7 +7,6 @@ import Toast from 'react-native-toast-message';
 import { EmptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { SyncProviderRegistryService } from '../service/sync-provider-registry.service';
 
 export const useSyncTokenUpdate = () => {
     const { t } = useLingui();

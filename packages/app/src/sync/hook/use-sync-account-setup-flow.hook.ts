@@ -13,7 +13,7 @@ import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redi
 import { useAccountSelection } from './use-account-selection.hook';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
-import type { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
+import type { SyncAccountPreviewInterface } from '@budgie/sync';
 import type * as Context from 'effect/Context';
 
 export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(

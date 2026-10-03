@@ -2,7 +2,7 @@ import { int } from 'drizzle-orm/sqlite-core';
 
 import { CURRENT_TIMESTAMP } from '../constant/current-timestamp.constant';
 
-import type { SQLiteColumnBuilderBase } from 'drizzle-orm/sqlite-core/columns/common';
+import type { ColumnBuilderBase } from 'drizzle-orm';
 
 const baseFields = {
     id: int({ mode: 'number' }).primaryKey({ autoIncrement: true }),
@@ -11,7 +11,7 @@ const baseFields = {
     deletedAt: int('deleted_at', { mode: 'timestamp' })
 } as const;
 
-export const withBaseEntityTableColumns = <T extends Record<string, SQLiteColumnBuilderBase>>(columns: T): T & typeof baseFields => ({
+export const withBaseEntityTableColumns = <T extends Record<string, ColumnBuilderBase>>(columns: T): T & typeof baseFields => ({
     ...baseFields,
     ...columns
 });

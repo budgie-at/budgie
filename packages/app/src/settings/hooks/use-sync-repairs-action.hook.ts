@@ -1,3 +1,4 @@
+import { SyncRepairService } from '@budgie/sync';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -8,7 +9,6 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
-import { SyncRepairService } from '../../sync/service/sync-repair.service';
 
 export const useSyncRepairsAction = (refresh: () => void) => {
     const { t } = useLingui();

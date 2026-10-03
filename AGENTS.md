@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, consolidation, and logger packages.
+Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, market, ledger, recurring, rules, categorization, import-export, consolidation, and logger packages.
 
 ## Commands
 
@@ -76,6 +76,12 @@ Use the repo package scopes without the npm namespace prefix:
 - `landing`
 - `sync`
 - `budget`
+- `market`
+- `ledger`
+- `recurring`
+- `rules`
+- `categorization`
+- `import-export`
 - `consolidation`
 - `logger`
 
@@ -129,9 +135,15 @@ pull request build natively again (or, worse, test the wrong binary):
 
 ```
 packages/
-├── app/                # React Native (Expo 57) - main mobile app
+├── app/                # React Native (Expo 58) - main mobile app
 ├── ai/                 # Pure TypeScript AI/LLM services
 ├── budget/             # Budget domain logic
+├── market/             # Exchange rates, market data, base valuation
+├── ledger/             # Transactions, transfers, imports, account balances
+├── recurring/          # Recurring charge detection and calendar projection
+├── rules/              # Rules engine: matching, application, transfer conversion
+├── categorization/     # Embeddings, category and tag suggestions, categorize inbox
+├── import-export/      # CSV import and export of transactions
 ├── consolidation/      # Transaction consolidation
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 16 marketing site
@@ -178,7 +190,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Domain packages (`recurring`, `categorization`, `import-export`, `rules`, `market`, `ledger`, `budget`, `consolidation`, `sync`, `contracts`, `ai`, `logger`) MAY host colocated `test/` suites using `@effect/vitest` + `tests/test-kit`, excluded from the package build; `app` and `landing` host no Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Cross-package scenario suites, real-backup checks and money-safety invariants live in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`; domain-package suites live in `packages/<name>/test/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -222,7 +234,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 57. **Concurrency, time and resources use Effect primitives.** `Schedule` + `Effect.retry`/`repeat`, `Effect.timeout`, `Effect.sleep`, `Semaphore`, `Latch`, `FiberMap`, `Cache`, fiber interruption and `Effect.acquireRelease`. Never `setTimeout` loops, generation counters, promise-chain mutexes, `Promise.race`, or boolean cancel flags.
 58. **Repositories are services; reads are Effects.** A repository is a `make` service (rule 22) whose methods return Effects over `Db.query(db => ...)`; it holds no `db` and returns no Drizzle builders. Shared repository behaviour is a `make<X>Repository(table, columns)` factory spread into `make`, not a base class. Atomic work is `Db.transaction(effect)` from `@budgie/contracts`, never a transaction argument threaded through method signatures.
 59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
-60. **Live database reads are atoms; writes carry no keys.** React reads of app database state are `databaseQueryAtom([Tables...], effect)` atoms (`databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` when parametrised) read with `useLiveAtomValue`, listing every table the SQL reads. Never raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. The expo change listener (`databaseChangeReactivityLayer`) invalidates changed tables once each top-level `Db.transaction` settles; only writes it cannot see (virtual tables, `WITHOUT ROWID`, truncate-optimised deletes, file swaps) wrap themselves in `Reactivity.mutation([tableName], effect)`.
+60. **Live database reads are atoms; writes carry no keys.** React reads of app database state are `databaseQueryAtom([Tables...], effect)` atoms (`databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` when parametrised) read with `useLiveAtomValue`, listing every table the SQL reads. Drizzle builder writes are tracked by the Drizzle adapter; every raw (non-builder) write (`db.run(sql...)`, `$client.unsafe`) is wrapped in `Db.mutation({ type, tables: [...tables] }, effect)`.
 61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`eslint-rules/max-component-props.mjs`). The `allow` list in `.oxlintrc.json` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
 62. **No delegate-only hooks, no logic above components.** A hook whose body is one call to another hook plus constants (strings, an enum literal, a settings key) gets inlined into its consumers and deleted. Every layer of a hook chain must add real composition (state, refs, effects, 2+ composed sources with branching); single-consumer wrapper hooks are inlined into their component unless that forces a new lint disable. Component files contain imports, the inline `Props`, and the component — free functions with branching, hooks, and inline anonymous object types above a component belong in their proper module folders or in the child component that consumes them. See [docs/component-composition.md](docs/component-composition.md).
 63. **Never force-add ignored files.** If a path matches `.gitignore`, do not use `git add -f` or any equivalent override to commit it. Keep the file untracked unless the ignore rule itself is intentionally changed through normal review.
@@ -233,7 +245,7 @@ Rule 3 ("No comments") applies to every language in this repo, not just TypeScri
 ### Money Safety
 
 - Any PR that adds a data migration or touches consolidation, balance, ledger, or import code must run `pnpm verify:backup <latest backup .db>` locally and report only redacted account ids and the pass/fail totals in the PR description. Never commit backup files or their output, and never paste account titles or balances.
-- Every data migration must pass `tests/sync-tests/src/scenarios/database/data-migration-money-impact.test.ts`; a migration that moves ledger money needs an explicit allowlist entry there with its reason, never a relaxed assertion.
+- Every data migration added after the `_baseline` migration must pass `tests/sync-tests/src/scenarios/database/data-migration-money-impact.test.ts`; a migration that moves ledger money needs an explicit allowlist entry added there with its reason, never a relaxed assertion.
 - `tests/sync-tests` and `tests/consolidation-tests` assert after every test that stored `account_balances` equal `getLedgerBalances`; fix the production path or the seed, never the check.
 
 ### Naming Conventions
@@ -519,7 +531,7 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 
 | Package       | Stack                                                                                                                                                    |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **app**       | Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                      |
+| **app**       | Expo 58, React 19 + Compiler, Expo Router 58, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                      |
 | **ai**        | Pure TypeScript, Effect                                                                                                                                  |
 | **contracts** | Drizzle ORM, Effect                                                                                                                                      |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                         |
@@ -584,7 +596,7 @@ Rules:
     4. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do not use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
     5. `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
     6. Stream on the Mac (`npx --yes serve-sim -p <port> <udid>`), expose with `cloudflared tunnel --url http://127.0.0.1:<port>`, and open the `*.trycloudflare.com` URL in the T3 preview. Drive with `serve-sim tap -d <udid> <x> <y>` and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
-7. **Xcode 26 toolchain** — `expo-modules-jsi@57.0.6` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.0.6.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
+7. **Xcode 26 toolchain** — `expo-modules-jsi@58.0.5` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@58.0.5.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.5, still ship the bug).
 
 Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/cloudflared when done; restore any shared Mac checkout you touched (`git checkout -f <branch> && git clean -fd`).
 

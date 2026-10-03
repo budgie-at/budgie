@@ -120,6 +120,10 @@ export class BaseTransactionFilterRepository {
         return and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
     }
 
+    buildLedgerEntryFilter() {
+        return { originalTransactionId: { isNull: true }, deletedAt: { isNull: true } } as const;
+    }
+
     buildLedgerEntryCondition() {
         return and(isNull(TransactionEntryEntityTable.originalTransactionId), isNull(TransactionEntryEntityTable.deletedAt));
     }

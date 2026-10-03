@@ -34,18 +34,41 @@ src/
 │   │   ├── sync-error.type.ts              # SyncError union
 │   │   ├── sync-provider-client.interface.ts
 │   │   └── sync-transaction.interface.ts
+│   ├── port/
+│   │   ├── sync-workload.port.ts           # Host scheduling port (app implements)
+│   │   └── sync-file-reader.port.ts        # Host native file reading port (app implements)
+│   ├── layer/                              # Shared dependency layers of the sync families
+│   ├── util/
+│   │   └── make-{sync,polling-sync,file-sync}-service.util.ts   # Sync family factories
+│   └── service/                            # Token, registry, resync, repair, transfer consolidation
+├── monobank/                 # Monobank implementation (wire types come from the SDK)
+│   ├── client/
+│   │   └── monobank.client.ts
+│   ├── constant/
+│   │   └── monobank-*.constant.ts
+│   ├── mapper/
+│   │   └── monobank-*.mapper.ts
 │   └── service/
-│       └── base-sync.service.ts            # Window pagination
-└── monobank/                 # Monobank implementation (wire types come from the SDK)
-    ├── client/
-    │   └── monobank.client.ts
-    ├── constant/
-    │   └── monobank-*.constant.ts
-    ├── mapper/
-    │   └── monobank-*.mapper.ts
-    └── service/
-        └── monosync.service.ts
+│       ├── monobank-transaction-sync.service.ts   # Window pager over MonobankClient
+│       └── monobank-sync.service.ts               # Polling orchestration (Context.Service)
+├── binance/ erste/ privatbank/   # Clients, parsers, mappers and their orchestration services
 ```
+
+## Orchestration
+
+Every provider sync service is a `Context.Service` whose `make` spreads a family factory from `core/util/`:
+`makePollingSyncService` (Monobank, Binance) or `makeFileSyncService` (Erste, Privatbank), both built on
+`makeSyncService`. `SyncProviderRegistryService` resolves the service for an account. The services depend on
+`@budgie/contracts` repositories and `@budgie/ledger`, `@budgie/rules` and `@budgie/consolidation` services.
+
+The host app owns scheduling and native IO and provides two layer-less ports:
+
+- `SyncWorkload`: background/user lanes (`run`, `runUser`, `hasQueuedWork`, `awaitQueuedUserWork`),
+  background task registration and the deferred rule-application and transfer-consolidation queues.
+- `SyncFileReader`: PDF text items and raw bytes for a file URI.
+
+`LedgerWorkload` (from `@budgie/ledger`) covers foreground-exclusive work, and consolidation needs the
+`P2pTransferTitleResolver` port from `@budgie/consolidation`.
 
 ## Architecture
 
@@ -119,7 +142,7 @@ Callers run it through the app runtime, which provides `HttpClient` via `FetchHt
 
 - **Monobank** delegates every request to `@liaugust/monobank-sdk` (its own retry config
   is kept) and wraps each call in `Effect.tryPromise`, mapping SDK errors to `SyncError`.
-  `MonobankClient` implements `SyncProviderClientInterface`; `MonobankSyncService` takes it as a constructor argument.
+  `MonobankClient` implements `SyncProviderClientInterface`; `MonobankTransactionSyncService` takes it as a constructor argument.
 - **Binance** has no usable SDK, so `BinanceSignedClient` extends `BaseSyncProviderClient`,
   the `effect/http` transport in `core/client/`. It owns `Schedule` retry (3 retries, exponential
   from 300 ms, statuses in `retryStatusCodes`, methods in `retryMethods`), a 30 s `Effect.timeout`,
@@ -208,15 +231,8 @@ schema change upstream surfaces as a compile error in the harness.
 
 ### Rate Limiting
 
-Monobank allows 1 request per minute per endpoint. Handle in app layer:
-
-```typescript
-// In app: monosync.service.ts
-const MONOBANK_RATE_LIMIT_MS = 60_000;
-
-// Add delay between API calls
-await sleep(MONOBANK_RATE_LIMIT_MS);
-```
+Monobank allows 1 request per minute per endpoint. `makePollingSyncService` sleeps `rateLimitMs`
+(`MONOBANK_RATE_LIMIT_MS`) between batches, or yields early when user work is queued.
 
 ## Generic Interfaces
 
@@ -305,7 +321,7 @@ export { NewProviderSyncService } from './[provider]/service/[provider]-sync.ser
 ### Test Location
 
 Per root rule 27 this package hosts no unit tests. Coverage lives in
-`tests/sync-tests`, which drives the real app sync services against a
+`tests/sync-tests`, which drives these sync services through the app runtime layer against a
 stubbed network:
 
 ```bash
@@ -365,10 +381,5 @@ omits it for some tokens. Always read it through a guard, as `getJars()` does.
 
 ## Error Recovery
 
-For failed syncs, the app tracks:
-
-- `errorCount` - Number of consecutive failures
-- `lastError` - Last error message
-- `lastSyncedAt` - Last successful sync timestamp
-
-Implement exponential backoff in app layer based on error count.
+`makePollingSyncService` records `errorCount` and `lastError` on the failed sync, retries after `rateLimitMs`
+up to three consecutive errors, then marks the sync (or its whole credential group) failed and disabled.

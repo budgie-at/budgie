@@ -1,3 +1,4 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text } from 'react-native';
 
@@ -9,12 +10,11 @@ import { testID } from '../../../@generic/utils/test-id.util';
 import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';
 import { CATEGORIZE_INBOX_RAIL_HIT_SLOP } from '../../constant/categorize-inbox-rail-hit-slop.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 import { CategorizeInboxSuggestionChip } from '../categorize-inbox-suggestion-chip/categorize-inbox-suggestion-chip';
 
 import { CategorizeInboxSuggestionChipsSelector } from './categorize-inbox-suggestion-chips.selector';
 
-import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;

@@ -1,4 +1,3 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountTypeEnum,
     CurrencyEnum,
@@ -9,6 +8,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
@@ -57,14 +57,14 @@ export const P2P_OUT_OF_WINDOW_OFFSET_MS = 3 * P2P_ONE_HOUR_MS;
 
 export const seedP2pFiatTransferFixture = Effect.fnUntraced(function* () {
     const uah = yield* requireInstrument(CurrencyEnum.UAH);
-    const usdt = seed.instrument({ code: 'USDT', name: 'Tether', symbol: 'USDT', type: InstrumentTypeEnum.CRYPTO });
-    const bankAccount = seed.account({
+    const usdt = yield* seed.instrument({ code: 'USDT', name: 'Tether', symbol: 'USDT', type: InstrumentTypeEnum.CRYPTO });
+    const bankAccount = yield* seed.account({
         title: 'Monobank UAH',
         type: AccountTypeEnum.BANK_SYNC,
         externalSource: ExternalSourceEnum.MONOBANK,
         instrumentId: uah.id
     });
-    const binanceAccount = seed.account({
+    const binanceAccount = yield* seed.account({
         title: 'Binance SPOT · USDT',
         type: AccountTypeEnum.CRYPTO_SYNC,
         externalSource: ExternalSourceEnum.BINANCE,
@@ -73,49 +73,52 @@ export const seedP2pFiatTransferFixture = Effect.fnUntraced(function* () {
 
     const usd = yield* requireInstrument(CurrencyEnum.USD);
 
-    testDb.update(SettingsEntityTable).set({ defaultInstrumentId: usd.id }).run();
-    seedExchangeRate(uah.id, usd.id, USD_PER_UAH_RATE);
-    seedExchangeRate(usd.id, usdt.id, USD_PER_USDT_RATE);
+    yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: usd.id });
+    yield* seedExchangeRate(uah.id, usd.id, USD_PER_UAH_RATE);
+    yield* seedExchangeRate(usd.id, usdt.id, USD_PER_USDT_RATE);
 
     const fixture: P2pFiatTransferFixture = { uah, usdt, bankAccount, binanceAccount };
 
     return fixture;
 });
 
-export const seedP2pPair = (
-    expenseLeg: P2pLeg,
-    incomeLeg: P2pLeg,
-    incomeOffsetMs = BANK_LEG_OFFSET_MS
-): { expense: TransactionEntityInterface; income: TransactionEntityInterface } => {
-    const expense = seedBankPair.expense(
-        { externalId: expenseLeg.externalId, operatedAt: P2P_OPERATED_AT },
-        { accountId: expenseLeg.accountId, amount: expenseLeg.amount }
-    );
-    const income = seedBankPair.income(
-        { externalId: incomeLeg.externalId, operatedAt: new Date(P2P_OPERATED_AT.getTime() + incomeOffsetMs) },
-        { accountId: incomeLeg.accountId, amount: incomeLeg.amount }
-    );
+export const seedP2pPair = (expenseLeg: P2pLeg, incomeLeg: P2pLeg, incomeOffsetMs = BANK_LEG_OFFSET_MS) =>
+    Effect.gen(function* () {
+        const expense = yield* seedBankPair.expense(
+            { externalId: expenseLeg.externalId, operatedAt: P2P_OPERATED_AT },
+            { accountId: expenseLeg.accountId, amount: expenseLeg.amount }
+        );
+        const income = yield* seedBankPair.income(
+            { externalId: incomeLeg.externalId, operatedAt: new Date(P2P_OPERATED_AT.getTime() + incomeOffsetMs) },
+            { accountId: incomeLeg.accountId, amount: incomeLeg.amount }
+        );
 
-    return { expense, income };
-};
+        return { expense, income };
+    });
 
 export const seedP2pIncome = (
     externalId: string,
     accountId: number,
     quote?: Required<Pick<TransactionEntryCreateEntityInterface, 'quotedInstrumentId' | 'quotedAmount' | 'quotedUnitPrice'>>
-): TransactionEntityInterface => {
-    const transaction = seedBankPair.income({ externalId, operatedAt: P2P_OPERATED_AT }, { accountId, amount: P2P_USDT_AMOUNT });
+) =>
+    Effect.gen(function* () {
+        const transaction = yield* seedBankPair.income({ externalId, operatedAt: P2P_OPERATED_AT }, { accountId, amount: P2P_USDT_AMOUNT });
 
-    if (isDefined(quote)) {
-        testDb.update(TransactionEntryEntityTable).set(quote).where(eq(TransactionEntryEntityTable.transactionId, transaction.id)).run();
-    }
+        if (isDefined(quote)) {
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set(quote)
+                .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+        }
 
-    return transaction;
-};
+        return transaction;
+    });
 
-export const fetchP2pCanonical = (): TransactionEntityInterface =>
-    getDefined(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER).at(0), () => {
-        throw new Error('P2P canonical transaction not found');
+export const fetchP2pCanonical = () =>
+    Effect.gen(function* () {
+        return getDefined((yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).at(0), () => {
+            throw new Error('P2P canonical transaction not found');
+        });
     });
 
 export const expectConsolidatedToP2pCanonical = (
@@ -123,20 +126,23 @@ export const expectConsolidatedToP2pCanonical = (
     income: TransactionEntityInterface,
     fromAccountId: number,
     toAccountId: number
-): void => {
-    const canonical = fetchP2pCanonical();
-    expect(canonical.fromAccountId).toBe(fromAccountId);
-    expect(canonical.toAccountId).toBe(toAccountId);
-    expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonical.id);
-    expect(fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonical.id);
-};
+) =>
+    Effect.gen(function* () {
+        const canonical = yield* fetchP2pCanonical();
+        expect(canonical.fromAccountId).toBe(fromAccountId);
+        expect(canonical.toAccountId).toBe(toAccountId);
+        expect((yield* fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonical.id);
+        expect((yield* fetchTransactionById(income.id)).consolidationParentTransactionId).toBe(canonical.id);
+    });
 
 export const expectP2pUnconsolidated = Effect.fnUntraced(function* (transactions: readonly TransactionEntityInterface[]) {
     const transferConsolidationService = yield* TransferConsolidationService;
 
     expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(0);
-    expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
-    expect(transactions.map(transaction => fetchTransactionById(transaction.id).consolidationParentTransactionId)).toEqual(
-        transactions.map(() => null)
-    );
+    expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+    expect(
+        (yield* Effect.forEach(transactions, transaction => fetchTransactionById(transaction.id))).map(
+            transaction => transaction.consolidationParentTransactionId
+        )
+    ).toEqual(transactions.map(() => null));
 });

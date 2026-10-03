@@ -5,8 +5,8 @@ import * as Layer from 'effect/Layer';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { ChatInvoker } from '../../chat/service/chat-invoker.service';
-import { containsNonLatin } from '../../embedding/util/contains-non-latin.util';
 import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
+import { containsNonLatin } from '../util/contains-non-latin.util';
 
 export class TranslationLlmService extends Context.Service<TranslationLlmService>()('@budgie/ai/TranslationLlmService', {
     make: Effect.gen(function* () {

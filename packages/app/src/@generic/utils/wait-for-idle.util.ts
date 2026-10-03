@@ -1,11 +1,23 @@
 import * as Effect from 'effect/Effect';
 
-import { scheduleIdleCallback } from './schedule-idle-callback.util';
+import { isDefined } from '@rnw-community/shared';
 
 export const waitForIdle: Effect.Effect<void> = Effect.callback(resume => {
-    const cancelIdleCallback = scheduleIdleCallback(() => {
+    const resumeVoid = () => {
         resume(Effect.void);
-    });
+    };
 
-    return Effect.sync(cancelIdleCallback);
+    if (isDefined(globalThis.requestIdleCallback)) {
+        const idleHandle = globalThis.requestIdleCallback(resumeVoid);
+
+        return Effect.sync(() => {
+            globalThis.cancelIdleCallback(idleHandle);
+        });
+    }
+
+    const timeoutHandle = setTimeout(resumeVoid, 0);
+
+    return Effect.sync(() => {
+        clearTimeout(timeoutHandle);
+    });
 });

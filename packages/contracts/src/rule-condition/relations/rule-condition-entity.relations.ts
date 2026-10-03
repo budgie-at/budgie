@@ -1,11 +1,20 @@
-import { relations } from 'drizzle-orm';
+import { defineRelationsPart } from 'drizzle-orm';
 
 import { RuleEntityTable } from '../../rule/table/rule-entity.table';
 import { RuleConditionEntityTable } from '../table/rule-condition-entity.table';
 
-export const RuleConditionEntityRelations = relations(RuleConditionEntityTable, ({ one }) => ({
-    rule: one(RuleEntityTable, {
-        fields: [RuleConditionEntityTable.ruleId],
-        references: [RuleEntityTable.id]
+export const RuleConditionEntityRelations = defineRelationsPart(
+    {
+        RuleConditionEntityTable,
+        RuleEntityTable
+    },
+    relation => ({
+        RuleConditionEntityTable: {
+            rule: relation.one.RuleEntityTable({
+                from: relation.RuleConditionEntityTable.ruleId,
+                to: relation.RuleEntityTable.id,
+                optional: false
+            })
+        }
     })
-}));
+);

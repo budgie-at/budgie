@@ -8,7 +8,7 @@ export const useSystemTheme = (): ColorSchemeName => {
 
     useEffect(() => {
         const appearanceSubscription = Appearance.addChangeListener(({ colorScheme }) => {
-            setSystemScheme(colorScheme);
+            setSystemScheme(colorScheme ?? 'light');
         });
 
         // oxlint-disable-next-line react-hooks-js/set-state-in-effect

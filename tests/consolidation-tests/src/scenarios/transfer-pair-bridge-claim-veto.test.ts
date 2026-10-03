@@ -11,96 +11,98 @@ const SAME_CURRENCY_AMOUNT = 5_000 * PRECISION;
 const THIRD_PARTY_IBAN = 'UA-THIRD-PARTY-IBAN';
 const FROM_ACCOUNT_IBAN = 'UA-FROM-IBAN';
 
-const seedSameCurrencyPairFixture = (
-    incomeToIban: string | null
-): { readonly incomeTransactionId: number; readonly fromAccountId: number; readonly toAccountId: number } => {
-    const transferMccId = testQueryService.findMccByCode(IBAN_BRIDGE_TRANSFER_MCC).id;
-    const fromAccount = testSeedService.account({ title: 'From UAH', type: AccountTypeEnum.BANK_SYNC, iban: FROM_ACCOUNT_IBAN });
-    const toAccount = testSeedService.account({ title: 'To UAH', type: AccountTypeEnum.BANK_SYNC });
-    const income = testSeedService.bankPairIncome(
-        { externalId: `pair-income-${incomeToIban ?? 'none'}`, operatedAt: BRIDGE_THEFT_FX_OPERATED_AT },
-        { accountId: toAccount.id, amount: SAME_CURRENCY_AMOUNT, mccCategoryId: transferMccId, toIban: incomeToIban }
-    );
-    testSeedService.bankPairExpense(
-        { externalId: `pair-expense-${incomeToIban ?? 'none'}`, operatedAt: new Date(BRIDGE_THEFT_FX_OPERATED_AT.getTime() + 5_000) },
-        { accountId: fromAccount.id, amount: SAME_CURRENCY_AMOUNT, mccCategoryId: transferMccId }
-    );
+const seedSameCurrencyPairFixture = (incomeToIban: string | null) =>
+    Effect.gen(function* () {
+        const transferMccId = (yield* testQueryService.findMccByCode(IBAN_BRIDGE_TRANSFER_MCC)).id;
+        const fromAccount = yield* testSeedService.account({ title: 'From UAH', type: AccountTypeEnum.BANK_SYNC, iban: FROM_ACCOUNT_IBAN });
+        const toAccount = yield* testSeedService.account({ title: 'To UAH', type: AccountTypeEnum.BANK_SYNC });
+        const income = yield* testSeedService.bankPairIncome(
+            { externalId: `pair-income-${incomeToIban ?? 'none'}`, operatedAt: BRIDGE_THEFT_FX_OPERATED_AT },
+            { accountId: toAccount.id, amount: SAME_CURRENCY_AMOUNT, mccCategoryId: transferMccId, toIban: incomeToIban }
+        );
+        yield* testSeedService.bankPairExpense(
+            { externalId: `pair-expense-${incomeToIban ?? 'none'}`, operatedAt: new Date(BRIDGE_THEFT_FX_OPERATED_AT.getTime() + 5_000) },
+            { accountId: fromAccount.id, amount: SAME_CURRENCY_AMOUNT, mccCategoryId: transferMccId }
+        );
 
-    return { fromAccountId: fromAccount.id, incomeTransactionId: income.id, toAccountId: toAccount.id };
-};
+        return { fromAccountId: fromAccount.id, incomeTransactionId: income.id, toAccountId: toAccount.id };
+    });
 
-const fetchConsolidationParentId = (transactionId: number): number | null =>
-    testQueryService.findTransactionById(transactionId)?.consolidationParentTransactionId ?? null;
+const fetchConsolidationParentId = (transactionId: number) =>
+    Effect.gen(function* () {
+        return (yield* testQueryService.findTransactionById(transactionId))?.consolidationParentTransactionId ?? null;
+    });
 
-const fetchSingleTransferPairCanonical = (): number => {
-    const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+const fetchSingleTransferPairCanonical = () =>
+    Effect.gen(function* () {
+        const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
-    if (canonical === undefined) {
-        throw new Error('Expected a single TRANSFER_PAIR canonical');
-    }
+        if (canonical === undefined) {
+            throw new Error('Expected a single TRANSFER_PAIR canonical');
+        }
 
-    return canonical.id;
-};
+        return canonical.id;
+    });
 
 layer(TestLayer)('consolidation/transfer-pair-bridge-claim-veto', it => {
     it.effect('does not pair a same-currency interbank expense with a foreign-currency bridge income by title declaration', () =>
         Effect.gen(function* () {
-            const { fxExpense, fxBridgeIncome, interbankExpense, sourceEurAccountId, bridgeUahAccountId } = seedBridgeTheftFixture();
+            const { fxExpense, fxBridgeIncome, interbankExpense, sourceEurAccountId, bridgeUahAccountId } = yield* seedBridgeTheftFixture();
 
             const result = yield* runConsolidation();
 
             expect(result.consolidated).toBe(1);
-            const canonicalId = fetchSingleTransferPairCanonical();
-            expectFxPairCanonicalChildren(canonicalId, {
+            const canonicalId = yield* fetchSingleTransferPairCanonical();
+            yield* expectFxPairCanonicalChildren(canonicalId, {
                 fxExpenseId: fxExpense.id,
                 fxBridgeIncomeId: fxBridgeIncome.id,
                 interbankExpenseId: interbankExpense.id
             });
-            const canonical = testQueryService.fetchTransactionById(canonicalId);
+            const canonical = yield* testQueryService.fetchTransactionById(canonicalId);
             expect(canonical.fromAccountId).toBe(sourceEurAccountId);
             expect(canonical.toAccountId).toBe(bridgeUahAccountId);
-            expect(fetchConsolidationParentId(interbankExpense.id)).toBeNull();
+            expect(yield* fetchConsolidationParentId(interbankExpense.id)).toBeNull();
         })
     );
 
     it.effect('does not pair a same-currency expense with an income whose declared source iban belongs to a third account', () =>
         Effect.gen(function* () {
-            const fixture = seedSameCurrencyPairFixture(THIRD_PARTY_IBAN);
+            const fixture = yield* seedSameCurrencyPairFixture(THIRD_PARTY_IBAN);
 
             const result = yield* runConsolidation();
 
             expect(result.consolidated).toBe(0);
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
-            expect(fetchConsolidationParentId(fixture.incomeTransactionId)).toBeNull();
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+            expect(yield* fetchConsolidationParentId(fixture.incomeTransactionId)).toBeNull();
         })
     );
 
     it.effect('still pairs a same-currency expense with an income whose declared source iban matches the expense account', () =>
         Effect.gen(function* () {
-            const fixture = seedSameCurrencyPairFixture(FROM_ACCOUNT_IBAN);
+            const fixture = yield* seedSameCurrencyPairFixture(FROM_ACCOUNT_IBAN);
 
             const result = yield* runConsolidation();
 
             expect(result.consolidated).toBe(1);
-            const canonicalId = fetchSingleTransferPairCanonical();
-            const childIds = testQueryService.fetchChildTransactionIds(canonicalId);
+            const canonicalId = yield* fetchSingleTransferPairCanonical();
+            const childIds = yield* testQueryService.fetchChildTransactionIds(canonicalId);
             expect(childIds).toHaveLength(2);
-            const canonical = testQueryService.fetchTransactionById(canonicalId);
+            const canonical = yield* testQueryService.fetchTransactionById(canonicalId);
             expect(canonical.fromAccountId).toBe(fixture.fromAccountId);
             expect(canonical.toAccountId).toBe(fixture.toAccountId);
-            expect(fetchConsolidationParentId(fixture.incomeTransactionId)).toBe(canonicalId);
+            expect(yield* fetchConsolidationParentId(fixture.incomeTransactionId)).toBe(canonicalId);
         })
     );
 
     it.effect('keeps results stable when consolidation runs twice', () =>
         Effect.gen(function* () {
-            const { fxExpense, fxBridgeIncome, interbankExpense } = seedBridgeTheftFixture();
+            const { fxExpense, fxBridgeIncome, interbankExpense } = yield* seedBridgeTheftFixture();
 
             yield* runConsolidation();
             yield* expectSecondConsolidationRunStable();
-            const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const canonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
             expect(canonicals).toHaveLength(1);
-            expectFxPairCanonicalChildren(canonicals[0].id, {
+            yield* expectFxPairCanonicalChildren(canonicals[0].id, {
                 fxExpenseId: fxExpense.id,
                 fxBridgeIncomeId: fxBridgeIncome.id,
                 interbankExpenseId: interbankExpense.id

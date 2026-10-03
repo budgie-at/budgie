@@ -1,6 +1,5 @@
-import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-item.type';
-import type { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
 import type { CategorizeInboxVisibilityInterface } from './categorize-inbox-visibility.interface';
+import type { CategorizeInboxAssignmentInterface, CategorizeInboxListItemType } from '@budgie/categorization';
 
 export interface CategorizeInboxDataInterface {
     readonly isLoading: boolean;

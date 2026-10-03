@@ -1,4 +1,4 @@
-import type { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
+import type { SyncHistoryDepthEnum } from '@budgie/sync';
 
 export const SyncHistoryDepthOptionSelector = {
     Row: (depth: SyncHistoryDepthEnum) => `SyncHistoryDepthOption.${depth}` as const

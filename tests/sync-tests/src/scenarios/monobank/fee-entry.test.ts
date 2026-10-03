@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     AccountBalanceRepository,
     BANK_FEE_CATEGORY_ID,
@@ -16,13 +15,13 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/fee-entry', () => {
     it.effect('finds the bank fee default category by lowercase localized search', () =>
         Effect.gen(function* () {
             const categoryRepository = yield* CategoryRepository;
-            setupMonobankFixture();
+            yield* setupMonobankFixture();
 
             const categories = yield* categoryRepository.findBySearchQuery('бан', true, LanguageEnum.UK);
 
@@ -35,23 +34,21 @@ describe('monobank/fee-entry', () => {
             const monobankSyncService = yield* MonobankSyncService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const statisticsRepository = yield* StatisticsRepository;
-            const { account } = setupMonobankFixture();
+            const { account } = yield* setupMonobankFixture();
             monobankStub.statement([buildMonobank.transaction({ id: 'tx-fee', amount: -6000, hold: false, commissionRate: -1000 })]);
 
             yield* monobankSyncService.sync();
 
-            const [mainEntry] = testDb
+            const [mainEntry] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-fee'))
-                .all();
-            const [feeEntry] = testDb
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-fee'));
+            const [feeEntry] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-fee:fee'))
-                .all();
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-fee:fee'));
 
-            const [feeCategory] = testDb.select().from(CategoryEntityTable).where(eq(CategoryEntityTable.id, BANK_FEE_CATEGORY_ID)).all();
+            const [feeCategory] = yield* testDb.select().from(CategoryEntityTable).where(eq(CategoryEntityTable.id, BANK_FEE_CATEGORY_ID));
             const categoryEntries = [mainEntry, feeEntry].filter(entry => entry.type !== TransactionEntryTypeEnum.FEE);
 
             expect(mainEntry.amount).toBe(50 * PRECISION);
@@ -82,16 +79,15 @@ describe('monobank/fee-entry', () => {
     it.effect('keeps a single entry when there is no commission', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            setupMonobankFixture();
+            yield* setupMonobankFixture();
             monobankStub.statement([buildMonobank.transaction({ id: 'tx-no-fee', amount: -6000, hold: false, commissionRate: 0 })]);
 
             yield* monobankSyncService.sync();
 
-            const entries = testDb
+            const entries = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-no-fee:fee'))
-                .all();
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-no-fee:fee'));
 
             expect(entries).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))

@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -34,8 +33,7 @@ export class MccGroupRepository extends Context.Service<MccGroupRepository>()('@
                 ).pipe(Effect.map(([mccGroup]) => mccGroup)),
             truncate: () => Db.query(db => db.delete(MccGroupEntityTable)),
             findAll: () => Db.query(db => db.query.MccGroupEntityTable.findMany()),
-            findByType: (type: string) =>
-                Db.query(db => db.query.MccGroupEntityTable.findFirst({ where: eq(MccGroupEntityTable.type, type) }))
+            findByType: (type: string) => Db.query(db => db.query.MccGroupEntityTable.findFirst({ where: { type } }))
         };
     })
 }) {

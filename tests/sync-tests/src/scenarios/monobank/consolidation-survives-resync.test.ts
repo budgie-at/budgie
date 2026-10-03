@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     AccountTypeEnum,
     ExternalSourceEnum,
@@ -13,19 +12,19 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, seed, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, seed, testDb, TestLayer } from '../../harness';
 
 describe('monobank/consolidation-survives-resync', () => {
     it.effect('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const fromAccount = seed.account({ externalId: 'mono-acc-1', type: AccountTypeEnum.BANK_SYNC });
-            const toAccount = seed.account({ externalId: 'mono-acc-2', type: AccountTypeEnum.BANK_SYNC });
-            seed.sync({ accountId: fromAccount.id, mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(2026, 0, 1) });
+            const fromAccount = yield* seed.account({ externalId: 'mono-acc-1', type: AccountTypeEnum.BANK_SYNC });
+            const toAccount = yield* seed.account({ externalId: 'mono-acc-2', type: AccountTypeEnum.BANK_SYNC });
+            yield* seed.sync({ accountId: fromAccount.id, mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(2026, 0, 1) });
 
             const operatedAt = new Date(2026, 0, 15);
 
-            const sourceExpense = testDb
+            const sourceExpense = (yield* testDb
                 .insert(TransactionEntityTable)
                 .values({
                     type: TransactionTypeEnum.EXPENSE,
@@ -38,10 +37,9 @@ describe('monobank/consolidation-survives-resync', () => {
                     toAccountId: null,
                     comment: ''
                 })
-                .returning()
-                .all()[0];
+                .returning())[0];
 
-            const sourceIncome = testDb
+            const sourceIncome = (yield* testDb
                 .insert(TransactionEntityTable)
                 .values({
                     type: TransactionTypeEnum.INCOME,
@@ -54,10 +52,9 @@ describe('monobank/consolidation-survives-resync', () => {
                     toAccountId: toAccount.id,
                     comment: ''
                 })
-                .returning()
-                .all()[0];
+                .returning())[0];
 
-            const canonicalTransfer = testDb
+            const canonicalTransfer = (yield* testDb
                 .insert(TransactionEntityTable)
                 .values({
                     type: TransactionTypeEnum.TRANSFER,
@@ -71,88 +68,79 @@ describe('monobank/consolidation-survives-resync', () => {
                     consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
                     comment: ''
                 })
-                .returning()
-                .all()[0];
+                .returning())[0];
 
-            testDb
-                .insert(TransactionEntryEntityTable)
-                .values([
-                    {
-                        transactionId: canonicalTransfer.id,
-                        accountId: fromAccount.id,
-                        type: TransactionEntryTypeEnum.CREDIT,
-                        amount: 25_000_000,
-                        exchangeRate: 1,
-                        externalId: null,
-                        originalTransactionId: null
-                    },
-                    {
-                        transactionId: canonicalTransfer.id,
-                        accountId: toAccount.id,
-                        type: TransactionEntryTypeEnum.DEBIT,
-                        amount: 25_000_000,
-                        exchangeRate: 1,
-                        externalId: null,
-                        originalTransactionId: null
-                    },
-                    {
-                        transactionId: canonicalTransfer.id,
-                        originalTransactionId: sourceExpense.id,
-                        accountId: fromAccount.id,
-                        type: TransactionEntryTypeEnum.CREDIT,
-                        amount: 25_000_000,
-                        exchangeRate: 1,
-                        externalId: 'tx-expense-1'
-                    },
-                    {
-                        transactionId: canonicalTransfer.id,
-                        originalTransactionId: sourceIncome.id,
-                        accountId: toAccount.id,
-                        type: TransactionEntryTypeEnum.DEBIT,
-                        amount: 25_000_000,
-                        exchangeRate: 1,
-                        externalId: 'tx-income-1'
-                    }
-                ])
-                .run();
+            yield* testDb.insert(TransactionEntryEntityTable).values([
+                {
+                    transactionId: canonicalTransfer.id,
+                    accountId: fromAccount.id,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: 25_000_000,
+                    exchangeRate: 1,
+                    externalId: null,
+                    originalTransactionId: null
+                },
+                {
+                    transactionId: canonicalTransfer.id,
+                    accountId: toAccount.id,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: 25_000_000,
+                    exchangeRate: 1,
+                    externalId: null,
+                    originalTransactionId: null
+                },
+                {
+                    transactionId: canonicalTransfer.id,
+                    originalTransactionId: sourceExpense.id,
+                    accountId: fromAccount.id,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: 25_000_000,
+                    exchangeRate: 1,
+                    externalId: 'tx-expense-1'
+                },
+                {
+                    transactionId: canonicalTransfer.id,
+                    originalTransactionId: sourceIncome.id,
+                    accountId: toAccount.id,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: 25_000_000,
+                    exchangeRate: 1,
+                    externalId: 'tx-income-1'
+                }
+            ]);
 
-            testDb
+            yield* testDb
                 .update(TransactionEntityTable)
                 .set({ consolidationParentTransactionId: canonicalTransfer.id })
-                .where(eq(TransactionEntityTable.id, sourceExpense.id))
-                .run();
-            testDb
+                .where(eq(TransactionEntityTable.id, sourceExpense.id));
+            yield* testDb
                 .update(TransactionEntityTable)
                 .set({ consolidationParentTransactionId: canonicalTransfer.id })
-                .where(eq(TransactionEntityTable.id, sourceIncome.id))
-                .run();
+                .where(eq(TransactionEntityTable.id, sourceIncome.id));
 
             monobankStub.clientInfo(buildMonobank.clientInfoWith(['mono-acc-1']));
             monobankStub.statement([buildMonobank.transaction({ id: 'tx-expense-1', amount: -25000, hold: false })]);
 
             yield* monobankSyncService.sync();
 
-            const canonicalAfter = testDb
+            const canonicalAfter = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.id, canonicalTransfer.id))
-                .all();
+                .where(eq(TransactionEntityTable.id, canonicalTransfer.id));
             expect(canonicalAfter).toHaveLength(1);
             expect(canonicalAfter[0].deletedAt).toBeNull();
             expect(canonicalAfter[0].consolidationType).toBe('TRANSFER_PAIR');
 
-            const sourceExpenseAfter = testDb
+            const sourceExpenseAfter = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.id, sourceExpense.id))
-                .all();
+                .where(eq(TransactionEntityTable.id, sourceExpense.id));
             expect(sourceExpenseAfter[0].consolidationParentTransactionId).toBe(canonicalTransfer.id);
 
-            const shadowEntry = testDb
+            const shadowEntry = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-expense-1'))
-                .all();
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-expense-1'));
             expect(shadowEntry).toHaveLength(1);
             expect(shadowEntry[0].originalTransactionId).toBe(sourceExpense.id);
             expect(shadowEntry[0].transactionId).toBe(canonicalTransfer.id);

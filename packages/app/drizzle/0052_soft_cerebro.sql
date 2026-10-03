@@ -1,1 +1,0 @@
-ALTER TABLE `settings` ADD `is_runway_widget_enabled` integer DEFAULT true NOT NULL;

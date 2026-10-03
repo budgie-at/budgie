@@ -54,8 +54,8 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             ];
 
             const buildExistingTransferDuplicateBlockedSourceTransactionIdSet = (
-                existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[],
-                existingTransferChainReclaimCandidates: ExistingTransferChainReclaimCandidateInterface[]
+                existingTransferBridgeCandidates: readonly ExistingTransferBridgeCandidateInterface[],
+                existingTransferChainReclaimCandidates: readonly ExistingTransferChainReclaimCandidateInterface[]
             ): Set<number> => {
                 const sourceTransactionIds = new Set(
                     existingTransferBridgeCandidates.flatMap(candidate => [

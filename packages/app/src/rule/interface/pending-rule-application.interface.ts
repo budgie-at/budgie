@@ -1,4 +1,4 @@
-import type { ApplyRuleResultInterface } from './apply-rule-result.interface';
+import type { ApplyRuleResultInterface } from '@budgie/rules';
 
 export interface PendingRuleApplicationInterface {
     readonly ruleId: number;

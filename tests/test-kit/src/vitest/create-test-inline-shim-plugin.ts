@@ -1,4 +1,4 @@
-import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import type { TestInlineShimPluginInterface } from './interface/test-inline-shim-plugin.interface';
@@ -8,19 +8,15 @@ const VIRTUAL_PREFIX = '\0virtual:';
 const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-secure-store': `export const getItem = () => null;`,
     expo: `export const requireNativeModule = () => ({}); export const requireOptionalNativeModule = () => null;`,
-    'expo-file-system': `export const File = class { constructor() {} };`,
+    'expo-file-system': `
+        export const File = class { constructor() {} };
+        export const Directory = class { constructor() { this.uri = 'file:///tmp/sqlite/'; } };
+        export const Paths = { document: '/tmp', cache: '/tmp' };
+    `,
     'expo-file-system/legacy': `export const createDownloadResumable = () => ({});`,
     'expo-constants': `export default { expoConfig: { extra: { aiEnabled: true } } };`,
     'llama.rn': `export const initLlama = async () => ({});`,
     'whisper.rn': `export const initWhisper = async () => ({});`,
-    'expo-sqlite': `
-        export class SQLiteDatabase {}
-        export class SQLiteStatement {}
-        export const openDatabaseSync = () => ({});
-        export const deleteDatabaseAsync = async () => undefined;
-        export const bundledExtensions = {};
-        export const addDatabaseChangeListener = () => ({ remove: () => undefined });
-    `,
     'expo-background-task': `
         export const BackgroundTaskResult = Object.freeze({ Success: 'success', Failed: 'failed' });
         export const registerTaskAsync = async () => undefined;
@@ -73,17 +69,21 @@ const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-localization': `
         export const getLocales = () => [{ languageCode: 'en', languageTag: 'en-US', regionCode: 'US', currencyCode: 'USD' }];
     `,
-    'expo-sqlite/kv-store': `
-        const store = new Map();
-        export default {
-            getItem: async key => store.get(key) ?? null,
-            setItem: async (key, value) => {
-                store.set(key, value);
-            },
-            removeItem: async key => {
-                store.delete(key);
-            }
+    '@op-engineering/op-sqlite': `
+        export const open = () => {
+            throw new Error('op-sqlite is unavailable in tests');
         };
+        export class Storage {
+            store = new Map();
+            getItem = async key => this.store.get(key) ?? null;
+            setItem = async (key, value) => {
+                this.store.set(key, value);
+            };
+            removeItem = async key => {
+                this.store.delete(key);
+            };
+            closeSync = () => undefined;
+        }
     `,
     'react-native': `
         export const InteractionManager = {
@@ -101,37 +101,17 @@ const VIRTUAL_SHIMS: Record<string, string> = {
     `
 };
 
-const DRIZZLE_EXPO_SQLITE_SHIM: Record<string, string> = {
-    'drizzle-orm/expo-sqlite': `
-        import { drizzle as drizzleBetterSqlite } from ${JSON.stringify(createRequire(import.meta.url).resolve('drizzle-orm/better-sqlite3'))};
-
-        export const drizzle = (database, config) => {
-            if (database?.$client) {
-                return drizzleBetterSqlite(database.$client, config);
-            }
-
-            if (typeof database?.prepare === 'function') {
-                return drizzleBetterSqlite(database, config);
-            }
-
-            return {};
-        };
-    `
-};
-
 const APP_WIDGET_MODULE_PATTERN = /\/widget\/[a-z-]+\.widget$/u;
 
 const APP_WIDGET_SHIM_ID = 'app-widget';
 
 const APP_WIDGET_SHIM = `export default { updateSnapshot: () => undefined, updateTimeline: () => undefined, reload: () => undefined };`;
 
-export const createTestInlineShimPlugin = (includeDrizzleExpoSqlite: boolean = false): TestInlineShimPluginInterface => ({
+export const createTestInlineShimPlugin = (): TestInlineShimPluginInterface => ({
     name: 'inline-shim',
     enforce: 'pre',
     resolveId: id => {
-        const virtualShims = includeDrizzleExpoSqlite ? { ...VIRTUAL_SHIMS, ...DRIZZLE_EXPO_SQLITE_SHIM } : VIRTUAL_SHIMS;
-
-        if (Object.hasOwn(virtualShims, id)) {
+        if (Object.hasOwn(VIRTUAL_SHIMS, id)) {
             return `${VIRTUAL_PREFIX}${id}`;
         }
 
@@ -149,9 +129,11 @@ export const createTestInlineShimPlugin = (includeDrizzleExpoSqlite: boolean = f
                 return APP_WIDGET_SHIM;
             }
 
-            const virtualShims = includeDrizzleExpoSqlite ? { ...VIRTUAL_SHIMS, ...DRIZZLE_EXPO_SQLITE_SHIM } : VIRTUAL_SHIMS;
+            return VIRTUAL_SHIMS[key] ?? null;
+        }
 
-            return virtualShims[key] ?? null;
+        if (id.endsWith('.sql')) {
+            return `export default ${JSON.stringify(readFileSync(id, 'utf8'))};`;
         }
 
         return null;
@@ -162,13 +144,14 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string, inclu
     const here = (relative: string) => resolve(rootDir, relative);
 
     return {
-        plugins: [createTestInlineShimPlugin(true)],
+        plugins: [createTestInlineShimPlugin()],
         ...(includeAppAlias && {
             resolve: {
                 alias: [{ find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') }]
             }
         }),
         test: {
+            server: { deps: { inline: [/@effect\/sql-sqlite-react-native/u] } },
             environment: 'node',
             globals: false,
             setupFiles: [here(setupFile)],

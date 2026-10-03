@@ -1,6 +1,6 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountBalanceRepository } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -14,14 +14,14 @@ describe('account/balance-after-consolidation', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const transferConsolidationService = yield* TransferConsolidationService;
-            const { bankAccount, cashAccount } = seedBankAndCashAccounts();
-            const atmExpense = seedBankPair.expense(
+            const { bankAccount, cashAccount } = yield* seedBankAndCashAccounts();
+            const atmExpense = yield* seedBankPair.expense(
                 { externalId: 'tx-atm', operatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-                { accountId: bankAccount.id, amount: AMOUNT, mccCategoryId: findMccByCode('6011').id }
+                { accountId: bankAccount.id, amount: AMOUNT, mccCategoryId: (yield* findMccByCode('6011')).id }
             );
 
             yield* accountBalanceIncrementalService.updateAllBalances(false);
-            yield* Effect.promise(() => testDb.$client.execAsync('UPDATE account_balances SET updated_at = updated_at - 60'));
+            yield* testDb.$client.unsafe('UPDATE account_balances SET updated_at = updated_at - 60');
             yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([atmExpense.id]);
             yield* accountBalanceIncrementalService.updateAllBalances(false);
 

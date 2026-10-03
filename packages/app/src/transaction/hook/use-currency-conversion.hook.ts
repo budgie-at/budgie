@@ -1,4 +1,5 @@
 import { PRECISION } from '@budgie/contracts';
+import { ExchangeRatesService } from '@budgie/market';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import { useEffect, useRef, useState } from 'react';
@@ -7,7 +8,6 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 interface ConversionState {
     readonly destinationAmount: number;

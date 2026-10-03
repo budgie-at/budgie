@@ -17,8 +17,8 @@ describe('opening a funded debt under a frozen clock', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const accountDebtOpeningService = yield* AccountDebtOpeningService;
 
-            vi.useFakeTimers({ now: new Date('2026-01-15T12:00:00.000Z') });
-            const fundingAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+            vi.useFakeTimers({ now: new Date('2026-01-15T12:00:00.000Z'), toFake: ['Date'] });
+            const fundingAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
 
             for (const openedCount of [1, 2]) {
                 yield* accountDebtOpeningService.openDebtWithFundingAccount(

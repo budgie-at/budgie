@@ -11,7 +11,7 @@ Seeded app state for App Store / Play Store screenshot capture. Consumed by
 | -------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `showcase.db`                                | The curated dataset. Committed, fully migrated, anchored on 2026-09-01.                      |
 | `showcase.sql`                               | The SQL that produces `showcase.db` from the base fixture.                                   |
-| `build-showcase.sh`                          | Regenerates `showcase.db`: base fixture -> pending migrations -> `showcase.sql` -> `VACUUM`. |
+| `build-showcase.sh`                          | Regenerates `showcase.db`: base fixture -> `showcase.sql` -> `VACUUM`.                       |
 | `shift-dates.sql`                            | Re-anchors every date on the capture day and re-points the monthly budget periods.           |
 | `en.sql` `fr.sql` `de.sql` `es.sql` `uk.sql` | Locale overlays: user-visible strings and display currency.                                  |
 
@@ -127,7 +127,7 @@ in epoch seconds, and is safe to apply more than once, matching
 ## Regenerating
 
 ```bash
-# rebuild showcase.db after editing showcase.sql or pulling new migrations
+# rebuild showcase.db after editing showcase.sql
 tests/app-tests/fixtures/screenshots/build-showcase.sh
 
 # inspect one locale offline, without a simulator
@@ -140,11 +140,9 @@ tests/app-tests/scripts/test-seed-screenshot-scene.sh
 `build-showcase.sh` starts from `../29.db` — the largest committed E2E fixture
 and the one with the most complete schema (all 233 instruments, 1 088 MCC
 categories, 39 default categories with their five-language translations, the
-`sqlite-vec` embedding tables). It then applies every Drizzle migration the
-base fixture has not run yet, straight from `packages/app/drizzle`, and records
-them in `__drizzle_migrations`, so the app boots with nothing left to migrate.
-That matters: `0036`-`0044` include data-repair migrations that would otherwise
-run over the curated rows.
+`sqlite-vec` embedding tables). The base fixture already carries the final
+schema and the last pre-baseline migration record, so the app records the
+baseline without running anything over the curated rows.
 
 `showcase.sql` also drops all but the last anchor year of
 `historical_exchange_rates` for USD/EUR/UAH. The dataset is single-currency in

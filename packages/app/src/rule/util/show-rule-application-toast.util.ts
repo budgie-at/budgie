@@ -5,7 +5,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 
-import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
+import type { ApplyRuleResultInterface } from '@budgie/rules';
 
 export const showRuleApplicationToast = (result: ApplyRuleResultInterface | null, error: unknown): void => {
     if (!isDefined(result)) {

@@ -30,17 +30,17 @@ const UNCONVERTIBLE_EXPENSE_AMOUNT = Number('15000') * PRECISION;
 
 const seedUnconvertibleExpense = Effect.fnUntraced(function* (title: string) {
     const euro = yield* requireInstrument(CurrencyEnum.EUR);
-    const foreignInstrument = seed.instrument({
+    const foreignInstrument = yield* seed.instrument({
         code: 'NOFX',
         name: 'No Rate Currency',
         symbol: 'NF'
     });
-    const account = seed.account({ instrumentId: foreignInstrument.id, type: AccountTypeEnum.BANK });
-    const [category] = testDb.select().from(CategoryEntityTable).all();
+    const account = yield* seed.account({ instrumentId: foreignInstrument.id, type: AccountTypeEnum.BANK });
+    const [category] = yield* testDb.select().from(CategoryEntityTable);
 
-    testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+    yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
-    const transaction = insertOne(TransactionEntityTable, {
+    const transaction = yield* insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.EXPENSE,
         title,
         operatedAt: new Date('2026-05-15T12:00:00.000Z'),
@@ -53,7 +53,7 @@ const seedUnconvertibleExpense = Effect.fnUntraced(function* (title: string) {
         updatedBy: null
     } satisfies TransactionCreateEntityInterface);
 
-    const entry = insertOne(TransactionEntryEntityTable, {
+    const entry = yield* insertOne(TransactionEntryEntityTable, {
         transactionId: transaction.id,
         accountId: account.id,
         type: TransactionEntryTypeEnum.CREDIT,
@@ -88,12 +88,17 @@ describe('statistics fallback for unvalued entries', () => {
             const statisticsRepository = yield* StatisticsRepository;
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-            const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.BANK });
+            const account = yield* seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.BANK });
 
-            testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
-            insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: hryvnia.id, quoteInstrumentId: euro.id, rate: 0.02 });
+            yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+            yield* insertOne(ExchangeRateEntityTable, {
+                source: 'test',
+                baseInstrumentId: hryvnia.id,
+                quoteInstrumentId: euro.id,
+                rate: 0.02
+            });
 
-            const transaction = insertOne(TransactionEntityTable, {
+            const transaction = yield* insertOne(TransactionEntityTable, {
                 type: TransactionTypeEnum.INCOME,
                 title: 'Unvalued UAH income',
                 operatedAt: new Date('2026-05-15T12:00:00.000Z'),
@@ -106,7 +111,7 @@ describe('statistics fallback for unvalued entries', () => {
                 updatedBy: null
             } satisfies TransactionCreateEntityInterface);
 
-            insertOne(TransactionEntryEntityTable, {
+            yield* insertOne(TransactionEntryEntityTable, {
                 transactionId: transaction.id,
                 accountId: account.id,
                 type: TransactionEntryTypeEnum.DEBIT,
@@ -132,9 +137,9 @@ describe('statistics fallback for unvalued entries', () => {
         Effect.gen(function* () {
             const statisticsRepository = yield* StatisticsRepository;
             const { category, euro, transaction } = yield* seedUnconvertibleExpense('Unconvertible foreign expense');
-            const tag = seed.tag('Car');
+            const tag = yield* seed.tag('Car');
 
-            seed.transactionTag(transaction.id, tag.id);
+            yield* seed.transactionTag(transaction.id, tag.id);
 
             const totals = (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id)).at(0);
             const tagRows = yield* statisticsRepository.getExpenseByTagQuery(DEFAULT_TRANSACTION_FILTER, euro.id);
@@ -156,11 +161,10 @@ describe('statistics fallback for unvalued entries', () => {
 
             yield* moneyDataUpgradeService.run();
 
-            const [updatedEntry] = testDb
+            const [updatedEntry] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.id, entry.id))
-                .all();
+                .where(eq(TransactionEntryEntityTable.id, entry.id));
             const totals = (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id)).at(0);
             const categoryAmount = yield* getExpenseCategoryAmount(category.id, euro.id);
 

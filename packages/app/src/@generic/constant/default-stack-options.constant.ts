@@ -1,6 +1,6 @@
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
+import type { NativeStackNavigationOptions } from 'expo-router';
 
-export const DEFAULT_STACK_OPTIONS: ExtendedStackNavigationOptions = {
+export const DEFAULT_STACK_OPTIONS: NativeStackNavigationOptions = {
     headerShown: false,
     scrollEdgeEffects: { top: 'hidden', bottom: 'hidden', left: 'hidden', right: 'hidden' }
 };

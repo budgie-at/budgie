@@ -1,4 +1,5 @@
-import { EmbeddingSuggestionService, UseSuggestionReturnInterface } from '@budgie/ai';
+import { UseSuggestionReturnInterface } from '@budgie/ai';
+import { EmbeddingSuggestionService } from '@budgie/categorization';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 

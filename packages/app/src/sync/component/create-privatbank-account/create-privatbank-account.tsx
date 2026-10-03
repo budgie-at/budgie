@@ -1,10 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { PrivatbankSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
-import { PrivatbankSyncService } from '../../service/privatbank-sync.service';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
 
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';

@@ -1,4 +1,6 @@
 import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
+import { RuleEngineService } from '@budgie/rules';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import * as Context from 'effect/Context';
@@ -6,9 +8,6 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
-
-import { RuleEngineService } from '../../rule/service/rule-engine.service';
-import { TransactionService } from '../../transaction/service/transaction.service';
 
 import type { WalletCaptureNativeRecordInterface } from '../interface/wallet-capture-native-record.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';

@@ -1,4 +1,4 @@
-import { count, eq, inArray, like, or, sql } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -77,18 +77,20 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
             Db.query(db =>
                 db.select({ count: count() }).from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, tagId))
             ).pipe(Effect.map(([result]) => result.count)),
-        findByIds: (ids: number[]) => Db.query(db => db.query.TagEntityTable.findMany({ where: inArray(TagEntityTable.id, ids) })),
+        findByIds: (ids: number[]) => Db.query(db => db.query.TagEntityTable.findMany({ where: { id: { in: ids } } })),
         findBySearchQuery: (search: string) => {
             const pattern = `%${search.trim().toLowerCase()}%`;
 
             return Db.query(db =>
                 db.query.TagEntityTable.findMany({
                     ...(isNotEmptyString(search.trim()) && {
-                        where: or(
-                            like(TagEntityTable.titleSearch, pattern),
-                            like(sql<string>`LOWER(COALESCE(${TagEntityTable.titleEn}, ''))`, pattern),
-                            like(sql<string>`LOWER(COALESCE(${TagEntityTable.titleTags}, ''))`, pattern)
-                        )
+                        where: {
+                            OR: [
+                                { titleSearch: { like: pattern } },
+                                { RAW: (table, { like, sql }) => like(sql<string>`LOWER(COALESCE(${table.titleEn}, ''))`, pattern) },
+                                { RAW: (table, { like, sql }) => like(sql<string>`LOWER(COALESCE(${table.titleTags}, ''))`, pattern) }
+                            ]
+                        }
                     })
                 })
             );

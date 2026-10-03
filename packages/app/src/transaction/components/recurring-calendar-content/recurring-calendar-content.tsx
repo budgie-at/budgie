@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -12,7 +12,6 @@ import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/recurring-calendar-day-detail';
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
@@ -20,10 +19,13 @@ import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-cale
 
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
+
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
 // eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
+    const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
@@ -70,6 +72,8 @@ export const RecurringCalendarContent = () => {
     const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
+    const committedExpense = formatDigits(data?.committedMonthlyExpense ?? 0, defaultInstrument.symbol);
+    const committedIncome = formatDigits(data?.committedMonthlyIncome ?? 0, defaultInstrument.symbol);
 
     if (isDefined(data) && !hasEntries) {
         return (
@@ -89,6 +93,9 @@ export const RecurringCalendarContent = () => {
                     <Text className="font-medium text-xs uppercase text-secondary-foreground">
                         <Trans>Monthly Total</Trans>
                     </Text>
+                    <ProtectedText className="text-xs text-secondary-foreground">
+                        {t`Committed ${committedExpense} per month · income ${committedIncome}`}
+                    </ProtectedText>
                 </View>
 
                 <RecurringCalendarGrid

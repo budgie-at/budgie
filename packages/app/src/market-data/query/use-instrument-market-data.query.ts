@@ -1,4 +1,5 @@
-import { InstrumentDailyMarketPriceEntityTable, InstrumentDailyMarketPriceRepository } from '@budgie/contracts';
+import { InstrumentDailyMarketPriceEntityTable } from '@budgie/contracts';
+import { InstrumentDailyMarketPriceRepository } from '@budgie/market';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';

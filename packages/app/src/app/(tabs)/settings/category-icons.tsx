@@ -1,4 +1,4 @@
-import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryEntityInterface, DEFAULT_CATEGORY_ICON, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { FlatList } from 'react-native';
 
@@ -7,7 +7,6 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { Page } from '../../../@generic/component/page/page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryIconFixRow } from '../../../category/components/category-icon-fix-row/category-icon-fix-row';
-import { DEFAULT_CATEGORY_ICON } from '../../../category/constant/default-category-icon.constant';
 import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
 
 import { CategoryIconsPageSelector } from './category-icons-page.selector';

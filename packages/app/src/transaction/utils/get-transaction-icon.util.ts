@@ -5,8 +5,7 @@ import {
     UserIconNameEnum,
     UserIconType
 } from '@budgie/contracts';
-
-import { getTransactionCategoryEntries } from './get-transaction-category-entries.util';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 
 export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconType => {
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {

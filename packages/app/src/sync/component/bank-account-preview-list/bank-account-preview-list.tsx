@@ -1,4 +1,5 @@
-import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
+import { SyncAccountPreviewInterface } from '@budgie/sync';
+
 import { BankAccountPreviewCard } from '../bank-account-preview-card/bank-account-preview-card';
 
 interface Props {

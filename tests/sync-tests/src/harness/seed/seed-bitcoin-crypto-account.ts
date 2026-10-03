@@ -11,15 +11,15 @@ import { seedLedgerBalance } from './seed-ledger-balance';
 
 export const seedBitcoinCryptoAccount = Effect.fnUntraced(function* (balance: number | null = null) {
     const euro = yield* requireInstrument(CurrencyEnum.EUR);
-    const bitcoin = seed.instrument({
+    const bitcoin = yield* seed.instrument({
         code: 'BTC',
         name: 'Bitcoin',
         symbol: 'BTC',
         type: InstrumentTypeEnum.CRYPTO
     });
-    const account = seed.account({ instrumentId: bitcoin.id, type: AccountTypeEnum.CRYPTO });
+    const account = yield* seed.account({ instrumentId: bitcoin.id, type: AccountTypeEnum.CRYPTO });
 
-    testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+    yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
     if (isDefined(balance)) {
         yield* seedLedgerBalance(account.id, balance);

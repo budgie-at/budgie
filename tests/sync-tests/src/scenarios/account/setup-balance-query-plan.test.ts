@@ -8,8 +8,8 @@ describe('account/setup-balance-query-plan', () => {
     it.effect('looks up the Monobank setup balance through the unique sync-account index', () =>
         Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const account = seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-            seed.sync({ accountId: account.id });
+            const account = yield* seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+            yield* seed.sync({ accountId: account.id });
 
             const details = yield* explainQueryPlan(accountBalanceRepository.getByAccountId(account.id));
 

@@ -6,9 +6,9 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import type { DB } from '@budgie/contracts';
 
-export const assertStoredBalancesMatchLedger = async (database: DB): Promise<void> => {
-    const mismatches = await Effect.runPromise(
-        Effect.gen(function* () {
+export const assertStoredBalancesMatchLedger = (database: DB) =>
+    Effect.gen(function* () {
+        const mismatches = yield* Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative();
@@ -22,10 +22,9 @@ export const assertStoredBalancesMatchLedger = async (database: DB): Promise<voi
         }).pipe(
             Effect.provide(Layer.mergeAll(AccountRepository.layer, AccountBalanceRepository.layer)),
             Effect.provideService(Db, database)
-        )
-    );
+        );
 
-    if (isNotEmptyArray(mismatches)) {
-        throw new Error(`Stored balances drifted from the ledger: ${mismatches.join('; ')}`);
-    }
-};
+        if (isNotEmptyArray(mismatches)) {
+            return yield* Effect.die(new Error(`Stored balances drifted from the ledger: ${mismatches.join('; ')}`));
+        }
+    });

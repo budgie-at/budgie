@@ -1,4 +1,5 @@
-import { LanguageEnum, TransactionPatternRepository } from '@budgie/contracts';
+import { RecurringSeriesEntityTable, SettingsEntityTable } from '@budgie/contracts';
+import { RecurringService } from '@budgie/recurring';
 import { isSameDay } from 'date-fns/isSameDay';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
@@ -6,29 +7,18 @@ import { useState } from 'react';
 import { useAppState } from '../../@generic/hook/use-app-state.hook';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { useSettingsContext } from '../../settings/context/settings.context';
-import { useSetting } from '../../settings/hook/use-setting.hook';
 import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
-import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
-import { detectRecurringSeries } from '../utils/detect-recurring-series.util';
-import { projectRecurringMonth } from '../utils/project-recurring-month.util';
 
-const RECURRING_WINDOW_MONTHS = 24;
+import type { RecurringCalendarDataInterface } from '@budgie/recurring';
 
-const recurringChargeCandidatesAtom = databaseQueryFamily(
-    STATISTICS_TABLES,
-    TransactionPatternRepository,
-    (transactionPatternRepository, [defaultInstrumentId, language, sinceTime]: readonly [number, LanguageEnum, number]) =>
-        transactionPatternRepository.findRecurringChargeCandidates({ defaultInstrumentId, language, since: new Date(sinceTime) })
+const recurringCalendarAtom = databaseQueryFamily(
+    [...STATISTICS_TABLES, SettingsEntityTable, RecurringSeriesEntityTable],
+    RecurringService,
+    (recurringService, [year, month, nowTime]: readonly [number, number, number]) =>
+        recurringService.calendar(year, month, new Date(nowTime))
 );
 
-interface UseRecurringCalendarReturnInterface {
-    readonly data?: RecurringCalendarDataInterface;
-}
-
-export const useRecurringCalendar = (displayYear: number, displayMonth: number): UseRecurringCalendarReturnInterface => {
-    const { defaultInstrument } = useSettingsContext();
-    const language = useSetting('language');
+export const useRecurringCalendar = (displayYear: number, displayMonth: number): { readonly data?: RecurringCalendarDataInterface } => {
     const [now, setNow] = useState(() => new Date());
     useAppState(isActive => {
         if (isActive) {
@@ -39,16 +29,8 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
             });
         }
     });
-    const since = new Date(now.getFullYear(), now.getMonth() - RECURRING_WINDOW_MONTHS, now.getDate());
 
-    const result = useLiveAtomValue(recurringChargeCandidatesAtom([defaultInstrument.id, language, since.getTime()]));
+    const result = useLiveAtomValue(recurringCalendarAtom([displayYear, displayMonth, now.getTime()]));
 
-    const calendarData = projectRecurringMonth(
-        detectRecurringSeries(AsyncResult.getOrElse(result, () => [])),
-        displayYear,
-        displayMonth,
-        now
-    );
-
-    return { ...(!AsyncResult.isInitial(result) && { data: calendarData }) };
+    return { ...(AsyncResult.isSuccess(result) && { data: result.value }) };
 };

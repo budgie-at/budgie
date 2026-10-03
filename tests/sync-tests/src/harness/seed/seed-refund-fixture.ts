@@ -5,14 +5,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { insertOne } from '../db/insert-one';
 
-import type {
-    TransactionCreateEntityInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface
-} from '@budgie/contracts';
+import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
 
 interface SeedRefundedExpenseInput {
     readonly accountId: number;
@@ -28,87 +25,85 @@ interface SeedRefundedExpenseInput {
     readonly externalIdPrefix?: string;
 }
 
-interface SeedRefundedExpenseResult {
-    readonly expense: TransactionEntityInterface;
-    readonly refunds: TransactionEntityInterface[];
-}
-
 const DEFAULT_TITLE = 'STARBUCKS #1234';
 const DEFAULT_DELAY_SECONDS = 86_400;
 const DEFAULT_OPERATED_AT = new Date(2026, 0, 15, 12, 0, 0);
 const DEFAULT_BASE_INSTRUMENT_ID = 1;
 
-export const seedRefundedExpense = (input: SeedRefundedExpenseInput): SeedRefundedExpenseResult => {
-    const title = input.title ?? DEFAULT_TITLE;
-    const refundTitle = input.refundTitle ?? title;
-    const refundAccountId = input.refundAccountId ?? input.accountId;
-    const expenseOperatedAt = input.expenseOperatedAt ?? DEFAULT_OPERATED_AT;
-    const refundDelaySeconds = input.refundDelaySeconds ?? DEFAULT_DELAY_SECONDS;
-    const externalIdPrefix = input.externalIdPrefix ?? 'rf';
+export const seedRefundedExpense = (input: SeedRefundedExpenseInput) =>
+    Effect.gen(function* () {
+        const title = input.title ?? DEFAULT_TITLE;
+        const refundTitle = input.refundTitle ?? title;
+        const refundAccountId = input.refundAccountId ?? input.accountId;
+        const expenseOperatedAt = input.expenseOperatedAt ?? DEFAULT_OPERATED_AT;
+        const refundDelaySeconds = input.refundDelaySeconds ?? DEFAULT_DELAY_SECONDS;
+        const externalIdPrefix = input.externalIdPrefix ?? 'rf';
 
-    const expense = insertOne(TransactionEntityTable, {
-        type: TransactionTypeEnum.EXPENSE,
-        title,
-        externalId: `${externalIdPrefix}-expense`,
-        externalSource: ExternalSourceEnum.MONOBANK,
-        operatedAt: expenseOperatedAt,
-        exchangeRate: 1,
-        fromAccountId: input.accountId,
-        toAccountId: null,
-        comment: '',
-        updatedBy: null
-    } satisfies TransactionCreateEntityInterface);
-
-    insertOne(TransactionEntryEntityTable, {
-        transactionId: expense.id,
-        accountId: input.accountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        amount: input.expenseAmount,
-        externalId: `${externalIdPrefix}-expense`,
-        exchangeRate: 1,
-        baseInstrumentId: DEFAULT_BASE_INSTRUMENT_ID,
-        baseExchangeRate: 1,
-        baseAmount: input.expenseAmount,
-        toIban: null,
-        categoryId: null,
-        mccCategoryId: input.mccCategoryId ?? null,
-        originalTransactionId: null
-    } satisfies TransactionEntryCreateEntityInterface);
-
-    const refunds = input.refundAmounts.map((refundAmount, index) => {
-        const operatedAt = new Date(expenseOperatedAt.getTime() + refundDelaySeconds * 1000 * (index + 1));
-
-        const refund = insertOne(TransactionEntityTable, {
-            type: TransactionTypeEnum.INCOME,
-            title: refundTitle,
-            externalId: `${externalIdPrefix}-refund-${index}`,
+        const expense = yield* insertOne(TransactionEntityTable, {
+            type: TransactionTypeEnum.EXPENSE,
+            title,
+            externalId: `${externalIdPrefix}-expense`,
             externalSource: ExternalSourceEnum.MONOBANK,
-            operatedAt,
+            operatedAt: expenseOperatedAt,
             exchangeRate: 1,
-            fromAccountId: null,
-            toAccountId: refundAccountId,
+            fromAccountId: input.accountId,
+            toAccountId: null,
             comment: '',
             updatedBy: null
         } satisfies TransactionCreateEntityInterface);
 
-        insertOne(TransactionEntryEntityTable, {
-            transactionId: refund.id,
-            accountId: refundAccountId,
-            type: TransactionEntryTypeEnum.DEBIT,
-            amount: refundAmount,
-            externalId: `${externalIdPrefix}-refund-${index}`,
+        yield* insertOne(TransactionEntryEntityTable, {
+            transactionId: expense.id,
+            accountId: input.accountId,
+            type: TransactionEntryTypeEnum.CREDIT,
+            amount: input.expenseAmount,
+            externalId: `${externalIdPrefix}-expense`,
             exchangeRate: 1,
             baseInstrumentId: DEFAULT_BASE_INSTRUMENT_ID,
             baseExchangeRate: 1,
-            baseAmount: refundAmount,
+            baseAmount: input.expenseAmount,
             toIban: null,
             categoryId: null,
-            mccCategoryId: input.refundMccCategoryId ?? input.mccCategoryId ?? null,
+            mccCategoryId: input.mccCategoryId ?? null,
             originalTransactionId: null
         } satisfies TransactionEntryCreateEntityInterface);
 
-        return refund;
-    });
+        const refunds = yield* Effect.forEach(input.refundAmounts, (refundAmount, index) =>
+            Effect.gen(function* () {
+                const operatedAt = new Date(expenseOperatedAt.getTime() + refundDelaySeconds * 1000 * (index + 1));
 
-    return { expense, refunds };
-};
+                const refund = yield* insertOne(TransactionEntityTable, {
+                    type: TransactionTypeEnum.INCOME,
+                    title: refundTitle,
+                    externalId: `${externalIdPrefix}-refund-${index}`,
+                    externalSource: ExternalSourceEnum.MONOBANK,
+                    operatedAt,
+                    exchangeRate: 1,
+                    fromAccountId: null,
+                    toAccountId: refundAccountId,
+                    comment: '',
+                    updatedBy: null
+                } satisfies TransactionCreateEntityInterface);
+
+                yield* insertOne(TransactionEntryEntityTable, {
+                    transactionId: refund.id,
+                    accountId: refundAccountId,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: refundAmount,
+                    externalId: `${externalIdPrefix}-refund-${index}`,
+                    exchangeRate: 1,
+                    baseInstrumentId: DEFAULT_BASE_INSTRUMENT_ID,
+                    baseExchangeRate: 1,
+                    baseAmount: refundAmount,
+                    toIban: null,
+                    categoryId: null,
+                    mccCategoryId: input.refundMccCategoryId ?? input.mccCategoryId ?? null,
+                    originalTransactionId: null
+                } satisfies TransactionEntryCreateEntityInterface);
+
+                return refund;
+            })
+        );
+
+        return { expense, refunds };
+    });

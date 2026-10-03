@@ -1,4 +1,5 @@
-import { AITransactionInterface, EmbeddingSuggestionService, VoiceLlmService, findAccountByCurrency } from '@budgie/ai';
+import { AITransactionInterface, VoiceLlmService, findAccountByCurrency } from '@budgie/ai';
+import { EmbeddingSuggestionService } from '@budgie/categorization';
 import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';

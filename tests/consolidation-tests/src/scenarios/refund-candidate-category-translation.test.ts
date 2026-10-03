@@ -18,27 +18,25 @@ layer(TestLayer)('consolidation/refund-candidate-category-translation', it => {
     it.effect('returns the localized default category title for the active language', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: EXPENSE_AMOUNT,
                 refundAmounts: [EXPENSE_AMOUNT],
                 title: 'Silpo',
                 refundTitle: 'Скасування. Silpo'
             });
-            const groceriesCategory = testDb
+            const [groceriesCategory] = yield* testDb
                 .select({ id: CategoryEntityTable.id })
                 .from(CategoryEntityTable)
-                .where(eq(CategoryEntityTable.title, GROCERIES_TITLE))
-                .get();
+                .where(eq(CategoryEntityTable.title, GROCERIES_TITLE));
 
             if (!isDefined(groceriesCategory)) {
                 throw new Error(`Missing default category ${GROCERIES_TITLE}`);
             }
 
-            testDb
+            yield* testDb
                 .update(TransactionEntryEntityTable)
                 .set({ categoryId: groceriesCategory.id })
-                .where(eq(TransactionEntryEntityTable.transactionId, expense.id))
-                .run();
+                .where(eq(TransactionEntryEntityTable.transactionId, expense.id));
 
             const englishCandidates = yield* refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
             const ukrainianCandidates = yield* refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.UK);

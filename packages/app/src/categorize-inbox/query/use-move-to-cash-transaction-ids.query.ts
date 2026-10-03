@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 
-import type { CategorizeInboxRowInterface } from '@budgie/contracts';
+import type { CategorizeInboxRowInterface } from '@budgie/categorization';
 
 export const useMoveToCashTransactionIdsQuery = (rows: readonly CategorizeInboxRowInterface[]): number[] => {
     const [transactionIds, setTransactionIds] = useState<number[]>([]);

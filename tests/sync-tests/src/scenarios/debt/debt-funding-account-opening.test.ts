@@ -1,4 +1,3 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import {
     AccountDebtTypeEnum,
@@ -16,6 +15,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -53,10 +53,14 @@ const openDebt = Effect.fnUntraced(function* (
 });
 
 const readEntries = (accountId: number) =>
-    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)).all();
+    Effect.gen(function* () {
+        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
+    });
 
 const readDebtEvents = (debtAccountId: number) =>
-    testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId)).all();
+    Effect.gen(function* () {
+        return yield* testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
+    });
 
 describe('opening a debt from a funding account', () => {
     it.effect.each([
@@ -74,22 +78,21 @@ describe('opening a debt from a funding account', () => {
         }
     ])('books a single $debtType movement on the funding account', ({ debtType, transactionType, categoryId, expectedDebtBalance }) =>
         Effect.gen(function* () {
-            const fundingAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+            const fundingAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
             const debtAccount = yield* openDebt(debtType, fundingAccount);
-            const [entry] = readEntries(fundingAccount.id);
-            const transaction = testDb
+            const [entry] = yield* readEntries(fundingAccount.id);
+            const [transaction] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.id, entry.transactionId))
-                .get();
-            const debtEvents = readDebtEvents(debtAccount.id);
+                .where(eq(TransactionEntityTable.id, entry.transactionId));
+            const debtEvents = yield* readDebtEvents(debtAccount.id);
 
-            expect(readEntries(fundingAccount.id)).toHaveLength(1);
+            expect(yield* readEntries(fundingAccount.id)).toHaveLength(1);
             expect(transaction?.type).toBe(transactionType);
             expect(entry.categoryId).toBe(categoryId);
             expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
             expect(entry.amount).toBe(OPENING_AMOUNT * PRECISION);
-            expect(readEntries(debtAccount.id)).toHaveLength(0);
+            expect(yield* readEntries(debtAccount.id)).toHaveLength(0);
             expect(debtEvents).toHaveLength(1);
             expect(debtEvents[0]).toMatchObject({
                 direction: DebtEventDirectionEnum.OPEN,
@@ -110,13 +113,17 @@ describe('opening a debt from a funding account', () => {
                 2
             );
 
-            const fundingAccount = seed.account({ title: 'Euro account', type: AccountTypeEnum.BANK_SYNC, instrumentId: eurInstrument.id });
+            const fundingAccount = yield* seed.account({
+                title: 'Euro account',
+                type: AccountTypeEnum.BANK_SYNC,
+                instrumentId: eurInstrument.id
+            });
             const debtAccount = yield* openDebt(AccountDebtTypeEnum.LENT, fundingAccount, usdInstrument.id);
-            const [entry] = readEntries(fundingAccount.id);
+            const [entry] = yield* readEntries(fundingAccount.id);
 
             expect(entry.amount).toBe((OPENING_AMOUNT / 2) * PRECISION);
             expect(debtAccount.targetBalance).toBe(OPENING_AMOUNT * PRECISION);
-            expect(readDebtEvents(debtAccount.id)[0].amount).toBe(OPENING_AMOUNT * PRECISION);
+            expect((yield* readDebtEvents(debtAccount.id))[0].amount).toBe(OPENING_AMOUNT * PRECISION);
             expect(yield* fetchAccountBalance(debtAccount.id)).toBe(OPENING_AMOUNT * PRECISION);
             expect(yield* fetchAccountBalance(fundingAccount.id)).toBe(-(OPENING_AMOUNT / 2) * PRECISION);
         }).pipe(Effect.provide(TestLayer))
@@ -126,7 +133,7 @@ describe('opening a debt from a funding account', () => {
         Effect.gen(function* () {
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
 
-            const fundingAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+            const fundingAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
             const debtAccount = yield* openDebt(AccountDebtTypeEnum.BORROW, fundingAccount);
 
             yield* accountBalanceIncrementalService.updateAllBalances(true);

@@ -1,4 +1,4 @@
-import { EmbeddingSuggestionService, TranslationLlmService, VoiceLlmService } from '@budgie/ai';
+import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
 import {
     BudgetAlertThresholdService,
     BudgetCategoryLimitRepository,
@@ -8,45 +8,81 @@ import {
     BudgetTemplateService
 } from '@budgie/budget';
 import {
+    CategorizeInboxService,
+    CommentEmbeddingRepository,
+    EmbeddingIndexService,
+    EmbeddingSuggestionService,
+    MerchantEmbeddingRepository,
+    TransactionCategorizeInboxRepository,
+    TransactionEmbeddingRepository
+} from '@budgie/categorization';
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
+import {
     AccountBalanceRepository,
     AccountRepository,
     BankIntegrationRepository,
     CategoryRepository,
-    CommentEmbeddingRepository,
     DebtEventRepository,
-    ExchangeRateRepository,
-    HistoricalExchangeRateRepository,
-    InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository,
     InstrumentRepository,
     MccCategoryRepository,
-    MerchantEmbeddingRepository,
-    RuleActionRepository,
-    RuleConditionRepository,
-    RuleRepository,
     SettingsRepository,
     SyncRepository,
     TagRepository,
-    TransactionCategorizeInboxRepository,
     MccGroupRepository,
     StatisticsRepository,
-    TransactionEmbeddingRepository,
     TransactionEntryPositionRepository,
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
     TransactionConsolidationRepository,
     TransactionViewRepository,
-    TransactionRuleRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { ExporterService, ImporterService } from '@budgie/import-export';
+import {
+    AccountArchiveService,
+    AccountBalanceIncrementalService,
+    AccountService,
+    AccountTransferConversionService,
+    CategoryService,
+    ImportedBatchNormalizerService,
+    ImportedTransactionEntryUpdateService,
+    RefreshedImportedEntriesService,
+    TransactionBatchCreateService,
+    TransactionDebtSettlementService,
+    TransactionDepositSafetyService,
+    TransactionImportService,
+    TransactionService,
+    TransactionTransferService,
+    TransferCreationService,
+    LedgerWorkload
+} from '@budgie/ledger';
+import {
+    EntryBaseValuationService,
+    ExchangeRateRepository,
+    ExchangeRatesService,
+    HistoricalExchangeRateRepository,
+    InstrumentDailyMarketPriceRepository,
+    InstrumentMarketDataJobRepository
+} from '@budgie/market';
+import { RecurringService } from '@budgie/recurring';
+import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
+import {
+    BinanceSyncService,
+    ErsteSyncService,
+    MonobankSyncService,
+    PrivatbankCategoryMatcherService,
+    PrivatbankSyncService,
+    ResyncService,
+    SyncProviderRegistryService,
+    SyncRepairService,
+    TransferConsolidationService,
+    UnpairedOwnCardTransferRepairService
+} from '@budgie/sync';
+import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { AccountArchiveService } from '../../account/service/account-archive.service';
-import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AccountDebtOpeningService } from '../../account/service/account-debt-opening.service';
-import { AccountTransferConversionService } from '../../account/service/account-transfer-conversion.service';
-import { AccountService } from '../../account/service/account.service';
 import { DebtAccountService } from '../../account/service/debt-account.service';
 import { AiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
@@ -64,56 +100,23 @@ import { EmbeddingProgressStore } from '../../ai/store/embedding-progress.store'
 import { TranslationProgressStore } from '../../ai/store/translation-progress.store';
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
-import { CategorizeInboxService } from '../../categorize-inbox/service/categorize-inbox.service';
-import { CategoryService } from '../../category/service/category.service';
-import { ExchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { CategorizeInboxCashService } from '../../categorize-inbox/service/categorize-inbox-cash.service';
+import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
-import { ExporterService } from '../../export/service/exporter.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
-import { ImporterService } from '../../import/service/importer.service';
-import { HistoricalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
-import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
-import { RuleEngineService } from '../../rule/service/rule-engine.service';
-import { RuleMatcherService } from '../../rule/service/rule-matcher.service';
-import { RuleTransferConversionService } from '../../rule/service/rule-transfer-conversion.service';
-import { RuleService } from '../../rule/service/rule.service';
-import { consolidationCoordinatorLayer } from '../../sync/layer/consolidation-coordinator.layer';
+import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
+import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
+import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
-import { BinanceAccountService } from '../../sync/service/binance-account.service';
-import { BinanceAssetCodeService } from '../../sync/service/binance-asset-code.service';
-import { BinanceSourceQuoteService } from '../../sync/service/binance-source-quote.service';
-import { BinanceSyncService } from '../../sync/service/binance-sync.service';
-import { BinanceTradeCursorService } from '../../sync/service/binance-trade-cursor.service';
-import { ErsteSyncService } from '../../sync/service/erste-sync.service';
-import { MonobankSyncService } from '../../sync/service/monobank-sync.service';
-import { PrivatbankCategoryMatcherService } from '../../sync/service/privatbank-category-matcher.service';
-import { PrivatbankSyncService } from '../../sync/service/privatbank-sync.service';
-import { ResyncService } from '../../sync/service/resync.service';
-import { SyncDuplicateSoftDeleteService } from '../../sync/service/sync-duplicate-soft-delete.service';
-import { SyncIntegrationTokenService } from '../../sync/service/sync-integration-token.service';
-import { SyncProviderRegistryService } from '../../sync/service/sync-provider-registry.service';
-import { SyncRepairService } from '../../sync/service/sync-repair.service';
 import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
-import { TransferConsolidationService } from '../../sync/service/transfer-consolidation.service';
-import { UnpairedOwnCardTransferRepairService } from '../../sync/service/unpaired-own-card-transfer-repair.service';
 import { TagService } from '../../tag/service/tag.service';
-import { ImportedBatchNormalizerService } from '../../transaction/service/imported-batch-normalizer.service';
-import { ImportedTransactionEntryUpdateService } from '../../transaction/service/imported-transaction-entry-update.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
-import { RefreshedImportedEntriesService } from '../../transaction/service/refreshed-imported-entries.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
-import { TransactionBatchCreateService } from '../../transaction/service/transaction-batch-create.service';
-import { TransactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
-import { TransactionDepositSafetyService } from '../../transaction/service/transaction-deposit-safety.service';
-import { TransactionImportService } from '../../transaction/service/transaction-import.service';
 import { TransactionRefundService } from '../../transaction/service/transaction-refund.service';
-import { TransactionTransferService } from '../../transaction/service/transaction-transfer.service';
-import { TransactionService } from '../../transaction/service/transaction.service';
-import { TransferCreationService } from '../../transaction/service/transfer-creation.service';
 import { WalletCaptureAccountMirrorService } from '../../wallet-capture/service/wallet-capture-account-mirror.service';
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
@@ -121,9 +124,15 @@ import { WalletCaptureTransactionService } from '../../wallet-capture/service/wa
 import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
+import { DatabaseMigrationService } from '../drizzle/service/database-migration.service';
 import { DatabaseRekeyService } from '../drizzle/service/database-rekey.service';
 import { AppResetService } from '../service/app-reset.service';
 import { Workload } from '../service/workload.service';
+
+const ledgerWorkloadLayer = Layer.effect(
+    LedgerWorkload,
+    Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
+).pipe(Layer.provide(Workload.layer));
 
 export const appServicesLayer = Layer.mergeAll(
     AccountRepository.layer,
@@ -136,6 +145,7 @@ export const appServicesLayer = Layer.mergeAll(
     BudgetAlertThresholdService.layer,
     BudgetTemplateService.layer,
     BudgetService.layer,
+    RecurringService.layer,
     AccountBalanceIncrementalService.layer,
     AccountTransferConversionService.layer,
     AccountService.layer,
@@ -144,6 +154,7 @@ export const appServicesLayer = Layer.mergeAll(
     AccountDebtOpeningService.layer,
     Workload.layer,
     DatabaseLifecycleService.layer,
+    DatabaseMigrationService.layer,
     DatabaseRekeyService.layer,
     WidgetSnapshotBuilderService.layer,
     WidgetSnapshotService.layer,
@@ -161,16 +172,14 @@ export const appServicesLayer = Layer.mergeAll(
     MerchantEmbeddingRepository.layer,
     TransactionEmbeddingRepository.layer,
     RuleRepository.layer,
-    RuleActionRepository.layer,
-    RuleConditionRepository.layer,
     TransactionRuleRepository.layer,
     RuleMatcherService.layer,
-    RuleTransferConversionService.layer,
     RuleEngineService.layer,
     RuleService.layer,
     RuleApplicationDrainerService.layer,
     TransactionCategorizeInboxRepository.layer,
     CategorizeInboxService.layer,
+    CategorizeInboxCashService.layer,
     ChatService.layer,
     LocalEmbeddingService.layer,
     WhisperModelService.layer,
@@ -188,6 +197,7 @@ export const appServicesLayer = Layer.mergeAll(
     TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     VoiceLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     EmbeddingSuggestionService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
+    EmbeddingIndexService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
     SyncRepository.layer,
     BankIntegrationRepository.layer,
     ExchangeRateRepository.layer,
@@ -195,20 +205,14 @@ export const appServicesLayer = Layer.mergeAll(
     InstrumentRepository.layer,
     InstrumentMarketDataJobRepository.layer,
     InstrumentDailyMarketPriceRepository.layer,
-    consolidationCoordinatorLayer,
+    ConsolidationCoordinatorService.layer,
     ExchangeRatesService.layer,
-    ExchangeRatesSyncService.layer,
-    HistoricalMarketDataLoaderService.layer,
-    SyncIntegrationTokenService.layer,
+    ExchangeRateBackgroundService.layer,
+    HistoricalMarketDataDrainerService.layer,
     TransferConsolidationService.layer,
     TransferConsolidationDrainerService.layer,
-    SyncDuplicateSoftDeleteService.layer,
     UnpairedOwnCardTransferRepairService.layer,
     SyncRepairService.layer,
-    BinanceAssetCodeService.layer,
-    BinanceSourceQuoteService.layer,
-    BinanceTradeCursorService.layer,
-    BinanceAccountService.layer,
     PrivatbankCategoryMatcherService.layer,
     MonobankSyncService.layer,
     BinanceSyncService.layer,
@@ -248,4 +252,7 @@ export const appServicesLayer = Layer.mergeAll(
     WalletCaptureAccountMirrorService.layer,
     WalletCaptureTransactionService.layer,
     WalletCaptureImportService.layer
+).pipe(
+    Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)),
+    Layer.provide(Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer))
 );

@@ -15,7 +15,7 @@ layer(TestLayer)('consolidation/refund-pair-time-window-boundary', it => {
             });
 
             expect(consolidated).toBe(1);
-            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(expense.id);
         })
     );
 
@@ -28,7 +28,7 @@ layer(TestLayer)('consolidation/refund-pair-time-window-boundary', it => {
             });
 
             expect(consolidated).toBe(0);
-            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBeNull();
         })
     );
 });

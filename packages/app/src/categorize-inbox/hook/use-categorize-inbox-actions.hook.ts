@@ -1,22 +1,21 @@
+import { CategorizeInboxLabelKindEnum, CategorizeInboxService } from '@budgie/categorization';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 
 import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
-import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
-import { CategorizeInboxService } from '../service/categorize-inbox.service';
 
 import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
 import { useCategorizeInboxWriteQueue } from './use-categorize-inbox-write-queue.hook';
 
 import type { CategorizeInboxActionsInterface } from '../interface/categorize-inbox-actions.interface';
-import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-inbox-last-write.interface';
 import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
 import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
+import type { CategorizeInboxAssignmentInterface } from '@budgie/categorization';
 
 const toTransactionIds = (assignments: CategorizeInboxAssignmentInterface[]): number[] =>
     assignments.flatMap(assignment => assignment.rows.map(row => row.transactionId));

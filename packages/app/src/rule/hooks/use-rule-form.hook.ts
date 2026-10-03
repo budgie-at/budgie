@@ -6,6 +6,7 @@ import {
     RuleCreateInputInterface,
     RuleCreateInputSchema
 } from '@budgie/contracts';
+import { RuleMatcherService, RuleService } from '@budgie/rules';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -20,8 +21,6 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { RuleApplicationDrainerService } from '../service/rule-application-drainer.service';
-import { RuleMatcherService } from '../service/rule-matcher.service';
-import { RuleService } from '../service/rule.service';
 import { showRuleApplicationToast } from '../util/show-rule-application-toast.util';
 
 import type { RuleFormResultType } from '../context/rule-form-modal.context';

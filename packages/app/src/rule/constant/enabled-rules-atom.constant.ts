@@ -1,4 +1,5 @@
-import { RuleActionEntityTable, RuleConditionEntityTable, RuleEntityTable, RuleRepository } from '@budgie/contracts';
+import { RuleActionEntityTable, RuleConditionEntityTable, RuleEntityTable } from '@budgie/contracts';
+import { RuleRepository } from '@budgie/rules';
 import * as Effect from 'effect/Effect';
 
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';

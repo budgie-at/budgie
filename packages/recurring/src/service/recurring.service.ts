@@ -1,0 +1,107 @@
+import {
+    Db,
+    RecurringSeriesKindEnum,
+    RecurringSeriesStatusEnum,
+    RecurringSeriesUserStateEnum,
+    SettingsRepository
+} from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+
+import { isDefined } from '@rnw-community/shared';
+
+import { RecurringRepository } from '../repository/recurring.repository';
+import { projectRecurringMonth } from '../series/recurring-projection';
+import { detectRecurringSeries, isSeriesActive } from '../series/recurring-series';
+
+import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
+import type { RecurringTrackedSeriesInterface } from '../interface/recurring-tracked-series.interface';
+import type { RecurringSeriesCreateEntityInterface, RecurringSeriesEntityInterface } from '@budgie/contracts';
+
+const HISTORY_MONTHS = 24;
+
+export class RecurringService extends Context.Service<RecurringService>()('@budgie/recurring/RecurringService', {
+    make: Effect.gen(function* () {
+        const recurringRepository = yield* RecurringRepository;
+        const settingsRepository = yield* SettingsRepository;
+
+        const toFacts = (series: RecurringSeriesInterface, now: Date) => ({
+            kind: series.predictedAmount < 0 ? RecurringSeriesKindEnum.INCOME : RecurringSeriesKindEnum.EXPENSE,
+            periodDays: Math.round(series.periodDays),
+            amount: Math.abs(series.predictedAmount),
+            status: isSeriesActive(series, now) ? RecurringSeriesStatusEnum.ACTIVE : RecurringSeriesStatusEnum.ENDED,
+            categoryId: series.categoryId,
+            lastSeenAt: new Date(series.anchorTimestamp)
+        });
+
+        const isUnchanged = (row: RecurringSeriesEntityInterface, facts: ReturnType<typeof toFacts>): boolean =>
+            row.periodDays === facts.periodDays &&
+            row.amount === facts.amount &&
+            row.status === facts.status &&
+            row.categoryId === facts.categoryId &&
+            row.lastSeenAt.getTime() === facts.lastSeenAt.getTime();
+
+        const store = (
+            series: RecurringSeriesInterface,
+            row: RecurringSeriesEntityInterface | undefined,
+            facts: ReturnType<typeof toFacts>
+        ) => {
+            if (!isDefined(row)) {
+                const input: RecurringSeriesCreateEntityInterface = {
+                    ...facts,
+                    merchantKey: series.merchantKey,
+                    title: series.title,
+                    userState: RecurringSeriesUserStateEnum.SUGGESTED
+                };
+
+                return recurringRepository.createSeries(input);
+            }
+
+            return row.userState === RecurringSeriesUserStateEnum.DISMISSED || isUnchanged(row, facts)
+                ? Effect.succeed(row)
+                : recurringRepository.updateSeries(row.id, facts);
+        };
+
+        const track = Effect.fn('RecurringService.track')(function* (detected: readonly RecurringSeriesInterface[], now: Date) {
+            const rows = yield* recurringRepository.findSeries();
+            const claimed = new Set<number>();
+            const tracked = yield* Effect.forEach(detected, series => {
+                const facts = toFacts(series, now);
+                const [row] = rows
+                    .filter(item => !claimed.has(item.id) && item.kind === facts.kind && series.labels.includes(item.merchantKey))
+                    .sort((first, second) => Math.abs(first.amount - facts.amount) - Math.abs(second.amount - facts.amount));
+                if (isDefined(row)) {
+                    claimed.add(row.id);
+                }
+
+                return Effect.map(store(series, row, facts), ({ id, userState, title }): RecurringTrackedSeriesInterface => ({
+                    ...series,
+                    seriesId: id,
+                    userState,
+                    title
+                }));
+            });
+
+            return tracked.filter(series => series.userState !== RecurringSeriesUserStateEnum.DISMISSED);
+        });
+
+        return {
+            calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
+                const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
+                const since = new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
+                const charges = yield* recurringRepository.findCharges(defaultInstrumentId, language, since);
+                const tracked = yield* Db.transaction(track(detectRecurringSeries(charges), now));
+
+                return projectRecurringMonth(tracked, year, month, now);
+            }),
+            setUserState: (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
+                recurringRepository.updateSeries(seriesId, { userState }),
+            rename: (seriesId: number, title: string) => recurringRepository.updateSeries(seriesId, { title })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(RecurringService, RecurringService.make).pipe(
+        Layer.provide([RecurringRepository.layer, SettingsRepository.layer])
+    );
+}

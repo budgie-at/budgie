@@ -130,7 +130,6 @@ export default ({ config }) => ({
             }
         ],
         ['./modules/apple-wallet-capture/app.plugin.js', { appGroupIdentifier: getWalletCaptureAppGroupIdentifier() }],
-        './plugins/with-vec-xcframework-fix',
         [
             'expo-widgets',
             {
@@ -185,14 +184,6 @@ export default ({ config }) => ({
             'expo-contacts',
             {
                 contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.'
-            }
-        ],
-        [
-            'expo-sqlite',
-            {
-                enableFTS: true,
-                useSQLCipher: true,
-                withSQLiteVecExtension: true
             }
         ],
         ...(!IS_AI_DISABLED

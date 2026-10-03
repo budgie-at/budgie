@@ -14,13 +14,15 @@ layer(TestLayer)('consolidation/refund-pair-multiple-refunds', it => {
             });
 
             expect(consolidated).toBe(1);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
 
             for (const refund of refunds) {
-                expect(testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId).toBe(expense.id);
+                expect((yield* testQueryService.fetchTransactionById(refund.id)).consolidationParentTransactionId).toBe(expense.id);
             }
 
-            const entries = testQueryService.fetchEntriesByTransactionId(expense.id);
+            const entries = yield* testQueryService.fetchEntriesByTransactionId(expense.id);
             const debits = entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
             expect(debits).toHaveLength(2);
             expect(debits.map(entry => entry.amount).sort((left, right) => left - right)).toEqual([30 * PRECISION, 40 * PRECISION]);

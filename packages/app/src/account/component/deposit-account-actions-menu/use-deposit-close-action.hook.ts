@@ -1,4 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountService, TransactionTransferService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -10,9 +11,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { TransactionTransferService } from '../../../transaction/service/transaction-transfer.service';
 import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
-import { AccountService } from '../../service/account.service';
 
 export const useDepositCloseAction = (accountId: number, balance: number, instrumentSymbol: string) => {
     const { t } = useLingui();

@@ -17,5 +17,4 @@
 27.mcc-default-category.flow.yaml
 28.rules-search.flow.yaml
 30.crypto-decimal-monero-account.flow.yaml
-35.debt-migration-repair.flow.yaml
 37.deposit-lifecycle.flow.yaml

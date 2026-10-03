@@ -4,10 +4,11 @@
         "module": "ESNext",
         "moduleResolution": "bundler",
         "noEmit": true,
+        "allowJs": true,
         "types": ["node", "vitest/globals"],
         "paths": {
             "@app/*": ["../../packages/app/src/*"]
         }
     },
-    "include": ["src/**/*.ts", "vitest.config.ts"]
+    "include": ["src/**/*.ts", "vitest.config.ts", "../test-kit/src/vitest/sql-module.d.ts"]
 }

@@ -1,9 +1,9 @@
+import { ImportColumnMapFormValues } from '@budgie/import-export';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { ImportColumnMapFormValues } from '../../schema/import-column-map.schema';
 import { ImportColumnMapper } from '../import-column-mapper/import-column-mapper';
 import { ImportColumnMapperSelector } from '../import-column-mapper/import-column-mapper.selector';
 

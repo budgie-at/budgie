@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { describe, expect, it, vi } from '@effect/vitest';
@@ -7,14 +6,14 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/consolidation-scope-enqueue', () => {
     it.effect('enqueues consolidation with the changed transaction scope after sync creates a transaction', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
-            setupMonobankFixture();
+            yield* setupMonobankFixture();
             monobankStub.statement([
                 buildMonobank.transaction({
                     id: 'tx-scoped-sync',
@@ -26,11 +25,10 @@ describe('monobank/consolidation-scope-enqueue', () => {
 
             yield* monobankSyncService.sync();
 
-            const transaction = testDb
+            const [transaction] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.MONOBANK))
-                .get();
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.MONOBANK));
 
             expect(transaction).toBeDefined();
             if (!isDefined(transaction)) {

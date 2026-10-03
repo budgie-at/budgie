@@ -34,8 +34,15 @@ const SECOND_TAIL_AMOUNT = PRECISION / 2;
 const UNTAGGED_AMOUNT = 40 * PRECISION;
 const SEEDED_MONTHS = 4;
 
-const seedCategory = (title: string): { readonly id: number; readonly title: string } =>
-    insertOne(CategoryEntityTable, { title, titleSearch: title.toLowerCase(), icon: UserIconNameEnum.Wallet, parentId: null });
+const seedCategory = (title: string) =>
+    Effect.gen(function* () {
+        return yield* insertOne(CategoryEntityTable, {
+            title,
+            titleSearch: title.toLowerCase(),
+            icon: UserIconNameEnum.Wallet,
+            parentId: null
+        });
+    });
 
 const monthOperatedAt = (monthsAgo: number): Date => {
     const now = new Date();
@@ -43,42 +50,43 @@ const monthOperatedAt = (monthsAgo: number): Date => {
     return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - monthsAgo, 15, 12));
 };
 
-const seedExpense = (accountId: number, categoryId: number, amount: number, monthsAgo: number): number => {
-    const transaction = insertOne(TransactionEntityTable, {
-        type: TransactionTypeEnum.EXPENSE,
-        title: `Runway driver expense ${categoryId} ${monthsAgo}`,
-        operatedAt: monthOperatedAt(monthsAgo),
-        comment: '',
-        toAccountId: null,
-        fromAccountId: accountId,
-        exchangeRate: 1,
-        externalId: null,
-        externalSource: ExternalSourceEnum.CSV,
-        updatedBy: null
-    } satisfies TransactionCreateEntityInterface);
+const seedExpense = (accountId: number, categoryId: number, amount: number, monthsAgo: number) =>
+    Effect.gen(function* () {
+        const transaction = yield* insertOne(TransactionEntityTable, {
+            type: TransactionTypeEnum.EXPENSE,
+            title: `Runway driver expense ${categoryId} ${monthsAgo}`,
+            operatedAt: monthOperatedAt(monthsAgo),
+            comment: '',
+            toAccountId: null,
+            fromAccountId: accountId,
+            exchangeRate: 1,
+            externalId: null,
+            externalSource: ExternalSourceEnum.CSV,
+            updatedBy: null
+        } satisfies TransactionCreateEntityInterface);
 
-    insertOne(TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        amount,
-        categoryId,
-        mccCategoryId: null,
-        externalId: null,
-        exchangeRate: 1,
-        baseInstrumentId: null,
-        baseExchangeRate: null,
-        baseAmount: null,
-        toIban: null
-    } satisfies TransactionEntryCreateEntityInterface);
+        yield* insertOne(TransactionEntryEntityTable, {
+            transactionId: transaction.id,
+            accountId,
+            type: TransactionEntryTypeEnum.CREDIT,
+            amount,
+            categoryId,
+            mccCategoryId: null,
+            externalId: null,
+            exchangeRate: 1,
+            baseInstrumentId: null,
+            baseExchangeRate: null,
+            baseAmount: null,
+            toIban: null
+        } satisfies TransactionEntryCreateEntityInterface);
 
-    return transaction.id;
-};
+        return transaction.id;
+    });
 
 const seedScenario = Effect.fnUntraced(function* () {
     const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
 
-    return { instrumentId: hryvnia.id, accountId: seed.account({ instrumentId: hryvnia.id }).id };
+    return { instrumentId: hryvnia.id, accountId: (yield* seed.account({ instrumentId: hryvnia.id })).id };
 });
 
 const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionEnum, instrumentId: number) {
@@ -110,17 +118,19 @@ describe('runway drivers', () => {
     it.effect('divides by months with data, flags only one-offs and folds the long tail', () =>
         Effect.gen(function* () {
             const { instrumentId, accountId } = yield* seedScenario();
-            const regular = seedCategory('Groceries');
-            const oneOff = seedCategory('Dentist');
-            const firstTail = seedCategory('Stamps');
-            const secondTail = seedCategory('Candles');
+            const regular = yield* seedCategory('Groceries');
+            const oneOff = yield* seedCategory('Dentist');
+            const firstTail = yield* seedCategory('Stamps');
+            const secondTail = yield* seedCategory('Candles');
 
-            Array.from({ length: SEEDED_MONTHS }, (_, index) => index + 1).forEach(monthsAgo => {
-                seedExpense(accountId, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
-            });
-            seedExpense(accountId, oneOff.id, ONE_OFF_AMOUNT, 2);
-            seedExpense(accountId, firstTail.id, FIRST_TAIL_AMOUNT, 3);
-            seedExpense(accountId, secondTail.id, SECOND_TAIL_AMOUNT, 1);
+            yield* Effect.forEach(
+                Array.from({ length: SEEDED_MONTHS }, (_, index) => index + 1),
+                monthsAgo => seedExpense(accountId, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo),
+                { discard: true }
+            );
+            yield* seedExpense(accountId, oneOff.id, ONE_OFF_AMOUNT, 2);
+            yield* seedExpense(accountId, firstTail.id, FIRST_TAIL_AMOUNT, 3);
+            yield* seedExpense(accountId, secondTail.id, SECOND_TAIL_AMOUNT, 1);
 
             const { drivers, irregularMonthlyAmount } = yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId);
 
@@ -148,21 +158,26 @@ describe('runway drivers', () => {
     it.effect('counts secondary tags and untagged spend in the tag dimension without changing irregular spend', () =>
         Effect.gen(function* () {
             const { instrumentId, accountId } = yield* seedScenario();
-            const regular = seedCategory('Groceries');
-            const oneOff = seedCategory('Dentist');
-            const tag = seed.tag('Trip');
-            const secondTag = seed.tag('Health');
+            const regular = yield* seedCategory('Groceries');
+            const oneOff = yield* seedCategory('Dentist');
+            const tag = yield* seed.tag('Trip');
+            const secondTag = yield* seed.tag('Health');
 
-            Array.from({ length: SEEDED_MONTHS }, (_, index) => index + 1).forEach(monthsAgo => {
-                const transactionId = seedExpense(accountId, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
+            yield* Effect.forEach(
+                Array.from({ length: SEEDED_MONTHS }, (_, index) => index + 1),
+                monthsAgo =>
+                    Effect.gen(function* () {
+                        const transactionId = yield* seedExpense(accountId, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
 
-                seed.transactionTag(transactionId, tag.id);
-            });
-            seedExpense(accountId, regular.id, UNTAGGED_AMOUNT, 1);
-            const oneOffTransactionId = seedExpense(accountId, oneOff.id, ONE_OFF_AMOUNT, 2);
+                        yield* seed.transactionTag(transactionId, tag.id);
+                    }),
+                { discard: true }
+            );
+            yield* seedExpense(accountId, regular.id, UNTAGGED_AMOUNT, 1);
+            const oneOffTransactionId = yield* seedExpense(accountId, oneOff.id, ONE_OFF_AMOUNT, 2);
 
-            seed.transactionTag(oneOffTransactionId, tag.id);
-            seed.transactionTag(oneOffTransactionId, secondTag.id);
+            yield* seed.transactionTag(oneOffTransactionId, tag.id);
+            yield* seed.transactionTag(oneOffTransactionId, secondTag.id);
 
             const tagBreakdown = yield* aggregate(RunwayDriverDimensionEnum.TAG, instrumentId);
 
@@ -192,32 +207,30 @@ describe('runway month window predicate', () => {
     it.effect('selects the same transactions as the previous strftime-based window and uses the visible/operated index', () =>
         Effect.gen(function* () {
             const { instrumentId, accountId } = yield* seedScenario();
-            const category = seedCategory('Groceries');
+            const category = yield* seedCategory('Groceries');
 
-            Array.from({ length: RUNWAY_WINDOW_MONTHS + 2 }, (_, index) => index).forEach(monthsAgo => {
-                seedExpense(accountId, category.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
-            });
-            testDb.run(sql`ANALYZE`);
+            yield* Effect.forEach(
+                Array.from({ length: RUNWAY_WINDOW_MONTHS + 2 }, (_, index) => index),
+                monthsAgo => seedExpense(accountId, category.id, REGULAR_MONTHLY_AMOUNT, monthsAgo),
+                { discard: true }
+            );
+            yield* testDb.run(sql`ANALYZE`);
 
             const monthsAgoOffset = `-${RUNWAY_WINDOW_MONTHS} months`;
 
-            const oldPredicateIds = testDb
-                .all<{ id: number }>(
-                    sql`SELECT id FROM transactions
+            const oldPredicateIds = (yield* testDb.all<{ id: number }>(
+                sql`SELECT id FROM transactions
                  WHERE strftime('%Y-%m', operated_at, 'unixepoch') >= strftime('%Y-%m', 'now', ${monthsAgoOffset})
                    AND strftime('%Y-%m', operated_at, 'unixepoch') < strftime('%Y-%m', 'now')
                  ORDER BY id`
-                )
-                .map(row => row.id);
+            )).map(row => row.id);
 
-            const newPredicateIds = testDb
-                .all<{ id: number }>(
-                    sql`SELECT id FROM transactions
+            const newPredicateIds = (yield* testDb.all<{ id: number }>(
+                sql`SELECT id FROM transactions
                  WHERE operated_at >= unixepoch(strftime('%Y-%m-01', 'now', ${monthsAgoOffset}))
                    AND operated_at < unixepoch(strftime('%Y-%m-01', 'now'))
                  ORDER BY id`
-                )
-                .map(row => row.id);
+            )).map(row => row.id);
 
             expect(newPredicateIds.length).toBeGreaterThan(0);
             expect(newPredicateIds).toStrictEqual(oldPredicateIds);

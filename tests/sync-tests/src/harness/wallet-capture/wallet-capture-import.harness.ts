@@ -1,4 +1,3 @@
-import { RuleEngineService } from '@app/rule/service/rule-engine.service';
 import { WalletCaptureStatusEnum } from '@app/wallet-capture/enum/wallet-capture-status.enum';
 import {
     CategoryEntityTable,
@@ -18,6 +17,7 @@ import {
     TransactionTagsEntityTable,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { RuleEngineService } from '@budgie/rules';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { expect, vi } from 'vitest';
@@ -33,10 +33,11 @@ export const WALLET_CAPTURE_AMOUNT = 125;
 export const WALLET_CAPTURE_AMOUNT_IN_MICRO_UNITS = WALLET_CAPTURE_AMOUNT * PRECISION;
 export const WALLET_CAPTURE_MISSING_ACCOUNT_ID = 999;
 
-export const walletCaptureSeedAccount = () => {
-    seed.instrument();
-    return seed.account({ title: 'Wallet card' });
-};
+export const walletCaptureSeedAccount = Effect.fnUntraced(function* () {
+    yield* seed.instrument();
+
+    return yield* seed.account({ title: 'Wallet card' });
+});
 
 export const walletCaptureBuild = (
     captureId: string,
@@ -53,18 +54,33 @@ export const walletCaptureBuild = (
     ...overrides
 });
 
-export const walletCaptureFindTransaction = (externalId: string) =>
-    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, externalId)).all()[0];
+export const walletCaptureFindTransaction = Effect.fnUntraced(function* (externalId: string) {
+    const [transaction] = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, externalId));
 
-export const walletCaptureFindEntry = (transactionId: number) =>
-    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId)).all()[0];
+    return transaction;
+});
 
-const walletCaptureFindTransactionTag = (transactionId: number) =>
-    testDb.select().from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, transactionId)).all()[0];
+export const walletCaptureFindEntry = Effect.fnUntraced(function* (transactionId: number) {
+    const [entry] = yield* testDb
+        .select()
+        .from(TransactionEntryEntityTable)
+        .where(eq(TransactionEntryEntityTable.transactionId, transactionId));
 
-export const walletCaptureSeedRule = (): { readonly id: number; readonly tagId: number } => {
-    const tag = seed.tag('Food');
-    const [category] = testDb
+    return entry;
+});
+
+const walletCaptureFindTransactionTag = Effect.fnUntraced(function* (transactionId: number) {
+    const [transactionTag] = yield* testDb
+        .select()
+        .from(TransactionTagsEntityTable)
+        .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
+
+    return transactionTag;
+});
+
+export const walletCaptureSeedRule = Effect.fnUntraced(function* () {
+    const tag = yield* seed.tag('Food');
+    const [category] = yield* testDb
         .insert(CategoryEntityTable)
         .values({
             title: 'Groceries',
@@ -77,57 +93,50 @@ export const walletCaptureSeedRule = (): { readonly id: number; readonly tagId: 
             isDefault: false,
             isSystemCategory: false
         })
-        .returning()
-        .all();
-    const [rule] = testDb
+        .returning();
+    const [rule] = yield* testDb
         .insert(RuleEntityTable)
         .values({ enabled: true, conditionMatchType: RuleConditionMatchTypeEnum.ALL })
-        .returning()
-        .all();
+        .returning();
 
     if (!isDefined(category) || !isDefined(rule)) {
-        throw new Error('Failed to seed Wallet capture rule');
+        return yield* Effect.die(new Error('Failed to seed Wallet capture rule'));
     }
 
-    testDb
-        .insert(RuleConditionEntityTable)
-        .values([
-            {
-                ruleId: rule.id,
-                field: RuleConditionFieldEnum.TITLE,
-                operator: RuleConditionOperatorEnum.CONTAINS,
-                value: 'Silpo',
-                secondaryValue: null
-            },
-            {
-                ruleId: rule.id,
-                field: RuleConditionFieldEnum.EXTERNAL_SOURCE,
-                operator: RuleConditionOperatorEnum.EQUALS,
-                value: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
-                secondaryValue: null
-            }
-        ])
-        .run();
-    testDb
+    yield* testDb.insert(RuleConditionEntityTable).values([
+        {
+            ruleId: rule.id,
+            field: RuleConditionFieldEnum.TITLE,
+            operator: RuleConditionOperatorEnum.CONTAINS,
+            value: 'Silpo',
+            secondaryValue: null
+        },
+        {
+            ruleId: rule.id,
+            field: RuleConditionFieldEnum.EXTERNAL_SOURCE,
+            operator: RuleConditionOperatorEnum.EQUALS,
+            value: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
+            secondaryValue: null
+        }
+    ]);
+    yield* testDb
         .insert(RuleActionEntityTable)
-        .values({ ruleId: rule.id, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id, tagId: null, accountId: null })
-        .run();
-    testDb
+        .values({ ruleId: rule.id, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id, tagId: null, accountId: null });
+    yield* testDb
         .insert(RuleActionEntityTable)
-        .values({ ruleId: rule.id, type: RuleActionTypeEnum.ADD_TAG, categoryId: null, tagId: tag.id, accountId: null })
-        .run();
+        .values({ ruleId: rule.id, type: RuleActionTypeEnum.ADD_TAG, categoryId: null, tagId: tag.id, accountId: null });
 
     return { id: category.id, tagId: tag.id };
-};
+});
 
-export const walletCaptureSeedInput = (captureId: string) => {
-    seed.instrument();
-    const account = seed.account({ title: 'Wallet card' });
-    const category = walletCaptureSeedRule();
+export const walletCaptureSeedInput = Effect.fnUntraced(function* (captureId: string) {
+    yield* seed.instrument();
+    const account = yield* seed.account({ title: 'Wallet card' });
+    const category = yield* walletCaptureSeedRule();
     const capture = walletCaptureBuild(captureId, { accountId: account.id });
 
     return { capture, category };
-};
+});
 
 export const walletCaptureForcePostCreateRulePreparation = (ruleEngineService: RuleEngineService['Service']): void => {
     vi.spyOn(ruleEngineService, 'prepareCreateInputsForRules').mockImplementation(transactionInputs =>
@@ -138,24 +147,24 @@ export const walletCaptureForcePostCreateRulePreparation = (ruleEngineService: R
     );
 };
 
-export const walletCaptureSeedExistingTransaction = (capture: WalletCaptureNativeRecordInterface): void => {
-    seed.bankPairExpense(
+export const walletCaptureSeedExistingTransaction = Effect.fnUntraced(function* (capture: WalletCaptureNativeRecordInterface) {
+    yield* seed.bankPairExpense(
         { externalId: capture.captureId, operatedAt: new Date(capture.capturedAt) },
         { accountId: capture.accountId, amount: WALLET_CAPTURE_AMOUNT_IN_MICRO_UNITS, mccCategoryId: null }
     );
-    seed.updateTransaction(1, {
+    yield* seed.updateTransaction(1, {
         externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
         title: capture.merchant
     });
-};
+});
 
-export const walletCaptureExpectRuleApplied = (
+export const walletCaptureExpectRuleApplied = Effect.fnUntraced(function* (
     capture: WalletCaptureNativeRecordInterface,
     category: { readonly id: number; readonly tagId: number }
-): void => {
-    const transaction = walletCaptureFindTransaction(capture.captureId);
-    const entry = walletCaptureFindEntry(transaction.id);
-    const transactionTag = walletCaptureFindTransactionTag(transaction.id);
+) {
+    const transaction = yield* walletCaptureFindTransaction(capture.captureId);
+    const entry = yield* walletCaptureFindEntry(transaction.id);
+    const transactionTag = yield* walletCaptureFindTransactionTag(transaction.id);
 
     expect(entry).toMatchObject({
         type: TransactionEntryTypeEnum.CREDIT,
@@ -164,4 +173,4 @@ export const walletCaptureExpectRuleApplied = (
         categorySource: CategorySourceEnum.RULE
     });
     expect(transactionTag.tagId).toBe(category.tagId);
-};
+});

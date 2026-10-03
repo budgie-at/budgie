@@ -1,5 +1,5 @@
-import { RuleDetectionModeEnum } from '../../rule/enum/rule-detection-mode.enum';
-import { SuggestRuleDataInterface } from '../../rule/interface/suggest-rule-data.interface';
+import { RuleDetectionModeEnum, SuggestRuleDataInterface } from '@budgie/rules';
+
 import { UpdateRuleDataInterface } from '../../rule/interface/update-rule-data.interface';
 
 export interface RulePillSlotPropsInterface {

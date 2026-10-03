@@ -1,7 +1,7 @@
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as Semaphore from 'effect/Semaphore';
-import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';

@@ -5,13 +5,13 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { TransactionBatchCreateService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionBatchCreateService } from '../../transaction/service/transaction-batch-create.service';
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
 
 export class VoiceReviewBatchCreateService extends Context.Service<VoiceReviewBatchCreateService>()(

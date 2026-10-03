@@ -1,6 +1,5 @@
-import { mapSyncAccountToCreateInput } from '@app/sync/util/map-sync-account-to-create-input.util';
 import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
-import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum } from '@budgie/sync';
+import { mapSyncAccountToCreateInput, SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Schema from 'effect/Schema';
 

@@ -11,10 +11,11 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { dateTypeToDate } from '../../../@generic/utils/date/date-type-to-date.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { getMonthLabel } from '../../utils/get-month-label.util';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
+
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 interface Props {
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;

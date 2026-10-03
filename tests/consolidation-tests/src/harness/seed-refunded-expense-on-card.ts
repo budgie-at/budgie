@@ -1,10 +1,13 @@
+import * as Effect from 'effect/Effect';
+
 import { testSeedService } from './test-context';
 
 export const seedRefundedExpenseOnCard = (
     cardExternalId: string,
     input: Omit<Parameters<typeof testSeedService.refundedExpense>[0], 'accountId'>
-) => {
-    const account = testSeedService.account({ externalId: cardExternalId });
+) =>
+    Effect.gen(function* () {
+        const account = yield* testSeedService.account({ externalId: cardExternalId });
 
-    return { account, ...testSeedService.refundedExpense({ ...input, accountId: account.id }) };
-};
+        return { account, ...(yield* testSeedService.refundedExpense({ ...input, accountId: account.id })) };
+    });

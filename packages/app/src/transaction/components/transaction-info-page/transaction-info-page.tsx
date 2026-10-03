@@ -1,4 +1,5 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { ScrollView, View } from 'react-native';
@@ -11,8 +12,6 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
-import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
-import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
 import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';

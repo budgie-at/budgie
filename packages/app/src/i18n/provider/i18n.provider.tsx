@@ -23,7 +23,6 @@ export const I18nProvider = ({ children }: Props) => {
     const { settings, isLoading: isSettingsLoading } = useSettingsContext();
     const { language } = settings;
     const [activatedLanguage, setActivatedLanguage] = useState<LanguageEnum | null>(null);
-    const [isFallbackActivated, setIsFallbackActivated] = useState(false);
 
     useEffect(() => {
         const targetLanguage = isSettingsLoading ? i18nGetOSLocale() : language;
@@ -31,12 +30,10 @@ export const I18nProvider = ({ children }: Props) => {
             i18nEnsureLanguageActivated(targetLanguage).pipe(
                 Effect.match({
                     onSuccess: () => {
-                        setIsFallbackActivated(false);
                         setActivatedLanguage(targetLanguage);
                     },
                     onFailure: () => {
                         i18nActivateFallback();
-                        setIsFallbackActivated(true);
                         setActivatedLanguage(LanguageEnum.EN);
                     }
                 })
@@ -53,12 +50,6 @@ export const I18nProvider = ({ children }: Props) => {
     const value: I18nContextInterface = { intl };
 
     if (!isDefined(activatedLanguage)) {
-        return null;
-    }
-
-    const isLanguageSwitchPending = !isFallbackActivated && !isSettingsLoading && activatedLanguage !== language;
-
-    if (isLanguageSwitchPending) {
         return null;
     }
 

@@ -3,7 +3,6 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import { Directory, File, Paths } from 'expo-file-system';
-import * as SQLite from 'expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -11,6 +10,7 @@ import { AiModelResidencyService } from '../../ai/service/ai-model-residency.ser
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
+import { DATABASE_DIRECTORY } from '../drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
 import { DatabaseLifecycleOperationEnum } from '../drizzle/enum/database-lifecycle-operation.enum';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
@@ -23,7 +23,7 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
         const authService = yield* AuthService;
         const patternCacheService = yield* PatternCacheService;
         const databaseLifecycleService = yield* DatabaseLifecycleService;
-        const databasePath = `${SQLite.defaultDatabaseDirectory}/${DB_NAME}`;
+        const databasePath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
 
         const deleteFileIfExists = (file: File): void => {
             if (file.exists) {

@@ -1,6 +1,6 @@
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
+import type { NativeStackNavigationOptions } from 'expo-router';
 
-export const RULE_FORM_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
+export const RULE_FORM_MODAL_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'modal',
     headerShown: false
 };

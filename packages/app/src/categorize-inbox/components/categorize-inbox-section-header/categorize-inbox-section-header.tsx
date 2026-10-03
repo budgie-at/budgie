@@ -1,3 +1,4 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,7 +8,6 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 
 import { CategorizeInboxSectionHeaderSelector } from './categorize-inbox-section-header.selector';
 

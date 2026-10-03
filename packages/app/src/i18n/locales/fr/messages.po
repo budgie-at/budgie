@@ -13,12 +13,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. js-lingui-explicit-id
-#: src/sync/layer/consolidation-coordinator.layer.ts
+#: src/sync/layer/p2p-transfer-title-resolver.layer.ts
 msgid "Binance P2P buy {assetCode}"
 msgstr "Achat P2P de {assetCode} sur Binance"
 
 #. js-lingui-explicit-id
-#: src/sync/layer/consolidation-coordinator.layer.ts
+#: src/sync/layer/p2p-transfer-title-resolver.layer.ts
 msgid "Binance P2P sell {assetCode}"
 msgstr "Vente P2P de {assetCode} sur Binance"
 
@@ -122,8 +122,8 @@ msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {# jour restant} other {# jours restants}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "{formattedAmount} · {category}"
-msgstr "{formattedAmount} · {category}"
+msgid "{formattedAmount} · {detail}"
+msgstr "{formattedAmount} · {detail}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{formattedAmount} / mo"
@@ -327,7 +327,7 @@ msgstr "Compte"
 msgid "Account {accountId}"
 msgstr "Compte {accountId}"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Compte {accountId} introuvable"
 
@@ -348,7 +348,7 @@ msgid "Account Name & Icon"
 msgstr "Nom et icône du compte"
 
 #. js-lingui-explicit-id
-#: src/transaction/service/transfer-creation.service.ts
+#: ../ledger/src/transaction/service/transfer-creation.service.ts
 msgid "transaction.accountNotFound"
 msgstr "Compte introuvable"
 
@@ -732,7 +732,6 @@ msgstr "Synchronisation bancaire réinitialisée"
 msgid "Base currency"
 msgstr "Devise de base"
 
-#: src/money-data/service/entry-base-valuation.service.ts
 #: src/money-data/service/money-data-upgrade.service.ts
 msgid "Base instrument not found"
 msgstr "Devise de base introuvable"
@@ -829,6 +828,10 @@ msgstr "Budgie peut catégoriser les transactions, suggérer des étiquettes et 
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie peut détecter les imports de synchronisation bancaire en double et réparer les consolidations de virements associées à des comptes inactifs."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Budgie could not open your data"
+msgstr "Budgie n'a pas pu ouvrir vos données"
+
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie a rencontré un problème inattendu. Vous pouvez redémarrer l’application ou signaler le problème afin que nous puissions l’examiner."
@@ -891,6 +894,7 @@ msgstr "Peut prendre des heures"
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -1064,6 +1068,10 @@ msgstr "Portefeuilles à froid et soldes d'exchange"
 msgid "Comment"
 msgstr "Commentaire"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Committed {committedExpense} per month · income {committedIncome}"
+msgstr "Engagé {committedExpense} par mois · revenus {committedIncome}"
+
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Condition"
 msgstr "Condition"
@@ -1071,6 +1079,10 @@ msgstr "Condition"
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
 msgid "Conditions"
 msgstr "Conditions"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Confirm"
+msgstr "Confirmer"
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Confirm PIN"
@@ -1191,9 +1203,9 @@ msgstr "Impossible d'appliquer la règle aux transactions existantes"
 msgid "Could not archive account"
 msgstr "Impossible d'archiver le compte"
 
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
-#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Could not attach debt"
 msgstr "Impossible d'associer la dette"
 
@@ -1347,6 +1359,10 @@ msgstr "Impossible de réassigner l'étiquette"
 msgid "Could not recalculate balances"
 msgstr "Impossible de recalculer les soldes"
 
+#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+msgid "Could not rename recurring payment."
+msgstr "Impossible de renommer le paiement récurrent."
+
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Could not repair sync data"
 msgstr "Impossible de réparer les données de synchronisation"
@@ -1411,6 +1427,10 @@ msgstr "Impossible de mettre à jour les notifications"
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 msgid "Could not update on-device AI"
 msgstr "Impossible de mettre à jour l'IA sur l'appareil"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Could not update recurring payment."
+msgstr "Impossible de mettre à jour le paiement récurrent."
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -1617,15 +1637,15 @@ msgstr "Dette · {accountTitle}"
 msgid "Debt Account"
 msgstr "Compte de dette"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account cannot match transaction account"
 msgstr "Le compte de dette ne peut pas correspondre au compte de transaction"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Compte de dette introuvable"
 
-#: src/transaction/error/debt-transfer-not-allowed.error.ts
+#: ../ledger/src/transaction/error/debt-transfer-not-allowed.error.ts
 msgid "Debt accounts cannot take part in transfers"
 msgstr "Les comptes de dette ne peuvent pas participer aux virements"
 
@@ -1685,12 +1705,12 @@ msgid "Deposit Account"
 msgstr "Compte de dépôt"
 
 #. js-lingui-explicit-id
-#: src/transaction/service/transaction-deposit-safety.service.ts
+#: ../ledger/src/transaction/service/transaction-deposit-safety.service.ts
 msgid "transaction.depositExpenseDisallowed"
 msgstr "Les comptes de dépôt ne peuvent pas financer des dépenses"
 
 #. js-lingui-explicit-id
-#: src/account/error/deposit-negative-balance.error.ts
+#: ../ledger/src/account/error/deposit-negative-balance.error.ts
 msgid "account.depositNegativeBalanceDisallowed"
 msgstr "Le solde du dépôt ne peut pas devenir négatif"
 
@@ -1710,10 +1730,15 @@ msgstr "Détails"
 msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss"
 msgstr "Ignorer"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Dismiss recurring payment?"
+msgstr "Ignorer le paiement récurrent ?"
 
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Dismiss Wallet capture?"
@@ -1791,7 +1816,7 @@ msgstr "ex. Compte d'épargne"
 msgid "Edit"
 msgstr "Modifier"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-edit-button/account-edit-button.tsx
 msgid "Edit account"
 msgstr "Modifier le compte"
 
@@ -1994,11 +2019,7 @@ msgstr "Transactions et dépenses quotidiennes"
 msgid "Exchange rate"
 msgstr "Taux de change"
 
-#: src/money-data/service/entry-base-valuation.service.ts
-msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
-msgstr "Taux de change {sourceInstrumentId}->{targetInstrumentId} introuvable"
-
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Exchange rate not found"
 msgstr "Taux de change introuvable"
 
@@ -2380,10 +2401,6 @@ msgstr "Revenus par étiquette"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Instrument not found"
-msgstr "Instrument introuvable"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
 msgstr "Taux d'intérêt"
@@ -2399,6 +2416,10 @@ msgstr "Fichier invalide"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Is Planned"
 msgstr "Est planifié"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "It will no longer appear in the calendar."
+msgstr "Il n’apparaîtra plus dans le calendrier."
 
 #: src/i18n/constant/locales.constant.ts
 msgid "Italian (Italy)"
@@ -2558,10 +2579,6 @@ msgstr "Mapper les colonnes CSV"
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
 msgstr "Capitalisation"
-
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Market data prices missing"
-msgstr "Prix des données de marché manquants"
 
 #: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
 msgid "Market history is loading quietly."
@@ -3025,21 +3042,21 @@ msgstr "Import ponctuel à partir d'un relevé Privat24 — ce n'est pas une syn
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Seules les transactions de dépenses et de revenus sont converties : les dépenses sont transférées vers ce compte, les revenus en proviennent. Les autres types restent inchangés."
 
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
 msgstr "Seules les transactions de dépense peuvent être converties"
 
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 #: src/account/service/account-debt-opening.service.ts
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Seules les transactions de revenu peuvent être converties"
 
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Seules les dépenses à écriture unique peuvent être converties"
 
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 #: src/account/service/account-debt-opening.service.ts
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Seuls les revenus à écriture unique peuvent être convertis"
 
@@ -3153,6 +3170,10 @@ msgstr "Budget global: {threshold}% dépensé"
 #: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
 msgid "Overall monthly limit"
 msgstr "Limite mensuelle totale"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Overdue"
+msgstr "En retard"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Overpaid"
@@ -3273,6 +3294,10 @@ msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Press to re-evaluate transactions"
 msgstr "Appuyez pour réévaluer les transactions"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Price changed"
+msgstr "Prix modifié"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Prices fill in quietly while you use the app."
@@ -3428,6 +3453,10 @@ msgstr "Supprimer la répartition"
 msgid "Remove split?"
 msgstr "Supprimer la répartition ?"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Rename"
+msgstr "Renommer"
+
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Remboursé"
@@ -3465,6 +3494,10 @@ msgstr "Restaurer le compte ?"
 #: src/import/components/import-database/import-database.tsx
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Restore from Backup"
+msgstr "Restaurer depuis une sauvegarde"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Restore the account or choose another active account in the automation before importing the capture."
@@ -4023,6 +4056,10 @@ msgstr "Échanger les comptes"
 msgid "Swipe left"
 msgstr "Faites glisser vers la gauche"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Swipe left to dismiss this recurring payment."
+msgstr "Balayez vers la gauche pour ignorer ce paiement récurrent."
+
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
 msgstr "Balayez pour supprimer ce plafond par catégorie de votre budget."
@@ -4146,11 +4183,11 @@ msgstr "La règle a été enregistrée, mais aucune transaction existante n'avai
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "The selected Budgie account is archived or no longer exists."
-msgstr ""
+msgstr "Le compte Budgie sélectionné est archivé ou n'existe plus."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "The Wallet automation did not provide a usable amount or merchant."
-msgstr ""
+msgstr "L'automatisation Wallet n'a pas fourni de montant ou de commerçant exploitable."
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -4163,13 +4200,26 @@ msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dan
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup could not be opened with your current PIN."
+msgstr "Cette sauvegarde n'a pas pu être ouverte avec votre code PIN actuel."
+
 #: src/import/components/import-database/import-database.tsx
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Cette sauvegarde est protégée par un code PIN. L'importer remplacera toutes les données actuelles et son code PIN deviendra celui de l'app. L'app redémarrera après l'import. Cette action est irréversible."
 
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup was made by an older Budgie version and cannot be imported."
+msgstr "Cette sauvegarde a été créée avec une ancienne version de Budgie et ne peut pas être importée."
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup was made by an older Budgie version and cannot be restored."
+msgstr "Cette sauvegarde a été créée avec une ancienne version de Budgie et ne peut pas être restaurée."
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
-msgstr ""
+msgstr "Cette capture ressemble à une transaction existante."
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."
@@ -4318,25 +4368,25 @@ msgstr "Touch ID"
 msgid "Tracking in {defaultInstrumentCode}"
 msgstr "Suivi en {defaultInstrumentCode}"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
 msgstr "La transaction a déjà un rattachement de dette"
 
-#: src/transaction/service/transaction-transfer.service.ts
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"
 msgstr "La transaction doit avoir un compte de destination"
 
-#: src/transaction/service/transaction-transfer.service.ts
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a source account"
 msgstr "La transaction doit avoir un compte source"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction must have exactly one primary entry"
 msgstr "La transaction doit avoir exactement une écriture principale"
 
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 #: src/account/service/account-debt-opening.service.ts
-#: src/transaction/service/transaction-debt-settlement.service.ts
-#: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Transaction introuvable"
 
@@ -4423,6 +4473,7 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 msgid "Try again"
 msgstr "Réessayer"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -4679,6 +4730,10 @@ msgstr "Tout est prêt"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your bank, with nobody in between"
 msgstr "Votre banque, sans intermédiaire"
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
+msgstr "Vos données restent intactes sur cet appareil. Réessayez ou restaurez une sauvegarde créée avec votre code PIN actuel."
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."

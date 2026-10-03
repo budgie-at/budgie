@@ -1,4 +1,3 @@
-import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
@@ -20,6 +19,7 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -30,8 +30,6 @@ import { fetchAccountBalance, fetchDebtProgress, seed, testDb, TestLayer } from 
 import { insertOne } from '../../harness/db/insert-one';
 
 import type {
-    AccountEntityInterface,
-    DebtEventEntityInterface,
     TransactionCreateEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryEntityInterface
@@ -42,114 +40,127 @@ const SETTLED_AMOUNT = 100 * PRECISION;
 const OVERPAID_AMOUNT = 400 * PRECISION;
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
 
-const fetchPrimaryEntry = (transactionId: number): TransactionEntryEntityInterface => {
-    const entry = testDb
-        .select()
-        .from(TransactionEntryEntityTable)
-        .all()
-        .find(row => row.transactionId === transactionId && row.kind === TransactionEntryKindEnum.PRIMARY);
+const fetchPrimaryEntry = (transactionId: number) =>
+    Effect.gen(function* () {
+        const entry = (yield* testDb.select().from(TransactionEntryEntityTable)).find(
+            row => row.transactionId === transactionId && row.kind === TransactionEntryKindEnum.PRIMARY
+        );
 
-    if (!isDefined(entry)) {
-        throw new Error(`Primary entry for transaction ${transactionId} not found`);
-    }
+        if (!isDefined(entry)) {
+            throw new Error(`Primary entry for transaction ${transactionId} not found`);
+        }
 
-    return entry;
-};
-
-const fetchDebtEvents = (debtAccountId: number): DebtEventEntityInterface[] =>
-    testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId)).all();
-
-const fetchAccountEntries = (accountId: number): TransactionEntryEntityInterface[] =>
-    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)).all();
-
-const createCashAccount = () => seed.account({ title: 'Category cash account', type: AccountTypeEnum.BANK_SYNC });
-
-const createDebtAccount = (debtType: AccountDebtTypeEnum): AccountEntityInterface => {
-    const account = seed.account({ title: 'Category debt account', type: AccountTypeEnum.DEBT, debtType, targetBalance: OPENED_AMOUNT });
-
-    insertOne(DebtEventEntityTable, {
-        debtAccountId: account.id,
-        direction: DebtEventDirectionEnum.OPEN,
-        source: DebtEventSourceEnum.OPENING,
-        amount: OPENED_AMOUNT,
-        operatedAt: OPERATED_AT
+        return entry;
     });
 
-    return account;
-};
+const fetchDebtEvents = (debtAccountId: number) =>
+    Effect.gen(function* () {
+        return yield* testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
+    });
 
-const createUncategorizedIncomeOnLentDebt = (amount = SETTLED_AMOUNT) => {
-    const cashAccount = createCashAccount();
-    const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
-    const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null, amount);
+const fetchAccountEntries = (accountId: number) =>
+    Effect.gen(function* () {
+        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
+    });
 
-    return { debtAccount, transaction };
-};
+const createCashAccount = () =>
+    Effect.gen(function* () {
+        return yield* seed.account({ title: 'Category cash account', type: AccountTypeEnum.BANK_SYNC });
+    });
+
+const createDebtAccount = (debtType: AccountDebtTypeEnum) =>
+    Effect.gen(function* () {
+        const account = yield* seed.account({
+            title: 'Category debt account',
+            type: AccountTypeEnum.DEBT,
+            debtType,
+            targetBalance: OPENED_AMOUNT
+        });
+
+        yield* insertOne(DebtEventEntityTable, {
+            debtAccountId: account.id,
+            direction: DebtEventDirectionEnum.OPEN,
+            source: DebtEventSourceEnum.OPENING,
+            amount: OPENED_AMOUNT,
+            operatedAt: OPERATED_AT
+        });
+
+        return account;
+    });
+
+const createUncategorizedIncomeOnLentDebt = (amount = SETTLED_AMOUNT) =>
+    Effect.gen(function* () {
+        const cashAccount = yield* createCashAccount();
+        const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT);
+        const transaction = yield* createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null, amount);
+
+        return { debtAccount, transaction };
+    });
 
 const createSettlementTransaction = (
     type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
     cashAccountId: number,
     categoryId: number | null,
     amount = SETTLED_AMOUNT
-) => {
-    const isExpense = type === TransactionTypeEnum.EXPENSE;
-    const transaction = insertOne(TransactionEntityTable, {
-        type,
-        title: isExpense ? 'Grocery store' : 'Alex returned money',
-        externalId: null,
-        externalSource: ExternalSourceEnum.MONOBANK,
-        operatedAt: OPERATED_AT,
-        comment: '',
-        exchangeRate: 1,
-        updatedBy: null,
-        fromAccountId: isExpense ? cashAccountId : null,
-        toAccountId: isExpense ? null : cashAccountId
-    } satisfies TransactionCreateEntityInterface);
+) =>
+    Effect.gen(function* () {
+        const isExpense = type === TransactionTypeEnum.EXPENSE;
+        const transaction = yield* insertOne(TransactionEntityTable, {
+            type,
+            title: isExpense ? 'Grocery store' : 'Alex returned money',
+            externalId: null,
+            externalSource: ExternalSourceEnum.MONOBANK,
+            operatedAt: OPERATED_AT,
+            comment: '',
+            exchangeRate: 1,
+            updatedBy: null,
+            fromAccountId: isExpense ? cashAccountId : null,
+            toAccountId: isExpense ? null : cashAccountId
+        } satisfies TransactionCreateEntityInterface);
 
-    insertOne(TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId: cashAccountId,
-        type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId,
-        mccCategoryId: null,
-        externalId: null,
-        exchangeRate: 1,
-        baseInstrumentId: 1,
-        baseExchangeRate: 1,
-        baseAmount: amount,
-        toIban: null,
-        originalTransactionId: null
-    } satisfies TransactionEntryCreateEntityInterface);
+        yield* insertOne(TransactionEntryEntityTable, {
+            transactionId: transaction.id,
+            accountId: cashAccountId,
+            type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount,
+            categoryId,
+            mccCategoryId: null,
+            externalId: null,
+            exchangeRate: 1,
+            baseInstrumentId: 1,
+            baseExchangeRate: 1,
+            baseAmount: amount,
+            toIban: null,
+            originalTransactionId: null
+        } satisfies TransactionEntryCreateEntityInterface);
 
-    return transaction;
-};
+        return transaction;
+    });
 
-const createUserCategorizedIncomeFixture = () => {
-    const userCategory = testDb
-        .select()
-        .from(CategoryEntityTable)
-        .all()
-        .find(row => row.id !== LENDING_CATEGORY_ID && row.id !== BORROWING_CATEGORY_ID);
+const createUserCategorizedIncomeFixture = () =>
+    Effect.gen(function* () {
+        const userCategory = (yield* testDb.select().from(CategoryEntityTable)).find(
+            row => row.id !== LENDING_CATEGORY_ID && row.id !== BORROWING_CATEGORY_ID
+        );
 
-    if (!isDefined(userCategory)) {
-        throw new Error('No non-debt category seeded');
-    }
+        if (!isDefined(userCategory)) {
+            throw new Error('No non-debt category seeded');
+        }
 
-    const cashAccount = createCashAccount();
-    const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
-    const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, userCategory.id);
+        const cashAccount = yield* createCashAccount();
+        const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT);
+        const transaction = yield* createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, userCategory.id);
 
-    return { debtAccount, transaction, userCategory };
-};
+        return { debtAccount, transaction, userCategory };
+    });
 
 const attachAndReadEntry = Effect.fnUntraced(function* (transactionId: number, debtAccountId: number) {
     const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
     yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
 
-    return fetchPrimaryEntry(transactionId);
+    return yield* fetchPrimaryEntry(transactionId);
 });
 
 const expectUserCategoryPreserved = (entry: TransactionEntryEntityInterface, userCategoryId: number): void => {
@@ -163,7 +174,7 @@ const attachDetachAndReadEntry = Effect.fnUntraced(function* (transactionId: num
     yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
     yield* transactionDebtSettlementService.detach(transactionId);
 
-    return fetchPrimaryEntry(transactionId);
+    return yield* fetchPrimaryEntry(transactionId);
 });
 
 const readExpenseTotal = Effect.fnUntraced(function* (instrumentId: number) {
@@ -197,16 +208,16 @@ describe('debt settlement categorization', () => {
         }
     ])('categorizes and repays a $debtType debt when attaching an uncategorized $type', ({ debtType, type, categoryId, expectedBalance }) =>
         Effect.gen(function* () {
-            const cashAccount = createCashAccount();
-            const debtAccount = createDebtAccount(debtType);
-            const transaction = createSettlementTransaction(type, cashAccount.id, null);
+            const cashAccount = yield* createCashAccount();
+            const debtAccount = yield* createDebtAccount(debtType);
+            const transaction = yield* createSettlementTransaction(type, cashAccount.id, null);
 
             const entry = yield* attachAndReadEntry(transaction.id, debtAccount.id);
             const progress = yield* fetchDebtProgress(debtAccount.id);
 
             expect(entry.categoryId).toBe(categoryId);
             expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
-            expect(fetchDebtEvents(debtAccount.id).at(1)?.direction).toBe(DebtEventDirectionEnum.CLOSE);
+            expect((yield* fetchDebtEvents(debtAccount.id)).at(1)?.direction).toBe(DebtEventDirectionEnum.CLOSE);
             expect(progress.paidAmount).toBe(SETTLED_AMOUNT);
             expect(progress.totalAmount).toBe(OPENED_AMOUNT);
             expect(yield* fetchAccountBalance(debtAccount.id)).toBe(expectedBalance);
@@ -215,15 +226,15 @@ describe('debt settlement categorization', () => {
 
     it.effect('assigns Lending and grows the debt when attaching an uncategorized expense to a lent debt', () =>
         Effect.gen(function* () {
-            const cashAccount = createCashAccount();
-            const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
-            const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+            const cashAccount = yield* createCashAccount();
+            const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT);
+            const transaction = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
 
             const entry = yield* attachAndReadEntry(transaction.id, debtAccount.id);
             const progress = yield* fetchDebtProgress(debtAccount.id);
 
             expect(entry.categoryId).toBe(LENDING_CATEGORY_ID);
-            expect(fetchDebtEvents(debtAccount.id).at(1)?.direction).toBe(DebtEventDirectionEnum.OPEN);
+            expect((yield* fetchDebtEvents(debtAccount.id)).at(1)?.direction).toBe(DebtEventDirectionEnum.OPEN);
             expect(progress.totalAmount).toBe(OPENED_AMOUNT + SETTLED_AMOUNT);
             expect(yield* fetchAccountBalance(debtAccount.id)).toBe(OPENED_AMOUNT + SETTLED_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
@@ -233,17 +244,15 @@ describe('debt settlement categorization', () => {
         Effect.gen(function* () {
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            const { debtAccount, transaction } = createUncategorizedIncomeOnLentDebt();
+            const { debtAccount, transaction } = yield* createUncategorizedIncomeOnLentDebt();
 
             yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
-            const settlementEntries = testDb
-                .select()
-                .from(TransactionEntryEntityTable)
-                .all()
-                .filter(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+            const settlementEntries = (yield* testDb.select().from(TransactionEntryEntityTable)).filter(
+                entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT
+            );
 
-            expect(fetchAccountEntries(debtAccount.id)).toHaveLength(0);
+            expect(yield* fetchAccountEntries(debtAccount.id)).toHaveLength(0);
             expect(settlementEntries).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -253,9 +262,9 @@ describe('debt settlement categorization', () => {
             const statisticsRepository = yield* StatisticsRepository;
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            const cashAccount = createCashAccount();
-            const debtAccount = createDebtAccount(AccountDebtTypeEnum.BORROW);
-            const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+            const cashAccount = yield* createCashAccount();
+            const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.BORROW);
+            const transaction = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
             const expenseBefore = yield* readExpenseTotal(cashAccount.instrumentId);
 
             yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
@@ -274,18 +283,18 @@ describe('debt settlement categorization', () => {
 
     it.effect('never clobbers an existing category when attaching', () =>
         Effect.gen(function* () {
-            const { debtAccount, transaction, userCategory } = createUserCategorizedIncomeFixture();
+            const { debtAccount, transaction, userCategory } = yield* createUserCategorizedIncomeFixture();
 
             const entry = yield* attachAndReadEntry(transaction.id, debtAccount.id);
 
             expectUserCategoryPreserved(entry, userCategory.id);
-            expect(fetchDebtEvents(debtAccount.id)).toHaveLength(2);
+            expect(yield* fetchDebtEvents(debtAccount.id)).toHaveLength(2);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('reverts only the settlement-sourced category on detach', () =>
         Effect.gen(function* () {
-            const { debtAccount, transaction } = createUncategorizedIncomeOnLentDebt();
+            const { debtAccount, transaction } = yield* createUncategorizedIncomeOnLentDebt();
 
             const entry = yield* attachDetachAndReadEntry(transaction.id, debtAccount.id);
 
@@ -297,7 +306,7 @@ describe('debt settlement categorization', () => {
 
     it.effect('keeps a user category on detach of a categorized income attachment', () =>
         Effect.gen(function* () {
-            const { debtAccount, transaction, userCategory } = createUserCategorizedIncomeFixture();
+            const { debtAccount, transaction, userCategory } = yield* createUserCategorizedIncomeFixture();
 
             const entry = yield* attachDetachAndReadEntry(transaction.id, debtAccount.id);
 
@@ -309,7 +318,7 @@ describe('debt settlement categorization', () => {
         Effect.gen(function* () {
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            const { debtAccount, transaction } = createUncategorizedIncomeOnLentDebt(OVERPAID_AMOUNT);
+            const { debtAccount, transaction } = yield* createUncategorizedIncomeOnLentDebt(OVERPAID_AMOUNT);
 
             yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 

@@ -35,7 +35,7 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
         const getById = (id: number) =>
             Db.query(db =>
                 db.query.SyncEntityTable.findFirst({
-                    where: and(eq(SyncEntityTable.id, id), isNull(SyncEntityTable.deletedAt))
+                    where: { id, deletedAt: { isNull: true } }
                 })
             );
 
@@ -125,13 +125,13 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
             getByAccountId: (accountId: number) =>
                 Db.query(db =>
                     db.query.SyncEntityTable.findFirst({
-                        where: and(eq(SyncEntityTable.accountId, accountId), isNull(SyncEntityTable.deletedAt))
+                        where: { accountId, deletedAt: { isNull: true } }
                     })
                 ),
             getByProvider: (provider: ExternalSourceEnum) =>
                 Db.query(db =>
                     db.query.SyncEntityTable.findMany({
-                        where: and(eq(SyncEntityTable.provider, provider), isNull(SyncEntityTable.deletedAt))
+                        where: { provider, deletedAt: { isNull: true } }
                     })
                 ),
             getEnabledByProvider: (provider: ExternalSourceEnum) =>

@@ -110,7 +110,7 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
 
                 findConsolidationSources: (canonicalTransactionId: number, language: LanguageEnum) =>
                     Db.query(db =>
-                        db.$client.getAllAsync<ConsolidationSourceRowInterface>(
+                        db.$client.unsafe<ConsolidationSourceRowInterface>(
                             `SELECT
                 moved.transaction_id AS canonicalTransactionId,
                 moved.original_transaction_id AS sourceTransactionId,

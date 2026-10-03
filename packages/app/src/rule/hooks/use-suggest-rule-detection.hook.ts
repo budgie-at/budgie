@@ -1,4 +1,12 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import {
+    RuleDetectionModeEnum,
+    buildDismissKey,
+    computeDetectionMode,
+    doesRuleMatchTransaction,
+    extractRuleActionOutcomes,
+    hasConflictWithRuleOutcomes
+} from '@budgie/rules';
 import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
@@ -6,17 +14,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
 import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
-import { RuleDetectionModeEnum } from '../enum/rule-detection-mode.enum';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
-import { buildDismissKey } from '../util/build-dismiss-key.util';
-import { computeDetectionMode } from '../util/compute-detection-mode.util';
-import { doesRuleMatchTransaction } from '../util/does-rule-match-transaction.util';
-import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
-import { hasConflictWithRuleOutcomes } from '../util/has-conflict-with-rule-outcomes.util';
 
-import type { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import type { UpdateRuleDataInterface } from '../interface/update-rule-data.interface';
 import type { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { SuggestRuleDataInterface } from '@budgie/rules';
 import type { Control } from 'react-hook-form';
 
 type UseSuggestRuleDetectionParamsType = {

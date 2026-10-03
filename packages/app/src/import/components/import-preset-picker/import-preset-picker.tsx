@@ -1,10 +1,10 @@
+import { ImportPresetEnum } from '@budgie/import-export';
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ImportPresetEnum } from '../../enum/import-preset.enum';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
 import { ImportPresetPickerSelector } from './import-preset-picker.selector';

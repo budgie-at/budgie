@@ -1,4 +1,5 @@
 import { AccountRepository, ExternalSourceEnum, TransactionRepository } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -11,7 +12,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { TransactionService } from '../../transaction/service/transaction.service';
 import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
 import { WalletCaptureReviewReasonEnum } from '../enum/wallet-capture-review-reason.enum';
 import { WalletCaptureStatusEnum } from '../enum/wallet-capture-status.enum';

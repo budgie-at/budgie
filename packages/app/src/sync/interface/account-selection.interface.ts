@@ -1,6 +1,6 @@
-import { EmptyFn } from '@rnw-community/shared';
+import { SyncAccountPreviewInterface } from '@budgie/sync';
 
-import { SyncAccountPreviewInterface } from './sync-account-preview.interface';
+import { EmptyFn } from '@rnw-community/shared';
 
 export interface AccountSelectionInterface {
     readonly accountPreviews: SyncAccountPreviewInterface[];

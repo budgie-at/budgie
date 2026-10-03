@@ -27,6 +27,6 @@
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
-        "effect": "4.0.0-rc.118"
+        "effect": "4.0.0"
     }
 }

@@ -1,4 +1,4 @@
-import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { useRef } from 'react';
 import { Easing, SharedValue, runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
 

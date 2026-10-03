@@ -12,7 +12,7 @@ export class AtmCashWithdrawalRepository extends Context.Service<AtmCashWithdraw
     {
         make: Effect.succeed({
             findCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
-                Db.query(db => db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(scope)))
+                Db.query(db => db.$client.unsafe<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(scope)))
         })
     }
 ) {

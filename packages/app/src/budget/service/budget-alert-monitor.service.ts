@@ -9,13 +9,13 @@ import {
 import { CategoryRepository, LanguageEnum, SettingsRepository } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
+import { Storage } from '@op-engineering/op-sqlite';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 import * as BackgroundTask from 'expo-background-task';
-import Storage from 'expo-sqlite/kv-store';
 import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -38,6 +38,13 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         const backgroundTaskMinimumIntervalMinutes = 15;
         const storageKeyPrefix = '@budgie:budget-alerts-fired';
         const firedTriggersSchema = Schema.fromJsonString(Schema.Array(Schema.String));
+        const storage = yield* Effect.acquireRelease(
+            Effect.sync(() => new Storage({ name: 'budget-alerts.sqlite' })),
+            budgetAlertStorage =>
+                Effect.sync(() => {
+                    budgetAlertStorage.closeSync();
+                })
+        );
 
         const buildStorageKey = (budgetId: number, periodStartMs: number): string => `${storageKeyPrefix}:${budgetId}:${periodStartMs}`;
 
@@ -67,7 +74,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         });
 
         const loadDeliveredTriggerKeys = Effect.fn('BudgetAlertMonitorService.loadDeliveredTriggerKeys')(function* (storageKey: string) {
-            const raw = yield* Effect.promise(() => Storage.getItem(storageKey));
+            const raw = yield* Effect.promise(() => storage.getItem(storageKey));
 
             if (!isDefined(raw)) {
                 return new Set<string>();
@@ -91,7 +98,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         ) {
             const fired = yield* loadDeliveredTriggerKeys(storageKey);
             fired.add(buildTriggerKey(trigger));
-            yield* Effect.promise(() => Storage.setItem(storageKey, JSON.stringify([...fired])));
+            yield* Effect.promise(() => storage.setItem(storageKey, JSON.stringify([...fired])));
         });
 
         const postOverallAlert = Effect.fn('BudgetAlertMonitorService.postOverallAlert')(function* (

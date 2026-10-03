@@ -1,11 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import Toast from 'react-native-toast-message';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { TransferConsolidationService } from '../../../sync/service/transfer-consolidation.service';
 import { useConfirmedSettingsAction } from '../../hook/use-confirmed-settings-action.hook';
 import { SettingsCard } from '../settings-card/settings-card';
 

@@ -1,4 +1,5 @@
 import { CategorySourceEnum, TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useImperativeHandle, useRef } from 'react';
@@ -23,7 +24,6 @@ import {
 } from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
-import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 import { TransactionFieldIconsSelector } from './transaction-field-icons.selector';

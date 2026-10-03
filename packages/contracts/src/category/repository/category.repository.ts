@@ -170,13 +170,13 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
             findWithoutTags: () =>
                 Db.query(db =>
                     db.query.CategoryEntityTable.findMany({
-                        where: and(isNull(CategoryEntityTable.tagsGeneratedAt), eq(CategoryEntityTable.isSystemCategory, false))
+                        where: { tagsGeneratedAt: { isNull: true }, isSystemCategory: false }
                     })
                 ),
             findAllNonSystem: () =>
                 Db.query(db =>
                     db.query.CategoryEntityTable.findMany({
-                        where: eq(CategoryEntityTable.isSystemCategory, false)
+                        where: { isSystemCategory: false }
                     })
                 )
         };

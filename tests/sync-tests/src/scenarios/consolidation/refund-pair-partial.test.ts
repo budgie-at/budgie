@@ -1,4 +1,3 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { computeRefundedSummary } from '@app/transaction/utils/compute-refunded-summary.util';
 import {
     AccountBalanceRepository,
@@ -10,6 +9,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionViewRepository
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -30,10 +30,10 @@ describe('consolidation/refund-pair-partial', () => {
 
             expect(result.consolidated).toBe(1);
 
-            const promotedExpense = fetchTransactionById(expense.id);
+            const promotedExpense = yield* fetchTransactionById(expense.id);
             expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
-            const expenseEntries = fetchExpenseEntries(expense.id);
+            const expenseEntries = yield* fetchExpenseEntries(expense.id);
             const credits = expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
             const debits = expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
 
@@ -49,9 +49,9 @@ describe('consolidation/refund-pair-partial', () => {
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const statisticsRepository = yield* StatisticsRepository;
-            const { account, category, expense } = seedRefundStatisticsScenario(PARTIAL_REFUND_AMOUNT);
-            const tag = seed.tag('Refunded');
-            seed.transactionTag(expense.id, tag.id);
+            const { account, category, expense } = yield* seedRefundStatisticsScenario(PARTIAL_REFUND_AMOUNT);
+            const tag = yield* seed.tag('Refunded');
+            yield* seed.transactionTag(expense.id, tag.id);
 
             yield* transferConsolidationService.consolidate(null);
 

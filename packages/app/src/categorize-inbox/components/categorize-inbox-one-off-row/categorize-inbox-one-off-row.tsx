@@ -11,7 +11,7 @@ import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-c
 
 import { CategorizeInboxOneOffRowSelector } from './categorize-inbox-one-off-row.selector';
 
-import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;

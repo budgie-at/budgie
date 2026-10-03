@@ -7,7 +7,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 import { SyncHistoryDepthOptionSelector } from './sync-history-depth-option.selector';
 
-import type { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
+import type { SyncHistoryDepthEnum } from '@budgie/sync';
 
 interface Props {
     readonly depth: SyncHistoryDepthEnum;

@@ -1,3 +1,4 @@
+import { RuleEngineService } from '@budgie/rules';
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -9,11 +10,9 @@ import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 
-import { RuleEngineService } from './rule-engine.service';
-
-import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import type { PendingRuleApplicationInterface } from '../interface/pending-rule-application.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
+import type { ApplyRuleResultInterface } from '@budgie/rules';
 
 export class RuleApplicationDrainerService extends Context.Service<RuleApplicationDrainerService>()(
     '@budgie/app/RuleApplicationDrainerService',
@@ -57,7 +56,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
 
                 const { ruleId, onSettled } = pending;
 
-                yield* workload.run(ruleEngineService.applyRuleToMatchingTransactions(ruleId, null)).pipe(
+                yield* workload.run(ruleEngineService.applyRuleToMatchingTransactions(ruleId)).pipe(
                     Effect.matchCause({
                         onSuccess: result => {
                             onSettled?.(result, null);

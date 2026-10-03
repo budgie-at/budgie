@@ -27,8 +27,8 @@ const expectLocalizedAutoCandidate = Effect.fnUntraced(function* (input: {
     readonly refundTitle: string;
 }) {
     const refundPairRepository = yield* RefundPairRepository;
-    const account = testSeedService.account({ externalId: input.accountExternalId });
-    const { expense, refunds } = testSeedService.refundedExpense({
+    const account = yield* testSeedService.account({ externalId: input.accountExternalId });
+    const { expense, refunds } = yield* testSeedService.refundedExpense({
         accountId: account.id,
         expenseAmount: input.amount,
         refundAmounts: [input.amount],
@@ -93,8 +93,8 @@ layer(TestLayer)('consolidation/refund-pair-by-title-candidates', it => {
 
     it.effect('auto-consolidates cancellation-prefixed card reversals to the nearest same-amount expense', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            const first = testSeedService.refundedExpense({
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            const first = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: OBB_AMOUNT,
                 refundAmounts: [OBB_AMOUNT],
@@ -104,7 +104,7 @@ layer(TestLayer)('consolidation/refund-pair-by-title-candidates', it => {
                 refundDelaySeconds: FIRST_OBB_REFUND_DELAY_SECONDS,
                 externalIdPrefix: 'obb-first'
             });
-            const second = testSeedService.refundedExpense({
+            const second = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: OBB_AMOUNT,
                 refundAmounts: [OBB_AMOUNT],
@@ -117,12 +117,18 @@ layer(TestLayer)('consolidation/refund-pair-by-title-candidates', it => {
 
             const result = yield* runConsolidation();
             expect(result.consolidated).toBe(2);
-            expect(testQueryService.fetchTransactionById(first.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-            expect(testQueryService.fetchTransactionById(first.refunds[0].id).consolidationParentTransactionId).toBe(first.expense.id);
-            expect(testQueryService.fetchTransactionById(second.expense.id).consolidationType).toBe(
+            expect((yield* testQueryService.fetchTransactionById(first.expense.id)).consolidationType).toBe(
                 TransactionConsolidationTypeEnum.REFUND
             );
-            expect(testQueryService.fetchTransactionById(second.refunds[0].id).consolidationParentTransactionId).toBe(second.expense.id);
+            expect((yield* testQueryService.fetchTransactionById(first.refunds[0].id)).consolidationParentTransactionId).toBe(
+                first.expense.id
+            );
+            expect((yield* testQueryService.fetchTransactionById(second.expense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
+            expect((yield* testQueryService.fetchTransactionById(second.refunds[0].id)).consolidationParentTransactionId).toBe(
+                second.expense.id
+            );
         })
     );
 });

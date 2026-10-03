@@ -1,0 +1,173 @@
+import {
+    Db,
+    MccCategoryEntityTable,
+    MerchantEmbeddingEntityTable,
+    MerchantEmbeddingTagEntityTable,
+    TransactionEntityTable
+} from '@budgie/contracts';
+import { and, eq, sql } from 'drizzle-orm';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+
+import { buildVecNeighboursSql } from '../util/build-vec-neighbours-sql.util';
+import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
+import { makeEmbeddingRepository } from '../util/make-embedding-repository.util';
+import { parsePendingContextBaseFields } from '../util/parse-pending-context-base-fields.util';
+
+import type { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
+import type { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
+import type { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
+
+const SIMILAR_CATEGORIES_QUERY = `
+    SELECT me.category_id as categoryId,
+           SUM(vec.weight) as score
+    FROM ${buildVecNeighboursSql('merchant_embedding_vec')} vec
+    JOIN merchant_embeddings me ON me.id = vec.rowid
+    WHERE me.deleted_at IS NULL AND vec.distance < ?
+    GROUP BY me.category_id
+    ORDER BY score DESC
+    LIMIT ?
+`;
+
+const SIMILAR_TAGS_QUERY = `
+    SELECT met.tag_id as tagId,
+           SUM(vec.weight) as score
+    FROM ${buildVecNeighboursSql('merchant_embedding_vec')} vec
+    JOIN merchant_embeddings me ON me.id = vec.rowid
+    JOIN merchant_embedding_tags met ON met.merchant_embedding_id = me.id
+    WHERE me.deleted_at IS NULL AND vec.distance < ? AND (? IS NULL OR me.category_id = ?)
+    GROUP BY met.tag_id
+    ORDER BY score DESC
+    LIMIT ?
+`;
+
+const SIMILAR_COMMENTS_QUERY = `
+    SELECT me.comment as comment, MIN(vec.distance) as bestDistance
+    FROM (SELECT rowid, distance FROM merchant_embedding_vec
+          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    JOIN merchant_embeddings me ON me.id = vec.rowid
+    WHERE me.deleted_at IS NULL AND vec.distance < ?
+        AND me.comment != '' AND me.category_id = ?
+    GROUP BY me.comment
+    ORDER BY bestDistance
+    LIMIT ?
+`;
+
+const PENDING_MERCHANT_CONTEXTS_BASE = `
+    SELECT
+        t.title AS title,
+        COALESCE(mcc.full_description, '') AS mccDescription,
+        te.category_id AS categoryId,
+        MAX(t.comment) AS comment,
+        GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
+        GROUP_CONCAT(DISTINCT tt.tag_id) AS tagIdsCsv,
+        MAX(t.operated_at) AS maxOperatedAt
+    FROM transactions t
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+    LEFT JOIN transaction_tags tt ON tt.transaction_id = t.id
+    WHERE t.deleted_at IS NULL
+      AND t.needs_embedding = 1
+      AND t.title != ''
+      AND te.category_id IS NOT NULL
+    GROUP BY t.title, COALESCE(mcc.full_description, ''), te.category_id
+`;
+
+const PENDING_MERCHANT_CONTEXTS_QUERY = `
+    WITH pending_contexts AS (${PENDING_MERCHANT_CONTEXTS_BASE})
+    SELECT
+        pc.title AS title,
+        pc.mccDescription AS mccDescription,
+        pc.categoryId AS categoryId,
+        pc.comment AS comment,
+        pc.transactionIdsCsv AS transactionIdsCsv,
+        pc.tagIdsCsv AS tagIdsCsv,
+        me.id AS existingEmbeddingId
+    FROM pending_contexts pc
+    LEFT JOIN merchant_embeddings me ON me.title = pc.title
+        AND me.mcc_description = pc.mccDescription
+        AND me.category_id = pc.categoryId
+        AND me.deleted_at IS NULL
+    ORDER BY pc.maxOperatedAt DESC
+    LIMIT ?
+`;
+
+export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddingRepository>()(
+    '@budgie/categorization/MerchantEmbeddingRepository',
+    {
+        make: Effect.succeed({
+            ...makeEmbeddingRepository({
+                similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+                similarTagsQuery: SIMILAR_TAGS_QUERY,
+                vecTableName: 'merchant_embedding_vec',
+                embeddingTable: MerchantEmbeddingEntityTable,
+                idColumn: MerchantEmbeddingEntityTable.id,
+                categoryColumn: MerchantEmbeddingEntityTable.categoryId,
+                transactionMatchCondition: and(
+                    eq(MerchantEmbeddingEntityTable.title, TransactionEntityTable.title),
+                    sql`${MerchantEmbeddingEntityTable.mccDescription} = COALESCE(${MccCategoryEntityTable.fullDescription}, '')`
+                ),
+                deletedAtColumn: MerchantEmbeddingEntityTable.deletedAt,
+                tagTable: MerchantEmbeddingTagEntityTable,
+                foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
+                createTagRow: (embeddingId, tagId) => ({ merchantEmbeddingId: embeddingId, tagId }),
+                upsertRow: (
+                    db,
+                    { title, mccDescription, categoryId, comment, embedding, dimensions }: UpsertMerchantEmbeddingParamsInterface
+                ) =>
+                    db
+                        .insert(MerchantEmbeddingEntityTable)
+                        .values({ title, mccDescription, categoryId, comment, embedding, dimensions })
+                        .onConflictDoUpdate({
+                            target: [
+                                MerchantEmbeddingEntityTable.title,
+                                MerchantEmbeddingEntityTable.mccDescription,
+                                MerchantEmbeddingEntityTable.categoryId
+                            ],
+                            set: { comment, embedding, dimensions, updatedAt: new Date() }
+                        })
+                        .returning({ id: MerchantEmbeddingEntityTable.id })
+            }),
+            findSimilarComments: (
+                queryEmbedding: Uint8Array,
+                { vecLimit, distanceThreshold, categoryId, commentLimit }: SimilarCommentsParamsInterface
+            ) =>
+                Db.query(db =>
+                    db.$client.unsafe<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+                        convertEmbeddingToJson(queryEmbedding),
+                        vecLimit,
+                        distanceThreshold,
+                        categoryId,
+                        commentLimit
+                    ])
+                ),
+            findPendingMerchantContexts: Effect.fn('MerchantEmbeddingRepository.findPendingMerchantContexts')(function* (limit: number) {
+                const rows = yield* Db.query(db =>
+                    db.$client.unsafe<{
+                        title: string;
+                        mccDescription: string;
+                        categoryId: number;
+                        comment: string | null;
+                        transactionIdsCsv: string;
+                        tagIdsCsv: string | null;
+                        existingEmbeddingId: number | null;
+                    }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit])
+                );
+
+                return rows.map(row => ({
+                    title: row.title,
+                    mccDescription: row.mccDescription,
+                    comment: row.comment ?? '',
+                    ...parsePendingContextBaseFields(row)
+                }));
+            }),
+            countPendingMerchantContexts: () =>
+                Db.query(db =>
+                    db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
+                ).pipe(Effect.map(([row]) => row.count))
+        })
+    }
+) {
+    static readonly layer = Layer.effect(MerchantEmbeddingRepository, MerchantEmbeddingRepository.make);
+}

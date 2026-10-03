@@ -1,5 +1,4 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { SyncAccountTypeEnum } from '@budgie/sync';
+import { MonobankSyncService, SyncAccountTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';

@@ -1,3 +1,17 @@
+diff --git a/dist/commonjs/components/index.cjs b/dist/commonjs/components/index.cjs
+index bf661727ee33dc92f69aaaf06159b60cef51cff1..dc8516df16486d9ebd379df7cd1bed856c81d5df 100644
+--- a/dist/commonjs/components/index.cjs
++++ b/dist/commonjs/components/index.cjs
+@@ -180,6 +180,9 @@ module.exports = {
+   get NativeDialogManagerAndroid() {
+     return require("react-native").NativeDialogManagerAndroid;
+   },
++  get NativeComponentRegistry() {
++    return require("react-native").NativeComponentRegistry;
++  },
+   get NativeEventEmitter() {
+     return require("react-native").NativeEventEmitter;
+   },
 diff --git a/dist/commonjs/native/react/useNativeCss.js b/dist/commonjs/native/react/useNativeCss.js
 index b0cd24db473da9892e4d17a328cd9fa178c09066..2cc8f10967e7832873b8909363012c6d52a13d86 100644
 --- a/dist/commonjs/native/react/useNativeCss.js
@@ -116,6 +130,20 @@ index 222296d6bd95a69dd87af100d8387753c54d2095..9401a5644bf501f614e9456739c20507
        }
      }
    });
+diff --git a/dist/module/components/index.cjs b/dist/module/components/index.cjs
+index bf661727ee33dc92f69aaaf06159b60cef51cff1..dc8516df16486d9ebd379df7cd1bed856c81d5df 100644
+--- a/dist/module/components/index.cjs
++++ b/dist/module/components/index.cjs
+@@ -180,6 +180,9 @@ module.exports = {
+   get NativeDialogManagerAndroid() {
+     return require("react-native").NativeDialogManagerAndroid;
+   },
++  get NativeComponentRegistry() {
++    return require("react-native").NativeComponentRegistry;
++  },
+   get NativeEventEmitter() {
+     return require("react-native").NativeEventEmitter;
+   },
 diff --git a/dist/module/native/react/useNativeCss.js b/dist/module/native/react/useNativeCss.js
 index 61833ec16e14dcf1a2a91cb1f700c117206deb52..fef54837fbd4e0c8ca146c5d215f9252e9933f45 100644
 --- a/dist/module/native/react/useNativeCss.js

@@ -1,3 +1,4 @@
+import { ExchangeRatesService } from '@budgie/market';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -5,7 +6,6 @@ import * as Atom from 'effect/reactivity/Atom';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
-import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 import type { ConvertedAmountInterface } from '../interface/converted-amount.interface';
 

@@ -1,12 +1,12 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { TransactionService } from '@app/transaction/service/transaction.service';
+import { DatabaseSync } from 'node:sqlite';
+
 import { Db, PRECISION, SyncRepository, TransactionEntryEntityTable } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import { describe, expect, it, vi } from '@effect/vitest';
-import Database from 'better-sqlite3';
 import { like } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 const SMALL_PAGE_SIZE = 5;
 const LARGE_PAGE_SIZE = 20;
@@ -23,7 +23,7 @@ const resyncAndMeasure = Effect.fnUntraced(function* (accountId: number, count: 
     monobankStub.statementBatches([buildRows(count, amount)]);
     const bulkUpdateSpy = vi.spyOn(transactionService, 'bulkUpdateImported');
     let topLevelTransactionCount = 0;
-    const statementSpy = vi.spyOn(Database.prototype, 'prepare');
+    const statementSpy = vi.spyOn(DatabaseSync.prototype, 'prepare');
 
     yield* monobankSyncService.sync().pipe(
         Effect.provideService(Db.TransactionBoundary, transaction =>
@@ -52,17 +52,16 @@ describe('monobank/resync-existing-batch', () => {
     it.effect('resyncs a page of existing rows in one page transaction plus one balance transaction without per-row lookups', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const { account } = setupMonobankFixture();
+            const { account } = yield* setupMonobankFixture();
             monobankStub.statementBatches([buildRows(LARGE_PAGE_SIZE, -1000)]);
             yield* monobankSyncService.sync();
 
             const small = yield* resyncAndMeasure(account.id, SMALL_PAGE_SIZE, -2000);
             const large = yield* resyncAndMeasure(account.id, LARGE_PAGE_SIZE, -3000);
-            const entries = testDb
+            const entries = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(like(TransactionEntryEntityTable.externalId, 'tx-resync-%'))
-                .all();
+                .where(like(TransactionEntryEntityTable.externalId, 'tx-resync-%'));
 
             expect(small.bulkUpdateCallCount).toBe(1);
             expect(large.bulkUpdateCallCount).toBe(1);

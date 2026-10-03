@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { DEFAULT_CATEGORY_ICON, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
@@ -6,7 +6,6 @@ import { useRouter } from 'expo-router';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { DEFAULT_CATEGORY_ICON } from '../../constant/default-category-icon.constant';
 import { useNonSystemCategoriesQuery } from '../../query/use-non-system-categories.query';
 
 import { CategoryDefaultIconButtonSelector } from './category-default-icon-button.selector';

@@ -1,5 +1,5 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountTypeEnum, ExternalSourceEnum, PRECISION } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -31,27 +31,29 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const firstExpense = seedBankPair.expense(
+            const firstExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-split-1', operatedAt: new Date(P2P_OPERATED_AT.getTime() + FIRST_SPLIT_OFFSET_MS) },
                 { accountId: bankAccount.id, amount: SPLIT_FIRST_AMOUNT }
             );
-            const secondExpense = seedBankPair.expense(
+            const secondExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-split-2', operatedAt: new Date(P2P_OPERATED_AT.getTime() + SECOND_SPLIT_OFFSET_MS) },
                 { accountId: bankAccount.id, amount: SPLIT_SECOND_AMOUNT }
             );
-            const income = seedBankPair.income(
+            const income = yield* seedBankPair.income(
                 { externalId: 'binance:c2c:buy-split', operatedAt: P2P_OPERATED_AT },
                 { accountId: binanceAccount.id, amount: SPLIT_USDT_AMOUNT }
             );
 
             expect(yield* transferConsolidationService.consolidate(null)).toEqual({ found: 1, consolidated: 1 });
 
-            const canonical = fetchP2pCanonical();
+            const canonical = yield* fetchP2pCanonical();
             expect(canonical.fromAccountId).toBe(bankAccount.id);
             expect(canonical.toAccountId).toBe(binanceAccount.id);
             expect(canonical.exchangeRate).toBeCloseTo(SPLIT_TOTAL_AMOUNT / SPLIT_USDT_AMOUNT);
             expect(
-                [firstExpense, secondExpense, income].map(item => fetchTransactionById(item.id).consolidationParentTransactionId)
+                (yield* Effect.forEach([firstExpense, secondExpense, income], item => fetchTransactionById(item.id))).map(
+                    transaction => transaction.consolidationParentTransactionId
+                )
             ).toEqual([canonical.id, canonical.id, canonical.id]);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -60,7 +62,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const expenses = THREE_EXPENSE_AMOUNTS.map((amount, index) =>
+            const expenses = yield* Effect.forEach(THREE_EXPENSE_AMOUNTS, (amount, index) =>
                 seedBankPair.expense(
                     {
                         externalId: `mono-uah-three-${index}`,
@@ -69,17 +71,16 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
                     { accountId: bankAccount.id, amount: amount * PRECISION }
                 )
             );
-            const income = seedP2pIncome('binance:c2c:buy-three', binanceAccount.id);
+            const income = yield* seedP2pIncome('binance:c2c:buy-three', binanceAccount.id);
 
             expect(yield* transferConsolidationService.consolidate(null)).toEqual({ found: 1, consolidated: 1 });
 
-            const canonicalId = fetchP2pCanonical().id;
-            expect([...expenses, income].map(item => fetchTransactionById(item.id).consolidationParentTransactionId)).toEqual([
-                canonicalId,
-                canonicalId,
-                canonicalId,
-                canonicalId
-            ]);
+            const canonicalId = (yield* fetchP2pCanonical()).id;
+            expect(
+                (yield* Effect.forEach([...expenses, income], item => fetchTransactionById(item.id))).map(
+                    transaction => transaction.consolidationParentTransactionId
+                )
+            ).toEqual([canonicalId, canonicalId, canonicalId, canonicalId]);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -88,7 +89,7 @@ describe('consolidation/binance-p2p-fiat-transfer group limits', () => {
     it.effect('does not combine four expenses into one P2P buy', () =>
         Effect.gen(function* () {
             const { bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const expenses = [0, 1, 2, 3].map(index =>
+            const expenses = yield* Effect.forEach([0, 1, 2, 3], index =>
                 seedBankPair.expense(
                     {
                         externalId: `mono-uah-four-${index}`,
@@ -97,7 +98,7 @@ describe('consolidation/binance-p2p-fiat-transfer group limits', () => {
                     { accountId: bankAccount.id, amount: GROUP_EXPENSE_AMOUNT }
                 )
             );
-            const income = seedP2pIncome('binance:c2c:buy-four', binanceAccount.id);
+            const income = yield* seedP2pIncome('binance:c2c:buy-four', binanceAccount.id);
 
             yield* expectP2pUnconsolidated([...expenses, income]);
         }).pipe(Effect.provide(TestLayer))
@@ -106,21 +107,21 @@ describe('consolidation/binance-p2p-fiat-transfer group limits', () => {
     it.effect('does not combine expenses from different bank accounts', () =>
         Effect.gen(function* () {
             const { uah, bankAccount, binanceAccount } = yield* seedP2pFiatTransferFixture();
-            const secondBankAccount = seed.account({
+            const secondBankAccount = yield* seed.account({
                 title: 'Second Monobank UAH',
                 type: AccountTypeEnum.BANK_SYNC,
                 externalSource: ExternalSourceEnum.MONOBANK,
                 instrumentId: uah.id
             });
-            const firstExpense = seedBankPair.expense(
+            const firstExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-mixed-1', operatedAt: P2P_OPERATED_AT },
                 { accountId: bankAccount.id, amount: FIRST_MIXED_ACCOUNT_AMOUNT }
             );
-            const secondExpense = seedBankPair.expense(
+            const secondExpense = yield* seedBankPair.expense(
                 { externalId: 'mono-uah-mixed-2', operatedAt: P2P_OPERATED_AT },
                 { accountId: secondBankAccount.id, amount: SECOND_MIXED_ACCOUNT_AMOUNT }
             );
-            const income = seedP2pIncome('binance:c2c:buy-mixed', binanceAccount.id);
+            const income = yield* seedP2pIncome('binance:c2c:buy-mixed', binanceAccount.id);
 
             yield* expectP2pUnconsolidated([firstExpense, secondExpense, income]);
         }).pipe(Effect.provide(TestLayer))

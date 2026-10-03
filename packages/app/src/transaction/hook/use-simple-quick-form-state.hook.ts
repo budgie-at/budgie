@@ -1,9 +1,8 @@
 import { CategorySourceEnum, TransactionCreateInputInterface } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
-
-import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
 

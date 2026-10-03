@@ -1,6 +1,6 @@
-import { CategorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
@@ -13,16 +13,16 @@ export const expectAtmCashWithdrawalConsolidation = Effect.fnUntraced(function* 
     sourceTransactionId: number
 ) {
     const transferConsolidationService = yield* TransferConsolidationService;
-    const categorizeInboxService = yield* CategorizeInboxService;
+    const categorizeInboxService = yield* CategorizeInboxCashService;
 
     yield* transferConsolidationService.consolidate(null);
 
-    expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+    expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
     expect(yield* categorizeInboxService.moveToCash([sourceTransactionId])).toEqual([sourceTransactionId]);
 
-    const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
+    const canonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
     expect(canonicals).toHaveLength(1);
     expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
     expect(canonicals[0].toAccountId).toBe(cashAccountId);
-    expect(fetchTransactionById(sourceTransactionId).consolidationParentTransactionId).toBe(canonicals[0].id);
+    expect((yield* fetchTransactionById(sourceTransactionId)).consolidationParentTransactionId).toBe(canonicals[0].id);
 });

@@ -1,5 +1,4 @@
-import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { AccountEntityInterface } from '@budgie/contracts';
 import { cn } from 'cn';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
@@ -9,11 +8,10 @@ import { OnEventFn, isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { AccountEditButton } from '../account-edit-button/account-edit-button';
 
 import { AccountCardBaseSelector } from './account-card-base.selector';
 
@@ -22,35 +20,18 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly className?: string;
     readonly instrumentSymbol: string;
     readonly accessibilityLabel?: string;
-    readonly leading?: ReactNode;
     readonly bottomRight?: ReactNode;
     readonly balanceContent?: ReactNode;
-    readonly children?: ReactNode;
     readonly onLongPress?: OnEventFn;
 }
 
 export const AccountCardBase = (props: Props) => {
-    const {
-        id,
-        title,
-        icon,
-        balance,
-        className,
-        instrumentSymbol,
-        accessibilityLabel,
-        leading,
-        bottomRight,
-        balanceContent,
-        children,
-        onLongPress
-    } = props;
+    const { id, title, icon, balance, className, instrumentSymbol, accessibilityLabel, bottomRight, balanceContent, onLongPress } = props;
 
-    const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
     const protectAmount = useProtectedAmountLabel();
 
     const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
-    const navigateToEditAccount = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
     const accountCardTestID = AccountCardBaseSelector.Card(title);
     const accountBalance = formatDigits(balance, instrumentSymbol);
@@ -67,16 +48,9 @@ export const AccountCardBase = (props: Props) => {
         >
             <View className="gap-3">
                 <View className="flex-row items-center justify-between">
-                    {leading ?? <CircleIcon size={36} iconSize={20} icon={icon} variant="ghost" border={false} />}
+                    <CircleIcon size={36} iconSize={20} icon={icon} variant="ghost" border={false} />
 
-                    <HapticPressable
-                        className="rounded-full active:bg-secondary-background"
-                        onPress={navigateToEditAccount}
-                        accessibilityRole="button"
-                        accessibilityLabel={t`Edit account`}
-                    >
-                        <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
-                    </HapticPressable>
+                    <AccountEditButton id={id} />
                 </View>
 
                 <View className="flex-row items-end justify-between gap-2">
@@ -97,8 +71,6 @@ export const AccountCardBase = (props: Props) => {
 
                     {isDefined(bottomRight) && <View className="w-[14px] items-center">{bottomRight}</View>}
                 </View>
-
-                {children}
             </View>
         </Card>
     );

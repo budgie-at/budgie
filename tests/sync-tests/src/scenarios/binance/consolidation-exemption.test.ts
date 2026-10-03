@@ -1,6 +1,6 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { TransferPairRepository } from '@budgie/consolidation';
 import { PRECISION, TransactionTypeEnum } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -15,7 +15,10 @@ import {
     TestLayer
 } from '../../harness';
 
-const fetchBinanceTransfers = () => fetchBinanceTransactions().filter(transaction => transaction.type === TransactionTypeEnum.TRANSFER);
+const fetchBinanceTransfers = () =>
+    Effect.gen(function* () {
+        return (yield* fetchBinanceTransactions()).filter(transaction => transaction.type === TransactionTypeEnum.TRANSFER);
+    });
 
 describe('binance/consolidation-exemption', () => {
     it.effect('does not surface a synced Binance TRANSFER as a transfer-pair candidate', () =>
@@ -23,17 +26,17 @@ describe('binance/consolidation-exemption', () => {
             const binanceSyncService = yield* BinanceSyncService;
             const transferPairRepository = yield* TransferPairRepository;
 
-            seedAmountTransferPair(50 * PRECISION);
+            yield* seedAmountTransferPair(50 * PRECISION);
 
-            seedCryptoInstrument('ADA');
-            setupUsdtSpotFixtureWithBalances('ADA', '200');
+            yield* seedCryptoInstrument('ADA');
+            yield* setupUsdtSpotFixtureWithBalances('ADA', '200');
             binanceStub.myTrades({
                 ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 90, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })]
             });
 
             yield* binanceSyncService.sync();
 
-            const binanceTransfers = fetchBinanceTransfers();
+            const binanceTransfers = yield* fetchBinanceTransfers();
             expect(binanceTransfers).toHaveLength(1);
             const transferTransactionId = binanceTransfers[0].id;
 

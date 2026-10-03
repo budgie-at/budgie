@@ -66,18 +66,22 @@ layer(TestLayer)('consolidation/family-priority', it => {
     it.effect('lets the IBAN bridge chain family claim overlapping legs before the plain IBAN bridge family', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
-            const topology = seedIbanBridgeTopology();
-            const legs = seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
+            const topology = yield* seedIbanBridgeTopology();
+            const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
 
-            seedIbanBridgeSourceExpense(topology.sourceAccount.id, topology.transferMccId);
-            seedIbanBridgeTargetIncome(topology.targetAccount.id, topology.transferMccId);
+            yield* seedIbanBridgeSourceExpense(topology.sourceAccount.id, topology.transferMccId);
+            yield* seedIbanBridgeTargetIncome(topology.targetAccount.id, topology.transferMccId);
 
             expect(yield* consolidationCoordinatorService.consolidate()).toEqual({ consolidated: 1, found: 1 });
 
-            const [chainCanonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
+            const [chainCanonical] = yield* testQueryService.fetchCanonicalsOfType(
+                TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER
+            );
 
-            expect(testQueryService.fetchTransactionById(legs.bridgeIncome.id).consolidationParentTransactionId).toBe(chainCanonical.id);
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)).toHaveLength(0);
+            expect((yield* testQueryService.fetchTransactionById(legs.bridgeIncome.id)).consolidationParentTransactionId).toBe(
+                chainCanonical.id
+            );
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)).toHaveLength(0);
         })
     );
 });

@@ -1,4 +1,4 @@
-import { MonobankClient, MonobankSyncService } from '@budgie/sync';
+import { MonobankClient, MonobankTransactionSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -27,7 +27,7 @@ describe('monobank/retry-policy', () => {
                 })
             );
 
-            const result = yield* new MonobankSyncService(new MonobankClient('test-token')).syncTransactionsForward(
+            const result = yield* new MonobankTransactionSyncService(new MonobankClient('test-token')).syncTransactionsForward(
                 'mono-card',
                 new Date()
             );
@@ -49,7 +49,7 @@ describe('monobank/retry-policy', () => {
             );
 
             const exit = yield* Effect.exit(
-                new MonobankSyncService(new MonobankClient('test-token')).syncTransactionsForward('mono-card', new Date())
+                new MonobankTransactionSyncService(new MonobankClient('test-token')).syncTransactionsForward('mono-card', new Date())
             );
 
             expect(Exit.isFailure(exit)).toBe(true);

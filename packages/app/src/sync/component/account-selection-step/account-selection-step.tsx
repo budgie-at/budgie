@@ -1,11 +1,10 @@
-import { SyncAccountTypeEnum } from '@budgie/sync';
+import { SyncAccountPreviewInterface, SyncAccountTypeEnum } from '@budgie/sync';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 import { BankAccountPreviewList } from '../bank-account-preview-list/bank-account-preview-list';
 
 import { AccountSelectionStepSelector } from './account-selection-step.selector';

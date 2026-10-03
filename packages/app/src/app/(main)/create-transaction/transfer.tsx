@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransferCreationService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
@@ -15,7 +16,6 @@ import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-par
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { TransferQuickForm } from '../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
-import { TransferCreationService } from '../../../transaction/service/transfer-creation.service';
 
 import type { Edge } from 'react-native-safe-area-context';
 /* jscpd:ignore-end */

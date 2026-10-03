@@ -1,7 +1,13 @@
-import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
-import { TransactionImportService } from '@app/transaction/service/transaction-import.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum, ersteMapper } from '@budgie/sync';
+import { TransactionImportService } from '@budgie/ledger';
+import {
+    ersteMapper,
+    mapBankTransactionToCreateInput,
+    SyncAccountBalanceStateEnum,
+    SyncAccountTypeEnum,
+    SyncProviderEnum,
+    SyncTransactionTypeEnum
+} from '@budgie/sync';
 import { beforeEach, describe, expect, it, vi } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -12,9 +18,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { expectFileImportConsolidationEnqueued, makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
 
-import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
-import type { TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
-import type { ErsteRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
+import type { TransactionCreateInputInterface } from '@budgie/contracts';
+import type { ErsteRowInterface, FileBasedSyncClientInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const ERSTE_ACCOUNT_ID = 'AT123';
 const ERSTE_EXTERNAL_ID = 'erste-transaction-1';
@@ -125,20 +130,26 @@ const buildBarrierErsteSyncService = (parseBarrier: TwoCallBarrier, resolveBarri
     });
 };
 
-const fetchImportedErsteTransactionCount = (): number =>
-    testDb
-        .select()
-        .from(TransactionEntityTable)
-        .where(
-            and(
-                eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE),
-                eq(TransactionEntityTable.externalId, ERSTE_EXTERNAL_ID)
-            )
-        )
-        .all().length;
+const fetchImportedErsteTransactionCount = () =>
+    Effect.gen(function* () {
+        return (yield* testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE),
+                    eq(TransactionEntityTable.externalId, ERSTE_EXTERNAL_ID)
+                )
+            )).length;
+    });
 
-const fetchImportedErsteTransactions = (): TransactionEntityInterface[] =>
-    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE)).all();
+const fetchImportedErsteTransactions = () =>
+    Effect.gen(function* () {
+        return yield* testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE));
+    });
 
 describe('erste/file-import-idempotency', () => {
     beforeEach(() => {
@@ -151,7 +162,7 @@ describe('erste/file-import-idempotency', () => {
 
             yield* syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
 
-            const transaction = testDb
+            const [transaction] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
                 .where(
@@ -159,8 +170,7 @@ describe('erste/file-import-idempotency', () => {
                         eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE),
                         eq(TransactionEntityTable.externalId, ERSTE_EXTERNAL_ID)
                     )
-                )
-                .get();
+                );
 
             yield* expectFileImportConsolidationEnqueued(transaction?.id);
         }).pipe(Effect.provide(TestLayer))
@@ -181,7 +191,7 @@ describe('erste/file-import-idempotency', () => {
                 { concurrency: 'unbounded' }
             );
 
-            expect(fetchImportedErsteTransactionCount()).toBe(1);
+            expect(yield* fetchImportedErsteTransactionCount()).toBe(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -192,14 +202,14 @@ describe('erste/file-import-idempotency', () => {
             yield* syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
             yield* syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
 
-            expect(fetchImportedErsteTransactionCount()).toBe(1);
+            expect(yield* fetchImportedErsteTransactionCount()).toBe(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('updates an older Erste PDF transaction instead of creating a duplicate', () =>
         Effect.gen(function* () {
             const transactionImportService = yield* TransactionImportService;
-            const account = seed.account({ externalId: ERSTE_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
+            const account = yield* seed.account({ externalId: ERSTE_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
             const bankTransaction = buildMappedErsteTransaction();
             const [legacyTransaction] = yield* transactionImportService.bulkUpsertImported(
                 [buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
@@ -212,7 +222,7 @@ describe('erste/file-import-idempotency', () => {
 
             yield* syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
 
-            const transactions = fetchImportedErsteTransactions();
+            const transactions = yield* fetchImportedErsteTransactions();
 
             expect(transactions).toHaveLength(1);
             expect(transactions[0].id).toBe(legacyTransaction.id);

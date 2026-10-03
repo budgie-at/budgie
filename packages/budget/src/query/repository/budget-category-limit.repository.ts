@@ -51,7 +51,7 @@ export class BudgetCategoryLimitRepository extends Context.Service<BudgetCategor
             getByBudget: (budgetId: number) =>
                 Db.query(db =>
                     db.query.BudgetCategoryLimitEntityTable.findMany({
-                        where: and(eq(BudgetCategoryLimitEntityTable.budgetId, budgetId), isNull(BudgetCategoryLimitEntityTable.deletedAt))
+                        where: { budgetId, deletedAt: { isNull: true } }
                     })
                 )
         })

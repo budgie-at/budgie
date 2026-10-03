@@ -1,4 +1,5 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface, CategoryRepository, UserIconType } from '@budgie/contracts';
+import { CategoryService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
@@ -22,7 +23,6 @@ import { useNoteInputModal } from '../../../transaction/context/note-input-modal
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
-import { CategoryService } from '../../service/category.service';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';

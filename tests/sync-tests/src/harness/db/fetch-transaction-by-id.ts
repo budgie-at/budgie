@@ -1,9 +1,10 @@
 import { TransactionEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/setup';
 
-import type { TransactionEntityInterface } from '@budgie/contracts';
-
-export const fetchTransactionById = (id: number): TransactionEntityInterface =>
-    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)).all()[0];
+export const fetchTransactionById = (id: number) =>
+    Effect.gen(function* () {
+        return (yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)))[0];
+    });

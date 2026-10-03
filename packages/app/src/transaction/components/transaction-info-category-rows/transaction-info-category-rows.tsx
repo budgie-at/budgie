@@ -1,9 +1,9 @@
 import { TransactionTypeEnum, UserIconNameEnum, UserIconType } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';

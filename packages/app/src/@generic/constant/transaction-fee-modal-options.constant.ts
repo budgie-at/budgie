@@ -1,8 +1,8 @@
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
+import type { NativeStackNavigationOptions } from 'expo-router';
 
 const SHEET_CORNER_RADIUS = 24;
 
-export const TRANSACTION_FEE_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
+export const TRANSACTION_FEE_MODAL_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,
