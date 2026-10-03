@@ -4,12 +4,10 @@ import { router } from 'expo-router';
 import { PropsWithChildren, ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
-import { AccountEditButton } from '../account-edit-button/account-edit-button';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props extends Pick<AccountEntityInterface, 'id' | 'title'> {
     readonly accessibilityLabel: string;
     readonly subtitle: ReactNode;
     readonly trailing: ReactNode;
@@ -19,40 +17,37 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
 export const DebtAccountCardFrame = ({
     id,
     title,
-    icon,
     accessibilityLabel,
     subtitle,
     trailing,
     className,
     children
 }: PropsWithChildren<Props>) => {
-    const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
+    const handleOpenDetails = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
 
     return (
-        <Card
+        <HapticPressable
             accessible
+            accessibilityRole="button"
             testID={AccountCardBaseSelector.Card(title)}
             accessibilityLabel={accessibilityLabel}
-            onPress={navigateToAccount}
-            className={cn('flex-none gap-y-lg overflow-hidden px-3xl py-xl active:scale-xs', className)}
+            onPress={handleOpenDetails}
+            hitSlop={0}
+            className={cn('gap-y-[14px] px-3xl py-xl', className)}
         >
-            <View className="flex-row items-center gap-x-md">
-                <CircleIcon size={36} iconSize={20} icon={icon} variant="ghost" border={false} />
-
-                <View className="min-w-0 flex-1 items-start gap-y-xs">
-                    <Text className="text-sm font-medium text-primary" ellipsizeMode="tail" numberOfLines={1}>
+            <View className="flex-row items-center gap-x-[14px]">
+                <View className="h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ghost-background">
+                    <Text className="text-base font-semibold text-primary">{title.trim().charAt(0).toLocaleUpperCase()}</Text>
+                </View>
+                <View className="min-w-0 flex-1 items-start gap-y-xxs">
+                    <Text className="text-base font-semibold text-primary" ellipsizeMode="tail" numberOfLines={1}>
                         {title}
                     </Text>
-
                     {subtitle}
                 </View>
-
                 {trailing}
-
-                <AccountEditButton id={id} className="-mr-xs p-xs" />
             </View>
-
             {children}
-        </Card>
+        </HapticPressable>
     );
 };
