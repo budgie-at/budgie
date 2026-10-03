@@ -1,4 +1,5 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -8,10 +9,10 @@ import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { DebtAccountCardDeadline } from '../debt-account-card-deadline/debt-account-card-deadline';
 import { DebtAccountCardEmpty } from '../debt-account-card-empty/debt-account-card-empty';
 import { DebtAccountCardFrame } from '../debt-account-card-frame/debt-account-card-frame';
-import { DebtAccountCardProgress } from '../debt-account-card-progress/debt-account-card-progress';
 import { DebtAccountCardSettled } from '../debt-account-card-settled/debt-account-card-settled';
 import { DebtAccountCardSkeleton } from '../debt-account-card-skeleton/debt-account-card-skeleton';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
+import { DebtAccountCardSummarySelector } from '../debt-account-card-summary/debt-account-card-summary.selector';
 
 import type { AccountEntityInterface, DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
@@ -19,10 +20,9 @@ interface Props {
     readonly account: Pick<AccountEntityInterface, 'id' | 'title' | 'debtType' | 'deadline'>;
     readonly instrumentSymbol: string;
     readonly debtProgressSummary: DebtAccountProgressSummaryInterface | null;
-    readonly className?: string;
 }
 
-export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary, className }: Props) => {
+export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary }: Props) => {
     const { id, title, debtType, deadline } = account;
 
     const { t } = useLingui();
@@ -36,9 +36,10 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
                 id={id}
                 title={title}
                 accessibilityLabel={`${title}. ${t`Loading debt progress`}`}
+                debtType={debtType}
+                percentage={0}
                 subtitle={deadlineBadge}
                 trailing={<DebtAccountCardSkeleton />}
-                className={className}
             />
         );
     }
@@ -46,7 +47,20 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
     const { outstandingAmount, paidAmount, percentage, totalAmount } = debtProgressSummary;
     const displayPercentage = percentage >= 100 ? 100 : Math.floor(percentage);
     const isSettled = !isPositiveNumber(outstandingAmount) && percentage >= 100;
-    const subtitle = isSettled ? <DebtAccountCardSettled debtType={debtType} /> : deadlineBadge;
+    const statusBadge = isSettled ? <DebtAccountCardSettled debtType={debtType} /> : deadlineBadge;
+    const separator = isDefined(statusBadge) ? <Text className="text-xs text-secondary-foreground">·</Text> : null;
+    const subtitle = (
+        <View className="flex-row items-center gap-x-xs">
+            <Text
+                className="shrink-0 text-xs text-secondary-foreground tabular-nums"
+                testID={DebtAccountCardSummarySelector.Percentage(title, displayPercentage)}
+            >
+                <Trans>{displayPercentage}%</Trans>
+            </Text>
+            {separator}
+            {statusBadge}
+        </View>
+    );
     const trailing = isPositiveNumber(totalAmount) ? (
         <DebtAccountCardSummary
             instrumentSymbol={instrumentSymbol}
@@ -63,11 +77,10 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
             id={id}
             title={title}
             accessibilityLabel={`${title}. ${t(DEBT_REMAINING_LABEL[debtType])}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${t(DEBT_SETTLED_LABEL[debtType])}: ${protectAmount(paidAmount, instrumentSymbol)}. ${t`Total`}: ${protectAmount(totalAmount, instrumentSymbol)}. ${displayPercentage}%`}
+            debtType={debtType}
+            percentage={displayPercentage}
             subtitle={subtitle}
             trailing={trailing}
-            className={className}
-        >
-            <DebtAccountCardProgress debtType={debtType} percentage={displayPercentage} title={title} />
-        </DebtAccountCardFrame>
+        />
     );
 };

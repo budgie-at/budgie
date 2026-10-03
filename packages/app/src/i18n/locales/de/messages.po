@@ -125,6 +125,10 @@ msgstr "{days, plural, one {In # Tag} other {In # Tagen}}"
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "{displayPercentage}%"
+msgstr "{displayPercentage}%"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
@@ -183,10 +187,6 @@ msgstr "{percentage}% der Ausgaben"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
-
-#: src/account/component/debt-account-card-progress/debt-account-card-progress.tsx
-msgid "{percentage}% repaid"
-msgstr "{percentage}% zurückgezahlt"
 
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"

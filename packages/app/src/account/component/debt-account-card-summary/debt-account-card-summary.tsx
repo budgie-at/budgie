@@ -25,7 +25,7 @@ export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, ti
         <View className="max-w-[55%] shrink-0 items-end gap-y-xxs">
             <ProtectedText
                 adjustsFontSizeToFit
-                className={cn('text-xl font-semibold tracking-tight tabular-nums', amountColorClassName)}
+                className={cn('text-lg font-semibold tracking-tight tabular-nums', amountColorClassName)}
                 minimumFontScale={0.7}
                 numberOfLines={1}
                 testID={DebtAccountCardSummarySelector.OutstandingAmount(title, outstandingAmount)}
