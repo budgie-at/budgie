@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.88.6](https://github.com/budgie-at/budgie/compare/v6.88.5...v6.88.6) (2026-10-03)
+
+
+### Bug Fixes
+
+* **app:** group debt rows and drop the date pill and menu ([9a8698e](https://github.com/budgie-at/budgie/commit/9a8698e6713956726dac448a635eb526fd6c446d))
+
+
+
+
+
 ## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
 
 **Note:** Version bump only for package @budgie-at/app
