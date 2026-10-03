@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.89.0](https://github.com/budgie-at/budgie/compare/v6.88.6...v6.89.0) (2026-10-03)
+
+
+### Features
+
+* **app:** show each debt as its own card with a progress ring ([c22085f](https://github.com/budgie-at/budgie/commit/c22085f2a76a3b04071520e363b6f8ea24c298f9))
+
+
+
+
+
 ## [6.88.6](https://github.com/budgie-at/budgie/compare/v6.88.5...v6.88.6) (2026-10-03)
 
 
