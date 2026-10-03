@@ -117,6 +117,10 @@ msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
 
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+msgid "{days, plural, one {In # day} other {In # days}}"
+msgstr "{days, plural, one {In # Tag} other {In # Tagen}}"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
@@ -166,6 +170,10 @@ msgstr "{months, plural, one {# Monat} other {# Monate}}"
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {parsedTransactionCount} geprüft"
 
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
+msgstr "{overdueDays, plural, one {# Tag überfällig} other {# Tage überfällig}}"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -175,6 +183,10 @@ msgstr "{percentage}% der Ausgaben"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
+
+#: src/account/component/debt-account-card-progress/debt-account-card-progress.tsx
+msgid "{percentage}% repaid"
+msgstr "{percentage}% zurückgezahlt"
 
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
@@ -1697,6 +1709,10 @@ msgstr "KI-Modelle werden heruntergeladen…"
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Downloads about 2.5 GB of models once"
 msgstr "Lädt einmalig rund 2.5 GB an Modellen herunter"
+
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+msgid "Due {date}"
+msgstr "Fällig am {date}"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
@@ -4179,6 +4195,7 @@ msgid "To repay"
 msgstr "Zu zahlen"
 
 #: src/@generic/constant/date-period.constant.ts
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Today"
 msgstr "Heute"

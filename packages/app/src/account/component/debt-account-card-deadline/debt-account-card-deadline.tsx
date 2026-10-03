@@ -1,27 +1,43 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { cn } from 'cn';
+import { differenceInCalendarDays } from 'date-fns';
 import { Text, View } from 'react-native';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { isDebtDeadlineUrgent } from '../../utils/is-debt-deadline-urgent.util';
+import { useDebtDeadlineDate } from '../../hook/use-debt-deadline-date.hook';
 
 interface Props {
-    readonly createdAt: Date;
     readonly deadline: Date;
 }
 
-export const DebtAccountCardDeadline = ({ createdAt, deadline }: Props) => {
-    const { formatCompactFullDate } = useFormatDate();
+export const DebtAccountCardDeadline = ({ deadline }: Props) => {
+    const { t } = useLingui();
+    const { formatDayAndMonthAndYear } = useFormatDate();
+    const now = useDebtDeadlineDate();
+    const days = differenceInCalendarDays(deadline, now);
+    const overdueDays = Math.abs(days);
+    const isOverdue = days < 0;
+    const isSoon = !isOverdue && days <= 30;
+    const textClassName = isOverdue ? 'text-destructive-foreground' : 'text-warning-foreground';
+    const dotClassName = isOverdue ? 'bg-destructive-foreground' : 'bg-warning-foreground';
+    const relativeDate = days === 0 ? t`Today` : t({ message: plural(days, { one: 'In # day', other: 'In # days' }) });
+    const dateLabel = isOverdue
+        ? t({ message: plural(overdueDays, { one: 'Overdue # day', other: 'Overdue # days' }) })
+        : `${relativeDate} · ${formatDayAndMonthAndYear(deadline)}`;
 
-    const isUrgent = isDebtDeadlineUrgent(createdAt, deadline);
-    const backgroundClassName = isUrgent ? 'bg-dark-warning-background' : 'bg-ghost-background';
-    const textClassName = isUrgent ? 'text-dark-warning-foreground' : 'text-secondary-foreground';
+    if (!isOverdue && !isSoon) {
+        const date = formatDayAndMonthAndYear(deadline);
+
+        return <Text className="text-xs text-secondary-foreground" numberOfLines={1}>{t`Due ${date}`}</Text>;
+    }
 
     return (
-        <View className={cn('shrink-0 flex-row items-center gap-x-xs self-start rounded-full px-md py-xxs', backgroundClassName)}>
-            <Icon icon={UserIconNameEnum.Calendar} className={textClassName} size={11} />
-            <Text className={cn('text-xxs font-medium tabular-nums', textClassName)}>{formatCompactFullDate(deadline)}</Text>
+        <View className="flex-row items-center gap-x-xs">
+            <View className={cn('h-[6px] w-[6px] rounded-full', dotClassName)} />
+            <Text className={cn('shrink text-xs tabular-nums', textClassName)} numberOfLines={1}>
+                {dateLabel}
+            </Text>
         </View>
     );
 };

@@ -119,7 +119,7 @@ const buildHomePageSections = (
         if (isNotEmptyArray(groupAccounts)) {
             sections.push({
                 kind,
-                data: groupAccounts.map(account => ({ left: account }))
+                data: [{ kind, debtAccounts: groupAccounts }]
             });
         }
     });
