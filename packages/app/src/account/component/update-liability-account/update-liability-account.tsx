@@ -1,4 +1,5 @@
 import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
@@ -17,7 +18,6 @@ import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { AccountService } from '../../service/account.service';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 

@@ -1,11 +1,11 @@
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
+import type { NativeStackNavigationOptions } from 'expo-router';
 
 const SHEET_DETENT_COMPACT = 0.4;
 const SHEET_DETENT_AMOUNT = 0.82;
 const SHEET_DETENT_AMOUNT_LARGE = 0.96;
 const SHEET_CORNER_RADIUS = 24;
 
-export const COMPACT_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
+export const COMPACT_FILTER_SHEET_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,
@@ -14,7 +14,7 @@ export const COMPACT_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
     contentStyle: { backgroundColor: 'transparent' }
 };
 
-export const AMOUNT_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
+export const AMOUNT_FILTER_SHEET_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,

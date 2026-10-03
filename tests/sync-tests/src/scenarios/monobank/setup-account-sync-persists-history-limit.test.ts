@@ -1,31 +1,29 @@
-import { SyncHistoryDepthEnum } from '@app/sync/enum/sync-history-depth.enum';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncEntityTable } from '@budgie/contracts';
+import { MonobankSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { buildMonobank, monobankStub, seed, skipRequestedSync, subtractMonths, testDb, TestLayer } from '../../harness';
 
-import type { SyncEntityInterface } from '@budgie/contracts';
-
 const HISTORY_LIMIT_MONTHS = 3;
 const HISTORY_LIMIT_TOLERANCE_MS = 5_000;
 
-const fetchSyncByAccountId = (accountId: number): SyncEntityInterface => {
-    const [row] = testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.accountId, accountId)).all();
+const fetchSyncByAccountId = (accountId: number) =>
+    Effect.gen(function* () {
+        const [row] = yield* testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.accountId, accountId));
 
-    return row;
-};
+        return row;
+    });
 
 const setupAccountSyncWithDepth = Effect.fnUntraced(function* (externalId: string, historyDepth: SyncHistoryDepthEnum) {
     const monobankSyncService = yield* MonobankSyncService;
-    const account = seed.account({ externalId, type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+    const account = yield* seed.account({ externalId, type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
     monobankStub.clientInfo(buildMonobank.clientInfoWith([externalId]));
 
     yield* skipRequestedSync(monobankSyncService.setupAccountSyncBatch('test-token', [externalId], historyDepth));
 
-    return fetchSyncByAccountId(account.id);
+    return yield* fetchSyncByAccountId(account.id);
 });
 
 describe('monobank/setup-account-sync-persists-history-limit', () => {

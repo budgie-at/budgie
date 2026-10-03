@@ -1,3 +1,4 @@
+import { CategorizeInboxSectionEnum, categorizeInboxEngineService } from '@budgie/categorization';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
@@ -5,14 +6,12 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
-import { categorizeInboxEngineService } from '../service/categorize-inbox-engine.service';
 
 import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
-import type { CategorizeInboxSessionInterface } from '../interface/categorize-inbox-session.interface';
 import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
 import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
-import type { CategorizeInboxRowInterface, LabelEvidenceRowInterface, TransactionFilterInterface } from '@budgie/contracts';
+import type { CategorizeInboxRowInterface, CategorizeInboxSessionInterface, LabelEvidenceRowInterface } from '@budgie/categorization';
+import type { TransactionFilterInterface } from '@budgie/contracts';
 
 const EMPTY_INBOX: [CategorizeInboxRowInterface[], LabelEvidenceRowInterface[]] = [[], []];
 

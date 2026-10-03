@@ -1,12 +1,14 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import {
-    AccountBalanceRepository,
-    AccountRepository,
-    CategoryRepository,
-    TransactionEntryRepository,
-    TransactionRepository,
-    TransactionTagsRepository,
-    UserIconNameEnum
-} from '@budgie/contracts';
+    countCsvRows,
+    IMPORT_PRESETS,
+    ImportColumnMapFormValues,
+    ImportColumnMapSchema,
+    ImporterColumnMapInterface,
+    ImporterService,
+    ImportPresetEnum,
+    parseCsvHeaders
+} from '@budgie/import-export';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
@@ -25,15 +27,9 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { YIELD_TO_UI } from '../../../@generic/constant/yield-to-ui.constant';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { AccountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
-import { IMPORT_PRESETS } from '../../../import/constant/import-presets.constant';
-import { ImportPresetEnum } from '../../../import/enum/import-preset.enum';
-import { ImporterColumnMapInterface } from '../../../import/interface/importer-column-map.interface';
-import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../../import/schema/import-column-map.schema';
-import { ImporterService } from '../../../import/service/importer.service';
-import { countCsvRows, parseCsvHeaders } from '../../../import/util/csv-parser.util';
+import { RuleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
 
 import { ImportScreenSelector } from './import-screen.selector';
 
@@ -122,28 +118,12 @@ export default function ImportScreen() {
 
         return appRuntime.runPromise(
             Effect.gen(function* () {
-                const accountRepository = yield* AccountRepository;
-                const categoryRepository = yield* CategoryRepository;
-                const transactionTagsRepository = yield* TransactionTagsRepository;
-                const transactionEntryRepository = yield* TransactionEntryRepository;
-                const transactionRepository = yield* TransactionRepository;
-                const accountBalanceRepository = yield* AccountBalanceRepository;
-                const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+                const importerService = yield* ImporterService;
+                const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
 
                 yield* YIELD_TO_UI;
-                yield* Effect.all(
-                    [
-                        accountRepository.truncate(),
-                        categoryRepository.truncate(false),
-                        transactionTagsRepository.truncate(),
-                        transactionEntryRepository.truncate(),
-                        transactionRepository.truncate(),
-                        accountBalanceRepository.truncate()
-                    ],
-                    { discard: true }
-                );
-                yield* Effect.flatMap(ImporterService, importerService => importerService.process(columnMap, csvText, rowCount));
-                yield* accountBalanceIncrementalService.updateAllBalances(true);
+                const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
+                yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
 
                 router.back();
             }).pipe(

@@ -1,4 +1,4 @@
-import { TransactionCategorizeInboxRepository } from '@budgie/contracts';
+import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import * as Effect from 'effect/Effect';
 
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';

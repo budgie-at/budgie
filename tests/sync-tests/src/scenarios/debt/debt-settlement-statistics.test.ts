@@ -2,7 +2,6 @@ import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-un
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { DebtAccountService } from '@app/account/service/debt-account.service';
-import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
     AccountBalanceRepository,
     AccountEntityTable,
@@ -16,9 +15,7 @@ import {
     DebtEventEntityTable,
     DebtEventRepository,
     DebtEventSourceEnum,
-    ExchangeRateRepository,
     ExternalSourceEnum,
-    HistoricalExchangeRateRepository,
     LENDING_CATEGORY_ID,
     LanguageEnum,
     PRECISION,
@@ -32,6 +29,8 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { TransactionDebtSettlementService } from '@budgie/ledger';
+import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -49,7 +48,6 @@ import type {
     DebtAccountProgressSummaryInterface,
     DebtEventCreateEntityInterface,
     TransactionCreateEntityInterface,
-    TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryEntityInterface
 } from '@budgie/contracts';
@@ -67,11 +65,11 @@ describe('debt settlement statistics', () => {
         Effect.gen(function* () {
             const statisticsRepository = yield* StatisticsRepository;
 
-            const [category] = testDb.select().from(CategoryEntityTable).all();
-            const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-            const debtAccount = seed.account({ title: 'Debt account', type: AccountTypeEnum.DEBT });
-            const transaction = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
-            const originalTransaction = createTransaction({
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+            const debtAccount = yield* seed.account({ title: 'Debt account', type: AccountTypeEnum.DEBT });
+            const transaction = yield* createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
+            const originalTransaction = yield* createTransaction({
                 type: TransactionTypeEnum.INCOME,
                 title: 'Moved source',
                 externalSource: ExternalSourceEnum.MONOBANK,
@@ -79,7 +77,7 @@ describe('debt settlement statistics', () => {
                 toAccountId: cashAccount.id
             });
 
-            insertOne(TransactionEntryEntityTable, {
+            yield* insertOne(TransactionEntryEntityTable, {
                 transactionId: transaction.id,
                 accountId: debtAccount.id,
                 type: TransactionEntryTypeEnum.CREDIT,
@@ -96,7 +94,7 @@ describe('debt settlement statistics', () => {
                 originalTransactionId: null,
                 deletedAt: new Date('2026-06-03T12:00:00.000Z')
             });
-            insertOne(TransactionEntryEntityTable, {
+            yield* insertOne(TransactionEntryEntityTable, {
                 transactionId: transaction.id,
                 accountId: cashAccount.id,
                 type: TransactionEntryTypeEnum.DEBIT,
@@ -137,7 +135,7 @@ describe('debt settlement statistics', () => {
 
     it.effect('counts debt returns once in income analytics while updating lent debt progress', () =>
         Effect.gen(function* () {
-            const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(300 * PRECISION);
+            const { category, cashAccount, debtAccount } = yield* createFundedLentDebtFixture(300 * PRECISION);
 
             yield* createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
 
@@ -174,17 +172,15 @@ describe('debt settlement statistics', () => {
             const debtEventRepository = yield* DebtEventRepository;
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(300 * PRECISION);
-            const transaction = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
+            const { category, cashAccount, debtAccount } = yield* createFundedLentDebtFixture(300 * PRECISION);
+            const transaction = yield* createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
             yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
             const debtEvent = yield* debtEventRepository.findByTransactionId(transaction.id);
-            const storedDebtEvent = testDb
-                .select()
-                .from(DebtEventEntityTable)
-                .all()
-                .find(event => event.transactionId === transaction.id);
+            const storedDebtEvent = (yield* testDb.select().from(DebtEventEntityTable)).find(
+                event => event.transactionId === transaction.id
+            );
 
             expect(debtEvent).toBeDefined();
             expect(storedDebtEvent).toBeDefined();
@@ -311,17 +307,16 @@ describe('debt settlement statistics', () => {
 
     it.effect('keeps target-backed lent debt partially outstanding when ledger entries exist without a returned snapshot', () =>
         Effect.gen(function* () {
-            const [category] = testDb.select().from(CategoryEntityTable).all();
-            const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-            const debtAccount = seed.account({
+            const { category, cashAccount } = yield* seedCategoryAndCashAccount();
+            const debtAccount = yield* seed.account({
                 title: 'Target-backed lent account',
                 type: AccountTypeEnum.DEBT,
                 debtType: AccountDebtTypeEnum.LENT,
                 targetBalance: 64_000 * PRECISION
             });
 
-            createDebtTransferTransaction(cashAccount.id, debtAccount.id, 500 * PRECISION, 'Lend extra money to Alex');
-            createDebtEvent({
+            yield* createDebtTransferTransaction(cashAccount.id, debtAccount.id, 500 * PRECISION, 'Lend extra money to Alex');
+            yield* createDebtEvent({
                 debtAccountId: debtAccount.id,
                 transactionId: null,
                 transactionEntryId: null,
@@ -344,7 +339,7 @@ describe('debt settlement statistics', () => {
             expect(account.targetBaseInstrumentId).toBe(euroInstrument.id);
             expect(account.targetBaseExchangeRate).toBe(HISTORICAL_USD_TO_EUR_RATE);
             expect(account.targetBaseAmount).toBe(12_000 * PRECISION);
-            expect(findAdjustmentEntry(account.id)).toBeUndefined();
+            expect(yield* findAdjustmentEntry(account.id)).toBeUndefined();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -374,7 +369,7 @@ describe('debt settlement statistics', () => {
         Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;
 
-            const debtAccount = seed.account({
+            const debtAccount = yield* seed.account({
                 title: 'Target only debt',
                 type: AccountTypeEnum.DEBT,
                 targetBalance: 13_000 * PRECISION
@@ -403,15 +398,15 @@ describe('debt settlement statistics', () => {
         'keeps target-backed borrowed debt partially outstanding when principal and repayment ledger entries exist without a snapshot',
         () =>
             Effect.gen(function* () {
-                const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-                const debtAccount = seed.account({
+                const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+                const debtAccount = yield* seed.account({
                     title: 'Target-backed borrowed account',
                     type: AccountTypeEnum.DEBT,
                     debtType: AccountDebtTypeEnum.BORROW,
                     targetBalance: 64_000 * PRECISION
                 });
 
-                createDebtEvent({
+                yield* createDebtEvent({
                     debtAccountId: debtAccount.id,
                     transactionId: null,
                     transactionEntryId: null,
@@ -420,8 +415,8 @@ describe('debt settlement statistics', () => {
                     amount: debtAccount.targetBalance,
                     operatedAt: debtAccount.createdAt
                 });
-                createDebtTransferTransaction(debtAccount.id, cashAccount.id, 500 * PRECISION, 'Borrow extra money from Alex');
-                createDebtTransferTransaction(cashAccount.id, debtAccount.id, 6_000 * PRECISION, 'Return money to Alex');
+                yield* createDebtTransferTransaction(debtAccount.id, cashAccount.id, 500 * PRECISION, 'Borrow extra money from Alex');
+                yield* createDebtTransferTransaction(cashAccount.id, debtAccount.id, 6_000 * PRECISION, 'Return money to Alex');
 
                 yield* expectTargetBackedDebtProgress(debtAccount, cashAccount);
             }).pipe(Effect.provide(TestLayer))
@@ -452,16 +447,16 @@ describe('debt settlement statistics', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const statisticsRepository = yield* StatisticsRepository;
 
-            const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-            const debtAccount = seed.account({
+            const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+            const debtAccount = yield* seed.account({
                 title: 'I owe Alex',
                 type: AccountTypeEnum.DEBT,
                 debtType: AccountDebtTypeEnum.BORROW,
                 targetBalance: 300 * PRECISION
             });
 
-            createDebtTransferTransaction(debtAccount.id, cashAccount.id, 300 * PRECISION, 'Borrow money from Alex');
-            createDebtTransferTransaction(cashAccount.id, debtAccount.id, 100 * PRECISION, 'Return money to Alex');
+            yield* createDebtTransferTransaction(debtAccount.id, cashAccount.id, 300 * PRECISION, 'Borrow money from Alex');
+            yield* createDebtTransferTransaction(cashAccount.id, debtAccount.id, 100 * PRECISION, 'Return money to Alex');
 
             const totals = (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(
                 DEFAULT_TRANSACTION_FILTER,
@@ -543,10 +538,10 @@ describe('debt settlement statistics', () => {
         Effect.gen(function* () {
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            const [category] = testDb.select().from(CategoryEntityTable).all();
-            const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
             const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT, 0, 300, cashAccount.instrumentId);
-            const transaction = createIncomeTransaction(cashAccount.id, category.id, 300 * PRECISION);
+            const transaction = yield* createIncomeTransaction(cashAccount.id, category.id, 300 * PRECISION);
 
             yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
@@ -562,7 +557,7 @@ describe('debt settlement statistics', () => {
 
             const debtAccount = yield* createFundedLentDebt();
             const summary = yield* buildSummaryFromDebtAccount(debtAccount);
-            const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
+            const adjustmentEntry = yield* findAdjustmentEntry(debtAccount.id);
 
             expect(adjustmentEntry).toBeUndefined();
             expect((yield* accountBalanceRepository.getByAccountId(debtAccount.id)).at(0)?.balance).toBe(500 * PRECISION);
@@ -576,7 +571,7 @@ describe('debt settlement statistics', () => {
 
             const debtAccount = yield* createFundedLentDebt();
 
-            insertOne(DebtEventEntityTable, {
+            yield* insertOne(DebtEventEntityTable, {
                 debtAccountId: debtAccount.id,
                 direction: DebtEventDirectionEnum.OPEN,
                 source: DebtEventSourceEnum.INCOME_ATTACHMENT,
@@ -621,9 +616,9 @@ describe('debt settlement statistics', () => {
             const accountDebtOpeningService = yield* AccountDebtOpeningService;
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            const [category] = testDb.select().from(CategoryEntityTable).all();
-            const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-            const openingIncome = createIncomeTransaction(cashAccount.id, category.id, 500 * PRECISION);
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+            const openingIncome = yield* createIncomeTransaction(cashAccount.id, category.id, 500 * PRECISION);
             const debtAccount = yield* accountDebtOpeningService.createBorrowedDebtFromIncome(
                 {
                     title: 'I owe Oleh',
@@ -639,12 +634,12 @@ describe('debt settlement statistics', () => {
                 },
                 openingIncome.id
             );
-            const additionalIncome = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
+            const additionalIncome = yield* createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
             yield* transactionDebtSettlementService.attach({ transactionId: additionalIncome.id, debtAccountId: debtAccount.id });
 
             const summary = yield* buildSummaryFromDebtAccount(debtAccount);
-            const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
+            const adjustmentEntry = yield* findAdjustmentEntry(debtAccount.id);
 
             expect(adjustmentEntry).toBeUndefined();
             expectDebtProgressSummary(summary, 600 * PRECISION, 0, 600 * PRECISION, 0);
@@ -660,7 +655,7 @@ describe('debt settlement statistics', () => {
 
                 const account = yield* createDebtAccount(debtType, 0, 15_000, 1);
 
-                insertOne(DebtEventEntityTable, {
+                yield* insertOne(DebtEventEntityTable, {
                     debtAccountId: account.id,
                     direction: DebtEventDirectionEnum.CLOSE,
                     source: DebtEventSourceEnum.TRANSFER,
@@ -728,7 +723,7 @@ const createDebtAccount = Effect.fnUntraced(function* (
 const createFundedLentDebt = Effect.fnUntraced(function* () {
     const accountDebtOpeningService = yield* AccountDebtOpeningService;
 
-    const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+    const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
 
     return yield* accountDebtOpeningService.openDebtWithFundingAccount(
         {
@@ -747,19 +742,27 @@ const createFundedLentDebt = Effect.fnUntraced(function* () {
     );
 });
 
-const createFundedLentDebtFixture = (targetBalance: number) => {
-    const [category] = testDb.select().from(CategoryEntityTable).all();
-    const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-    const debtAccount = seed.account({ title: 'Alex owes me', type: AccountTypeEnum.DEBT, targetBalance });
+const seedCategoryAndCashAccount = () =>
+    Effect.gen(function* () {
+        const [category] = yield* testDb.select().from(CategoryEntityTable);
+        const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
 
-    createDebtTransferTransaction(cashAccount.id, debtAccount.id, 300 * PRECISION, 'Lend money to Alex');
+        return { category, cashAccount };
+    });
 
-    return { category, cashAccount, debtAccount };
-};
+const createFundedLentDebtFixture = (targetBalance: number) =>
+    Effect.gen(function* () {
+        const { category, cashAccount } = yield* seedCategoryAndCashAccount();
+        const debtAccount = yield* seed.account({ title: 'Alex owes me', type: AccountTypeEnum.DEBT, targetBalance });
+
+        yield* createDebtTransferTransaction(cashAccount.id, debtAccount.id, 300 * PRECISION, 'Lend money to Alex');
+
+        return { category, cashAccount, debtAccount };
+    });
 
 const attachTransactionToFundedLentDebt = Effect.fnUntraced(function* (debtTargetAmount: number) {
-    const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(debtTargetAmount);
-    const transaction = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
+    const { category, cashAccount, debtAccount } = yield* createFundedLentDebtFixture(debtTargetAmount);
+    const transaction = yield* createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
     return yield* attachDebtSettlementAndReadState(transaction.id, cashAccount.id, debtAccount.id);
 });
@@ -861,8 +864,8 @@ const updateDebtCurrentBalanceAndReadState = Effect.fnUntraced(function* ({
 });
 
 const seedMainAccountWithDebt = Effect.fnUntraced(function* (debtType: AccountDebtTypeEnum, currentBalance: number) {
-    const [category] = testDb.select().from(CategoryEntityTable).all();
-    const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+    const [category] = yield* testDb.select().from(CategoryEntityTable);
+    const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
     const debtAccount = yield* createDebtAccount(debtType, currentBalance, 15_000, cashAccount.instrumentId);
 
     return { category, cashAccount, debtAccount };
@@ -888,7 +891,7 @@ const createLentDebtIncomeSettlementScenario = Effect.fnUntraced(function* ({
         });
     }
 
-    const transaction = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
+    const transaction = yield* createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
 
     yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
@@ -904,8 +907,8 @@ const createBorrowedDebtSettlementScenario = Effect.fnUntraced(function* () {
 
     const { category, cashAccount, debtAccount } = yield* seedMainAccountWithDebt(AccountDebtTypeEnum.BORROW, 0);
 
-    createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
-    const additionalBorrowing = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
+    yield* createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
+    const additionalBorrowing = yield* createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
 
     yield* transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
 
@@ -919,16 +922,16 @@ const createBorrowedDebtSettlementScenario = Effect.fnUntraced(function* () {
 });
 
 const createBorrowedDebtCoveredOpeningScenario = Effect.fnUntraced(function* () {
-    const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-    const debtAccount = seed.account({
+    const cashAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+    const debtAccount = yield* seed.account({
         title: 'Covered borrowed account',
         type: AccountTypeEnum.DEBT,
         debtType: AccountDebtTypeEnum.BORROW,
         targetBalance: 45_000 * PRECISION
     });
 
-    createDebtAdjustmentTransaction(debtAccount.id, 4_100 * PRECISION);
-    createDebtTransferTransaction(cashAccount.id, debtAccount.id, 3_966 * PRECISION, 'Return money to Alex');
+    yield* createDebtAdjustmentTransaction(debtAccount.id, 4_100 * PRECISION);
+    yield* createDebtTransferTransaction(cashAccount.id, debtAccount.id, 3_966 * PRECISION, 'Return money to Alex');
 
     const row = yield* findHomeRow(debtAccount.id, cashAccount.instrumentId);
 
@@ -1016,31 +1019,32 @@ const setupUsdDebtExchangeRateScenario = Effect.fnUntraced(function* () {
     const usdInstrument = yield* requireInstrument(CurrencyEnum.USD);
 
     yield* settingsRepository.update({ defaultInstrumentId: euroInstrument.id });
-    yield* exchangeRateRepository.upsert(usdInstrument.id, euroInstrument.id, CURRENT_USD_TO_EUR_RATE, 'test');
-    yield* historicalExchangeRateRepository.upsert({
-        sourceInstrumentId: usdInstrument.id,
-        targetInstrumentId: euroInstrument.id,
-        rate: HISTORICAL_USD_TO_EUR_RATE,
-        rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
-    });
-    vi.useFakeTimers({ now: new Date(`${HISTORICAL_USD_TO_EUR_RATE_DATE}T12:00:00.000Z`) });
+    yield* exchangeRateRepository.bulkUpsert([
+        { baseInstrumentId: usdInstrument.id, quoteInstrumentId: euroInstrument.id, rate: CURRENT_USD_TO_EUR_RATE, source: 'test' }
+    ]);
+    yield* historicalExchangeRateRepository.bulkUpsert([
+        {
+            sourceInstrumentId: usdInstrument.id,
+            targetInstrumentId: euroInstrument.id,
+            rate: HISTORICAL_USD_TO_EUR_RATE,
+            rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
+        }
+    ]);
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date(`${HISTORICAL_USD_TO_EUR_RATE_DATE}T12:00:00.000Z`) });
 
     return { euroInstrument, usdInstrument };
 });
 
-const findAdjustmentEntry = (accountId: number) => {
-    const transactions = testDb.select().from(TransactionEntityTable).all();
+const findAdjustmentEntry = (accountId: number) =>
+    Effect.gen(function* () {
+        const transactions = yield* testDb.select().from(TransactionEntityTable);
 
-    return testDb
-        .select()
-        .from(TransactionEntryEntityTable)
-        .all()
-        .find(entry => {
+        return (yield* testDb.select().from(TransactionEntryEntityTable)).find(entry => {
             const transaction = transactions.find(item => item.id === entry.transactionId);
 
             return entry.accountId === accountId && transaction?.type === TransactionTypeEnum.ADJUSTMENT;
         });
-};
+    });
 
 const expectDebtProgressSummary = (
     summary: Pick<DebtAccountProgressSummaryInterface, 'outstandingAmount' | 'paidAmount' | 'percentage' | 'totalAmount'>,
@@ -1055,40 +1059,41 @@ const expectDebtProgressSummary = (
     expect(summary.percentage).toBe(percentage);
 };
 
-const createDebtTransferTransaction = (fromAccountId: number, toAccountId: number, amount: number, title: string): void => {
-    const transaction = createTransaction({
-        type: TransactionTypeEnum.DEBT,
-        title,
-        externalSource: null,
-        fromAccountId,
-        toAccountId
+const createDebtTransferTransaction = (fromAccountId: number, toAccountId: number, amount: number, title: string) =>
+    Effect.gen(function* () {
+        const transaction = yield* createTransaction({
+            type: TransactionTypeEnum.DEBT,
+            title,
+            externalSource: null,
+            fromAccountId,
+            toAccountId
+        });
+
+        const fromEntry = yield* createTransactionEntry({
+            transactionId: transaction.id,
+            accountId: fromAccountId,
+            type: TransactionEntryTypeEnum.CREDIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount,
+            categoryId: null
+        });
+
+        const toEntry = yield* createTransactionEntry({
+            transactionId: transaction.id,
+            accountId: toAccountId,
+            type: TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount,
+            categoryId: null
+        });
+
+        const fromAccount = yield* findAccountById(fromAccountId);
+        const toAccount = yield* findAccountById(toAccountId);
+        const debtAccount = fromAccount.type === AccountTypeEnum.DEBT ? fromAccount : toAccount;
+        const debtEntry = fromAccount.type === AccountTypeEnum.DEBT ? fromEntry : toEntry;
+
+        yield* createDebtEventFromTransferEntry(debtAccount, debtEntry, transaction.operatedAt);
     });
-
-    const fromEntry = createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: fromAccountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId: null
-    });
-
-    const toEntry = createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: toAccountId,
-        type: TransactionEntryTypeEnum.DEBIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId: null
-    });
-
-    const fromAccount = findAccountById(fromAccountId);
-    const toAccount = findAccountById(toAccountId);
-    const debtAccount = fromAccount.type === AccountTypeEnum.DEBT ? fromAccount : toAccount;
-    const debtEntry = fromAccount.type === AccountTypeEnum.DEBT ? fromEntry : toEntry;
-
-    createDebtEventFromTransferEntry(debtAccount, debtEntry, transaction.operatedAt);
-};
 
 const createDebtReturnIncome = Effect.fnUntraced(function* (
     cashAccountId: number,
@@ -1098,121 +1103,121 @@ const createDebtReturnIncome = Effect.fnUntraced(function* (
 ) {
     const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-    const transaction = createIncomeTransaction(cashAccountId, categoryId, amount);
+    const transaction = yield* createIncomeTransaction(cashAccountId, categoryId, amount);
 
     yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId });
 });
 
-const createDebtAdjustmentTransaction = (debtAccountId: number, amount: number): void => {
-    const transaction = createTransaction({
-        type: TransactionTypeEnum.ADJUSTMENT,
-        title: 'Already covered borrowed amount',
-        externalSource: null,
-        fromAccountId: null,
-        toAccountId: debtAccountId
+const createDebtAdjustmentTransaction = (debtAccountId: number, amount: number) =>
+    Effect.gen(function* () {
+        const transaction = yield* createTransaction({
+            type: TransactionTypeEnum.ADJUSTMENT,
+            title: 'Already covered borrowed amount',
+            externalSource: null,
+            fromAccountId: null,
+            toAccountId: debtAccountId
+        });
+
+        const entry = yield* createTransactionEntry({
+            transactionId: transaction.id,
+            accountId: debtAccountId,
+            type: TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount,
+            categoryId: null
+        });
+
+        yield* createDebtEvent({
+            debtAccountId,
+            transactionId: transaction.id,
+            transactionEntryId: entry.id,
+            direction: DebtEventDirectionEnum.CLOSE,
+            source: DebtEventSourceEnum.MANUAL,
+            amount,
+            operatedAt: transaction.operatedAt
+        });
     });
 
-    const entry = createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: debtAccountId,
-        type: TransactionEntryTypeEnum.DEBIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId: null
-    });
+const createIncomeTransaction = (cashAccountId: number, categoryId: number, amount: number) =>
+    Effect.gen(function* () {
+        const transaction = yield* createTransaction({
+            type: TransactionTypeEnum.INCOME,
+            title: 'Alex returned money',
+            externalSource: ExternalSourceEnum.MONOBANK,
+            fromAccountId: null,
+            toAccountId: cashAccountId
+        });
 
-    createDebtEvent({
-        debtAccountId,
-        transactionId: transaction.id,
-        transactionEntryId: entry.id,
-        direction: DebtEventDirectionEnum.CLOSE,
-        source: DebtEventSourceEnum.MANUAL,
-        amount,
-        operatedAt: transaction.operatedAt
-    });
-};
+        yield* createTransactionEntry({
+            transactionId: transaction.id,
+            accountId: cashAccountId,
+            type: TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount,
+            categoryId
+        });
 
-const createIncomeTransaction = (cashAccountId: number, categoryId: number, amount: number) => {
-    const transaction = createTransaction({
-        type: TransactionTypeEnum.INCOME,
-        title: 'Alex returned money',
-        externalSource: ExternalSourceEnum.MONOBANK,
-        fromAccountId: null,
-        toAccountId: cashAccountId
+        return transaction;
     });
-
-    createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: cashAccountId,
-        type: TransactionEntryTypeEnum.DEBIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId
-    });
-
-    return transaction;
-};
 
 const createTransaction = (
     transaction: Pick<TransactionCreateEntityInterface, 'type' | 'title' | 'externalSource' | 'fromAccountId' | 'toAccountId'>,
     operatedAt = new Date('2026-06-02T12:00:00.000Z')
 ) =>
-    insertOne(TransactionEntityTable, {
-        ...transaction,
-        externalId: null,
-        operatedAt,
-        comment: '',
-        exchangeRate: 1,
-        updatedBy: null
-    } satisfies TransactionCreateEntityInterface);
+    Effect.gen(function* () {
+        return yield* insertOne(TransactionEntityTable, {
+            ...transaction,
+            externalId: null,
+            operatedAt,
+            comment: '',
+            exchangeRate: 1,
+            updatedBy: null
+        } satisfies TransactionCreateEntityInterface);
+    });
 
 const createTransactionEntry = (
     entry: Pick<TransactionEntryCreateEntityInterface, 'transactionId' | 'accountId' | 'type' | 'kind' | 'amount' | 'categoryId'>
-): TransactionEntryEntityInterface =>
-    insertOne(TransactionEntryEntityTable, {
-        ...entry,
-        mccCategoryId: null,
-        externalId: null,
-        exchangeRate: 1,
-        baseInstrumentId: 1,
-        baseExchangeRate: 1,
-        baseAmount: entry.amount,
-        toIban: null
-    } satisfies TransactionEntryCreateEntityInterface);
-
-const findAccountById = (accountId: number): AccountEntityInterface => {
-    const account = testDb
-        .select()
-        .from(AccountEntityTable)
-        .all()
-        .find(row => row.id === accountId);
-
-    if (!isDefined(account)) {
-        throw new Error(`Account ${accountId} not found`);
-    }
-
-    return account;
-};
-
-const createDebtEventFromTransferEntry = (
-    account: AccountEntityInterface,
-    entry: TransactionEntryEntityInterface,
-    operatedAt: Date
-): void => {
-    if (account.type !== AccountTypeEnum.DEBT) {
-        return;
-    }
-
-    createDebtEvent({
-        debtAccountId: account.id,
-        transactionId: entry.transactionId,
-        transactionEntryId: entry.id,
-        direction: getTransferDebtEventDirection(account.debtType, entry.type),
-        source: DebtEventSourceEnum.TRANSFER,
-        amount: entry.amount,
-        operatedAt
+) =>
+    Effect.gen(function* () {
+        return yield* insertOne(TransactionEntryEntityTable, {
+            ...entry,
+            mccCategoryId: null,
+            externalId: null,
+            exchangeRate: 1,
+            baseInstrumentId: 1,
+            baseExchangeRate: 1,
+            baseAmount: entry.amount,
+            toIban: null
+        } satisfies TransactionEntryCreateEntityInterface);
     });
-};
+
+const findAccountById = (accountId: number) =>
+    Effect.gen(function* () {
+        const account = (yield* testDb.select().from(AccountEntityTable)).find(row => row.id === accountId);
+
+        if (!isDefined(account)) {
+            throw new Error(`Account ${accountId} not found`);
+        }
+
+        return account;
+    });
+
+const createDebtEventFromTransferEntry = (account: AccountEntityInterface, entry: TransactionEntryEntityInterface, operatedAt: Date) =>
+    Effect.gen(function* () {
+        if (account.type !== AccountTypeEnum.DEBT) {
+            return;
+        }
+
+        yield* createDebtEvent({
+            debtAccountId: account.id,
+            transactionId: entry.transactionId,
+            transactionEntryId: entry.id,
+            direction: getTransferDebtEventDirection(account.debtType, entry.type),
+            source: DebtEventSourceEnum.TRANSFER,
+            amount: entry.amount,
+            operatedAt
+        });
+    });
 
 const getTransferDebtEventDirection = (debtType: AccountDebtTypeEnum, entryType: TransactionEntryTypeEnum): DebtEventDirectionEnum => {
     if (debtType === AccountDebtTypeEnum.LENT) {
@@ -1233,20 +1238,21 @@ const createDebtEvent = ({
 }: Pick<
     DebtEventCreateEntityInterface,
     'debtAccountId' | 'transactionId' | 'transactionEntryId' | 'direction' | 'source' | 'amount' | 'operatedAt'
->): void => {
-    insertOne(DebtEventEntityTable, {
-        debtAccountId,
-        transactionId,
-        transactionEntryId,
-        direction,
-        source,
-        amount,
-        baseInstrumentId: 1,
-        baseExchangeRate: 1,
-        baseAmount: amount,
-        operatedAt
-    } satisfies DebtEventCreateEntityInterface);
-};
+>) =>
+    Effect.gen(function* () {
+        yield* insertOne(DebtEventEntityTable, {
+            debtAccountId,
+            transactionId,
+            transactionEntryId,
+            direction,
+            source,
+            amount,
+            baseInstrumentId: 1,
+            baseExchangeRate: 1,
+            baseAmount: amount,
+            operatedAt
+        } satisfies DebtEventCreateEntityInterface);
+    });
 
 const DEBT_V2_JANUARY_OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
 const DEBT_V2_MARCH_OPERATED_AT = new Date('2026-03-10T12:00:00.000Z');
@@ -1304,30 +1310,31 @@ const createFundingAccountTransaction = (
     accountId: number,
     operatedAt: Date,
     amount: number
-): TransactionEntityInterface => {
-    const isExpense = type === TransactionTypeEnum.EXPENSE;
-    const transaction = createTransaction(
-        {
-            type,
-            title: isExpense ? 'Sent to Alex' : 'Alex returned money',
-            externalSource: ExternalSourceEnum.MONOBANK,
-            fromAccountId: isExpense ? accountId : null,
-            toAccountId: isExpense ? null : accountId
-        },
-        operatedAt
-    );
+) =>
+    Effect.gen(function* () {
+        const isExpense = type === TransactionTypeEnum.EXPENSE;
+        const transaction = yield* createTransaction(
+            {
+                type,
+                title: isExpense ? 'Sent to Alex' : 'Alex returned money',
+                externalSource: ExternalSourceEnum.MONOBANK,
+                fromAccountId: isExpense ? accountId : null,
+                toAccountId: isExpense ? null : accountId
+            },
+            operatedAt
+        );
 
-    createTransactionEntry({
-        transactionId: transaction.id,
-        accountId,
-        type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId: null
+        yield* createTransactionEntry({
+            transactionId: transaction.id,
+            accountId,
+            type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount,
+            categoryId: null
+        });
+
+        return transaction;
     });
-
-    return transaction;
-};
 
 const readCategoryRows = Effect.fnUntraced(function* (
     type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
@@ -1354,8 +1361,10 @@ const readCategoryAmount = Effect.fnUntraced(function* (
     return rows.find(row => row.category?.id === categoryId)?.amount ?? 0;
 });
 
-const readDebtAccountEntries = (accountId: number): TransactionEntryEntityInterface[] =>
-    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)).all();
+const readDebtAccountEntries = (accountId: number) =>
+    Effect.gen(function* () {
+        return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
+    });
 
 const expectDebtTile = Effect.fnUntraced(function* (
     accountId: number,
@@ -1378,7 +1387,7 @@ const expectDebtTile = Effect.fnUntraced(function* (
 });
 
 const openJanuaryFundedDebt = Effect.fnUntraced(function* (debtType: AccountDebtTypeEnum, totalAmount: number) {
-    const fundingAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+    const fundingAccount = yield* seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
     const categoryId = DEBT_V2_CATEGORY_ID_BY_DEBT_TYPE[debtType];
     const openingType = getOpeningTransactionType(debtType);
     const repaymentType = getOppositeTransactionType(openingType);
@@ -1399,7 +1408,7 @@ const attachMarchRepayment = Effect.fnUntraced(function* (
 ) {
     const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-    const repayment = createFundingAccountTransaction(type, fundingAccountId, operatedAt, amount);
+    const repayment = yield* createFundingAccountTransaction(type, fundingAccountId, operatedAt, amount);
 
     yield* transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId });
 
@@ -1444,7 +1453,7 @@ describe('debt v2 analytics — both ways', () => {
                 expect(yield* readCategoryAmount(openingType, categoryId, fundingAccount.instrumentId, DEBT_V2_JANUARY_RANGE)).toBe(
                     DEBT_V2_TOTAL_AMOUNT
                 );
-                expect(readDebtAccountEntries(debtAccount.id)).toHaveLength(0);
+                expect(yield* readDebtAccountEntries(debtAccount.id)).toHaveLength(0);
                 yield* expectDebtTile(debtAccount.id, {
                     outstandingAmount: DEBT_V2_TOTAL_AMOUNT - DEBT_V2_REPAYMENT_AMOUNT,
                     paidAmount: DEBT_V2_REPAYMENT_AMOUNT,
@@ -1512,7 +1521,11 @@ describe('debt v2 analytics — both ways', () => {
     it.effect('values the lent opening in the funding entry base valuation while the tile stays in the debt account instrument', () =>
         Effect.gen(function* () {
             const { euroInstrument, usdInstrument } = yield* setupUsdDebtExchangeRateScenario();
-            const fundingAccount = seed.account({ title: 'USD account', type: AccountTypeEnum.BANK_SYNC, instrumentId: usdInstrument.id });
+            const fundingAccount = yield* seed.account({
+                title: 'USD account',
+                type: AccountTypeEnum.BANK_SYNC,
+                instrumentId: usdInstrument.id
+            });
 
             const debtAccount = yield* openFundedDebt(AccountDebtTypeEnum.LENT, fundingAccount, DEBT_V2_TOTAL_AMOUNT, usdInstrument.id);
 
@@ -1554,7 +1567,7 @@ describe('debt v2 analytics — both ways', () => {
 
                 expect(yield* readCategoryAmount(TransactionTypeEnum.EXPENSE, categoryId, 1, null)).toBe(0);
                 expect(yield* readCategoryAmount(TransactionTypeEnum.INCOME, categoryId, 1, null)).toBe(0);
-                expect(readDebtAccountEntries(account.id)).toHaveLength(0);
+                expect(yield* readDebtAccountEntries(account.id)).toHaveLength(0);
                 yield* expectDebtTile(account.id, {
                     outstandingAmount: 300 * PRECISION,
                     paidAmount: 200 * PRECISION,

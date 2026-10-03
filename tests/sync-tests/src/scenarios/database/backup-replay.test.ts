@@ -1,8 +1,8 @@
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountBalanceRepository, AccountEntityTable, InstrumentEntityTable } from '@budgie/contracts';
-import { afterAll, describe, expect, it } from '@effect/vitest';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { TransferConsolidationService } from '@budgie/sync';
+import { describe, expect, it } from '@effect/vitest';
 import { eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
@@ -26,20 +26,17 @@ const snapshotBalances = Effect.fnUntraced(function* (accountIds: number[]) {
 const formatAmount = (amount: number | undefined): string => (isDefined(amount) ? convertFromMicroUnits(amount).toFixed(2) : '-');
 
 describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => {
-    afterAll(() => testDb.$client.closeAsync());
-
     it.effect(
         'replays consolidation and the balance rebuild on a migrated real backup without moving any ledger balance',
         () =>
             Effect.gen(function* () {
                 const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
                 const transferConsolidationService = yield* TransferConsolidationService;
-                const accounts = testDb
+                const accounts = yield* testDb
                     .select({ id: AccountEntityTable.id, title: AccountEntityTable.title, currency: InstrumentEntityTable.code })
                     .from(AccountEntityTable)
                     .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
-                    .where(isNull(AccountEntityTable.deletedAt))
-                    .all();
+                    .where(isNull(AccountEntityTable.deletedAt));
                 const accountIds = accounts.map(({ id }) => id);
                 const before = yield* snapshotBalances(accountIds);
 

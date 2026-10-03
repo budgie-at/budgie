@@ -1,5 +1,6 @@
 import { AccountTypeEnum, ExternalSourceEnum, InstrumentTypeEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import * as Effect from 'effect/Effect';
 
 import { seed } from '../seed/seed';
 
@@ -18,46 +19,47 @@ interface SetupBinanceFixtureOptions {
     readonly binanceTradeCursor?: string;
 }
 
-export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) => {
-    const asset = options.asset ?? 'BTC';
-    const wallet = options.wallet ?? BinanceWalletEnum.SPOT;
-    const mode = options.mode ?? SyncModeEnum.BACKWARD;
-    const instrumentType = options.instrumentType ?? InstrumentTypeEnum.CRYPTO;
-    const externalId = encodeBinanceAccountId({ wallet, asset });
+export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
+    Effect.gen(function* () {
+        const asset = options.asset ?? 'BTC';
+        const wallet = options.wallet ?? BinanceWalletEnum.SPOT;
+        const mode = options.mode ?? SyncModeEnum.BACKWARD;
+        const instrumentType = options.instrumentType ?? InstrumentTypeEnum.CRYPTO;
+        const externalId = encodeBinanceAccountId({ wallet, asset });
 
-    const instrument = seed.instrument({ code: asset, name: asset, symbol: asset, type: instrumentType });
-    const account = seed.account({
-        externalId,
-        externalSource: ExternalSourceEnum.BINANCE,
-        type: AccountTypeEnum.CRYPTO_SYNC,
-        instrumentId: instrument.id
+        const instrument = yield* seed.instrument({ code: asset, name: asset, symbol: asset, type: instrumentType });
+        const account = yield* seed.account({
+            externalId,
+            externalSource: ExternalSourceEnum.BINANCE,
+            type: AccountTypeEnum.CRYPTO_SYNC,
+            instrumentId: instrument.id
+        });
+        const sync = yield* seed.sync({
+            accountId: account.id,
+            token: BINANCE_TOKEN,
+            provider: ExternalSourceEnum.BINANCE,
+            mode,
+            status: SyncStatusEnum.SYNCING,
+            backwardSyncFromAt: options.backwardSyncFromAt ?? new Date(),
+            backwardSyncedAt: null,
+            forwardSyncFromAt: options.forwardSyncFromAt ?? new Date(),
+            forwardSyncedAt: options.forwardSyncedAt ?? null,
+            binanceTradeCursor: options.binanceTradeCursor ?? null
+        });
+
+        binanceStub.serverTime();
+        binanceStub.exchangeInfoAllValid();
+        binanceStub.spotBalances([]);
+        binanceStub.fundingBalances([]);
+        binanceStub.deposits([]);
+        binanceStub.withdrawals([]);
+        binanceStub.fiatOrders([], []);
+        binanceStub.c2cOrders([], []);
+        binanceStub.myTrades({});
+        binanceStub.convertTradeFlow([]);
+        binanceStub.earnPositions([]);
+        binanceStub.lockedEarnPositions([]);
+        binanceStub.earnRewards([]);
+
+        return { account, sync, instrument, externalId, token: BINANCE_TOKEN, asset, wallet };
     });
-    const sync = seed.sync({
-        accountId: account.id,
-        token: BINANCE_TOKEN,
-        provider: ExternalSourceEnum.BINANCE,
-        mode,
-        status: SyncStatusEnum.SYNCING,
-        backwardSyncFromAt: options.backwardSyncFromAt ?? new Date(),
-        backwardSyncedAt: null,
-        forwardSyncFromAt: options.forwardSyncFromAt ?? new Date(),
-        forwardSyncedAt: options.forwardSyncedAt ?? null,
-        binanceTradeCursor: options.binanceTradeCursor ?? null
-    });
-
-    binanceStub.serverTime();
-    binanceStub.exchangeInfoAllValid();
-    binanceStub.spotBalances([]);
-    binanceStub.fundingBalances([]);
-    binanceStub.deposits([]);
-    binanceStub.withdrawals([]);
-    binanceStub.fiatOrders([], []);
-    binanceStub.c2cOrders([], []);
-    binanceStub.myTrades({});
-    binanceStub.convertTradeFlow([]);
-    binanceStub.earnPositions([]);
-    binanceStub.lockedEarnPositions([]);
-    binanceStub.earnRewards([]);
-
-    return { account, sync, instrument, externalId, token: BINANCE_TOKEN, asset, wallet };
-};

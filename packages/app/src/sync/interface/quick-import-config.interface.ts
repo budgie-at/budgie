@@ -1,6 +1,6 @@
 import type { AppServices } from '../../@generic/runtime/app.runtime';
-import type { FileBankSyncImportResultInterface } from './file-bank-sync-import-result.interface';
 import type { ExternalSourceEnum } from '@budgie/contracts';
+import type { FileBankSyncImportResultInterface } from '@budgie/sync';
 import type * as Effect from 'effect/Effect';
 
 export interface QuickImportConfigInterface {

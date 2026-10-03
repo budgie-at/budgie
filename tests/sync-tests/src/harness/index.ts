@@ -74,6 +74,7 @@ export {
     seedP2pPair
 } from './consolidation/seed-p2p-fiat-transfer-fixture';
 export { TestClockLayer, TestLayer } from './scenario/test-runtime';
+export { MonobankSyncService } from '@budgie/sync';
 export { inWorkload } from './sync-workload/run-in-workload';
 export { pauseUserWork } from './sync-workload/pause-user-work';
 export { advanceScheduledDrain } from './scheduler/advance-scheduled-drain';
@@ -81,3 +82,7 @@ export { skipRequestedSync } from './sync-workload/skip-requested-sync';
 export { expectForwardSyncWithoutHistory } from './db/expect-forward-sync-without-history';
 export { seedBankAndCashAccounts } from './seed/seed-bank-and-cash-accounts';
 export { explainQueryPlan } from './db/explain-query-plan';
+export { fetchCachedBalanceAmount } from './db/fetch-cached-balance-amount';
+export { seedUsdtFundingAccount } from './binance/seed-usdt-funding-account';
+export { expectParentedToCanonical } from './consolidation/expect-parented-to-canonical';
+export { seedEuroBaseUahAccount } from './seed/seed-euro-base-uah-account';

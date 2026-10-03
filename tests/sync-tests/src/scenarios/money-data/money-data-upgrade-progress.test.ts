@@ -20,29 +20,27 @@ const ENTRIES_PER_DAY = 2;
 const DAY_MS = 86_400_000;
 const FIRST_PENDING_DAY = new Date('2025-01-01T12:00:00.000Z');
 
-const seedPendingEntries = (accountId: number) => {
-    const transactions = testDb
-        .insert(TransactionEntityTable)
-        .values(
-            Array.from({ length: PENDING_DAY_COUNT * ENTRIES_PER_DAY }, (_, index) => ({
-                type: TransactionTypeEnum.EXPENSE,
-                title: `Pending ${index}`,
-                operatedAt: new Date(FIRST_PENDING_DAY.getTime() + (index % PENDING_DAY_COUNT) * DAY_MS),
-                comment: '',
-                fromAccountId: accountId,
-                toAccountId: null,
-                exchangeRate: 1,
-                externalId: null,
-                externalSource: null,
-                updatedBy: null
-            }))
-        )
-        .returning()
-        .all();
+const seedPendingEntries = (accountId: number) =>
+    Effect.gen(function* () {
+        const transactions = yield* testDb
+            .insert(TransactionEntityTable)
+            .values(
+                Array.from({ length: PENDING_DAY_COUNT * ENTRIES_PER_DAY }, (_, index) => ({
+                    type: TransactionTypeEnum.EXPENSE,
+                    title: `Pending ${index}`,
+                    operatedAt: new Date(FIRST_PENDING_DAY.getTime() + (index % PENDING_DAY_COUNT) * DAY_MS),
+                    comment: '',
+                    fromAccountId: accountId,
+                    toAccountId: null,
+                    exchangeRate: 1,
+                    externalId: null,
+                    externalSource: null,
+                    updatedBy: null
+                }))
+            )
+            .returning();
 
-    testDb
-        .insert(TransactionEntryEntityTable)
-        .values(
+        yield* testDb.insert(TransactionEntryEntityTable).values(
             transactions.map(transaction => ({
                 transactionId: transaction.id,
                 accountId,
@@ -57,11 +55,10 @@ const seedPendingEntries = (accountId: number) => {
                 baseAmount: null,
                 toIban: null
             }))
-        )
-        .run();
+        );
 
-    return transactions.length;
-};
+        return transactions.length;
+    });
 
 describe('money data upgrade progress', () => {
     it.effect('reports processed entries after every valued bucket, monotonically from 0 to the total', () =>
@@ -69,11 +66,11 @@ describe('money data upgrade progress', () => {
             const moneyDataUpgradeService = yield* MoneyDataUpgradeService;
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-            const account = seed.account({ type: AccountTypeEnum.BANK, instrumentId: hryvnia.id });
-            const totalEntryCount = seedPendingEntries(account.id);
+            const account = yield* seed.account({ type: AccountTypeEnum.BANK, instrumentId: hryvnia.id });
+            const totalEntryCount = yield* seedPendingEntries(account.id);
             const snapshots: MoneyDataUpgradeRuntimeSnapshotInterface[] = [];
 
-            testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+            yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
             const result = yield* moneyDataUpgradeService.run(snapshot => {
                 snapshots.push(snapshot);

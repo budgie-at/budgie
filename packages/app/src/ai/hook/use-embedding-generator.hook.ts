@@ -1,4 +1,4 @@
-import { TransactionEmbeddingRepository } from '@budgie/contracts';
+import { EmbeddingIndexService, TransactionEmbeddingRepository } from '@budgie/categorization';
 import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
@@ -9,9 +9,12 @@ import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 interface UseEmbeddingGeneratorReturnInterface {
     readonly markForEmbedding: (transactionId: number) => void;
     readonly markManyForEmbedding: (transactionIds: readonly number[]) => void;
+    readonly learnCorrection: (transactionId: number, previousCategoryIds: number[]) => void;
 }
 
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface => {
+    const refreshProgress = Effect.flatMap(EmbeddingProgressStore, embeddingProgressStore => embeddingProgressStore.refresh());
+
     const markManyForEmbedding = (transactionIds: readonly number[]): void => {
         const ids = [...transactionIds];
 
@@ -21,13 +24,9 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
 
         appRuntime.runFork(
             Effect.ignore(
-                Effect.gen(function* () {
-                    const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
-                    const embeddingProgressStore = yield* EmbeddingProgressStore;
-
-                    yield* transactionEmbeddingRepository.markForEmbeddingByIds(ids);
-                    yield* embeddingProgressStore.refresh();
-                })
+                Effect.flatMap(TransactionEmbeddingRepository, repository => repository.markForEmbeddingByIds(ids)).pipe(
+                    Effect.andThen(refreshProgress)
+                )
             )
         );
     };
@@ -36,5 +35,15 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
         markManyForEmbedding([transactionId]);
     };
 
-    return { markForEmbedding, markManyForEmbedding };
+    const learnCorrection = (transactionId: number, previousCategoryIds: number[]): void => {
+        appRuntime.runFork(
+            Effect.ignore(
+                Effect.flatMap(EmbeddingIndexService, service => service.learnCorrection(transactionId, previousCategoryIds)).pipe(
+                    Effect.andThen(refreshProgress)
+                )
+            )
+        );
+    };
+
+    return { markForEmbedding, markManyForEmbedding, learnCorrection };
 };

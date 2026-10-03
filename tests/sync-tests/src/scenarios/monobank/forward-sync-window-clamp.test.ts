@@ -1,6 +1,5 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
-import { MONOBANK_MAX_PERIOD_SECONDS } from '@budgie/sync';
+import { MONOBANK_MAX_PERIOD_SECONDS, MonobankSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
@@ -53,12 +52,13 @@ const expectWindowsAreBoundedAndContiguous = (windows: RequestedWindowInterface[
     }
 };
 
-const expectForwardSyncCompleted = (bankSyncId: number, expectedTransactionCount: number): void => {
-    const finalSync = fetchSyncById(bankSyncId);
-    expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
-    expect(finalSync.forwardSyncedAt).not.toBeNull();
-    expect(finalSync.transactionCount).toBe(expectedTransactionCount);
-};
+const expectForwardSyncCompleted = (bankSyncId: number, expectedTransactionCount: number) =>
+    Effect.gen(function* () {
+        const finalSync = yield* fetchSyncById(bankSyncId);
+        expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
+        expect(finalSync.forwardSyncedAt).not.toBeNull();
+        expect(finalSync.transactionCount).toBe(expectedTransactionCount);
+    });
 
 describe('monobank/forward-sync-window-clamp', () => {
     it.effect(
@@ -68,8 +68,8 @@ describe('monobank/forward-sync-window-clamp', () => {
                 const monobankSyncService = yield* MonobankSyncService;
                 const now = new Date();
                 const staleForwardSyncFromAt = new Date(now.getTime() - STALE_GAP_DAYS * SECONDS_PER_DAY * MS_PER_SECOND);
-                const account = seed.account({ externalId: 'mono-acc-stale', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-                const bankSync = seed.sync({
+                const account = yield* seed.account({ externalId: 'mono-acc-stale', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+                const bankSync = yield* seed.sync({
                     accountId: account.id,
                     mode: SyncModeEnum.FORWARD,
                     forwardSyncFromAt: staleForwardSyncFromAt
@@ -80,8 +80,8 @@ describe('monobank/forward-sync-window-clamp', () => {
 
                 expect(requestedWindows).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
                 expectWindowsAreBoundedAndContiguous(requestedWindows);
-                expect(fetchPersistedMonobankTransactions()).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
-                expectForwardSyncCompleted(bankSync.id, EXPECTED_STALE_CHUNK_COUNT);
+                expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
+                yield* expectForwardSyncCompleted(bankSync.id, EXPECTED_STALE_CHUNK_COUNT);
             }).pipe(Effect.provide(TestLayer))
     );
 
@@ -90,8 +90,8 @@ describe('monobank/forward-sync-window-clamp', () => {
             const monobankSyncService = yield* MonobankSyncService;
             const now = new Date();
             const freshForwardSyncFromAt = new Date(now.getTime() - FRESH_GAP_DAYS * SECONDS_PER_DAY * MS_PER_SECOND);
-            const account = seed.account({ externalId: 'mono-acc-fresh', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-            const bankSync = seed.sync({
+            const account = yield* seed.account({ externalId: 'mono-acc-fresh', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+            const bankSync = yield* seed.sync({
                 accountId: account.id,
                 mode: SyncModeEnum.FORWARD,
                 forwardSyncFromAt: freshForwardSyncFromAt
@@ -108,8 +108,8 @@ describe('monobank/forward-sync-window-clamp', () => {
             yield* monobankSyncService.sync();
 
             expect(requestCount).toBe(1);
-            expect(fetchPersistedMonobankTransactions()).toHaveLength(1);
-            expectForwardSyncCompleted(bankSync.id, 1);
+            expect(yield* fetchPersistedMonobankTransactions()).toHaveLength(1);
+            yield* expectForwardSyncCompleted(bankSync.id, 1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -1,7 +1,3 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { SyncHistoryDepthEnum } from '@app/sync/enum/sync-history-depth.enum';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { ResyncService } from '@app/sync/service/resync.service';
 import {
     AccountBalanceRepository,
     AccountRepository,
@@ -13,6 +9,8 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { MonobankSyncService, ResyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -43,16 +41,19 @@ const setupMonobankSync = Effect.fnUntraced(function* (bankAccount: Account) {
 });
 
 const fetchBalanceAdjustments = (accountId: number) =>
-    testDb
-        .select({
-            amount: TransactionEntryEntityTable.amount,
-            type: TransactionEntryEntityTable.type,
-            operatedAt: TransactionEntityTable.operatedAt
-        })
-        .from(TransactionEntryEntityTable)
-        .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-        .where(and(eq(TransactionEntryEntityTable.accountId, accountId), eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)))
-        .all();
+    Effect.gen(function* () {
+        return yield* testDb
+            .select({
+                amount: TransactionEntryEntityTable.amount,
+                type: TransactionEntryEntityTable.type,
+                operatedAt: TransactionEntityTable.operatedAt
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+            .where(
+                and(eq(TransactionEntryEntityTable.accountId, accountId), eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT))
+            );
+    });
 
 const readBalance = Effect.fnUntraced(function* (accountId: number) {
     const accountBalanceRepository = yield* AccountBalanceRepository;
@@ -68,7 +69,7 @@ const importHistory = Effect.fnUntraced(function* (onLaterRequest: () => Promise
 });
 
 const expectReconciledTo = Effect.fnUntraced(function* (accountId: number, setupBalance: number) {
-    expect(fetchBalanceAdjustments(accountId)).toStrictEqual([expect.objectContaining({ amount: setupBalance - HISTORY_LEDGER })]);
+    expect(yield* fetchBalanceAdjustments(accountId)).toStrictEqual([expect.objectContaining({ amount: setupBalance - HISTORY_LEDGER })]);
     expect(yield* readBalance(accountId)).toBe(setupBalance);
 });
 
@@ -93,7 +94,7 @@ describe('monobank/setup-balance', () => {
 
             expect(balancesDuringImport).toStrictEqual(new Set([1_500_000_000]));
             yield* expectReconciledTo(account.id, 1_500_000_000);
-            expect(fetchBalanceAdjustments(account.id)[0]).toMatchObject({
+            expect((yield* fetchBalanceAdjustments(account.id))[0]).toMatchObject({
                 type: TransactionEntryTypeEnum.DEBIT,
                 operatedAt: new Date((HISTORY_TIME - 1) * 1000)
             });
@@ -109,7 +110,7 @@ describe('monobank/setup-balance', () => {
             yield* setupMonobankSync({ ...bankAccount, balance: 50_000 });
             yield* importHistory();
 
-            expect(fetchBalanceAdjustments(account.id)).toStrictEqual([]);
+            expect(yield* fetchBalanceAdjustments(account.id)).toStrictEqual([]);
             expect(yield* readBalance(account.id)).toBe(HISTORY_LEDGER);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -135,7 +136,7 @@ describe('monobank/setup-balance', () => {
             const account = yield* setupMonobankSync(buildMonobank.account({ id: 'mono-pause', balance: 150_000 }));
             yield* importHistory(() => runPromise(monobankSyncService.setAccountSyncEnabled(account.id, false)));
             const pausedBalance = yield* readBalance(account.id);
-            const pausedAdjustments = fetchBalanceAdjustments(account.id);
+            const pausedAdjustments = yield* fetchBalanceAdjustments(account.id);
 
             monobankStub.statementThen([], emptyFn);
             yield* skipRequestedSync(monobankSyncService.setAccountSyncEnabled(account.id, true));
@@ -150,17 +151,22 @@ describe('monobank/setup-balance', () => {
     it.effect('rolls back a reconciliation interrupted after its writes and books it once on retry', () =>
         Effect.gen(function* () {
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+            const runPromise = yield* FiberSet.makeRuntimePromise<Services>();
             const account = yield* setupMonobankSync(buildMonobank.account({ id: 'mono-retry', balance: 150_000 }));
             const adjustmentCountsBeforeCompletion: number[] = [];
 
-            yield* importHistory(() => {
-                adjustmentCountsBeforeCompletion.push(fetchBalanceAdjustments(account.id).length);
-                if (!vi.isMockFunction(accountBalanceIncrementalService.updateBalancesByAccountIds)) {
-                    vi.spyOn(accountBalanceIncrementalService, 'updateBalancesByAccountIds').mockReturnValueOnce(
-                        Effect.die(new Error('app suspended'))
-                    );
-                }
-            });
+            yield* importHistory(() =>
+                runPromise(
+                    Effect.gen(function* () {
+                        adjustmentCountsBeforeCompletion.push((yield* fetchBalanceAdjustments(account.id)).length);
+                        if (!vi.isMockFunction(accountBalanceIncrementalService.updateBalancesByAccountIds)) {
+                            vi.spyOn(accountBalanceIncrementalService, 'updateBalancesByAccountIds').mockReturnValueOnce(
+                                Effect.die(new Error('app suspended'))
+                            );
+                        }
+                    })
+                )
+            );
 
             expect(adjustmentCountsBeforeCompletion.slice(0, 3)).toStrictEqual([0, 0, 0]);
             yield* expectReconciledTo(account.id, 1_500_000_000);
@@ -197,8 +203,8 @@ describe('monobank/setup-balance', () => {
             const monobankSyncService = yield* MonobankSyncService;
             const resyncService = yield* ResyncService;
             const syncRepository = yield* SyncRepository;
-            const account = seed.account({ externalId: 'binance-spot' });
-            seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE });
+            const account = yield* seed.account({ externalId: 'binance-spot' });
+            yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE });
             const fetchSetupBalanceSpy = vi.spyOn(monobankSyncService, 'fetchSetupBalance');
 
             yield* resyncService.resync({ accountId: account.id, sinceDays: null });

@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.88.4](https://github.com/budgie-at/budgie/compare/v6.88.3...v6.88.4) (2026-10-02)
+
+
+### Bug Fixes
+
+* **app:** redesign debt tiles as full-width rows with a progress line ([8530380](https://github.com/budgie-at/budgie/commit/853038026b6519b0cb7d9e3783e46ded5a440ce3))
+
+
+
+
+
+## [6.88.3](https://github.com/budgie-at/budgie/compare/v6.88.2...v6.88.3) (2026-10-02)
+
+
+### Bug Fixes
+
+* **app:** hide the tab bar while the create menu or voice input is open ([b58dc75](https://github.com/budgie-at/budgie/commit/b58dc75ebed934d287e69c440a24233e3c91d8e3)), closes [#1368](https://github.com/budgie-at/budgie/issues/1368)
+* **app:** open voice input from the create menu while AI works in the background ([3e5d01e](https://github.com/budgie-at/budgie/commit/3e5d01e05635e7fb1b5f71e1146baa3b46929969)), closes [#1367](https://github.com/budgie-at/budgie/issues/1367)
+
+
+
+
+
+## [6.88.2](https://github.com/budgie-at/budgie/compare/v6.88.1...v6.88.2) (2026-10-02)
+
+
+### Bug Fixes
+
+* **app:** forecast only active recurring series and include income ([40fcfbb](https://github.com/budgie-at/budgie/commit/40fcfbbf93fe10f28b3c48f2938ff61f1cec674b)), closes [#1357](https://github.com/budgie-at/budgie/issues/1357)
+* **app:** keep recurring monthly totals expense-only ([d9112a0](https://github.com/budgie-at/budgie/commit/d9112a0b9360c7f0ff0b6faa29dcfc9d7f360d94))
+* **app:** match recurring merchants by identity and amount band ([04aae48](https://github.com/budgie-at/budgie/commit/04aae48cdffe948081e71dfec672dd386229cceb)), closes [#990](https://github.com/budgie-at/budgie/issues/990)
+
+
+
+
+
 ## [6.88.1](https://github.com/budgie-at/budgie/compare/v6.88.0...v6.88.1) (2026-10-01)
 
 

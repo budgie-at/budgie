@@ -1,2 +1,0 @@
-DROP INDEX `transactions_needs_embedding_idx`;--> statement-breakpoint
-CREATE INDEX `transactions_pending_embedding_idx` ON `transactions` (`id`) WHERE "transactions"."needs_embedding" = 1 AND "transactions"."deleted_at" IS NULL;

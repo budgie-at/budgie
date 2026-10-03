@@ -12,7 +12,8 @@
     "moduleDetection": "force",
     "moduleResolution": "bundler",
     "customConditions": [
-      "react-native"
+      "react-native",
+      "react-native-legacy-deep-imports"
     ],
     "paths": {
       "whisper.rn": ["./node_modules/whisper.rn/lib/typescript/index.d.ts"]

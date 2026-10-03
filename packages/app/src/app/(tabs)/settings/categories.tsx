@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryService } from '@budgie/ledger';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -18,7 +19,6 @@ import { CategoryEmptyState } from '../../../category/components/category-empty-
 import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
-import { CategoryService } from '../../../category/service/category.service';
 
 import { CategoryPageSelector } from './category-page.selector';
 

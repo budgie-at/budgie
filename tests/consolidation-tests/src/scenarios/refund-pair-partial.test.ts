@@ -14,9 +14,11 @@ layer(TestLayer)('consolidation/refund-pair-partial', it => {
             });
 
             expect(consolidated).toBe(1);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
 
-            const promotedEntries = testQueryService.fetchEntriesByTransactionId(expense.id);
+            const promotedEntries = yield* testQueryService.fetchEntriesByTransactionId(expense.id);
 
             expect(promotedEntries).toEqual(
                 expect.arrayContaining([

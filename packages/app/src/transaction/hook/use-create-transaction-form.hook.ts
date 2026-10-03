@@ -4,6 +4,7 @@ import {
     TransactionEntityInterface,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { createTransactionInput } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Schema from 'effect/Schema';
@@ -12,7 +13,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { buildExpenseEntry } from '../utils/build-expense-entry.util';
-import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 interface UseTransactionFormConfig {
     readonly onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;

@@ -1,5 +1,5 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';

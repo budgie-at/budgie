@@ -1,4 +1,3 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -8,6 +7,7 @@ import {
     fetchPersistedMonobankTransactions,
     fetchSyncById,
     monobankStub,
+    MonobankSyncService,
     setupBackwardSweepFixture,
     TestLayer
 } from '../../harness';
@@ -25,7 +25,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const sweepStart = new Date();
-            const sync = setupBackwardSweepFixture(sweepStart);
+            const sync = yield* setupBackwardSweepFixture(sweepStart);
 
             const oldTransactionTimeSeconds = Math.floor(sweepStart.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
             const oldTransaction: StatementItem = buildMonobank.transaction({
@@ -39,12 +39,12 @@ describe('monobank/old-transactions-after-dormant-month', () => {
 
             yield* monobankSyncService.sync();
 
-            const persisted = fetchPersistedMonobankTransactions();
+            const persisted = yield* fetchPersistedMonobankTransactions();
             expect(persisted).toHaveLength(EXPECTED_PERSISTED_COUNT);
             const [persistedOld] = persisted;
             expect(persistedOld.externalId).toBe('tx-old-80d');
 
-            const finalSync = fetchSyncById(sync.id);
+            const finalSync = yield* fetchSyncById(sync.id);
             expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
             expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
         }).pipe(Effect.provide(TestLayer))

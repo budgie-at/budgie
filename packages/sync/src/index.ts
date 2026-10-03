@@ -15,6 +15,7 @@ export type { SyncTransactionInterface } from './core/interface/sync-transaction
 export type { SyncBatchResultInterface } from './core/interface/sync-batch-result.interface';
 
 export { MonobankClient } from './monobank/client/monobank.client';
+export { MonobankTransactionSyncService } from './monobank/service/monobank-transaction-sync.service';
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
@@ -55,3 +56,32 @@ export { ersteMapper } from './erste/mapper/erste.mapper';
 
 export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
 export type { PdfTextItemInterface } from './erste/interface/pdf-text-item.interface';
+
+export { SyncWorkload } from './core/port/sync-workload.port';
+export { SyncFileReader } from './core/port/sync-file-reader.port';
+export { SyncHistoryDepthEnum } from './core/enum/sync-history-depth.enum';
+export { ResyncService } from './core/service/resync.service';
+export { SyncProviderRegistryService } from './core/service/sync-provider-registry.service';
+export { SyncRepairService } from './core/service/sync-repair.service';
+export { TransferConsolidationService } from './core/service/transfer-consolidation.service';
+export { generateDefaultSyncAccountTitle } from './core/util/generate-default-sync-account-title.util';
+export { makeFileSyncService } from './core/util/make-file-sync-service.util';
+export { mapBankTransactionToCreateInput } from './core/util/map-bank-transaction-to-create-input.util';
+export { mapSyncAccountToCreateInput } from './core/util/map-sync-account-to-create-input.util';
+
+export type { FileBankSyncImportResultInterface } from './core/interface/file-bank-sync-import-result.interface';
+export type { FileBasedSyncClientInterface } from './core/interface/file-based-sync-client.interface';
+export type { FileSyncServiceDefinitionInterface } from './core/interface/file-sync-service-definition.interface';
+export type { SyncAccountPreviewInterface } from './core/interface/sync-account-preview.interface';
+export type { SyncDuplicateCandidateRowInterface } from './core/interface/sync-duplicate-candidate-row.interface';
+export type { SyncDuplicateRepairPreviewInterface } from './core/interface/sync-duplicate-repair-preview.interface';
+export type { SyncDuplicateRepairSourcePreviewInterface } from './core/interface/sync-duplicate-repair-source-preview.interface';
+
+export { BinanceSyncService } from './binance/service/binance-sync.service';
+
+export { ErsteSyncService } from './erste/service/erste-sync.service';
+
+export { PrivatbankSyncService } from './privatbank/service/privatbank-sync.service';
+export { PrivatbankCategoryMatcherService } from './privatbank/service/privatbank-category-matcher.service';
+export { UnpairedOwnCardTransferRepairService } from './privatbank/service/unpaired-own-card-transfer-repair.service';
+export { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from './privatbank/constant/privatbank-duplicate-candidate-sql.constant';

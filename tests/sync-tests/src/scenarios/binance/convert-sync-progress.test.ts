@@ -1,5 +1,5 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { SyncEntityTable } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -44,8 +44,8 @@ describe('binance/convert-sync-progress', () => {
             const olderConvertTime = Date.now() - OLDER_CONVERT_AGE_DAYS * DAY_MS;
             const newerConvertTime = Date.now() - NEWER_CONVERT_AGE_MS;
             const requestedWindows: TimeWindow[] = [];
-            seedCryptoInstrument('BTC');
-            setupUsdtSpotFixtureWithBalances('BTC', '1');
+            yield* seedCryptoInstrument('BTC');
+            yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             binanceStub.convertTradeFlow(
                 [
                     buildBinance.convertFlow({
@@ -71,9 +71,7 @@ describe('binance/convert-sync-progress', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = fetchBinanceTransactions()
-                .map(transaction => transaction.externalId)
-                .sort();
+            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
             expect(externalIds).toEqual(['binance:convert:7101', 'binance:convert:7102']);
             expect(requestedWindows.length).toBeGreaterThan(MIN_SPLIT_WINDOW_COUNT);
         }).pipe(Effect.provide(TestLayer))
@@ -83,8 +81,8 @@ describe('binance/convert-sync-progress', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            seedCryptoInstrument('BTC');
-            const { sync } = setupBinanceFixture({ asset: 'USDT' });
+            yield* seedCryptoInstrument('BTC');
+            const { sync } = yield* setupBinanceFixture({ asset: 'USDT' });
             binanceStub.spotBalances([
                 buildBinance.balance({ asset: 'USDT', free: '100' }),
                 buildBinance.balance({ asset: 'BTC', free: '1' })
@@ -93,7 +91,7 @@ describe('binance/convert-sync-progress', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(fetchSyncById(sync.id).transactionCount).toBe(EXPECTED_CREATED_TRANSACTION_COUNT);
+            expect((yield* fetchSyncById(sync.id)).transactionCount).toBe(EXPECTED_CREATED_TRANSACTION_COUNT);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -103,8 +101,8 @@ describe('binance/convert-sync-progress', () => {
 
             const sourceWindows: TimeWindow[] = [];
             const transferWindows: TimeWindow[] = [];
-            const { sync } = setupBinanceFixture({ asset: 'USDT', backwardSyncFromAt: BACKFILL_STARTED_AT });
-            testDb.update(SyncEntityTable).set({ backwardSyncedAt: INTERRUPTED_PROGRESS_AT }).where(eq(SyncEntityTable.id, sync.id)).run();
+            const { sync } = yield* setupBinanceFixture({ asset: 'USDT', backwardSyncFromAt: BACKFILL_STARTED_AT });
+            yield* testDb.update(SyncEntityTable).set({ backwardSyncedAt: INTERRUPTED_PROGRESS_AT }).where(eq(SyncEntityTable.id, sync.id));
             binanceStub.deposits([], sourceWindows);
             binanceStub.convertTradeFlow([], transferWindows);
 

@@ -1,4 +1,5 @@
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { useWatch } from 'react-hook-form';
 
@@ -7,7 +8,6 @@ import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transacti
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
-import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';

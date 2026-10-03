@@ -1,5 +1,5 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { SyncModeEnum, InstrumentTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -13,24 +13,25 @@ import {
     TestLayer
 } from '../../harness';
 
-const setupFiatScenario = () => {
-    setupBinanceFixture({ mode: SyncModeEnum.FORWARD, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
-    stubEmptyBinanceBalances();
-    binanceStub.deposits([]);
-    binanceStub.withdrawals([]);
-};
+const setupFiatScenario = () =>
+    Effect.gen(function* () {
+        yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
+        stubEmptyBinanceBalances();
+        binanceStub.deposits([]);
+        binanceStub.withdrawals([]);
+    });
 
 describe('binance/fiat-orders', () => {
     it.effect('maps a fiat deposit to an INCOME transaction on the FIAT instrument account', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupFiatScenario();
+            yield* setupFiatScenario();
             binanceStub.fiatOrders([buildBinance.fiatOrder({ orderNo: 'fiat-dep-1', fiatCurrency: 'EUR', amount: '100' })], []);
 
             yield* binanceSyncService.sync();
 
-            expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'fiat-dep-1');
+            yield* expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'fiat-dep-1');
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -38,12 +39,12 @@ describe('binance/fiat-orders', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupFiatScenario();
+            yield* setupFiatScenario();
             binanceStub.fiatOrders([], [buildBinance.fiatOrder({ orderNo: 'fiat-wd-1', fiatCurrency: 'EUR', amount: '50' })]);
 
             yield* binanceSyncService.sync();
 
-            expectSingleBinanceTransaction(TransactionTypeEnum.EXPENSE, 'fiat-wd-1');
+            yield* expectSingleBinanceTransaction(TransactionTypeEnum.EXPENSE, 'fiat-wd-1');
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -51,7 +52,7 @@ describe('binance/fiat-orders', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            setupFiatScenario();
+            yield* setupFiatScenario();
             binanceStub.fiatOrders(
                 [
                     buildBinance.fiatOrder({ orderNo: 'fiat-eur', fiatCurrency: 'EUR', amount: '100' }),
@@ -62,7 +63,7 @@ describe('binance/fiat-orders', () => {
 
             yield* binanceSyncService.sync();
 
-            const transactions = fetchBinanceTransactions();
+            const transactions = yield* fetchBinanceTransactions();
             expect(transactions).toHaveLength(1);
             expect(transactions[0].externalId).toBe('fiat-eur');
         }).pipe(Effect.provide(TestLayer))

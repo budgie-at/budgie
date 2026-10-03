@@ -10,14 +10,14 @@ describe('Wallet capture duplicate query', () => {
     it.effect('returns a nearby matching expense and excludes a different amount', () =>
         Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
-            const account = walletCaptureSeedAccount();
+            const account = yield* walletCaptureSeedAccount();
             const operatedAt = new Date('2026-08-07T10:00:00.000Z');
-            const transaction = seed.bankPairExpense(
+            const transaction = yield* seed.bankPairExpense(
                 { externalId: 'capture-existing', operatedAt },
                 { accountId: account.id, amount: 125_000_000, mccCategoryId: null }
             );
 
-            seed.updateTransaction(transaction.id, {
+            yield* seed.updateTransaction(transaction.id, {
                 externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
                 title: 'Silpo'
             });
@@ -47,13 +47,13 @@ describe('Wallet capture duplicate query', () => {
     it.effect.each(['АТБ', 'BILLA ÖSTERREICH'])('matches Unicode merchant %s without relying on SQLite lowercase', merchant =>
         Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
-            const account = walletCaptureSeedAccount();
+            const account = yield* walletCaptureSeedAccount();
             const operatedAt = new Date('2026-08-07T10:00:00.000Z');
-            const transaction = seed.bankPairExpense(
+            const transaction = yield* seed.bankPairExpense(
                 { externalId: 'unicode-existing', operatedAt },
                 { accountId: account.id, amount: 125_000_000, mccCategoryId: null }
             );
-            seed.updateTransaction(transaction.id, { title: `  ${merchant}  ` });
+            yield* seed.updateTransaction(transaction.id, { title: `  ${merchant}  ` });
 
             expect(
                 yield* transactionRepository.findPotentialExpenseDuplicate({
@@ -70,23 +70,22 @@ describe('Wallet capture duplicate query', () => {
     it.effect('ignores historical moved consolidation entries', () =>
         Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
-            const account = walletCaptureSeedAccount();
+            const account = yield* walletCaptureSeedAccount();
             const operatedAt = new Date('2026-08-07T10:00:00.000Z');
-            const sourceTransaction = seed.bankPairExpense(
+            const sourceTransaction = yield* seed.bankPairExpense(
                 { externalId: 'capture-moved-source', operatedAt },
                 { accountId: account.id, amount: 125_000_000, mccCategoryId: null }
             );
 
-            seed.updateTransaction(sourceTransaction.id, {
+            yield* seed.updateTransaction(sourceTransaction.id, {
                 externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
                 title: 'Silpo'
             });
 
-            testDb
+            yield* testDb
                 .update(TransactionEntryEntityTable)
                 .set({ originalTransactionId: sourceTransaction.id })
-                .where(eq(TransactionEntryEntityTable.transactionId, sourceTransaction.id))
-                .run();
+                .where(eq(TransactionEntryEntityTable.transactionId, sourceTransaction.id));
 
             expect(
                 yield* transactionRepository.findPotentialExpenseDuplicate({

@@ -3,10 +3,9 @@ import {
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { getTransactionCategoryEntries } from './get-transaction-category-entries.util';
 
 export const getTransactionCategoryLabel = (
     transaction: TransactionWithRelationsEntityInterface,

@@ -25,19 +25,19 @@ import type {
 export class TransferPairRepository extends Context.Service<TransferPairRepository>()('@budgie/consolidation/TransferPairRepository', {
     make: Effect.succeed({
         findCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
-            Db.query(db => db.$client.getAllAsync<TransferPairCandidateInterface>(buildTransferPairCandidatesSql(scope))),
+            Db.query(db => db.$client.unsafe<TransferPairCandidateInterface>(buildTransferPairCandidatesSql(scope))),
         findBridgeClaimedRepairCandidates: () =>
-            Db.query(db => db.$client.getAllAsync<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL)),
+            Db.query(db => db.$client.unsafe<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL)),
         findP2pFiatAtomicCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
-            Db.query(db => db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(buildP2pFiatAtomicCandidateSql(scope))),
+            Db.query(db => db.$client.unsafe<P2pFiatAtomicCandidateInterface>(buildP2pFiatAtomicCandidateSql(scope))),
         findP2pFiatAuthoritativeCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
-            Db.query(db => db.$client.getAllAsync<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope))),
+            Db.query(db => db.$client.unsafe<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope))),
         findP2pFiatAuthoritativeRepairCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
             Db.query(db =>
-                db.$client.getAllAsync<P2pFiatAuthoritativeRepairCandidateInterface>(buildP2pFiatAuthoritativeRepairCandidateSql(scope))
+                db.$client.unsafe<P2pFiatAuthoritativeRepairCandidateInterface>(buildP2pFiatAuthoritativeRepairCandidateSql(scope))
             ),
         findManualReviewCandidates: () =>
-            Db.query(db => db.$client.getAllAsync<TransferPairReviewCandidateInterface>(buildTransferPairManualReviewCandidatesSql()))
+            Db.query(db => db.$client.unsafe<TransferPairReviewCandidateInterface>(buildTransferPairManualReviewCandidatesSql()))
     })
 }) {
     static readonly layer = Layer.effect(TransferPairRepository, TransferPairRepository.make);

@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { AccountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useConfirmedSettingsAction } from '../../hook/use-confirmed-settings-action.hook';
 import { SettingsCard } from '../settings-card/settings-card';

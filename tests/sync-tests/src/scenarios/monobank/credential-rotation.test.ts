@@ -1,11 +1,10 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountIntegrationToken, fetchSyncById, seed, TestLayer } from '../../harness';
+import { fetchAccountIntegrationToken, fetchSyncById, MonobankSyncService, seed, TestLayer } from '../../harness';
 
-import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
+import type { SyncEntityInterface } from '@budgie/contracts';
 
 const MONOBANK_OLD_TOKEN = 'shared-monobank-old-token';
 const MONOBANK_SEPARATE_TOKEN = 'separate-monobank-token';
@@ -20,69 +19,65 @@ interface ExpectedForwardSyncInterface {
     readonly lastError: string | null;
 }
 
-interface MonobankRotationScenarioInterface {
-    readonly selectedAccount: AccountEntityInterface;
-    readonly sharedAccount: AccountEntityInterface;
-    readonly separateAccount: AccountEntityInterface;
-    readonly selectedSync: SyncEntityInterface;
-    readonly sharedSync: SyncEntityInterface;
-    readonly separateSync: SyncEntityInterface;
-}
-
-const seedMonobankAccount = (externalId: string): AccountEntityInterface =>
-    seed.account({
-        externalId,
-        externalSource: ExternalSourceEnum.MONOBANK,
-        type: AccountTypeEnum.BANK_SYNC
+const seedMonobankAccount = (externalId: string) =>
+    Effect.gen(function* () {
+        return yield* seed.account({
+            externalId,
+            externalSource: ExternalSourceEnum.MONOBANK,
+            type: AccountTypeEnum.BANK_SYNC
+        });
     });
 
-const seedFailedForwardSync = (
-    accountId: number,
-    token: string,
-    errorCount: number,
-    forwardSyncFromAt: Date,
-    lastError: string
-): SyncEntityInterface =>
-    seed.sync({
-        accountId,
-        token,
-        provider: ExternalSourceEnum.MONOBANK,
-        mode: SyncModeEnum.FORWARD,
-        status: SyncStatusEnum.FAILED,
-        forwardSyncFromAt,
-        forwardSyncedAt: null,
-        backwardSyncFromAt: null,
-        backwardSyncedAt: null,
-        errorCount,
-        lastError
+const seedFailedForwardSync = (accountId: number, token: string, errorCount: number, forwardSyncFromAt: Date, lastError: string) =>
+    Effect.gen(function* () {
+        return yield* seed.sync({
+            accountId,
+            token,
+            provider: ExternalSourceEnum.MONOBANK,
+            mode: SyncModeEnum.FORWARD,
+            status: SyncStatusEnum.FAILED,
+            forwardSyncFromAt,
+            forwardSyncedAt: null,
+            backwardSyncFromAt: null,
+            backwardSyncedAt: null,
+            errorCount,
+            lastError
+        });
     });
 
-const seedMonobankCredentialRotationScenario = (): MonobankRotationScenarioInterface => {
-    const selectedAccount = seedMonobankAccount('monobank-selected');
-    const sharedAccount = seedMonobankAccount('monobank-shared');
-    const separateAccount = seedMonobankAccount('monobank-separate');
+const seedMonobankCredentialRotationScenario = () =>
+    Effect.gen(function* () {
+        const selectedAccount = yield* seedMonobankAccount('monobank-selected');
+        const sharedAccount = yield* seedMonobankAccount('monobank-shared');
+        const separateAccount = yield* seedMonobankAccount('monobank-separate');
 
-    return {
-        selectedAccount,
-        sharedAccount,
-        separateAccount,
-        selectedSync: seedFailedForwardSync(
-            selectedAccount.id,
-            MONOBANK_OLD_TOKEN,
-            2,
-            SELECTED_FORWARD_SYNC_FROM_AT,
-            'selected monobank failure'
-        ),
-        sharedSync: seedFailedForwardSync(sharedAccount.id, MONOBANK_OLD_TOKEN, 3, SHARED_FORWARD_SYNC_FROM_AT, 'shared monobank failure'),
-        separateSync: seedFailedForwardSync(
-            separateAccount.id,
-            MONOBANK_SEPARATE_TOKEN,
-            4,
-            SEPARATE_FORWARD_SYNC_FROM_AT,
-            'separate monobank failure'
-        )
-    };
-};
+        return {
+            selectedAccount,
+            sharedAccount,
+            separateAccount,
+            selectedSync: yield* seedFailedForwardSync(
+                selectedAccount.id,
+                MONOBANK_OLD_TOKEN,
+                2,
+                SELECTED_FORWARD_SYNC_FROM_AT,
+                'selected monobank failure'
+            ),
+            sharedSync: yield* seedFailedForwardSync(
+                sharedAccount.id,
+                MONOBANK_OLD_TOKEN,
+                3,
+                SHARED_FORWARD_SYNC_FROM_AT,
+                'shared monobank failure'
+            ),
+            separateSync: yield* seedFailedForwardSync(
+                separateAccount.id,
+                MONOBANK_SEPARATE_TOKEN,
+                4,
+                SEPARATE_FORWARD_SYNC_FROM_AT,
+                'separate monobank failure'
+            )
+        };
+    });
 
 const expectForwardSync = (sync: SyncEntityInterface, expected: ExpectedForwardSyncInterface): void => {
     expect(sync).toMatchObject({
@@ -101,34 +96,34 @@ describe('Monobank credential rotation', () => {
     it.effect('rotates the shared integration token for every account in the credential group', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const scenario = seedMonobankCredentialRotationScenario();
+            const scenario = yield* seedMonobankCredentialRotationScenario();
 
             yield* monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN);
 
-            expect(fetchAccountIntegrationToken(scenario.selectedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
-            expect(fetchAccountIntegrationToken(scenario.sharedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
-            expect(fetchAccountIntegrationToken(scenario.separateAccount.id)).toBe(MONOBANK_SEPARATE_TOKEN);
+            expect(yield* fetchAccountIntegrationToken(scenario.selectedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
+            expect(yield* fetchAccountIntegrationToken(scenario.sharedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
+            expect(yield* fetchAccountIntegrationToken(scenario.separateAccount.id)).toBe(MONOBANK_SEPARATE_TOKEN);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('clears sync error state across the credential group and leaves other integrations untouched', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const scenario = seedMonobankCredentialRotationScenario();
+            const scenario = yield* seedMonobankCredentialRotationScenario();
 
             yield* monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN);
 
-            expectForwardSync(fetchSyncById(scenario.selectedSync.id), {
+            expectForwardSync(yield* fetchSyncById(scenario.selectedSync.id), {
                 errorCount: 0,
                 forwardSyncFromAt: SELECTED_FORWARD_SYNC_FROM_AT,
                 lastError: null
             });
-            expectForwardSync(fetchSyncById(scenario.sharedSync.id), {
+            expectForwardSync(yield* fetchSyncById(scenario.sharedSync.id), {
                 errorCount: 0,
                 forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
                 lastError: null
             });
-            expectForwardSync(fetchSyncById(scenario.separateSync.id), {
+            expectForwardSync(yield* fetchSyncById(scenario.separateSync.id), {
                 errorCount: 4,
                 forwardSyncFromAt: SEPARATE_FORWARD_SYNC_FROM_AT,
                 lastError: 'separate monobank failure'

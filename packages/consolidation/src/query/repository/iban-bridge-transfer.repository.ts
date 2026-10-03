@@ -25,28 +25,28 @@ export class IbanBridgeTransferRepository extends Context.Service<IbanBridgeTran
             ) {
                 const sql = IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL(scope);
 
-                return yield* Db.query(db => db.$client.getAllAsync<IbanBridgeTransferCandidateInterface>(sql));
+                return yield* Db.query(db => db.$client.unsafe<IbanBridgeTransferCandidateInterface>(sql));
             }),
             findCanonicalDuplicateCandidates: Effect.fn('IbanBridgeTransferRepository.findCanonicalDuplicateCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null = null
             ) {
                 const sql = IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL(scope);
 
-                return yield* Db.query(db => db.$client.getAllAsync<IbanBridgeCanonicalDuplicateCandidateInterface>(sql));
+                return yield* Db.query(db => db.$client.unsafe<IbanBridgeCanonicalDuplicateCandidateInterface>(sql));
             }),
             findCanonicalSupersessionCandidates: Effect.fn('IbanBridgeTransferRepository.findCanonicalSupersessionCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null = null
             ) {
                 const sql = IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_SQL(scope);
 
-                return yield* Db.query(db => db.$client.getAllAsync<IbanBridgeCanonicalSupersessionCandidateInterface>(sql));
+                return yield* Db.query(db => db.$client.unsafe<IbanBridgeCanonicalSupersessionCandidateInterface>(sql));
             }),
             findChainTransferCandidates: Effect.fn('IbanBridgeTransferRepository.findChainTransferCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null = null
             ) {
                 const sql = IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL(scope);
 
-                return yield* Db.query(db => db.$client.getAllAsync<IbanBridgeChainTransferCandidateInterface>(sql));
+                return yield* Db.query(db => db.$client.unsafe<IbanBridgeChainTransferCandidateInterface>(sql));
             })
         })
     }

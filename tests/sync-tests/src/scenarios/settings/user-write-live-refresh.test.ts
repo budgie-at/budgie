@@ -1,8 +1,8 @@
-import { AccountService } from '@app/account/service/account.service';
 import { OnboardingService } from '@app/onboarding/service/onboarding.service';
 import { updateSettingsMutation } from '@app/settings/mutation/update-settings.mutation';
 import { BudgetRepository, BudgetService } from '@budgie/budget';
 import { AccountRepository, BudgetPeriodEnum, Db, SettingsRepository } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Ref from 'effect/Ref';
@@ -63,7 +63,7 @@ describe('settings/user-write-live-refresh', () => {
         Effect.gen(function* () {
             const accountService = yield* AccountService;
             const accountRepository = yield* AccountRepository;
-            const account = seed.account({ title: 'Inactive', isActive: false });
+            const account = yield* seed.account({ title: 'Inactive', isActive: false });
 
             expect(yield* countSettledTransactionBoundaries(accountService.activateById(account.id))).toBe(1);
             expect((yield* accountRepository.findById(account.id))?.isActive).toBe(true);

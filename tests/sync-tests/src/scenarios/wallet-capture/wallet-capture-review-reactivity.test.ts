@@ -28,6 +28,7 @@ const subscribeToReview = Effect.fnUntraced(function* () {
     );
     const results = yield* reactivity.query([WalletCaptureReactivityKeyEnum.CAPTURES], importService.getReviewItems());
     expect(yield* Queue.take(results)).toEqual([]);
+
     return { notification, results };
 });
 

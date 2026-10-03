@@ -3,9 +3,9 @@ import { ScrollView, Text, View } from 'react-native';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarEntryRows } from '../recurring-calendar-entry-rows/recurring-calendar-entry-rows';
 
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 import type { ReactNode } from 'react';
 
 interface Props {

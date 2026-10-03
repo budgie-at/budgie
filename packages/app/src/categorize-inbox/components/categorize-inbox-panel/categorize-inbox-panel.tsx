@@ -14,8 +14,8 @@ import { CategorizeInboxUndoLayout } from '../categorize-inbox-undo-layout/categ
 
 import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
 
-import type { CategorizeInboxAssignmentInterface } from '../../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxLastWriteInterface } from '../../interface/categorize-inbox-last-write.interface';
+import type { CategorizeInboxAssignmentInterface } from '@budgie/categorization';
 
 interface Props {
     readonly remainingCount: number;

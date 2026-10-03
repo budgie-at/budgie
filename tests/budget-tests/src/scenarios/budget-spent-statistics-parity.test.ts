@@ -17,16 +17,19 @@ layer(TestLayer)('budget spent parity with statistics', it => {
             const budgetRepository = yield* BudgetRepository;
             const budgetSpentService = yield* BudgetSpentService;
             const statisticsRepository = yield* StatisticsRepository;
-            const bankAccount = testSeedService.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: BASE_INSTRUMENT_ID });
-            const counterpartAccount = testSeedService.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: BASE_INSTRUMENT_ID });
-            const debtAccount = testSeedService.account({ type: AccountTypeEnum.DEBT, instrumentId: BASE_INSTRUMENT_ID });
+            const bankAccount = yield* testSeedService.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: BASE_INSTRUMENT_ID });
+            const counterpartAccount = yield* testSeedService.account({
+                type: AccountTypeEnum.BANK_SYNC,
+                instrumentId: BASE_INSTRUMENT_ID
+            });
+            const debtAccount = yield* testSeedService.account({ type: AccountTypeEnum.DEBT, instrumentId: BASE_INSTRUMENT_ID });
 
-            testSeedService.bankPairExpense(
+            yield* testSeedService.bankPairExpense(
                 { externalId: 'plain', operatedAt: OPERATED_AT },
                 { accountId: bankAccount.id, amount: 10 * PRECISION }
             );
 
-            const transfer = testSeedService.directTransfer({
+            const transfer = yield* testSeedService.directTransfer({
                 exchangeRate: 1,
                 operatedAt: OPERATED_AT,
                 sourceAccountId: bankAccount.id,
@@ -36,28 +39,27 @@ layer(TestLayer)('budget spent parity with statistics', it => {
                 targetAmount: 30 * PRECISION,
                 toIban: null
             });
-            const consolidatedChild = testSeedService.bankPairExpense(
+            const consolidatedChild = yield* testSeedService.bankPairExpense(
                 { externalId: 'consolidated-child', operatedAt: OPERATED_AT },
                 { accountId: bankAccount.id, amount: 30 * PRECISION }
             );
 
-            testDb
+            yield* testDb
                 .update(TransactionEntityTable)
                 .set({ consolidationParentTransactionId: transfer.id })
-                .where(eq(TransactionEntityTable.id, consolidatedChild.id))
-                .run();
+                .where(eq(TransactionEntityTable.id, consolidatedChild.id));
 
-            testSeedService.bankPairExpense(
+            yield* testSeedService.bankPairExpense(
                 { externalId: 'debt', operatedAt: OPERATED_AT },
                 { accountId: debtAccount.id, amount: 20 * PRECISION }
             );
 
-            const feeTransaction = testSeedService.bankPairExpense(
+            const feeTransaction = yield* testSeedService.bankPairExpense(
                 { externalId: 'with-fee', operatedAt: OPERATED_AT },
                 { accountId: bankAccount.id, amount: 5 * PRECISION }
             );
 
-            testSeedService.feeEntry(feeTransaction.id, 'fee', { accountId: bankAccount.id, amount: 2 * PRECISION });
+            yield* testSeedService.feeEntry(feeTransaction.id, 'fee', { accountId: bankAccount.id, amount: 2 * PRECISION });
 
             const entries = yield* budgetRepository.findBudgetSpentEntries(PERIOD_START, NEXT_PERIOD_START, BASE_INSTRUMENT_ID);
             const { spentOverall } = budgetSpentService.computeSpent(entries, BASE_INSTRUMENT_ID);

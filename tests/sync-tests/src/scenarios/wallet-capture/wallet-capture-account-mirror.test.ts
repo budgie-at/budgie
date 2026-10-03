@@ -10,17 +10,16 @@ describe('Wallet capture account mirror', () => {
     it.effect('writes only active non-archived accounts to the native picker store', () =>
         Effect.gen(function* () {
             const walletCaptureAccountMirrorService = yield* WalletCaptureAccountMirrorService;
-            seed.instrument();
-            const activeAccount = seed.account({ title: 'Wallet card' });
-            const inactiveAccount = seed.account({ title: 'Hidden card' });
-            const archivedAccount = seed.account({ title: 'Archived card' });
+            yield* seed.instrument();
+            const activeAccount = yield* seed.account({ title: 'Wallet card' });
+            const inactiveAccount = yield* seed.account({ title: 'Hidden card' });
+            const archivedAccount = yield* seed.account({ title: 'Archived card' });
 
-            testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, inactiveAccount.id)).run();
-            testDb
+            yield* testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, inactiveAccount.id));
+            yield* testDb
                 .update(AccountEntityTable)
                 .set({ deletedAt: new Date('2026-08-07T12:00:00.000Z') })
-                .where(eq(AccountEntityTable.id, archivedAccount.id))
-                .run();
+                .where(eq(AccountEntityTable.id, archivedAccount.id));
 
             yield* walletCaptureAccountMirrorService.refresh();
 

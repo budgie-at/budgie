@@ -84,9 +84,9 @@ const releaseNotesResponseSchema = Schema.Struct({
 
 type LocaleReleaseNotes = (typeof releaseNotesResponseSchema.Type)['locales'];
 
-const releaseNotesStateSchema = z.object({ generatedAtCommit: z.string(), generatedFor: z.string() });
+const releaseNotesStateSchema = Schema.Struct({ generatedAtCommit: Schema.String, generatedFor: Schema.String });
 
-const appPackageJsonSchema = z.object({ version: z.string().min(1) });
+const appPackageJsonSchema = Schema.Struct({ version: Schema.String.pipe(Schema.check(Schema.isNonEmpty())) });
 
 function runGit(args: string[]): string {
     return execFileSync('git', args, { cwd: repositoryRootDirectory, encoding: 'utf8' }).trim();
@@ -220,7 +220,7 @@ function checkReleaseNotesFreshness(): void {
     }
 
     try {
-        const state = releaseNotesStateSchema.parse(JSON.parse(readFileSync(stateFilePath, 'utf8')));
+        const state = Schema.decodeUnknownSync(releaseNotesStateSchema)(JSON.parse(readFileSync(stateFilePath, 'utf8')));
         const unreflectedBullets = getReleaseNoteBullets(getCommitSubjects(state.generatedAtCommit, 'HEAD'));
 
         if (isEmptyArray(unreflectedBullets)) {
@@ -256,7 +256,9 @@ async function main(): Promise<void> {
     const baseRef = isPendingRelease ? latestTag : getPreviousTag(latestTag);
     const headRef = isPendingRelease ? 'HEAD' : latestTag;
     const bullets = getReleaseNoteBullets(getCommitSubjects(baseRef, headRef));
-    const version = appPackageJsonSchema.parse(JSON.parse(readFileSync(join(appDirectory, 'package.json'), 'utf8'))).version;
+    const version = Schema.decodeUnknownSync(appPackageJsonSchema)(
+        JSON.parse(readFileSync(join(appDirectory, 'package.json'), 'utf8'))
+    ).version;
 
     console.log(`Generating store release notes for version ${version} from ${baseRef ?? '(initial commit)'}..${headRef}`);
 

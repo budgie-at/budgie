@@ -1,9 +1,15 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { describe, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { http, HttpResponse } from 'msw';
 
-import { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases, setupMonobankFixture, TestLayer } from '../../harness';
+import {
+    expectSyncFailedAndDisabled,
+    httpFailureCases,
+    MonobankSyncService,
+    setupMonobankFixture,
+    SYNC_ERROR_THRESHOLD,
+    TestLayer
+} from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 describe('monobank/error-recovery', () => {
@@ -12,14 +18,14 @@ describe('monobank/error-recovery', () => {
         ({ status }) =>
             Effect.gen(function* () {
                 const monobankSyncService = yield* MonobankSyncService;
-                const { sync } = setupMonobankFixture();
+                const { sync } = yield* setupMonobankFixture();
                 mockServer.use(
                     http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => new HttpResponse(null, { status }))
                 );
 
                 yield* monobankSyncService.sync();
 
-                expectSyncFailedAndDisabled(sync.id);
+                yield* expectSyncFailedAndDisabled(sync.id);
             }).pipe(Effect.provide(TestLayer))
     );
 });

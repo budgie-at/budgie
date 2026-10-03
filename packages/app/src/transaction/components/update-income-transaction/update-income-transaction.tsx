@@ -1,4 +1,5 @@
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { useWatch } from 'react-hook-form';
 
@@ -6,7 +7,6 @@ import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transacti
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { buildIncomeEntry } from '../../utils/build-income-entry.util';
-import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';

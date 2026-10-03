@@ -17,8 +17,8 @@ const DEFAULT_INSTRUMENT_ID = 1;
 layer(TestLayer)('consolidation/refund-pair-rejected-payment-statistics', it => {
     it.effect('nets an over-primary PrivatBank rejected-payment refund (principal + fee absorbed) to zero', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'privat-card' });
-            const { expense } = testSeedService.refundedExpense({
+            const account = yield* testSeedService.account({ externalId: 'privat-card' });
+            const { expense } = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 title: 'FOP TESTOVYI PRODUCTS',
                 expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
@@ -30,7 +30,9 @@ layer(TestLayer)('consolidation/refund-pair-rejected-payment-statistics', it => 
 
             const result = yield* runConsolidation();
             expect(result.consolidated).toBe(2);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
 
             const statisticsRepository = yield* StatisticsRepository;
             const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, DEFAULT_INSTRUMENT_ID);

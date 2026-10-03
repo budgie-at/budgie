@@ -1,4 +1,4 @@
-import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
@@ -8,7 +8,6 @@ import {
     LanguageEnum,
     PRECISION,
     StatisticsRepository,
-    TransactionCategorizeInboxRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
@@ -16,6 +15,7 @@ import {
     TransactionViewRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -60,58 +60,59 @@ const seedTransaction = (
     operatedAt: Date,
     entries: readonly EntrySeedInterface[],
     tagId: number | null = null
-): number => {
-    const [firstEntry] = entries;
-    const transaction = insertOne(TransactionEntityTable, {
-        type,
-        title: `Parity ${type} ${entries.length}`,
-        operatedAt,
-        comment: '',
-        fromAccountId: type === TransactionTypeEnum.INCOME ? null : firstEntry.accountId,
-        toAccountId: type === TransactionTypeEnum.INCOME ? firstEntry.accountId : null,
-        exchangeRate: 1,
-        externalId: null,
-        externalSource: ExternalSourceEnum.CSV,
-        updatedBy: null
-    });
-
-    for (const entry of entries) {
-        insertOne(TransactionEntryEntityTable, {
-            transactionId: transaction.id,
-            accountId: entry.accountId,
-            type: entry.type,
-            amount: entry.amount,
-            categoryId: entry.categoryId,
-            mccCategoryId: null,
-            externalId: null,
+) =>
+    Effect.gen(function* () {
+        const [firstEntry] = entries;
+        const transaction = yield* insertOne(TransactionEntityTable, {
+            type,
+            title: `Parity ${type} ${entries.length}`,
+            operatedAt,
+            comment: '',
+            fromAccountId: type === TransactionTypeEnum.INCOME ? null : firstEntry.accountId,
+            toAccountId: type === TransactionTypeEnum.INCOME ? firstEntry.accountId : null,
             exchangeRate: 1,
-            baseInstrumentId: 1,
-            baseExchangeRate: 1,
-            baseAmount: entry.amount,
-            toIban: null,
-            originalTransactionId: null
+            externalId: null,
+            externalSource: ExternalSourceEnum.CSV,
+            updatedBy: null
         });
-    }
 
-    if (isDefined(tagId)) {
-        seed.transactionTag(transaction.id, tagId);
-    }
+        for (const entry of entries) {
+            yield* insertOne(TransactionEntryEntityTable, {
+                transactionId: transaction.id,
+                accountId: entry.accountId,
+                type: entry.type,
+                amount: entry.amount,
+                categoryId: entry.categoryId,
+                mccCategoryId: null,
+                externalId: null,
+                exchangeRate: 1,
+                baseInstrumentId: 1,
+                baseExchangeRate: 1,
+                baseAmount: entry.amount,
+                toIban: null,
+                originalTransactionId: null
+            });
+        }
 
-    return transaction.id;
-};
+        if (isDefined(tagId)) {
+            yield* seed.transactionTag(transaction.id, tagId);
+        }
+
+        return transaction.id;
+    });
 
 const seedParityLedger = Effect.gen(function* () {
     const transferConsolidationService = yield* TransferConsolidationService;
-    const card = seed.account({ title: 'Card', externalId: 'parity-card' });
-    const savings = seed.account({ title: 'Savings', externalId: 'parity-savings' });
-    const debt = seed.account({ title: 'Friend', type: AccountTypeEnum.DEBT });
-    const category = insertOne(CategoryEntityTable, {
+    const card = yield* seed.account({ title: 'Card', externalId: 'parity-card' });
+    const savings = yield* seed.account({ title: 'Savings', externalId: 'parity-savings' });
+    const debt = yield* seed.account({ title: 'Friend', type: AccountTypeEnum.DEBT });
+    const category = yield* insertOne(CategoryEntityTable, {
         title: 'Parity',
         titleSearch: 'parity',
         icon: UserIconNameEnum.Wallet,
         parentId: null
     });
-    const tag = seed.tag('Parity');
+    const tag = yield* seed.tag('Parity');
     const credit = (accountId: number, categoryId: number | null): EntrySeedInterface => ({
         accountId,
         type: TransactionEntryTypeEnum.CREDIT,
@@ -125,17 +126,22 @@ const seedParityLedger = Effect.gen(function* () {
         categoryId
     });
 
-    seedTransaction(TransactionTypeEnum.EXPENSE, JANUARY_OPERATED_AT, [credit(card.id, null)]);
-    seedTransaction(TransactionTypeEnum.EXPENSE, JANUARY_OPERATED_AT, [credit(card.id, null), fee(card.id, BANK_FEE_CATEGORY_ID)], tag.id);
-    seedTransaction(TransactionTypeEnum.EXPENSE, FEBRUARY_OPERATED_AT, [credit(savings.id, category.id), fee(savings.id, null)]);
-    seedTransaction(TransactionTypeEnum.EXPENSE, JANUARY_OPERATED_AT, [credit(debt.id, null)]);
-    seedTransaction(TransactionTypeEnum.EXPENSE, FEBRUARY_OPERATED_AT, [credit(card.id, category.id), credit(savings.id, null)]);
-    seedTransaction(TransactionTypeEnum.EXPENSE, FEBRUARY_OPERATED_AT, [credit(card.id, category.id)], tag.id);
-    seedTransaction(TransactionTypeEnum.INCOME, JANUARY_OPERATED_AT, [
+    yield* seedTransaction(TransactionTypeEnum.EXPENSE, JANUARY_OPERATED_AT, [credit(card.id, null)]);
+    yield* seedTransaction(
+        TransactionTypeEnum.EXPENSE,
+        JANUARY_OPERATED_AT,
+        [credit(card.id, null), fee(card.id, BANK_FEE_CATEGORY_ID)],
+        tag.id
+    );
+    yield* seedTransaction(TransactionTypeEnum.EXPENSE, FEBRUARY_OPERATED_AT, [credit(savings.id, category.id), fee(savings.id, null)]);
+    yield* seedTransaction(TransactionTypeEnum.EXPENSE, JANUARY_OPERATED_AT, [credit(debt.id, null)]);
+    yield* seedTransaction(TransactionTypeEnum.EXPENSE, FEBRUARY_OPERATED_AT, [credit(card.id, category.id), credit(savings.id, null)]);
+    yield* seedTransaction(TransactionTypeEnum.EXPENSE, FEBRUARY_OPERATED_AT, [credit(card.id, category.id)], tag.id);
+    yield* seedTransaction(TransactionTypeEnum.INCOME, JANUARY_OPERATED_AT, [
         { accountId: savings.id, type: TransactionEntryTypeEnum.DEBIT, amount: nextAmount(), categoryId: null }
     ]);
 
-    const transfer = seed.directTransfer({
+    const transfer = yield* seed.directTransfer({
         exchangeRate: 1,
         operatedAt: JANUARY_OPERATED_AT,
         sourceAccountId: card.id,
@@ -145,8 +151,8 @@ const seedParityLedger = Effect.gen(function* () {
         targetAmount: nextAmount(),
         toIban: null
     });
-    seed.feeEntry(transfer.id, null, { accountId: card.id, amount: PRECISION });
-    seed.refundedExpense({ accountId: card.id, expenseAmount: nextAmount(), refundAmounts: [PRECISION * 3] });
+    yield* seed.feeEntry(transfer.id, null, { accountId: card.id, amount: PRECISION });
+    yield* seed.refundedExpense({ accountId: card.id, expenseAmount: nextAmount(), refundAmounts: [PRECISION * 3] });
     yield* transferConsolidationService.consolidate(null);
 
     return { card, savings };

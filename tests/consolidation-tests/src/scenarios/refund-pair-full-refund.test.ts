@@ -16,11 +16,11 @@ layer(TestLayer)('consolidation/refund-pair-full-refund', it => {
 
             expect(consolidated).toBe(1);
 
-            const promotedExpense = testQueryService.fetchTransactionById(expense.id);
+            const promotedExpense = yield* testQueryService.fetchTransactionById(expense.id);
             expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(expense.id);
 
-            const expenseEntries = testQueryService.fetchEntriesByTransactionId(expense.id);
+            const expenseEntries = yield* testQueryService.fetchEntriesByTransactionId(expense.id);
             const creditTotal = expenseEntries
                 .filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT)
                 .reduce((sum, entry) => sum + entry.amount, 0);
@@ -34,17 +34,15 @@ layer(TestLayer)('consolidation/refund-pair-full-refund', it => {
 
     it.effect('copies refund income tags to the expense canonical', () =>
         Effect.gen(function* () {
-            const tag = testSeedService.tag('Refund Source');
+            const tag = yield* testSeedService.tag('Refund Source');
             const { consolidated, expense } = yield* runRefundScenario({
-                beforeConsolidation: ({ refunds }) => {
-                    testSeedService.transactionTag(refunds[0].id, tag.id);
-                },
+                beforeConsolidation: ({ refunds }) => testSeedService.transactionTag(refunds[0].id, tag.id),
                 expenseAmount: 120 * PRECISION,
                 refundAmounts: [120 * PRECISION]
             });
 
             expect(consolidated).toBe(1);
-            expectRefundCanonicalTags(expense.id, [tag.id]);
+            yield* expectRefundCanonicalTags(expense.id, [tag.id]);
         })
     );
 });

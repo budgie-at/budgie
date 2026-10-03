@@ -86,9 +86,9 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
             const { consolidated, expense, refunds } = yield* runRefundScenario(scenario);
 
             expect(consolidated).toBe(1);
-            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(expense.id);
 
-            const promotedExpense = testQueryService.fetchTransactionById(expense.id);
+            const promotedExpense = yield* testQueryService.fetchTransactionById(expense.id);
             expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
             if (checksParent) {
@@ -100,7 +100,7 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
     it.effect('finds manual refund candidates only from refund income transactions', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: APPLE_STORE_AMOUNT,
                 refundAmounts: [APPLE_STORE_AMOUNT],
                 title: 'Apple Store',
@@ -117,8 +117,8 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
 
     it.effect('does not consolidate when titles differ', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            testSeedService.refundedExpense({
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: APPLE_STORE_AMOUNT,
                 refundAmounts: [APPLE_STORE_AMOUNT],
@@ -133,15 +133,15 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
 
     it.effect('does not auto-consolidate one refund when multiple same-title expenses can claim it', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            testSeedService.refundedExpense({
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: APPLE_STORE_AMOUNT,
                 refundAmounts: [],
                 externalIdPrefix: 'first',
                 expenseOperatedAt: FIRST_LIME_OPERATED_AT
             });
-            testSeedService.refundedExpense({
+            yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: APPLE_STORE_AMOUNT,
                 refundAmounts: [APPLE_STORE_AMOUNT],

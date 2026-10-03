@@ -1,6 +1,6 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -39,15 +39,10 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
-    const snapshot = useAiSystemStatus();
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
-    const isAiAvailable = snapshot.state !== AiSystemStateEnum.DISABLED;
-    const isAiLoading = isAiAvailable && snapshot.state !== AiSystemStateEnum.READY;
-    const isAiInitializing = snapshot.state === AiSystemStateEnum.BOOTING;
-    const PERCENT_TO_RATIO = 100;
-    const aiDownloadProgress = isAiAvailable ? snapshot.percent / PERCENT_TO_RATIO : 0;
+    const isAiAvailable = useAiSystemStatus().state !== AiSystemStateEnum.DISABLED;
 
     const rotation = useSharedValue(0);
     const menuScale = useSharedValue(0);
@@ -158,14 +153,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
             {showAiButton && (
                 <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={aiButtonStyle} pointerEvents="box-none">
-                    <AiButton
-                        onPress={handleAiPress}
-                        isAnimating={false}
-                        isLoading={isAiLoading}
-                        isInitializing={isAiInitializing}
-                        downloadProgress={aiDownloadProgress}
-                        testID={CreateTransactionMenuSelector.AiButton}
-                    />
+                    <AiButton onPress={handleAiPress} testID={CreateTransactionMenuSelector.AiButton} />
                 </Animated.View>
             )}
 

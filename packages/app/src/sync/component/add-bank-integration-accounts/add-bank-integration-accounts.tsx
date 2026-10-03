@@ -1,3 +1,4 @@
+import { MonobankSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useEffect, useRef, useState } from 'react';
@@ -12,9 +13,8 @@ import { GoBackButton } from '../../../@generic/component/go-back-button/go-back
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
+import { DEFAULT_SYNC_HISTORY_DEPTH } from '../../constant/sync-history-depth-options.constant';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
-import { MonobankSyncService } from '../../service/monobank-sync.service';
 import { AddBankIntegrationAccountsContent } from '../add-bank-integration-accounts-content/add-bank-integration-accounts-content';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
 
@@ -33,7 +33,7 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
     const { t } = useLingui();
 
     const [step, setStep] = useState<AddAccountsStep>('accounts');
-    const [historyDepth, setHistoryDepth] = useState(SyncHistoryDepthEnum.MONTHS_3);
+    const [historyDepth, setHistoryDepth] = useState(DEFAULT_SYNC_HISTORY_DEPTH);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [fetchErrorMessage, setFetchErrorMessage] = useState<string | null>(null);

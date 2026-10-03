@@ -1,4 +1,5 @@
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { seed } from '../seed/seed';
 
@@ -9,10 +10,11 @@ export const setupMonobankFixture = (
     externalId: string = 'mono-acc-1',
     mode: SyncModeEnum = SyncModeEnum.FORWARD,
     forwardSyncFromAt: Date = new Date()
-) => {
-    const account = seed.account({ externalId, type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-    const sync = seed.sync({ accountId: account.id, mode, forwardSyncFromAt });
-    monobankStub.clientInfo(buildMonobank.clientInfoWith([externalId]));
+) =>
+    Effect.gen(function* () {
+        const account = yield* seed.account({ externalId, type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+        const sync = yield* seed.sync({ accountId: account.id, mode, forwardSyncFromAt });
+        monobankStub.clientInfo(buildMonobank.clientInfoWith([externalId]));
 
-    return { account, sync };
-};
+        return { account, sync };
+    });

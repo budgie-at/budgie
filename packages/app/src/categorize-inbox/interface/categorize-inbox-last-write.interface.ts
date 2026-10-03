@@ -1,4 +1,4 @@
-import type { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
+import type { CategorizeInboxAssignmentInterface } from '@budgie/categorization';
 
 export interface CategorizeInboxLastWriteInterface {
     readonly assignments: CategorizeInboxAssignmentInterface[];

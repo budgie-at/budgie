@@ -1,4 +1,5 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { SyncProviderRegistryService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -16,7 +17,6 @@ import { useAccountBalanceQuery } from '../../../account/query/use-account-balan
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integration-account-row-state.hook';
-import { SyncProviderRegistryService } from '../../service/sync-provider-registry.service';
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
 interface Props {

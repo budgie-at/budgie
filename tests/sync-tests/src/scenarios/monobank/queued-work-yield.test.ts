@@ -1,5 +1,4 @@
 import { Workload } from '@app/@generic/service/workload.service';
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { describe, expect, it } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Deferred from 'effect/Deferred';
@@ -9,7 +8,7 @@ import * as FiberSet from 'effect/FiberSet';
 import * as Option from 'effect/Option';
 import { HttpResponse, http } from 'msw';
 
-import { inWorkload, TestLayer } from '../../harness';
+import { inWorkload, MonobankSyncService, TestLayer } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -28,7 +27,7 @@ describe('monobank/queued-work-yield', () => {
             const queuedImport = yield* Deferred.make<void>();
             let hasQueuedImport = false;
 
-            seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
+            yield* seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
 
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
@@ -65,7 +64,7 @@ describe('monobank/queued-work-yield', () => {
             const importRan = yield* Deferred.make<void>();
             const clock = yield* Effect.clockWith(Effect.succeed);
 
-            seedMonobankForwardSyncAccounts(['mono-acc-1', 'mono-acc-2'], staleForwardSyncFromAt);
+            yield* seedMonobankForwardSyncAccounts(['mono-acc-1', 'mono-acc-2'], staleForwardSyncFromAt);
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
                     events.push(`request:${String(params[statementAccountParam])}`);

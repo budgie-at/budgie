@@ -1,4 +1,4 @@
-import { SQL, and, count, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import { Column, SQL, and, count, eq, getColumnTable, getTableColumns, inArray, is, or, sql } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -12,7 +12,6 @@ import { Db } from '../../@generic/service/db.service';
 import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
-import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -31,10 +30,16 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
 
         const queryBuilder = new QueryBuilder();
 
-        const LIVE_ENTRY_RELATION_WHERE = and(
-            isNull(TransactionEntryEntityTable.originalTransactionId),
-            isNull(TransactionEntryEntityTable.deletedAt)
-        );
+        const mapTransactionColumns = (query: SQL, transactionTable: typeof TransactionEntityTable): SQL =>
+            sql.join(
+                query.queryChunks.map(chunk => {
+                    if (is(chunk, Column) && getColumnTable(chunk) === TransactionEntityTable) {
+                        return Object.values(getTableColumns(transactionTable)).find(column => column.name === chunk.name) ?? chunk;
+                    }
+
+                    return is(chunk, SQL) ? mapTransactionColumns(chunk, transactionTable) : chunk;
+                })
+            );
 
         const buildSimilarIdentityConditions = (query: SimilarTransactionStatsQueryInterface): string[] => {
             const conditions: string[] = [];
@@ -143,7 +148,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
         const buildFullRelations = (language: LanguageEnum) =>
             ({
                 [TransactionAssociationEnum.ENTRIES]: {
-                    where: LIVE_ENTRY_RELATION_WHERE,
+                    where: filters.buildLedgerEntryFilter(),
                     with: {
                         [TransactionEntryAssociationEnum.ACCOUNT]: {
                             with: {
@@ -160,7 +165,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                     }
                 },
                 [TransactionAssociationEnum.DEBT_EVENTS]: {
-                    where: isNull(DebtEventEntityTable.deletedAt),
+                    where: { deletedAt: { isNull: true } },
                     with: {
                         [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
                             with: {
@@ -179,7 +184,13 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                     with: buildFullRelations(language),
                     orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
                     limit,
-                    ...(isDefined(where) ? { where } : {})
+                    ...(isDefined(where)
+                        ? {
+                              where: {
+                                  RAW: (transactionTable: typeof TransactionEntityTable) => mapTransactionColumns(where, transactionTable)
+                              }
+                          }
+                        : {})
                 })
             );
 
@@ -192,7 +203,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                 }
 
                 const rows = yield* Db.query(db =>
-                    db.$client.getAllAsync<SimilarTransactionMonthRowInterface>(buildSimilarStatsSql(query), buildSimilarStatsParams(query))
+                    db.$client.unsafe<SimilarTransactionMonthRowInterface>(buildSimilarStatsSql(query), buildSimilarStatsParams(query))
                 );
 
                 if (isEmptyArray(rows)) {
@@ -241,7 +252,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
             getById: (id: number, language: LanguageEnum) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findFirst({
-                        where: eq(TransactionEntityTable.id, id),
+                        where: { id },
                         with: buildFullRelations(language)
                     })
                 )

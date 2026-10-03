@@ -7,8 +7,9 @@ import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker
 import { isDefined } from '@rnw-community/shared';
 
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
+
+import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
 const MAX_DOTS = 3;
 const DOT_STAGGER_MS = 4;

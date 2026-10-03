@@ -1,5 +1,4 @@
-import * as Haptics from 'expo-haptics';
-import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle, NotificationFeedbackType, impactAsync, notificationAsync } from 'expo-haptics';
 
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
@@ -8,13 +7,13 @@ export const useVibration = (): [notification: (type: NotificationFeedbackType) 
 
     const hapticNotification = (type: NotificationFeedbackType = NotificationFeedbackType.Success) => {
         if (isVibrationEnabled) {
-            void Haptics.notificationAsync(type);
+            void notificationAsync(type);
         }
     };
 
     const hapticImpact = (style: ImpactFeedbackStyle = ImpactFeedbackStyle.Medium) => {
         if (isVibrationEnabled) {
-            void Haptics.impactAsync(style);
+            void impactAsync(style);
         }
     };
 

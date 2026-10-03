@@ -1,4 +1,5 @@
 import { CategoryEntityInterface, UserIconType } from '@budgie/contracts';
+import { CategoryService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
@@ -9,7 +10,6 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useCategoryFormModal } from '../../context/category-form-modal.context';
-import { CategoryService } from '../../service/category.service';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 
 import { CategoryIconFixRowSelector } from './category-icon-fix-row.selector';

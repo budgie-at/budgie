@@ -11,23 +11,23 @@ const SLOW_WINDOW_OFFSET_MS = 30 * 60 * 1000;
 layer(TestLayer)('consolidation/transfer-pair-by-amount', it => {
     it.effect('consolidates amount and transfer-MCC matches through consolidation services', () =>
         Effect.gen(function* () {
-            const transferMcc = testQueryService.findMccByCode('4829');
-            const { expense, income } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const { expense, income } = yield* testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
             yield* expectConsolidationResult({ found: 1, consolidated: 1 });
 
-            const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const canonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
             expect(canonicals).toHaveLength(1);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonicals[0].id);
-            expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonicals[0].id);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonicals[0].id);
+            expect((yield* testQueryService.fetchTransactionById(income.id)).consolidationParentTransactionId).toBe(canonicals[0].id);
         })
     );
 
     it.effect('keeps moved source entries out of account balance calculations', () =>
         Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const transferMcc = testQueryService.findMccByCode('4829');
-            const { fromAccount, toAccount } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const { fromAccount, toAccount } = yield* testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
             yield* runConsolidation();
 
@@ -41,35 +41,35 @@ layer(TestLayer)('consolidation/transfer-pair-by-amount', it => {
 
     it.effect('auto-consolidates amount and transfer-MCC matches outside the fast window', () =>
         Effect.gen(function* () {
-            const { fromAccount, toAccount } = testSeedService.accountPair();
-            const transferMcc = testQueryService.findMccByCode('4829');
+            const { fromAccount, toAccount } = yield* testSeedService.accountPair();
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
             const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
             const slowOperatedAt = new Date(operatedAt.getTime() + SLOW_WINDOW_OFFSET_MS);
 
-            testSeedService.bankPairExpense(
+            yield* testSeedService.bankPairExpense(
                 { externalId: 'slow-expense', operatedAt },
                 { accountId: fromAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
             );
-            testSeedService.bankPairIncome(
+            yield* testSeedService.bankPairIncome(
                 { externalId: 'slow-income', operatedAt: slowOperatedAt },
                 { accountId: toAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
             );
 
             yield* expectConsolidationResult({ found: 1, consolidated: 1 });
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
         })
     );
 
     it.effect('leaves matching amounts unconsolidated without IBAN or transfer MCC evidence', () =>
         Effect.gen(function* () {
-            const { fromAccount, toAccount } = testSeedService.accountPair();
+            const { fromAccount, toAccount } = yield* testSeedService.accountPair();
             const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
 
-            testSeedService.bankPairExpense(
+            yield* testSeedService.bankPairExpense(
                 { externalId: 'missing-evidence-expense', operatedAt },
                 { accountId: fromAccount.id, amount: 250 * PRECISION }
             );
-            testSeedService.bankPairIncome(
+            yield* testSeedService.bankPairIncome(
                 { externalId: 'missing-evidence-income', operatedAt },
                 { accountId: toAccount.id, amount: 250 * PRECISION }
             );
@@ -82,8 +82,8 @@ layer(TestLayer)('consolidation/transfer-pair-by-amount', it => {
     it.effect('leaves amount transfers from inactive source accounts unconsolidated', () =>
         Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
-            const transferMcc = testQueryService.findMccByCode('4829');
-            const { fromAccount } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const { fromAccount } = yield* testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
             yield* accountRepository.updateById(fromAccount.id, { isActive: false });
 
@@ -95,8 +95,8 @@ layer(TestLayer)('consolidation/transfer-pair-by-amount', it => {
     it.effect('leaves amount transfers to inactive target accounts unconsolidated', () =>
         Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
-            const transferMcc = testQueryService.findMccByCode('4829');
-            const { toAccount } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const { toAccount } = yield* testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
             yield* accountRepository.updateById(toAccount.id, { isActive: false });
 

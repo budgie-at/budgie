@@ -1,10 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { ErsteSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { PDF_MIME_TYPE } from '../../constant/pdf-mime-type.constant';
-import { ErsteSyncService } from '../../service/erste-sync.service';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
 
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';

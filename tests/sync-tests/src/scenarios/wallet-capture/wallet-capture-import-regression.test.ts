@@ -1,8 +1,8 @@
-import { RuleEngineService } from '@app/rule/service/rule-engine.service';
 import { WalletCaptureReviewReasonEnum } from '@app/wallet-capture/enum/wallet-capture-review-reason.enum';
 import { WalletCaptureStatusEnum } from '@app/wallet-capture/enum/wallet-capture-status.enum';
 import { WalletCaptureImportService } from '@app/wallet-capture/service/wallet-capture-import.service';
 import { AccountEntityTable, CategorySourceEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { RuleEngineService } from '@budgie/rules';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -27,12 +27,12 @@ import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-cap
 import type { WalletCaptureNativeRecordInterface } from '@app/wallet-capture/interface/wallet-capture-native-record.interface';
 
 const CAPTURE_ID = '8e3f58ae-cd1c-45c8-91da-e54a5c8ea444';
-const expectCreatedCapturePending = (capture: WalletCaptureNativeRecordInterface): void => {
-    const transaction = walletCaptureFindTransaction(capture.captureId);
+const expectCreatedCapturePending = Effect.fnUntraced(function* (capture: WalletCaptureNativeRecordInterface) {
+    const transaction = yield* walletCaptureFindTransaction(capture.captureId);
 
     expect(transaction.externalSource).toBe(ExternalSourceEnum.APPLE_PAY_AUTOMATION);
-    expect(walletCaptureFindEntry(transaction.id).categorySource).toBe(CategorySourceEnum.USER);
-};
+    expect((yield* walletCaptureFindEntry(transaction.id)).categorySource).toBe(CategorySourceEnum.USER);
+});
 
 const expectUnavailableCaptureDismissed = Effect.fnUntraced(function* (capture: WalletCaptureNativeRecordInterface) {
     const walletCaptureImportService = yield* WalletCaptureImportService;
@@ -49,7 +49,7 @@ describe('Wallet capture import regressions', () => {
         Effect.gen(function* () {
             const walletCaptureImportService = yield* WalletCaptureImportService;
             const ruleEngineService = yield* RuleEngineService;
-            const { capture, category } = walletCaptureSeedInput(CAPTURE_ID);
+            const { capture, category } = yield* walletCaptureSeedInput(CAPTURE_ID);
 
             walletCaptureNativeStub.seed([capture]);
             walletCaptureForcePostCreateRulePreparation(ruleEngineService);
@@ -57,20 +57,20 @@ describe('Wallet capture import regressions', () => {
 
             expect(Exit.isFailure(yield* Effect.exit(walletCaptureImportService.drain()))).toBe(true);
 
-            expectCreatedCapturePending(capture);
+            yield* expectCreatedCapturePending(capture);
             expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([capture]);
 
             expect(yield* walletCaptureImportService.drain()).toEqual([]);
 
-            expect(testDb.select().from(TransactionEntityTable).all()).toHaveLength(1);
-            walletCaptureExpectRuleApplied(capture, category);
+            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
+            yield* walletCaptureExpectRuleApplied(capture, category);
             expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('returns and dismisses a pending capture whose account is missing from review items', () =>
         Effect.gen(function* () {
-            seed.instrument();
+            yield* seed.instrument();
             const capture = walletCaptureBuild(CAPTURE_ID, { accountId: WALLET_CAPTURE_MISSING_ACCOUNT_ID });
 
             yield* expectUnavailableCaptureDismissed(capture);
@@ -79,10 +79,10 @@ describe('Wallet capture import regressions', () => {
 
     it.effect('returns and dismisses a pending capture whose account is inactive from review items', () =>
         Effect.gen(function* () {
-            const account = walletCaptureSeedAccount();
+            const account = yield* walletCaptureSeedAccount();
             const capture = walletCaptureBuild(CAPTURE_ID, { accountId: account.id });
 
-            testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, account.id)).run();
+            yield* testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, account.id));
             yield* expectUnavailableCaptureDismissed(capture);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -90,7 +90,7 @@ describe('Wallet capture import regressions', () => {
     it.effect('does not dismiss an arbitrary pending capture with an available account', () =>
         Effect.gen(function* () {
             const walletCaptureImportService = yield* WalletCaptureImportService;
-            const account = walletCaptureSeedAccount();
+            const account = yield* walletCaptureSeedAccount();
             const capture = walletCaptureBuild(CAPTURE_ID, { accountId: account.id });
 
             walletCaptureNativeStub.seed([capture]);
@@ -104,21 +104,21 @@ describe('Wallet capture import regressions', () => {
         Effect.gen(function* () {
             const walletCaptureImportService = yield* WalletCaptureImportService;
             const ruleEngineService = yield* RuleEngineService;
-            const input = walletCaptureSeedInput(CAPTURE_ID);
+            const input = yield* walletCaptureSeedInput(CAPTURE_ID);
             const capture = walletCaptureBuild(CAPTURE_ID, {
                 accountId: input.capture.accountId,
                 status: WalletCaptureStatusEnum.NEEDS_REVIEW,
                 duplicateTransactionId: WALLET_CAPTURE_MISSING_ACCOUNT_ID
             });
 
-            walletCaptureSeedExistingTransaction(capture);
+            yield* walletCaptureSeedExistingTransaction(capture);
             walletCaptureNativeStub.seed([capture]);
             walletCaptureForcePostCreateRulePreparation(ruleEngineService);
 
             yield* walletCaptureImportService.forceImport(capture.captureId);
 
-            expect(testDb.select().from(TransactionEntityTable).all()).toHaveLength(1);
-            walletCaptureExpectRuleApplied(capture, input.category);
+            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
+            yield* walletCaptureExpectRuleApplied(capture, input.category);
             expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );

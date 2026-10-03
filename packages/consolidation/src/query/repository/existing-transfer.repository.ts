@@ -23,21 +23,21 @@ export class ExistingTransferRepository extends Context.Service<ExistingTransfer
             ) {
                 const sql = EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL(scope);
 
-                return yield* Db.query(db => db.$client.getAllAsync<ExistingTransferBridgeCandidateInterface>(sql));
+                return yield* Db.query(db => db.$client.unsafe<ExistingTransferBridgeCandidateInterface>(sql));
             }),
             findChainReclaimCandidates: Effect.fn('ExistingTransferRepository.findChainReclaimCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null = null
             ) {
                 const sql = EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL(scope);
 
-                return yield* Db.query(db => db.$client.getAllAsync<ExistingTransferChainReclaimCandidateInterface>(sql));
+                return yield* Db.query(db => db.$client.unsafe<ExistingTransferChainReclaimCandidateInterface>(sql));
             }),
             findIncomeDuplicateCandidates: Effect.fn('ExistingTransferRepository.findIncomeDuplicateCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null = null
             ) {
                 const sql = EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL(scope);
 
-                return yield* Db.query(db => db.$client.getAllAsync<ExistingTransferIncomeDuplicateCandidateInterface>(sql));
+                return yield* Db.query(db => db.$client.unsafe<ExistingTransferIncomeDuplicateCandidateInterface>(sql));
             })
         })
     }
