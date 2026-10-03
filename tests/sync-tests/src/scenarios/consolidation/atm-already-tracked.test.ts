@@ -1,7 +1,5 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { CategorizeInboxLabelKindEnum } from '@app/categorize-inbox/enum/categorize-inbox-label-kind.enum';
-import { CategorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
 import { BudgetRepository } from '@budgie/budget';
+import { CategorizeInboxLabelKindEnum, CategorizeInboxService, TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -10,9 +8,9 @@ import {
     LanguageEnum,
     RUNWAY_WINDOW_MONTHS,
     StatisticsRepository,
-    TransactionCategorizeInboxRepository,
     TransactionViewRepository
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -64,15 +62,19 @@ describe('consolidation/atm-already-tracked', () => {
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const categorizeInboxService = yield* CategorizeInboxService;
             const transactionCategorizeInboxRepository = yield* TransactionCategorizeInboxRepository;
-            const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: INSTRUMENT_ID });
-            const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: INSTRUMENT_ID });
-            const atmExpense = seedBankPair.expense(
+            const bankAccount = yield* seed.account({
+                externalId: 'mono-bank',
+                type: AccountTypeEnum.BANK_SYNC,
+                instrumentId: INSTRUMENT_ID
+            });
+            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: INSTRUMENT_ID });
+            const atmExpense = yield* seedBankPair.expense(
                 { externalId: 'tx-atm-tracked', operatedAt: buildLastMonthDate() },
-                { accountId: bankAccount.id, amount: ATM_AMOUNT, mccCategoryId: findMccByCode('6011').id }
+                { accountId: bankAccount.id, amount: ATM_AMOUNT, mccCategoryId: (yield* findMccByCode('6011')).id }
             );
-            seedBankPair.expense(
+            yield* seedBankPair.expense(
                 { externalId: 'tx-groceries', operatedAt: buildLastMonthDate() },
-                { accountId: bankAccount.id, amount: GROCERY_AMOUNT, mccCategoryId: findMccByCode('5411').id }
+                { accountId: bankAccount.id, amount: GROCERY_AMOUNT, mccCategoryId: (yield* findMccByCode('5411')).id }
             );
             const accountIds = [bankAccount.id, cashAccount.id];
             yield* accountBalanceIncrementalService.updateAllBalances(true);

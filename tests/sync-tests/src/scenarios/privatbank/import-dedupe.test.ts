@@ -6,8 +6,7 @@ import * as Effect from 'effect/Effect';
 
 import { makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
 
-import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
-import type { PrivatbankRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
+import type { FileBasedSyncClientInterface, PrivatbankRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const PRIVATBANK_CARD_ID = '4731 **** **** 5524';
 const PRIVATBANK_STATEMENT_URI = 'privatbank-statement.xlsx';
@@ -51,52 +50,55 @@ class StubPrivatbankFileClient implements FileBasedSyncClientInterface {
     }
 }
 
-const seedPrivatbankAccount = (): number => {
-    const account = seed.account({
-        title: 'Privatbank Card',
-        externalId: PRIVATBANK_CARD_ID,
-        externalSource: ExternalSourceEnum.PRIVATBANK
+const seedPrivatbankAccount = () =>
+    Effect.gen(function* () {
+        const account = yield* seed.account({
+            title: 'Privatbank Card',
+            externalId: PRIVATBANK_CARD_ID,
+            externalSource: ExternalSourceEnum.PRIVATBANK
+        });
+
+        return account.id;
     });
 
-    return account.id;
-};
+const seedPrivatbankParsedDateTransaction = (accountId: number) =>
+    Effect.gen(function* () {
+        const row = buildPrivatbankRow();
 
-const seedPrivatbankParsedDateTransaction = (accountId: number): void => {
-    const row = buildPrivatbankRow();
+        const transaction = yield* seed.bankPairExpense(
+            { externalId: PRIVATBANK_PARSED_DATE_EXTERNAL_ID, operatedAt: row.date },
+            {
+                amount: PRIVATBANK_TRANSACTION_AMOUNT,
+                accountId
+            }
+        );
 
-    const transaction = seed.bankPairExpense(
-        { externalId: PRIVATBANK_PARSED_DATE_EXTERNAL_ID, operatedAt: row.date },
-        {
-            amount: PRIVATBANK_TRANSACTION_AMOUNT,
-            accountId
-        }
-    );
-
-    seed.updateTransaction(transaction.id, {
-        externalSource: ExternalSourceEnum.PRIVATBANK,
-        title: row.description
+        yield* seed.updateTransaction(transaction.id, {
+            externalSource: ExternalSourceEnum.PRIVATBANK,
+            title: row.description
+        });
     });
-};
 const fetchPrivatbankTransactions = () =>
-    testDb
-        .select()
-        .from(TransactionEntityTable)
-        .where(and(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK), isNull(TransactionEntityTable.deletedAt)))
-        .all();
+    Effect.gen(function* () {
+        return yield* testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(and(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK), isNull(TransactionEntityTable.deletedAt)));
+    });
 
 describe('privatbank/import-dedupe', () => {
     it.effect('reuses transactions imported with the old parsed-date external id', () =>
         Effect.gen(function* () {
-            const accountId = seedPrivatbankAccount();
+            const accountId = yield* seedPrivatbankAccount();
             const client = new StubPrivatbankFileClient();
             const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
             const [importedTransaction] = client.getTransactions(PRIVATBANK_CARD_ID);
 
-            seedPrivatbankParsedDateTransaction(accountId);
+            yield* seedPrivatbankParsedDateTransaction(accountId);
 
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-            const transactions = fetchPrivatbankTransactions();
+            const transactions = yield* fetchPrivatbankTransactions();
 
             expect(transactions).toHaveLength(1);
             expect(transactions[0]).toEqual(expect.objectContaining({ externalId: importedTransaction.id }));
@@ -110,7 +112,7 @@ describe('privatbank/import-dedupe', () => {
 
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, ['4731 **** **** 0000']);
 
-            expect(fetchPrivatbankTransactions()).toHaveLength(0);
+            expect(yield* fetchPrivatbankTransactions()).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 });

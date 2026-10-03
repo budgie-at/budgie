@@ -14,7 +14,7 @@ layer(TestLayer)('consolidation/refund-pair-review-null-mcc', it => {
     it.effect('surfaces a prefix-stripped pair without MCC data for manual review', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
+            const { expense, refunds } = yield* seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: COMFY_REVIEW_AMOUNT,
                 refundAmounts: [COMFY_REVIEW_AMOUNT],
                 title: 'Платіж COMFY',

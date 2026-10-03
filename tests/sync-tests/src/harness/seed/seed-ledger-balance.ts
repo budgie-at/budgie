@@ -1,5 +1,5 @@
-import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { AccountBalanceRepository } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
 
 import { seed } from './seed';
@@ -9,7 +9,7 @@ export const seedLedgerBalance = Effect.fnUntraced(function* (accountId: number,
     const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
     const ledgerBalance = (yield* accountBalanceRepository.getLedgerBalances([accountId])).get(accountId) ?? 0;
 
-    seed.bankPairIncome(
+    yield* seed.bankPairIncome(
         { externalId: `opening-balance-${accountId}`, operatedAt: new Date() },
         { accountId, amount: amount - ledgerBalance }
     );

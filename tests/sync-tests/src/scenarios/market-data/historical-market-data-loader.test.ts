@@ -1,6 +1,7 @@
 import { Workload } from '@app/@generic/service/workload.service';
-import { HistoricalMarketDataLoaderService } from '@app/market-data/service/historical-market-data-loader.service';
-import { InstrumentMarketDataJobRepository, InstrumentMarketDataJobStatusEnum, InstrumentRepository } from '@budgie/contracts';
+import { HistoricalMarketDataDrainerService } from '@app/market-data/service/historical-market-data-drainer.service';
+import { InstrumentMarketDataJobStatusEnum, InstrumentRepository } from '@budgie/contracts';
+import { InstrumentMarketDataJobRepository } from '@budgie/market';
 import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -56,12 +57,12 @@ describe('market-data/historical-market-data-loader', () => {
 
     it.effect('waits for active user import work before claiming the next market data job', () =>
         Effect.gen(function* () {
-            const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+            const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
             const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
             vi.spyOn(instrumentMarketDataJobRepository, 'claimNext').mockImplementation(() => recordClaimNext(undefined));
             const releaseImportWork = yield* pauseUserWork(Effect.void);
 
-            yield* historicalMarketDataLoaderService.scheduleDrain();
+            yield* historicalMarketDataDrainerService.scheduleDrain();
             yield* advanceScheduledDrain(drainDelayMs);
             expect(claimNextExecutions).not.toHaveBeenCalled();
 
@@ -74,7 +75,7 @@ describe('market-data/historical-market-data-loader', () => {
 
     it.effect('waits for active user import work before marking a market data job failed', () =>
         Effect.gen(function* () {
-            const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+            const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
             const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
             const instrumentRepository = yield* InstrumentRepository;
             const workload = yield* Workload;
@@ -98,7 +99,7 @@ describe('market-data/historical-market-data-loader', () => {
                 })
             );
 
-            yield* historicalMarketDataLoaderService.scheduleDrain();
+            yield* historicalMarketDataDrainerService.scheduleDrain();
             yield* advanceScheduledDrain(drainDelayMs);
             expect(markFailedExecutions).not.toHaveBeenCalled();
 

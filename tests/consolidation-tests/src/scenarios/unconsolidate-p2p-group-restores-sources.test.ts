@@ -13,35 +13,36 @@ const INCOME_AMOUNT = Number('187.21') * PRECISION;
 const SECOND_EXPENSE_OFFSET_MS = 30_000;
 const INCOME_OFFSET_MS = 60_000;
 
-const seedGroupedP2pSources = () => {
-    const usdt = testSeedService.instrument({ code: 'USDT', name: 'Tether', symbol: 'USDT' });
-    const bankAccount = testSeedService.account({ externalId: 'mono-white-p2p', type: AccountTypeEnum.BANK_SYNC });
-    const binanceAccount = testSeedService.account({
-        externalId: 'binance-funding-usdt',
-        type: AccountTypeEnum.CRYPTO_SYNC,
-        instrumentId: usdt.id
-    });
-    const firstExpense = testSeedService.bankPairExpense(
-        { externalId: 'mono-p2p-expense-a', operatedAt: OPERATED_AT },
-        { accountId: bankAccount.id, amount: FIRST_EXPENSE_AMOUNT }
-    );
-    const secondExpense = testSeedService.bankPairExpense(
-        { externalId: 'mono-p2p-expense-b', operatedAt: new Date(OPERATED_AT.getTime() + SECOND_EXPENSE_OFFSET_MS) },
-        { accountId: bankAccount.id, amount: SECOND_EXPENSE_AMOUNT }
-    );
-    const income = testSeedService.bankPairIncome(
-        { externalId: 'binance:c2c:grouped-buy', operatedAt: new Date(OPERATED_AT.getTime() + INCOME_OFFSET_MS) },
-        { accountId: binanceAccount.id, amount: INCOME_AMOUNT }
-    );
+const seedGroupedP2pSources = () =>
+    Effect.gen(function* () {
+        const usdt = yield* testSeedService.instrument({ code: 'USDT', name: 'Tether', symbol: 'USDT' });
+        const bankAccount = yield* testSeedService.account({ externalId: 'mono-white-p2p', type: AccountTypeEnum.BANK_SYNC });
+        const binanceAccount = yield* testSeedService.account({
+            externalId: 'binance-funding-usdt',
+            type: AccountTypeEnum.CRYPTO_SYNC,
+            instrumentId: usdt.id
+        });
+        const firstExpense = yield* testSeedService.bankPairExpense(
+            { externalId: 'mono-p2p-expense-a', operatedAt: OPERATED_AT },
+            { accountId: bankAccount.id, amount: FIRST_EXPENSE_AMOUNT }
+        );
+        const secondExpense = yield* testSeedService.bankPairExpense(
+            { externalId: 'mono-p2p-expense-b', operatedAt: new Date(OPERATED_AT.getTime() + SECOND_EXPENSE_OFFSET_MS) },
+            { accountId: bankAccount.id, amount: SECOND_EXPENSE_AMOUNT }
+        );
+        const income = yield* testSeedService.bankPairIncome(
+            { externalId: 'binance:c2c:grouped-buy', operatedAt: new Date(OPERATED_AT.getTime() + INCOME_OFFSET_MS) },
+            { accountId: binanceAccount.id, amount: INCOME_AMOUNT }
+        );
 
-    return { bankAccount, binanceAccount, firstExpense, secondExpense, income };
-};
+        return { bankAccount, binanceAccount, firstExpense, secondExpense, income };
+    });
 
 layer(TestLayer)('consolidation/unconsolidate-p2p-group-restores-sources', it => {
     it.effect('restores every source from a grouped P2P transfer and allows reconsolidation', () =>
         Effect.gen(function* () {
             const consolidationExecutorService = yield* ConsolidationExecutorService;
-            const { bankAccount, binanceAccount, firstExpense, secondExpense, income } = seedGroupedP2pSources();
+            const { bankAccount, binanceAccount, firstExpense, secondExpense, income } = yield* seedGroupedP2pSources();
             const candidate = {
                 sourceTransactionIds: [firstExpense.id, secondExpense.id, income.id],
                 bankTransactionIds: [firstExpense.id, secondExpense.id],
@@ -62,16 +63,16 @@ layer(TestLayer)('consolidation/unconsolidate-p2p-group-restores-sources', it =>
 
             expect(yield* consolidationExecutorService.consolidateP2pFiatTransfer(candidate)).toBe(true);
 
-            const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
             expect(canonical).toBeDefined();
 
             yield* unconsolidateById(canonical.id);
 
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
 
             for (const sourceTransaction of [firstExpense, secondExpense, income]) {
-                expect(testQueryService.fetchTransactionById(sourceTransaction.id).consolidationParentTransactionId).toBeNull();
-                expect(testQueryService.fetchEntryByExternalId(sourceTransaction.externalId ?? '').transactionId).toBe(
+                expect((yield* testQueryService.fetchTransactionById(sourceTransaction.id)).consolidationParentTransactionId).toBeNull();
+                expect((yield* testQueryService.fetchEntryByExternalId(sourceTransaction.externalId ?? '')).transactionId).toBe(
                     sourceTransaction.id
                 );
             }

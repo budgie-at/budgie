@@ -1,9 +1,9 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { AccountService } from '../../service/account.service';
 import { AccountActionCard } from '../account-action-card/account-action-card';
 
 import { InactiveAccountCardSelector } from './inactive-account-card.selector';

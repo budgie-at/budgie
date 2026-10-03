@@ -1,4 +1,4 @@
-import { TransactionCategorizeInboxRepository } from '@budgie/contracts';
+import { CategorizeInboxLabelKindEnum, TransactionCategorizeInboxRepository, categorizeInboxEngineService } from '@budgie/categorization';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -13,14 +13,12 @@ import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.c
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
 import { categoryEvidenceAtom, uncategorizedRowsAtom } from '../../constant/categorize-inbox-atoms.constant';
-import { CategorizeInboxLabelKindEnum } from '../../enum/categorize-inbox-label-kind.enum';
 import { useCategorizeInboxLabels } from '../../hook/use-categorize-inbox-labels.hook';
-import { categorizeInboxEngineService } from '../../service/categorize-inbox-engine.service';
 import { CategorizeInboxPage } from '../categorize-inbox-page/categorize-inbox-page';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
-import type { CategorizeInboxAssignmentInterface } from '../../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxStrategyInterface } from '../../interface/categorize-inbox-strategy.interface';
+import type { CategorizeInboxAssignmentInterface } from '@budgie/categorization';
 
 interface Props {
     readonly params: AnalyticsTransactionsRouteParamsInterface;

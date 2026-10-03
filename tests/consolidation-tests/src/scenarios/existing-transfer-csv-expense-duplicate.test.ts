@@ -26,40 +26,40 @@ const seedLegacyCsvTransfer = (
     sourceAmount: number,
     isTargetActive: boolean,
     targetType = AccountTypeEnum.BANK
-) => {
-    const legacySourceAccount = testSeedService.account({
-        title: 'monobank',
-        type: AccountTypeEnum.BANK,
-        instrumentId: sourceInstrumentId
-    });
-    const legacyTargetAccount = testSeedService.account({ title: 'приватбанк UAH', type: targetType, isActive: isTargetActive });
-    const syncedCardAccount = testSeedService.bankSyncAccount('Monobank Black •3126', ExternalSourceEnum.MONOBANK, null);
-    const legacyTransfer = testSeedService.directTransfer({
-        exchangeRate: sourceAmount / LEGACY_AMOUNT,
-        operatedAt: OPERATED_AT,
-        sourceAccountId: legacySourceAccount.id,
-        sourceAmount,
-        sourceEntryExchangeRate: 1,
-        targetAccountId: legacyTargetAccount.id,
-        targetAmount: LEGACY_AMOUNT,
-        title: '',
-        toIban: null
-    });
+) =>
+    Effect.gen(function* () {
+        const legacySourceAccount = yield* testSeedService.account({
+            title: 'monobank',
+            type: AccountTypeEnum.BANK,
+            instrumentId: sourceInstrumentId
+        });
+        const legacyTargetAccount = yield* testSeedService.account({ title: 'приватбанк UAH', type: targetType, isActive: isTargetActive });
+        const syncedCardAccount = yield* testSeedService.bankSyncAccount('Monobank Black •3126', ExternalSourceEnum.MONOBANK, null);
+        const legacyTransfer = yield* testSeedService.directTransfer({
+            exchangeRate: sourceAmount / LEGACY_AMOUNT,
+            operatedAt: OPERATED_AT,
+            sourceAccountId: legacySourceAccount.id,
+            sourceAmount,
+            sourceEntryExchangeRate: 1,
+            targetAccountId: legacyTargetAccount.id,
+            targetAmount: LEGACY_AMOUNT,
+            title: '',
+            toIban: null
+        });
 
-    testSeedService.updateTransaction(legacyTransfer.id, { externalSource: ExternalSourceEnum.CSV });
-    testDb
-        .update(TransactionEntryEntityTable)
-        .set({ deletedAt: new Date('2026-01-01') })
-        .where(
-            and(
-                eq(TransactionEntryEntityTable.transactionId, legacyTransfer.id),
-                eq(TransactionEntryEntityTable.accountId, legacySourceAccount.id)
-            )
-        )
-        .run();
+        yield* testSeedService.updateTransaction(legacyTransfer.id, { externalSource: ExternalSourceEnum.CSV });
+        yield* testDb
+            .update(TransactionEntryEntityTable)
+            .set({ deletedAt: new Date('2026-01-01') })
+            .where(
+                and(
+                    eq(TransactionEntryEntityTable.transactionId, legacyTransfer.id),
+                    eq(TransactionEntryEntityTable.accountId, legacySourceAccount.id)
+                )
+            );
 
-    return { legacySourceAccount, legacyTargetAccount, legacyTransfer, syncedCardAccount };
-};
+        return { legacySourceAccount, legacyTargetAccount, legacyTransfer, syncedCardAccount };
+    });
 
 const fetchTotalExpense = Effect.fnUntraced(function* () {
     const statisticsRepository = yield* StatisticsRepository;
@@ -67,30 +67,37 @@ const fetchTotalExpense = Effect.fnUntraced(function* () {
     return (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, 1)).at(0)?.expense ?? 0;
 });
 
-const seedSyncedExpense = (accountId: number, amount: number, title: string, mcc = '4829') => {
-    const expense = testSeedService.bankPairExpense(
-        { externalId: `synced-${title}`, operatedAt: new Date(OPERATED_AT.getTime() + 14_000) },
-        { accountId, amount, mccCategoryId: testQueryService.findMccByCode(mcc).id }
-    );
+const seedSyncedExpense = (accountId: number, amount: number, title: string, mcc = '4829') =>
+    Effect.gen(function* () {
+        const expense = yield* testSeedService.bankPairExpense(
+            { externalId: `synced-${title}`, operatedAt: new Date(OPERATED_AT.getTime() + 14_000) },
+            { accountId, amount, mccCategoryId: (yield* testQueryService.findMccByCode(mcc)).id }
+        );
 
-    return testSeedService.updateTransaction(expense.id, { title });
-};
+        return yield* testSeedService.updateTransaction(expense.id, { title });
+    });
+
+const expectExpenseLeftUnconsolidated = (expenseId: number) =>
+    Effect.gen(function* () {
+        expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect((yield* testQueryService.fetchTransactionById(expenseId)).consolidationParentTransactionId).toBeNull();
+    });
 
 layer(TestLayer)('consolidation/existing-transfer-csv-expense-duplicate', it => {
     it.effect('pairs a synced expense with the rounded source leg of a legacy CSV transfer to an inactive account', () =>
         Effect.gen(function* () {
-            const { legacyTargetAccount, legacyTransfer, syncedCardAccount } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
-            const expense = seedSyncedExpense(syncedCardAccount.id, SYNCED_AMOUNT, 'приват сина 3');
+            const { legacyTargetAccount, legacyTransfer, syncedCardAccount } = yield* seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
+            const expense = yield* seedSyncedExpense(syncedCardAccount.id, SYNCED_AMOUNT, 'приват сина 3');
 
             const result = yield* runConsolidation();
-            const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
             expect(result.consolidated).toBe(1);
             expect(canonical.title).toBe('приват сина 3');
             expect(canonical.fromAccountId).toBe(syncedCardAccount.id);
             expect(canonical.toAccountId).toBe(legacyTargetAccount.id);
-            expectConsolidationParent(legacyTransfer.id, canonical.id);
-            expectConsolidationParent(expense.id, canonical.id);
+            yield* expectConsolidationParent(legacyTransfer.id, canonical.id);
+            yield* expectConsolidationParent(expense.id, canonical.id);
             expect(yield* fetchLedgerBalances([syncedCardAccount.id, legacyTargetAccount.id])).toEqual([
                 [syncedCardAccount.id, -SYNCED_AMOUNT],
                 [legacyTargetAccount.id, LEGACY_AMOUNT]
@@ -105,16 +112,16 @@ layer(TestLayer)('consolidation/existing-transfer-csv-expense-duplicate', it => 
                 legacyTargetAccount: cashAccount,
                 legacyTransfer,
                 syncedCardAccount
-            } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, true, AccountTypeEnum.CASH);
-            const atmExpense = seedSyncedExpense(syncedCardAccount.id, ATM_AMOUNT, 'Банкомат MONO', '6011');
+            } = yield* seedLegacyCsvTransfer(1, LEGACY_AMOUNT, true, AccountTypeEnum.CASH);
+            const atmExpense = yield* seedSyncedExpense(syncedCardAccount.id, ATM_AMOUNT, 'Банкомат MONO', '6011');
             const ledgerBalances = yield* fetchLedgerBalances([syncedCardAccount.id, cashAccount.id]);
             const totalExpense = yield* fetchTotalExpense();
 
             expect(yield* runConsolidation()).toEqual({ consolidated: 1, found: 1 });
-            const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-            expectConsolidationParent(legacyTransfer.id, canonical.id);
-            expectConsolidationParent(atmExpense.id, canonical.id);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+            yield* expectConsolidationParent(legacyTransfer.id, canonical.id);
+            yield* expectConsolidationParent(atmExpense.id, canonical.id);
             expect(yield* fetchLedgerBalances([syncedCardAccount.id, cashAccount.id])).toEqual(ledgerBalances);
             expect(totalExpense - (yield* fetchTotalExpense())).toBe(ATM_AMOUNT);
             yield* expectSecondConsolidationRunStable();
@@ -123,24 +130,28 @@ layer(TestLayer)('consolidation/existing-transfer-csv-expense-duplicate', it => 
 
     it.effect('matches the target leg when the legacy source account holds another currency', () =>
         Effect.gen(function* () {
-            const eur = testSeedService.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
-            const { legacyTargetAccount, legacyTransfer, syncedCardAccount } = seedLegacyCsvTransfer(eur.id, LEGACY_EUR_AMOUNT, true);
-            const expense = seedSyncedExpense(syncedCardAccount.id, LEGACY_AMOUNT, '552324****0356');
+            const eur = yield* testSeedService.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
+            const { legacyTargetAccount, legacyTransfer, syncedCardAccount } = yield* seedLegacyCsvTransfer(
+                eur.id,
+                LEGACY_EUR_AMOUNT,
+                true
+            );
+            const expense = yield* seedSyncedExpense(syncedCardAccount.id, LEGACY_AMOUNT, '552324****0356');
 
             expect((yield* runConsolidation()).consolidated).toBe(1);
-            const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
             expect(canonical.toAccountId).toBe(legacyTargetAccount.id);
-            expectConsolidationParent(legacyTransfer.id, canonical.id);
-            expectConsolidationParent(expense.id, canonical.id);
+            yield* expectConsolidationParent(legacyTransfer.id, canonical.id);
+            yield* expectConsolidationParent(expense.id, canonical.id);
         })
     );
 
     it.effect('keeps the expense when the legacy source leg is still live on an active account', () =>
         Effect.gen(function* () {
-            const { legacySourceAccount, legacyTransfer, syncedCardAccount } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
-            const expense = seedSyncedExpense(syncedCardAccount.id, LEGACY_AMOUNT, 'приват сина 3');
+            const { legacySourceAccount, legacyTransfer, syncedCardAccount } = yield* seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
+            const expense = yield* seedSyncedExpense(syncedCardAccount.id, LEGACY_AMOUNT, 'приват сина 3');
 
-            testDb
+            yield* testDb
                 .update(TransactionEntryEntityTable)
                 .set({ deletedAt: null })
                 .where(
@@ -148,11 +159,9 @@ layer(TestLayer)('consolidation/existing-transfer-csv-expense-duplicate', it => 
                         eq(TransactionEntryEntityTable.transactionId, legacyTransfer.id),
                         eq(TransactionEntryEntityTable.accountId, legacySourceAccount.id)
                     )
-                )
-                .run();
+                );
 
-            expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
+            yield* expectExpenseLeftUnconsolidated(expense.id);
         })
     );
 
@@ -163,11 +172,10 @@ layer(TestLayer)('consolidation/existing-transfer-csv-expense-duplicate', it => 
         ['Переказ на картку', LEGACY_AMOUNT, '5411']
     ] as const)('keeps "%s" as an expense when it does not duplicate the legacy leg', ([title, amount, mcc]) =>
         Effect.gen(function* () {
-            const { syncedCardAccount } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
-            const expense = seedSyncedExpense(syncedCardAccount.id, amount, title, mcc);
+            const { syncedCardAccount } = yield* seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
+            const expense = yield* seedSyncedExpense(syncedCardAccount.id, amount, title, mcc);
 
-            expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
+            yield* expectExpenseLeftUnconsolidated(expense.id);
         })
     );
 });

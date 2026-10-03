@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { runConsolidation } from './run-consolidation';
 import { testSeedService } from './test-context';
 
@@ -10,7 +12,7 @@ export const runRefundScenario = Effect.fnUntraced(function* (input: {
         readonly account: AccountEntityInterface;
         readonly expense: TransactionEntityInterface;
         readonly refunds: TransactionEntityInterface[];
-    }) => void;
+    }) => Effect.Effect<unknown, unknown>;
     readonly expenseAmount: number;
     readonly expenseFeeAmount?: number;
     readonly expenseOperatedAt?: Date;
@@ -23,10 +25,12 @@ export const runRefundScenario = Effect.fnUntraced(function* (input: {
     readonly refundTitles?: readonly string[];
     readonly title?: string;
 }) {
-    const account = testSeedService.account({ externalId: 'mono-card' });
-    const { expense, refunds } = testSeedService.refundedExpense({ ...input, accountId: account.id });
+    const account = yield* testSeedService.account({ externalId: 'mono-card' });
+    const { expense, refunds } = yield* testSeedService.refundedExpense({ ...input, accountId: account.id });
 
-    input.beforeConsolidation?.({ account, expense, refunds });
+    if (isDefined(input.beforeConsolidation)) {
+        yield* input.beforeConsolidation({ account, expense, refunds });
+    }
 
     const result = yield* runConsolidation();
 

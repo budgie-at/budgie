@@ -1,12 +1,11 @@
 import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
-import { afterEach, beforeEach } from 'vitest';
+import * as Effect from 'effect/Effect';
+import { afterAll, afterEach, beforeEach } from 'vitest';
 
-import { testDb } from './test-context';
+import { testDb, testDbHandle } from './test-context';
 
-beforeEach(() => {
-    resetTestDb(testDb);
-});
+beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
-afterEach(async () => {
-    await assertStoredBalancesMatchLedger(testDb);
-});
+afterEach(() => Effect.runPromise(assertStoredBalancesMatchLedger(testDb)));
+
+afterAll(() => testDbHandle.dispose());

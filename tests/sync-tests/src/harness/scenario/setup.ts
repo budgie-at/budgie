@@ -10,6 +10,12 @@ vi.mock('@app/sync/service/transfer-consolidation-drainer.service', async () => 
     return { TransferConsolidationDrainerService: FakeTransferConsolidationDrainerService };
 });
 
+vi.mock('@app/@generic/drizzle/service/database-connection.service', async () => {
+    const { FakeDatabaseConnectionService } = await import('../fake/fake-database-connection.service');
+
+    return { DatabaseConnectionService: FakeDatabaseConnectionService };
+});
+
 vi.mock('@app/@generic/constant/yield-to-ui.constant', () => ({ YIELD_TO_UI: Effect.void }));
 
 const resolveLinguiMessage = (descriptor: unknown): string => {
@@ -43,12 +49,9 @@ vi.mock('@lingui/core', () => ({
 
 export const backupDatabasePath = isNotEmptyString(process.env['BUDGIE_BACKUP_DB']) ? process.env['BUDGIE_BACKUP_DB'] : null;
 
-export const testDb = buildTestDb(backupDatabasePath);
+const testDbHandle = await buildTestDb(backupDatabasePath);
 
-vi.mock('@app/@generic/drizzle/db/db', () => ({
-    db: testDb,
-    expoDb: { closeAsync: vi.fn((): Promise<void> => Promise.resolve()) }
-}));
+export const testDb = testDbHandle.database;
 
 vi.mock('@app/@generic/runtime/app.runtime', async () => {
     const { testRuntime } = await import('./test-runtime');
@@ -64,15 +67,20 @@ beforeAll(() => {
 
 beforeEach(() => {
     if (!isDefined(backupDatabasePath)) {
-        resetTestDb(testDb);
+        return Effect.runPromise(resetTestDb(testDb));
     }
+
+    return undefined;
 });
 
-afterEach(async () => {
+afterEach(() => {
     mockServer.resetHandlers();
-    await assertStoredBalancesMatchLedger(testDb);
+
+    return Effect.runPromise(assertStoredBalancesMatchLedger(testDb));
 });
 
 afterAll(() => {
     mockServer.close();
+
+    return testDbHandle.dispose();
 });

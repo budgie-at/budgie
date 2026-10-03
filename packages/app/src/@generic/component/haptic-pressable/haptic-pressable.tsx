@@ -1,5 +1,5 @@
 import { cn } from 'cn';
-import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { ComponentProps, useRef } from 'react';
 import { GestureResponderEvent, Keyboard, Pressable } from 'react-native';
 

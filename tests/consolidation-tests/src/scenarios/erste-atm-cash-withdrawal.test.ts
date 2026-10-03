@@ -16,35 +16,41 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
     it.effect('moves an Erste AUTOMAT withdrawal to the cash account only on request and leaves cash back and deposits unpaired', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
-            const bankAccount = testSeedService.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK_SYNC });
-            const cashAccount = testSeedService.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
-            const seedErsteTransaction = (title: string, transaction: TransactionEntityInterface): TransactionEntityInterface =>
-                testSeedService.updateTransaction(transaction.id, { title, externalSource: ExternalSourceEnum.ERSTE });
-            const atmWithdrawal = seedErsteTransaction(
+            const bankAccount = yield* testSeedService.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK_SYNC });
+            const cashAccount = yield* testSeedService.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
+            const seedErsteTransaction = (title: string, transaction: TransactionEntityInterface) =>
+                Effect.gen(function* () {
+                    return yield* testSeedService.updateTransaction(transaction.id, { title, externalSource: ExternalSourceEnum.ERSTE });
+                });
+            const atmWithdrawal = yield* seedErsteTransaction(
                 'AUTOMAT 12210014 K1 26.11. 14:51',
-                testSeedService.bankPairExpense(
+                yield* testSeedService.bankPairExpense(
                     { externalId: 'erste-atm', operatedAt: ERSTE_OPERATED_AT },
-                    { accountId: bankAccount.id, amount: ATM_WITHDRAWAL_AMOUNT, mccCategoryId: testQueryService.findMccByCode('6011').id }
+                    {
+                        accountId: bankAccount.id,
+                        amount: ATM_WITHDRAWAL_AMOUNT,
+                        mccCategoryId: (yield* testQueryService.findMccByCode('6011')).id
+                    }
                 )
             );
             const unpairedTransactions = [
-                seedErsteTransaction(
+                yield* seedErsteTransaction(
                     'POS 0,10 Cash 30,00',
-                    testSeedService.bankPairExpense(
+                    yield* testSeedService.bankPairExpense(
                         { externalId: 'erste-cash-back', operatedAt: ERSTE_OPERATED_AT },
                         { accountId: bankAccount.id, amount: 30_100_000 }
                     )
                 ),
-                seedErsteTransaction(
+                yield* seedErsteTransaction(
                     'Bareinzahlung',
-                    testSeedService.bankPairIncome(
+                    yield* testSeedService.bankPairIncome(
                         { externalId: 'erste-cash-deposit', operatedAt: ERSTE_OPERATED_AT },
                         { accountId: bankAccount.id, amount: 50_000_000 }
                     )
                 ),
-                seedErsteTransaction(
+                yield* seedErsteTransaction(
                     'SB-Münzeinz. K1 S05303 17.08/11:06',
-                    testSeedService.bankPairIncome(
+                    yield* testSeedService.bankPairIncome(
                         { externalId: 'erste-coin-deposit', operatedAt: ERSTE_OPERATED_AT },
                         { accountId: bankAccount.id, amount: 97_330_000 }
                     )
@@ -59,13 +65,13 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
                 ])
             ).toBe(1);
 
-            const canonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
+            const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 
-            expectConsolidationParent(atmWithdrawal.id, canonicalId);
-            expect(fetchLedgerEntry(canonicalId, cashAccount.id).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
+            yield* expectConsolidationParent(atmWithdrawal.id, canonicalId);
+            expect((yield* fetchLedgerEntry(canonicalId, cashAccount.id)).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
             expect(
-                unpairedTransactions.map(
-                    transaction => testQueryService.fetchTransactionById(transaction.id).consolidationParentTransactionId
+                (yield* Effect.forEach(unpairedTransactions, transaction => testQueryService.fetchTransactionById(transaction.id))).map(
+                    transaction => transaction.consolidationParentTransactionId
                 )
             ).toEqual([null, null, null]);
         })

@@ -26,38 +26,43 @@ const DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
 const ATM_OPERATED_AT = new Date(Date.now() - DAY_MILLISECONDS);
 const HISTORICAL_ATM_OPERATED_AT = new Date(Date.now() - 400 * DAY_MILLISECONDS);
 
-const seedAtmExpense = (bankAccountId: number, externalId: string, operatedAt: Date) => {
-    const expense = testSeedService.bankPairExpense(
-        { externalId, operatedAt },
-        { accountId: bankAccountId, amount: ATM_WITHDRAWAL_AMOUNT, mccCategoryId: testQueryService.findMccByCode(ATM_MCC).id }
-    );
+const seedAtmExpense = (bankAccountId: number, externalId: string, operatedAt: Date) =>
+    Effect.gen(function* () {
+        const expense = yield* testSeedService.bankPairExpense(
+            { externalId, operatedAt },
+            { accountId: bankAccountId, amount: ATM_WITHDRAWAL_AMOUNT, mccCategoryId: (yield* testQueryService.findMccByCode(ATM_MCC)).id }
+        );
 
-    testSeedService.feeEntry(expense.id, `${externalId}-fee`, { accountId: bankAccountId, amount: ATM_WITHDRAWAL_FEE_AMOUNT });
+        yield* testSeedService.feeEntry(expense.id, `${externalId}-fee`, { accountId: bankAccountId, amount: ATM_WITHDRAWAL_FEE_AMOUNT });
 
-    return expense;
-};
+        return expense;
+    });
 
-const seedAtmCashWithdrawalFixture = () => {
-    const bankAccount = testSeedService.account({ title: 'Atm Bank', type: AccountTypeEnum.BANK_SYNC });
-    const cashAccount = testSeedService.account({ title: 'Atm Cash', type: AccountTypeEnum.CASH });
-    const expense = seedAtmExpense(bankAccount.id, 'tx-atm', ATM_OPERATED_AT);
+const seedAtmCashWithdrawalFixture = () =>
+    Effect.gen(function* () {
+        const bankAccount = yield* testSeedService.account({ title: 'Atm Bank', type: AccountTypeEnum.BANK_SYNC });
+        const cashAccount = yield* testSeedService.account({ title: 'Atm Cash', type: AccountTypeEnum.CASH });
+        const expense = yield* seedAtmExpense(bankAccount.id, 'tx-atm', ATM_OPERATED_AT);
 
-    return { bankAccount, cashAccount, expense };
-};
+        return { bankAccount, cashAccount, expense };
+    });
 
-const fetchAtmCanonicalId = (): number => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
+const fetchAtmCanonicalId = () =>
+    Effect.gen(function* () {
+        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
+    });
 
 layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
     it.effect('never moves a recent or historical ATM expense to cash without the user', () =>
         Effect.gen(function* () {
-            const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
-            const historicalExpense = seedAtmExpense(bankAccount.id, 'tx-atm-historical', HISTORICAL_ATM_OPERATED_AT);
+            const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
+            const historicalExpense = yield* seedAtmExpense(bankAccount.id, 'tx-atm-historical', HISTORICAL_ATM_OPERATED_AT);
             const balancesBefore = yield* fetchLedgerBalances([bankAccount.id, cashAccount.id]);
 
             expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
-            expect(testQueryService.fetchTransactionById(historicalExpense.id).consolidationParentTransactionId).toBeNull();
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(historicalExpense.id)).consolidationParentTransactionId).toBeNull();
             expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
         })
     );
@@ -65,53 +70,55 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
     it.effect('moves only the selected ATM expense to cash with its fee entry and ignores a repeated move', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
-            const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
-            const otherExpense = seedAtmExpense(bankAccount.id, 'tx-atm-other', ATM_OPERATED_AT);
+            const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
+            const otherExpense = yield* seedAtmExpense(bankAccount.id, 'tx-atm-other', ATM_OPERATED_AT);
 
             expect(yield* consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds([expense.id])).toEqual([expense.id]);
             expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(1);
 
-            const canonicalId = fetchAtmCanonicalId();
+            const canonicalId = yield* fetchAtmCanonicalId();
 
-            expectConsolidationParent(expense.id, canonicalId);
-            expect(testQueryService.fetchTransactionById(otherExpense.id).consolidationParentTransactionId).toBeNull();
-            expect(fetchOwnLedgerEntries(canonicalId)).toHaveLength(ATM_CANONICAL_LEDGER_ENTRY_COUNT);
-            expect(fetchLedgerEntry(canonicalId, cashAccount.id).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
+            yield* expectConsolidationParent(expense.id, canonicalId);
+            expect((yield* testQueryService.fetchTransactionById(otherExpense.id)).consolidationParentTransactionId).toBeNull();
+            expect(yield* fetchOwnLedgerEntries(canonicalId)).toHaveLength(ATM_CANONICAL_LEDGER_ENTRY_COUNT);
+            expect((yield* fetchLedgerEntry(canonicalId, cashAccount.id)).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
             expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual([
                 [bankAccount.id, -2 * (ATM_WITHDRAWAL_AMOUNT + ATM_WITHDRAWAL_FEE_AMOUNT)],
                 [cashAccount.id, ATM_WITHDRAWAL_AMOUNT]
             ]);
             expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(0);
             expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
-            expect(fetchAtmCanonicalId()).toBe(canonicalId);
+            expect(yield* fetchAtmCanonicalId()).toBe(canonicalId);
         })
     );
 
     it.effect('does not move an ATM expense when its currency has no single active cash account', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
-            const { expense } = seedAtmCashWithdrawalFixture();
-            testSeedService.account({ title: 'Second Cash', type: AccountTypeEnum.CASH });
+            const { expense } = yield* seedAtmCashWithdrawalFixture();
+            yield* testSeedService.account({ title: 'Second Cash', type: AccountTypeEnum.CASH });
 
             expect(yield* consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds([expense.id])).toEqual([]);
             expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(0);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
         })
     );
 
     it.effect('restores the ATM expense with its fee entry and clears the cash balance when reverted', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
-            const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
-            const stateBefore = snapshotSourceState([expense.id]);
+            const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
+            const stateBefore = yield* snapshotSourceState([expense.id]);
             const balancesBefore = yield* fetchLedgerBalances([bankAccount.id, cashAccount.id]);
 
             yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id]);
 
-            expectRevertRemovedCanonical(yield* revertSingleCanonical(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL), [expense.id]);
-            expectSourceStateRestored(stateBefore);
+            yield* expectRevertRemovedCanonical(yield* revertSingleCanonical(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL), [
+                expense.id
+            ]);
+            yield* expectSourceStateRestored(stateBefore);
             expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
-            expect(fetchOwnLedgerEntries(expense.id)).toHaveLength(ATM_EXPENSE_LEDGER_ENTRY_COUNT);
+            expect(yield* fetchOwnLedgerEntries(expense.id)).toHaveLength(ATM_EXPENSE_LEDGER_ENTRY_COUNT);
         })
     );
 });

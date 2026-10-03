@@ -1,3 +1,4 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cn } from 'cn';
 
@@ -10,12 +11,11 @@ import { SuggestionPillContent } from '../../../transaction/components/suggestio
 import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';
 import { CATEGORIZE_INBOX_RAIL_HIT_SLOP } from '../../constant/categorize-inbox-rail-hit-slop.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 
 import { CategorizeInboxSuggestionChipSelector } from './categorize-inbox-suggestion-chip.selector';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;

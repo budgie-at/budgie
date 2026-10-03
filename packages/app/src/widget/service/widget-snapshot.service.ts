@@ -4,13 +4,14 @@ import * as FiberSet from 'effect/FiberSet';
 import * as Layer from 'effect/Layer';
 import * as Ref from 'effect/Ref';
 import * as Semaphore from 'effect/Semaphore';
+import * as Stream from 'effect/Stream';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { databaseRefreshService } from '../../@generic/service/database-refresh.service';
+import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { Workload } from '../../@generic/service/workload.service';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
 import BudgetWidget from '../widget/budget.widget';
@@ -27,6 +28,7 @@ import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.inter
 export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService>()('@budgie/app/WidgetSnapshotService', {
     make: Effect.gen(function* () {
         const workload = yield* Workload;
+        const databaseChangeService = yield* DatabaseChangeService;
         const widgetSnapshotBuilderService = yield* WidgetSnapshotBuilderService;
         const backgroundTaskMinimumIntervalMinutes = 60;
         const publishDebounceMs = 2_000;
@@ -111,10 +113,6 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
             });
         });
 
-        const schedulePublish = (): void => {
-            runFork(debouncePublish());
-        };
-
         return {
             registerBackgroundTask: Effect.fn('WidgetSnapshotService.registerBackgroundTask')(function* () {
                 if (Platform.OS !== 'ios' || (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(WIDGET_SNAPSHOT_TASK)))) {
@@ -137,13 +135,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
                     return;
                 }
 
-                runFork(
-                    Effect.callback<never>(() => {
-                        const unsubscribe = databaseRefreshService.subscribe(schedulePublish);
-
-                        return Effect.sync(unsubscribe);
-                    })
-                );
+                runFork(Stream.runForEach(databaseChangeService.changes, () => debouncePublish()));
                 yield* debouncePublish();
             }),
             unlock: (): void => {
@@ -153,6 +145,6 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
     })
 }) {
     static readonly layer = Layer.effect(WidgetSnapshotService, WidgetSnapshotService.make).pipe(
-        Layer.provide([Workload.layer, WidgetSnapshotBuilderService.layer])
+        Layer.provide([Workload.layer, DatabaseChangeService.layer, WidgetSnapshotBuilderService.layer])
     );
 }

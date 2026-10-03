@@ -1,5 +1,5 @@
-import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import { SyncEntityTable, SyncModeEnum } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -12,8 +12,12 @@ const RESUME_TRADE_ID = 42;
 const runAdaUsdtSyncWithCursor = Effect.fnUntraced(function* (mode: SyncModeEnum) {
     const binanceSyncService = yield* BinanceSyncService;
 
-    seedCryptoInstrument('ADA');
-    const { sync } = setupAdaUsdtFixture(mode, new Date(Date.now() - RECURRING_SYNC_AGE_MS), JSON.stringify({ ADAUSDT: RESUME_TRADE_ID }));
+    yield* seedCryptoInstrument('ADA');
+    const { sync } = yield* setupAdaUsdtFixture(
+        mode,
+        new Date(Date.now() - RECURRING_SYNC_AGE_MS),
+        JSON.stringify({ ADAUSDT: RESUME_TRADE_ID })
+    );
     const requestedUrls: URL[] = [];
 
     binanceStub.myTrades({}, new Set<string>(), requestedUrls);
@@ -30,7 +34,7 @@ describe('binance/trade-cursor-resume', () => {
             expect(requestedUrls.length).toBeGreaterThan(0);
             expect(requestedUrls[0].searchParams.get('fromId')).toBe(String(RESUME_TRADE_ID + 1));
             expect(requestedUrls[0].searchParams.has('startTime')).toBe(false);
-            expect(testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, syncId)).get()?.binanceTradeCursor).toBe(
+            expect((yield* testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, syncId)))[0]?.binanceTradeCursor).toBe(
                 JSON.stringify({ ADAUSDT: RESUME_TRADE_ID })
             );
         }).pipe(Effect.provide(TestLayer))

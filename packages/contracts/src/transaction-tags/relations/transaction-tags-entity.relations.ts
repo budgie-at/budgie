@@ -1,17 +1,28 @@
-import { relations } from 'drizzle-orm';
+import { defineRelationsPart } from 'drizzle-orm';
 
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionTagsAssociationEnum } from '../enum/transaction-tags-association.enum';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 
-export const TransactionTagsEntityRelations = relations(TransactionTagsEntityTable, ({ one }) => ({
-    [TransactionTagsAssociationEnum.TRANSACTION]: one(TransactionEntityTable, {
-        fields: [TransactionTagsEntityTable.transactionId],
-        references: [TransactionEntityTable.id]
-    }),
-    [TransactionTagsAssociationEnum.TAG]: one(TagEntityTable, {
-        fields: [TransactionTagsEntityTable.tagId],
-        references: [TagEntityTable.id]
+export const TransactionTagsEntityRelations = defineRelationsPart(
+    {
+        TagEntityTable,
+        TransactionEntityTable,
+        TransactionTagsEntityTable
+    },
+    relation => ({
+        TransactionTagsEntityTable: {
+            [TransactionTagsAssociationEnum.TRANSACTION]: relation.one.TransactionEntityTable({
+                from: relation.TransactionTagsEntityTable.transactionId,
+                to: relation.TransactionEntityTable.id,
+                optional: false
+            }),
+            [TransactionTagsAssociationEnum.TAG]: relation.one.TagEntityTable({
+                from: relation.TransactionTagsEntityTable.tagId,
+                to: relation.TagEntityTable.id,
+                optional: false
+            })
+        }
     })
-}));
+);

@@ -9,8 +9,8 @@ import { testQueryService, testSeedService, TestLayer } from '../harness/test-co
 layer(TestLayer)('consolidation/yielding', it => {
     it.effect('yields while processing automatic candidate families', () =>
         Effect.gen(function* () {
-            const transferMcc = testQueryService.findMccByCode('4829');
-            testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            yield* testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
             let sleepCount = 0;
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
@@ -32,7 +32,7 @@ layer(TestLayer)('consolidation/yielding', it => {
 
             expect(result.consolidated).toBe(1);
             expect(sleepCount).toBeGreaterThan(1);
-            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
         })
     );
 });

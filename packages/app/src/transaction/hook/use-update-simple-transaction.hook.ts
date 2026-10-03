@@ -10,13 +10,13 @@ import { useUpdateTransactionForm } from './use-update-transaction-form.hook';
 import type { UpdateSimpleTransactionParamsInterface } from '../interface/update-simple-transaction-params.interface';
 
 export const useUpdateSimpleTransaction = ({ transaction, transactionId, schema }: UpdateSimpleTransactionParamsInterface) => {
-    const { markForEmbedding } = useEmbeddingGenerator();
+    const { learnCorrection } = useEmbeddingGenerator();
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
         schema,
         id: transactionId,
-        onAfterSubmit: () => void markForEmbedding(transactionId)
+        onAfterSubmit: () => void learnCorrection(transactionId, transaction.entries.map(entry => entry.categoryId).filter(isDefined))
     });
 
     const {

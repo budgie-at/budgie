@@ -12,15 +12,14 @@
         "@budgie-at/test-kit": "workspace:*",
         "@budgie/budget": "workspace:*",
         "@budgie/contracts": "workspace:^",
-        "@effect/vitest": "4.0.0-rc.118",
-        "better-sqlite3": "^12.10.0",
-        "drizzle-orm": "^0.45.2",
+        "@effect/sql-sqlite-node": "4.0.0",
+        "@effect/vitest": "4.0.0",
+        "drizzle-orm": "1.0.0-rc.4",
         "vitest": "^5.0.2"
     },
     "devDependencies": {
-        "@types/better-sqlite3": "^7.6.13",
         "@types/node": "22.20.1",
-        "effect": "4.0.0-rc.118",
+        "effect": "4.0.0",
         "typescript": "npm:@typescript/typescript6@6.0.2"
     }
 }

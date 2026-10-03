@@ -1,4 +1,4 @@
-import { ExchangeRateRepository } from '@budgie/contracts';
+import { ExchangeRateRepository } from '@budgie/market';
 import * as Effect from 'effect/Effect';
 
 import { requireInstrument } from './require-instrument';
@@ -10,7 +10,9 @@ export const upsertCurrencyRate = Effect.fnUntraced(function* (baseCurrency: Cur
     const baseInstrument = yield* requireInstrument(baseCurrency);
     const quoteInstrument = yield* requireInstrument(quoteCurrency);
 
-    yield* exchangeRateRepository.upsert(baseInstrument.id, quoteInstrument.id, rate, 'test');
+    yield* exchangeRateRepository.bulkUpsert([
+        { baseInstrumentId: baseInstrument.id, quoteInstrumentId: quoteInstrument.id, rate, source: 'test' }
+    ]);
 
     return { baseInstrument, quoteInstrument };
 });

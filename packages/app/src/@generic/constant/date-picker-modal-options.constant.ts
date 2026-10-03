@@ -1,9 +1,9 @@
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
+import type { NativeStackNavigationOptions } from 'expo-router';
 
 const SHEET_DETENT = 0.46;
 const SHEET_CORNER_RADIUS = 24;
 
-export const DATE_PICKER_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
+export const DATE_PICKER_MODAL_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,

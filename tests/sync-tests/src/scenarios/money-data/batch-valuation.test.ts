@@ -1,9 +1,9 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
-import { EntryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
-import { TransactionService } from '@app/transaction/service/transaction.service';
+import { makeTestDatabase } from '@budgie-at/test-kit';
 import {
     AccountTypeEnum,
     CurrencyEnum,
+    Db,
     ExternalSourceEnum,
     SettingsEntityTable,
     TransactionEntryEntityTable,
@@ -11,8 +11,9 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { describe, expect, it, vi } from '@effect/vitest';
-import { BetterSQLiteSession } from 'drizzle-orm/better-sqlite3/session';
+import { TransactionService } from '@budgie/ledger';
+import { EntryBaseValuationService } from '@budgie/market';
+import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { requireInstrument, seed, testDb, TestLayer } from '../../harness';
@@ -54,26 +55,26 @@ describe('batch entry valuation', () => {
             const transactionService = yield* TransactionService;
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-            const account = seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: hryvnia.id });
+            const account = yield* seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: hryvnia.id });
             const inputs = Array.from({ length: TRANSACTION_COUNT }, (_, index) => buildExpenseInput(account.id, index));
 
-            testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+            yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
-            const prepareSpy = vi.spyOn(BetterSQLiteSession.prototype, 'prepareQuery');
+            const executedStatements: string[] = [];
+            const countingDatabase = yield* makeTestDatabase(testDb.$client, queryText => executedStatements.push(queryText));
 
-            yield* transactionService.bulkCreate(inputs);
+            yield* transactionService.bulkCreate(inputs).pipe(Effect.provideService(Db, countingDatabase));
 
-            expect(prepareSpy.mock.calls.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
-            prepareSpy.mockRestore();
+            expect(executedStatements.length).toBeGreaterThan(0);
+            expect(executedStatements.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
 
-            const entries = testDb.select().from(TransactionEntryEntityTable).all();
+            const entries = yield* testDb.select().from(TransactionEntryEntityTable);
             const expected = yield* Effect.all(
                 inputs.map(input =>
                     entryBaseValuationService.valueMicroUnitEntry({
                         accountId: account.id,
                         amount: convertToMicroUnits(input.amount),
-                        operatedAt: input.operatedAt,
-                        externalSource: input.externalSource
+                        operatedAt: input.operatedAt
                     })
                 )
             );

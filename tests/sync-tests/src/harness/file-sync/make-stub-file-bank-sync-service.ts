@@ -1,11 +1,9 @@
-import { generateDefaultSyncAccountTitle } from '@app/sync/util/generate-default-sync-account-title.util';
-import { makeFileSyncService } from '@app/sync/util/make-file-sync-service.util';
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { generateDefaultSyncAccountTitle, makeFileSyncService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 
-import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
-import type { FileSyncServiceDefinitionInterface } from '@app/sync/interface/file-sync-service-definition.interface';
 import type { ExternalSourceEnum, MccCategoryLookupInterface } from '@budgie/contracts';
+import type { FileBasedSyncClientInterface, FileSyncServiceDefinitionInterface } from '@budgie/sync';
 
 export const makeStubFileBankSyncService = (
     provider: ExternalSourceEnum,

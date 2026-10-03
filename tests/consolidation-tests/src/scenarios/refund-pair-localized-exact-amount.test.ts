@@ -4,6 +4,7 @@ import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { runConsolidation } from '../harness/run-consolidation';
+import { seedExpenseWithoutRefund } from '../harness/seed-expense-without-refund';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const AMAZON_TITLE = 'Amazon';
@@ -36,25 +37,23 @@ layer(TestLayer)('consolidation/refund-pair-localized-exact-amount', it => {
     it.effect('auto-consolidates a localized refund to its unique exact-amount candidate over a closer-in-time mismatch', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const account = testSeedService.account({ externalId: 'mono-card' });
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
 
-            testSeedService.refundedExpense({
+            yield* seedExpenseWithoutRefund({
                 accountId: account.id,
                 title: AMAZON_TITLE,
                 expenseAmount: AMAZON_CLOSE_AMOUNT,
-                refundAmounts: [],
                 expenseOperatedAt: AMAZON_CLOSE_EXPENSE_OPERATED_AT,
                 externalIdPrefix: 'amazon-close'
             });
-            testSeedService.refundedExpense({
+            yield* seedExpenseWithoutRefund({
                 accountId: account.id,
                 title: AMAZON_TITLE,
                 expenseAmount: AMAZON_MID_AMOUNT,
-                refundAmounts: [],
                 expenseOperatedAt: AMAZON_MID_EXPENSE_OPERATED_AT,
                 externalIdPrefix: 'amazon-mid'
             });
-            const { expense: exactExpense, refunds } = testSeedService.refundedExpense({
+            const { expense: exactExpense, refunds } = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 title: AMAZON_TITLE,
                 expenseAmount: AMAZON_EXACT_AMOUNT,
@@ -77,33 +76,33 @@ layer(TestLayer)('consolidation/refund-pair-localized-exact-amount', it => {
             const result = yield* runConsolidation();
 
             expect(result.consolidated).toBe(1);
-            expect(testQueryService.fetchTransactionById(exactExpense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(exactExpense.id);
+            expect((yield* testQueryService.fetchTransactionById(exactExpense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
+            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(exactExpense.id);
         })
     );
 
     it.effect('does not auto-consolidate when two candidates share an exact amount match (identical fare twins)', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const account = testSeedService.account({ externalId: 'mono-card' });
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
 
-            testSeedService.refundedExpense({
+            yield* seedExpenseWithoutRefund({
                 accountId: account.id,
                 title: TWIN_TITLE,
                 expenseAmount: TWIN_AMOUNT,
-                refundAmounts: [],
                 expenseOperatedAt: TWIN_FIRST_EXPENSE_OPERATED_AT,
                 externalIdPrefix: 'twin-first'
             });
-            testSeedService.refundedExpense({
+            yield* seedExpenseWithoutRefund({
                 accountId: account.id,
                 title: TWIN_TITLE,
                 expenseAmount: TWIN_MISMATCH_AMOUNT,
-                refundAmounts: [],
                 expenseOperatedAt: TWIN_MISMATCH_EXPENSE_OPERATED_AT,
                 externalIdPrefix: 'twin-mismatch'
             });
-            const { expense: secondExpense, refunds } = testSeedService.refundedExpense({
+            const { expense: secondExpense, refunds } = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 title: TWIN_TITLE,
                 expenseAmount: TWIN_AMOUNT,

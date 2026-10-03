@@ -1,8 +1,8 @@
+import { SyncHistoryDepthEnum } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { SYNC_HISTORY_DEPTH_OPTIONS } from '../../constant/sync-history-depth-options.constant';
-import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
 import { SyncHistoryDepthOption } from '../sync-history-depth-option/sync-history-depth-option';
 import { SyncHistoryDurationNotice } from '../sync-history-duration-notice/sync-history-duration-notice';
 

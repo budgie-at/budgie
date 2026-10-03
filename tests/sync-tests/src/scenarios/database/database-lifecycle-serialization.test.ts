@@ -1,15 +1,15 @@
-import { expoDb } from '@app/@generic/drizzle/db/db';
 import { DatabaseLifecycleOperationEnum } from '@app/@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { DatabaseLifecycleService } from '@app/@generic/drizzle/service/database-lifecycle.service';
-import { beforeEach, describe, expect, it, vi } from '@effect/vitest';
+import { beforeEach, describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 
 import { TestLayer } from '../../harness';
+import { FakeDatabaseConnectionService } from '../../harness/fake/fake-database-connection.service';
 
 describe('database/database-lifecycle-serialization', () => {
     beforeEach(() => {
-        vi.mocked(expoDb.closeAsync).mockClear();
+        FakeDatabaseConnectionService.closeMock.mockClear();
     });
 
     it.effect('runs a concurrent rekey and import one after the other and closes the handle once', () =>
@@ -41,7 +41,7 @@ describe('database/database-lifecycle-serialization', () => {
             );
 
             expect(events).toEqual(['rekey:start', 'rekey:end', 'import:start', 'import:end']);
-            expect(vi.mocked(expoDb.closeAsync)).toHaveBeenCalledTimes(1);
+            expect(FakeDatabaseConnectionService.closeMock).toHaveBeenCalledTimes(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -98,13 +98,15 @@ describe('database/database-lifecycle-serialization', () => {
     it.effect('retries the close when the native handle fails to close', () =>
         Effect.gen(function* () {
             const databaseLifecycleService = yield* DatabaseLifecycleService;
-            vi.mocked(expoDb.closeAsync).mockRejectedValueOnce(new Error('unable to close due to unfinalized statements'));
+            FakeDatabaseConnectionService.closeMock.mockReturnValueOnce(
+                Effect.die(new Error('unable to close due to unfinalized statements'))
+            );
 
             const firstClose = yield* Effect.exit(databaseLifecycleService.close());
             yield* databaseLifecycleService.close();
 
             expect(Exit.isFailure(firstClose)).toBe(true);
-            expect(vi.mocked(expoDb.closeAsync)).toHaveBeenCalledTimes(2);
+            expect(FakeDatabaseConnectionService.closeMock).toHaveBeenCalledTimes(2);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -114,7 +116,7 @@ describe('database/database-lifecycle-serialization', () => {
 
             yield* Effect.all([databaseLifecycleService.close(), databaseLifecycleService.close()], { concurrency: 'unbounded' });
 
-            expect(vi.mocked(expoDb.closeAsync)).toHaveBeenCalledTimes(1);
+            expect(FakeDatabaseConnectionService.closeMock).toHaveBeenCalledTimes(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });

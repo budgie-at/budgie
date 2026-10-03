@@ -1,5 +1,5 @@
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
-import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { ReactElement, ReactNode } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

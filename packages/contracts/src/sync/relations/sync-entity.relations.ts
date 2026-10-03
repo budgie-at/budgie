@@ -1,12 +1,21 @@
-import { relations } from 'drizzle-orm';
+import { defineRelationsPart } from 'drizzle-orm';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { SyncAssociationEnum } from '../enum/sync-association.enum';
 import { SyncEntityTable } from '../table/sync-entity.table';
 
-export const SyncEntityRelations = relations(SyncEntityTable, ({ one }) => ({
-    [SyncAssociationEnum.ACCOUNT]: one(AccountEntityTable, {
-        fields: [SyncEntityTable.accountId],
-        references: [AccountEntityTable.id]
+export const SyncEntityRelations = defineRelationsPart(
+    {
+        AccountEntityTable,
+        SyncEntityTable
+    },
+    relation => ({
+        SyncEntityTable: {
+            [SyncAssociationEnum.ACCOUNT]: relation.one.AccountEntityTable({
+                from: relation.SyncEntityTable.accountId,
+                to: relation.AccountEntityTable.id,
+                optional: false
+            })
+        }
     })
-}));
+);

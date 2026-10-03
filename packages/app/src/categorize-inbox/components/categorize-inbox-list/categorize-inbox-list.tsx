@@ -1,11 +1,12 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
+
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { LEGEND_LIST_CONTENT_GAP, LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
-import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 import { CategorizeInboxClusterCard } from '../categorize-inbox-cluster-card/categorize-inbox-cluster-card';
 import { CategorizeInboxOneOffRow } from '../categorize-inbox-one-off-row/categorize-inbox-one-off-row';
 import { CategorizeInboxSectionHeader } from '../categorize-inbox-section-header/categorize-inbox-section-header';
 
-import type { CategorizeInboxListItemType } from '../../type/categorize-inbox-list-item.type';
+import type { CategorizeInboxListItemType } from '@budgie/categorization';
 import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
 
 interface Props {

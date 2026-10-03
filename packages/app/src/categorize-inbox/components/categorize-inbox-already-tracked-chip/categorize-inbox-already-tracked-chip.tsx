@@ -1,3 +1,4 @@
+import { CategorizeInboxLabelKindEnum } from '@budgie/categorization';
 import { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
@@ -7,11 +8,10 @@ import { SuggestionPillContent } from '../../../transaction/components/suggestio
 import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';
 import { CATEGORIZE_INBOX_RAIL_HIT_SLOP } from '../../constant/categorize-inbox-rail-hit-slop.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxLabelKindEnum } from '../../enum/categorize-inbox-label-kind.enum';
 
 import { CategorizeInboxAlreadyTrackedChipSelector } from './categorize-inbox-already-tracked-chip.selector';
 
-import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;

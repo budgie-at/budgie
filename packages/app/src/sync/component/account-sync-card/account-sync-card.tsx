@@ -1,4 +1,5 @@
 import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
+import { SyncProviderRegistryService } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
@@ -12,7 +13,6 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { SYNC_PROVIDER_CAPABILITIES } from '../../constant/sync-provider-capabilities.constant';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
-import { SyncProviderRegistryService } from '../../service/sync-provider-registry.service';
 import { buildSyncStatusLabel } from '../../utils/build-sync-status-label.util';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';

@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
-import { ImpactFeedbackStyle } from 'expo-haptics';
-import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { ReactNode, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';

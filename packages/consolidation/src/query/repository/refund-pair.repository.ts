@@ -52,7 +52,7 @@ export class RefundPairRepository extends Context.Service<RefundPairRepository>(
             findCandidates: Effect.fn('RefundPairRepository.findCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null = null
             ) {
-                const rows = yield* Db.query(db => db.$client.getAllAsync<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL(scope)));
+                const rows = yield* Db.query(db => db.$client.unsafe<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL(scope)));
 
                 return rows.map((row): RefundCandidateInterface => ({
                     ...mapCandidateBaseRow(row),
@@ -61,7 +61,7 @@ export class RefundPairRepository extends Context.Service<RefundPairRepository>(
                 }));
             }),
             findReviewCandidates: Effect.fn('RefundPairRepository.findReviewCandidates')(function* () {
-                const rows = yield* Db.query(db => db.$client.getAllAsync<RefundReviewCandidateRowInterface>(REFUND_REVIEW_CANDIDATES_SQL));
+                const rows = yield* Db.query(db => db.$client.unsafe<RefundReviewCandidateRowInterface>(REFUND_REVIEW_CANDIDATES_SQL));
 
                 return rows.map((row): RefundReviewCandidateInterface => ({
                     ...mapCandidateBaseRow(row),
@@ -76,7 +76,7 @@ export class RefundPairRepository extends Context.Service<RefundPairRepository>(
             ) {
                 const searchPattern = `%${search.trim().toLowerCase()}%`;
                 const rows = yield* Db.query(db =>
-                    db.$client.getAllAsync<RefundableExpenseCandidateRowInterface>(
+                    db.$client.unsafe<RefundableExpenseCandidateRowInterface>(
                         REFUNDABLE_EXPENSE_CANDIDATES_SQL,
                         buildRefundableExpenseCandidateParams(refundIncomeTransactionId, searchPattern, language)
                     )

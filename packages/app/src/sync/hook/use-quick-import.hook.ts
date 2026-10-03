@@ -11,7 +11,7 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
 
-import type { FileBankSyncImportResultInterface } from '../interface/file-bank-sync-import-result.interface';
+import type { FileBankSyncImportResultInterface } from '@budgie/sync';
 
 interface QuickImportResult {
     readonly isLoading: boolean;

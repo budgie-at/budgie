@@ -21,7 +21,7 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
             getScopeTransactionIds(candidate).some(scopeTransactionId => scope.transactionIds.includes(scopeTransactionId))) &&
         definition.getSourceTransactionIds(candidate).every(sourceTransactionId => !blockedSourceTransactionIds.has(sourceTransactionId));
 
-    const buildBlockedSourceTransactionIds = (candidates: Candidate[]): number[] =>
+    const buildBlockedSourceTransactionIds = (candidates: readonly Candidate[]): number[] =>
         candidates.flatMap(candidate => definition.getSourceTransactionIds(candidate));
 
     const buildRunnableCandidates = Effect.fnUntraced(function* (context: ConsolidationFamilyRunContextInterface) {
@@ -41,7 +41,9 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
         }
     });
 
-    const processCandidateList = Effect.fn('ConsolidationFamilyStrategyService.processCandidateList')(function* (candidates: Candidate[]) {
+    const processCandidateList = Effect.fn('ConsolidationFamilyStrategyService.processCandidateList')(function* (
+        candidates: readonly Candidate[]
+    ) {
         let consolidated = 0;
 
         for (const [candidateIndex, candidate] of candidates.entries()) {

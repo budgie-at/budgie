@@ -18,6 +18,14 @@ const config = {
         // HINT: We have build errors with react-native-audio-api
         '**/node_modules/react-native-audio-api/**/*'
     ],
+    extraSources: [
+        {
+            type: 'contents',
+            id: 'op-sqlite-config',
+            contents: JSON.stringify(require('../../package.json')['op-sqlite']),
+            reasons: ['op-sqlite']
+        }
+    ],
     // Values that differ per build and are rewritten into the repacked binary
     // rather than compiled into it. `ExpoConfigExtraSection` is deliberately NOT
     // skipped: `extra.appVariant` and `extra.aiEnabled` decide which config

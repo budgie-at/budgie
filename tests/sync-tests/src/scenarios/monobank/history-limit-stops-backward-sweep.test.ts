@@ -1,9 +1,8 @@
-import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { expectForwardSyncWithoutHistory, seed, stubEmptyStatements, subtractMonths, TestLayer } from '../../harness';
+import { expectForwardSyncWithoutHistory, MonobankSyncService, seed, stubEmptyStatements, subtractMonths, TestLayer } from '../../harness';
 
 const HISTORY_LIMIT_MONTHS = 1;
 const MS_PER_SECOND = 1_000;
@@ -16,8 +15,8 @@ describe('monobank/history-limit-stops-backward-sweep', () => {
             const monobankSyncService = yield* MonobankSyncService;
             const now = new Date();
             const backwardSyncLimitAt = subtractMonths(now, HISTORY_LIMIT_MONTHS);
-            const account = seed.account({ externalId: 'mono-acc-history-limit', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-            const bankSync = seed.sync({
+            const account = yield* seed.account({ externalId: 'mono-acc-history-limit', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+            const bankSync = yield* seed.sync({
                 accountId: account.id,
                 mode: SyncModeEnum.BACKWARD,
                 backwardSyncFromAt: now,
@@ -34,7 +33,7 @@ describe('monobank/history-limit-stops-backward-sweep', () => {
 
             expect(requestedFromValues).toHaveLength(1);
             expect(requestedFromValues[0]).toBe(toUnixSeconds(backwardSyncLimitAt));
-            expectForwardSyncWithoutHistory(bankSync.id);
+            yield* expectForwardSyncWithoutHistory(bankSync.id);
         }).pipe(Effect.provide(TestLayer))
     );
 });

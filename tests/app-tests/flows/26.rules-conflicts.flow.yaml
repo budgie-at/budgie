@@ -47,8 +47,10 @@ env:
     visible:
       text: 'Some transactions may match multiple rules\..*'
 
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
+- swipe:
+    direction: DOWN
+- extendedWaitUntil:
+    notVisible: 'Create Rule'
 
 - runFlow:
     file: subflows/rules/delete-first-rule.flow.yaml

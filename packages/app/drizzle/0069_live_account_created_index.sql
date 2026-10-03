@@ -1,1 +1,0 @@
-CREATE INDEX `transaction_entries_live_account_created_idx` ON `transaction_entries` (`account_id`,`created_at`) WHERE "transaction_entries"."deleted_at" IS NULL;

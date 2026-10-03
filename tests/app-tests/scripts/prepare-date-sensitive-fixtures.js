@@ -53,6 +53,7 @@ const findBalanceMismatches = databasePath => {
 };
 
 const shiftTransactionsFixtureToNow = () => {
+    const now = Math.floor(Date.now() / 1000);
     const sourcePath = path.join(fixturesDirectoryPath, '14.db');
     const targetPath = path.join(outputDirectoryPath, '14.db');
     const historicalAccountId = 10;
@@ -69,7 +70,7 @@ const shiftTransactionsFixtureToNow = () => {
         nativeAmountTransferSourceAmount +
         nativeAmountTransferFeeAmount
     );
-    const missingRateInstrumentId = 34;
+    const missingRateInstrumentId = 234;
     const missingRateAccountId = 11;
     const missingRateCategoryId = 42;
     const missingRateAmount = 15_000_000_000;
@@ -81,7 +82,7 @@ const shiftTransactionsFixtureToNow = () => {
         `
         BEGIN;
         CREATE TEMP TABLE fixture_offset AS
-        SELECT CAST(strftime('%s', 'now') AS INTEGER) - 86400 - MAX(operated_at) AS seconds
+        SELECT ${now} - 86400 - MAX(operated_at) AS seconds
         FROM transactions;
 
         UPDATE transactions
@@ -158,9 +159,9 @@ const shiftTransactionsFixtureToNow = () => {
         )
         VALUES (
             ${historicalAccountId},
-            CAST(strftime('%s', 'now') AS INTEGER),
-            CAST(strftime('%s', 'now') AS INTEGER),
-            'Wallet',
+            ${now},
+            ${now},
+            'PiggyBank',
             10,
             'E2E Historical UAH',
             'CASH',
@@ -178,8 +179,8 @@ const shiftTransactionsFixtureToNow = () => {
             amount
         )
         VALUES (
-            CAST(strftime('%s', 'now') AS INTEGER),
-            CAST(strftime('%s', 'now') AS INTEGER),
+            ${now},
+            ${now},
             ${historicalAccountId},
             ${historicalBalance}
         );
@@ -340,8 +341,8 @@ const shiftTransactionsFixtureToNow = () => {
         )
         VALUES (
             ${missingRateInstrumentId},
-            CAST(strftime('%s', 'now') AS INTEGER),
-            CAST(strftime('%s', 'now') AS INTEGER),
+            ${now},
+            ${now},
             'FIAT',
             'NOFX',
             'No Rate Currency',
@@ -364,9 +365,9 @@ const shiftTransactionsFixtureToNow = () => {
         )
         VALUES (
             ${missingRateAccountId},
-            CAST(strftime('%s', 'now') AS INTEGER),
-            CAST(strftime('%s', 'now') AS INTEGER),
-            'Wallet',
+            ${now},
+            ${now},
+            'PiggyBank',
             11,
             'E2E Missing Rate',
             'CASH',
@@ -384,8 +385,8 @@ const shiftTransactionsFixtureToNow = () => {
             amount
         )
         VALUES (
-            CAST(strftime('%s', 'now') AS INTEGER),
-            CAST(strftime('%s', 'now') AS INTEGER),
+            ${now},
+            ${now},
             ${missingRateAccountId},
             -${missingRateAmount}
         );
@@ -400,8 +401,8 @@ const shiftTransactionsFixtureToNow = () => {
         )
         VALUES (
             ${missingRateCategoryId},
-            CAST(strftime('%s', 'now') AS INTEGER),
-            CAST(strftime('%s', 'now') AS INTEGER),
+            ${now},
+            ${now},
             'E2E Missing Rate Category',
             'Wallet',
             'e2e missing rate category'
@@ -494,7 +495,13 @@ const shiftTransactionsFixtureToNow = () => {
         WHERE account_id = 2;
 
         UPDATE settings
-        SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+        SET updated_at = ${now};
+
+        UPDATE transaction_entries
+        SET updated_at = ${now}
+        WHERE transaction_id = 3;
+
+        UPDATE transactions SET needs_embedding = 1;
 
         DROP TABLE fixture_offset;
         COMMIT;
@@ -523,6 +530,7 @@ const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
 };
 
 const generateRunwayCryptoFixture = () => {
+    const now = Math.floor(Date.now() / 1000);
     const sourcePath = path.join(fixturesDirectoryPath, '29.db');
     const targetPath = path.join(outputDirectoryPath, '29.db');
     const fiatAccountId = 1;
@@ -545,7 +553,7 @@ const generateRunwayCryptoFixture = () => {
     const monthlyIncomeBaseAmount = Math.round(monthlyIncomeAmount * eurToUsdRate);
     const openingAdjustmentAmount = runwayFiatBalance - fixtureFiatBalance + 3 * (monthlyExpenseAmount - monthlyIncomeAmount);
     const openingAdjustmentBaseAmount = Math.round(openingAdjustmentAmount * eurToUsdRate);
-    const rateUpdatedAtSql = "unixepoch('now') - 900";
+    const rateUpdatedAt = now - 900;
     const historyMonths = [-1, -2, -3].map(monthOffset => buildMonthlyTimestamp(monthOffset, historyDay));
     const openingAdjustmentAt = Math.min(...historyMonths) - 86_400;
     const transactionValues = historyMonths
@@ -568,7 +576,7 @@ const generateRunwayCryptoFixture = () => {
         BEGIN;
 
         UPDATE account_balances
-        SET amount = ${runwayFiatBalance}, created_at = unixepoch('now'), updated_at = unixepoch('now')
+        SET amount = ${runwayFiatBalance}, created_at = ${now}, updated_at = ${now}
         WHERE account_id = ${fiatAccountId};
 
         DELETE FROM transaction_entries WHERE transaction_id BETWEEN 2100 AND 2199;
@@ -611,8 +619,8 @@ const generateRunwayCryptoFixture = () => {
 
         INSERT INTO exchange_rates (created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
         VALUES
-            (${rateUpdatedAtSql}, ${rateUpdatedAtSql}, 'coingecko.com', ${bitcoinInstrumentId}, ${defaultInstrumentId}, ${bitcoinToUsdRate}),
-            (${rateUpdatedAtSql}, ${rateUpdatedAtSql}, 'coingecko.com', ${ethereumInstrumentId}, ${defaultInstrumentId}, ${ethereumToUsdRate});
+            (${rateUpdatedAt}, ${rateUpdatedAt}, 'coingecko.com', ${bitcoinInstrumentId}, ${defaultInstrumentId}, ${bitcoinToUsdRate}),
+            (${rateUpdatedAt}, ${rateUpdatedAt}, 'coingecko.com', ${ethereumInstrumentId}, ${defaultInstrumentId}, ${ethereumToUsdRate});
 
         COMMIT;
         VACUUM;
@@ -647,7 +655,7 @@ const generateBudgetMultiCurrencyFixture = () => {
         WHERE account_id = 3;
 
         UPDATE settings
-        SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+        SET updated_at = unixepoch();
 
         COMMIT;
         VACUUM;
@@ -656,6 +664,7 @@ const generateBudgetMultiCurrencyFixture = () => {
 };
 
 const generateRecurringFixture = () => {
+    const now = Math.floor(Date.now() / 1000);
     const sourcePath = path.join(fixturesDirectoryPath, '07.db');
     const targetPath = path.join(outputDirectoryPath, '20-recurring-calendar.db');
 
@@ -689,7 +698,7 @@ const generateRecurringFixture = () => {
             WHEN 2 THEN 'E2E Recurring Spare'
             ELSE title
         END,
-            updated_at = CAST(strftime('%s', 'now') AS INTEGER),
+            updated_at = ${now},
             is_active = 1,
             include_in_net_worth = 1;
 
@@ -698,7 +707,7 @@ const generateRecurringFixture = () => {
             default_instrument_id = 1,
             language = 'en',
             show_cents = 0,
-            updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+            updated_at = ${now};
 
         INSERT INTO transactions (
             created_at,
@@ -745,8 +754,10 @@ const generateRecurringFixture = () => {
             amount
         )
         VALUES
-            (CAST(strftime('%s', 'now') AS INTEGER), CAST(strftime('%s', 'now') AS INTEGER), 1, -${totalRecurringAmount}),
-            (CAST(strftime('%s', 'now') AS INTEGER), CAST(strftime('%s', 'now') AS INTEGER), 2, 0);
+            (${now}, ${now}, 1, -${totalRecurringAmount}),
+            (${now}, ${now}, 2, 0);
+
+        UPDATE transactions SET needs_embedding = 1;
 
         COMMIT;
         VACUUM;
@@ -801,16 +812,6 @@ const generateConsolidationFixture = () => {
     runSqlite(
         targetPath,
         `
-        ALTER TABLE transaction_entries ADD exchange_rate real DEFAULT 1 NOT NULL;
-        ALTER TABLE transaction_entries ADD to_iban text;
-        INSERT INTO __drizzle_migrations (hash, created_at)
-        VALUES ('', 1776196800000);
-        `
-    );
-
-    runSqlite(
-        targetPath,
-        `
         BEGIN;
 
         DELETE FROM transaction_entries;
@@ -829,7 +830,7 @@ const generateConsolidationFixture = () => {
             (3, ${now}, ${now}, 'Wallet',     3, 'E2E Consolidation USD',        'BANK_SYNC', 'ASSET', ${usdId}, 'MONOBANK', 'UA000000000000000000000000U1', 1, 1),
             (4, ${now}, ${now}, 'Wallet',     4, 'E2E Consolidation EUR',        'BANK_SYNC', 'ASSET', ${eurId}, 'MONOBANK', 'UA000000000000000000000000E1', 1, 1),
             (5, ${now}, ${now}, 'CreditCard', 5, 'E2E Consolidation Card',       'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000C1', 1, 1),
-            (6, ${now}, ${now}, 'Wallet',     6, 'E2E Consolidation Cash',       'CASH',      'ASSET', ${uahId}, NULL,       NULL,                            1, 1),
+            (6, ${now}, ${now}, 'PiggyBank',   6, 'E2E Consolidation Cash',       'CASH',      'ASSET', ${uahId}, NULL,       NULL,                            1, 1),
             (7, ${now}, ${now}, 'Wallet',     7, 'E2E Consolidation Untouched',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000T1', 1, 1),
             (8, ${now}, ${now}, 'Wallet',     8, 'E2E Consolidation Privat Source', 'BANK_SYNC', 'ASSET', ${uahId}, 'PRIVATBANK', 'UA1111111000000000000000000356', 1, 1),
             (9, ${now}, ${now}, 'Wallet',     9, 'E2E Consolidation Privat Target', 'BANK_SYNC', 'ASSET', ${uahId}, 'PRIVATBANK', 'UA1111111000000000000000005524', 1, 1),
@@ -840,22 +841,33 @@ const generateConsolidationFixture = () => {
             (14, ${now}, ${now}, 'Wallet',   14, 'E2E Consolidation Chain Middle',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000CMID', 1, 1),
             (15, ${now}, ${now}, 'Wallet',   15, 'E2E Consolidation Chain Target',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000CTGT', 1, 1);
 
-        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
+        INSERT INTO bank_integrations (id, provider, token, created_at, updated_at)
         VALUES
-            (1, 'MONOBANK', 1, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (2, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (3, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (4, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (5, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (7, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (8, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '${privatbankIntegrationToken}', ${now}, ${now}),
-            (9, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '${privatbankIntegrationToken}', ${now}, ${now}),
-            (10, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (11, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (12, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (13, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (14, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
-            (15, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now});
+            (1, 'MONOBANK', '${monobankIntegrationToken}', ${now}, ${now}),
+            (3, 'PRIVATBANK', '${privatbankIntegrationToken}', ${now}, ${now});
+
+        UPDATE accounts
+        SET integration_id = (
+            SELECT id FROM bank_integrations WHERE bank_integrations.provider = accounts.external_source
+        )
+        WHERE external_source IN ('MONOBANK', 'PRIVATBANK');
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, created_at, updated_at)
+        VALUES
+            (1, 'MONOBANK', 1, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (2, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (3, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (4, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (5, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (7, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (8, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (9, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (10, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (11, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (12, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (13, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (14, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now}),
+            (15, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now});
 
         INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
         VALUES
@@ -922,6 +934,8 @@ const generateConsolidationFixture = () => {
             show_cents = 0,
             updated_at = ${now};
 
+        UPDATE transactions SET needs_embedding = 1;
+
         COMMIT;
         VACUUM;
         `
@@ -975,9 +989,20 @@ const generateRefundConsolidationFixture = () => {
         VALUES
             (1, ${now}, ${now}, 'Wallet', 1, 'E2E Refund Card', 'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000R1', 1, 1);
 
-        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
+        INSERT INTO bank_integrations (id, provider, token, created_at, updated_at)
         VALUES
-            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now});
+            (1, 'MONOBANK', '${monobankIntegrationToken}', ${now}, ${now});
+
+        UPDATE sqlite_sequence
+        SET seq = 2
+        WHERE name = 'bank_integrations';
+
+        UPDATE accounts
+        SET integration_id = (SELECT id FROM bank_integrations WHERE provider = 'MONOBANK');
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, created_at, updated_at)
+        VALUES
+            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now});
 
         INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
         VALUES
@@ -1015,6 +1040,8 @@ const generateRefundConsolidationFixture = () => {
             language = 'en',
             show_cents = 0,
             updated_at = ${now};
+
+        UPDATE transactions SET needs_embedding = 1;
 
         COMMIT;
         VACUUM;
@@ -1063,6 +1090,8 @@ const generateLongPressActionsFixture = () => {
         UPDATE account_balances
         SET amount = amount - ${deleteAmount + convertAmount}, updated_at = ${now}
         WHERE account_id = ${expenseSourceAccountId};
+
+        UPDATE transactions SET needs_embedding = 1;
 
         COMMIT;
         VACUUM;
@@ -1223,6 +1252,7 @@ const generateDebtSettlementFixture = () => {
 };
 
 const shiftTransactionInfoFixtureToNow = () => {
+    const now = Math.floor(Date.now() / 1000);
     const sourcePath = path.join(fixturesDirectoryPath, '31-transaction-info.db');
     const targetPath = path.join(outputDirectoryPath, '31-transaction-info.db');
 
@@ -1232,7 +1262,7 @@ const shiftTransactionInfoFixtureToNow = () => {
         `
         BEGIN;
         CREATE TEMP TABLE fixture_offset AS
-        SELECT CAST(strftime('%s', 'now') AS INTEGER) - 86400 - MAX(operated_at) AS seconds
+        SELECT ${now} - 86400 - MAX(operated_at) AS seconds
         FROM transactions;
 
         UPDATE transactions
@@ -1334,12 +1364,12 @@ const generateCategorizeInboxFixture = () => {
             (${coffeeTagId}, ${now}, ${now}, 'E2E Coffee Tag', 'e2e coffee tag'),
             (${grocerTagId}, ${now}, ${now}, 'E2E Grocer Tag', 'e2e grocer tag');
 
-        INSERT INTO transaction_tags (transaction_id, tag_id)
+        INSERT INTO transaction_tags (transaction_id, tag_id, is_primary)
         VALUES
-            (1, ${coffeeTagId}),
-            (2, ${coffeeTagId}),
-            (6, ${grocerTagId}),
-            (7, ${grocerTagId});
+            (1, ${coffeeTagId}, 1),
+            (2, ${coffeeTagId}, 1),
+            (6, ${grocerTagId}, 1),
+            (7, ${grocerTagId}, 1);
 
         INSERT INTO account_balances (account_id, amount, created_at, updated_at)
         VALUES (1, ${accountBalance}, ${now}, ${now});
@@ -1350,6 +1380,8 @@ const generateCategorizeInboxFixture = () => {
             language = 'en',
             show_cents = 0,
             updated_at = ${now};
+
+        UPDATE transactions SET needs_embedding = 1;
 
         COMMIT;
         VACUUM;

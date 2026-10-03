@@ -1,6 +1,6 @@
 import { RuleApplicationDrainerService } from '@app/rule/service/rule-application-drainer.service';
-import { RuleEngineService } from '@app/rule/service/rule-engine.service';
 import { CategorySourceEnum, DbError, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { RuleEngineService } from '@budgie/rules';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { vi } from 'vitest';
@@ -89,7 +89,7 @@ describe('rule/rule-application-drainer', () => {
             yield* ruleApplicationDrainerService.enqueueRuleApplication(7, onSettled);
             yield* advanceScheduledDrain(drainDelayMs);
 
-            expect(applyRule).toHaveBeenCalledWith(7, null);
+            expect(applyRule).toHaveBeenCalledWith(7);
             expect(onSettled).toHaveBeenCalledWith({ applied: 3, failed: 0, total: 3 }, null);
         }).pipe(Effect.provide(TestClockLayer))
     );

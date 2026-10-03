@@ -20,21 +20,22 @@ const LIME_REFUND_YEAR = 2026;
 const FIRST_LIME_EXPENSE_OPERATED_AT = new Date(LIME_REFUND_YEAR, 0, 15, 12, 0, 0);
 const SECOND_LIME_EXPENSE_OPERATED_AT = new Date(LIME_REFUND_YEAR, 0, 16, 12, 0, 0);
 
-const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
-    const mcc = testQueryService.findMccByCode('5621');
+const seedSeezonaRefund = (accountId: number, refundAccountId?: number) =>
+    Effect.gen(function* () {
+        const mcc = yield* testQueryService.findMccByCode('5621');
 
-    return testSeedService.refundedExpense({
-        accountId,
-        ...(isDefined(refundAccountId) && { refundAccountId }),
-        expenseAmount: SEEZONA_EXPENSE_AMOUNT,
-        refundAmounts: [SEEZONA_REFUND_AMOUNT],
-        title: 'Seezona',
-        refundTitle: 'Скасування. Seezona,Stockholm,SE',
-        mccCategoryId: mcc.id,
-        refundMccCategoryId: mcc.id,
-        refundDelaySeconds: 50 * 24 * 60 * 60
+        return yield* testSeedService.refundedExpense({
+            accountId,
+            ...(isDefined(refundAccountId) && { refundAccountId }),
+            expenseAmount: SEEZONA_EXPENSE_AMOUNT,
+            refundAmounts: [SEEZONA_REFUND_AMOUNT],
+            title: 'Seezona',
+            refundTitle: 'Скасування. Seezona,Stockholm,SE',
+            mccCategoryId: mcc.id,
+            refundMccCategoryId: mcc.id,
+            refundDelaySeconds: 50 * 24 * 60 * 60
+        });
     });
-};
 
 const expectManualSeezonaCandidate = Effect.fnUntraced(function* (refundId: number, accountTitle?: string) {
     const refundPairRepository = yield* RefundPairRepository;
@@ -57,9 +58,9 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
     it.effect('counts a prefix-stripped + same-MCC pair for manual review but does not auto-consolidate it', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            const mcc = testQueryService.findMccByCode('5814');
-            const { expense, refunds } = testSeedService.refundedExpense({
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            const mcc = yield* testQueryService.findMccByCode('5814');
+            const { expense, refunds } = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: STARBUCKS_EXPENSE_AMOUNT,
                 refundAmounts: [STARBUCKS_EXPENSE_AMOUNT],
@@ -76,15 +77,15 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
 
             const result = yield* runConsolidation();
             expect(result.consolidated).toBe(0);
-            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
-            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationType).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBeNull();
         })
     );
 
     it.effect('recommends a localized cancellation with a location suffix for manual review', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            const { refunds } = seedSeezonaRefund(account.id);
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            const { refunds } = yield* seedSeezonaRefund(account.id);
 
             yield* expectManualSeezonaCandidate(refunds[0].id);
         })
@@ -92,9 +93,9 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
 
     it.effect('recommends same-currency refunds from another account for manual review', () =>
         Effect.gen(function* () {
-            const expenseAccount = testSeedService.account({ title: 'Expense Card', externalId: 'mono-expense-card' });
-            const refundAccount = testSeedService.account({ title: 'Refund Card', externalId: 'mono-refund-card' });
-            const { refunds } = seedSeezonaRefund(expenseAccount.id, refundAccount.id);
+            const expenseAccount = yield* testSeedService.account({ title: 'Expense Card', externalId: 'mono-expense-card' });
+            const refundAccount = yield* testSeedService.account({ title: 'Refund Card', externalId: 'mono-refund-card' });
+            const { refunds } = yield* seedSeezonaRefund(expenseAccount.id, refundAccount.id);
 
             yield* expectManualSeezonaCandidate(refunds[0].id, 'Expense Card');
         })
@@ -103,10 +104,10 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
     it.effect('does not treat prefix-only refund titles as broad manual-review matches', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            const mcc = testQueryService.findMccByCode('5814');
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            const mcc = yield* testQueryService.findMccByCode('5814');
 
-            testSeedService.refundedExpense({
+            yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: STARBUCKS_EXPENSE_AMOUNT,
                 refundAmounts: [STARBUCKS_EXPENSE_AMOUNT],
@@ -125,8 +126,8 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
     it.effect('surfaces a gated-out localized-refund-title candidate for manual review when multiple expenses compete', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            testSeedService.refundedExpense({
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: LIME_EXPENSE_AMOUNT,
                 refundAmounts: [],
@@ -134,7 +135,7 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
                 externalIdPrefix: 'first',
                 expenseOperatedAt: FIRST_LIME_EXPENSE_OPERATED_AT
             });
-            const { expense: secondExpense, refunds } = testSeedService.refundedExpense({
+            const { expense: secondExpense, refunds } = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: LIME_EXPENSE_AMOUNT,
                 refundAmounts: [LIME_EXPENSE_AMOUNT],

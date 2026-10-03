@@ -60,7 +60,7 @@
         "**/dist/**",
         "**/public/**",
         "**/build/**",
-        "**/drizzle/**",
+        "packages/app/drizzle/**",
         "**/*.html",
         "**/*.json",
         "**/*.d.ts",
@@ -725,6 +725,7 @@
                             "^Arrow[A-Z]+",
                             "Tab",
                             "Enter",
+                            "SQLite",
                             "use client"
                         ],
                         "ignoreNames": [
@@ -1026,7 +1027,7 @@
                 "**/*.service.ts",
                 "**/*.repository.ts",
                 "**/*.layer.ts",
-                "packages/app/src/sync/util/make-*sync-service.util.ts",
+                "packages/sync/src/core/util/make-*sync-service.util.ts",
                 "packages/consolidation/src/auto/utils/make-consolidation-family-strategy.util.ts"
             ],
             "rules": {

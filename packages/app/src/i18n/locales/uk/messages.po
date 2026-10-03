@@ -13,12 +13,12 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. js-lingui-explicit-id
-#: src/sync/layer/consolidation-coordinator.layer.ts
+#: src/sync/layer/p2p-transfer-title-resolver.layer.ts
 msgid "Binance P2P buy {assetCode}"
 msgstr "P2P-купівля {assetCode} на Binance"
 
 #. js-lingui-explicit-id
-#: src/sync/layer/consolidation-coordinator.layer.ts
+#: src/sync/layer/p2p-transfer-title-resolver.layer.ts
 msgid "Binance P2P sell {assetCode}"
 msgstr "P2P-продаж {assetCode} на Binance"
 
@@ -122,8 +122,8 @@ msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {Залишився # день} few {Залишилося # дні} many {Залишилося # днів} other {Залишилося # дня}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "{formattedAmount} · {category}"
-msgstr "{formattedAmount} · {category}"
+msgid "{formattedAmount} · {detail}"
+msgstr "{formattedAmount} · {detail}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{formattedAmount} / mo"
@@ -323,7 +323,7 @@ msgstr "Близько хвилини"
 msgid "Account"
 msgstr "Рахунок"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Рахунок {accountId} не знайдено"
 
@@ -340,7 +340,7 @@ msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
 #. js-lingui-explicit-id
-#: src/transaction/service/transfer-creation.service.ts
+#: ../ledger/src/transaction/service/transfer-creation.service.ts
 msgid "transaction.accountNotFound"
 msgstr "Рахунок не знайдено"
 
@@ -694,7 +694,6 @@ msgstr "Синхронізацію з банком скинуто"
 msgid "Base currency"
 msgstr "Базова валюта"
 
-#: src/money-data/service/entry-base-valuation.service.ts
 #: src/money-data/service/money-data-upgrade.service.ts
 msgid "Base instrument not found"
 msgstr "Базову валюту не знайдено"
@@ -775,6 +774,10 @@ msgstr "Budgie вміє категоризувати транзакції, пр�
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Budgie could not open your data"
+msgstr "Budgie не вдалося відкрити ваші дані"
+
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie зіткнувся з неочікуваною проблемою. Ви можете перезапустити застосунок або повідомити про проблему, щоб ми її дослідили."
@@ -837,6 +840,7 @@ msgstr "Може тривати годинами"
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -1001,6 +1005,10 @@ msgstr "Холодні гаманці та баланси на біржах"
 msgid "Comment"
 msgstr "Коментар"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Committed {committedExpense} per month · income {committedIncome}"
+msgstr "Обов’язкові {committedExpense} на місяць · дохід {committedIncome}"
+
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Condition"
 msgstr "Умова"
@@ -1008,6 +1016,10 @@ msgstr "Умова"
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
 msgid "Conditions"
 msgstr "Умови"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Confirm"
+msgstr "Підтвердити"
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Confirm PIN"
@@ -1128,9 +1140,9 @@ msgstr "Не вдалося застосувати правило до наяв�
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
-#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Could not attach debt"
 msgstr "Не вдалося прив’язати борг"
 
@@ -1272,6 +1284,10 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
 
+#: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
+msgid "Could not rename recurring payment."
+msgstr "Не вдалося перейменувати регулярний платіж."
+
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Could not repair sync data"
 msgstr "Не вдалося виправити дані синхронізації"
@@ -1336,6 +1352,10 @@ msgstr "Не вдалося оновити сповіщення"
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 msgid "Could not update on-device AI"
 msgstr "Не вдалося оновити ШІ на пристрої"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Could not update recurring payment."
+msgstr "Не вдалося оновити регулярний платіж."
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -1542,15 +1562,15 @@ msgstr "Борг · {accountTitle}"
 msgid "Debt Account"
 msgstr "Борговий рахунок"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account cannot match transaction account"
 msgstr "Борговий рахунок не може збігатися з рахунком транзакції"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Борговий рахунок не знайдено"
 
-#: src/transaction/error/debt-transfer-not-allowed.error.ts
+#: ../ledger/src/transaction/error/debt-transfer-not-allowed.error.ts
 msgid "Debt accounts cannot take part in transfers"
 msgstr "Боргові рахунки не можуть брати участь у переказах"
 
@@ -1610,12 +1630,12 @@ msgid "Deposit Account"
 msgstr "Депозитний рахунок"
 
 #. js-lingui-explicit-id
-#: src/transaction/service/transaction-deposit-safety.service.ts
+#: ../ledger/src/transaction/service/transaction-deposit-safety.service.ts
 msgid "transaction.depositExpenseDisallowed"
 msgstr "Депозитні рахунки не можуть фінансувати витрати"
 
 #. js-lingui-explicit-id
-#: src/account/error/deposit-negative-balance.error.ts
+#: ../ledger/src/account/error/deposit-negative-balance.error.ts
 msgid "account.depositNegativeBalanceDisallowed"
 msgstr "Баланс депозиту не може стати відʼємним"
 
@@ -1634,6 +1654,14 @@ msgstr "Деталі"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Dismiss"
+msgstr "Приховати"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Dismiss recurring payment?"
+msgstr "Приховати регулярний платіж?"
 
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Display the budget card on the home screen"
@@ -1910,11 +1938,7 @@ msgstr "Щоденні транзакції та витрати"
 msgid "Exchange rate"
 msgstr "Обмінний курс"
 
-#: src/money-data/service/entry-base-valuation.service.ts
-msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
-msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
-
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Exchange rate not found"
 msgstr "Курс обміну не знайдено"
 
@@ -2292,10 +2316,6 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Instrument not found"
-msgstr "Інструмент не знайдено"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
 msgstr "Відсоткова ставка"
@@ -2311,6 +2331,10 @@ msgstr "Невірний файл"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Is Planned"
 msgstr "Заплановано"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "It will no longer appear in the calendar."
+msgstr "Він більше не з’являтиметься в календарі."
 
 #: src/i18n/constant/locales.constant.ts
 msgid "Italian (Italy)"
@@ -2470,10 +2494,6 @@ msgstr "Зіставлення стовпців CSV"
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
 msgstr "Ринкова капіталізація"
-
-#: src/market-data/service/historical-market-data-loader.service.ts
-msgid "Market data prices missing"
-msgstr "Ціни ринкових даних відсутні"
 
 #: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
 msgid "Market history is loading quietly."
@@ -2936,21 +2956,21 @@ msgstr "Одноразовий імпорт виписки з Приват24 —
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."
 
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
 msgstr "Можна конвертувати лише витратні транзакції"
 
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 #: src/account/service/account-debt-opening.service.ts
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Можна конвертувати лише дохідні транзакції"
 
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Можна конвертувати лише витрати з одним записом"
 
+#: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 #: src/account/service/account-debt-opening.service.ts
-#: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Можна конвертувати лише доходи з одним записом"
 
@@ -3048,6 +3068,10 @@ msgstr "Загальний бюджет: {threshold}% витрачено"
 #: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
 msgid "Overall monthly limit"
 msgstr "Загальний місячний ліміт"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Overdue"
+msgstr "Прострочено"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Overpaid"
@@ -3168,6 +3192,10 @@ msgstr "Шаблон застосовано. За потреби налашту�
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Press to re-evaluate transactions"
 msgstr "Натисніть, щоб переоцінити транзакції"
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Price changed"
+msgstr "Ціна змінилася"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Prices fill in quietly while you use the app."
@@ -3323,6 +3351,10 @@ msgstr "Прибрати розділення"
 msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Rename"
+msgstr "Перейменувати"
+
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Погашено"
@@ -3360,6 +3392,10 @@ msgstr "Відновити рахунок?"
 #: src/import/components/import-database/import-database.tsx
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Restore from Backup"
+msgstr "Відновити з резервної копії"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -3882,6 +3918,10 @@ msgstr "Поміняти рахунки"
 msgid "Swipe left"
 msgstr "Проведіть вліво"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Swipe left to dismiss this recurring payment."
+msgstr "Проведіть ліворуч, щоб приховати цей регулярний платіж."
+
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
 msgstr "Проведіть, щоб видалити цей ліміт категорії з вашого бюджету."
@@ -4014,9 +4054,22 @@ msgstr "Цей рахунок буде приховано з головного 
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup could not be opened with your current PIN."
+msgstr "Не вдалося відкрити цю резервну копію з вашим поточним PIN-кодом."
+
 #: src/import/components/import-database/import-database.tsx
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Ця резервна копія захищена PIN-кодом. Імпорт замінить усі поточні дані, а її PIN стане PIN-кодом застосунку. Після імпорту застосунок перезапуститься. Цю дію не можна скасувати."
+
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup was made by an older Budgie version and cannot be imported."
+msgstr "Цю резервну копію створено старішою версією Budgie, її не можна імпортувати."
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup was made by an older Budgie version and cannot be restored."
+msgstr "Цю резервну копію створено старішою версією Budgie, її не можна відновити."
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."
@@ -4161,25 +4214,25 @@ msgstr "Touch ID"
 msgid "Tracking in {defaultInstrumentCode}"
 msgstr "Облік у {defaultInstrumentCode}"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
 msgstr "Транзакція вже має прив’язку боргу"
 
-#: src/transaction/service/transaction-transfer.service.ts
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"
 msgstr "Транзакція повинна мати рахунок призначення"
 
-#: src/transaction/service/transaction-transfer.service.ts
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
-#: src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction must have exactly one primary entry"
 msgstr "Транзакція повинна мати рівно один основний запис"
 
+#: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 #: src/account/service/account-debt-opening.service.ts
-#: src/transaction/service/transaction-debt-settlement.service.ts
-#: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
@@ -4262,6 +4315,7 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 msgid "Try again"
 msgstr "Спробувати ще раз"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -4506,6 +4560,10 @@ msgstr "Усе готово"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your bank, with nobody in between"
 msgstr "Ваш банк, без посередників"
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
+msgstr "Ваші дані залишаються недоторканими на цьому пристрої. Спробуйте ще раз або відновіть резервну копію, створену з вашим поточним PIN-кодом."
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
