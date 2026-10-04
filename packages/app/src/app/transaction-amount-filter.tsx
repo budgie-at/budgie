@@ -9,7 +9,6 @@ import { AmountInput } from '../@generic/component/amount-input/amount-input';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FormItem } from '../@generic/component/form-item/form-item';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
@@ -23,7 +22,6 @@ const KEYBOARD_STICKY_OFFSET = { closed: 0, opened: 12 };
 
 export default function TransactionAmountFilterModal() {
     const { t } = useLingui();
-    const { backgroundColor } = useFormsheetListStyles();
     const [, resolveTransactionAmountFilter] = useTransactionAmountFilterModal();
     const currentParams = useTransactionAmountFilterModalParams();
 
@@ -43,7 +41,6 @@ export default function TransactionAmountFilterModal() {
     const hasSelected = isPositiveNumber(fromValue) || isPositiveNumber(toValue);
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all amounts`;
     const contentStyle = { paddingTop: CONTENT_TOP_SPACE };
-    const drawerStyle = { backgroundColor };
 
     return (
         <FilterSheet>
@@ -79,7 +76,7 @@ export default function TransactionAmountFilterModal() {
             </View>
 
             <KeyboardStickyView offset={KEYBOARD_STICKY_OFFSET} className="absolute inset-x-0 bottom-0">
-                <View className="border-t border-t-secondary-corner px-xl pb-safe-or-[16px] pt-lg" style={drawerStyle}>
+                <View className="border-t border-t-secondary-corner bg-primary-reverse px-xl pb-safe-or-[16px] pt-lg">
                     <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.AmountApplyButton} />
                 </View>
             </KeyboardStickyView>
