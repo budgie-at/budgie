@@ -1,6 +1,7 @@
 export interface PrivatbankRowInterface {
     readonly rawDate: string;
     readonly date: Date;
+    readonly deviceLocalDate: Date;
     readonly category: string;
     readonly card: string;
     readonly description: string;

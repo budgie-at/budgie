@@ -1012,6 +1012,9 @@ importers:
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
 
   tests/test-kit:
     dependencies:

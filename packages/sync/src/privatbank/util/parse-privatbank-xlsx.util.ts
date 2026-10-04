@@ -21,29 +21,54 @@ import {
 
 import type { PrivatbankRowInterface } from '../interface/privatbank-row.interface';
 
+const MARCH_MONTH_INDEX = 2;
+const OCTOBER_MONTH_INDEX = 9;
+const KYIV_DST_SWITCH_UTC_HOUR = 1;
+const KYIV_STANDARD_OFFSET_MILLISECONDS = 2 * 60 * 60 * 1000;
+const KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS = 3 * 60 * 60 * 1000;
+
 const createParseError = (message: string): SyncInvalidResponseError =>
     new SyncInvalidResponseError({ provider: SyncProviderEnum.PRIVATBANK, message });
 
-const parsePrivatbankDate = (dateString: string): Effect.Effect<Date, SyncInvalidResponseError> => {
+const findLastSundayUtc = (year: number, month: number): number => {
+    const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0));
+
+    return Date.UTC(year, month, lastDayOfMonth.getUTCDate() - lastDayOfMonth.getUTCDay(), KYIV_DST_SWITCH_UTC_HOUR);
+};
+
+const resolveKyivUtcOffsetMilliseconds = (wallClockTime: number, year: number): number => {
+    const daylightSavingStart = findLastSundayUtc(year, MARCH_MONTH_INDEX);
+    const daylightSavingEnd = findLastSundayUtc(year, OCTOBER_MONTH_INDEX);
+    const daylightSavingCandidate = wallClockTime - KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS;
+
+    return daylightSavingCandidate >= daylightSavingStart && daylightSavingCandidate < daylightSavingEnd
+        ? KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS
+        : KYIV_STANDARD_OFFSET_MILLISECONDS;
+};
+
+const parsePrivatbankDates = (
+    dateString: string
+): Effect.Effect<Pick<PrivatbankRowInterface, 'date' | 'deviceLocalDate'>, SyncInvalidResponseError> => {
     const [datePart, timePart] = dateString.split(' ');
 
     if (!isNotEmptyString(datePart) || !isNotEmptyString(timePart)) {
         return Effect.fail(createParseError(`Invalid Privatbank date format: "${dateString}"`));
     }
 
-    const [day, month, year] = datePart.split('.');
-    const [hours, minutes, seconds] = timePart.split(':');
-    const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes), Number(seconds));
+    const [day, month, year] = datePart.split('.').map(Number);
+    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+    const wallClockTime = Date.UTC(year, month - 1, day, hours, minutes, seconds);
+    const date = new Date(wallClockTime - resolveKyivUtcOffsetMilliseconds(wallClockTime, year));
 
     return Number.isNaN(date.getTime())
         ? Effect.fail(createParseError(`Failed to parse Privatbank date: "${dateString}"`))
-        : Effect.succeed(date);
+        : Effect.succeed({ date, deviceLocalDate: new Date(year, month - 1, day, hours, minutes, seconds) });
 };
 
 const mapRawRowToPrivatbankRow = (row: unknown[]): Effect.Effect<PrivatbankRowInterface, SyncInvalidResponseError> =>
-    Effect.map(parsePrivatbankDate(String(row[PRIVATBANK_DATE_COLUMN_INDEX])), date => ({
+    Effect.map(parsePrivatbankDates(String(row[PRIVATBANK_DATE_COLUMN_INDEX])), dates => ({
         rawDate: String(row[PRIVATBANK_DATE_COLUMN_INDEX]),
-        date,
+        ...dates,
         category: String(row[PRIVATBANK_CATEGORY_COLUMN_INDEX]),
         card: String(row[PRIVATBANK_CARD_COLUMN_INDEX]),
         description: String(row[PRIVATBANK_DESCRIPTION_COLUMN_INDEX]),

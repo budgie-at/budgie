@@ -30,6 +30,7 @@ const buildPrivatbankTransaction = (): SyncTransactionInterface =>
     privatbankTransactionMapper({
         rawDate: '13.01.2026 11:42:53',
         date: new Date('2026-01-13T09:42:53.000Z'),
+        deviceLocalDate: new Date('2026-01-13T09:42:53.000Z'),
         category: PRIVATBANK_TRANSFER_CATEGORY,
         card: PRIVATBANK_CARD_ID,
         description: 'Transfer from Monobank',

@@ -34,5 +34,5 @@ export const generatePrivatbankLegacyExternalId = (input: PrivatbankExternalIdIn
 
 export const generatePrivatbankParsedDateLegacyExternalId = (input: PrivatbankExternalIdInputInterface): string =>
     generateStableExternalIdHash(
-        `${input.date.toISOString()}|${input.card}|${input.cardAmount}|${input.operationAmount}|${input.description}`
+        `${input.deviceLocalDate.toISOString()}|${input.card}|${input.cardAmount}|${input.operationAmount}|${input.description}`
     ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);
