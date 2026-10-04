@@ -1,6 +1,6 @@
 {
     "name": "@budgie/categorization",
-    "version": "6.91.2",
+    "version": "6.92.0",
     "private": true,
     "description": "Category and tag suggestion, embedding indexing and categorize inbox domain services",
     "sideEffects": false,
