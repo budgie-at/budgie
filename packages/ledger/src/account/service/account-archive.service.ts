@@ -6,11 +6,14 @@ import {
     SettingsRepository,
     TransactionEntryRepository,
     TransactionRepository,
-    TransactionConsolidationRepository
+    TransactionConsolidationRepository,
+    TransactionEntityInterface
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
@@ -33,11 +36,9 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         const ledgerWorkload = yield* LedgerWorkload;
         const unconsolidationBatchSize = 25;
 
-        const unconsolidateActiveAutoByAccountId = Effect.fn('AccountArchiveService.unconsolidateActiveAutoByAccountId')(function* (
-            id: number
+        const unconsolidateCanonicals = Effect.fn('AccountArchiveService.unconsolidateCanonicals')(function* (
+            canonicals: Array<Pick<TransactionEntityInterface, 'id'>>
         ) {
-            const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
-
             yield* processInputWithBatches(canonicals, unconsolidationBatchSize, batch =>
                 Effect.forEach(batch, canonical => Db.transaction(unconsolidationService.unconsolidateById(canonical.id)), {
                     discard: true
@@ -46,7 +47,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         });
 
         const archiveByIdInTransaction = Effect.fn('AccountArchiveService.archiveByIdInTransaction')(function* (id: number) {
-            yield* unconsolidateActiveAutoByAccountId(id);
+            yield* unconsolidateCanonicals(yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]));
 
             yield* accountRepository.archiveById(id);
             yield* debtEventRepository.archiveByAccountIds([id]);
@@ -79,8 +80,11 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
             }),
             deleteById: Effect.fn('AccountArchiveService.deleteById')(
                 function* (id: number) {
-                    yield* unconsolidateActiveAutoByAccountId(id);
+                    const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
+
+                    yield* unconsolidateCanonicals(canonicals.filter(canonical => !isDefined(canonical.consolidationParentTransactionId)));
                     yield* accountTransferConversionService.convertAccountTransfers(id);
+                    yield* transactionRepository.detachTransfersFromAccount(id);
                     yield* debtEventRepository.deleteByAccountId(id);
                     yield* transactionEntryRepository.deleteByAccountId(id);
                     yield* transactionRepository.deleteByAccountId(id);
