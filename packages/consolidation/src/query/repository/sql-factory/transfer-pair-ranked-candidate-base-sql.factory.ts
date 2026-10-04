@@ -1,12 +1,16 @@
 import {
     AccountTypeEnum,
     InstrumentTypeEnum,
+    REFUND_TIME_WINDOW_SECONDS,
     TRANSFER_PAIR_TIME_WINDOW_SECONDS,
+    TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 
+import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { P2P_FIAT_BANK_ACCOUNT_TYPE_SQL } from '../../../shared/constant/p2p-fiat-bank-account-type-sql.constant';
+import { REFUND_TITLE_PREFIXES } from '../../../shared/constant/refund-title-prefixes.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH,
@@ -16,7 +20,10 @@ import {
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 import { P2P_ORDER_EXTERNAL_ID_MARKER } from '../../../shared/constant/transfer-pair-p2p-fiat.constant';
+import { buildPrefixLikeSql } from '../../../shared/util/build-prefix-like-sql.util';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+
+import { TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL } from './transfer-pair-available-exchange-rates-sql.factory';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -74,6 +81,24 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     AND expense_entry.original_transaction_id IS NULL
                     AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
                     AND expense_entry.exchange_rate > 0
+                    AND expense_tx.consolidation_type IS NOT '${TransactionConsolidationTypeEnum.REFUND}'
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM transactions rejected_payment_refund_tx
+                        INNER JOIN transaction_entries rejected_payment_refund_entry ON
+                            rejected_payment_refund_entry.transaction_id = rejected_payment_refund_tx.id
+                            AND rejected_payment_refund_entry.deleted_at IS NULL
+                            AND rejected_payment_refund_entry.original_transaction_id IS NULL
+                            AND rejected_payment_refund_entry.account_id = expense_entry.account_id
+                            AND rejected_payment_refund_entry.amount = expense_entry.amount
+                        WHERE rejected_payment_refund_tx.type = '${TransactionTypeEnum.INCOME}'
+                            AND rejected_payment_refund_tx.deleted_at IS NULL
+                            AND rejected_payment_refund_tx.consolidation_parent_transaction_id IS NULL
+                            AND rejected_payment_refund_tx.to_account_id = expense_entry.account_id
+                            AND rejected_payment_refund_tx.operated_at BETWEEN expense_tx.operated_at
+                                AND expense_tx.operated_at + ${REFUND_TIME_WINDOW_SECONDS}
+                            AND ${buildPrefixLikeSql('rejected_payment_refund_tx.title', REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal)}
+                    )
                     ${EXPENSE_SCOPE_SQL_PLACEHOLDER}
             ),
             income_entries AS (
@@ -119,59 +144,10 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 WHERE income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
                     AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND NOT ${buildPrefixLikeSql('income_tx.title', [...REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal, ...REFUND_TITLE_PREFIXES.rejectedPaymentFee])}
                     ${INCOME_SCOPE_SQL_PLACEHOLDER}
             ),
-            latest_exchange_rates AS (
-                SELECT
-                    base_instrument_id,
-                    quote_instrument_id,
-                    rate * 1.0 as rate,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY base_instrument_id, quote_instrument_id
-                        ORDER BY created_at DESC
-                    ) as exchangeRateRank
-                FROM exchange_rates
-                WHERE deleted_at IS NULL
-                    AND rate > 0
-            ),
-            direct_exchange_rates AS (
-                SELECT base_instrument_id, quote_instrument_id, rate, 0 as direction
-                FROM latest_exchange_rates
-                WHERE exchangeRateRank = 1
-                UNION ALL
-                SELECT quote_instrument_id as base_instrument_id, base_instrument_id as quote_instrument_id, 1.0 / rate as rate, 1 as direction
-                FROM latest_exchange_rates
-                WHERE exchangeRateRank = 1
-            ),
-            base_triangulated_rates AS (
-                SELECT
-                    first_leg.base_instrument_id as base_instrument_id,
-                    second_leg.quote_instrument_id as quote_instrument_id,
-                    first_leg.rate * second_leg.rate as rate, 2 as direction
-                FROM direct_exchange_rates first_leg
-                INNER JOIN direct_exchange_rates second_leg
-                    ON first_leg.quote_instrument_id = second_leg.base_instrument_id
-                WHERE first_leg.quote_instrument_id = (SELECT default_instrument_id FROM settings LIMIT 1)
-                    AND first_leg.base_instrument_id != second_leg.quote_instrument_id
-            ),
-            available_exchange_rates AS (
-                SELECT base_instrument_id, quote_instrument_id, rate FROM (
-                    SELECT
-                        base_instrument_id,
-                        quote_instrument_id,
-                        rate,
-                        ROW_NUMBER() OVER (
-                            PARTITION BY base_instrument_id, quote_instrument_id
-                            ORDER BY direction
-                        ) as directionRank
-                    FROM (
-                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM direct_exchange_rates
-                        UNION ALL
-                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM base_triangulated_rates
-                    )
-                )
-                WHERE directionRank = 1
-            ),
+            ${TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL}
             scored_pairs_base AS (
                 SELECT
                     expense_entries.*,
@@ -244,6 +220,17 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                         THEN 1
                         ELSE 0
                     END as operationAmountMatch,
+                    CASE
+                        WHEN expense_entries.expenseInstrumentId != income_entries.incomeInstrumentId
+                            AND (
+                                (expense_entries.expenseEntryExchangeRate != 1
+                                    AND ABS(expense_entries.expenseOperationAmount - income_entries.incomeEntryAmount) <= ${CANONICAL_CENT_TOLERANCE_AMOUNT})
+                                OR (income_entries.incomeEntryExchangeRate != 1
+                                    AND ABS(income_entries.incomeOperationAmount - expense_entries.expenseEntryAmount) <= ${CANONICAL_CENT_TOLERANCE_AMOUNT})
+                            )
+                        THEN 1
+                        ELSE 0
+                    END as bankRateAmountMatch,
                     CASE
                         WHEN expense_entries.expenseAccountHintSuffix IS NOT NULL
                             AND income_entries.incomeAccountHintSuffix IS NOT NULL

@@ -25,6 +25,7 @@ export interface TransferPairCandidateInterface {
         | 'implied-rate'
         | 'p2p-fiat'
         | 'same-bank-cross-currency'
+        | 'bank-rate'
         | 'same-bank-hinted-fee'
         | 'interbank-hinted-fee';
     readonly timeDiff: number;
