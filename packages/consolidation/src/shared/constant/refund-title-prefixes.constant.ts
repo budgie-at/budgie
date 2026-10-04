@@ -20,6 +20,7 @@ const AUTO_PREFIXES = [
 
 export const REFUND_TITLE_PREFIXES = {
     auto: AUTO_PREFIXES,
+    privatbankCategoryRefund: ['ПОВЕРНЕННЯ КОШТІВ, ', 'Повернення коштів, '] as const,
     rejectedPaymentFee: ['Повернення комісій', 'ПОВЕРНЕННЯ КОМІСІЙ'] as const,
     rejectedPaymentPrincipal: ['Повернення коштів за забракованим платежем', 'ПОВЕРНЕННЯ КОШТІВ ЗА ЗАБРАКОВАНИМ ПЛАТЕЖЕМ'] as const,
     review: [
