@@ -126,7 +126,7 @@ describe('ledger', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('stores rule tags as RULE and keeps tag sources when the user edits the transaction', () =>
+    it.effect('keeps tag sources on an edit with the same tag set and confirms every tag as USER once the set changes', () =>
         Effect.gen(function* () {
             const transactionService = yield* TransactionService;
             const testSeedService = yield* seed;
@@ -139,16 +139,21 @@ describe('ledger', () => {
             const [transaction] = yield* transactionService.bulkCreate([
                 { ...buildInput(TransactionTypeEnum.EXPENSE, entries), tagIds: [userTag.id], ruleTagIds: [ruleTag.id] }
             ]);
+            const createdSources = yield* getTagSources(transaction.id);
 
-            expect(yield* getTagSources(transaction.id)).toStrictEqual([
+            yield* transactionService.updateById(transaction.id, { entries, tagIds: [ruleTag.id, userTag.id] });
+            const unchangedSetSources = yield* getTagSources(transaction.id);
+
+            yield* transactionService.updateById(transaction.id, { entries, tagIds: [ruleTag.id, addedTag.id] });
+            const changedSetSources = yield* getTagSources(transaction.id);
+
+            expect(createdSources).toStrictEqual([
                 { tagId: userTag.id, source: TagSourceEnum.USER },
                 { tagId: ruleTag.id, source: TagSourceEnum.RULE }
             ]);
-
-            yield* transactionService.updateById(transaction.id, { entries, tagIds: [ruleTag.id, addedTag.id] });
-
-            expect(yield* getTagSources(transaction.id)).toStrictEqual([
-                { tagId: ruleTag.id, source: TagSourceEnum.RULE },
+            expect(unchangedSetSources).toStrictEqual(createdSources);
+            expect(changedSetSources).toStrictEqual([
+                { tagId: ruleTag.id, source: TagSourceEnum.USER },
                 { tagId: addedTag.id, source: TagSourceEnum.USER }
             ]);
         }).pipe(Effect.provide(TestLayer))

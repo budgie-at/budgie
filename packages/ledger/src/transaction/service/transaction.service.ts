@@ -73,10 +73,17 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             );
 
             const existingTags = yield* transactionTagsRepository.findByTransactionId(transactionId);
+            const submittedTagIds = new Set(input.tagIds);
+            const isTagSetUnchanged =
+                submittedTagIds.size === existingTags.length && existingTags.every(tag => submittedTagIds.has(tag.tagId));
 
             yield* transactionTagsRepository.deleteByTransactionId(transactionId);
             yield* transactionTagsRepository.bulkCreate(
-                transactionMapTagIdsToCreateEntities(input, transactionId, new Map(existingTags.map(tag => [tag.tagId, tag.source])))
+                transactionMapTagIdsToCreateEntities(
+                    input,
+                    transactionId,
+                    new Map(isTagSetUnchanged ? existingTags.map(tag => [tag.tagId, tag.source]) : [])
+                )
             );
         });
 

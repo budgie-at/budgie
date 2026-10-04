@@ -12,7 +12,7 @@ import {
     TransactionTagsEntityTable,
     insertTransactionTag
 } from '@budgie/contracts';
-import { and, desc, eq, inArray, isNotNull, isNull, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -137,7 +137,8 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                 }),
                 addTagByTransactionIds: Effect.fn('TransactionCategorizeInboxRepository.addTagByTransactionIds')(function* (
                     transactionIds: number[],
-                    tagId: number
+                    tagId: number,
+                    source: TagSourceEnum
                 ) {
                     return yield* writeInChunks(transactionIds, chunk =>
                         Db.query(db =>
@@ -149,7 +150,7 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                                     transactionFilters.buildVisibleTransactionCondition(),
                                     transactionFilters.buildCategorizableTypeCondition(null)
                                 ),
-                                TagSourceEnum.INBOX
+                                source
                             )
                         )
                     );
@@ -194,7 +195,10 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                             .where(
                                 buildEvidenceWhere([
                                     isNotNull(TransactionEntryEntityTable.categoryId),
-                                    ne(TransactionEntryEntityTable.categorySource, CategorySourceEnum.MCC_DEFAULT),
+                                    notInArray(TransactionEntryEntityTable.categorySource, [
+                                        CategorySourceEnum.MCC_DEFAULT,
+                                        CategorySourceEnum.INBOX
+                                    ]),
                                     eq(CategoryEntityTable.isSystemCategory, false),
                                     isNull(CategoryEntityTable.deletedAt)
                                 ])
