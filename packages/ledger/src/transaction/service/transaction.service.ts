@@ -72,10 +72,12 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId, valuations.get(entry)))
             );
 
+            const existingTags = yield* transactionTagsRepository.findByTransactionId(transactionId);
+
             yield* transactionTagsRepository.deleteByTransactionId(transactionId);
-            if (isNotEmptyArray(input.tagIds)) {
-                yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId));
-            }
+            yield* transactionTagsRepository.bulkCreate(
+                transactionMapTagIdsToCreateEntities(input, transactionId, new Map(existingTags.map(tag => [tag.tagId, tag.source])))
+            );
         });
 
         const bulkCreate = Effect.fn('TransactionService.bulkCreate')(

@@ -56,7 +56,7 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
         reassignTransactions: Effect.fn('TagRepository.reassignTransactions')(function* (fromTagId: number, toTagId: number) {
             const transactionsWithFromTag = yield* Db.query(db =>
                 db
-                    .select({ transactionId: TransactionTagsEntityTable.transactionId })
+                    .select({ transactionId: TransactionTagsEntityTable.transactionId, source: TransactionTagsEntityTable.source })
                     .from(TransactionTagsEntityTable)
                     .where(eq(TransactionTagsEntityTable.tagId, fromTagId))
             );
@@ -65,7 +65,9 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
                 yield* Db.query(db =>
                     db
                         .insert(TransactionTagsEntityTable)
-                        .values(transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId })))
+                        .values(
+                            transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId, source: row.source }))
+                        )
                         .onConflictDoNothing()
                 );
             }

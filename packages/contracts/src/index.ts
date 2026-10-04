@@ -205,6 +205,7 @@ export { TransactionAssociationEnum } from './transaction/enum/transaction-assoc
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
 export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-pair-time-window.constant';
 export { REFUND_TIME_WINDOW_SECONDS } from './transaction/constant/refund-time-window.constant';
+export { REFUND_TITLE_PREFIXES } from './transaction/constant/refund-title-prefixes.constant';
 
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 
@@ -243,6 +244,7 @@ export { TransactionConsolidationRepository } from './transaction/repository/tra
 export { TransactionViewRepository } from './transaction/repository/transaction-view.repository';
 
 export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
+export { TagSourceEnum } from './transaction-tags/enum/tag-source.enum';
 
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
 export { insertTransactionTag } from './transaction-tags/util/insert-transaction-tag.util';

@@ -6,6 +6,7 @@ import {
     Db,
     InstrumentEntityTable,
     MccCategoryEntityTable,
+    TagSourceEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTagsEntityTable,
@@ -147,7 +148,8 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                                     inArray(TransactionEntityTable.id, chunk),
                                     transactionFilters.buildVisibleTransactionCondition(),
                                     transactionFilters.buildCategorizableTypeCondition(null)
-                                )
+                                ),
+                                TagSourceEnum.INBOX
                             )
                         )
                     );
@@ -178,7 +180,11 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                     selectInboxRows(
                         buildInboxRowsWhere(
                             { ...filters, tagIds: [] },
-                            and(transactionFilters.buildCategorizableEntryCondition(), transactionFilters.buildNonDebtAccountCondition())
+                            and(
+                                transactionFilters.buildCategorizableEntryCondition(),
+                                transactionFilters.buildNonDebtAccountCondition(),
+                                sql`LENGTH(TRIM(${TransactionEntityTable.title})) > 0`
+                            )
                         )
                     ),
                 findCategoryEvidence: () =>
@@ -199,7 +205,7 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                     Db.query(db =>
                         selectEvidence(db, sql<number>`${TransactionTagsEntityTable.tagId}`.mapWith(Number))
                             .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-                            .where(buildEvidenceWhere([]))
+                            .where(buildEvidenceWhere([eq(TransactionTagsEntityTable.source, TagSourceEnum.USER)]))
                             .groupBy(...buildEvidenceGroupBy(), TransactionTagsEntityTable.tagId)
                     )
             };

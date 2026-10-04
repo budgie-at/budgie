@@ -5,6 +5,7 @@ import {
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
+    TagSourceEnum,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTagsEntityTable,
@@ -79,7 +80,8 @@ layer(TestLayer)('rules engine', it => {
             const [prepared] = transactionInputs;
 
             expect(postCreateIndexes).toEqual([]);
-            expect(prepared.tagIds).toEqual([tag.id]);
+            expect(prepared.tagIds).toEqual([]);
+            expect(prepared.ruleTagIds).toEqual([tag.id]);
             expect(prepared.entries.map(entry => [entry.categoryId, entry.categorySource])).toEqual([
                 [firstCategory.id, CategorySourceEnum.RULE]
             ]);
@@ -109,7 +111,7 @@ layer(TestLayer)('rules engine', it => {
                 .where(eq(TransactionTagsEntityTable.transactionId, expense.id));
 
             expect(entries.map(entry => [entry.categoryId, entry.categorySource])).toEqual([[firstCategory.id, CategorySourceEnum.RULE]]);
-            expect(tags.map(transactionTag => transactionTag.tagId)).toEqual([tag.id]);
+            expect(tags.map(transactionTag => [transactionTag.tagId, transactionTag.source])).toEqual([[tag.id, TagSourceEnum.RULE]]);
         })
     );
 });

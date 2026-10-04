@@ -6,6 +6,7 @@ import {
     TransactionTagsRepository,
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
+    TagSourceEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
@@ -71,7 +72,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 return;
             }
 
-            const taggedIds = yield* transactionTagsRepository.addTagByTransactionIds([transactionId], action.tagId);
+            const taggedIds = yield* transactionTagsRepository.addTagByTransactionIds([transactionId], action.tagId, TagSourceEnum.RULE);
 
             if (isNotEmptyArray(taggedIds)) {
                 yield* transactionRepository.touchUpdatedAt(transactionId);
@@ -267,9 +268,11 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 
             const ruleActionOutcomes = extractRuleActionOutcomes(matchingRules);
             const { categoryId } = ruleActionOutcomes;
-            const tagIds = [...new Set([...input.tagIds, ...ruleActionOutcomes.tagIds])];
+            const ruleTagIds = [...new Set([...(input.ruleTagIds ?? []), ...ruleActionOutcomes.tagIds])].filter(
+                tagId => !input.tagIds.includes(tagId)
+            );
             const hasCategoryAction = isDefined(categoryId);
-            const hasTagAction = tagIds.length !== input.tagIds.length;
+            const hasTagAction = ruleTagIds.length !== (input.ruleTagIds ?? []).length;
 
             if (!hasCategoryAction && !hasTagAction) {
                 return input;
@@ -282,7 +285,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             return {
                 ...input,
                 updatedBy: TransactionUpdatedByEnum.RULE,
-                tagIds,
+                ruleTagIds,
                 entries
             };
         };
@@ -355,7 +358,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 const taggedIds: number[] = [];
 
                 for (const tagId of tagIds) {
-                    taggedIds.push(...(yield* transactionTagsRepository.addTagByTransactionIds(batchIds, tagId)));
+                    taggedIds.push(...(yield* transactionTagsRepository.addTagByTransactionIds(batchIds, tagId, TagSourceEnum.RULE)));
                 }
 
                 yield* transactionRepository.touchUpdatedByIds(

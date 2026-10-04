@@ -6,8 +6,10 @@ import {
     Db,
     ExternalSourceEnum,
     PRECISION,
+    TagSourceEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
+    TransactionTagsRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -52,6 +54,13 @@ const buildEntry = (accountId: number, type: TransactionEntryTypeEnum, amount: n
     categorySource: CategorySourceEnum.USER,
     mccCategoryId: null,
     externalId
+});
+
+const getTagSources = Effect.fn(function* (transactionId: number) {
+    const transactionTagsRepository = yield* TransactionTagsRepository;
+    const transactionTags = yield* transactionTagsRepository.findByTransactionId(transactionId);
+
+    return transactionTags.map(({ tagId, source }) => ({ tagId, source })).sort((left, right) => left.tagId - right.tagId);
 });
 
 const getStoredBalance = Effect.fn(function* (accountId: number) {
@@ -114,6 +123,34 @@ describe('ledger', () => {
             expect(reimported.map(({ id }) => id)).toStrictEqual([imported.id]);
             expect(yield* getStoredBalance(account.id)).toBe(-10 * PRECISION);
             yield* assertStoredBalancesMatchLedger(yield* Db);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('stores rule tags as RULE and keeps tag sources when the user edits the transaction', () =>
+        Effect.gen(function* () {
+            const transactionService = yield* TransactionService;
+            const testSeedService = yield* seed;
+            const account = yield* testSeedService.account({ type: AccountTypeEnum.CASH });
+            const userTag = yield* testSeedService.tag('Ledger user tag');
+            const ruleTag = yield* testSeedService.tag('Ledger rule tag');
+            const addedTag = yield* testSeedService.tag('Ledger added tag');
+            const entries = [buildEntry(account.id, TransactionEntryTypeEnum.CREDIT, 5)];
+
+            const [transaction] = yield* transactionService.bulkCreate([
+                { ...buildInput(TransactionTypeEnum.EXPENSE, entries), tagIds: [userTag.id], ruleTagIds: [ruleTag.id] }
+            ]);
+
+            expect(yield* getTagSources(transaction.id)).toStrictEqual([
+                { tagId: userTag.id, source: TagSourceEnum.USER },
+                { tagId: ruleTag.id, source: TagSourceEnum.RULE }
+            ]);
+
+            yield* transactionService.updateById(transaction.id, { entries, tagIds: [ruleTag.id, addedTag.id] });
+
+            expect(yield* getTagSources(transaction.id)).toStrictEqual([
+                { tagId: ruleTag.id, source: TagSourceEnum.RULE },
+                { tagId: addedTag.id, source: TagSourceEnum.USER }
+            ]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

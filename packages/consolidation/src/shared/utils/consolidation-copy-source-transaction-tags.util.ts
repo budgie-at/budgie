@@ -1,3 +1,4 @@
+import { TagSourceEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { isEmptyArray } from '@rnw-community/shared';
@@ -17,17 +18,20 @@ export const consolidationCopySourceTransactionTags = Effect.fn('consolidationCo
     const sourceTags = yield* transactionTagsRepository.findByTransactionIds(sourceTransactionIds);
     const existingTags = yield* transactionTagsRepository.findByTransactionId(canonicalTransactionId);
     const existingTagIds = new Set(existingTags.map(tag => tag.tagId));
-    const uniqueTagIds = [...new Set(sourceTags.map(tag => tag.tagId))].filter(tagId => !existingTagIds.has(tagId));
+    const sourceByTagId = new Map<number, TagSourceEnum>();
 
-    if (isEmptyArray(uniqueTagIds)) {
-        return;
+    for (const tag of sourceTags) {
+        if (!existingTagIds.has(tag.tagId) && sourceByTagId.get(tag.tagId) !== TagSourceEnum.USER) {
+            sourceByTagId.set(tag.tagId, tag.source);
+        }
     }
 
     yield* transactionTagsRepository.bulkCreate(
-        uniqueTagIds.map(tagId => ({
+        [...sourceByTagId].map(([tagId, source]) => ({
             transactionId: canonicalTransactionId,
             tagId,
-            isPrimary: false
+            isPrimary: false,
+            source
         }))
     );
 });

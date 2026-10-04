@@ -11,6 +11,8 @@ import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 import { insertTransactionTag } from '../util/insert-transaction-tag.util';
 
+import type { TagSourceEnum } from '../enum/tag-source.enum';
+
 export class TransactionTagsRepository extends Context.Service<TransactionTagsRepository>()('@budgie/contracts/TransactionTagsRepository', {
     make: Effect.succeed({
         findByTransactionIds: Effect.fn('TransactionTagsRepository.findByTransactionIds')(function* (transactionIds: readonly number[]) {
@@ -33,13 +35,14 @@ export class TransactionTagsRepository extends Context.Service<TransactionTagsRe
 
         addTagByTransactionIds: Effect.fn('TransactionTagsRepository.addTagByTransactionIds')(function* (
             transactionIds: number[],
-            tagId: number
+            tagId: number,
+            source: TagSourceEnum
         ) {
             if (!isNotEmptyArray(transactionIds)) {
                 return [];
             }
 
-            const rows = yield* Db.query(db => insertTransactionTag(db, tagId, inArray(TransactionEntityTable.id, transactionIds)));
+            const rows = yield* Db.query(db => insertTransactionTag(db, tagId, inArray(TransactionEntityTable.id, transactionIds), source));
 
             return rows.map(row => row.transactionId);
         }),
