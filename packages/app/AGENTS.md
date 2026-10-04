@@ -413,8 +413,8 @@ const handleClose = () => void ref.current?.close();
 - `ThemeProvider` drives the active theme with `Uniwind.setTheme('light' | 'dark' | 'system')`; Uniwind updates `Appearance` itself.
 - Only React Native core components (and libraries built on them, such as Reanimated) accept `className`. Wrap any other component once at module level with `withUniwind` from `uniwind`.
 - Colour props take `*ColorClassName` with an `accent-*` class, for example `placeholderTextColorClassName="accent-primary/50"`.
-- On native, conflicting classes resolve by className order (last wins). `cn()` does not know the custom size tokens (`p-xl`, `gap-3xl`, `mb-lg`), so it keeps both and the later one wins.
-- `cn()` classifies unknown `text-*` tokens (`text-xxs`, `text-xxxs`, `text-4_5xl`) as colours, so `cn('text-xxs', 'text-primary')` drops the size. Keep those sizes outside `cn()` merges with a text colour.
+- On native, conflicting classes resolve by className order (last wins), and edge-specific styles beat shorthands (`pt-*` over `py-*` over `p-*`, `gap-x-*` over `gap-*`) whatever their order. Merge every className override through `cn()` so only one class per property survives.
+- `cn()` is `src/@generic/utils/cn.util.ts`, a `createCn` from `cn/config` that registers the `@theme` scales of `global.css` (spacing/radius `xxs`..`8xl`, the text scale, `scale-xs`/`scale-s`). Adding a token to `global.css` means adding it to that scale list. Import `cn` from the util, never from the `cn` package (`ClassValue` still comes from `cn`).
 - Theme colours have one source: `global.css`. Never mirror them in JS. Native colour props use `*ColorClassName` with `accent-*`; react-native-svg colours use the shared `StyledCircle`/`AnimatedStyledCircle`/`StyledLine`/`StyledSvgText` (or a file-local `withUniwind(Primitive, SVG_COLOR_CLASS_NAME_MAPPING)`) with `strokeClassName`/`fillClassName`; a raw value for a non-Uniwind API comes from `useResolveClassNames`.
 - Safe-area padding is `pt-safe`/`pb-safe`/`pb-safe-or-[16px]`/`bottom-safe-offset-[4px]`; the root `SafeAreaListener` feeds `Uniwind.updateInsets`. Keep `useSafeAreaInsets` only for arithmetic that a class cannot express.
 - `ThemeContext.isDarkColorSchema` mirrors `useUniwind().theme`; `ScopedTheme theme="light"` pins the AI record button and hold ring to the light palette they always used.
@@ -451,10 +451,10 @@ Available variants: `default`, `destructive`, `warning`, `dark-warning`, `positi
 
 ### Utility Function
 
-Use `cn()` from the `cn` package for combining classes:
+Use the theme-aware `cn()` util for combining classes:
 
 ```typescript
-import { cn } from 'cn';
+import { cn } from '../../utils/cn.util';
 className={cn('base-classes', classNameFromProps)}
 ```
 

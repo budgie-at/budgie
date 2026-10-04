@@ -1,5 +1,6 @@
-import { cn } from 'cn';
 import { View } from 'react-native';
+
+import { cn } from '../../utils/cn.util';
 
 import { PAGE_DEFAULT_SAFE_EDGES, pageGetSafeEdgeClassName } from './utils/page-get-safe-edge-class-name.util';
 

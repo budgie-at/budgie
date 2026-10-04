@@ -1,11 +1,11 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
-import { cn } from 'cn';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { SuggestionPillContent } from '../../../transaction/components/suggestion-pill-content/suggestion-pill-content';
 import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';

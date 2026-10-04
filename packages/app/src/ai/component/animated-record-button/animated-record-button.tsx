@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { cn } from 'cn';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import Animated, {
@@ -15,6 +14,7 @@ import { ScopedTheme } from 'uniwind';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 import { BUTTON_SIZE, RING_SIZE } from '../../constant/animated-record-button.constant';
 import { RecordButtonStateType } from '../../type/record-button-state.type';
 import { LoadingRing } from '../loading-ring/loading-ring';

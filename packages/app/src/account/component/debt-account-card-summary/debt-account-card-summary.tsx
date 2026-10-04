@@ -1,10 +1,10 @@
 import { Trans } from '@lingui/react/macro';
-import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import { DebtAccountCardSummarySelector } from './debt-account-card-summary.selector';

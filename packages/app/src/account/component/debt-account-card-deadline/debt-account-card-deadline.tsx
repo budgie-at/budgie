@@ -1,9 +1,9 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { cn } from 'cn';
 import { differenceInCalendarDays } from 'date-fns';
 import { Text, View } from 'react-native';
 
+import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useDebtDeadlineDate } from '../../hook/use-debt-deadline-date.hook';
 

@@ -1,8 +1,8 @@
-import { cn } from 'cn';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { cn } from '../../utils/cn.util';
 import { EdgeFade } from '../edge-fade/edge-fade';
 import { PAGE_DEFAULT_SAFE_EDGES, pageGetSafeEdgeClassName } from '../page/utils/page-get-safe-edge-class-name.util';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
