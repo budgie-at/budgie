@@ -82,7 +82,7 @@ export const OnboardingStepLayout = (props: Props) => {
                     />
                 ) : null}
 
-                <Text className="text-primary text-4xl font-semibold tracking-tight text-left">{title}</Text>
+                <Text className="text-primary text-(length:--text-4xl) font-semibold tracking-tight text-left">{title}</Text>
                 <Text className="text-secondary-foreground text-md mt-lg mb-5xl text-left">{description}</Text>
 
                 <View className="flex-1">{children}</View>

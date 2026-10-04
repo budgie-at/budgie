@@ -37,7 +37,7 @@ const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 item
     }))
 });
 
-const textVariants = cva('font-medium text-xs text-center', {
+const textVariants = cva('font-medium text-(length:--text-xs) text-center', {
     variants: {
         isSelected: {
             true: '',

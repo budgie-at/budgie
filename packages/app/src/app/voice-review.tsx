@@ -107,7 +107,7 @@ export default function VoiceReviewModal() {
             {isNotEmptyString(originalText) ? (
                 <View className="mx-lg mb-lg mt-2xl flex-row gap-x-md rounded-2xl bg-secondary-background px-lg py-md">
                     <View className="w-[2px] rounded-full bg-secondary-foreground/30" />
-                    <Text className="flex-1 text-lg text-primary" numberOfLines={4}>
+                    <Text className="flex-1 text-(length:--text-lg) text-primary" numberOfLines={4}>
                         {originalText}
                     </Text>
                 </View>

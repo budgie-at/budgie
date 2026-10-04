@@ -39,7 +39,7 @@ export const OnboardingAi = () => {
             {costPoints.map(point => (
                 <View key={point} className="flex-row items-start gap-x-md">
                     <Icon icon={UserIconNameEnum.BadgeInfo} size={16} className="text-secondary-foreground mt-xxs" />
-                    <Text className="text-secondary-foreground text-sm flex-1">{point}</Text>
+                    <Text className="text-secondary-foreground text-(length:--text-sm) flex-1">{point}</Text>
                 </View>
             ))}
         </View>

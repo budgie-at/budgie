@@ -26,7 +26,7 @@ export const OnboardingWelcome = () => {
     return (
         <FullPage testID={OnboardingWelcomeSelector.Root} className="bg-background">
             <View className="flex-1 justify-center gap-y-lg">
-                <Text className="text-primary text-4xl font-semibold tracking-tight text-left">
+                <Text className="text-primary text-(length:--text-4xl) font-semibold tracking-tight text-left">
                     {t`Your money. Your phone. Nobody else's server.`}
                 </Text>
 
