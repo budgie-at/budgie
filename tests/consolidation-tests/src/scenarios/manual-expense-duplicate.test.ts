@@ -166,6 +166,28 @@ layer(TestLayer)('consolidation/manual-expense-duplicate', it => {
         })
     );
 
+    it.effect('counts support per synced account so pairs spread over several cards do not add up', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            const pairs = yield* Effect.forEach(SUPPORTING_PAIR_INDEXES, index =>
+                Effect.gen(function* () {
+                    const syncedAccount = yield* testSeedService.account({
+                        title: `Privat card ${index}`,
+                        type: AccountTypeEnum.BANK_SYNC,
+                        externalId: `privat-card-${index}`
+                    });
+
+                    return yield* seedManualExpenseDuplicatePair({ accounts: { ...accounts, syncedAccount }, index });
+                })
+            );
+            const balancesBefore = yield* fetchLedgerBalances([accounts.manualAccount.id]);
+
+            expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
+            yield* expectUntouched(pairs.flatMap(({ synced, manual }) => [synced.id, manual.id]));
+            expect(yield* fetchLedgerBalances([accounts.manualAccount.id])).toEqual(balancesBefore);
+        })
+    );
+
     it.effect('ignores manual expenses on cash accounts', () =>
         Effect.gen(function* () {
             yield* expectPairsSkipped(yield* seedManualExpenseDuplicateAccounts(AccountTypeEnum.CASH), SUPPORTING_PAIR_INDEXES);
