@@ -6,6 +6,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
+import { ARCHIVED_SOURCE_EXPENSE_DUPLICATE_BUCKET } from '../../../shared/constant/archived-source-expense-duplicate-bucket.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA,
@@ -13,6 +14,7 @@ import {
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 
 const LEGACY_CSV_DUPLICATE_TIME_WINDOW_SECONDS = 2 * 60 * 60 + 5 * 60;
+const ARCHIVED_SOURCE_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS = 7 * 60 * 60;
 
 const LEGACY_CSV_EXISTING_TRANSFER_LEGS_SQL = `FROM transactions existing_transfer INDEXED BY transactions_visible_type_to_operated_idx
                 INNER JOIN transaction_entries source_entry ON
@@ -86,4 +88,44 @@ export const EXISTING_TRANSFER_LEGACY_CSV_DUPLICATE_CANDIDATES_SQL = `SELECT 'AU
                     AND expense_account.id != target_account.id
                     AND ABS(expense_entry.amount - ${LEGACY_CSV_EXPENSE_COMPARABLE_AMOUNT_SQL}) <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA}
                     AND ABS(expense_entry.amount - ${LEGACY_CSV_EXPENSE_COMPARABLE_AMOUNT_SQL})
-                        <= ${LEGACY_CSV_EXPENSE_COMPARABLE_AMOUNT_SQL} * ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO}`;
+                        <= ${LEGACY_CSV_EXPENSE_COMPARABLE_AMOUNT_SQL} * ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO}
+                UNION ALL
+                SELECT '${ARCHIVED_SOURCE_EXPENSE_DUPLICATE_BUCKET}' as confidenceBucket, existing_transfer.id as existingTransferId,
+                    existing_transfer.title as existingTransferTitle, expense_tx.id as duplicateTransactionId, expense_tx.title as duplicateTransactionTitle,
+                    expense_account.id as sourceAccountId, expense_account.title as sourceAccountTitle, target_account.id as targetAccountId,
+                    target_account.title as targetAccountTitle, target_entry.id as existingTransferTargetEntryId, expense_entry.amount as sourceAmount,
+                    target_entry.amount as existingTransferTargetAmount, target_entry.amount as amount,
+                    CASE WHEN expense_account.instrument_id != target_account.instrument_id THEN expense_entry.amount * 1.0 / target_entry.amount ELSE 1 END as exchangeRate,
+                    0 as amountDelta, ABS(expense_tx.operated_at - existing_transfer.operated_at) as timeDiff
+                ${LEGACY_CSV_EXISTING_TRANSFER_LEGS_SQL}
+                CROSS JOIN transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
+                    ON expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+                    AND expense_tx.external_source IN ('${ExternalSourceEnum.MONOBANK}', '${ExternalSourceEnum.PRIVATBANK}', '${ExternalSourceEnum.ERSTE}')
+                    AND expense_tx.deleted_at IS NULL AND expense_tx.consolidation_parent_transaction_id IS NULL
+                    AND expense_tx.operated_at BETWEEN existing_transfer.operated_at - ${ARCHIVED_SOURCE_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
+                        AND existing_transfer.operated_at + ${ARCHIVED_SOURCE_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
+                INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
+                    expense_entry.transaction_id = expense_tx.id AND expense_entry.deleted_at IS NULL
+                    AND expense_entry.original_transaction_id IS NULL AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND expense_entry.amount = source_entry.amount
+                INNER JOIN accounts expense_account ON
+                    expense_account.id = expense_entry.account_id AND expense_account.deleted_at IS NULL
+                    AND expense_account.type = '${AccountTypeEnum.BANK_SYNC}' AND expense_account.is_active = 1
+                    AND expense_account.instrument_id = source_account.instrument_id
+                LEFT JOIN mcc_categories expense_mcc ON expense_mcc.id = expense_entry.mcc_category_id
+                WHERE ${LEGACY_CSV_EXISTING_TRANSFER_CONDITIONS_SQL}
+                    AND source_entry.deleted_at IS NOT NULL AND (source_account.deleted_at IS NOT NULL OR source_account.is_active = 0)
+                    AND expense_account.id != target_account.id
+                    AND NOT EXISTS (
+                        SELECT 1 FROM transaction_entries other_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
+                        WHERE other_entry.transaction_id = existing_transfer.id AND other_entry.deleted_at IS NULL
+                            AND other_entry.original_transaction_id IS NULL AND other_entry.id != target_entry.id
+                    )
+                    AND (
+                        (
+                            expense_tx.external_source IN ('${ExternalSourceEnum.MONOBANK}', '${ExternalSourceEnum.PRIVATBANK}')
+                            AND expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
+                            AND ABS(expense_tx.operated_at - existing_transfer.operated_at) > ${LEGACY_CSV_DUPLICATE_TIME_WINDOW_SECONDS}
+                        )
+                        OR (expense_tx.external_source = '${ExternalSourceEnum.ERSTE}' AND target_account.type = '${AccountTypeEnum.CASH}')
+                    )`;
