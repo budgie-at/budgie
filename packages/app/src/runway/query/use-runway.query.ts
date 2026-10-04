@@ -50,8 +50,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const computation = computeRunway({
         series: seriesRows,
         liquid,
-        irregularMonthlyAmount: categoryBreakdown.irregularMonthlyAmount,
-        isAllIn,
+        irregularMonthlyAmount: isAllIn ? categoryBreakdown.irregularMonthlyAmount : 0,
         referenceDate: today
     });
     const drivers = dimension === RunwayDriverDimensionEnum.CATEGORY ? categoryBreakdown.drivers : tagBreakdown.drivers;

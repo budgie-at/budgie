@@ -207,7 +207,6 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     series,
                     liquid: liquidRows.at(0)?.total ?? 0,
                     irregularMonthlyAmount: 0,
-                    isAllIn: false,
                     referenceDate: new Date()
                 });
 

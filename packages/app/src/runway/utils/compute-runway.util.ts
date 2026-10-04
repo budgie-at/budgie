@@ -1,4 +1,4 @@
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { RUNWAY_MINIMUM_MONTHS } from '../constant/runway-minimum-months.constant';
 
@@ -18,9 +18,9 @@ const runsOutDate = (referenceDate: Date, months: number | null): Date | null =>
     isDefined(months) ? new Date(referenceDate.getTime() + months * MILLISECONDS_PER_MONTH) : null;
 
 export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInterface => {
-    const { series, liquid, irregularMonthlyAmount, isAllIn, referenceDate } = params;
+    const { series, liquid, irregularMonthlyAmount, referenceDate } = params;
     const rows = series.length < RUNWAY_MINIMUM_MONTHS ? [] : series;
-    const burn = median(rows.map(row => row.expense)) + (isAllIn && isNotEmptyArray(rows) ? irregularMonthlyAmount : 0);
+    const burn = median(rows.map(row => row.expense)) + (isEmptyArray(rows) ? 0 : irregularMonthlyAmount);
     const income = median(rows.map(row => row.income));
     const net = income - burn;
     const netSeries = rows.map(row => row.income - row.expense);
