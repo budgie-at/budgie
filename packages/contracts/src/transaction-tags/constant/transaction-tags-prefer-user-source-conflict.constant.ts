@@ -5,7 +5,6 @@ import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.tab
 
 export const TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT = {
     target: [TransactionTagsEntityTable.transactionId, TransactionTagsEntityTable.tagId],
-    set: {
-        source: sql<TagSourceEnum>`CASE WHEN excluded.source = ${TagSourceEnum.USER} THEN excluded.source ELSE ${TransactionTagsEntityTable.source} END`
-    }
+    set: { source: TagSourceEnum.USER },
+    setWhere: sql`excluded.source = ${TagSourceEnum.USER} AND ${TransactionTagsEntityTable.source} <> ${TagSourceEnum.USER}`
 };

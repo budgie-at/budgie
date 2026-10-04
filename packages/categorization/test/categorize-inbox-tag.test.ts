@@ -4,7 +4,7 @@ import {
     TransactionCategorizeInboxRepository,
     categorizeInboxEngineService
 } from '@budgie/categorization';
-import { DEFAULT_TRANSACTION_FILTER, TransactionTypeEnum } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TagSourceEnum, TransactionTagsRepository, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -62,6 +62,28 @@ describe('categorization/inbox-tag', () => {
 
             expect(rows.map(row => row.transactionId)).toContain(titled.id);
             expect(rows.map(row => row.transactionId)).not.toContain(untitled.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('promotes an existing rule tag to USER on a user pick and leaves a USER tag untouched by inbox accepts', () =>
+        Effect.gen(function* () {
+            const inboxRepository = yield* TransactionCategorizeInboxRepository;
+            const transactionTagsRepository = yield* TransactionTagsRepository;
+            const account = yield* testSeedService.account();
+            const tag = yield* testSeedService.tag('Coffee');
+            const expense = yield* testSeedService.bankPairExpense(
+                { externalId: 'rule-tagged', operatedAt: new Date('2026-01-03T09:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+            yield* testSeedService.transactionTag(expense.id, tag.id, TagSourceEnum.RULE);
+
+            const userPickIds = yield* inboxRepository.addTagByTransactionIds([expense.id], tag.id, TagSourceEnum.USER);
+            const inboxAcceptIds = yield* inboxRepository.addTagByTransactionIds([expense.id], tag.id, TagSourceEnum.INBOX);
+            const [stored] = yield* transactionTagsRepository.findByTransactionId(expense.id);
+
+            expect(userPickIds).toEqual([expense.id]);
+            expect(inboxAcceptIds).toEqual([]);
+            expect(stored.source).toBe(TagSourceEnum.USER);
         }).pipe(Effect.provide(TestLayer))
     );
 

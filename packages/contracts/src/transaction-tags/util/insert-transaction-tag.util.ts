@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
@@ -24,5 +25,5 @@ export const insertTransactionTag = (runner: DB, tagId: number, where: SQL | und
                 .from(TransactionEntityTable)
                 .where(where)
         )
-        .onConflictDoNothing()
+        .onConflictDoUpdate(TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT)
         .returning({ transactionId: TransactionTagsEntityTable.transactionId });
