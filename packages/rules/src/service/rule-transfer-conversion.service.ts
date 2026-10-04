@@ -32,7 +32,8 @@ export class RuleTransferConversionService extends Context.Service<RuleTransferC
                 ) {
                     const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
                     const isConvertible =
-                        transaction?.type === TransactionTypeEnum.EXPENSE || transaction?.type === TransactionTypeEnum.INCOME;
+                        (transaction?.type === TransactionTypeEnum.EXPENSE || transaction?.type === TransactionTypeEnum.INCOME) &&
+                        !isDefined(transaction.consolidationType);
                     const [originalEntry] = transaction?.entries ?? [];
 
                     if (!isConvertible || !isDefined(originalEntry) || originalEntry.accountId === targetAccountId) {

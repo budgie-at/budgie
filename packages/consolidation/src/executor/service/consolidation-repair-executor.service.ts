@@ -19,6 +19,7 @@ import { ConsolidationEligibilityService } from './consolidation-eligibility.ser
 import { ConsolidationMutationService } from './consolidation-mutation.service';
 import { UnconsolidationService } from './unconsolidation.service';
 
+import type { ManualExpenseDuplicateCandidateInterface } from '../../query/interface/manual-expense-duplicate-candidate.interface';
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type {
     BridgeClaimRepairCandidateInterface,
@@ -270,6 +271,38 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                         yield* consolidationMutationService.moveSourcesToCanonical(
                             [candidate.existingTransferId, candidate.duplicateTransactionId],
                             canonicalTransaction.id
+                        );
+
+                        return true;
+                    },
+                    effect => Db.transaction(effect)
+                ),
+                consolidateManualExpenseDuplicate: Effect.fn('ConsolidationRepairExecutorService.consolidateManualExpenseDuplicate')(
+                    function* (candidate: ManualExpenseDuplicateCandidateInterface) {
+                        const transactions = yield* consolidationEligibilityService.findEligibleSourceTransactions([
+                            candidate.syncedTransactionId,
+                            candidate.manualTransactionId
+                        ]);
+                        const syncedTransaction = transactions?.find(transaction => transaction.id === candidate.syncedTransactionId);
+                        const manualTransaction = transactions?.find(transaction => transaction.id === candidate.manualTransactionId);
+
+                        if (
+                            !isDefined(syncedTransaction) ||
+                            !isDefined(manualTransaction) ||
+                            isDefined(syncedTransaction.consolidationType) ||
+                            isDefined(manualTransaction.consolidationType)
+                        ) {
+                            return false;
+                        }
+
+                        yield* transactionConsolidationRepository.setConsolidationType(
+                            candidate.syncedTransactionId,
+                            TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE
+                        );
+                        yield* consolidationMutationService.copyManualExpenseDuplicateUserData(syncedTransaction, manualTransaction);
+                        yield* consolidationMutationService.moveSourcesToCanonical(
+                            [candidate.manualTransactionId],
+                            candidate.syncedTransactionId
                         );
 
                         return true;

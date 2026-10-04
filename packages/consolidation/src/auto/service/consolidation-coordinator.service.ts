@@ -17,6 +17,7 @@ import { IbanBridgeCanonicalDuplicateConsolidationFamilyService } from './iban-b
 import { IbanBridgeCanonicalSupersessionConsolidationFamilyService } from './iban-bridge-canonical-supersession-consolidation-family.service';
 import { IbanBridgeChainTransferConsolidationFamilyService } from './iban-bridge-chain-transfer-consolidation-family.service';
 import { IbanBridgeTransferConsolidationFamilyService } from './iban-bridge-transfer-consolidation-family.service';
+import { ManualExpenseDuplicateConsolidationFamilyService } from './manual-expense-duplicate-consolidation-family.service';
 import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-consolidation-family.service';
 import { RefundPairConsolidationFamilyService } from './refund-pair-consolidation-family.service';
 import { TransferPairConsolidationFamilyService } from './transfer-pair-consolidation-family.service';
@@ -50,7 +51,8 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 existingTransferIncomeDuplicateFamily,
                 yield* P2pFiatTransferConsolidationFamilyService,
                 yield* TransferPairConsolidationFamilyService,
-                yield* RefundPairConsolidationFamilyService
+                yield* RefundPairConsolidationFamilyService,
+                yield* ManualExpenseDuplicateConsolidationFamilyService
             ];
 
             const buildExistingTransferDuplicateBlockedSourceTransactionIdSet = (
@@ -233,6 +235,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             IbanBridgeCanonicalSupersessionConsolidationFamilyService.layer,
             IbanBridgeChainTransferConsolidationFamilyService.layer,
             IbanBridgeTransferConsolidationFamilyService.layer,
+            ManualExpenseDuplicateConsolidationFamilyService.layer,
             P2pFiatTransferConsolidationFamilyService.layer,
             RefundPairConsolidationFamilyService.layer,
             TransferPairConsolidationFamilyService.layer

@@ -1,4 +1,5 @@
 import {
+    CategorySourceEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
     TransactionRepository,
@@ -9,7 +10,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
@@ -27,14 +28,57 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
 
             return (
                 transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
+                transaction.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
                 isDefined(transaction.externalId) ||
                 isDefined(transaction.externalSource)
             );
         };
 
+        const restoreManualExpenseDuplicateUserData = Effect.fnUntraced(function* (canonicalTransactionId: number) {
+            const canonical = (yield* transactionRepository.findByIdsWithRefundConsolidationHistory([canonicalTransactionId])).at(0);
+            const copiedCategoryEntry = canonical?.entries.find(
+                entry => !isDefined(entry.originalTransactionId) && entry.categorySource === CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE
+            );
+
+            if (!isDefined(canonical)) {
+                return;
+            }
+
+            const manualTransactionIds = [...new Set(canonical.entries.map(entry => entry.originalTransactionId).filter(isDefined))];
+            const manualTags = yield* transactionTagsRepository.findByTransactionIds(manualTransactionIds);
+            const manualTransactions = yield* transactionRepository.findByIds(manualTransactionIds);
+            const hasCopiedComment = manualTransactions.some(
+                manual => isNotEmptyString(manual.comment) && manual.comment === canonical.comment
+            );
+
+            if (!isDefined(copiedCategoryEntry) && !hasCopiedComment) {
+                return;
+            }
+
+            if (isDefined(copiedCategoryEntry)) {
+                yield* transactionEntryRepository.updateById(copiedCategoryEntry.id, {
+                    categoryId: null,
+                    categorySource: CategorySourceEnum.USER
+                });
+            }
+
+            yield* transactionTagsRepository.deleteByTransactionIdAndTagIds(
+                canonicalTransactionId,
+                manualTags.map(tag => tag.tagId)
+            );
+
+            if (hasCopiedComment) {
+                yield* transactionRepository.updateById(canonicalTransactionId, { comment: '' });
+            }
+        });
+
         return {
             unconsolidateById: Effect.fn('UnconsolidationService.unconsolidateById')(function* (transactionId: number) {
                 const canonical = yield* transactionRepository.getByIdRaw(transactionId);
+
+                if (canonical?.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE) {
+                    yield* restoreManualExpenseDuplicateUserData(transactionId);
+                }
 
                 yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
                 yield* transactionConsolidationRepository.clearConsolidationParent(transactionId);

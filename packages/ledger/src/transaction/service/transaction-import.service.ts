@@ -159,7 +159,7 @@ export class TransactionImportService extends Context.Service<TransactionImportS
                 return;
             }
 
-            yield* transactionEntryRepository.deleteByTransactionId(transactionId);
+            yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
             yield* transactionEntryRepository.bulkCreate([...refreshedEntriesResult.entries]);
         });
 

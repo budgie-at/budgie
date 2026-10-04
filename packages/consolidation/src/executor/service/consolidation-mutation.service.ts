@@ -1,5 +1,6 @@
 import {
     CategorySourceEnum,
+    TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -11,7 +12,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { P2pFiatDirectionEnum } from '../../auto/enum/p2p-fiat-direction.enum';
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
@@ -68,6 +69,24 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                         toIban: null,
                         originalTransactionId: null
                     }))
+                );
+            });
+
+            const findUncategorizedSyncedEntry = Effect.fnUntraced(function* (syncedTransaction: TransactionWithEntriesEntityInterface) {
+                const syncedTags = yield* transactionTagsRepository.findByTransactionId(syncedTransaction.id);
+
+                if (isNotEmptyArray(syncedTags) || isNotEmptyString(syncedTransaction.comment)) {
+                    return null;
+                }
+
+                return (
+                    syncedTransaction.entries.find(
+                        entry =>
+                            entry.kind === TransactionEntryKindEnum.PRIMARY &&
+                            entry.type === TransactionEntryTypeEnum.CREDIT &&
+                            !isDefined(entry.categoryId) &&
+                            entry.categorySource === CategorySourceEnum.USER
+                    ) ?? null
                 );
             });
 
@@ -156,6 +175,28 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                 ) {
                     yield* transactionEntryRepository.moveToConsolidatedTransaction(sourceTransactionIds, canonicalTransactionId);
                     yield* transactionConsolidationRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId);
+                }),
+                copyManualExpenseDuplicateUserData: Effect.fn('ConsolidationMutationService.copyManualExpenseDuplicateUserData')(function* (
+                    syncedTransaction: TransactionWithEntriesEntityInterface,
+                    manualTransaction: TransactionWithEntriesEntityInterface
+                ) {
+                    const syncedEntry = yield* findUncategorizedSyncedEntry(syncedTransaction);
+
+                    if (!isDefined(syncedEntry)) {
+                        return;
+                    }
+
+                    yield* transactionEntryRepository.updateById(syncedEntry.id, {
+                        categoryId: manualTransaction.entries.at(0)?.categoryId ?? null,
+                        categorySource: CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE
+                    });
+                    yield* consolidationCopySourceTransactionTags(transactionTagsRepository, [manualTransaction.id], syncedTransaction.id);
+
+                    if (isNotEmptyString(manualTransaction.comment)) {
+                        yield* transactionRepository.updateById(syncedTransaction.id, {
+                            comment: manualTransaction.comment
+                        });
+                    }
                 }),
                 copySourceTags: Effect.fn('ConsolidationMutationService.copySourceTags')(function* (
                     sourceTransactionIds: number[],
