@@ -3,12 +3,9 @@ import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isString } from '@rnw-community/shared';
 
 import { AnalyticsPageHeader } from '../../@generic/component/analytics-page-header/analytics-page-header';
-import { CollapsibleHeaderBackdrop } from '../../@generic/component/collapsible-header-backdrop/collapsible-header-backdrop';
-import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
 import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
 import { StatisticsContent } from '../../transaction/components/statistics-content/statistics-content';
 
@@ -35,20 +32,16 @@ export default function AnalyticsPage() {
     const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: handleChangeTab });
 
     return (
-        <ScreenChromeThemeProvider syncNativeScrollOffset>
-            <ScreenChromeFrame testID={AnalyticsPageSelector.Container}>
-                <GestureDetector gesture={swipeGesture}>
-                    <View className="flex-1 px-5xl">
-                        <StatisticsContent activeTab={activeTab} />
-                    </View>
-                </GestureDetector>
-
-                <CollapsibleHeaderBackdrop />
-
-                <View className="absolute top-0 right-0 left-0 z-10" pointerEvents="box-none" style={headerStyle}>
-                    <AnalyticsPageHeader activeTab={activeTab} onChangeTab={handleChangeTab} />
+        <View className="flex-1" testID={AnalyticsPageSelector.Container}>
+            <GestureDetector gesture={swipeGesture}>
+                <View className="flex-1 px-5xl">
+                    <StatisticsContent activeTab={activeTab} />
                 </View>
-            </ScreenChromeFrame>
-        </ScreenChromeThemeProvider>
+            </GestureDetector>
+
+            <View className="absolute top-0 right-0 left-0 z-10" pointerEvents="box-none" style={headerStyle}>
+                <AnalyticsPageHeader activeTab={activeTab} onChangeTab={handleChangeTab} />
+            </View>
+        </View>
     );
 }

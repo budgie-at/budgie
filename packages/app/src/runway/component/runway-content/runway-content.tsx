@@ -2,10 +2,8 @@ import { RunwayDriverDimensionEnum } from '@budgie/contracts';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
-
+import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
 import { RUNWAY_MINIMUM_MONTHS } from '../../constant/runway-minimum-months.constant';
 import { useLiquidBalanceQuery } from '../../query/use-liquid-balance.query';
 import { useRunwayQuery } from '../../query/use-runway.query';
@@ -33,19 +31,17 @@ export const RunwayContent = () => {
     }
 
     return (
-        <ScreenChromeScrollView contentInsetTop={SCREEN_CHROME_CONTENT_INSET_TOP} showsVerticalScrollIndicator={false}>
-            <View className="gap-y-7xl pb-5xl">
-                <View className="gap-y-lg">
-                    <RunwayVerdict computation={computation} />
-                    <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
-                </View>
-
-                <RunwayFlowRow computation={computation} />
-                <RunwayForecastChart computation={computation} />
-                <RunwayHistoryChart series={series} burn={computation.burn} />
-                <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
-                <MenuSpacer />
+        <ChromeScrollFrame>
+            <View className="gap-y-lg">
+                <RunwayVerdict computation={computation} />
+                <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
             </View>
-        </ScreenChromeScrollView>
+
+            <RunwayFlowRow computation={computation} />
+            <RunwayForecastChart computation={computation} />
+            <RunwayHistoryChart series={series} burn={computation.burn} />
+            <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
+            <MenuSpacer />
+        </ChromeScrollFrame>
     );
 };

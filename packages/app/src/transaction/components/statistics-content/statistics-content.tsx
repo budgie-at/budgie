@@ -3,10 +3,8 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Activity, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
-
+import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
@@ -42,43 +40,41 @@ export const StatisticsContent = ({ activeTab }: Props) => {
     }
 
     return (
-        <ScreenChromeScrollView contentInsetTop={SCREEN_CHROME_CONTENT_INSET_TOP} showsVerticalScrollIndicator={false}>
-            <View className="gap-y-7xl pb-5xl">
-                <TransactionFilters
-                    accountId={null}
-                    filters={filters}
-                    onChange={setFilters}
-                    showTypeFilter={false}
-                    hasFiltersSelected={checkIfFiltersSelected(null, filters)}
-                />
+        <ChromeScrollFrame>
+            <TransactionFilters
+                accountId={null}
+                filters={filters}
+                onChange={setFilters}
+                showTypeFilter={false}
+                hasFiltersSelected={checkIfFiltersSelected(null, filters)}
+            />
 
-                <View className="gap-y-lg">
-                    <Text className="uppercase text-secondary-foreground text-xs">
-                        <Trans>Overview</Trans>
-                    </Text>
+            <View className="gap-y-lg">
+                <Text className="uppercase text-secondary-foreground text-xs">
+                    <Trans>Overview</Trans>
+                </Text>
 
-                    <View className="flex-row gap-x-xl">
-                        <TransactionAnalyticsCard
-                            amount={expense}
-                            label={t`Spent`}
-                            icon={UserIconNameEnum.TrendingDown}
-                            variant="destructive"
-                        />
-                        <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
-                        <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
-                    </View>
+                <View className="flex-row gap-x-xl">
+                    <TransactionAnalyticsCard
+                        amount={expense}
+                        label={t`Spent`}
+                        icon={UserIconNameEnum.TrendingDown}
+                        variant="destructive"
+                    />
+                    <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
+                    <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
                 </View>
-
-                <Activity mode={categoriesActivityMode}>
-                    <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
-                </Activity>
-
-                <Activity mode={tagsActivityMode}>
-                    <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
-                </Activity>
-
-                <MenuSpacer />
             </View>
-        </ScreenChromeScrollView>
+
+            <Activity mode={categoriesActivityMode}>
+                <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
+            </Activity>
+
+            <Activity mode={tagsActivityMode}>
+                <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
+            </Activity>
+
+            <MenuSpacer />
+        </ChromeScrollFrame>
     );
 };
