@@ -21,6 +21,7 @@ export const TransactionCreateInputSchema = Schema.Struct({
     externalSource: Schema.NullOr(Schema.Enum(ExternalSourceEnum)),
     updatedBy: Schema.NullOr(Schema.Enum(TransactionUpdatedByEnum)),
     needsEmbedding: Schema.optional(Schema.Boolean),
+    importFingerprint: Schema.optional(Schema.NullOr(Schema.String)),
     consolidationParentTransactionId: Schema.optional(Schema.NullOr(PositiveNumberSchema)),
     consolidationType: Schema.optional(Schema.NullOr(Schema.Enum(TransactionConsolidationTypeEnum))),
     amount: Schema.Finite,
