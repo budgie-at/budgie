@@ -1,8 +1,11 @@
 import { RunwayDriverDimensionEnum } from '@budgie/contracts';
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+
+import { ScreenChromeScrollView } from '@rnw-community/react-native-screen-chrome';
 
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
 import { RUNWAY_MINIMUM_MONTHS } from '../../constant/runway-minimum-months.constant';
 import { useLiquidBalanceQuery } from '../../query/use-liquid-balance.query';
 import { useRunwayQuery } from '../../query/use-runway.query';
@@ -14,13 +17,7 @@ import { RunwayForecastChart } from '../runway-forecast-chart/runway-forecast-ch
 import { RunwayHistoryChart } from '../runway-history-chart/runway-history-chart';
 import { RunwayVerdict } from '../runway-verdict/runway-verdict';
 
-import type { StyleProp, ViewStyle } from 'react-native';
-
-interface Props {
-    readonly contentContainerStyle: StyleProp<ViewStyle>;
-}
-
-export const RunwayContent = ({ contentContainerStyle }: Props) => {
+export const RunwayContent = () => {
     const [dimension, setDimension] = useState<RunwayDriverDimensionEnum>(RunwayDriverDimensionEnum.CATEGORY);
     const [isAllIn, setIsAllIn] = useState(false);
 
@@ -36,21 +33,19 @@ export const RunwayContent = ({ contentContainerStyle }: Props) => {
     }
 
     return (
-        <ScrollView
-            contentContainerClassName="gap-y-7xl pb-5xl"
-            contentContainerStyle={contentContainerStyle}
-            showsVerticalScrollIndicator={false}
-        >
-            <View className="gap-y-lg">
-                <RunwayVerdict computation={computation} />
-                <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
-            </View>
+        <ScreenChromeScrollView contentInsetTop={SCREEN_CHROME_CONTENT_INSET_TOP} showsVerticalScrollIndicator={false}>
+            <View className="gap-y-7xl pb-5xl">
+                <View className="gap-y-lg">
+                    <RunwayVerdict computation={computation} />
+                    <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
+                </View>
 
-            <RunwayFlowRow computation={computation} />
-            <RunwayForecastChart computation={computation} />
-            <RunwayHistoryChart series={series} burn={computation.burn} />
-            <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
-            <MenuSpacer />
-        </ScrollView>
+                <RunwayFlowRow computation={computation} />
+                <RunwayForecastChart computation={computation} />
+                <RunwayHistoryChart series={series} burn={computation.burn} />
+                <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
+                <MenuSpacer />
+            </View>
+        </ScreenChromeScrollView>
     );
 };
