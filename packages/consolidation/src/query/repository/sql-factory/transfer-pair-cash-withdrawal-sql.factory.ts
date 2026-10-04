@@ -1,8 +1,10 @@
-import { ATM_CASH_WITHDRAWAL_MCC, TransactionTypeEnum } from '@budgie/contracts';
+import { ATM_CASH_WITHDRAWAL_MCC, ExternalSourceEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
+
+const ERSTE_ATM_WITHDRAWAL_TITLE_GLOB = 'AUTOMAT [0-9]* K[0-9]* *';
 
 export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null = null): string => `
             WITH active_cash_accounts AS (
@@ -46,9 +48,7 @@ export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScop
                 AND source_account.deleted_at IS NULL
                 AND source_account.type != 'CASH'
             INNER JOIN instruments source_instrument ON source_instrument.id = source_account.instrument_id
-            INNER JOIN mcc_categories expense_mcc ON
-                expense_mcc.id = expense_entry.mcc_category_id
-                AND expense_mcc.mcc = '${ATM_CASH_WITHDRAWAL_MCC}'
+            LEFT JOIN mcc_categories expense_mcc ON expense_mcc.id = expense_entry.mcc_category_id
             INNER JOIN cash_account_counts ON
                 cash_account_counts.instrument_id = source_account.instrument_id
                 AND cash_account_counts.cashAccountCount = 1
@@ -56,5 +56,13 @@ export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScop
                 target_cash_account.instrument_id = source_account.instrument_id
             WHERE expense_entry.deleted_at IS NULL
                 AND expense_entry.original_transaction_id IS NULL
+                AND (
+                    expense_mcc.mcc = '${ATM_CASH_WITHDRAWAL_MCC}'
+                    OR (
+                        expense_entry.mcc_category_id IS NULL
+                        AND expense_tx.external_source = '${ExternalSourceEnum.ERSTE}'
+                        AND expense_tx.title GLOB '${ERSTE_ATM_WITHDRAWAL_TITLE_GLOB}'
+                    )
+                )
                 ${buildConsolidationScanScopeSql(scope, 'expense_tx.operated_at')}
         `;

@@ -12,12 +12,18 @@ import type { TransactionEntityInterface } from '@budgie/contracts';
 const ERSTE_OPERATED_AT = new Date(Date.now() - 24 * 60 * 60 * 1000);
 const ATM_WITHDRAWAL_AMOUNT = 200 * PRECISION;
 
+const seedErsteAndCashAccounts = Effect.fnUntraced(function* () {
+    return {
+        bankAccount: yield* testSeedService.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK_SYNC }),
+        cashAccount: yield* testSeedService.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH })
+    };
+});
+
 layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
     it.effect('moves an Erste AUTOMAT withdrawal to the cash account only on request and leaves cash back and deposits unpaired', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
-            const bankAccount = yield* testSeedService.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK_SYNC });
-            const cashAccount = yield* testSeedService.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
+            const { bankAccount, cashAccount } = yield* seedErsteAndCashAccounts();
             const seedErsteTransaction = (title: string, transaction: TransactionEntityInterface) =>
                 Effect.gen(function* () {
                     return yield* testSeedService.updateTransaction(transaction.id, { title, externalSource: ExternalSourceEnum.ERSTE });
@@ -74,6 +80,46 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
                     transaction => transaction.consolidationParentTransactionId
                 )
             ).toEqual([null, null, null]);
+        })
+    );
+    it.effect('moves an Erste AUTOMAT withdrawal imported before the ATM MCC existed, recognised by its title', () =>
+        Effect.gen(function* () {
+            const { bankAccount, cashAccount } = yield* seedErsteAndCashAccounts();
+            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const seedMcclessExpense = (externalId: string, title: string, externalSource: ExternalSourceEnum) =>
+                Effect.gen(function* () {
+                    const expense = yield* testSeedService.bankPairExpense(
+                        { externalId, operatedAt: ERSTE_OPERATED_AT },
+                        { accountId: bankAccount.id, amount: ATM_WITHDRAWAL_AMOUNT }
+                    );
+
+                    return yield* testSeedService.updateTransaction(expense.id, { title, externalSource });
+                });
+            const legacyAtmWithdrawal = yield* seedMcclessExpense(
+                'erste-legacy-atm',
+                'AUTOMAT 12210014 K1 26.11. 14:51',
+                ExternalSourceEnum.ERSTE
+            );
+            const otherBankAutomat = yield* seedMcclessExpense(
+                'other-bank-automat',
+                'AUTOMAT 12210014 K1 26.11. 14:51',
+                ExternalSourceEnum.MONOBANK
+            );
+            const ersteShopping = yield* seedMcclessExpense('erste-shopping', 'AUTOMATENSHOP WIEN 1010', ExternalSourceEnum.ERSTE);
+
+            expect(
+                yield* consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds([
+                    legacyAtmWithdrawal.id,
+                    otherBankAutomat.id,
+                    ersteShopping.id
+                ])
+            ).toEqual([legacyAtmWithdrawal.id]);
+            expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([legacyAtmWithdrawal.id])).toBe(1);
+
+            const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
+
+            yield* expectConsolidationParent(legacyAtmWithdrawal.id, canonicalId);
+            expect((yield* fetchLedgerEntry(canonicalId, cashAccount.id)).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
         })
     );
 });
