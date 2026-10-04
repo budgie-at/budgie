@@ -11,18 +11,19 @@ interface Props {
 const syncStatusVariants = cva('h-2 w-2 rounded-full will-change-animation', {
     variants: {
         status: {
-            [SyncStatusEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
-            [SyncStatusEnum.IDLE]: 'bg-positive-foreground',
-            [SyncStatusEnum.FAILED]: 'bg-destructive'
+            [SyncStatusEnum.SYNCING]: '',
+            [SyncStatusEnum.IDLE]: '',
+            [SyncStatusEnum.FAILED]: ''
         },
         disabled: {
-            true: '',
+            true: 'bg-secondary-foreground',
             false: ''
         }
     },
     compoundVariants: [
-        { disabled: true, status: SyncStatusEnum.IDLE, class: 'bg-secondary-foreground' },
-        { disabled: true, status: SyncStatusEnum.FAILED, class: 'bg-secondary-foreground' }
+        { disabled: false, status: SyncStatusEnum.SYNCING, class: 'bg-warning-foreground animate-pulse' },
+        { disabled: false, status: SyncStatusEnum.IDLE, class: 'bg-positive-foreground' },
+        { disabled: false, status: SyncStatusEnum.FAILED, class: 'bg-destructive-foreground' }
     ]
 });
 
