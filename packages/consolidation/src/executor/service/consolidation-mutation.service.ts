@@ -194,8 +194,7 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
 
                     if (isNotEmptyString(manualTransaction.comment)) {
                         yield* transactionRepository.updateById(syncedTransaction.id, {
-                            comment: manualTransaction.comment,
-                            needsEmbedding: syncedTransaction.needsEmbedding
+                            comment: manualTransaction.comment
                         });
                     }
                 }),

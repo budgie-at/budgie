@@ -172,6 +172,18 @@ layer(TestLayer)('consolidation/manual-expense-duplicate', it => {
         })
     );
 
+    it.effect('ignores imported expenses on a manual BANK account', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            const pairs = yield* Effect.forEach(SUPPORTING_PAIR_INDEXES, index =>
+                seedManualExpenseDuplicatePair({ accounts, index, manualExternalSource: ExternalSourceEnum.MONOBANK })
+            );
+
+            expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
+            yield* expectUntouched(pairs.flatMap(({ synced, manual }) => [synced.id, manual.id]));
+        })
+    );
+
     it.effect('ignores manual expenses in a different instrument', () =>
         Effect.gen(function* () {
             const usd = yield* testSeedService.instrument({ code: 'USD', name: 'US Dollar', symbol: '$' });

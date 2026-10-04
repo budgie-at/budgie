@@ -68,6 +68,8 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             AND manual_tx.deleted_at IS NULL
             AND manual_tx.consolidation_parent_transaction_id IS NULL
             AND manual_tx.consolidation_type IS NULL
+            AND manual_tx.external_id IS NULL
+            AND manual_tx.external_source IS NULL
             AND NOT EXISTS (
                 SELECT 1
                 FROM transaction_entries manual_sibling_entry

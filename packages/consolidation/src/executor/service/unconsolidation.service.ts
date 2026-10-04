@@ -40,25 +40,35 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
                 entry => !isDefined(entry.originalTransactionId) && entry.categorySource === CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE
             );
 
-            if (!isDefined(canonical) || !isDefined(copiedCategoryEntry)) {
+            if (!isDefined(canonical)) {
                 return;
             }
 
             const manualTransactionIds = [...new Set(canonical.entries.map(entry => entry.originalTransactionId).filter(isDefined))];
             const manualTags = yield* transactionTagsRepository.findByTransactionIds(manualTransactionIds);
             const manualTransactions = yield* transactionRepository.findByIds(manualTransactionIds);
+            const hasCopiedComment = manualTransactions.some(
+                manual => isNotEmptyString(manual.comment) && manual.comment === canonical.comment
+            );
 
-            yield* transactionEntryRepository.updateById(copiedCategoryEntry.id, {
-                categoryId: null,
-                categorySource: CategorySourceEnum.USER
-            });
+            if (!isDefined(copiedCategoryEntry) && !hasCopiedComment) {
+                return;
+            }
+
+            if (isDefined(copiedCategoryEntry)) {
+                yield* transactionEntryRepository.updateById(copiedCategoryEntry.id, {
+                    categoryId: null,
+                    categorySource: CategorySourceEnum.USER
+                });
+            }
+
             yield* transactionTagsRepository.deleteByTransactionIdAndTagIds(
                 canonicalTransactionId,
                 manualTags.map(tag => tag.tagId)
             );
 
-            if (manualTransactions.some(manual => isNotEmptyString(manual.comment) && manual.comment === canonical.comment)) {
-                yield* transactionRepository.updateById(canonicalTransactionId, { comment: '', needsEmbedding: canonical.needsEmbedding });
+            if (hasCopiedComment) {
+                yield* transactionRepository.updateById(canonicalTransactionId, { comment: '' });
             }
         });
 

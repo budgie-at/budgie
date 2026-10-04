@@ -426,6 +426,8 @@ export class TestSeedService {
         readonly categoryId?: number | null;
         readonly comment?: string;
         readonly title?: string;
+        readonly externalId?: string;
+        readonly externalSource?: ExternalSourceEnum;
     }) {
         return Effect.gen({ self: this }, function* () {
             const transactionRows = yield* this.database
@@ -433,8 +435,8 @@ export class TestSeedService {
                 .values({
                     type: TransactionTypeEnum.EXPENSE,
                     title: input.title ?? '',
-                    externalId: null,
-                    externalSource: null,
+                    externalId: input.externalId ?? null,
+                    externalSource: input.externalSource ?? null,
                     operatedAt: input.operatedAt,
                     exchangeRate: 1,
                     fromAccountId: input.accountId,

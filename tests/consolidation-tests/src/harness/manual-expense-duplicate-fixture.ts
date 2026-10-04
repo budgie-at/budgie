@@ -38,7 +38,11 @@ export const seedManualExpenseDuplicatePair = Effect.fnUntraced(function* (input
         amount: amount + (input.manualAmountDelta ?? 0),
         operatedAt: new Date(operatedAt.getTime() + (input.manualOperatedAtOffsetSeconds ?? 0) * 1000),
         categoryId: input.manualCategoryId ?? null,
-        comment: input.manualComment ?? ''
+        comment: input.manualComment ?? '',
+        ...(input.manualExternalSource && {
+            externalId: `manual-duplicate-imported-${input.index}`,
+            externalSource: input.manualExternalSource
+        })
     });
 
     return { synced, manual };

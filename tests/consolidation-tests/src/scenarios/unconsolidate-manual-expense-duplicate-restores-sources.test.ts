@@ -11,7 +11,7 @@ import {
 } from '../harness/consolidation-revert-audit';
 import { seedManualExpenseDuplicateAccounts, seedManualExpenseDuplicatePair } from '../harness/manual-expense-duplicate-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
 
 layer(TestLayer)('consolidation/unconsolidate-manual-expense-duplicate-restores-sources', it => {
     it.effect('restores the exact prior state of both the synced and the manual expense', () =>
@@ -54,6 +54,30 @@ layer(TestLayer)('consolidation/unconsolidate-manual-expense-duplicate-restores-
             yield* expectSourcesRestored(pairs.map(({ manual }) => manual.id));
             yield* expectSourceStateRestored(stateBeforeConsolidation);
             expect(yield* fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+        })
+    );
+
+    it.effect('still removes copied tags and comment when a rule recategorized the canonical', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            const manualCategory = yield* testSeedService.category('Groceries');
+            const ruleCategory = yield* testSeedService.category('Restaurants');
+            const manualTag = yield* testSeedService.tag('Family');
+            const pairs = yield* Effect.forEach([0, 1, 2], index =>
+                seedManualExpenseDuplicatePair({ accounts, index, manualCategoryId: manualCategory.id, manualComment: 'Manual note' })
+            );
+
+            yield* Effect.forEach(pairs, ({ manual }) => testSeedService.transactionTag(manual.id, manualTag.id));
+            expect((yield* runConsolidation()).consolidated).toBe(3);
+
+            const [{ synced }] = pairs;
+            const [canonicalEntry] = yield* fetchOwnLedgerEntries(synced.id);
+
+            yield* testSeedService.entryCategory(canonicalEntry.id, ruleCategory.id, CategorySourceEnum.RULE);
+            yield* unconsolidateById(synced.id);
+
+            expect(yield* testQueryService.fetchTransactionTagIds(synced.id)).toEqual([]);
+            expect((yield* testQueryService.fetchTransactionById(synced.id)).comment).toBe('');
         })
     );
 });
