@@ -8,6 +8,7 @@ export { P2pTransferTitleResolver } from './executor/service/p2p-transfer-title-
 export { AtmCashWithdrawalRepository } from './query/repository/atm-cash-withdrawal.repository';
 export { ExistingTransferRepository } from './query/repository/existing-transfer.repository';
 export { IbanBridgeTransferRepository } from './query/repository/iban-bridge-transfer.repository';
+export { ManualExpenseDuplicateRepository } from './query/repository/manual-expense-duplicate.repository';
 export { RefundPairRepository } from './query/repository/refund-pair.repository';
 export { RefundAlreadyConsolidatedError } from './refund/error/refund-already-consolidated.error';
 export { RefundExceedsExpenseError } from './refund/error/refund-exceeds-expense.error';

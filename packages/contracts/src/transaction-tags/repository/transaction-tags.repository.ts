@@ -1,4 +1,4 @@
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -46,6 +46,23 @@ export class TransactionTagsRepository extends Context.Service<TransactionTagsRe
 
         findByTransactionId: (transactionId: number) =>
             Db.query(db => db.select().from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, transactionId))),
+
+        deleteByTransactionIdAndTagIds: Effect.fn('TransactionTagsRepository.deleteByTransactionIdAndTagIds')(function* (
+            transactionId: number,
+            tagIds: readonly number[]
+        ) {
+            if (!isNotEmptyArray(tagIds)) {
+                return;
+            }
+
+            yield* Db.query(db =>
+                db
+                    .delete(TransactionTagsEntityTable)
+                    .where(
+                        and(eq(TransactionTagsEntityTable.transactionId, transactionId), inArray(TransactionTagsEntityTable.tagId, tagIds))
+                    )
+            );
+        }),
 
         deleteByTransactionId: (id: number) =>
             Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id))),

@@ -4,6 +4,11 @@ import {
     AccountNatureEnum,
     AccountTypeEnum,
     BankIntegrationEntityTable,
+    CategoryEntityTable,
+    CategorySourceEnum,
+    DebtEventDirectionEnum,
+    DebtEventEntityTable,
+    DebtEventSourceEnum,
     SyncEntityTable,
     SyncModeEnum,
     SyncStatusEnum,
@@ -400,6 +405,96 @@ export class TestSeedService {
                 .returning();
 
             return TestSeedService.requireInserted(rows, 'transactions');
+        });
+    }
+
+    category(title: string) {
+        return Effect.gen({ self: this }, function* () {
+            const rows = yield* this.database
+                .insert(CategoryEntityTable)
+                .values({ title, titleSearch: title.toLowerCase(), icon: UserIconNameEnum.Wallet })
+                .returning({ id: CategoryEntityTable.id });
+
+            return TestSeedService.requireInserted(rows, 'categories');
+        });
+    }
+
+    manualExpense(input: {
+        readonly accountId: number;
+        readonly amount: number;
+        readonly operatedAt: Date;
+        readonly categoryId?: number | null;
+        readonly comment?: string;
+        readonly title?: string;
+    }) {
+        return Effect.gen({ self: this }, function* () {
+            const transactionRows = yield* this.database
+                .insert(TransactionEntityTable)
+                .values({
+                    type: TransactionTypeEnum.EXPENSE,
+                    title: input.title ?? '',
+                    externalId: null,
+                    externalSource: null,
+                    operatedAt: input.operatedAt,
+                    exchangeRate: 1,
+                    fromAccountId: input.accountId,
+                    toAccountId: null,
+                    comment: input.comment ?? '',
+                    updatedBy: null
+                } satisfies TransactionCreateEntityInterface)
+                .returning();
+            const transaction = TestSeedService.requireInserted(transactionRows, 'transactions');
+            const entryRows = yield* this.database
+                .insert(TransactionEntryEntityTable)
+                .values({
+                    transactionId: transaction.id,
+                    accountId: input.accountId,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: input.amount,
+                    externalId: null,
+                    exchangeRate: 1,
+                    baseInstrumentId: TestSeedService.DEFAULT_BASE_INSTRUMENT_ID,
+                    baseExchangeRate: 1,
+                    baseAmount: input.amount,
+                    toIban: null,
+                    categoryId: input.categoryId ?? null,
+                    mccCategoryId: null,
+                    originalTransactionId: null
+                } satisfies TransactionEntryCreateEntityInterface)
+                .returning();
+
+            TestSeedService.requireInserted(entryRows, 'transaction_entries');
+
+            return transaction;
+        });
+    }
+
+    entryCategory(entryId: number, categoryId: number, categorySource: CategorySourceEnum) {
+        return Effect.gen({ self: this }, function* () {
+            const rows = yield* this.database
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId, categorySource })
+                .where(eq(TransactionEntryEntityTable.id, entryId))
+                .returning();
+
+            return TestSeedService.requireInserted(rows, 'transaction_entries');
+        });
+    }
+
+    debtEvent(transactionId: number, debtAccountId: number, amount: number) {
+        return Effect.gen({ self: this }, function* () {
+            const rows = yield* this.database
+                .insert(DebtEventEntityTable)
+                .values({
+                    debtAccountId,
+                    transactionId,
+                    direction: DebtEventDirectionEnum.OPEN,
+                    source: DebtEventSourceEnum.MANUAL,
+                    amount
+                })
+                .returning();
+
+            return TestSeedService.requireInserted(rows, 'debt_events');
         });
     }
 
