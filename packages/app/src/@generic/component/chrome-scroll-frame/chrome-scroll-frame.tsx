@@ -16,7 +16,7 @@ export const ChromeScrollFrame = ({ children }: Props) => (
     <ScreenChromeThemeProvider syncNativeScrollOffset>
         <ScreenChromeFrame>
             <ScreenChromeScrollView contentInsetTop={SCREEN_CHROME_CONTENT_INSET_TOP} showsVerticalScrollIndicator={false}>
-                <View className="gap-y-7xl pb-5xl">{children}</View>
+                <View className="gap-y-7xl px-5xl pb-5xl">{children}</View>
             </ScreenChromeScrollView>
 
             <CollapsibleHeaderBackdrop />

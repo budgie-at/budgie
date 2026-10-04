@@ -34,7 +34,7 @@ export default function AnalyticsPage() {
     return (
         <View className="flex-1" testID={AnalyticsPageSelector.Container}>
             <GestureDetector gesture={swipeGesture}>
-                <View className="flex-1 px-5xl">
+                <View className="flex-1">
                     <StatisticsContent activeTab={activeTab} />
                 </View>
             </GestureDetector>

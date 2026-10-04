@@ -27,7 +27,11 @@ export const RunwayContent = () => {
     };
 
     if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
-        return <RunwayEmptyState monthsUsed={computation.monthsUsed} />;
+        return (
+            <ChromeScrollFrame>
+                <RunwayEmptyState monthsUsed={computation.monthsUsed} />
+            </ChromeScrollFrame>
+        );
     }
 
     return (
