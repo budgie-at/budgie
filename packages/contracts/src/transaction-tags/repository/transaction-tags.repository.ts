@@ -31,16 +31,12 @@ export class TransactionTagsRepository extends Context.Service<TransactionTagsRe
                 return [];
             }
 
-            return yield* Db.query(db => db.insert(TransactionTagsEntityTable).values(inputs).returning());
-        }),
-
-        bulkMerge: Effect.fn('TransactionTagsRepository.bulkMerge')(function* (inputs: TransactionTagsCreateEntityInterface[]) {
-            if (!isNotEmptyArray(inputs)) {
-                return;
-            }
-
-            yield* Db.query(db =>
-                db.insert(TransactionTagsEntityTable).values(inputs).onConflictDoUpdate(TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT)
+            return yield* Db.query(db =>
+                db
+                    .insert(TransactionTagsEntityTable)
+                    .values(inputs)
+                    .onConflictDoUpdate(TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT)
+                    .returning()
             );
         }),
 
