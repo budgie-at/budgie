@@ -28,5 +28,6 @@ export const TransactionCreateInputSchema = Schema.Struct({
     debtAccountId: Schema.optional(Schema.NullOr(PositiveNumberSchema)),
     externalIdAliases: Schema.optional(Schema.mutable(Schema.Array(Schema.String))),
     tagIds: Schema.mutable(Schema.Array(Schema.Finite)),
+    ruleTagIds: Schema.optional(Schema.mutable(Schema.Array(Schema.Finite))),
     entries: Schema.mutable(Schema.Array(TransactionEntryCreateInputSchema).check(Schema.isMinLength(1)))
 });

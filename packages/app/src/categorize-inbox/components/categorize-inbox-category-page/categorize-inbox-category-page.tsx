@@ -41,7 +41,8 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
     const handlePickFollowUpTagIds = async (assignment: CategorizeInboxAssignmentInterface): Promise<number[] | null> => {
         const tagContext = categorizeInboxEngineService.buildContext(
             await appRuntime.runPromise(Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence())),
-            defaultInstrument.id
+            defaultInstrument.id,
+            CategorizeInboxLabelKindEnum.TAG
         );
 
         return openTagsSelector({

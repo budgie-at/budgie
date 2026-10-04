@@ -2,11 +2,11 @@ import {
     ExternalSourceEnum,
     PRECISION,
     REFUND_TIME_WINDOW_SECONDS,
+    REFUND_TITLE_PREFIXES,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { REFUND_TITLE_PREFIXES } from '../../../shared/constant/refund-title-prefixes.constant';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';

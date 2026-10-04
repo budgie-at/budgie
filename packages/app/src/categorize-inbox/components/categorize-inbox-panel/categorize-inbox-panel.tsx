@@ -52,7 +52,10 @@ export const CategorizeInboxPanel = ({
     ].join(' · ');
     const accessibilityValue = { min: 0, max: totalCount, now: categorizedCount, text: progressText };
     const rowCount = acceptableAssignments.reduce((total, assignment) => total + assignment.rows.length, 0);
-    const acceptAllText = t({ message: plural(rowCount, { one: 'Accept # suggestion', other: 'Accept # suggestions' }) });
+    const acceptAllText = [
+        t({ message: plural(acceptableAssignments.length, { one: 'Accept # suggestion', other: 'Accept # suggestions' }) }),
+        t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) })
+    ].join(' · ');
     const movedToCashDescription = t({
         message: plural(movedToCashTransactionIds.length, { one: '# transaction', other: '# transactions' })
     });
