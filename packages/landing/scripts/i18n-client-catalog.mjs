@@ -89,7 +89,7 @@ for (const locale of SUPPORTED_LOCALES) {
 
     writeFileSync(
         join(LOCALES_ROOT, locale, 'client-messages.ts'),
-        `/*eslint-disable*/import type{Messages}from"@lingui/core";export const messages=JSON.parse(${JSON.stringify(JSON.stringify(subset))})as Messages;`
+        `import type{Messages}from"@lingui/core";export const messages=JSON.parse(${JSON.stringify(JSON.stringify(subset))})as Messages;`
     );
 }
 

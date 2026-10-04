@@ -1,4 +1,4 @@
-/* eslint-disable max-lines, max-lines-per-function */
+/* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';

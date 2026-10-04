@@ -7,6 +7,7 @@ import * as Atom from 'effect/reactivity/Atom';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { useToday } from '../../@generic/hook/use-today.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
 import type { BudgetSpentInterface } from '@budgie/budget';
@@ -39,12 +40,13 @@ const budgetSpentAtom = Atom.family(
 );
 
 export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): UseGetBudgetSpentResult => {
+    const today = useToday();
     const result = useLiveAtomValue(
         budgetSpentAtom({
             periodStartDay: isDefined(budget) ? budget.periodStartDay : 1,
             useLastDayOfMonth: isDefined(budget) ? budget.useLastDayOfMonth : false,
             instrumentId: isDefined(budget) ? budget.instrumentId : 0,
-            dayStart: new Date().setHours(0, 0, 0, 0)
+            dayStart: new Date(today).setHours(0, 0, 0, 0)
         })
     );
 

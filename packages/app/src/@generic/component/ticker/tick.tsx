@@ -21,7 +21,7 @@ export const Tick = (props: Props) => {
     const translateY = useSharedValue(-textSize * num);
 
     useEffect(() => {
-        translateY.value = withDelay(delay * index, withTiming(-textSize * num, { duration }));
+        translateY.set(withDelay(delay * index, withTiming(-textSize * num, { duration })));
     }, [num, textSize, index, translateY, delay, duration]);
 
     const animatedStyle = useAnimatedStyle(() => ({

@@ -1,6 +1,6 @@
 {
     "name": "@budgie/rules",
-    "version": "6.88.5",
+    "version": "6.91.2",
     "private": true,
     "description": "Rules engine domain services",
     "sideEffects": false,
@@ -21,9 +21,8 @@
         "build:watch": "pnpm build --watch",
         "clear": "rimraf dist node_modules/.cache .turbo",
         "format": "oxfmt --write src test",
-        "lint": "oxlint --type-aware src && eslint src",
-        "lint:eslint": "eslint src",
-        "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
+        "lint": "oxlint --type-aware src",
+        "lint:fix": "oxlint --type-aware --fix src",
         "test": "vitest run",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p . && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.test.json"
     },

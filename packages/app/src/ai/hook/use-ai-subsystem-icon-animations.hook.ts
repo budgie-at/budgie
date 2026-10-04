@@ -27,19 +27,17 @@ export const useAiSubsystemIconAnimations = ({ percent, iconSize, pulsePeriodMs 
     useEffect(() => {
         cancelAnimation(pulseValue);
         if (reducedMotion || !isDefined(pulsePeriodMs)) {
-            pulseValue.value = FULL_OPACITY;
+            pulseValue.set(FULL_OPACITY);
 
             return;
         }
-        pulseValue.value = withRepeat(
-            withTiming(DIMMED_OPACITY, { duration: pulsePeriodMs / HALF, easing: Easing.inOut(Easing.ease) }),
-            -1,
-            true
+        pulseValue.set(
+            withRepeat(withTiming(DIMMED_OPACITY, { duration: pulsePeriodMs / HALF, easing: Easing.inOut(Easing.ease) }), -1, true)
         );
     }, [pulseValue, reducedMotion, pulsePeriodMs]);
 
     useEffect(() => {
-        fillHeight.value = withTiming((percent / PERCENT_DIVISOR) * iconSize, { duration: FILL_ANIMATION_DURATION });
+        fillHeight.set(withTiming((percent / PERCENT_DIVISOR) * iconSize, { duration: FILL_ANIMATION_DURATION }));
     }, [percent, iconSize, fillHeight]);
 
     const pulseStyle = useAnimatedStyle(() => ({ opacity: pulseValue.value }));

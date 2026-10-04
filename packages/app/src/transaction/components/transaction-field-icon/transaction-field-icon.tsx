@@ -45,11 +45,11 @@ export const TransactionFieldIcon = (props: Props) => {
     }));
 
     const handlePressIn = () => {
-        pressed.value = true;
+        pressed.set(true);
     };
 
     const handlePressOut = () => {
-        pressed.value = false;
+        pressed.set(false);
     };
 
     const hasValue = isNotEmptyString(value);

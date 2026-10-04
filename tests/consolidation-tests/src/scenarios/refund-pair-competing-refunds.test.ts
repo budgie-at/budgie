@@ -34,11 +34,9 @@ const STARBUCKS_REFUND_DELAY_SECONDS = 3 * 60 * 60;
 const NETFLIX_TITLE = 'Netflix';
 const NETFLIX_TARGET_AMOUNT_UAH = 50;
 const NETFLIX_TARGET_AMOUNT = NETFLIX_TARGET_AMOUNT_UAH * PRECISION;
-const NETFLIX_DECOY_AMOUNT_UAH = 77;
-const NETFLIX_DECOY_AMOUNT = NETFLIX_DECOY_AMOUNT_UAH * PRECISION;
-const NETFLIX_DECOY_EXPENSE_OPERATED_AT = new Date(COMPETING_YEAR, 4, 6, 8, 0, 0);
+const NETFLIX_TWIN_EXPENSE_OPERATED_AT = new Date(COMPETING_YEAR, 3, 11, 6, 0, 0);
 const NETFLIX_TARGET_EXPENSE_OPERATED_AT = new Date(COMPETING_YEAR, 4, 6, 18, 0, 0);
-const NETFLIX_REFUND_DELAY_SECONDS = 2 * 60 * 60;
+const NETFLIX_REFUND_DELAY_SECONDS = 3 * 24 * 60 * 60;
 
 const ROZETKA_TITLE = 'ROZETKA';
 const ROZETKA_EXPENSE_AMOUNT_UAH = 500;
@@ -223,9 +221,9 @@ layer(TestLayer)('consolidation/refund-pair-competing-refunds rejected best matc
             yield* seedExpenseWithoutRefund({
                 accountId: account.id,
                 title: NETFLIX_TITLE,
-                expenseAmount: NETFLIX_DECOY_AMOUNT,
-                expenseOperatedAt: NETFLIX_DECOY_EXPENSE_OPERATED_AT,
-                externalIdPrefix: 'netflix-decoy'
+                expenseAmount: NETFLIX_TARGET_AMOUNT,
+                expenseOperatedAt: NETFLIX_TWIN_EXPENSE_OPERATED_AT,
+                externalIdPrefix: 'netflix-twin'
             });
             const { expense: targetExpense, refunds } = yield* testSeedService.refundedExpense({
                 accountId: account.id,

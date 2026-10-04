@@ -39,11 +39,11 @@ export const OnboardingOptionRow = (props: Props) => {
     const targetTickScale = isSelected ? FULL_SCALE : TICK_INITIAL_SCALE;
 
     const handlePressIn = () => {
-        pressScale.value = reducedMotion ? PRESS_SCALE : withSpring(PRESS_SCALE, PRESS_SPRING_CONFIG);
+        pressScale.set(reducedMotion ? PRESS_SCALE : withSpring(PRESS_SCALE, PRESS_SPRING_CONFIG));
     };
 
     const handlePressOut = () => {
-        pressScale.value = reducedMotion ? FULL_SCALE : withSpring(FULL_SCALE, PRESS_SPRING_CONFIG);
+        pressScale.set(reducedMotion ? FULL_SCALE : withSpring(FULL_SCALE, PRESS_SPRING_CONFIG));
     };
 
     const pressStyle = useAnimatedStyle(() => ({ transform: [{ scale: pressScale.value }] }));

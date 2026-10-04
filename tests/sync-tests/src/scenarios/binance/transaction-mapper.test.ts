@@ -37,9 +37,12 @@ describe('binance/transaction-mapper', () => {
         );
 
         expect(isDefined(transaction)).toBe(true);
-        if (isDefined(transaction)) {
-            expect(transaction.operationAmount + transaction.feeAmount).toBeCloseTo(transaction.amount, 10);
+
+        if (!isDefined(transaction)) {
+            return;
         }
+
+        expect(transaction.operationAmount + transaction.feeAmount).toBeCloseTo(transaction.amount, 10);
     });
 
     it('drops the fee for a degenerate fee >= amount withdrawal', () => {

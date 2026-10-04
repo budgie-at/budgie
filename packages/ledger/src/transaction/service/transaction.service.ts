@@ -134,7 +134,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 effect => Db.transaction(effect)
             ),
             findByExternalSource: Effect.fn('TransactionService.findByExternalSource')(function* (externalSource: ExternalSourceEnum) {
-                return new Set([...(yield* transactionRepository.findExternalIdsByExternalSource(externalSource))]);
+                return new Set(yield* transactionRepository.findExternalIdsByExternalSource(externalSource));
             }),
             findIdMapByExternalSource: Effect.fn('TransactionService.findIdMapByExternalSource')(function* (
                 externalSource: ExternalSourceEnum

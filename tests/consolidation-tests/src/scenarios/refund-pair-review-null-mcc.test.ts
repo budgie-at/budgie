@@ -9,6 +9,7 @@ import { TestLayer } from '../harness/test-context';
 
 const COMFY_REVIEW_AMOUNT_UAH = 120;
 const COMFY_REVIEW_AMOUNT = convertToMicroUnits(COMFY_REVIEW_AMOUNT_UAH);
+const COMFY_REFUND_DELAY_SECONDS = 40 * 24 * 60 * 60;
 
 layer(TestLayer)('consolidation/refund-pair-review-null-mcc', it => {
     it.effect('surfaces a prefix-stripped pair without MCC data for manual review', () =>
@@ -18,7 +19,8 @@ layer(TestLayer)('consolidation/refund-pair-review-null-mcc', it => {
                 expenseAmount: COMFY_REVIEW_AMOUNT,
                 refundAmounts: [COMFY_REVIEW_AMOUNT],
                 title: 'Платіж COMFY',
-                refundTitle: 'Повернення платежу COMFY, Київ'
+                refundTitle: 'Повернення платежу COMFY, Київ',
+                refundDelaySeconds: COMFY_REFUND_DELAY_SECONDS
             });
 
             const autoCandidates = yield* refundPairRepository.findCandidates();

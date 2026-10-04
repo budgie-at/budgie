@@ -315,7 +315,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return createdCount;
         });
 
-        const runSyncPhases = Effect.fn('AppBinanceSyncService.runSyncPhases')(function* (
+        const runSyncPhases = Effect.fn('BinanceSyncService.runSyncPhases')(function* (
             sync: SyncEntityInterface,
             externalAccountId: string,
             token: string
@@ -348,7 +348,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const pollingSyncService = yield* makePollingSyncService({
             ...BINANCE_ACCOUNT_DEFINITION,
             rateLimitMs: BINANCE_RATE_LIMIT_MS,
-            executeSyncBatch: Effect.fn('AppBinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
+            executeSyncBatch: Effect.fn('BinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 const externalAccountId = account?.externalId ?? null;
                 if (!isNotEmptyString(externalAccountId)) {
@@ -375,7 +375,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     completed: !runDeferred
                 };
             }),
-            beforeSyncRun: Effect.fn('AppBinanceSyncService.beforeSyncRun')(function* (deadlineAtMs: number) {
+            beforeSyncRun: Effect.fn('BinanceSyncService.beforeSyncRun')(function* (deadlineAtMs: number) {
                 yield* Effect.sync(() => {
                     runDeadlineAtMs = deadlineAtMs;
                     runDeferred = false;
@@ -406,7 +406,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
         return {
             ...pollingSyncService,
-            fetchAccountsPreview: Effect.fn('AppBinanceSyncService.fetchAccountsPreview')(function* (token: string) {
+            fetchAccountsPreview: Effect.fn('BinanceSyncService.fetchAccountsPreview')(function* (token: string) {
                 const exchangeAccounts = yield* fetchExchangeAccounts(token);
                 const supportedIds = new Set(
                     (yield* binanceAccountService.findResolvableAccounts(exchangeAccounts)).map(
@@ -419,10 +419,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     exchangeAccount => !supportedIds.has(exchangeAccount.id)
                 );
             }),
-            setupAccountSyncBatch: Effect.fn('AppBinanceSyncService.setupAccountSyncBatch')(function* (
-                token: string,
-                externalIds: string[]
-            ) {
+            setupAccountSyncBatch: Effect.fn('BinanceSyncService.setupAccountSyncBatch')(function* (token: string, externalIds: string[]) {
                 const resolvableAccounts = yield* binanceAccountService.findResolvableAccounts(
                     (yield* fetchExchangeAccounts(token)).filter(exchangeAccount => externalIds.includes(exchangeAccount.id))
                 );

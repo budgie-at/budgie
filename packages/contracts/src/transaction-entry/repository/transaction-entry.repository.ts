@@ -74,6 +74,32 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
 
                     return isDefined(entry);
                 }),
+                findTransactionIdsWithLiveEntries: Effect.fn('TransactionEntryRepository.findTransactionIdsWithLiveEntries')(function* (
+                    transactionIds: number[]
+                ) {
+                    if (!isNotEmptyArray(transactionIds)) {
+                        return new Set<number>();
+                    }
+                    const entries = yield* Db.query(db =>
+                        db
+                            .select({
+                                transactionId: TransactionEntryEntityTable.transactionId,
+                                originalTransactionId: TransactionEntryEntityTable.originalTransactionId
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .where(
+                                and(
+                                    or(
+                                        inArray(TransactionEntryEntityTable.transactionId, transactionIds),
+                                        inArray(TransactionEntryEntityTable.originalTransactionId, transactionIds)
+                                    ),
+                                    isNull(TransactionEntryEntityTable.deletedAt)
+                                )
+                            )
+                    );
+
+                    return new Set(entries.flatMap(entry => [entry.transactionId, entry.originalTransactionId]).filter(isDefined));
+                }),
                 bulkCreate: Effect.fn('TransactionEntryRepository.bulkCreate')(function* (inputs: TransactionEntryCreateEntityInterface[]) {
                     return isNotEmptyArray(inputs)
                         ? yield* Db.query(db => db.insert(TransactionEntryEntityTable).values(inputs).returning())

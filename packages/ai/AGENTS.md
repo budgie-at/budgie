@@ -25,7 +25,7 @@ Dual model setup:
 pnpm build    # Native TypeScript 7 compilation
 pnpm clear    # Remove dist/ (needed after deleting source files)
 pnpm ts       # Native TypeScript 7 check without emit
-pnpm lint     # Oxlint + 13-rule ESLint fallback
+pnpm lint     # Oxlint (incl. local `lint-rules/` plugin)
 ```
 
 ## File Organization

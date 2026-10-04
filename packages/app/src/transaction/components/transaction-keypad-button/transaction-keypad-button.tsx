@@ -87,11 +87,11 @@ export const TransactionKeypadButton = (props: Props) => {
     const pressed = useSharedValue(false);
 
     const handlePressIn = () => {
-        pressed.value = true;
+        pressed.set(true);
     };
 
     const handlePressOut = () => {
-        pressed.value = false;
+        pressed.set(false);
     };
 
     const animatedStyle = useAnimatedStyle(() => ({

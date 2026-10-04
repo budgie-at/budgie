@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** guard PrivatBank refund currency and rank covering expenses first ([ad436ed](https://github.com/budgie-at/budgie/commit/ad436eda43f94ca49833076a7562d2a0fe610e13))
+* **consolidation:** match more refunds automatically ([dff5884](https://github.com/budgie-at/budgie/commit/dff58843850b4c912cdac5f6c32eb41999950181))
+
+
+
+
+
+## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** address review findings for manual duplicate family ([93c0888](https://github.com/budgie-at/budgie/commit/93c088859b72de34fa4fa5381b698a18da893c00))
+
+
+### Features
+
+* **consolidation:** consolidate synced duplicates of manual expenses ([5994732](https://github.com/budgie-at/budgie/commit/59947327f8f73b196c363f91e62eaa301133c551))
+
+
+
+
+
 ## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
 
 **Note:** Version bump only for package @budgie/consolidation

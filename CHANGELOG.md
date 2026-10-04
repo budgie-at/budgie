@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** guard PrivatBank refund currency and rank covering expenses first ([ad436ed](https://github.com/budgie-at/budgie/commit/ad436eda43f94ca49833076a7562d2a0fe610e13))
+* **consolidation:** match more refunds automatically ([dff5884](https://github.com/budgie-at/budgie/commit/dff58843850b4c912cdac5f6c32eb41999950181))
+
+
+
+
+
+## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+# [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **ledger:** pair refilled transactions with their own inputs before rule application ([d91159c](https://github.com/budgie-at/budgie/commit/d91159c8126ece52dd3a4cd925c394cd9d07b46c))
+
+
+### Features
+
+* **contracts:** add transaction import fingerprint column and heal queries ([1984b0e](https://github.com/budgie-at/budgie/commit/1984b0e3fb14ab91808406742b751974bd075653))
+* **ledger:** heal re-imported transactions with a bank-row fingerprint ([6838526](https://github.com/budgie-at/budgie/commit/6838526af4adf8c7d0f9a10674a42c27175080db))
+
+
+
+
+
+# [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** address review findings for manual duplicate family ([93c0888](https://github.com/budgie-at/budgie/commit/93c088859b72de34fa4fa5381b698a18da893c00))
+* **ledger:** keep consolidated entries when refreshing an imported transaction ([2d991af](https://github.com/budgie-at/budgie/commit/2d991af91e1815444e5840a5eaa5998b10989186))
+* **rules:** skip consolidated canonicals in transfer conversion ([75a2684](https://github.com/budgie-at/budgie/commit/75a26842caddacee15864980d2e1d03cc00a0948))
+
+
+### Features
+
+* **consolidation:** consolidate synced duplicates of manual expenses ([5994732](https://github.com/budgie-at/budgie/commit/59947327f8f73b196c363f91e62eaa301133c551))
+
+
+
+
+
 # [6.89.0](https://github.com/budgie-at/budgie/compare/v6.88.6...v6.89.0) (2026-10-03)
 
 

@@ -96,6 +96,6 @@ export const Icon = ({ icon, ...rest }: IconProps) => {
     const asyncIcon = asyncResolvedIcon?.icon === icon ? asyncResolvedIcon.styledIcon : STYLED_FALLBACK_ICON;
     const IconToRender = cachedIcon ?? asyncIcon;
 
-    // oxlint-disable-next-line react-hooks-js/static-components
+    // oxlint-disable-next-line react/static-components
     return <IconToRender {...rest} />;
 };

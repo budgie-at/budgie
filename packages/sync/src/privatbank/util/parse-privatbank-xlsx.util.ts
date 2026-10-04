@@ -35,7 +35,9 @@ const parsePrivatbankDate = (dateString: string): Effect.Effect<Date, SyncInvali
     const [hours, minutes, seconds] = timePart.split(':');
     const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes), Number(seconds));
 
-    return isNaN(date.getTime()) ? Effect.fail(createParseError(`Failed to parse Privatbank date: "${dateString}"`)) : Effect.succeed(date);
+    return Number.isNaN(date.getTime())
+        ? Effect.fail(createParseError(`Failed to parse Privatbank date: "${dateString}"`))
+        : Effect.succeed(date);
 };
 
 const mapRawRowToPrivatbankRow = (row: unknown[]): Effect.Effect<PrivatbankRowInterface, SyncInvalidResponseError> =>

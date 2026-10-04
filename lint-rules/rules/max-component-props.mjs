@@ -68,4 +68,4 @@ const maxComponentPropsRule = {
     },
 };
 
-export default { rules: { 'max-component-props': maxComponentPropsRule } };
+export default maxComponentPropsRule;

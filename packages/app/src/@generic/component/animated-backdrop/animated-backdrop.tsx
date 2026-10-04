@@ -18,15 +18,17 @@ export const AnimatedBackdrop = ({ isVisible, onClose }: Props) => {
 
     useEffect(() => {
         if (isVisible) {
-            // oxlint-disable-next-line react-hooks-js/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
+            // oxlint-disable-next-line react/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
             setIsMounted(true);
-            opacity.value = withTiming(BACKDROP_OPACITY, { duration: FADE_IN_DURATION });
+            opacity.set(withTiming(BACKDROP_OPACITY, { duration: FADE_IN_DURATION }));
         } else if (isMounted) {
-            opacity.value = withTiming(0, { duration: FADE_OUT_DURATION }, finished => {
-                if (finished) {
-                    runOnJS(setIsMounted)(false);
-                }
-            });
+            opacity.set(
+                withTiming(0, { duration: FADE_OUT_DURATION }, finished => {
+                    if (finished) {
+                        runOnJS(setIsMounted)(false);
+                    }
+                })
+            );
         }
     }, [isVisible, isMounted, opacity]);
 

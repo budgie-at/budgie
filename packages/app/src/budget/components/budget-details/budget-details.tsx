@@ -11,6 +11,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { useToday } from '../../../@generic/hook/use-today.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -35,7 +36,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const periodWindow = budgetPeriodService.computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
+    const periodWindow = budgetPeriodService.computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
     const periodEnd = budgetPeriodService.getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);

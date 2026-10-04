@@ -21,7 +21,7 @@ const hasBuildMetaAsset = (release: IosDevRelease): boolean => release.assets.so
 const tagNameToRunNumber = (tagName: string): number => {
     const runNumberPart = tagName.slice(IOS_DEV_RELEASE_TAG_PREFIX.length);
 
-    return DEV_TAG_RUN_NUMBER_REGEX.test(runNumberPart) ? Number.parseInt(runNumberPart, 10) : NaN;
+    return DEV_TAG_RUN_NUMBER_REGEX.test(runNumberPart) ? Number.parseInt(runNumberPart, 10) : Number.NaN;
 };
 
 const latestDevTagNameFetchApi = Effect.fnUntraced(function* (requestInit: RequestInit) {

@@ -26,7 +26,6 @@ const getErrorSource = (chatError: string | null, embeddingError: string | null)
     return AiSubsystemNameEnum.STT;
 };
 
-// eslint-disable-next-line max-statements -- Priority-ordered derivation table across all subsystem statuses
 const deriveUmbrellaStatus = (get: Atom.AtomContext): AiSystemUmbrellaSnapshotInterface => {
     if (!isAiEnabled()) {
         return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };

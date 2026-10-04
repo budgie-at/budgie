@@ -21,7 +21,6 @@ interface UseRepeatedTransactionSuggestionParams {
     readonly categoryId: number;
 }
 
-// eslint-disable-next-line max-statements -- Hook coordinates debounce, focus refresh, and async suggestion fetch lifecycle
 export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionSuggestionParams): PatternSuggestionsResultInterface => {
     const { enabled, type, accountId, amount, categoryId } = params;
     const language = useSetting('language');
