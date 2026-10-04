@@ -44,7 +44,10 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
 
                     return yield* Db.query(db =>
                         db
-                            .select({ id: TransactionEntityTable.id })
+                            .select({
+                                id: TransactionEntityTable.id,
+                                consolidationParentTransactionId: TransactionEntityTable.consolidationParentTransactionId
+                            })
                             .from(TransactionEntityTable)
                             .where(
                                 and(

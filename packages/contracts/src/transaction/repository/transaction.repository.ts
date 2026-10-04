@@ -243,6 +243,17 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 );
             }),
 
+            archiveByIds: Effect.fn('TransactionRepository.archiveByIds')(function* (transactionIds: number[]) {
+                if (isNotEmptyArray(transactionIds)) {
+                    yield* Db.query(db =>
+                        db
+                            .update(TransactionEntityTable)
+                            .set({ deletedAt: new Date() })
+                            .where(inArray(TransactionEntityTable.id, transactionIds))
+                    );
+                }
+            }),
+
             findMccCategorySuggestions: (mccCategoryId: number, limit: number) =>
                 Db.query(db =>
                     db.$client.unsafe<{ categoryId: number; count: number }>(
@@ -353,7 +364,12 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findTransfersForConversion: (accountId: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
-                        where: { type: TransactionTypeEnum.TRANSFER, OR: [{ fromAccountId: accountId }, { toAccountId: accountId }] },
+                        where: {
+                            type: TransactionTypeEnum.TRANSFER,
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            OR: [{ fromAccountId: accountId }, { toAccountId: accountId }]
+                        },
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
                                 where: filters.buildLedgerEntryFilter()
@@ -382,7 +398,8 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         .where(
                             and(
                                 eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
-                                eq(TransactionEntityTable.fromAccountId, accountId)
+                                eq(TransactionEntityTable.fromAccountId, accountId),
+                                filters.buildVisibleTransactionCondition()
                             )
                         )
                 ),
@@ -395,10 +412,36 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         .where(
                             and(
                                 eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
-                                eq(TransactionEntityTable.toAccountId, accountId)
+                                eq(TransactionEntityTable.toAccountId, accountId),
+                                filters.buildVisibleTransactionCondition()
                             )
                         )
                 ),
+
+            detachTransfersFromAccount: Effect.fn('TransactionRepository.detachTransfersFromAccount')(function* (accountId: number) {
+                yield* Db.query(db =>
+                    db
+                        .update(TransactionEntityTable)
+                        .set({ fromAccountId: sql`NULL` })
+                        .where(
+                            and(
+                                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                                eq(TransactionEntityTable.fromAccountId, accountId)
+                            )
+                        )
+                );
+                yield* Db.query(db =>
+                    db
+                        .update(TransactionEntityTable)
+                        .set({ toAccountId: sql`NULL` })
+                        .where(
+                            and(
+                                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                                eq(TransactionEntityTable.toAccountId, accountId)
+                            )
+                        )
+                );
+            }),
 
             countAllActive: () =>
                 Db.query(db =>

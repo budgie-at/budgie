@@ -41,7 +41,7 @@ export default function Archived() {
 
         return {
             title: t`Delete Account Permanently?`,
-            description: t`${accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone.`,
+            description: t`${accountTitle} and its transactions will be permanently deleted. Transfers with other accounts stay there as “Transfer (account deleted)” and are left out of statistics. This cannot be undone.`,
             buttonText: t`Delete Permanently`
         };
     };

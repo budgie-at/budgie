@@ -211,7 +211,8 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                     and(
                         inArray(TransactionEntityTable.id, transactionIdsSubquery),
                         transactionFilters.buildPrimaryLedgerEntryCondition(),
-                        transactionFilters.buildNonDebtAccountCondition()
+                        transactionFilters.buildNonDebtAccountCondition(),
+                        buildSpendingEntryCondition()
                     )
                 )
                 .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
@@ -239,7 +240,8 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                     and(
                         inArray(TransactionEntityTable.id, transactionIdsSubquery),
                         transactionFilters.buildPrimaryLedgerEntryCondition(),
-                        transactionFilters.buildNonDebtAccountCondition()
+                        transactionFilters.buildNonDebtAccountCondition(),
+                        buildSpendingEntryCondition()
                     )
                 )
                 .groupBy(TagEntityTable.id)

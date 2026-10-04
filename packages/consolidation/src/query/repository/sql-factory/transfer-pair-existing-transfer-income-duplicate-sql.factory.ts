@@ -1,5 +1,6 @@
 import { AccountTypeEnum, ExternalSourceEnum, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import { ARCHIVED_SOURCE_EXPENSE_DUPLICATE_BUCKET } from '../../../shared/constant/archived-source-expense-duplicate-bucket.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 
@@ -237,6 +238,7 @@ const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_BASE_SQL = `
                     ROW_NUMBER() OVER (
                         PARTITION BY existingTransferId
                         ORDER BY
+                            confidenceBucket = '${ARCHIVED_SOURCE_EXPENSE_DUPLICATE_BUCKET}',
                             amountDelta,
                             timeDiff,
                             duplicateTransactionId
@@ -244,10 +246,13 @@ const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_BASE_SQL = `
                     ROW_NUMBER() OVER (
                         PARTITION BY duplicateTransactionId
                         ORDER BY
+                            confidenceBucket = '${ARCHIVED_SOURCE_EXPENSE_DUPLICATE_BUCKET}',
                             amountDelta,
                             timeDiff,
                             existingTransferId
-                    ) as duplicateRank
+                    ) as duplicateRank,
+                    COUNT(*) OVER (PARTITION BY existingTransferId) as existingTransferCandidateCount,
+                    COUNT(*) OVER (PARTITION BY duplicateTransactionId) as duplicateCandidateCount
                 FROM candidate_rows
             )
             SELECT confidenceBucket, existingTransferId, existingTransferTitle, duplicateTransactionId, duplicateTransactionTitle,
@@ -255,6 +260,10 @@ const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_BASE_SQL = `
                 sourceAmount, existingTransferTargetAmount, amount, exchangeRate, amountDelta, timeDiff
             FROM ranked_candidates
             WHERE existingTransferRank = 1 AND duplicateRank = 1
+                AND (
+                    confidenceBucket != '${ARCHIVED_SOURCE_EXPENSE_DUPLICATE_BUCKET}'
+                    OR (existingTransferCandidateCount = 1 AND duplicateCandidateCount = 1)
+                )
 `;
 
 export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
