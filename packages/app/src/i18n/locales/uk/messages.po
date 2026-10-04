@@ -2660,7 +2660,7 @@ msgstr "Інші категорії"
 msgid "More tags"
 msgstr "Інші теги"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Most likely balance"
 msgstr "Найімовірніший баланс"
 
@@ -3238,7 +3238,7 @@ msgstr "Push-сповіщення вимкнено"
 msgid "Quick rule"
 msgstr "Швидке правило"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Range across better and worse months"
 msgstr "Діапазон кращих і гірших місяців"
 

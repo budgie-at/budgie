@@ -1,18 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { useThemeContext } from '../../../theme/context/theme.context';
+import { useResolveClassNames } from 'uniwind';
 
 const HEADER_OFFSET = 88;
 const HORIZONTAL_PADDING = 12;
-const BG_LIGHT = '#FFFFFF';
-const BG_DARK = '#000000';
 
 export const useFormsheetListStyles = (additionalBottomPadding = 0, topOffset = HEADER_OFFSET) => {
     const { bottom } = useSafeAreaInsets();
-    const { isDarkColorSchema } = useThemeContext();
-
-    const backgroundColor = isDarkColorSchema ? BG_DARK : BG_LIGHT;
+    const { backgroundColor } = useResolveClassNames('bg-primary-reverse');
 
     return {
         flatListStyle: [StyleSheet.absoluteFill, { backgroundColor }],

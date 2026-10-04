@@ -1,21 +1,20 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, { SharedValue, useAnimatedProps } from 'react-native-reanimated';
-import { Circle, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
+import { ScopedTheme } from 'uniwind';
 
+import { AnimatedStyledCircle } from '../../../@generic/component/animated-styled-circle/animated-styled-circle';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
 import {
-    LONG_PRESS_RING_FILL_COLOR,
     LONG_PRESS_RING_PADDING,
     LONG_PRESS_RING_ROTATION_OFFSET,
     LONG_PRESS_RING_STROKE_WIDTH,
-    LONG_PRESS_RING_TRACK_COLOR,
     LONG_PRESS_RING_TRACK_OPACITY
 } from '../../constant/long-press-brain.constant';
 import { useAiSubsystemIconAnimations } from '../../hook/use-ai-subsystem-icon-animations.hook';
 import { useAiSubsystemIconHoldRing } from '../../hook/use-ai-subsystem-icon-hold-ring.hook';
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const HALF = 2;
 const SVG_FILL_NONE = 'none' as const;
@@ -62,30 +61,32 @@ export const AiSubsystemIcon = ({ icon, percent, holdProgress, size, iconSize, p
                 </Animated.View>
             </View>
             <Animated.View style={holdRingStyle}>
-                <Svg width={ringSize} height={ringSize}>
-                    <Circle
-                        cx={ringCenter}
-                        cy={ringCenter}
-                        r={ringRadius}
-                        stroke={LONG_PRESS_RING_TRACK_COLOR}
-                        strokeWidth={LONG_PRESS_RING_STROKE_WIDTH}
-                        fill={SVG_FILL_NONE}
-                        opacity={LONG_PRESS_RING_TRACK_OPACITY}
-                    />
-                    <AnimatedCircle
-                        cx={ringCenter}
-                        cy={ringCenter}
-                        r={ringRadius}
-                        stroke={LONG_PRESS_RING_FILL_COLOR}
-                        strokeWidth={LONG_PRESS_RING_STROKE_WIDTH}
-                        fill={SVG_FILL_NONE}
-                        strokeLinecap={SVG_STROKE_LINECAP_ROUND}
-                        strokeDasharray={`${ringCircumference}`}
-                        rotation={LONG_PRESS_RING_ROTATION_OFFSET}
-                        origin={`${ringCenter}, ${ringCenter}`}
-                        animatedProps={holdAnimatedProps}
-                    />
-                </Svg>
+                <ScopedTheme theme="light">
+                    <Svg width={ringSize} height={ringSize}>
+                        <StyledCircle
+                            cx={ringCenter}
+                            cy={ringCenter}
+                            r={ringRadius}
+                            strokeClassName="accent-secondary-foreground"
+                            strokeWidth={LONG_PRESS_RING_STROKE_WIDTH}
+                            fill={SVG_FILL_NONE}
+                            opacity={LONG_PRESS_RING_TRACK_OPACITY}
+                        />
+                        <AnimatedStyledCircle
+                            cx={ringCenter}
+                            cy={ringCenter}
+                            r={ringRadius}
+                            strokeClassName="accent-positive-foreground"
+                            strokeWidth={LONG_PRESS_RING_STROKE_WIDTH}
+                            fill={SVG_FILL_NONE}
+                            strokeLinecap={SVG_STROKE_LINECAP_ROUND}
+                            strokeDasharray={`${ringCircumference}`}
+                            rotation={LONG_PRESS_RING_ROTATION_OFFSET}
+                            origin={`${ringCenter}, ${ringCenter}`}
+                            animatedProps={holdAnimatedProps}
+                        />
+                    </Svg>
+                </ScopedTheme>
             </Animated.View>
         </Animated.View>
     );

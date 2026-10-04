@@ -2660,7 +2660,7 @@ msgstr "Weitere Kategorien"
 msgid "More tags"
 msgstr "Weitere Tags"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Most likely balance"
 msgstr "Wahrscheinlichster Kontostand"
 
@@ -3238,7 +3238,7 @@ msgstr "Push-Benachrichtigungen sind deaktiviert"
 msgid "Quick rule"
 msgstr "Schnellregel"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Range across better and worse months"
 msgstr "Bereich über bessere und schlechtere Monate"
 

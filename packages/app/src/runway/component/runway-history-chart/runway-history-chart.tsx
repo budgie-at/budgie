@@ -1,16 +1,16 @@
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
-import Svg, { Line, Text as SvgText } from 'react-native-svg';
+import Svg from 'react-native-svg';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
+import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
+import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useThemeContext } from '../../../theme/context/theme.context';
-import { RUNWAY_CHART_COLORS } from '../../constant/runway-chart-colors.constant';
 import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_BAR_GAP,
@@ -42,7 +42,6 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
     const { intl } = useI18nContext();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(0);
-    const colors = RUNWAY_CHART_COLORS[useThemeContext().colorScheme];
 
     const peakRow = series.reduce<RunwaySeriesRowInterface | null>(
         (peak, row) => (isDefined(peak) && peak.expense >= row.expense ? peak : row),
@@ -65,7 +64,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
             income: row.income,
             isSpike,
             hasLabel: (series.length - 1 - index) % labelStep === 0,
-            labelFill: isSpike ? colors.spike : colors.label,
+            labelFillClassName: isSpike ? 'accent-warning-foreground' : 'accent-secondary-foreground',
             labelWeight: isSpike ? '600' : '400'
         };
     });
@@ -79,7 +78,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
             </Text>
 
             <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${RUNWAY_HISTORY_CHART_WIDTH} ${CHART_HEIGHT}`}>
-                <Line x1={0} y1={BASELINE_Y} x2={RUNWAY_HISTORY_CHART_WIDTH} y2={BASELINE_Y} stroke={colors.zero} />
+                <StyledLine x1={0} y1={BASELINE_Y} x2={RUNWAY_HISTORY_CHART_WIDTH} y2={BASELINE_Y} strokeClassName="accent-corner" />
 
                 {months.map(month => (
                     <RunwayHistoryBars
@@ -99,17 +98,17 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                 {months
                     .filter(month => month.hasLabel)
                     .map(month => (
-                        <SvgText
+                        <StyledSvgText
                             key={month.key}
                             x={month.centerX}
                             y={MONTH_LABEL_Y}
-                            fill={month.labelFill}
+                            fillClassName={month.labelFillClassName}
                             fontSize={MONTH_LABEL_FONT_SIZE}
                             fontWeight={month.labelWeight}
                             textAnchor="middle"
                         >
                             {month.label}
-                        </SvgText>
+                        </StyledSvgText>
                     ))}
             </Svg>
 

@@ -1,9 +1,8 @@
 import { ThemeEnum } from '@budgie/contracts';
 import { useLayoutEffect } from 'react';
 import { StatusBar, View } from 'react-native';
-import { Uniwind } from 'uniwind';
+import { Uniwind, useUniwind } from 'uniwind';
 
-import { useSystemTheme } from '../../@generic/hook/use-system-theme.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
@@ -12,126 +11,26 @@ import { ColorSchemaEnum } from '../enum/color-schema.enum';
 
 import type { ReactNode } from 'react';
 
-export const light = {
-    '--color-primary': 'rgb(0, 0, 0)',
-    '--color-primary-reverse': 'rgb(255, 255, 255)',
-    '--color-cta-foreground': 'rgb(255, 255, 255)',
-    '--color-cta-background': 'rgb(0, 0, 0)',
-    '--color-cta-corner': 'rgb(0, 0, 0)',
-    '--color-secondary-foreground': 'rgba(115, 115, 115, 1)',
-    '--color-secondary-corner': 'rgba(229, 229, 229, 1)',
-    '--color-secondary-background': 'rgba(248, 248, 248, 1)',
-    '--color-secondary-reverse-foreground': 'rgba(136, 136, 136, 1)',
-    '--color-secondary-reverse-corner': 'rgba(34, 34, 34, 1)',
-    '--color-secondary-reverse-background': 'rgba(10, 10, 10, 1)',
-    '--color-positive-foreground': 'rgba(16, 185, 129, 1)',
-    '--color-positive-corner': 'rgba(16, 185, 129, 0.2)',
-    '--color-positive-background': 'rgba(16, 185, 129, 0.1)',
-    '--color-destructive-foreground': 'rgba(239, 68, 68, 1)',
-    '--color-destructive-corner': 'rgba(239, 68, 68, 0.2)',
-    '--color-destructive-background': 'rgba(239, 68, 68, 0.1)',
-    '--color-warning-foreground': 'rgba(240, 177, 0, 1)',
-    '--color-warning-corner': 'rgba(240, 177, 0, 0.2)',
-    '--color-warning-background': 'rgba(240, 177, 0, 0.1)',
-    '--color-dark-warning-foreground': 'rgba(255, 105, 0, 1)',
-    '--color-dark-warning-corner': 'rgba(255, 105, 0, 0.20)',
-    '--color-dark-warning-background': 'rgba(255, 105, 0, 0.1)',
-    '--color-default-foreground': 'rgba(43, 127, 255, 1)',
-    '--color-default-corner': 'rgba(43, 127, 255, 0.2)',
-    '--color-default-background': 'rgba(43, 127, 255, 0.1)',
-    '--color-ghost-foreground': 'rgba(0, 0, 0, 1)',
-    '--color-ghost-corner': 'rgba(0, 0, 0, 0.2)',
-    '--color-ghost-background': 'rgba(10, 10, 10, 0.05)',
-    '--color-pink-foreground': 'rgba(246, 51, 154, 0.7)',
-    '--color-pink-corner': 'rgba(246, 51, 154, 0.2)',
-    '--color-pink-background': 'rgba(246, 51, 154, 0.1)',
-    '--color-violet-foreground': 'rgba(109, 40, 217, 1)',
-    '--color-violet-corner': 'rgba(109, 40, 217, 0.2)',
-    '--color-violet-background': 'rgba(109, 40, 217, 0.1)',
-    '--color-cyan-foreground': 'rgba(8, 105, 130, 1)',
-    '--color-cyan-corner': 'rgba(8, 105, 130, 0.2)',
-    '--color-cyan-background': 'rgba(8, 105, 130, 0.1)',
-    '--color-corner': 'rgba(229, 229, 229, 1)'
-};
-
-export const dark = {
-    '--color-primary': 'rgb(255, 255, 255)',
-    '--color-primary-reverse': 'rgb(0, 0, 0)',
-    '--color-cta-foreground': 'rgb(0, 0, 0)',
-    '--color-cta-background': 'rgb(255, 255, 255)',
-    '--color-cta-corner': 'rgb(255, 255, 255)',
-    '--color-secondary-foreground': 'rgba(136, 136, 136, 1)',
-    '--color-secondary-corner': 'rgba(34, 34, 34, 1)',
-    '--color-secondary-background': 'rgba(10, 10, 10, 1)',
-    '--color-secondary-reverse-foreground': 'rgba(115, 115, 115, 1)',
-    '--color-secondary-reverse-corner': 'rgba(229, 229, 229, 1)',
-    '--color-secondary-reverse-background': 'rgba(248, 248, 248, 1)',
-    '--color-positive-foreground': 'rgba(0, 255, 136, 1)',
-    '--color-positive-corner': 'rgba(1, 255, 136, 0.20)',
-    '--color-positive-background': 'rgba(1, 255, 136, 0.10)',
-    '--color-destructive-foreground': 'rgba(255, 68, 68, 1)',
-    '--color-destructive-corner': 'rgba(255, 107, 107, 0.20)',
-    '--color-destructive-background': 'rgba(255, 68, 68, 0.20)',
-    '--color-warning-foreground': 'rgba(240, 177, 0, 1)',
-    '--color-warning-corner': 'rgba(240, 177, 0, 0.20)',
-    '--color-warning-background': 'rgba(240, 177, 0, 0.1)',
-    '--color-dark-warning-foreground': 'rgba(255, 105, 0, 1)',
-    '--color-dark-warning-corner': 'rgba(255, 105, 0, 0.20)',
-    '--color-dark-warning-background': 'rgba(255, 105, 0, 0.1)',
-    '--color-default-foreground': 'rgba(43, 127, 255, 1)',
-    '--color-default-corner': 'rgba(43, 127, 255, 0.2)',
-    '--color-default-background': 'rgba(43, 127, 255, 0.1)',
-    '--color-ghost-foreground': 'rgba(255, 255, 255, 1)',
-    '--color-ghost-corner': 'rgba(255, 255, 255, 0.2)',
-    '--color-ghost-background': 'rgba(255, 255, 255, 0.05)',
-    '--color-pink-foreground': 'rgba(246, 51, 154, 0.7)',
-    '--color-pink-corner': 'rgba(246, 51, 154, 0.2)',
-    '--color-pink-background': 'rgba(246, 51, 154, 0.1)',
-    '--color-violet-foreground': 'rgba(167, 139, 250, 1)',
-    '--color-violet-corner': 'rgba(167, 139, 250, 0.2)',
-    '--color-violet-background': 'rgba(167, 139, 250, 0.1)',
-    '--color-cyan-foreground': 'rgba(34, 211, 238, 1)',
-    '--color-cyan-corner': 'rgba(34, 211, 238, 0.2)',
-    '--color-cyan-background': 'rgba(34, 211, 238, 0.1)',
-    '--color-corner': 'rgba(34, 34, 34, 1)'
-};
-
 interface Props {
     readonly children: ReactNode;
 }
 
 export const ThemeProvider = ({ children }: Props) => {
     const theme = useSetting('theme');
-    const systemScheme = useSystemTheme();
+    const { theme: activeTheme } = useUniwind();
 
-    const isSystemDark = systemScheme === 'dark';
-    const isManuallyDark = theme === ThemeEnum.DARK;
-    const isSystemTheme = theme === ThemeEnum.SYSTEM;
-
-    const shouldUseDarkTheme = isManuallyDark || (isSystemTheme && isSystemDark);
-
-    const colorScheme = shouldUseDarkTheme ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
-    const manualColorScheme = isManuallyDark ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
-    const uniwindTheme = isSystemTheme ? 'system' : manualColorScheme;
-    const barStyle = shouldUseDarkTheme ? 'light-content' : 'dark-content';
-
-    const getNextTheme = (): ThemeEnum => {
-        if (isSystemTheme) {
-            return shouldUseDarkTheme ? ThemeEnum.LIGHT : ThemeEnum.DARK;
-        }
-
-        return isManuallyDark ? ThemeEnum.LIGHT : ThemeEnum.DARK;
-    };
+    const manualColorScheme = theme === ThemeEnum.DARK ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
+    const uniwindTheme = theme === ThemeEnum.SYSTEM ? 'system' : manualColorScheme;
+    const isDarkColorSchema = activeTheme === 'dark';
+    const barStyle = isDarkColorSchema ? 'light-content' : 'dark-content';
 
     const toggleColorSchema = async () => {
-        const nextTheme = getNextTheme();
-        Uniwind.setTheme(nextTheme === ThemeEnum.DARK ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light);
-        await appRuntime.runPromise(updateSettingsMutation({ theme: nextTheme }));
+        Uniwind.setTheme(isDarkColorSchema ? ColorSchemaEnum.Light : ColorSchemaEnum.Dark);
+        await appRuntime.runPromise(updateSettingsMutation({ theme: isDarkColorSchema ? ThemeEnum.LIGHT : ThemeEnum.DARK }));
     };
 
     const contextValue = {
-        colorScheme,
-        isDarkColorSchema: shouldUseDarkTheme,
+        isDarkColorSchema,
         toggleColorSchema
     };
 

@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CollapsibleHeader } from '@rnw-community/react-native-collapsible-header';
 
@@ -32,7 +31,6 @@ const SCROLL_THRESHOLD = 100;
 const EXPANDED_CONTENT_HORIZONTAL_PADDING = 40;
 
 export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
-    const { top } = useSafeAreaInsets();
     const { defaultInstrument } = useSettingsContext();
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
     const formatDigits = useDisplayFormatDigits();
@@ -45,7 +43,6 @@ export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, crypto
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
     const formattedNetWorthValue = formatDigits(netWorth);
     const netWorthValueTestID = HomePageSelector.NetWorthValue(formattedNetWorthValue);
-    const containerStyle = { paddingTop: top };
     const availableTickerWidth = Math.max(expandedHeaderWidth - EXPANDED_CONTENT_HORIZONTAL_PADDING, 0);
 
     const expandedContent = (
@@ -88,7 +85,7 @@ export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, crypto
     );
 
     return (
-        <View style={containerStyle}>
+        <View className="pt-safe">
             <CollapsibleHeader
                 testID={HomePageSelector.TotalBalance}
                 scrollY={scrollY}

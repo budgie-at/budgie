@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { light } from '../../../theme/provider/theme.provider';
 import { TagVariantType } from '../../type/tag-variant.type';
 
 interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
@@ -26,7 +25,7 @@ const TAG_CARD_HEIGHT = 56;
 const PRIMARY_SCALE = 1.04;
 const NORMAL_SCALE = 1;
 const SCALE_SPRING = { damping: 14, stiffness: 220 };
-const PRIMARY_STAR_FILL = light['--color-dark-warning-foreground'];
+const PRIMARY_STAR_FILL = 'currentColor';
 const TRANSPARENT_FILL = 'transparent';
 
 const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justify-center gap-x-md', {

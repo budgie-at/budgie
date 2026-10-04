@@ -2,7 +2,6 @@ import { AmountRangeInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -20,12 +19,10 @@ import {
 } from '../transaction/context/transaction-amount-filter-modal.context';
 
 const CONTENT_TOP_SPACE = 96;
-const MIN_BOTTOM_SPACING = 16;
 const KEYBOARD_STICKY_OFFSET = { closed: 0, opened: 12 };
 
 export default function TransactionAmountFilterModal() {
     const { t } = useLingui();
-    const { bottom } = useSafeAreaInsets();
     const { backgroundColor } = useFormsheetListStyles();
     const [, resolveTransactionAmountFilter] = useTransactionAmountFilterModal();
     const currentParams = useTransactionAmountFilterModalParams();
@@ -46,7 +43,7 @@ export default function TransactionAmountFilterModal() {
     const hasSelected = isPositiveNumber(fromValue) || isPositiveNumber(toValue);
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all amounts`;
     const contentStyle = { paddingTop: CONTENT_TOP_SPACE };
-    const drawerStyle = { backgroundColor, paddingBottom: Math.max(bottom, MIN_BOTTOM_SPACING) };
+    const drawerStyle = { backgroundColor };
 
     return (
         <FilterSheet>
@@ -82,7 +79,7 @@ export default function TransactionAmountFilterModal() {
             </View>
 
             <KeyboardStickyView offset={KEYBOARD_STICKY_OFFSET} className="absolute inset-x-0 bottom-0">
-                <View className="border-t border-t-secondary-corner px-xl pb-lg pt-lg" style={drawerStyle}>
+                <View className="border-t border-t-secondary-corner px-xl pb-safe-or-[16px] pt-lg" style={drawerStyle}>
                     <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.AmountApplyButton} />
                 </View>
             </KeyboardStickyView>

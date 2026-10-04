@@ -5,7 +5,6 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -37,7 +36,6 @@ interface Props {
 export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType }: Props) => {
     const { t } = useLingui();
     const [, hapticImpact] = useVibration();
-    const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
@@ -139,11 +137,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
     const aiButtonStyle = useAnimatedStyle(() => ({
         transform: [{ scale: menuScale.value }],
-        opacity: menuScale.value,
-        paddingBottom: bottom
+        opacity: menuScale.value
     }));
-
-    const containerStyle = { paddingBottom: bottom };
 
     if (!isVisible) {
         return null;
@@ -152,12 +147,12 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     return (
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
             {showAiButton && (
-                <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={aiButtonStyle} pointerEvents="box-none">
+                <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-safe" style={aiButtonStyle} pointerEvents="box-none">
                     <AiButton onPress={handleAiPress} testID={CreateTransactionMenuSelector.AiButton} />
                 </Animated.View>
             )}
 
-            <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
+            <View className="absolute right-0 bottom-0 items-end px-lg pb-safe" pointerEvents="box-none">
                 <View className="items-end" pointerEvents="box-none">
                     {actionItems.map((item, index) => (
                         <ActionItem

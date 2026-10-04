@@ -7,8 +7,6 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { useThemeContext } from '../../../theme/context/theme.context';
-import { dark, light } from '../../../theme/provider/theme.provider';
 import { Icon } from '../icon/icon';
 
 interface Props extends ComponentProps<typeof TextInput> {
@@ -31,19 +29,15 @@ export const SearchInput = (props: Props) => {
         className,
         autoCapitalize,
         autoCorrect,
-        placeholderTextColor,
         returnKeyType,
         submitBehavior,
         ...rest
     } = props;
     const { t } = useLingui();
-    const { isDarkColorSchema } = useThemeContext();
 
     const showClear = isNotEmptyString(value);
-    const theme = isDarkColorSchema ? dark : light;
     const resolvedAutoCapitalize = autoCapitalize ?? 'none';
     const resolvedAutoCorrect = autoCorrect ?? false;
-    const resolvedPlaceholderTextColor = placeholderTextColor ?? theme['--color-secondary-foreground'];
     const resolvedReturnKeyType = returnKeyType ?? 'done';
     const resolvedSubmitBehavior = submitBehavior ?? 'blurAndSubmit';
 
@@ -60,10 +54,10 @@ export const SearchInput = (props: Props) => {
         >
             <Icon icon={UserIconNameEnum.Search} size={20} className="text-secondary-foreground" />
             <TextInput
+                placeholderTextColorClassName="accent-secondary-foreground"
                 {...rest}
                 value={value}
                 onChangeText={onChangeText}
-                placeholderTextColor={resolvedPlaceholderTextColor}
                 autoCapitalize={resolvedAutoCapitalize}
                 autoCorrect={resolvedAutoCorrect}
                 returnKeyType={resolvedReturnKeyType}

@@ -32,7 +32,7 @@ export const BankIntegrationAccountList = () => {
     }
 
     if (!isDefined(accounts)) {
-        return <ActivityIndicator size="large" color="var(--color-primary)" />;
+        return <ActivityIndicator size="large" colorClassName="accent-primary" />;
     }
 
     const addDepositRow = capabilities.supportsDeposit ? (

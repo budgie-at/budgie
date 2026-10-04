@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -31,10 +30,8 @@ export const VoiceReviewFooter = (props: Props) => {
     const { count, totalAmount, currencySymbol, canSave, hasInvalidAmounts, hasMissingCategories, isSaving, onCancel, onReRecord, onSave } =
         props;
     const { t } = useLingui();
-    const { bottom } = useSafeAreaInsets();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const containerStyle = { paddingBottom: bottom };
     const validSaveLabel = t`Save ${count}`;
     const amountAwareSaveLabel = hasInvalidAmounts ? t`Enter all amounts` : validSaveLabel;
     const saveLabel = hasMissingCategories ? t`Select all categories` : amountAwareSaveLabel;
@@ -43,7 +40,7 @@ export const VoiceReviewFooter = (props: Props) => {
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
-        <View className="border-t border-secondary-background bg-background px-lg pt-md" style={containerStyle}>
+        <View className="border-t border-secondary-background bg-background px-lg pt-md pb-safe">
             {isPositiveNumber(count) ? (
                 <View className="mb-md flex-row items-baseline justify-between">
                     <Text className="text-sm uppercase tracking-wider text-secondary-foreground">{t`Total`}</Text>
