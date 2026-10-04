@@ -24,7 +24,7 @@ export const NumberedSteps = ({ title, steps }: Props) => (
                     <View className="h-7 w-7 items-center justify-center rounded-full bg-primary-reverse">
                         <Text className="text-sm font-bold text-primary">{index + 1}</Text>
                     </View>
-                    <Text className="flex-1 text-sm leading-snug text-primary">{step}</Text>
+                    <Text className="flex-1 text-sm text-primary">{step}</Text>
                 </Animated.View>
             ))}
         </View>

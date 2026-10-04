@@ -16,12 +16,11 @@ const syncStatusVariants = cva('h-2 w-2 rounded-full will-change-animation', {
             [SyncStatusEnum.FAILED]: 'bg-destructive'
         },
         disabled: {
-            true: 'bg-secondary-foreground',
+            true: '',
             false: ''
         }
     },
     compoundVariants: [
-        { disabled: true, status: SyncStatusEnum.SYNCING, class: 'bg-secondary-foreground' },
         { disabled: true, status: SyncStatusEnum.IDLE, class: 'bg-secondary-foreground' },
         { disabled: true, status: SyncStatusEnum.FAILED, class: 'bg-secondary-foreground' }
     ]

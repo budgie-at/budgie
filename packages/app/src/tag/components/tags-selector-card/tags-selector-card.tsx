@@ -34,7 +34,7 @@ const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justi
         isPrimary: { true: '', false: '' },
         variant: {
             static: 'flex-1',
-            removable: 'flex-none flex-row bg-primary border-primary py-md px-2xl'
+            removable: 'flex-none flex-row bg-primary border-primary py-md'
         }
     },
     compoundVariants: [
