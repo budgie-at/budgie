@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
+import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
 
 import type { BuildRefreshedImportedEntriesInputInterface } from '../interface/build-refreshed-imported-entries-input.interface';
 import type {
@@ -109,6 +110,27 @@ export class RefreshedImportedEntriesService extends Context.Service<RefreshedIm
                 };
             };
 
+            const findMatchedExistingEntries = (
+                existingEntries: readonly TransactionEntryEntityInterface[],
+                inputEntries: readonly TransactionEntryCreateInputInterface[]
+            ): Map<number, TransactionEntryEntityInterface> => {
+                const remainingInputEntries = [...inputEntries];
+                const remainingInputIndexes = inputEntries.map((_entry, index) => index);
+                const matchedExistingEntries = new Map<number, TransactionEntryEntityInterface>();
+
+                for (const existingEntry of existingEntries) {
+                    const { matchingInputIndex } = findImportedEntryMatch(existingEntry, remainingInputEntries);
+
+                    if (isDefined(matchingInputIndex)) {
+                        matchedExistingEntries.set(remainingInputIndexes[matchingInputIndex], existingEntry);
+                        remainingInputEntries.splice(matchingInputIndex, 1);
+                        remainingInputIndexes.splice(matchingInputIndex, 1);
+                    }
+                }
+
+                return matchedExistingEntries;
+            };
+
             return {
                 build: Effect.fn('RefreshedImportedEntriesService.build')(function* (input: BuildRefreshedImportedEntriesInputInterface) {
                     if (input.existingEntries.length !== input.inputEntries.length) {
@@ -135,6 +157,27 @@ export class RefreshedImportedEntriesService extends Context.Service<RefreshedIm
                             concurrency: 'unbounded'
                         })
                     };
+                }),
+                rebuild: Effect.fn('RefreshedImportedEntriesService.rebuild')(function* (
+                    transactionId: number,
+                    input: TransactionCreateInputInterface,
+                    existingEntries: readonly TransactionEntryEntityInterface[]
+                ) {
+                    const matchedExistingEntries = findMatchedExistingEntries(existingEntries, input.entries);
+
+                    return yield* Effect.forEach(
+                        input.entries,
+                        (inputEntry, index) => {
+                            const entry = transactionMapEntryInputToCreateEntity(inputEntry, transactionId);
+                            const existingEntry = matchedExistingEntries.get(index);
+                            const userOwnedFields = isDefined(existingEntry)
+                                ? { categoryId: existingEntry.categoryId, categorySource: existingEntry.categorySource }
+                                : {};
+
+                            return addBaseValuation({ ...entry, ...userOwnedFields }, input);
+                        },
+                        { concurrency: 'unbounded' }
+                    );
                 })
             };
         })
