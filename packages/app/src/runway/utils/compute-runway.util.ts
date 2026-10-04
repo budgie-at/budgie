@@ -1,4 +1,4 @@
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { RUNWAY_MINIMUM_MONTHS } from '../constant/runway-minimum-months.constant';
 
@@ -18,27 +18,20 @@ const runsOutDate = (referenceDate: Date, months: number | null): Date | null =>
     isDefined(months) ? new Date(referenceDate.getTime() + months * MILLISECONDS_PER_MONTH) : null;
 
 export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInterface => {
-    const { series, liquid, irregularMonthlyAmount, referenceDate } = params;
+    const { series, liquid, irregularMonthlyAmount, isAllIn, referenceDate } = params;
     const rows = series.length < RUNWAY_MINIMUM_MONTHS ? [] : series;
-    const burn = median(rows.map(row => row.expense));
+    const burn = median(rows.map(row => row.expense)) + (isAllIn && isNotEmptyArray(rows) ? irregularMonthlyAmount : 0);
     const income = median(rows.map(row => row.income));
     const net = income - burn;
     const netSeries = rows.map(row => row.income - row.expense);
     const runwayMonths = net < 0 ? liquid / Math.abs(net) : null;
-    const allInBurn = burn + (isEmptyArray(rows) ? 0 : irregularMonthlyAmount);
-    const allInNet = income - allInBurn;
-    const allInRunwayMonths = allInNet < 0 ? liquid / Math.abs(allInNet) : null;
 
     return {
         burn,
         income,
         net,
-        allInBurn,
-        allInNet,
         liquid,
         runwayMonths,
-        allInRunwayMonths,
-        allInRunsOutAt: runsOutDate(referenceDate, allInRunwayMonths),
         runsOutAt: runsOutDate(referenceDate, runwayMonths),
         p25Net: percentile(netSeries, P25_PERCENTILE),
         p75Net: percentile(netSeries, P75_PERCENTILE),

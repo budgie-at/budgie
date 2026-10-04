@@ -51,6 +51,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
         series: seriesRows,
         liquid,
         irregularMonthlyAmount: categoryBreakdown.irregularMonthlyAmount,
+        isAllIn,
         referenceDate: today
     });
     const drivers = dimension === RunwayDriverDimensionEnum.CATEGORY ? categoryBreakdown.drivers : tagBreakdown.drivers;

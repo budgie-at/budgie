@@ -35,17 +35,6 @@ export const RunwayContent = ({ contentContainerStyle }: Props) => {
         return <RunwayEmptyState monthsUsed={computation.monthsUsed} />;
     }
 
-    const forecastComputation = isAllIn
-        ? {
-              ...computation,
-              burn: computation.allInBurn,
-              net: computation.allInNet,
-              runwayMonths: computation.allInRunwayMonths,
-              runsOutAt: computation.allInRunsOutAt,
-              isPositive: computation.allInNet >= 0
-          }
-        : computation;
-
     return (
         <ScrollView
             contentContainerClassName="gap-y-7xl pb-5xl"
@@ -53,12 +42,12 @@ export const RunwayContent = ({ contentContainerStyle }: Props) => {
             showsVerticalScrollIndicator={false}
         >
             <View className="gap-y-lg">
-                <RunwayVerdict computation={forecastComputation} />
+                <RunwayVerdict computation={computation} />
                 <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
             </View>
 
-            <RunwayFlowRow computation={forecastComputation} />
-            <RunwayForecastChart computation={forecastComputation} />
+            <RunwayFlowRow computation={computation} />
+            <RunwayForecastChart computation={computation} />
             <RunwayHistoryChart series={series} burn={computation.burn} />
             <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
             <MenuSpacer />
