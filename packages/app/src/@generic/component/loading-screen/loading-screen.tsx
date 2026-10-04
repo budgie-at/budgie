@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const LoadingScreen = ({ header }: Props) => (
-    <Page header={header}>
+    <Page header={header} contentClassName="px-0">
         <View className="flex-1 justify-center items-center">
             <ActivityIndicator size="large" colorClassName="accent-primary" />
         </View>
