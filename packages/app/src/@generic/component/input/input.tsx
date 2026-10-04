@@ -14,9 +14,9 @@ interface Props extends ComponentProps<typeof TextInput> {
 const inputVariant = cva('text-primary rounded-2xl', {
     variants: {
         size: {
-            sm: 'h-[36px] px-xl text-md/1',
-            md: 'h-[44px] px-xl text-md/1',
-            lg: 'h-[62px] px-4xl text-lg/1'
+            sm: 'h-[36px] px-xl text-md',
+            md: 'h-[44px] px-xl text-md',
+            lg: 'h-[62px] px-4xl text-[18px]'
         },
         status: {
             error: 'border border-destructive-corner bg-destructive-background/5 text-destructive-foreground',
