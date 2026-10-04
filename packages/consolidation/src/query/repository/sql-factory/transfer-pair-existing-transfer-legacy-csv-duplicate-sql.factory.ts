@@ -114,12 +114,12 @@ export const EXISTING_TRANSFER_LEGACY_CSV_DUPLICATE_CANDIDATES_SQL = `SELECT 'AU
                     AND expense_account.instrument_id = source_account.instrument_id
                 LEFT JOIN mcc_categories expense_mcc ON expense_mcc.id = expense_entry.mcc_category_id
                 WHERE ${LEGACY_CSV_EXISTING_TRANSFER_CONDITIONS_SQL}
-                    AND source_entry.deleted_at IS NOT NULL AND (source_account.deleted_at IS NOT NULL OR source_account.is_active = 0)
+                    AND (source_entry.deleted_at IS NOT NULL OR (source_account.deleted_at IS NULL AND source_account.is_active = 0))
                     AND expense_account.id != target_account.id
                     AND NOT EXISTS (
                         SELECT 1 FROM transaction_entries other_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                         WHERE other_entry.transaction_id = existing_transfer.id AND other_entry.deleted_at IS NULL
-                            AND other_entry.original_transaction_id IS NULL AND other_entry.id != target_entry.id
+                            AND other_entry.original_transaction_id IS NULL AND other_entry.id != target_entry.id AND other_entry.id != source_entry.id
                     )
                     AND (
                         (

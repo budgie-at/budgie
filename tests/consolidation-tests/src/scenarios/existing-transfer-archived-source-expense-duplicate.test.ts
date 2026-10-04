@@ -23,7 +23,7 @@ const HOUR_MS = 60 * 60 * 1000;
 const ERSTE_GAP_MS = 6.3 * HOUR_MS;
 const ARCHIVED_AT = new Date('2026-01-01');
 
-const seedOneSidedTransfer = (targetType: AccountTypeEnum, isSourceMissing = true) =>
+const seedOneSidedTransfer = (targetType: AccountTypeEnum, isSourceMissing = true, isSourceInactiveOnly = false) =>
     Effect.gen(function* () {
         const archivedAccount = yield* testSeedService.account({ title: 'erste bank EUR', type: AccountTypeEnum.BANK });
         const liveAccount = yield* testSeedService.account({ title: 'Готівка EUR', type: targetType });
@@ -40,6 +40,12 @@ const seedOneSidedTransfer = (targetType: AccountTypeEnum, isSourceMissing = tru
         });
 
         yield* testSeedService.updateTransaction(transfer.id, { externalSource: ExternalSourceEnum.CSV });
+        if (isSourceInactiveOnly) {
+            yield* testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, archivedAccount.id));
+
+            return { liveAccount, transfer };
+        }
+
         yield* testDb
             .update(TransactionEntryEntityTable)
             .set({ deletedAt: ARCHIVED_AT })
@@ -106,9 +112,12 @@ const expectMergedIntoTransfer = (input: {
     });
 
 layer(TestLayer)('consolidation/existing-transfer-archived-source-expense-duplicate', it => {
-    it.effect('merges an Erste expense without MCC 6.3h before a cash transfer from an archived account', () =>
+    it.effect.each([
+        ['from an archived account', false],
+        ['from an inactive account whose entry is still live', true]
+    ] as const)('merges an Erste expense without MCC 6.3h before a cash transfer %s', ([, isSourceInactiveOnly]) =>
         Effect.gen(function* () {
-            const { liveAccount, transfer } = yield* seedOneSidedTransfer(AccountTypeEnum.CASH);
+            const { liveAccount, transfer } = yield* seedOneSidedTransfer(AccountTypeEnum.CASH, true, isSourceInactiveOnly);
             const ersteAccount = yield* testSeedService.bankSyncAccount('Erste EUR', ExternalSourceEnum.ERSTE, null);
             const expense = yield* seedSyncedExpense(ersteAccount.id, ExternalSourceEnum.ERSTE, ERSTE_GAP_MS);
 
