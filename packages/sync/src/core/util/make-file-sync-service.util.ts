@@ -125,13 +125,20 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
 
         const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
             !isDefined(externalId) || !prepared.externalIdMap.has(externalId);
-        const refilledExternalIds = new Set(refilledTransactions.map(({ externalId }) => externalId));
+        const inputsByExternalId = new Map(prepared.transactionInputs.map(input => [input.externalId, input]));
+        const pairedRefills = refilledTransactions.flatMap(transaction => {
+            const input = inputsByExternalId.get(transaction.externalId);
+
+            return isDefined(input) && input.fromAccountId === transaction.fromAccountId && input.toAccountId === transaction.toAccountId
+                ? [{ transaction, input }]
+                : [];
+        });
 
         return {
             newTransactions: upsertedTransactions.filter(wasNotPreviouslyImported),
             newTransactionInputs: prepared.transactionInputs.filter(wasNotPreviouslyImported),
-            refilledTransactions,
-            refilledTransactionInputs: prepared.transactionInputs.filter(({ externalId }) => refilledExternalIds.has(externalId)),
+            refilledTransactions: pairedRefills.map(({ transaction }) => transaction),
+            refilledTransactionInputs: pairedRefills.map(({ input }) => input),
             parsedTransactionCount: transactionInputs.length
         } satisfies FileBankSyncAccountImportResultInterface;
     });
