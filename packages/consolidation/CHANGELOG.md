@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** match archived-source transfers on inactive accounts ([034e3f8](https://github.com/budgie-at/budgie/commit/034e3f83e4b30515f87fed64a89100bfd44721dd))
+
+
+### Features
+
+* **consolidation:** merge synced expenses into transfers from archived accounts ([9f8aef4](https://github.com/budgie-at/budgie/commit/9f8aef4adcad98e181dcb47f846798a9c4a54fbb))
+
+
+
+
+
 ## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
 
 
