@@ -19,7 +19,7 @@ interface Props extends BaseTextInputProps {
     readonly ref?: RefObject<TextInput | null>;
 }
 
-const textAreaVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
+const textAreaVariant = cva('text-primary rounded-2xl', {
     variants: {
         size: {
             sm: 'px-xl py-md text-md',
@@ -48,6 +48,7 @@ export const TextArea = (props: Props) => {
 
     return (
         <TextInput
+            placeholderTextColorClassName="accent-primary/50"
             {...rest}
             ref={ref}
             multiline

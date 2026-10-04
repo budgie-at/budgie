@@ -11,7 +11,7 @@ interface Props extends ComponentProps<typeof TextInput> {
     readonly size?: 'sm' | 'md' | 'lg';
 }
 
-const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
+const inputVariant = cva('text-primary rounded-2xl', {
     variants: {
         size: {
             sm: 'h-[36px] px-xl text-md/1',
@@ -30,5 +30,9 @@ const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
 });
 
 export const Input = ({ size = 'sm', status = 'default', borderless = false, className, ...rest }: Props) => (
-    <TextInput {...rest} className={cn(inputVariant({ size, status, borderless }), className)} />
+    <TextInput
+        placeholderTextColorClassName="accent-primary/50"
+        {...rest}
+        className={cn(inputVariant({ size, status, borderless }), className)}
+    />
 );

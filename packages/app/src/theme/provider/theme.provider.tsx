@@ -1,6 +1,7 @@
 import { ThemeEnum } from '@budgie/contracts';
-import { VariableContextProvider } from 'nativewind';
-import { Appearance, StatusBar, View } from 'react-native';
+import { useLayoutEffect } from 'react';
+import { StatusBar, View } from 'react-native';
+import { Uniwind } from 'uniwind';
 
 import { useSystemTheme } from '../../@generic/hook/use-system-theme.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
@@ -50,8 +51,7 @@ export const light = {
     '--color-cyan-foreground': 'rgba(8, 105, 130, 1)',
     '--color-cyan-corner': 'rgba(8, 105, 130, 0.2)',
     '--color-cyan-background': 'rgba(8, 105, 130, 0.1)',
-    '--color-corner': 'rgba(229, 229, 229, 1)',
-    '--color-separator': 'linear-gradient(90deg, rgba(0, 0, 0, 0.40) 0%, rgba(255, 255, 255, 0.00) 100%)'
+    '--color-corner': 'rgba(229, 229, 229, 1)'
 };
 
 export const dark = {
@@ -93,8 +93,7 @@ export const dark = {
     '--color-cyan-foreground': 'rgba(34, 211, 238, 1)',
     '--color-cyan-corner': 'rgba(34, 211, 238, 0.2)',
     '--color-cyan-background': 'rgba(34, 211, 238, 0.1)',
-    '--color-corner': 'rgba(34, 34, 34, 1)',
-    '--color-separator': 'linear-gradient(90deg, rgba(255, 255, 255, 0.40) 0%, rgba(0, 0, 0, 0.00) 100%)'
+    '--color-corner': 'rgba(34, 34, 34, 1)'
 };
 
 interface Props {
@@ -112,6 +111,8 @@ export const ThemeProvider = ({ children }: Props) => {
     const shouldUseDarkTheme = isManuallyDark || (isSystemTheme && isSystemDark);
 
     const colorScheme = shouldUseDarkTheme ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
+    const manualColorScheme = isManuallyDark ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
+    const uniwindTheme = isSystemTheme ? 'system' : manualColorScheme;
     const barStyle = shouldUseDarkTheme ? 'light-content' : 'dark-content';
 
     const getNextTheme = (): ThemeEnum => {
@@ -124,7 +125,7 @@ export const ThemeProvider = ({ children }: Props) => {
 
     const toggleColorSchema = async () => {
         const nextTheme = getNextTheme();
-        Appearance.setColorScheme(nextTheme === ThemeEnum.DARK ? 'dark' : 'light');
+        Uniwind.setTheme(nextTheme === ThemeEnum.DARK ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light);
         await appRuntime.runPromise(updateSettingsMutation({ theme: nextTheme }));
     };
 
@@ -134,14 +135,14 @@ export const ThemeProvider = ({ children }: Props) => {
         toggleColorSchema
     };
 
-    const styles = shouldUseDarkTheme ? dark : light;
+    useLayoutEffect(() => {
+        Uniwind.setTheme(uniwindTheme);
+    }, [uniwindTheme]);
 
     return (
-        <VariableContextProvider value={styles}>
-            <ThemeContext.Provider value={contextValue}>
-                <StatusBar barStyle={barStyle} />
-                <View className="flex-1">{children}</View>
-            </ThemeContext.Provider>
-        </VariableContextProvider>
+        <ThemeContext.Provider value={contextValue}>
+            <StatusBar barStyle={barStyle} />
+            <View className="flex-1">{children}</View>
+        </ThemeContext.Provider>
     );
 };

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const amountInputVariants = cva('text-primary placeholder-secondary-reverse-foreground border-0 h-auto');
+const amountInputVariants = cva('text-primary border-0 h-auto');
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
@@ -117,6 +117,7 @@ export const FormAmountInput = (props: Props) => {
                     value={absoluteValue}
                     onChangeValue={handleAmountChange}
                     inputClassName={amountInputClassName}
+                    placeholderTextColorClassName="accent-secondary-reverse-foreground"
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
                     minimumDecimalPlaces={minimumDecimalPlaces}
