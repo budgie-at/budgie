@@ -64,12 +64,14 @@ const buildSourceStateSnapshot = (transactionId: number) =>
         const transaction = yield* testQueryService.fetchTransactionById(transactionId);
 
         return {
+            comment: transaction.comment,
             consolidationType: transaction.consolidationType,
             entries: (yield* fetchOwnLedgerEntries(transactionId))
                 .map(entry => ({
                     accountId: entry.accountId,
                     amount: entry.amount,
                     categoryId: entry.categoryId,
+                    categorySource: entry.categorySource,
                     exchangeRate: entry.exchangeRate,
                     mccCategoryId: entry.mccCategoryId,
                     toIban: entry.toIban,

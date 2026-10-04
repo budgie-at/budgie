@@ -2,6 +2,7 @@ import {
     ConsolidationCoordinatorService,
     ExistingTransferRepository,
     IbanBridgeTransferRepository,
+    ManualExpenseDuplicateRepository,
     RefundPairRepository,
     TransferPairRepository
 } from '@budgie/consolidation';
@@ -27,6 +28,7 @@ layer(TestLayer)('consolidation/family-priority', it => {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
             const existingTransferRepository = yield* ExistingTransferRepository;
             const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
+            const manualExpenseDuplicateRepository = yield* ManualExpenseDuplicateRepository;
             const refundPairRepository = yield* RefundPairRepository;
             const transferPairRepository = yield* TransferPairRepository;
             const familyQueries = {
@@ -39,7 +41,8 @@ layer(TestLayer)('consolidation/family-priority', it => {
                 EXISTING_TRANSFER_INCOME_DUPLICATE: vi.spyOn(existingTransferRepository, 'findIncomeDuplicateCandidates'),
                 P2P_FIAT_TRANSFER: vi.spyOn(transferPairRepository, 'findP2pFiatAuthoritativeCandidates'),
                 TRANSFER_PAIR: vi.spyOn(transferPairRepository, 'findCandidates'),
-                REFUND: vi.spyOn(refundPairRepository, 'findCandidates')
+                REFUND: vi.spyOn(refundPairRepository, 'findCandidates'),
+                MANUAL_EXPENSE_DUPLICATE: vi.spyOn(manualExpenseDuplicateRepository, 'findCandidates')
             };
 
             yield* consolidationCoordinatorService.consolidate();
@@ -58,7 +61,8 @@ layer(TestLayer)('consolidation/family-priority', it => {
                 'EXISTING_TRANSFER_INCOME_DUPLICATE',
                 'P2P_FIAT_TRANSFER',
                 'TRANSFER_PAIR',
-                'REFUND'
+                'REFUND',
+                'MANUAL_EXPENSE_DUPLICATE'
             ]);
         })
     );
