@@ -272,7 +272,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 tagId => !input.tagIds.includes(tagId)
             );
             const hasCategoryAction = isDefined(categoryId);
-            const hasTagAction = ruleTagIds.length !== (input.ruleTagIds ?? []).length;
+            const hasTagAction = ruleTagIds.some(tagId => !(input.ruleTagIds ?? []).includes(tagId));
 
             if (!hasCategoryAction && !hasTagAction) {
                 return input;

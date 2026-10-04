@@ -7,6 +7,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Db } from '../../@generic/service/db.service';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags-create-entity.interface';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 import { insertTransactionTag } from '../util/insert-transaction-tag.util';
@@ -31,6 +32,16 @@ export class TransactionTagsRepository extends Context.Service<TransactionTagsRe
             }
 
             return yield* Db.query(db => db.insert(TransactionTagsEntityTable).values(inputs).returning());
+        }),
+
+        bulkMerge: Effect.fn('TransactionTagsRepository.bulkMerge')(function* (inputs: TransactionTagsCreateEntityInterface[]) {
+            if (!isNotEmptyArray(inputs)) {
+                return;
+            }
+
+            yield* Db.query(db =>
+                db.insert(TransactionTagsEntityTable).values(inputs).onConflictDoUpdate(TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT)
+            );
         }),
 
         addTagByTransactionIds: Effect.fn('TransactionTagsRepository.addTagByTransactionIds')(function* (
