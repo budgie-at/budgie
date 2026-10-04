@@ -14,7 +14,13 @@ import { RunwayForecastChart } from '../runway-forecast-chart/runway-forecast-ch
 import { RunwayHistoryChart } from '../runway-history-chart/runway-history-chart';
 import { RunwayVerdict } from '../runway-verdict/runway-verdict';
 
-export const RunwayContent = () => {
+import type { StyleProp, ViewStyle } from 'react-native';
+
+interface Props {
+    readonly contentContainerStyle: StyleProp<ViewStyle>;
+}
+
+export const RunwayContent = ({ contentContainerStyle }: Props) => {
     const [dimension, setDimension] = useState<RunwayDriverDimensionEnum>(RunwayDriverDimensionEnum.CATEGORY);
     const [isAllIn, setIsAllIn] = useState(false);
 
@@ -39,9 +45,14 @@ export const RunwayContent = () => {
               isPositive: computation.allInNet >= 0
           }
         : computation;
+    const visibleDrivers = isAllIn ? drivers : drivers.filter(driver => !driver.isIrregular);
 
     return (
-        <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
+        <ScrollView
+            contentContainerClassName="gap-y-7xl pb-5xl"
+            contentContainerStyle={contentContainerStyle}
+            showsVerticalScrollIndicator={false}
+        >
             <View className="gap-y-lg">
                 <RunwayVerdict computation={forecastComputation} />
                 <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
@@ -50,7 +61,7 @@ export const RunwayContent = () => {
             <RunwayFlowRow computation={forecastComputation} />
             <RunwayForecastChart computation={forecastComputation} />
             <RunwayHistoryChart series={series} burn={computation.burn} />
-            <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
+            <RunwayDrivers drivers={visibleDrivers} dimension={dimension} onChangeDimension={setDimension} />
             <MenuSpacer />
         </ScrollView>
     );
