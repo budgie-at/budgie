@@ -187,7 +187,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             return isNotEmptyArray(tokens) && hasOnlySqlSafeTokens ? tokens : null;
         };
 
-        const escapeSqlLikeValue = (value: string): string => value.replace(/\\/gu, '\\\\').replace(/%/gu, '\\%').replace(/_/gu, '\\_');
+        const escapeSqlLikeValue = (value: string): string => value.replaceAll('\\', '\\\\').replaceAll('%', '\\%').replaceAll('_', '\\_');
 
         const buildRegexSql = (column: Column | SQL, value: string): SQL | null => {
             const tokens = getFlexibleRegexTokens(value);

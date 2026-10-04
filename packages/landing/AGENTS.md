@@ -12,7 +12,7 @@ pnpm media:manifest           # Rescan public/media and regenerate the committed
 pnpm media:og                 # Regenerate the dark OG device plates in public/og-plate from public/media
 pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot>/<AppClip> usages
 pnpm ts                       # Native TypeScript 7 check
-pnpm lint                     # Oxlint + 13-rule ESLint fallback
+pnpm lint                     # Oxlint (incl. local `lint-rules/` plugin)
 ```
 
 ## Structure

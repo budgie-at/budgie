@@ -97,7 +97,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             return `${providerTitle} ${cardType} ${account.currencyCode}`;
         };
 
-        const completeBackwardHistory = Effect.fn('AppMonobankSyncService.completeBackwardHistory')(
+        const completeBackwardHistory = Effect.fn('MonobankSyncService.completeBackwardHistory')(
             function* (sync: SyncEntityInterface, setupBalance: number, result: SyncBatchResultInterface) {
                 const setupAt = sync.forwardSyncFromAt ?? new Date();
                 const oldestTransactionAt = yield* transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
@@ -204,7 +204,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             shouldRequestSyncWhenEnabled: true,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
-            executeSyncBatch: Effect.fn('AppMonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
+            executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
                     const now = new Date();
@@ -224,7 +224,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
                 return result;
             }),
-            beforeSyncRun: Effect.fn('AppMonobankSyncService.beforeSyncRun')(function* () {
+            beforeSyncRun: Effect.fn('MonobankSyncService.beforeSyncRun')(function* () {
                 mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
             }),
             applyProgressUpdate: (sync, result) =>
@@ -235,12 +235,12 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         return {
             ...pollingSyncService,
-            fetchAccountsPreview: Effect.fn('AppMonobankSyncService.fetchAccountsPreview')(function* (token: string) {
+            fetchAccountsPreview: Effect.fn('MonobankSyncService.fetchAccountsPreview')(function* (token: string) {
                 const bankAccounts = yield* fetchBankAccountsAndJars(token);
 
                 return isNotEmptyArray(bankAccounts) ? yield* pollingSyncService.mapAccountsToPreview(bankAccounts) : [];
             }),
-            setupAccountSyncBatch: Effect.fn('AppMonobankSyncService.setupAccountSyncBatch')(function* (
+            setupAccountSyncBatch: Effect.fn('MonobankSyncService.setupAccountSyncBatch')(function* (
                 token: string,
                 externalIds: string[],
                 historyDepth: SyncHistoryDepthEnum = SyncHistoryDepthEnum.FULL
@@ -257,7 +257,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
                 yield* pollingSyncService.requestSync();
             }),
-            fetchSetupBalance: Effect.fn('AppMonobankSyncService.fetchSetupBalance')(function* (accountId: number) {
+            fetchSetupBalance: Effect.fn('MonobankSyncService.fetchSetupBalance')(function* (accountId: number) {
                 const account = yield* accountRepository.findById(accountId);
                 const token = yield* syncIntegrationTokenService.resolveAccountToken(provider, accountId);
                 const bankAccounts = yield* fetchBankAccountsAndJars(token);

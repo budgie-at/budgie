@@ -14,12 +14,12 @@ const getRequestLocale = (requestHeaders: Headers): string => {
         return 'en';
     }
 
-    const languages = new Negotiator({ headers: { 'accept-language': langHeader } }).languages(locales.slice());
+    const languages = new Negotiator({ headers: { 'accept-language': langHeader } }).languages([...locales]);
 
     return languages[0] || 'en';
 };
 
-// eslint-disable-next-line func-style,no-implicit-globals
+// eslint-disable-next-line func-style
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
@@ -35,7 +35,6 @@ export function proxy(request: NextRequest) {
     // oxlint-disable-next-line lingui/no-unlocalized-strings
     response.headers.set('Vary', 'Accept-Language');
 
-    // eslint-disable-next-line consistent-return
     return response;
 }
 

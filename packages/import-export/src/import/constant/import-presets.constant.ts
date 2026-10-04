@@ -3,7 +3,6 @@ import { ImportColumnMapFormValues } from '../schema/import-column-map.schema';
 
 export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues> = {
     [ImportPresetEnum.SmartBudget]: {
-        // oxlint-disable-next-line lingui/no-unlocalized-strings
         externalId: 'Порядковый номер',
         fromAccount: 'Счёт_1',
         toAccount: 'Счёт',
@@ -12,9 +11,7 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         comment: 'Описание',
         toAmount: 'Сумма',
         toCurrency: 'Валюта',
-        // oxlint-disable-next-line lingui/no-unlocalized-strings
         fromCurrency: 'Валюта 2',
-        // oxlint-disable-next-line lingui/no-unlocalized-strings
         fromAmount: 'Сумма 2',
         isPlanned: 'Запланировано',
         mcc: ''

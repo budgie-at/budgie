@@ -1,4 +1,3 @@
-/* oxlint-disable lingui/no-unlocalized-strings -- Internal error message, not user-facing */
 import * as Effect from 'effect/Effect';
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';

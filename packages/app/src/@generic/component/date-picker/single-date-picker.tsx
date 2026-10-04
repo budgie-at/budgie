@@ -3,6 +3,7 @@ import { DateType } from 'react-native-ui-datepicker';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useToday } from '../../hook/use-today.hook';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { dateTypeToDate } from '../../utils/date/date-type-to-date.util';
 
@@ -15,6 +16,7 @@ interface Props {
 
 export const SingleDatePicker = ({ date, onChange }: Props) => {
     const [, hapticImpact] = useVibration();
+    const today = useToday();
 
     const handleChange = (value: { date: DateType }) => {
         const resolved = dateTypeToDate(value.date);
@@ -25,5 +27,5 @@ export const SingleDatePicker = ({ date, onChange }: Props) => {
         }
     };
 
-    return <DatePicker date={date ?? new Date()} mode="single" onChange={handleChange} />;
+    return <DatePicker date={date ?? today} mode="single" onChange={handleChange} />;
 };

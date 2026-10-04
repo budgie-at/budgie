@@ -1,4 +1,3 @@
-/* oxlint-disable lingui/no-unlocalized-strings */
 import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientRequest from 'effect/http/HttpClientRequest';

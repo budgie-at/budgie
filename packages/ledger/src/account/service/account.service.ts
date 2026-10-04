@@ -140,7 +140,11 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
             ) {
                 const result = yield* processInputWithBatches(inputs, batchSize, batch => processBatch(batch));
 
-                return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
+                return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => {
+                    acc[account.title] = account;
+
+                    return acc;
+                }, {});
             }),
             findByIdOrFail: Effect.fn('AccountService.findByIdOrFail')(function* (id: number) {
                 const account = yield* accountRepository.findById(id);

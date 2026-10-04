@@ -27,7 +27,7 @@ interface UseKeypadInputResult {
 }
 
 const formatNumericDisplay = (value: number, maxDecimalPlaces: number): string => {
-    const rounded = parseFloat(value.toFixed(maxDecimalPlaces));
+    const rounded = Number.parseFloat(value.toFixed(maxDecimalPlaces));
 
     return rounded.toString();
 };
@@ -45,7 +45,7 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
         onChangeRef.current = onChange;
     }, [onChange]);
 
-    const numericValue = parseFloat(displayValue) || 0;
+    const numericValue = Number.parseFloat(displayValue) || 0;
 
     useEffect(() => {
         if (isInitialMount.current) {

@@ -123,17 +123,19 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
     useEffect(() => {
         if (isOpen) {
-            // oxlint-disable-next-line react-hooks-js/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
+            // oxlint-disable-next-line react/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
             setIsVisible(true);
-            rotation.value = withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG);
-            menuScale.value = withSpring(1, SPRING_CONFIG);
+            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG));
+            menuScale.set(withSpring(1, SPRING_CONFIG));
         } else if (isVisible) {
-            rotation.value = withSpring(0, CLOSE_SPRING_CONFIG);
-            menuScale.value = withTiming(0, { duration: CLOSE_ANIMATION_DURATION }, finished => {
-                if (finished) {
-                    runOnJS(setIsVisible)(false);
-                }
-            });
+            rotation.set(withSpring(0, CLOSE_SPRING_CONFIG));
+            menuScale.set(
+                withTiming(0, { duration: CLOSE_ANIMATION_DURATION }, finished => {
+                    if (finished) {
+                        runOnJS(setIsVisible)(false);
+                    }
+                })
+            );
         }
     }, [isOpen, isVisible, menuScale, rotation]);
     const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));

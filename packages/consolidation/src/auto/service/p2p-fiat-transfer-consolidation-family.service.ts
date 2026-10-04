@@ -42,7 +42,7 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                     return null;
                 }
 
-                const sortedCandidates = candidates.slice().sort((left, right) => compareCandidates(left, right));
+                const sortedCandidates = [...candidates].sort((left, right) => compareCandidates(left, right));
                 const [bestCandidate, secondCandidate] = sortedCandidates;
 
                 if (isDefined(secondCandidate) && compareCandidates(bestCandidate, secondCandidate) === 0) {

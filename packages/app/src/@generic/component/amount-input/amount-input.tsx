@@ -32,7 +32,7 @@ const parseAmountText = (text: string, decimalSeparator: string, digitGroupingSe
     const normalizedNumeric = cleaned.replace(decimalSeparator, '.');
     const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric, visibleDecimalPlaces);
     const displayValue = hasDecimal ? `${integerPart}${decimalSeparator}${decimalPart}` : integerPart;
-    const parsedValue = parseFloat(normalizedNumeric) || 0;
+    const parsedValue = Number.parseFloat(normalizedNumeric) || 0;
 
     return { displayValue, parsedValue };
 };

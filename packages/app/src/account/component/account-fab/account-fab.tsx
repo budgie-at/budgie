@@ -19,7 +19,7 @@ export const AccountFab = ({ isMenuOpen, onPress }: Props) => {
     const scale = useSharedValue(FAB_INITIAL_SCALE);
 
     useEffect(() => {
-        scale.value = withDelay(FAB_ANIMATION_DELAY, withSpring(1, FAB_SPRING_CONFIG));
+        scale.set(withDelay(FAB_ANIMATION_DELAY, withSpring(1, FAB_SPRING_CONFIG)));
     }, [scale]);
 
     const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));

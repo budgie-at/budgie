@@ -1,4 +1,3 @@
-/* oxlint-disable lingui/no-unlocalized-strings */
 import {
     AccountBalanceRepository,
     AccountRepository,
@@ -223,34 +222,33 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
             } satisfies NormalizedRowType;
         };
 
-        // eslint-disable-next-line max-statements
         const parseRow = (
             normalizedRow: NormalizedRowType,
             lookup: ImporterLookupInterface
         ): Result.Result<ImporterRowInterface, string> => {
             const toAccount = lookup.accountsMap[getToAccountKey(normalizedRow)];
-            const toAmount = parseFloat(normalizedRow.toAmount);
+            const toAmount = Number.parseFloat(normalizedRow.toAmount);
             const toInstrument = lookup.instrumentsMap[normalizedRow.toCurrency];
             const explicitCategory = lookup.categoriesMap[normalizedRow.category];
             const operatedAt = parseDate(normalizedRow.operatedAt);
             const fromAccount = lookup.accountsMap[getFromAccountKey(normalizedRow)];
             const fromInstrument = isDefined(fromAccount) ? lookup.instrumentsMap[normalizedRow.fromCurrency] : null;
-            const fromAmount = isDefined(fromAccount) ? parseFloat(normalizedRow.fromAmount) : null;
+            const fromAmount = isDefined(fromAccount) ? Number.parseFloat(normalizedRow.fromAmount) : null;
             const isPlanned = normalizedRow.isPlanned === '1';
 
             if (!isDefined(toAccount)) {
                 return Result.fail(`To Account ${normalizedRow.toAccount} not found`);
             }
-            if (!isDefined(operatedAt) || isNaN(operatedAt.getTime())) {
+            if (!isDefined(operatedAt) || Number.isNaN(operatedAt.getTime())) {
                 return Result.fail(`Date "${normalizedRow.operatedAt}" is invalid`);
             }
-            if (!isDefined(toAmount) || isNaN(toAmount)) {
+            if (!isDefined(toAmount) || Number.isNaN(toAmount)) {
                 return Result.fail(`To Amount "${normalizedRow.toAmount}" is invalid`);
             }
             if (!isDefined(toInstrument)) {
                 return Result.fail(`Currency ${normalizedRow.toCurrency} not found`);
             }
-            if (isDefined(fromInstrument) && (!isDefined(fromAmount) || isNaN(fromAmount))) {
+            if (isDefined(fromInstrument) && (!isDefined(fromAmount) || Number.isNaN(fromAmount))) {
                 return Result.fail(`From Amount "${normalizedRow.fromAmount}" is invalid`);
             }
 
@@ -300,10 +298,11 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
         const initializeInstruments = Effect.fn('ImporterService.initializeInstruments')(function* () {
             const instruments = yield* instrumentRepository.getAll();
 
-            return instruments.reduce<Record<string, InstrumentEntityInterface>>(
-                (acc, instrument) => ({ ...acc, [instrument.code]: instrument }),
-                {}
-            );
+            return instruments.reduce<Record<string, InstrumentEntityInterface>>((acc, instrument) => {
+                acc[instrument.code] = instrument;
+
+                return acc;
+            }, {});
         });
 
         const collectEntities = Effect.fn('ImporterService.collectEntities')(function* (

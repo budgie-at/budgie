@@ -1,5 +1,5 @@
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
@@ -18,11 +18,8 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
     const { formatMonthAndYear } = useFormatDate();
     const language = useSetting('language');
     const queryKey = `${filterKey}|${language}`;
-    const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
-
-    useEffect(() => {
-        setLoadedCount(DEFAULT_LIMIT);
-    }, [queryKey]);
+    const [pagination, setPagination] = useState({ queryKey, loadedCount: DEFAULT_LIMIT });
+    const loadedCount = pagination.queryKey === queryKey ? pagination.loadedCount : DEFAULT_LIMIT;
 
     const result = useLiveAtomValue(getQueryAtom(loadedCount + 1, language));
     const data = AsyncResult.getOrElse(result, () => []);
@@ -32,7 +29,7 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
 
     const loadMore = () => {
         if (hasMore) {
-            setLoadedCount(prev => prev + DEFAULT_LIMIT);
+            setPagination({ queryKey, loadedCount: loadedCount + DEFAULT_LIMIT });
         }
     };
 

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Transaction pattern repository owns repeated and amount pattern queries that share private SQL helpers */
 import { SQL, and, between, desc, eq, gte, inArray, isNotNull, lte, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -84,7 +83,6 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
                 return new Map(amountRows.map(row => [`${row.categoryId}-${row.title}`, row.amount]));
             });
 
-            // eslint-disable-next-line max-statements -- Batched tag query replacing N+1 pattern
             const findTagsForPatterns = Effect.fnUntraced(function* (
                 patterns: ValidPatternRowInterface[],
                 groupColumn: PatternGroupColumn

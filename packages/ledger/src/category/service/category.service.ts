@@ -24,10 +24,11 @@ export class CategoryService extends Context.Service<CategoryService>()('@budgie
                     results.push(...(yield* Db.transaction(categoryRepository.bulkCreate(batch))));
                 }
 
-                return results.reduce<Record<string, CategoryEntityInterface>>(
-                    (acc, category) => ({ ...acc, [category.title]: category }),
-                    {}
-                );
+                return results.reduce<Record<string, CategoryEntityInterface>>((acc, category) => {
+                    acc[category.title] = category;
+
+                    return acc;
+                }, {});
             }),
             countTransactionEntries: Effect.fn('CategoryService.countTransactionEntries')(function* (categoryId: number) {
                 return yield* categoryRepository.countTransactionEntries(categoryId);

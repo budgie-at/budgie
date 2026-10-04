@@ -7,7 +7,7 @@ Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Eff
 ```bash
 pnpm build                    # Build package (required after changes)
 pnpm ts                       # Native TypeScript 7 check
-pnpm lint                     # Oxlint + 13-rule ESLint fallback
+pnpm lint                     # Oxlint (incl. local `lint-rules/` plugin)
 ```
 
 ## Structure
