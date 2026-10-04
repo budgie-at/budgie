@@ -177,6 +177,20 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('repairs against the card archived after the income when another card with the same ending was archived before it', () =>
+        Effect.gen(function* () {
+            const liveCard = yield* seedPrivatbankCard('1234');
+            const earlierArchivedCard = yield* seedPrivatbankCard('4321');
+            const laterArchivedCard = yield* seedPrivatbankCard('4321');
+            const income = yield* seedOwnCardIncome(liveCard.id);
+
+            yield* archiveAccount(earlierArchivedCard.id, ARCHIVED_BEFORE_INCOME_AT);
+            yield* archiveAccount(laterArchivedCard.id);
+
+            yield* expectRepairedFromCounterpart(laterArchivedCard, income);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('ignores a maskless third-party card transfer', () =>
         Effect.gen(function* () {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;

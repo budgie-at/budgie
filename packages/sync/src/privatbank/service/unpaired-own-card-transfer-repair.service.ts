@@ -83,6 +83,8 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                     AND (
                         SELECT COUNT(*) FROM accounts archived_account
                         WHERE archived_account.deleted_at IS NOT NULL
+                            AND archived_account.deleted_at >= tx.operated_at
+                            AND archived_account.id != own_account.id
                             AND archived_account.type = 'BANK_SYNC'
                             AND (${buildCardMaskPredicate('archived_account')})
                     ) = 1
