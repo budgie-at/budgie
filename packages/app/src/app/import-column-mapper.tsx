@@ -15,7 +15,6 @@ import { ImportColumnMapperModalSelector } from './import-column-mapper.selector
 
 const sortHeaders = (first: string, second: string): number => first.localeCompare(second);
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ImportColumnMapperModal() {
     const { t } = useLingui();
     const [, resolveImportColumnMapper] = useImportColumnMapperModal();
