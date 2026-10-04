@@ -1,6 +1,6 @@
 {
     "name": "@budgie/ledger",
-    "version": "6.88.5",
+    "version": "6.90.0",
     "private": true,
     "description": "Ledger domain services: transactions, transfers, imports and account balances",
     "sideEffects": false,

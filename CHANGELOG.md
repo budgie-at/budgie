@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** address review findings for manual duplicate family ([93c0888](https://github.com/budgie-at/budgie/commit/93c088859b72de34fa4fa5381b698a18da893c00))
+* **ledger:** keep consolidated entries when refreshing an imported transaction ([2d991af](https://github.com/budgie-at/budgie/commit/2d991af91e1815444e5840a5eaa5998b10989186))
+* **rules:** skip consolidated canonicals in transfer conversion ([75a2684](https://github.com/budgie-at/budgie/commit/75a26842caddacee15864980d2e1d03cc00a0948))
+
+
+### Features
+
+* **consolidation:** consolidate synced duplicates of manual expenses ([5994732](https://github.com/budgie-at/budgie/commit/59947327f8f73b196c363f91e62eaa301133c551))
+
+
+
+
+
 # [6.89.0](https://github.com/budgie-at/budgie/compare/v6.88.6...v6.89.0) (2026-10-03)
 
 
