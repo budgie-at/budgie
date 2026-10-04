@@ -243,6 +243,17 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 );
             }),
 
+            archiveByIds: Effect.fn('TransactionRepository.archiveByIds')(function* (transactionIds: number[]) {
+                if (isNotEmptyArray(transactionIds)) {
+                    yield* Db.query(db =>
+                        db
+                            .update(TransactionEntityTable)
+                            .set({ deletedAt: new Date() })
+                            .where(inArray(TransactionEntityTable.id, transactionIds))
+                    );
+                }
+            }),
+
             findMccCategorySuggestions: (mccCategoryId: number, limit: number) =>
                 Db.query(db =>
                     db.$client.unsafe<{ categoryId: number; count: number }>(

@@ -44,12 +44,17 @@ export class AccountTransferConversionService extends Context.Service<AccountTra
                         return;
                     }
 
+                    const orphanedTransferIds = transfers
+                        .filter(transfer => transfer.entries.every(entry => entry.accountId === accountId))
+                        .map(transfer => transfer.id);
+
+                    yield* transactionRepository.archiveByIds(orphanedTransferIds);
                     yield* transactionRepository.convertTransfersFromAccountToIncome(accountId);
                     yield* transactionRepository.convertTransfersToAccountToExpense(accountId);
 
                     const entriesToCreate = collectSurvivingEntries(transfers, accountId);
 
-                    yield* transactionEntryRepository.deleteByTransactionIds(transfers.map(transaction => transaction.id));
+                    yield* transactionEntryRepository.deleteLedgerByTransactionIds(transfers.map(transaction => transaction.id));
 
                     if (isNotEmptyArray(entriesToCreate)) {
                         yield* transactionEntryRepository.bulkCreate(entriesToCreate);

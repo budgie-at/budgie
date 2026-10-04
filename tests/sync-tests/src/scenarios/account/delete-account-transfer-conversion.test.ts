@@ -182,4 +182,34 @@ describe('account/delete-account-transfer-conversion', () => {
             expect(yield* fetchStatistics()).toEqual(statisticsBefore);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('keeps the archived counterpart entry and hides the transfer when the only live entry sat on the deleted account', () =>
+        Effect.gen(function* () {
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const deletedAccount = yield* seed.account({ title: 'Old card', type: AccountTypeEnum.BANK });
+            const archivedAccount = yield* seed.account({ title: 'Archived card', type: AccountTypeEnum.BANK });
+            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH });
+            const transfer = yield* seedTransfer(deletedAccount.id, archivedAccount.id, 30 * PRECISION);
+
+            yield* accountArchiveService.archiveById(archivedAccount.id);
+
+            const archivedEntryBefore = (yield* fetchEntries(transfer.id)).filter(entry => entry.accountId === archivedAccount.id);
+            const ledgerBefore = yield* accountBalanceRepository.getLedgerBalances([cashAccount.id]);
+            const statisticsBefore = yield* fetchStatistics();
+
+            expect(archivedEntryBefore).toHaveLength(1);
+            expect(archivedEntryBefore[0].deletedAt).not.toBeNull();
+
+            yield* accountArchiveService.deleteById(deletedAccount.id);
+
+            const transferAfter = yield* fetchTransactionById(transfer.id);
+
+            expect(transferAfter.deletedAt).not.toBeNull();
+            expect(transferAfter.fromAccountId).toBeNull();
+            expect(yield* fetchEntries(transfer.id)).toEqual(archivedEntryBefore);
+            expect(yield* accountBalanceRepository.getLedgerBalances([cashAccount.id])).toEqual(ledgerBefore);
+            expect(yield* fetchStatistics()).toEqual(statisticsBefore);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });
