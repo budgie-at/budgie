@@ -89,7 +89,7 @@ const seedScenario = Effect.fnUntraced(function* () {
     return { instrumentId: hryvnia.id, accountId: (yield* seed.account({ instrumentId: hryvnia.id })).id };
 });
 
-const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionEnum, instrumentId: number) {
+const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionEnum, instrumentId: number, isAllIn: boolean) {
     const statisticsRepository = yield* StatisticsRepository;
     const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS);
     const monthlyBurn = median(seriesRows.map(row => row.expense));
@@ -109,8 +109,8 @@ const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionE
     );
 
     return {
-        drivers: aggregateRunwayDrivers(driverRows, monthlyBurn).drivers,
-        irregularMonthlyAmount: aggregateRunwayDrivers(categoryRows, monthlyBurn).irregularMonthlyAmount
+        drivers: aggregateRunwayDrivers(driverRows, monthlyBurn, isAllIn).drivers,
+        irregularMonthlyAmount: aggregateRunwayDrivers(categoryRows, monthlyBurn, isAllIn).irregularMonthlyAmount
     } satisfies RunwayDriverBreakdownInterface;
 });
 
@@ -132,7 +132,7 @@ describe('runway drivers', () => {
             yield* seedExpense(accountId, firstTail.id, FIRST_TAIL_AMOUNT, 3);
             yield* seedExpense(accountId, secondTail.id, SECOND_TAIL_AMOUNT, 1);
 
-            const { drivers, irregularMonthlyAmount } = yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId);
+            const { drivers, irregularMonthlyAmount } = yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, true);
 
             expect(drivers).toStrictEqual([
                 { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 },
@@ -152,6 +152,9 @@ describe('runway drivers', () => {
                 }
             ]);
             expect(irregularMonthlyAmount).toBe((ONE_OFF_AMOUNT + FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT) / SEEDED_MONTHS);
+            expect((yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, false)).drivers).toStrictEqual([
+                { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 }
+            ]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -179,7 +182,7 @@ describe('runway drivers', () => {
             yield* seed.transactionTag(oneOffTransactionId, tag.id);
             yield* seed.transactionTag(oneOffTransactionId, secondTag.id);
 
-            const tagBreakdown = yield* aggregate(RunwayDriverDimensionEnum.TAG, instrumentId);
+            const tagBreakdown = yield* aggregate(RunwayDriverDimensionEnum.TAG, instrumentId, true);
 
             expect(tagBreakdown.drivers).toStrictEqual([
                 {
