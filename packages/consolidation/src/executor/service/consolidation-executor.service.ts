@@ -61,15 +61,35 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
             );
 
             return {
-                consolidatePair: Effect.fn('ConsolidationExecutorService.consolidatePair')(function* (
-                    candidate: TransferPairCandidateInterface,
-                    consolidationPlan: ConsolidationPlanInterface
-                ) {
-                    return yield* consolidateRequiredSources(
-                        [candidate.expenseTransactionId, candidate.incomeTransactionId],
-                        consolidationPlan
-                    );
-                }),
+                consolidatePair: Effect.fn('ConsolidationExecutorService.consolidatePair')(
+                    function* (candidate: TransferPairCandidateInterface, consolidationPlan: ConsolidationPlanInterface) {
+                        const sourceTransactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
+                            consolidationPlan.sourceTransactionIds,
+                            consolidationPlan.allowedMovedSourceTransactionIds
+                        );
+
+                        if (!isDefined(sourceTransactions)) {
+                            return false;
+                        }
+
+                        const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer(
+                            consolidationPlan.canonicalInput
+                        );
+
+                        yield* consolidationMutationService.createTransferPairFeeEntries(
+                            candidate,
+                            sourceTransactions,
+                            canonicalTransaction.id
+                        );
+                        yield* consolidationMutationService.moveSourcesToCanonical(
+                            consolidationPlan.sourceTransactionIds,
+                            canonicalTransaction.id
+                        );
+
+                        return true;
+                    },
+                    effect => Db.transaction(effect)
+                ),
                 consolidateAtmCashWithdrawal: Effect.fn('ConsolidationExecutorService.consolidateAtmCashWithdrawal')(
                     function* (candidate: AtmCashWithdrawalCandidateInterface, consolidationPlan: ConsolidationPlanInterface) {
                         const sourceTransactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
