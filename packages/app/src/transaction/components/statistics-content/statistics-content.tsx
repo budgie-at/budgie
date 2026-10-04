@@ -1,25 +1,31 @@
-import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Activity } from 'react';
+import { Activity, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
+import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
+import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { StatisticsCategoriesActivityContent } from '../statistics-categories-activity-content/statistics-categories-activity-content';
 import { StatisticsTagsActivityContent } from '../statistics-tags-activity-content/statistics-tags-activity-content';
 import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
+import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
 interface Props {
     readonly activeTab: AnalyticsTabType;
-    readonly filters: TransactionFilterInterface;
     readonly contentInsetTop: number;
 }
 
-export const StatisticsContent = ({ activeTab, filters, contentInsetTop }: Props) => {
+export const StatisticsContent = ({ activeTab, contentInsetTop }: Props) => {
     const { t } = useLingui();
+    const [filters, setFilters] = useState<TransactionFilterInterface>({
+        ...DEFAULT_TRANSACTION_FILTER,
+        date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
+    });
 
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
     const netWorth = useNetWorthQuery();
@@ -40,6 +46,14 @@ export const StatisticsContent = ({ activeTab, filters, contentInsetTop }: Props
             contentContainerStyle={contentContainerStyle}
             showsVerticalScrollIndicator={false}
         >
+            <TransactionFilters
+                accountId={null}
+                filters={filters}
+                onChange={setFilters}
+                showTypeFilter={false}
+                hasFiltersSelected={checkIfFiltersSelected(null, filters)}
+            />
+
             <View className="gap-y-lg">
                 <Text className="uppercase text-secondary-foreground text-xs">
                     <Trans>Overview</Trans>

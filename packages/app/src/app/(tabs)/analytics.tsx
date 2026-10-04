@@ -1,4 +1,3 @@
-import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum } from '@budgie/contracts';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
@@ -9,14 +8,12 @@ import { isDefined, isString } from '@rnw-community/shared';
 
 import { AnalyticsPageHeader } from '../../@generic/component/analytics-page-header/analytics-page-header';
 import { ChromePage } from '../../@generic/component/chrome-page/chrome-page';
-import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
 import { StatisticsContent } from '../../transaction/components/statistics-content/statistics-content';
 
 import { AnalyticsPageSelector } from './analytics-page.selector';
 
 import type { AnalyticsTabType } from '../../@generic/type/analytics-tab.type';
-import type { TransactionFilterInterface } from '@budgie/contracts';
 
 const DEFAULT_ANALYTICS_TAB: AnalyticsTabType = 'categories';
 const TABS: readonly AnalyticsTabType[] = [DEFAULT_ANALYTICS_TAB, 'tags', 'runway'];
@@ -28,10 +25,6 @@ export default function AnalyticsPage() {
     const insets = useSafeAreaInsets();
     const headerRef = useRef<View>(null);
     const [headerHeight, setHeaderHeight] = useState(0);
-    const [filters, setFilters] = useState<TransactionFilterInterface>({
-        ...DEFAULT_TRANSACTION_FILTER,
-        date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
-    });
 
     const activeTab = isAnalyticsTab(tab) ? tab : DEFAULT_ANALYTICS_TAB;
     const contentInsetTop = insets.top + headerHeight;
@@ -49,22 +42,13 @@ export default function AnalyticsPage() {
 
     const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: handleChangeTab });
 
-    const header = (
-        <AnalyticsPageHeader
-            activeTab={activeTab}
-            onChangeTab={handleChangeTab}
-            filters={filters}
-            onChangeFilters={setFilters}
-            ref={headerRef}
-            onLayout={measureHeader}
-        />
-    );
+    const header = <AnalyticsPageHeader activeTab={activeTab} onChangeTab={handleChangeTab} ref={headerRef} onLayout={measureHeader} />;
 
     return (
         <ChromePage testID={AnalyticsPageSelector.Container} header={header}>
             <GestureDetector gesture={swipeGesture}>
                 <View className="flex-1">
-                    <StatisticsContent activeTab={activeTab} filters={filters} contentInsetTop={contentInsetTop} />
+                    <StatisticsContent activeTab={activeTab} contentInsetTop={contentInsetTop} />
                 </View>
             </GestureDetector>
         </ChromePage>

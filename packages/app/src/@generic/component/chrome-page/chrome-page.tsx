@@ -2,6 +2,7 @@ import { cn } from 'cn';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { EdgeFade } from '../edge-fade/edge-fade';
@@ -26,6 +27,7 @@ export const ChromePage = (props: PageChromePropsInterface) => {
     } = props;
 
     const insets = useSafeAreaInsets();
+    const { config } = useScreenChrome();
     const contentSafeEdges = safeEdges.filter(edge => edge !== 'top');
     const contentStyle = [pageGetSafeEdgeStyle(contentSafeEdges, insets), styleProp];
     const headerStyle = { ...pageGetSafeEdgeStyle(safeEdges, insets), zIndex: CHROME_PAGE_Z_INDEX };
@@ -36,7 +38,7 @@ export const ChromePage = (props: PageChromePropsInterface) => {
                 <View className={cn('px-5xl flex-1', contentClassName)}>{children}</View>
             </View>
 
-            <EdgeFade position="top" />
+            <EdgeFade position="top" height={config.headerBackdropHeight} intensity={config.maxBlurIntensity} />
             <View className="absolute top-0 right-0 left-0" pointerEvents="box-none" style={headerStyle}>
                 {header}
             </View>
