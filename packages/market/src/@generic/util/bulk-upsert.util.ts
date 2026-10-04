@@ -14,7 +14,7 @@ export const bulkUpsert = <Table extends SQLiteTable>(
 ) => {
     const columns = getTableColumns(table);
     const set = updatedColumnNames.reduce<SQLiteUpdateSetSource<Table>>(
-        (accumulator, columnName) => ({ ...accumulator, [columnName]: sql.raw(`excluded.${columns[columnName].name}`) }),
+        (accumulator, columnName) => Object.assign(accumulator, { [columnName]: sql.raw(`excluded.${columns[columnName].name}`) }),
         {}
     );
 

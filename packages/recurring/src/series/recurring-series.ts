@@ -71,7 +71,7 @@ const cleanTokens = (charge: RecurringChargeInterface): string[] => {
 const chargeLabel = (charge: RecurringChargeInterface): string => cleanTokens(charge).join(' ').toUpperCase();
 
 const bigrams = (label: string): Set<string> => {
-    const compact = label.replace(/ /gu, '');
+    const compact = label.replaceAll(' ', '');
 
     return new Set(Array.from({ length: Math.max(compact.length - 1, 0) }, (_, index) => compact.slice(index, index + 2)));
 };

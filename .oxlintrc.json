@@ -1,14 +1,18 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "plugins": [],
+    "plugins": [
+        "typescript",
+        "import",
+        "promise",
+        "node",
+        "react",
+        "oxc",
+        "unicorn"
+    ],
     "jsPlugins": [
         {
             "name": "lingui",
             "specifier": "eslint-plugin-lingui"
-        },
-        {
-            "name": "react-hooks-js",
-            "specifier": "eslint-plugin-react-hooks"
         },
         {
             "name": "n",
@@ -32,14 +36,15 @@
         },
         {
             "name": "budgie",
-            "specifier": "./eslint-rules/max-component-props.mjs"
+            "specifier": "./lint-rules/index.mjs"
         }
     ],
     "categories": {
-        "correctness": "off"
+        "correctness": "error"
     },
     "options": {
-        "typeAware": true
+        "typeAware": true,
+        "reportUnusedDisableDirectives": "error"
     },
     "env": {
         "builtin": true
@@ -66,11 +71,11 @@
         "**/*.d.ts",
         "**/messages.po",
         "**/messages.ts",
+        "**/client-messages.ts",
         "**/media-manifest.constant.ts",
         "**/babel.config.js",
         "**/fingerprint.config.js",
-        "packages/app/scripts/**",
-        "eslint.config.mjs"
+        "packages/app/scripts/**"
     ],
     "overrides": [
         {
@@ -629,17 +634,30 @@
                     }
                 ],
                 "typescript/promise-function-async": "off",
-                "typescript/explicit-function-return-type": "off"
-            },
-            "plugins": [
-                "typescript"
-            ]
+                "typescript/explicit-function-return-type": "off",
+                "@stylistic/nonblock-statement-body-position": [
+                    "error",
+                    "below"
+                ]
+            }
         },
         {
             "files": [
                 "**/*.{ts,tsx}"
             ],
             "rules": {
+                "@stylistic/padding-line-between-statements": [
+                    "error",
+                    {
+                        "blankLine": "always",
+                        "prev": "*",
+                        "next": "return"
+                    }
+                ],
+                "budgie/camelcase": "error",
+                "budgie/class-member-order": "error",
+                "budgie/effect-fn-name": "error",
+                "budgie/effect-service-id": "error",
                 "@stylistic/lines-between-class-members": [
                     "error",
                     "always",
@@ -688,7 +706,11 @@
                             "packages/landing/src/generic/component/blog-card/blog-card.tsx"
                         ]
                     }
-                ]
+                ],
+                "react/capitalized-calls": "off",
+                "react/exhaustive-effect-dependencies": "off",
+                "budgie/consistent-this": "error",
+                "budgie/no-undef-init": "error"
             }
         },
         {
@@ -812,10 +834,7 @@
             "env": {
                 "es2018": true,
                 "es2026": true
-            },
-            "plugins": [
-                "import"
-            ]
+            }
         },
         {
             "files": [
@@ -908,9 +927,6 @@
                 "WritableStreamDefaultController": "readonly",
                 "WritableStreamDefaultWriter": "readonly"
             },
-            "plugins": [
-                "node"
-            ],
             "env": {
                 "commonjs": true,
                 "es2024": true
@@ -932,10 +948,7 @@
                 "promise/avoid-new": "off",
                 "promise/no-new-statics": "error",
                 "promise/valid-params": "warn"
-            },
-            "plugins": [
-                "promise"
-            ]
+            }
         },
         {
             "files": [
@@ -977,20 +990,6 @@
                     15
                 ],
                 "@rnw-community/no-complex-jsx-logic": "error",
-                "react-hooks-js/static-components": "error",
-                "react-hooks-js/use-memo": "error",
-                "react-hooks-js/preserve-manual-memoization": "error",
-                "react-hooks-js/incompatible-library": "error",
-                "react-hooks-js/immutability": "error",
-                "react-hooks-js/globals": "error",
-                "react-hooks-js/refs": "error",
-                "react-hooks-js/set-state-in-effect": "error",
-                "react-hooks-js/error-boundaries": "error",
-                "react-hooks-js/purity": "error",
-                "react-hooks-js/set-state-in-render": "error",
-                "react-hooks-js/unsupported-syntax": "error",
-                "react-hooks-js/config": "error",
-                "react-hooks-js/gating": "error",
                 "react/jsx-curly-brace-presence": [
                     "error",
                     {
@@ -1016,11 +1015,24 @@
                     }
                 ],
                 "react/jsx-no-literals": "off",
-                "react/jsx-no-constructed-context-values": "off"
-            },
-            "plugins": [
-                "react"
-            ]
+                "react/jsx-no-constructed-context-values": "off",
+                "react/static-components": "error",
+                "react/use-memo": "error",
+                "react/preserve-manual-memoization": "error",
+                "react/incompatible-library": "error",
+                "react/globals": "error",
+                "react/refs": "error",
+                "react/set-state-in-effect": "error",
+                "react/error-boundaries": "error",
+                "react/set-state-in-render": "error",
+                "react/unsupported-syntax": "error",
+                "react/void-use-memo": "error",
+                "react/no-deriving-state-in-effects": "error",
+                "react/memo-dependencies": "error",
+                "react/hooks": "error",
+                "react/immutability": "error",
+                "react/purity": "error"
+            }
         },
         {
             "files": [
@@ -1044,9 +1056,109 @@
                 "react-native/no-raw-text": [
                     "error",
                     {
-                        "skip": ["Trans", "ProtectedText"]
+                        "skip": [
+                            "Trans",
+                            "ProtectedText"
+                        ]
                     }
                 ]
+            }
+        },
+        {
+            "files": [
+                "packages/*/test/**",
+                "tests/**"
+            ],
+            "plugins": [
+                "vitest"
+            ],
+            "rules": {
+                "vitest/consistent-test-it": [
+                    "error",
+                    {
+                        "fn": "it"
+                    }
+                ],
+                "vitest/no-focused-tests": "error",
+                "vitest/no-disabled-tests": "error",
+                "vitest/no-identical-title": "error",
+                "vitest/valid-expect": "error",
+                "vitest/no-standalone-expect": "off",
+                "vitest/require-mock-type-parameters": "off",
+                "vitest/expect-expect": "off"
+            }
+        },
+        {
+            "files": [
+                "**/*.{ts,tsx}"
+            ],
+            "rules": {
+                "unicorn/prefer-array-flat-map": "error",
+                "unicorn/prefer-array-flat": "error",
+                "unicorn/no-useless-spread": "error",
+                "unicorn/no-useless-fallback-in-spread": "error",
+                "unicorn/no-useless-length-check": "error",
+                "unicorn/no-useless-promise-resolve-reject": "error",
+                "unicorn/prefer-includes": "error",
+                "unicorn/prefer-string-starts-ends-with": "error",
+                "unicorn/prefer-string-replace-all": "error",
+                "unicorn/prefer-set-has": "error",
+                "unicorn/prefer-number-properties": "error",
+                "unicorn/prefer-node-protocol": "error",
+                "unicorn/no-instanceof-array": "error",
+                "unicorn/no-new-array": "error",
+                "unicorn/no-unnecessary-await": "error",
+                "unicorn/prefer-structured-clone": "error",
+                "unicorn/prefer-date-now": "error",
+                "unicorn/prefer-math-trunc": "error",
+                "unicorn/no-lonely-if": "error",
+                "unicorn/no-negated-condition": "error",
+                "unicorn/no-typeof-undefined": "error",
+                "unicorn/prefer-optional-catch-binding": "error",
+                "oxc/no-accumulating-spread": "error"
+            }
+        },
+        {
+            "files": [
+                "packages/app/src/**/*.{ts,tsx}",
+                "packages/contracts/src/**/*.ts",
+                "packages/ai/src/**/*.ts",
+                "packages/sync/src/**/*.ts"
+            ],
+            "rules": {
+                "budgie/shared-guards": "warn"
+            }
+        },
+        {
+            "files": [
+                "packages/{contracts,sync,consolidation,budget,market,ledger,rules,recurring,categorization,import-export,ai}/src/**/*.ts",
+                "packages/app/src/**/service/**/*.ts",
+                "packages/app/src/**/repository/**/*.ts",
+                "packages/app/src/**/*.task.ts",
+                "packages/app/src/**/api/**/*.ts"
+            ],
+            "rules": {
+                "budgie/effect-no-imperative": "error",
+                "budgie/shared-guards": "error"
+            }
+        },
+        {
+            "files": [
+                "packages/*/src/**/service/**/*.ts",
+                "packages/*/src/**/repository/**/*.ts",
+                "packages/*/src/**/*.service.ts",
+                "packages/*/src/**/*.repository.ts"
+            ],
+            "rules": {
+                "budgie/effect-no-run": "error"
+            }
+        },
+        {
+            "files": [
+                "packages/app/src/widget/widget/**/*.tsx"
+            ],
+            "rules": {
+                "budgie/shared-guards": "off"
             }
         }
     ]

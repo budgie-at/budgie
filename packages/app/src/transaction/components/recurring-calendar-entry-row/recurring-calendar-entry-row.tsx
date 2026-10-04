@@ -32,7 +32,7 @@ interface Props {
     readonly dayLabel?: string;
 }
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Row derives navigation, day-label, alert and series-action affordances from entry data
+// eslint-disable-next-line max-statements -- Row derives navigation, day-label, alert and series-action affordances from entry data
 export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
     const router = useRouter();
     const { t } = useLingui();

@@ -224,7 +224,9 @@ export class DrainerService<E> {
     private started = false;
     private isForegroundBusy = false;
     private consecutiveFailures = 0;
+    // eslint-disable-next-line budgie/effect-no-run -- legacy class service builds its FiberHandles synchronously at construction
     private readonly loop = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
+    // eslint-disable-next-line budgie/effect-no-run -- legacy class service builds its FiberHandles synchronously at construction
     private readonly retryTimer = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
 
     constructor(

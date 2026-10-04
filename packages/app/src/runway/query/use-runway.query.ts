@@ -2,6 +2,7 @@ import { DEFAULT_TRANSACTION_FILTER, RUNWAY_WINDOW_MONTHS, RunwayDriverDimension
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { useToday } from '../../@generic/hook/use-today.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useSetting } from '../../settings/hook/use-setting.hook';
@@ -39,6 +40,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
         runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.CATEGORY, language])
     );
     const tagDriverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.TAG, language]));
+    const today = useToday();
     const seriesRows = AsyncResult.getOrElse(seriesResult, () => []);
     const categoryDriverRows = AsyncResult.getOrElse(categoryDriverResult, () => []);
     const tagDriverRows = AsyncResult.getOrElse(tagDriverResult, () => []);
@@ -49,7 +51,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
         series: seriesRows,
         liquid,
         irregularMonthlyAmount: categoryBreakdown.irregularMonthlyAmount,
-        referenceDate: new Date()
+        referenceDate: today
     });
     const drivers = dimension === RunwayDriverDimensionEnum.CATEGORY ? categoryBreakdown.drivers : tagBreakdown.drivers;
 

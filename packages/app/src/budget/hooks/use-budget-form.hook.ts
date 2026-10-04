@@ -4,7 +4,6 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
@@ -111,13 +110,14 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     const isEditing = isPositiveNumber(editingId);
     const hasAsyncTemplate = isDefined(templateKind) && templateKind !== BudgetTemplateKindEnum.EMPTY;
     const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
-    const categoryLimitsBudgetId = isEditing && isDefined(budget) ? budget.id : null;
-    const { categoryLimits: loadedCategoryLimits, isLoading: isCategoryLimitsLoading } =
-        useGetBudgetCategoryLimitsQuery(categoryLimitsBudgetId);
+    const { categoryLimits: loadedCategoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(
+        isEditing && isDefined(budget) ? budget.id : null
+    );
     const { draft: templateDraft, isReady: isTemplateReady } = useBudgetTemplateDraft(isEditing ? null : templateKind);
 
-    const defaultFormValues = useMemo(() => buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId), [defaultInstrumentId, t]);
-    const formValues = useMemo(() => {
+    const defaultFormValues = buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId);
+
+    const resolveFormValues = (): BudgetFormValues => {
         if (isEditing && isDefined(budget) && !isCategoryLimitsLoading) {
             return buildBudgetFormValues(budget, loadedCategoryLimits);
         }
@@ -127,18 +127,9 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         }
 
         return defaultFormValues;
-    }, [
-        budget,
-        defaultFormValues,
-        defaultInstrumentId,
-        hasAsyncTemplate,
-        isCategoryLimitsLoading,
-        isEditing,
-        isTemplateReady,
-        loadedCategoryLimits,
-        t,
-        templateDraft
-    ]);
+    };
+
+    const formValues = resolveFormValues();
 
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',

@@ -1,15 +1,16 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 
 export const useCachedMicroUnitQuery = (microUnitValue: number | null | undefined): number => {
-    const previousValueRef = useRef(0);
+    const [cachedValue, setCachedValue] = useState(0);
+    const currentValue = isDefined(microUnitValue) ? convertFromMicroUnits(microUnitValue) : cachedValue;
 
-    if (isDefined(microUnitValue)) {
-        previousValueRef.current = convertFromMicroUnits(microUnitValue);
+    if (currentValue !== cachedValue) {
+        setCachedValue(currentValue);
     }
 
-    return previousValueRef.current;
+    return currentValue;
 };

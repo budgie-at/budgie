@@ -23,13 +23,13 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
 
     useEffect(() => {
         if (isOpen) {
-            backdropOpacity.value = withTiming(BACKDROP_OPACITY, TIMING_CONFIG);
-            menuScale.value = withTiming(1, TIMING_CONFIG);
-            menuOpacity.value = withTiming(1, TIMING_CONFIG);
+            backdropOpacity.set(withTiming(BACKDROP_OPACITY, TIMING_CONFIG));
+            menuScale.set(withTiming(1, TIMING_CONFIG));
+            menuOpacity.set(withTiming(1, TIMING_CONFIG));
         } else if (isAnimatingOut) {
-            backdropOpacity.value = withTiming(0, TIMING_CONFIG);
-            menuScale.value = withTiming(MENU_SCALE_CLOSED, TIMING_CONFIG);
-            menuOpacity.value = withTiming(0, TIMING_CONFIG);
+            backdropOpacity.set(withTiming(0, TIMING_CONFIG));
+            menuScale.set(withTiming(MENU_SCALE_CLOSED, TIMING_CONFIG));
+            menuOpacity.set(withTiming(0, TIMING_CONFIG));
 
             closeTimerRef.current = setTimeout(() => {
                 closeTimerRef.current = null;

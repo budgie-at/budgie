@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useToday } from '../../../@generic/hook/use-today.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -29,7 +30,7 @@ export const RecurringCalendarContent = () => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const now = new Date();
+    const now = useToday();
     const [displayMonth, setDisplayMonth] = useState(now.getMonth());
     const [displayYear, setDisplayYear] = useState(now.getFullYear());
     const { data } = useRecurringCalendar(displayYear, displayMonth);

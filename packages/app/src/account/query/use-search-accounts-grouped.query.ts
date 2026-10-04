@@ -31,12 +31,10 @@ export const useSearchAccountsGroupedQuery = (search = '', withActive = true) =>
         accounts: filteredData,
         total: AsyncResult.getOrElse(countResult, () => []).at(0)?.count ?? 0,
         isLoading: AsyncResult.isInitial(result),
-        accountsGrouped: filteredData.reduce<AccountGroups>(
-            (acc, curr) => ({
-                ...acc,
-                [curr.type]: [...(acc[curr.type] ?? []), curr]
-            }),
-            {}
-        )
+        accountsGrouped: filteredData.reduce<AccountGroups>((acc, curr) => {
+            acc[curr.type] = [...(acc[curr.type] ?? []), curr];
+
+            return acc;
+        }, {})
     };
 };

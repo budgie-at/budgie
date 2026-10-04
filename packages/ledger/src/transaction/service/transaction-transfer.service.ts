@@ -271,7 +271,6 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             const conversion = yield* exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits);
 
             if (!isDefined(conversion) || !isPositiveNumber(conversion.amount)) {
-                // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, surfaced via caller's Toast
                 return yield* Effect.die(new Error('No exchange rate available to close this deposit into the selected account'));
             }
 

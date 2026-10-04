@@ -8,7 +8,6 @@ build
 dist
 out
 *.tsbuildinfo
-.eslintcache
 
 # Logs
 logs

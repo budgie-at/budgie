@@ -51,11 +51,11 @@ class ErsteAccountInfoExtractor {
             if (match) {
                 const [, day, month, year, hours, minutes] = match;
                 const date = new Date(
-                    parseInt(year, 10),
-                    parseInt(month, 10) - 1,
-                    parseInt(day, 10),
-                    parseInt(hours, 10),
-                    parseInt(minutes, 10)
+                    Number.parseInt(year, 10),
+                    Number.parseInt(month, 10) - 1,
+                    Number.parseInt(day, 10),
+                    Number.parseInt(hours, 10),
+                    Number.parseInt(minutes, 10)
                 );
 
                 if (isValid(date)) {

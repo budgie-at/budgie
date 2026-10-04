@@ -11,7 +11,7 @@ export const useSystemTheme = (): ColorSchemeName => {
             setSystemScheme(colorScheme ?? 'light');
         });
 
-        // oxlint-disable-next-line react-hooks-js/set-state-in-effect
+        // oxlint-disable-next-line react/set-state-in-effect
         setSystemScheme(Appearance.getColorScheme() ?? 'light');
 
         return () => {

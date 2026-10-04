@@ -13,5 +13,5 @@ export const toggleFilterSelection = (prev: number[] | null, selected: number[])
         return isNotEmptyArray(next) ? next : null;
     }
 
-    return Array.from(new Set([...prev, ...selected]));
+    return [...new Set([...prev, ...selected])];
 };

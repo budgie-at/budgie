@@ -160,7 +160,9 @@ export class BudgetTemplateService extends Context.Service<BudgetTemplateService
                 if (isDefined(entry.categoryId) && isInsideWindow) {
                     const convertedAmount = budgetSpentService.convertEntryAmount(entry, baseInstrumentId);
                     const currentMonthlyAmounts = totalsByCategory.get(entry.categoryId);
-                    const monthlyAmounts = isDefined(currentMonthlyAmounts) ? currentMonthlyAmounts : new Array<number>(months).fill(0);
+                    const monthlyAmounts = isDefined(currentMonthlyAmounts)
+                        ? currentMonthlyAmounts
+                        : Array.from({ length: months }, () => 0);
                     monthlyAmounts[monthIndex] += convertedAmount;
                     totalsByCategory.set(entry.categoryId, monthlyAmounts);
                 }

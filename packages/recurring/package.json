@@ -21,9 +21,8 @@
         "build:watch": "pnpm build --watch",
         "clear": "rimraf dist node_modules/.cache .turbo",
         "format": "oxfmt --write src",
-        "lint": "oxlint --type-aware src && eslint src",
-        "lint:eslint": "eslint src",
-        "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
+        "lint": "oxlint --type-aware src",
+        "lint:fix": "oxlint --type-aware --fix src",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p . && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.test.json",
         "test": "vitest run",
         "test:watch": "vitest"
