@@ -31,6 +31,8 @@ const PRIVATBANK_EXPENSE_RATE = 50;
 const PRIVATBANK_REFUND_RATE = 49;
 const PRIVATBANK_ORIGINAL_AMOUNT = 32.26;
 const PRIVATBANK_DECOY_ORIGINAL_AMOUNT = 40;
+const PRIVATBANK_EUR_EXPENSE_RATE = 48;
+const PRIVATBANK_USD_REFUND_RATE = 41.5;
 const PRIVATBANK_EXPENSE_OPERATED_AT = new Date(MISSED_REFUND_YEAR, 5, 20, 10, 0, 0);
 const PRIVATBANK_DECOY_EXPENSE_OPERATED_AT = new Date(MISSED_REFUND_YEAR, 5, 22, 10, 0, 0);
 const PRIVATBANK_REFUND_OPERATED_AT = new Date(MISSED_REFUND_YEAR, 5, 25, 23, 59, 59);
@@ -52,6 +54,13 @@ const SHOP_SMALL_EXPENSE_AMOUNT = convertToMicroUnits(100);
 const SHOP_LARGE_EXPENSE_AMOUNT = convertToMicroUnits(300);
 const SHOP_SMALL_REFUND_AMOUNT = convertToMicroUnits(90);
 const SHOP_LARGE_REFUND_AMOUNT = convertToMicroUnits(280);
+const RANKING_TITLE = 'Decathlon';
+const RANKING_REVIEW_EXPENSE_TITLE = 'Decathlon, Wien';
+const RANKING_REFUND_AMOUNT = convertToMicroUnits(150);
+const RANKING_EXACT_EXPENSE_AMOUNT = convertToMicroUnits(100);
+const RANKING_REVIEW_EXPENSE_AMOUNT = convertToMicroUnits(200);
+const RANKING_EXACT_EXPENSE_OPERATED_AT = new Date(MISSED_REFUND_YEAR, 6, 1, 10, 0, 0);
+const RANKING_REVIEW_EXPENSE_OPERATED_AT = new Date(MISSED_REFUND_YEAR, 5, 1, 10, 0, 0);
 const SHOP_SMALL_EXPENSE_OPERATED_AT = new Date(MISSED_REFUND_YEAR, 2, 1, 10, 0, 0);
 const SHOP_LARGE_EXPENSE_OPERATED_AT = new Date(MISSED_REFUND_YEAR, 2, 2, 10, 0, 0);
 
@@ -278,6 +287,72 @@ layer(TestLayer)('consolidation/refund-pair-missed-refund-matches', it => {
                 { expenseTransactionId: smallExpense.expense.id, refundIncomeTransactionIds: [refunds[0].id] },
                 { expenseTransactionId: largeExpense.id, refundIncomeTransactionIds: [refunds[1].id] }
             ]);
+        })
+    );
+
+    it.effect('does not auto-consolidate a Privatbank refund whose exchange rate implies a different currency', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'privat-card', externalSource: ExternalSourceEnum.PRIVATBANK });
+
+            yield* seedPrivatbankTransaction({
+                accountId: account.id,
+                exchangeRate: PRIVATBANK_EUR_EXPENSE_RATE,
+                externalId: 'privat-eur-expense',
+                isRefund: false,
+                operatedAt: PRIVATBANK_EXPENSE_OPERATED_AT,
+                originalAmount: PRIVATBANK_ORIGINAL_AMOUNT,
+                title: 'Amazon'
+            });
+            yield* seedPrivatbankTransaction({
+                accountId: account.id,
+                exchangeRate: PRIVATBANK_USD_REFUND_RATE,
+                externalId: 'privat-usd-refund',
+                isRefund: true,
+                operatedAt: PRIVATBANK_REFUND_OPERATED_AT,
+                originalAmount: PRIVATBANK_ORIGINAL_AMOUNT,
+                title: PRIVATBANK_REFUND_TITLE
+            });
+
+            const { autoCandidates } = yield* findRefundCandidates();
+
+            expect(autoCandidates).toHaveLength(0);
+            expect((yield* runConsolidation()).consolidated).toBe(0);
+        })
+    );
+
+    it.effect('ranks a covering review expense above a closer non-covering exact-title expense', () =>
+        Effect.gen(function* () {
+            const exactAccount = yield* testSeedService.account({ externalId: 'mono-card' });
+            const reviewAccount = yield* testSeedService.account({ externalId: 'mono-card-second' });
+
+            const reviewExpense = yield* seedExpenseWithoutRefund({
+                accountId: reviewAccount.id,
+                title: RANKING_REVIEW_EXPENSE_TITLE,
+                expenseAmount: RANKING_REVIEW_EXPENSE_AMOUNT,
+                expenseOperatedAt: RANKING_REVIEW_EXPENSE_OPERATED_AT,
+                externalIdPrefix: 'ranking-review'
+            });
+            const { refunds } = yield* testSeedService.refundedExpense({
+                accountId: exactAccount.id,
+                title: RANKING_TITLE,
+                expenseAmount: RANKING_EXACT_EXPENSE_AMOUNT,
+                refundAmounts: [RANKING_REFUND_AMOUNT],
+                expenseOperatedAt: RANKING_EXACT_EXPENSE_OPERATED_AT,
+                refundDelaySeconds: DAY_SECONDS,
+                externalIdPrefix: 'ranking-refund'
+            });
+
+            const { reviewCandidates } = yield* findRefundCandidates();
+
+            expect(reviewCandidates).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        confidenceBucket: 'REVIEW_REFUND_PREFIX_TITLE_MCC',
+                        expenseTransactionId: reviewExpense.expense.id,
+                        refundIncomeTransactionIds: [refunds[0].id]
+                    })
+                ])
+            );
         })
     );
 });

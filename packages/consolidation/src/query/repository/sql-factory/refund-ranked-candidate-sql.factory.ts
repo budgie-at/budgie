@@ -13,6 +13,8 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 
+const PRIVATBANK_EXCHANGE_RATE_TOLERANCE = 0.05;
+
 const AUTO_BUCKET_MEMBERSHIP_SQL = `confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
     'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE', 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE', 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT')`;
 
@@ -38,6 +40,7 @@ const buildPrivatbankOriginalAmountRefundSql = (): string => `inc.externalSource
     AND inc.accountId = exp.accountId
     AND inc.exchangeRate != 1 AND exp.exchangeRate != 1
     AND inc.originalMinorAmount = exp.originalMinorAmount
+    AND ABS(inc.exchangeRate / exp.exchangeRate - 1) <= ${PRIVATBANK_EXCHANGE_RATE_TOLERANCE}
     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}`;
 
 const buildExpenseEntriesSql = (
@@ -188,8 +191,7 @@ const buildBucketPriorityOrderSql = (): string => `
 
 const buildAmountMismatchOrderSql = (): string => `CASE WHEN refundAmount = ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END`;
 
-const buildAmountDistanceOrderSql = (): string =>
-    `CASE WHEN refundAmount <= ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END, ABS(${REFUND_CEILING_SQL} - refundAmount)`;
+const buildCoveringOrderSql = (): string => `CASE WHEN refundAmount <= ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END`;
 
 const buildRankedPairsSql = (): string => `
     ranked_pairs AS (
@@ -198,7 +200,7 @@ const buildRankedPairsSql = (): string => `
             COUNT(*) OVER (PARTITION BY refundTxId) AS refundCandidateCount,
             ROW_NUMBER() OVER (
                 PARTITION BY refundTxId
-                ORDER BY ${buildAmountMismatchOrderSql()}, ${buildBucketPriorityOrderSql()}, ${buildAmountDistanceOrderSql()}, timeDiff
+                ORDER BY ${buildAmountMismatchOrderSql()}, ${buildCoveringOrderSql()}, ${buildBucketPriorityOrderSql()}, ABS(${REFUND_CEILING_SQL} - refundAmount), timeDiff
             ) AS refundRank,
             ROW_NUMBER() OVER (
                 PARTITION BY expenseTxId
