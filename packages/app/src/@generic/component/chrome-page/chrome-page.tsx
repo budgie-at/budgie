@@ -37,7 +37,7 @@ export const ChromePage = (props: PageChromePropsInterface) => {
             </View>
 
             <EdgeFade position="top" />
-            <View className="absolute top-0 right-0 left-0" style={headerStyle}>
+            <View className="absolute top-0 right-0 left-0" pointerEvents="box-none" style={headerStyle}>
                 {header}
             </View>
 

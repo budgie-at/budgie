@@ -32,7 +32,7 @@ const runwayDriverSeriesAtom = databaseQueryFamily(
 );
 
 export const useRunwayQuery = (params: UseRunwayQueryParams) => {
-    const { dimension, liquid } = params;
+    const { dimension, liquid, isAllIn } = params;
     const language = useSetting('language');
     const { defaultInstrument } = useSettingsContext();
     const seriesResult = useLiveAtomValue(runwaySeriesAtom(defaultInstrument.id));
@@ -45,8 +45,8 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const categoryDriverRows = AsyncResult.getOrElse(categoryDriverResult, () => []);
     const tagDriverRows = AsyncResult.getOrElse(tagDriverResult, () => []);
     const monthlyBurn = median(seriesRows.map(row => row.expense));
-    const categoryBreakdown = aggregateRunwayDrivers(categoryDriverRows, monthlyBurn);
-    const tagBreakdown = aggregateRunwayDrivers(tagDriverRows, monthlyBurn);
+    const categoryBreakdown = aggregateRunwayDrivers(categoryDriverRows, monthlyBurn, isAllIn);
+    const tagBreakdown = aggregateRunwayDrivers(tagDriverRows, monthlyBurn, isAllIn);
     const computation = computeRunway({
         series: seriesRows,
         liquid,

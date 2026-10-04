@@ -25,7 +25,7 @@ export const RunwayContent = ({ contentContainerStyle }: Props) => {
     const [isAllIn, setIsAllIn] = useState(false);
 
     const liquid = useLiquidBalanceQuery();
-    const { computation, drivers, series } = useRunwayQuery({ dimension, liquid });
+    const { computation, drivers, series } = useRunwayQuery({ dimension, liquid, isAllIn });
 
     const handleToggleAllIn = () => {
         setIsAllIn(current => !current);
@@ -45,7 +45,6 @@ export const RunwayContent = ({ contentContainerStyle }: Props) => {
               isPositive: computation.allInNet >= 0
           }
         : computation;
-    const visibleDrivers = isAllIn ? drivers : drivers.filter(driver => !driver.isIrregular);
 
     return (
         <ScrollView
@@ -61,7 +60,7 @@ export const RunwayContent = ({ contentContainerStyle }: Props) => {
             <RunwayFlowRow computation={forecastComputation} />
             <RunwayForecastChart computation={forecastComputation} />
             <RunwayHistoryChart series={series} burn={computation.burn} />
-            <RunwayDrivers drivers={visibleDrivers} dimension={dimension} onChangeDimension={setDimension} />
+            <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
             <MenuSpacer />
         </ScrollView>
     );

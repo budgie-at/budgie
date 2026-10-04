@@ -9,15 +9,15 @@ import { AnimatedTabBar } from '../animated-tab-bar/animated-tab-bar';
 
 import type { TabConfigInterface } from '../../interface/tab-config.interface';
 import type { TransactionFilterInterface } from '@budgie/contracts';
-import type { Dispatch, SetStateAction } from 'react';
-import type { LayoutChangeEvent } from 'react-native';
+import type { Dispatch, Ref, SetStateAction } from 'react';
 
 interface Props {
     readonly activeTab: AnalyticsTabType;
     readonly onChangeTab: (tab: AnalyticsTabType) => void;
     readonly filters: TransactionFilterInterface;
     readonly onChangeFilters: Dispatch<SetStateAction<TransactionFilterInterface>>;
-    readonly onLayout: (event: LayoutChangeEvent) => void;
+    readonly ref: Ref<View>;
+    readonly onLayout: () => void;
 }
 
 const TABS: readonly TabConfigInterface<AnalyticsTabType>[] = [
@@ -26,8 +26,8 @@ const TABS: readonly TabConfigInterface<AnalyticsTabType>[] = [
     { key: 'runway', label: <Trans>Runway</Trans>, testID: AnalyticsPageSelector.RunwayTab }
 ];
 
-export const AnalyticsPageHeader = ({ activeTab, onChangeTab, filters, onChangeFilters, onLayout }: Props) => (
-    <View className="pb-5xl" onLayout={onLayout}>
+export const AnalyticsPageHeader = ({ activeTab, onChangeTab, filters, onChangeFilters, ref, onLayout }: Props) => (
+    <View ref={ref} className="pb-5xl" pointerEvents="box-none" onLayout={onLayout}>
         <AnimatedTabBar tabs={TABS} activeTab={activeTab} onChangeTab={onChangeTab} />
 
         {activeTab === 'runway' ? null : (

@@ -1,11 +1,11 @@
 import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum } from '@budgie/contracts';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isString } from '@rnw-community/shared';
+import { isDefined, isString } from '@rnw-community/shared';
 
 import { AnalyticsPageHeader } from '../../@generic/component/analytics-page-header/analytics-page-header';
 import { ChromePage } from '../../@generic/component/chrome-page/chrome-page';
@@ -17,7 +17,6 @@ import { AnalyticsPageSelector } from './analytics-page.selector';
 
 import type { AnalyticsTabType } from '../../@generic/type/analytics-tab.type';
 import type { TransactionFilterInterface } from '@budgie/contracts';
-import type { LayoutChangeEvent } from 'react-native';
 
 const DEFAULT_ANALYTICS_TAB: AnalyticsTabType = 'categories';
 const TABS: readonly AnalyticsTabType[] = [DEFAULT_ANALYTICS_TAB, 'tags', 'runway'];
@@ -27,6 +26,7 @@ const isAnalyticsTab = (value: unknown): value is AnalyticsTabType => isString(v
 export default function AnalyticsPage() {
     const { tab } = useLocalSearchParams<{ tab?: string }>();
     const insets = useSafeAreaInsets();
+    const headerRef = useRef<View>(null);
     const [headerHeight, setHeaderHeight] = useState(0);
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
@@ -39,9 +39,13 @@ export default function AnalyticsPage() {
     const handleChangeTab = (nextTab: AnalyticsTabType) => {
         router.setParams({ tab: nextTab });
     };
-    const handleHeaderLayout = (event: LayoutChangeEvent) => {
-        setHeaderHeight(event.nativeEvent.layout.height);
+    const measureHeader = () => {
+        if (isDefined(headerRef.current)) {
+            setHeaderHeight(headerRef.current.getBoundingClientRect().height);
+        }
     };
+
+    useLayoutEffect(measureHeader);
 
     const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: handleChangeTab });
 
@@ -51,7 +55,8 @@ export default function AnalyticsPage() {
             onChangeTab={handleChangeTab}
             filters={filters}
             onChangeFilters={setFilters}
-            onLayout={handleHeaderLayout}
+            ref={headerRef}
+            onLayout={measureHeader}
         />
     );
 
