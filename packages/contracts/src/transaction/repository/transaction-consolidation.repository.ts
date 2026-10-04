@@ -181,6 +181,21 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                             )
                     ),
 
+                detachFromConsolidation: Effect.fn('TransactionConsolidationRepository.detachFromConsolidation')(function* (
+                    sourceTransactionIds: number[]
+                ) {
+                    if (isEmptyArray(sourceTransactionIds)) {
+                        return;
+                    }
+
+                    yield* Db.query(db =>
+                        db
+                            .update(TransactionEntityTable)
+                            .set({ consolidationParentTransactionId: null })
+                            .where(inArray(TransactionEntityTable.id, sourceTransactionIds))
+                    );
+                }),
+
                 clearConsolidationParent: (canonicalTransactionId: number) =>
                     Db.query(db =>
                         db

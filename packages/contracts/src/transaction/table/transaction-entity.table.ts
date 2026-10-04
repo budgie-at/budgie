@@ -28,6 +28,7 @@ export const TransactionEntityTable = sqliteTable(
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         updatedBy: text('updated_by', { enum: convertEnumToDrizzleEnum(TransactionUpdatedByEnum) }).$type<TransactionUpdatedByEnum>(),
         needsEmbedding: int('needs_embedding', { mode: 'boolean' }).notNull().default(false),
+        importFingerprint: text('import_fingerprint'),
         consolidationParentTransactionId: int('consolidation_parent_transaction_id', { mode: 'number' }).references(
             (): AnySQLiteColumn => TransactionEntityTable.id,
             { onDelete: 'set null' }
