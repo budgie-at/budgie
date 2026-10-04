@@ -106,12 +106,14 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
                 ExternalSourceEnum.MONOBANK
             );
             const ersteShopping = yield* seedMcclessExpense('erste-shopping', 'AUTOMATENSHOP WIEN 1010', ExternalSourceEnum.ERSTE);
+            const ersteNearMiss = yield* seedMcclessExpense('erste-near-miss', 'AUTOMAT 1SHOP K2BAR SNACK', ExternalSourceEnum.ERSTE);
 
             expect(
                 yield* consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds([
                     legacyAtmWithdrawal.id,
                     otherBankAutomat.id,
-                    ersteShopping.id
+                    ersteShopping.id,
+                    ersteNearMiss.id
                 ])
             ).toEqual([legacyAtmWithdrawal.id]);
             expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([legacyAtmWithdrawal.id])).toBe(1);

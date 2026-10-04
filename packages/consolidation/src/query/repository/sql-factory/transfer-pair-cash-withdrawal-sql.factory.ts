@@ -5,6 +5,10 @@ import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const ERSTE_ATM_WITHDRAWAL_TITLE_GLOB = 'AUTOMAT [0-9]* K[0-9]* *';
+const ERSTE_ATM_TERMINAL_TOKENS_SQL = `substr(expense_tx.title, 9)`;
+const ERSTE_ATM_CARD_TOKENS_SQL = `substr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, instr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, ' ') + 2)`;
+
+const buildFirstTokenSql = (tokensSql: string): string => `substr(${tokensSql}, 1, instr(${tokensSql}, ' ') - 1)`;
 
 export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null = null): string => `
             WITH active_cash_accounts AS (
@@ -62,6 +66,8 @@ export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScop
                         expense_entry.mcc_category_id IS NULL
                         AND expense_tx.external_source = '${ExternalSourceEnum.ERSTE}'
                         AND expense_tx.title GLOB '${ERSTE_ATM_WITHDRAWAL_TITLE_GLOB}'
+                        AND ${buildFirstTokenSql(ERSTE_ATM_TERMINAL_TOKENS_SQL)} NOT GLOB '*[^0-9]*'
+                        AND ${buildFirstTokenSql(ERSTE_ATM_CARD_TOKENS_SQL)} NOT GLOB '*[^0-9]*'
                     )
                 )
                 ${buildConsolidationScanScopeSql(scope, 'expense_tx.operated_at')}
