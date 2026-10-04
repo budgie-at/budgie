@@ -6,6 +6,9 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS = 2 * 24 * 60 * 60;
 const MANUAL_EXPENSE_DUPLICATE_MIN_ACCOUNT_PAIR_SUPPORT = 3;
+const MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_TIME_WINDOW_SECONDS = 3 * 60 * 60;
+const MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_AMOUNT_PERCENT = 1;
+const PERCENT_DIVISOR = 100;
 
 const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
     WITH synced_expenses AS MATERIALIZED (
@@ -96,9 +99,15 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
         FROM synced_expenses synced
         INNER JOIN manual_expenses manual
             ON manual.instrumentId = synced.instrumentId
-            AND manual.amount = synced.amount
             AND manual.operatedAt BETWEEN synced.operatedAt - ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
                 AND synced.operatedAt + ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
+            AND (
+                manual.amount = synced.amount
+                OR (
+                    ABS(manual.operatedAt - synced.operatedAt) <= ${MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_TIME_WINDOW_SECONDS}
+                    AND ABS(manual.amount - synced.amount) * ${PERCENT_DIVISOR} <= synced.amount * ${MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_AMOUNT_PERCENT}
+                )
+            )
     ),
     supported_pairs AS (
         SELECT
