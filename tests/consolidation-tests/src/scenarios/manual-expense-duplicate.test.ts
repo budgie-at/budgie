@@ -294,6 +294,23 @@ layer(TestLayer)('consolidation/manual-expense-duplicate', it => {
         })
     );
 
+    it.effect('prefers the exact manual match over a second hand-typed expense within one percent', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
+            const exact = yield* seedManualExpenseDuplicatePair({ accounts, index: 3 });
+            const approximateManual = yield* testSeedService.manualExpense({
+                accountId: accounts.manualAccount.id,
+                amount: buildManualExpenseDuplicateAmount(3) - buildOnePercentDelta(3),
+                operatedAt: new Date(exact.synced.operatedAt.getTime() + 60_000)
+            });
+
+            expect((yield* runConsolidation()).consolidated).toBe(4);
+            yield* expectManualExpenseDuplicateConsolidated(exact.synced.id, exact.manual.id);
+            yield* expectUntouched([approximateManual.id]);
+        })
+    );
+
     it.effect('matches manual expenses exactly two days apart and skips them one second later', () =>
         Effect.gen(function* () {
             const accounts = yield* seedManualExpenseDuplicateAccounts();

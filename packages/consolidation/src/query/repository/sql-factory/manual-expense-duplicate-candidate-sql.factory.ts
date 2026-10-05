@@ -96,8 +96,11 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             synced.operatedAt AS syncedOperatedAt,
             manual.manualTransactionId AS manualTransactionId,
             manual.accountId AS manualAccountId,
-            COUNT(*) OVER (PARTITION BY synced.syncedTransactionId) AS syncedMatchCount,
-            COUNT(*) OVER (PARTITION BY manual.manualTransactionId) AS manualMatchCount
+            manual.amount = synced.amount AS isExactAmount,
+            MAX(manual.amount = synced.amount) OVER (PARTITION BY synced.syncedTransactionId) AS syncedHasExactAmount,
+            MAX(manual.amount = synced.amount) OVER (PARTITION BY manual.manualTransactionId) AS manualHasExactAmount,
+            COUNT(*) OVER (PARTITION BY synced.syncedTransactionId, manual.amount = synced.amount) AS syncedMatchCount,
+            COUNT(*) OVER (PARTITION BY manual.manualTransactionId, manual.amount = synced.amount) AS manualMatchCount
         FROM synced_expenses synced
         INNER JOIN manual_expenses manual
             ON manual.instrumentId = synced.instrumentId
@@ -116,7 +119,10 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             *,
             COUNT(*) OVER (PARTITION BY manualAccountId, syncedAccountId, externalSource) AS accountPairSupport
         FROM eligible_pairs
-        WHERE syncedMatchCount = 1 AND manualMatchCount = 1
+        WHERE syncedMatchCount = 1
+            AND manualMatchCount = 1
+            AND isExactAmount = syncedHasExactAmount
+            AND isExactAmount = manualHasExactAmount
     )
     SELECT syncedTransactionId, manualTransactionId
     FROM supported_pairs
