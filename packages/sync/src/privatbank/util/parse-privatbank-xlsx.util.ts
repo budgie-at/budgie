@@ -1,4 +1,6 @@
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
 import { read, utils } from 'xlsx';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -21,30 +23,8 @@ import {
 
 import type { PrivatbankRowInterface } from '../interface/privatbank-row.interface';
 
-const MARCH_MONTH_INDEX = 2;
-const OCTOBER_MONTH_INDEX = 9;
-const KYIV_DST_SWITCH_UTC_HOUR = 1;
-const KYIV_STANDARD_OFFSET_MILLISECONDS = 2 * 60 * 60 * 1000;
-const KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS = 3 * 60 * 60 * 1000;
-
 const createParseError = (message: string): SyncInvalidResponseError =>
     new SyncInvalidResponseError({ provider: SyncProviderEnum.PRIVATBANK, message });
-
-const findLastSundayUtc = (year: number, month: number): number => {
-    const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0));
-
-    return Date.UTC(year, month, lastDayOfMonth.getUTCDate() - lastDayOfMonth.getUTCDay(), KYIV_DST_SWITCH_UTC_HOUR);
-};
-
-const resolveKyivUtcOffsetMilliseconds = (wallClockTime: number, year: number): number => {
-    const daylightSavingStart = findLastSundayUtc(year, MARCH_MONTH_INDEX);
-    const daylightSavingEnd = findLastSundayUtc(year, OCTOBER_MONTH_INDEX);
-    const daylightSavingCandidate = wallClockTime - KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS;
-
-    return daylightSavingCandidate >= daylightSavingStart && daylightSavingCandidate < daylightSavingEnd
-        ? KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS
-        : KYIV_STANDARD_OFFSET_MILLISECONDS;
-};
 
 const parsePrivatbankDates = (
     dateString: string
@@ -57,12 +37,21 @@ const parsePrivatbankDates = (
 
     const [day, month, year] = datePart.split('.').map(Number);
     const [hours, minutes, seconds] = timePart.split(':').map(Number);
-    const wallClockTime = Date.UTC(year, month - 1, day, hours, minutes, seconds);
-    const date = new Date(wallClockTime - resolveKyivUtcOffsetMilliseconds(wallClockTime, year));
 
-    return Number.isNaN(date.getTime())
-        ? Effect.fail(createParseError(`Failed to parse Privatbank date: "${dateString}"`))
-        : Effect.succeed({ date, deviceLocalDate: new Date(year, month - 1, day, hours, minutes, seconds) });
+    return Option.match(
+        DateTime.makeZoned(
+            { year, month, day, hour: hours, minute: minutes, second: seconds },
+            { timeZone: 'Europe/Kyiv', adjustForTimeZone: true }
+        ),
+        {
+            onNone: () => Effect.fail(createParseError(`Failed to parse Privatbank date: "${dateString}"`)),
+            onSome: zonedDate =>
+                Effect.succeed({
+                    date: DateTime.toDateUtc(zonedDate),
+                    deviceLocalDate: new Date(year, month - 1, day, hours, minutes, seconds)
+                })
+        }
+    );
 };
 
 const mapRawRowToPrivatbankRow = (row: unknown[]): Effect.Effect<PrivatbankRowInterface, SyncInvalidResponseError> =>
