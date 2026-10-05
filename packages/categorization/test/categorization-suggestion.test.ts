@@ -145,7 +145,7 @@ describe('categorization/suggestion', () => {
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
             const [cluster] = categorizeInboxEngineService.buildClusters(
                 rows,
-                categorizeInboxEngineService.buildContext(evidence, account.instrumentId)
+                categorizeInboxEngineService.buildContext(evidence, account.instrumentId, CategorizeInboxLabelKindEnum.CATEGORY)
             );
 
             expect(cluster.candidateLabelIds).toEqual([coffee.id]);
@@ -222,7 +222,7 @@ describe('categorization/suggestion', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('accepting a cluster writes a user category to every row', () =>
+    it.effect('accepting a cluster writes an inbox category to every row', () =>
         Effect.gen(function* () {
             const inboxRepository = yield* TransactionCategorizeInboxRepository;
             const categorizeInboxService = yield* CategorizeInboxService;
@@ -236,7 +236,7 @@ describe('categorization/suggestion', () => {
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
             const [cluster] = categorizeInboxEngineService.buildClusters(
                 rows,
-                categorizeInboxEngineService.buildContext([], account.instrumentId)
+                categorizeInboxEngineService.buildContext([], account.instrumentId, CategorizeInboxLabelKindEnum.CATEGORY)
             );
 
             yield* categorizeInboxService.assign(CategorizeInboxLabelKindEnum.CATEGORY, [
@@ -253,7 +253,7 @@ describe('categorization/suggestion', () => {
 
             expect(cluster.rows).toHaveLength(3);
             expect(
-                entries.filter(entry => entry.categoryId === groceries.id && entry.categorySource === CategorySourceEnum.USER)
+                entries.filter(entry => entry.categoryId === groceries.id && entry.categorySource === CategorySourceEnum.INBOX)
             ).toHaveLength(3);
         }).pipe(Effect.provide(TestLayer))
     );

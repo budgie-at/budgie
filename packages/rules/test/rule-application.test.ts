@@ -5,6 +5,7 @@ import {
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
+    TagSourceEnum,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTagsEntityTable,
@@ -79,7 +80,8 @@ layer(TestLayer)('rules engine', it => {
             const [prepared] = transactionInputs;
 
             expect(postCreateIndexes).toEqual([]);
-            expect(prepared.tagIds).toEqual([tag.id]);
+            expect(prepared.tagIds).toEqual([]);
+            expect(prepared.ruleTagIds).toEqual([tag.id]);
             expect(prepared.entries.map(entry => [entry.categoryId, entry.categorySource])).toEqual([
                 [firstCategory.id, CategorySourceEnum.RULE]
             ]);
@@ -109,7 +111,29 @@ layer(TestLayer)('rules engine', it => {
                 .where(eq(TransactionTagsEntityTable.transactionId, expense.id));
 
             expect(entries.map(entry => [entry.categoryId, entry.categorySource])).toEqual([[firstCategory.id, CategorySourceEnum.RULE]]);
-            expect(tags.map(transactionTag => transactionTag.tagId)).toEqual([tag.id]);
+            expect(tags.map(transactionTag => [transactionTag.tagId, transactionTag.source])).toEqual([[tag.id, TagSourceEnum.RULE]]);
+        })
+    );
+
+    it.effect('adds a new rule tag when an earlier rule tag is already user-picked', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const ruleService = yield* RuleService;
+            const tag = yield* testSeedService.tag('groceries');
+            const userTag = yield* testSeedService.tag('household');
+            yield* ruleService.create({
+                enabled: true,
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                conditions: [titleContains],
+                actions: [{ type: RuleActionTypeEnum.ADD_TAG, categoryId: null, tagId: tag.id, accountId: null }]
+            });
+            const account = yield* testSeedService.account();
+
+            const { transactionInputs } = yield* ruleEngineService.prepareCreateInputsForRules([
+                { ...buildInput(account.id), tagIds: [userTag.id], ruleTagIds: [userTag.id] }
+            ]);
+
+            expect(transactionInputs[0].ruleTagIds).toEqual([tag.id]);
         })
     );
 });

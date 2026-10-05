@@ -6,6 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -19,6 +20,7 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
     '@budgie/contracts/TransactionEntryRepository',
     {
         make: Effect.sync(() => {
+            const filters = new BaseTransactionFilterRepository();
             const buildPendingBaseValuationWhere = (baseInstrumentId: number) =>
                 and(
                     or(
@@ -159,15 +161,14 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                           )
                         : [];
                 }),
-                deleteByTransactionIds: Effect.fn('TransactionEntryRepository.deleteByTransactionIds')(function* (
-                    transactionIds: number[]
-                ) {
-                    if (isNotEmptyArray(transactionIds)) {
-                        yield* Db.query(db =>
-                            db.delete(TransactionEntryEntityTable).where(inArray(TransactionEntryEntityTable.transactionId, transactionIds))
-                        );
-                    }
-                }),
+                deleteLedgerByTransactionIds: (transactionIds: number[]) =>
+                    Db.query(db =>
+                        db
+                            .delete(TransactionEntryEntityTable)
+                            .where(
+                                and(inArray(TransactionEntryEntityTable.transactionId, transactionIds), filters.buildLedgerEntryCondition())
+                            )
+                    ),
                 moveBackToOriginalTransactions: (canonicalTransactionId: number) =>
                     Db.query(db =>
                         db

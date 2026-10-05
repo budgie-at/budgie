@@ -17,6 +17,7 @@ import {
     InstrumentTypeEnum,
     MccCategoryEntityTable,
     TagEntityTable,
+    TagSourceEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
@@ -206,14 +207,15 @@ export class TestSeedService {
         });
     }
 
-    transactionTag(transactionId: number, tagId: number) {
+    transactionTag(transactionId: number, tagId: number, source: TagSourceEnum = TagSourceEnum.USER) {
         return Effect.gen({ self: this }, function* () {
             const rows = yield* this.database
                 .insert(TransactionTagsEntityTable)
                 .values({
                     transactionId,
                     tagId,
-                    isPrimary: false
+                    isPrimary: false,
+                    source
                 })
                 .returning();
 

@@ -7,9 +7,12 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Db } from '../../@generic/service/db.service';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags-create-entity.interface';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 import { insertTransactionTag } from '../util/insert-transaction-tag.util';
+
+import type { TagSourceEnum } from '../enum/tag-source.enum';
 
 export class TransactionTagsRepository extends Context.Service<TransactionTagsRepository>()('@budgie/contracts/TransactionTagsRepository', {
     make: Effect.succeed({
@@ -28,18 +31,25 @@ export class TransactionTagsRepository extends Context.Service<TransactionTagsRe
                 return [];
             }
 
-            return yield* Db.query(db => db.insert(TransactionTagsEntityTable).values(inputs).returning());
+            return yield* Db.query(db =>
+                db
+                    .insert(TransactionTagsEntityTable)
+                    .values(inputs)
+                    .onConflictDoUpdate(TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT)
+                    .returning()
+            );
         }),
 
         addTagByTransactionIds: Effect.fn('TransactionTagsRepository.addTagByTransactionIds')(function* (
             transactionIds: number[],
-            tagId: number
+            tagId: number,
+            source: TagSourceEnum
         ) {
             if (!isNotEmptyArray(transactionIds)) {
                 return [];
             }
 
-            const rows = yield* Db.query(db => insertTransactionTag(db, tagId, inArray(TransactionEntityTable.id, transactionIds)));
+            const rows = yield* Db.query(db => insertTransactionTag(db, tagId, inArray(TransactionEntityTable.id, transactionIds), source));
 
             return rows.map(row => row.transactionId);
         }),

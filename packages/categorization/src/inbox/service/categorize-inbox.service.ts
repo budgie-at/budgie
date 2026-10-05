@@ -1,4 +1,4 @@
-import { CategorySourceEnum, Db, TransactionRepository, TransactionUpdatedByEnum } from '@budgie/contracts';
+import { CategorySourceEnum, Db, TagSourceEnum, TransactionRepository, TransactionUpdatedByEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -29,16 +29,19 @@ export class CategorizeInboxService extends Context.Service<CategorizeInboxServi
         const applyLabel = Effect.fn('CategorizeInboxService.applyLabel')(function* (
             labelKind: CategorizeInboxLabelKindEnum,
             transactionIds: number[],
-            labelId: number
+            labelId: number,
+            tagSource: TagSourceEnum
         ) {
             if (labelKind === CategorizeInboxLabelKindEnum.TAG) {
-                return yield* touchUpdated(yield* transactionCategorizeInboxRepository.addTagByTransactionIds(transactionIds, labelId));
+                return yield* touchUpdated(
+                    yield* transactionCategorizeInboxRepository.addTagByTransactionIds(transactionIds, labelId, tagSource)
+                );
             }
 
             const updatedTransactionIds = yield* transactionCategorizeInboxRepository.updateUncategorizedCategoryByTransactionIds(
                 transactionIds,
                 labelId,
-                CategorySourceEnum.USER
+                CategorySourceEnum.INBOX
             );
 
             yield* transactionEmbeddingRepository.touchAndMarkForEmbeddingByIds(updatedTransactionIds);
@@ -87,8 +90,14 @@ export class CategorizeInboxService extends Context.Service<CategorizeInboxServi
         });
 
         const assign = Effect.fn('CategorizeInboxService.assign')(
-            function* (labelKind: CategorizeInboxLabelKindEnum, assignments: CategorizeInboxAssignmentInterface[]) {
-                return yield* applyByLabel(assignments, (transactionIds, labelId) => applyLabel(labelKind, transactionIds, labelId));
+            function* (
+                labelKind: CategorizeInboxLabelKindEnum,
+                assignments: CategorizeInboxAssignmentInterface[],
+                tagSource: TagSourceEnum = TagSourceEnum.INBOX
+            ) {
+                return yield* applyByLabel(assignments, (transactionIds, labelId) =>
+                    applyLabel(labelKind, transactionIds, labelId, tagSource)
+                );
             },
             effect => Db.transaction(effect)
         );

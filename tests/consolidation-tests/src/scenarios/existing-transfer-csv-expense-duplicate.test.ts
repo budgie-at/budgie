@@ -1,9 +1,7 @@
 import {
     AccountTypeEnum,
-    DEFAULT_TRANSACTION_FILTER,
     ExternalSourceEnum,
     PRECISION,
-    StatisticsRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
@@ -12,6 +10,7 @@ import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { expectConsolidationParent, fetchLedgerBalances } from '../harness/consolidation-revert-audit';
+import { fetchTotalExpense } from '../harness/fetch-total-expense';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
 import { testDb, testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
@@ -60,12 +59,6 @@ const seedLegacyCsvTransfer = (
 
         return { legacySourceAccount, legacyTargetAccount, legacyTransfer, syncedCardAccount };
     });
-
-const fetchTotalExpense = Effect.fnUntraced(function* () {
-    const statisticsRepository = yield* StatisticsRepository;
-
-    return (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, 1)).at(0)?.expense ?? 0;
-});
 
 const seedSyncedExpense = (accountId: number, amount: number, title: string, mcc = '4829') =>
     Effect.gen(function* () {
