@@ -135,6 +135,10 @@ msgstr "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "{downloadPercent}%"
+msgstr "{downloadPercent}%"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
@@ -2477,6 +2481,10 @@ msgstr "Loading market history"
 msgid "Loading..."
 msgstr "Loading..."
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Loading…"
+msgstr "Loading…"
+
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
 msgstr "Lock it down"
@@ -2546,6 +2554,10 @@ msgstr "Matched income is converted into a transfer from this account."
 msgid "matches"
 msgstr "matches"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Matches consolidated"
+msgstr "Matches consolidated"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Matches Regex"
@@ -2590,6 +2602,10 @@ msgstr "Merge into another tag"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Merge matching transfers and refunds"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "Merged {consolidated} of {foundPairsText}."
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
@@ -4359,6 +4375,10 @@ msgstr "typical month {amount}"
 #: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Ukrainian"
+
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Unavailable"
+msgstr "Unavailable"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx

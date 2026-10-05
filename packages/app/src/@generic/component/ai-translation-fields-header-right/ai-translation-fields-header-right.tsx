@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Pressable, Text } from 'react-native';
 import Animated, { FadeInUp, type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -26,17 +27,17 @@ const DEFAULT_ANIMATION_DELAY = 200;
 
 const getStatusBadgeText = (status: ModelStatusInterface, t: ReturnType<typeof useLingui>['t']): string | null => {
     if (isDefined(status.error)) {
-        return t`Unavailable`;
+        return t(msg`Unavailable`);
     }
 
     if (status.isInitializing) {
-        return t`Loading…`;
+        return t(msg`Loading…`);
     }
 
     const downloadPercent = Math.round(status.downloadProgress * 100);
 
     if (status.downloadProgress < 1) {
-        return t`${downloadPercent}%`;
+        return t(msg`${downloadPercent}%`);
     }
 
     return null;
