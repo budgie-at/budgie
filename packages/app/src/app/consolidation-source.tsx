@@ -8,9 +8,7 @@ import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '
 export default function ConsolidationSourceModal() {
     const [, resolveConsolidationSource] = useConsolidationSourceModal();
     const currentParams = useConsolidationSourceModalParams();
-    const { backgroundColor, screenOptions } = useModalRouteState(currentParams, resolveConsolidationSource, null);
-
-    const containerStyle = { backgroundColor };
+    const screenOptions = useModalRouteState(currentParams, resolveConsolidationSource, null);
 
     const handleClose = () => {
         resolveConsolidationSource(null);
@@ -21,7 +19,7 @@ export default function ConsolidationSourceModal() {
     }
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="bg-primary-reverse" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <ConsolidationSourceModalContent
                 transactionId={currentParams.transactionId}

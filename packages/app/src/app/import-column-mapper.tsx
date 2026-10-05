@@ -8,7 +8,6 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../@generic/component/button/button';
 import { Footer } from '../@generic/component/footer/footer';
 import { Icon } from '../@generic/component/icon/icon';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { ImportColumnMapperOption } from '../import/components/import-column-mapper-option/import-column-mapper-option';
 import { useImportColumnMapperModal, useImportColumnMapperModalParams } from '../import/context/import-column-mapper-modal.context';
 
@@ -16,12 +15,10 @@ import { ImportColumnMapperModalSelector } from './import-column-mapper.selector
 
 const sortHeaders = (first: string, second: string): number => first.localeCompare(second);
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ImportColumnMapperModal() {
     const { t } = useLingui();
     const [, resolveImportColumnMapper] = useImportColumnMapperModal();
     const currentParams = useImportColumnMapperModalParams();
-    const { backgroundColor } = useFormsheetListStyles();
 
     const headers = currentParams?.headers ?? [];
     const selectedHeaders = currentParams?.selectedHeaders ?? [];
@@ -38,8 +35,6 @@ export default function ImportColumnMapperModal() {
         })
     });
 
-    const containerStyle = { flex: 1, backgroundColor };
-
     const handleSelect = (header: string) => () => {
         resolveImportColumnMapper({ type: 'select', header });
     };
@@ -53,7 +48,7 @@ export default function ImportColumnMapperModal() {
     };
 
     return (
-        <View style={containerStyle}>
+        <View className="flex-1 bg-primary-reverse">
             <View className="border-b border-b-secondary-corner px-3xl pt-3xl pb-xl">
                 <Text className="text-primary text-lg font-semibold">{fieldLabel}</Text>
                 <Text className="text-secondary-foreground text-sm">{description}</Text>

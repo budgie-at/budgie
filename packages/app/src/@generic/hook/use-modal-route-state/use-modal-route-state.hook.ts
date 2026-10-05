@@ -1,9 +1,8 @@
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
+import { useResolveClassNames } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { useFormsheetListStyles } from '../use-formsheet-list-styles/use-formsheet-list-styles.hook';
 
 import type { ModalContextTuple } from '../../utils/create-modal-context/create-modal-context.util';
 
@@ -13,12 +12,12 @@ export const useModalRouteState = <TParams, TResult>(
     emptyResult: TResult
 ) => {
     const router = useRouter();
-    const { backgroundColor } = useFormsheetListStyles();
+    const contentStyle = useResolveClassNames('bg-primary-reverse');
     const hadParamsRef = useRef(isDefined(currentParams));
     const resolveRef = useRef(resolve);
     const emptyResultRef = useRef(emptyResult);
 
-    const screenOptions: React.ComponentProps<typeof Stack.Screen>['options'] = { contentStyle: { backgroundColor } };
+    const screenOptions: React.ComponentProps<typeof Stack.Screen>['options'] = { contentStyle };
 
     useEffect(() => {
         resolveRef.current = resolve;
@@ -44,5 +43,5 @@ export const useModalRouteState = <TParams, TResult>(
         }
     }, [currentParams, router]);
 
-    return { backgroundColor, screenOptions };
+    return screenOptions;
 };

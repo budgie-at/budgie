@@ -1,5 +1,4 @@
 import { cva } from 'class-variance-authority';
-import { cn } from 'cn';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -8,6 +7,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { useAutoScaleFont } from '../../hook/use-auto-scale-font.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { cn } from '../../utils/cn.util';
 import { AmountInput } from '../amount-input/amount-input';
 import { SignTogglePill } from '../sign-toggle-pill/sign-toggle-pill';
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const amountInputVariants = cva('text-primary placeholder-secondary-reverse-foreground border-0 h-auto');
+const amountInputVariants = cva('text-primary border-0 h-auto');
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
@@ -98,7 +98,7 @@ export const FormAmountInput = (props: Props) => {
     };
 
     return (
-        <View className="flex-row items-center justify-center pl-4 pr-4 py-5xl px-lg h-36.5">
+        <View className="flex-row items-center justify-center px-4 py-5xl h-36.5">
             {allowNegative ? (
                 <View className="mr-xl flex-shrink-0">
                     <SignTogglePill isNegative={isNegative} variant={effectiveVariant} onToggle={handleToggleSign} />
@@ -117,6 +117,7 @@ export const FormAmountInput = (props: Props) => {
                     value={absoluteValue}
                     onChangeValue={handleAmountChange}
                     inputClassName={amountInputClassName}
+                    placeholderTextColorClassName="accent-secondary-reverse-foreground"
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
                     minimumDecimalPlaces={minimumDecimalPlaces}

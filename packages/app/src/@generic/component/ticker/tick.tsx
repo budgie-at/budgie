@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Text, TextStyle, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
 import { getTextStyleForTicket } from '../../utils/get-text-style-for-ticket.util';
@@ -7,7 +7,7 @@ import { getTextStyleForTicket } from '../../utils/get-text-style-for-ticket.uti
 interface Props {
     readonly num: number;
     readonly textSize: number;
-    readonly textStyle?: TextStyle;
+    readonly textClassName?: string;
     readonly index: number;
     readonly duration?: number;
     readonly delay?: number;
@@ -16,7 +16,7 @@ interface Props {
 const NUM_FROM_ZERO_TO_NINE = [...Array(10).keys()];
 
 export const Tick = (props: Props) => {
-    const { num, textSize, textStyle, index, duration = 500, delay = 50 } = props;
+    const { num, textSize, textClassName, index, duration = 500, delay = 50 } = props;
 
     const translateY = useSharedValue(-textSize * num);
 
@@ -28,14 +28,14 @@ export const Tick = (props: Props) => {
         transform: [{ translateY: translateY.value }]
     }));
 
-    const textStyles = [textStyle, getTextStyleForTicket(textSize)];
+    const textStyle = getTextStyleForTicket(textSize);
     const style = { height: textSize, overflow: 'hidden' } as const;
 
     return (
         <View style={style}>
             <Animated.View style={animatedStyle}>
                 {NUM_FROM_ZERO_TO_NINE.map((number, index) => (
-                    <Text key={index} style={textStyles}>
+                    <Text key={index} className={textClassName} style={textStyle}>
                         {number}
                     </Text>
                 ))}

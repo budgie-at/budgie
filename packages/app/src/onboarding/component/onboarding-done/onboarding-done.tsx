@@ -56,7 +56,7 @@ export const OnboardingDone = () => {
             ))}
         </View>
     ) : (
-        <Text className="text-secondary-foreground text-md leading-relaxed text-center">
+        <Text className="text-secondary-foreground text-md text-center">
             <Trans>You can always finish these steps later. Budgie&apos;s ready whenever you are.</Trans>
         </Text>
     );

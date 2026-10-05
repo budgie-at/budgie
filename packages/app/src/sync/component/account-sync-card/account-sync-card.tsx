@@ -71,7 +71,7 @@ export const AccountSyncCard = ({ accountId }: Props) => {
         );
 
     return (
-        <Card className="p-4xl gap-y-lg">
+        <Card className="gap-y-lg">
             <View className="flex-row items-center justify-between gap-2">
                 <ResyncAccount accountId={accountId} testID={AccountSyncCardSelector.ResyncButton} />
                 <View className="content-center items-center">

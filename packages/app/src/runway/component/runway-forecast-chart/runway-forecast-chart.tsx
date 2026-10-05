@@ -1,16 +1,20 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
-import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
+import { Text } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+import { withUniwind } from 'uniwind';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
+import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
+import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
+import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
+import { SVG_COLOR_CLASS_NAME_MAPPING } from '../../../@generic/constant/svg-color-class-name-mapping.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useThemeContext } from '../../../theme/context/theme.context';
-import { RUNWAY_CHART_COLORS } from '../../constant/runway-chart-colors.constant';
 import { RUNWAY_HORIZON_MONTHS } from '../../constant/runway-horizon-months.constant';
 import { buildRunwayForecastPath } from '../../utils/build-forecast-path.util';
+import { RunwayForecastLegend } from '../runway-forecast-legend/runway-forecast-legend';
 
 import type { RunwayComputationInterface } from '../../interface/runway-computation.interface';
 
@@ -33,11 +37,12 @@ const CHART_RIGHT = CHART_WIDTH - CHART_PADDING_RIGHT;
 const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
 const RUN_OUT_LABEL_Y = CHART_PADDING_TOP - LABEL_GAP;
 
+const StyledPath = withUniwind(Path, SVG_COLOR_CLASS_NAME_MAPPING);
+
 export const RunwayForecastChart = ({ computation }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndYear } = useFormatDate();
     const formatDigits = useFormatDigits(0);
-    const colors = RUNWAY_CHART_COLORS[useThemeContext().colorScheme];
 
     const { bandPath, medianPath, runOutX, tickXs, zeroY } = buildRunwayForecastPath({
         computation,
@@ -59,64 +64,64 @@ export const RunwayForecastChart = ({ computation }: Props) => {
             </Text>
 
             <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}>
-                <Line x1={CHART_PADDING_LEFT} y1={zeroY} x2={CHART_RIGHT} y2={zeroY} stroke={colors.zero} />
-                <Path d={bandPath} fill={colors.bandFill} stroke={colors.bandStroke} strokeWidth={1} />
-                <Path d={medianPath} fill="none" stroke={colors.median} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                <StyledLine x1={CHART_PADDING_LEFT} y1={zeroY} x2={CHART_RIGHT} y2={zeroY} strokeClassName="accent-corner" />
+                <StyledPath d={bandPath} fillClassName="accent-ghost-background" strokeClassName="accent-ghost-corner" strokeWidth={1} />
+                <StyledPath
+                    d={medianPath}
+                    fill="none"
+                    strokeClassName="accent-primary"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
 
                 {isDefined(runOutX) && isNotEmptyString(runOutLabel) ? (
                     <>
-                        <Line
+                        <StyledLine
                             x1={runOutX}
                             y1={CHART_PADDING_TOP}
                             x2={runOutX}
                             y2={zeroY}
-                            stroke={colors.destructive}
+                            strokeClassName="accent-destructive-foreground"
                             strokeDasharray={RUN_OUT_DASH}
                             strokeWidth={1}
                         />
-                        <Circle
+                        <StyledCircle
                             cx={runOutX}
                             cy={zeroY}
                             r={MARKER_RADIUS}
-                            fill={colors.destructive}
-                            stroke={colors.markerBackground}
+                            fillClassName="accent-destructive-foreground"
+                            strokeClassName="accent-primary-reverse dark:accent-secondary-background"
                             strokeWidth={1.5}
                         />
-                        <SvgText
+                        <StyledSvgText
                             x={runOutX}
                             y={RUN_OUT_LABEL_Y}
-                            fill={colors.destructive}
+                            fillClassName="accent-destructive-foreground"
                             fontSize={LABEL_FONT_SIZE}
                             fontWeight="600"
                             textAnchor={runOutAnchor}
                         >
                             {runOutLabel}
-                        </SvgText>
+                        </StyledSvgText>
                     </>
                 ) : null}
 
                 {tickXs.map((x, index) => (
-                    <SvgText key={x} x={x} y={CHART_BOTTOM} fill={colors.label} fontSize={LABEL_FONT_SIZE} textAnchor="middle">
+                    <StyledSvgText
+                        key={x}
+                        x={x}
+                        y={CHART_BOTTOM}
+                        fillClassName="accent-secondary-foreground"
+                        fontSize={LABEL_FONT_SIZE}
+                        textAnchor="middle"
+                    >
                         {tickLabels[index]}
-                    </SvgText>
+                    </StyledSvgText>
                 ))}
             </Svg>
 
-            <View className="gap-y-xs">
-                <View className="flex-row items-center gap-x-sm">
-                    <View className="h-0.5 w-4 rounded-full bg-primary" />
-                    <Text className="text-xxs text-secondary-foreground">
-                        <Trans>Most likely balance</Trans>
-                    </Text>
-                </View>
-
-                <View className="flex-row items-center gap-x-sm">
-                    <View className="h-3 w-4 rounded-sm border border-ghost-corner bg-ghost-background" />
-                    <Text className="text-xxs text-secondary-foreground">
-                        <Trans>Range across better and worse months</Trans>
-                    </Text>
-                </View>
-            </View>
+            <RunwayForecastLegend />
         </Card>
     );
 };

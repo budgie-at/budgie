@@ -9,7 +9,7 @@ import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useFormsheetListContentStyle } from '../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useGetAllMccCategoriesQuery } from '../mcc-category/query/use-get-all-mcc-categories.query';
 import { formatMccDisplay } from '../mcc-category/utils/format-mcc-display.util';
 import { useRuleMccSelectorModal, useRuleMccSelectorModalParams } from '../rule/context/rule-mcc-selector-modal.context';
@@ -39,7 +39,7 @@ export default function RuleMccSelectorModal() {
     const { t } = useLingui();
     const [, resolveRuleMccSelector] = useRuleMccSelectorModal();
     const currentParams = useRuleMccSelectorModalParams();
-    const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
+    const contentContainerStyle = useFormsheetListContentStyle();
     const [search, setSearch] = useState('');
     const { mccCategories } = useGetAllMccCategoriesQuery();
 
@@ -47,7 +47,6 @@ export default function RuleMccSelectorModal() {
     const filteredCategories = filterCategories(mccCategories, search);
     const emptyTitle = isNotEmptyString(search) ? t`No MCC codes found` : t`No MCC codes available`;
     const emptyDescription = isNotEmptyString(search) ? t`Try a different search term` : t`MCC categories are not loaded`;
-    const containerStyle = { flex: 1, backgroundColor };
 
     const renderItem = ({ item }: { item: MccCategoryEntityInterface }) => {
         const testID = RuleMccSelectorModalSelector.Card(item.mcc);
@@ -66,18 +65,17 @@ export default function RuleMccSelectorModal() {
     };
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search by code or description...`} />
 
             {isNotEmptyArray(filteredCategories) ? (
                 <FlatList
-                    style={flatListStyle}
                     contentContainerStyle={contentContainerStyle}
                     keyboardShouldPersistTaps="handled"
                     data={filteredCategories}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
-                    className="pt-3 px-xl"
+                    className="absolute inset-0 bg-primary-reverse pt-3 px-xl"
                     contentContainerClassName="gap-y-lg"
                 />
             ) : (

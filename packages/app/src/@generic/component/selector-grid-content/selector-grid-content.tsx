@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { FlatList, ListRenderItem, ViewStyle } from 'react-native';
 
-import { useFormsheetListStyles } from '../../hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { SelectorGridSkeleton } from '../selector-grid-skeleton/selector-grid-skeleton';
 
 interface Props<Item> {
@@ -32,7 +32,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
         additionalBottomPadding = 0,
         topOffset
     } = props;
-    const { flatListStyle, contentContainerStyle } = useFormsheetListStyles(additionalBottomPadding, topOffset);
+    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
     const alignedContentContainerStyle: ViewStyle = {
         ...contentContainerStyle,
         rowGap: ROW_GAP,
@@ -52,7 +52,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
 
     return (
         <FlatList
-            style={flatListStyle}
+            className="absolute inset-0 bg-primary-reverse"
             data={data}
             keyExtractor={keyExtractor}
             renderItem={renderItem}

@@ -65,7 +65,7 @@ export const TransactionPickerRow = ({ item, isSelected = false, onPress, testID
 
     if (!isDefined(onPress)) {
         return (
-            <View className={rowClassName} testID={testID}>
+            <View accessible className={rowClassName} testID={testID}>
                 {content}
             </View>
         );

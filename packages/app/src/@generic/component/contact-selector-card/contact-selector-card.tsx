@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Image } from 'expo-image';
-import { styled } from 'nativewind';
 import React from 'react';
 import { Text, View } from 'react-native';
+import { withUniwind } from 'uniwind';
 
 import { EmptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -21,7 +21,7 @@ interface Props {
     readonly phoneNumbers: string[];
 }
 
-const StyledImage = styled(Image, { className: 'style' });
+const StyledImage = withUniwind(Image);
 
 const blurhash =
     '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';

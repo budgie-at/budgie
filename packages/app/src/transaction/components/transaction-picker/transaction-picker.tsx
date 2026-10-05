@@ -68,7 +68,6 @@ export const TransactionPicker = (props: Props) => {
                         title={emptyTitle}
                         description={emptyDescription}
                         className="flex-1 px-2xl py-0"
-                        iconClassName="mb-lg"
                         titleClassName="text-center"
                         descriptionClassName="max-w-[260px] text-center leading-5"
                     />

@@ -1,6 +1,7 @@
-import { cn } from 'cn';
 import { ComponentProps } from 'react';
 import { Edge } from 'react-native-safe-area-context';
+
+import { cn } from '../../utils/cn.util';
 
 import { Page } from './page';
 

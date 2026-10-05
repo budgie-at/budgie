@@ -8,7 +8,6 @@ import { EmptyFn, isPositiveNumber } from '@rnw-community/shared';
 import { FilterSheetApply } from '../../../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetBulkToggle } from '../../../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { SelectorSearchRow } from '../../../@generic/component/selector-search-row/selector-search-row';
-import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 
 interface Props {
     readonly searchValue: string;
@@ -52,19 +51,14 @@ export const TransactionFilterSelectorFooter = (props: Props) => {
         applyTestID
     } = props;
     const { bottom } = useSafeAreaInsets();
-    const { backgroundColor } = useFormsheetListStyles();
     const { progress } = useReanimatedKeyboardAnimation();
 
     const hasSelection = isPositiveNumber(selectedCount);
     const bulkToggleDisabled = isLoading && !hasSelection;
     const closedBottomSpacing = Math.max(bottom, MIN_BOTTOM_SPACING);
-    const style = {
-        backgroundColor
-    };
     const footerStyle = useAnimatedStyle(() => ({
         paddingBottom: interpolate(progress.value, [0, 1], [closedBottomSpacing, KEYBOARD_OPEN_BOTTOM_SPACING])
     }));
-    const footerStyles = [style, footerStyle];
     const searchRowStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: interpolate(progress.value, [0, 1], [0, SEARCH_ROW_KEYBOARD_TRANSLATE_Y]) }]
     }));
@@ -77,7 +71,7 @@ export const TransactionFilterSelectorFooter = (props: Props) => {
 
     return (
         <KeyboardStickyView offset={keyboardOffset} className="absolute inset-x-0 bottom-0">
-            <Animated.View className="border-t border-t-secondary-corner px-xl pt-lg" style={footerStyles}>
+            <Animated.View className="border-t border-t-secondary-corner bg-primary-reverse px-xl pt-lg" style={footerStyle}>
                 <Animated.View style={searchRowStyle}>
                     <SelectorSearchRow
                         search={searchValue}

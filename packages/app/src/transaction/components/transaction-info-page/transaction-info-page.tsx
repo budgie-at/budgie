@@ -108,7 +108,6 @@ export const TransactionInfoPage = (props: Props) => {
     return (
         <ChromePage
             safeEdges={safeEdges}
-            contentClassName="px-0"
             header={<PageHeader title="" size="md" onGoBack={handleGoBack} right={actionsMenu} />}
             footer={
                 <View className="px-5xl pb-md pt-lg">

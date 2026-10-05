@@ -6,7 +6,6 @@ import { Text, View } from 'react-native';
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
@@ -48,7 +47,6 @@ export default function TagsSelectorModal() {
     const [openTagForm] = useTagFormModal();
     const [, resolveTagsSelector] = useTagsSelectorModal();
     const currentParams = useTagsSelectorModalParams();
-    const { backgroundColor } = useFormsheetListStyles();
 
     const {
         initialTagIds = [],
@@ -76,7 +74,6 @@ export default function TagsSelectorModal() {
     });
 
     const data = prepareTagData(tags, excludeTagIds, selected);
-    const containerStyle = { flex: 1, backgroundColor };
     const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
 
     const handleSelectTag = (tagId: number) => {
@@ -135,7 +132,7 @@ export default function TagsSelectorModal() {
     );
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}

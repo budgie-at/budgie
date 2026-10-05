@@ -1,12 +1,12 @@
 import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { PropsWithChildren, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
-import { Circle, Svg } from 'react-native-svg';
+import { Easing, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Svg } from 'react-native-svg';
 
+import { AnimatedStyledCircle } from '../../../@generic/component/animated-styled-circle/animated-styled-circle';
+import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
-import { RUNWAY_CHART_COLORS } from '../../../runway/constant/runway-chart-colors.constant';
-import { useThemeContext } from '../../../theme/context/theme.context';
 
 interface Props {
     readonly debtType: AccountDebtTypeEnum;
@@ -25,10 +25,8 @@ const FILL_EASING_Y1 = 0;
 const FILL_EASING_X2 = 0.175;
 const FILL_EASING_Y2 = 1;
 const FILL_EASING = Easing.bezier(FILL_EASING_X1, FILL_EASING_Y1, FILL_EASING_X2, FILL_EASING_Y2);
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export const DebtProgressRing = ({ debtType, percentage, children }: PropsWithChildren<Props>) => {
-    const { colorScheme } = useThemeContext();
     const reducedMotion = useReducedMotion();
     const progress = useSharedValue(percentage);
 
@@ -40,18 +38,24 @@ export const DebtProgressRing = ({ debtType, percentage, children }: PropsWithCh
         strokeDashoffset: RING_CIRCUMFERENCE * (1 - progress.get() / FULL_PERCENT)
     }));
 
-    const colors = RUNWAY_CHART_COLORS[colorScheme];
-    const fillColor = debtType === AccountDebtTypeEnum.BORROW ? colors.destructive : colors.positive;
+    const fillClassName = debtType === AccountDebtTypeEnum.BORROW ? 'accent-destructive-foreground' : 'accent-positive-foreground';
 
     return (
         <View className="h-[46px] w-[46px] shrink-0 items-center justify-center">
             <Svg width={RING_SIZE} height={RING_SIZE} style={StyleSheet.absoluteFill}>
-                <Circle cx={RING_CENTER} cy={RING_CENTER} r={RING_RADIUS} stroke={colors.zero} strokeWidth={STROKE_WIDTH} fill="none" />
-                <AnimatedCircle
+                <StyledCircle
                     cx={RING_CENTER}
                     cy={RING_CENTER}
                     r={RING_RADIUS}
-                    stroke={fillColor}
+                    strokeClassName="accent-corner"
+                    strokeWidth={STROKE_WIDTH}
+                    fill="none"
+                />
+                <AnimatedStyledCircle
+                    cx={RING_CENTER}
+                    cy={RING_CENTER}
+                    r={RING_RADIUS}
+                    strokeClassName={fillClassName}
                     strokeWidth={STROKE_WIDTH}
                     strokeDasharray={RING_CIRCUMFERENCE}
                     strokeLinecap="round"

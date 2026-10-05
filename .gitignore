@@ -49,7 +49,6 @@ tests/app-tests/artifacts/
 
 .env
 .worktrees
-nativewind-env.d.ts
 docs/plans
 docs/superpowers
 .vercel

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.93.1](https://github.com/budgie-at/budgie/compare/v6.93.0...v6.93.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* **app:** drop class overrides that NativeWind stylesheet order discarded ([66694ab](https://github.com/budgie-at/budgie/commit/66694ab0e4c1d07c7814cb6788ccdfaad6eac684))
+* **app:** drop unused eslint directive after oxlint-only migration ([66b0cd4](https://github.com/budgie-at/budgie/commit/66b0cd48ed4f574cd3a7ab44d430e18aa9c452de))
+* **app:** keep natural line height where leading classes used to cancel it ([c2807d5](https://github.com/budgie-at/budgie/commit/c2807d5a34a65a4ff9daf3ac3ff4a0ff14bec664))
+* **app:** keep pre-migration line heights in the explicit text scale ([8df75d4](https://github.com/budgie-at/budgie/commit/8df75d4e3e0e715f4aa66ec9988d38ae132c7cc1))
+* **app:** keep the read-only transaction picker row one accessible element ([2a86e87](https://github.com/budgie-at/budgie/commit/2a86e87269682a08620a7c6cc1347c723d358900))
+* **app:** restore NativeWind line-height and class-merge parity under Uniwind ([5fc7050](https://github.com/budgie-at/budgie/commit/5fc7050a9c87a43d380d578fb2a039d4e4f637ad))
+* **app:** show disabled sync dots grey in every status ([77e1bb1](https://github.com/budgie-at/budgie/commit/77e1bb1d9dd8d8765844e3f8e1218d50ba65f793))
+
+
+
+
+
 # [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
 
 

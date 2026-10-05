@@ -84,7 +84,7 @@ export default function AccountDetails() {
                         descriptionClassName={descriptionVariants({ variant: accountVariant })}
                     />
                 }
-                contentClassName="px-0 flex-1"
+                contentClassName="flex-1"
             >
                 <View className="pb-md">
                     {account.type === AccountTypeEnum.DEBT ? (

@@ -18,11 +18,10 @@ export default function AccountSelectorModal() {
     const { t } = useLingui();
     const [, resolveAccountSelector] = useAccountSelectorModal();
     const currentParams = useAccountSelectorModalParams();
-    const { backgroundColor, screenOptions } = useModalRouteState(currentParams, resolveAccountSelector, null);
+    const screenOptions = useModalRouteState(currentParams, resolveAccountSelector, null);
 
     const [search, setSearch] = useState('');
 
-    const containerStyle = { flex: 1, backgroundColor };
     const createAction = currentParams?.createAction;
 
     const { accounts } = useSearchAccountsSortedQuery(search, {
@@ -57,7 +56,7 @@ export default function AccountSelectorModal() {
     }
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <Stack.Screen options={screenOptions} />
 
             <SelectorModalSearchHeader

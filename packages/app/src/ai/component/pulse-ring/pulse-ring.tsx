@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
-import { BUTTON_SIZE, RECORDING_COLOR } from '../../constant/animated-record-button.constant';
+import { BUTTON_SIZE } from '../../constant/animated-record-button.constant';
 
 interface Props {
     readonly index: number;
@@ -31,7 +31,6 @@ export const PulseRing = ({ index, audioLevel }: Props) => {
     }, [audioLevel, index, opacity, scale]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        borderColor: RECORDING_COLOR,
         borderRadius: BUTTON_SIZE / 2,
         borderWidth: 2,
         height: BUTTON_SIZE,
@@ -41,5 +40,5 @@ export const PulseRing = ({ index, audioLevel }: Props) => {
         width: BUTTON_SIZE
     }));
 
-    return <Animated.View style={animatedStyle} />;
+    return <Animated.View className="border-destructive-foreground" style={animatedStyle} />;
 };

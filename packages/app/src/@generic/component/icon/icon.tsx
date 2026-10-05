@@ -5,9 +5,9 @@ import CircleQuestionMark from 'lucide-react-native/icons/circle-question-mark';
 import House from 'lucide-react-native/icons/house';
 import Receipt from 'lucide-react-native/icons/receipt';
 import Settings from 'lucide-react-native/icons/settings';
-import { styled } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { Text } from 'react-native';
+import { withUniwind } from 'uniwind';
 
 import { emptyFn, isDefined, isNumber } from '@rnw-community/shared';
 
@@ -16,12 +16,13 @@ import { ICON_IMPORTS } from '../../constant/icons.constant';
 import type { AsyncResolvedIconInterface } from '../../interface/async-resolved-icon.interface';
 import type { StyledLucideIconType } from '../../type/styled-lucide-icon.type';
 import type { LucideIcon, LucideProps } from 'lucide-react-native';
+import type { ApplyUniwind } from 'uniwind';
 
-interface IconProps extends LucideProps {
+interface IconProps extends ApplyUniwind<LucideProps> {
     readonly icon: UserIconType;
 }
 
-const createStyledIcon = (baseIcon: LucideIcon): StyledLucideIconType => styled(baseIcon, { className: { target: 'style' } });
+const createStyledIcon = (baseIcon: LucideIcon): StyledLucideIconType => withUniwind(baseIcon);
 
 const STYLED_FALLBACK_ICON = createStyledIcon(CircleQuestionMark);
 
