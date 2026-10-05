@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,7 +16,6 @@ interface Props {
 }
 
 export const InstallmentPlanScheduleSummary = ({ accountId, instrumentSymbol }: Props) => {
-    const { t } = useLingui();
     const schedule = useInstallmentPlanScheduleQuery(accountId);
 
     if (!isDefined(schedule)) {
@@ -42,7 +41,11 @@ export const InstallmentPlanScheduleSummary = ({ accountId, instrumentSymbol }: 
             testID={InstallmentPlanScheduleSummarySelector.Progress(paidCount, installmentCount)}
         >
             <Icon icon={UserIconNameEnum.CalendarClock} className="text-secondary-foreground" size={12} />
-            <Text className="text-xs text-secondary-foreground tabular-nums">{t`${paidCount} of ${installmentCount} paid`}</Text>
+            <Text className="text-xs text-secondary-foreground tabular-nums">
+                <Trans>
+                    {paidCount} of {installmentCount} paid
+                </Trans>
+            </Text>
             <InstallmentPlanNextPayment accountId={accountId} instrumentSymbol={instrumentSymbol} />
         </View>
     );
