@@ -22,8 +22,7 @@ import type { CanonicalTransferInputInterface } from '../interface/canonical-tra
 import type {
     AtmCashWithdrawalCandidateInterface,
     TransactionEntryEntityInterface,
-    TransactionWithEntriesEntityInterface,
-    TransferPairCandidateInterface
+    TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
 export class ConsolidationMutationService extends Context.Service<ConsolidationMutationService>()(
@@ -154,11 +153,11 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                     yield* createCanonicalFeeEntries(candidate.sourceAccountId, [feeEntry], canonicalTransactionId);
                 }),
                 createTransferPairFeeEntries: Effect.fn('ConsolidationMutationService.createTransferPairFeeEntries')(function* (
-                    candidate: TransferPairCandidateInterface,
+                    accountIds: number[],
                     sourceTransactions: TransactionWithEntriesEntityInterface[],
                     canonicalTransactionId: number
                 ) {
-                    for (const accountId of new Set([candidate.expenseEntryAccountId, candidate.incomeEntryAccountId])) {
+                    for (const accountId of new Set(accountIds)) {
                         const feeEntries = findFeeEntries(accountId, sourceTransactions);
 
                         if (isNotEmptyArray(feeEntries)) {
