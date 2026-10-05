@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Bug Fixes
+
+* **consolidation:** keep source fee entries on paired transfers ([5b96748](https://github.com/budgie-at/budgie/commit/5b96748f3590f7960112aa6df53f91ccf59f641e))
+* **consolidation:** offer MCC-less Erste AUTOMAT withdrawals for the move to cash ([1c2f34f](https://github.com/budgie-at/budgie/commit/1c2f34f1221b284ea6cffe14cb1b9c20969b5b69))
+* **consolidation:** prefer exact-amount manual duplicates over approximate ones ([9f746ef](https://github.com/budgie-at/budgie/commit/9f746efcb4cf1449818f94831ee4c6e0f4757fcc))
+* **consolidation:** require numeric identifiers in Erste AUTOMAT titles ([4a13b37](https://github.com/budgie-at/budgie/commit/4a13b37977ef886324a6c0043a5741732a02f7d2))
+
+
+### Features
+
+* **consolidation:** match hand-typed duplicates up to one percent off within three hours ([182fd01](https://github.com/budgie-at/budgie/commit/182fd011ee2954c201ac22b377990654ea03c525))
+* **consolidation:** pair cross-currency transfers by the bank-stored rate ([53753df](https://github.com/budgie-at/budgie/commit/53753dfa653a4d2b3d0b8f576a6b31b45a1da6cc))
+
+
+
+
+
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
 

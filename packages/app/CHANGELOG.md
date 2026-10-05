@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Bug Fixes
+
+* **app:** give each analytics scroll surface its own chrome scroll state ([3c1839c](https://github.com/budgie-at/budgie/commit/3c1839c69afb30c720e7a6d2845896646c1f6884))
+* **app:** measure analytics chrome before paint, pass header touches through, fold runway drivers after one-off exclusion ([3b40356](https://github.com/budgie-at/budgie/commit/3b4035606a757fe264ed095a045ebdd0e55f2a8d))
+* **app:** open runway from the home pill, float analytics header chrome, hide excluded one-offs ([6ea0f11](https://github.com/budgie-at/budgie/commit/6ea0f1123efb1100586accbeb7ee2b1380fa795d))
+* **app:** slim analytics chrome header to the tab bar and use the full-strength header backdrop ([12114ff](https://github.com/budgie-at/budgie/commit/12114ff424e35fa1b13010ee8d754496ba6d36fe))
+* **app:** span the analytics header backdrop full width and keep the runway empty state below it ([28b967c](https://github.com/budgie-at/budgie/commit/28b967c0a6f316c03a37f7ed5a3e2abc9afe2b0c))
+
+
+
+
+
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Features
+
+* **consolidation:** pair cross-currency transfers by the bank-stored rate ([53753df](https://github.com/budgie-at/budgie/commit/53753dfa653a4d2b3d0b8f576a6b31b45a1da6cc))
+
+
+
+
+
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
 

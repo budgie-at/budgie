@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Bug Fixes
+
+* **app:** give each analytics scroll surface its own chrome scroll state ([3c1839c](https://github.com/budgie-at/budgie/commit/3c1839c69afb30c720e7a6d2845896646c1f6884))
+* **app:** measure analytics chrome before paint, pass header touches through, fold runway drivers after one-off exclusion ([3b40356](https://github.com/budgie-at/budgie/commit/3b4035606a757fe264ed095a045ebdd0e55f2a8d))
+* **app:** open runway from the home pill, float analytics header chrome, hide excluded one-offs ([6ea0f11](https://github.com/budgie-at/budgie/commit/6ea0f1123efb1100586accbeb7ee2b1380fa795d))
+* **app:** slim analytics chrome header to the tab bar and use the full-strength header backdrop ([12114ff](https://github.com/budgie-at/budgie/commit/12114ff424e35fa1b13010ee8d754496ba6d36fe))
+* **app:** span the analytics header backdrop full width and keep the runway empty state below it ([28b967c](https://github.com/budgie-at/budgie/commit/28b967c0a6f316c03a37f7ed5a3e2abc9afe2b0c))
+* **consolidation:** keep source fee entries on paired transfers ([5b96748](https://github.com/budgie-at/budgie/commit/5b96748f3590f7960112aa6df53f91ccf59f641e))
+* **consolidation:** offer MCC-less Erste AUTOMAT withdrawals for the move to cash ([1c2f34f](https://github.com/budgie-at/budgie/commit/1c2f34f1221b284ea6cffe14cb1b9c20969b5b69))
+* **consolidation:** prefer exact-amount manual duplicates over approximate ones ([9f746ef](https://github.com/budgie-at/budgie/commit/9f746efcb4cf1449818f94831ee4c6e0f4757fcc))
+* **consolidation:** require numeric identifiers in Erste AUTOMAT titles ([4a13b37](https://github.com/budgie-at/budgie/commit/4a13b37977ef886324a6c0043a5741732a02f7d2))
+* **sync:** count only cards archived after the transfer when checking repair uniqueness ([b256cc5](https://github.com/budgie-at/budgie/commit/b256cc5cf292db99c9403ebd1ff4faa20fc98636))
+* **sync:** ignore placeholder IBANs when matching sync accounts ([360c15b](https://github.com/budgie-at/budgie/commit/360c15b827c0c8fc67ea481fcc250562bc7460f6))
+* **sync:** read PrivatBank statement times as Kyiv time ([1b51c45](https://github.com/budgie-at/budgie/commit/1b51c45169247fc0cd8f47dce519d934d76a3361))
+* **sync:** stop repairing own-card transfers into cards archived before them ([1a1d296](https://github.com/budgie-at/budgie/commit/1a1d296020b9e66136d01265a60edc2ced65afe0))
+
+
+### Features
+
+* **consolidation:** match hand-typed duplicates up to one percent off within three hours ([182fd01](https://github.com/budgie-at/budgie/commit/182fd011ee2954c201ac22b377990654ea03c525))
+* **consolidation:** pair cross-currency transfers by the bank-stored rate ([53753df](https://github.com/budgie-at/budgie/commit/53753dfa653a4d2b3d0b8f576a6b31b45a1da6cc))
+
+
+
+
+
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
 

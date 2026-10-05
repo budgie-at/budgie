@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Bug Fixes
+
+* **sync:** count only cards archived after the transfer when checking repair uniqueness ([b256cc5](https://github.com/budgie-at/budgie/commit/b256cc5cf292db99c9403ebd1ff4faa20fc98636))
+* **sync:** ignore placeholder IBANs when matching sync accounts ([360c15b](https://github.com/budgie-at/budgie/commit/360c15b827c0c8fc67ea481fcc250562bc7460f6))
+* **sync:** read PrivatBank statement times as Kyiv time ([1b51c45](https://github.com/budgie-at/budgie/commit/1b51c45169247fc0cd8f47dce519d934d76a3361))
+* **sync:** stop repairing own-card transfers into cards archived before them ([1a1d296](https://github.com/budgie-at/budgie/commit/1a1d296020b9e66136d01265a60edc2ced65afe0))
+
+
+
+
+
 ## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/sync
