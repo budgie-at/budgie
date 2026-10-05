@@ -33,7 +33,7 @@ export const RunwayPill = () => {
     const { defaultInstrument } = useSettingsContext();
     const isAmountProtected = useIsAmountProtected();
     const liquid = useLiquidBalanceQuery();
-    const { computation } = useRunwayQuery({ dimension: RunwayDriverDimensionEnum.CATEGORY, liquid });
+    const { computation } = useRunwayQuery({ dimension: RunwayDriverDimensionEnum.CATEGORY, liquid, isAllIn: false });
     const formatDigits = useFormatDigits(0);
 
     if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {

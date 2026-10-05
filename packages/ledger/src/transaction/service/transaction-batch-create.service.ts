@@ -114,7 +114,7 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
                         )
                     );
                     const batchTags = transactions.flatMap((transaction, index) =>
-                        transactionMapTagIdsToCreateEntities(batch[index].tagIds, transaction.id)
+                        transactionMapTagIdsToCreateEntities(batch[index], transaction.id)
                     );
                     const createdEntries = yield* transactionEntryRepository.bulkCreate(batchEntries);
 

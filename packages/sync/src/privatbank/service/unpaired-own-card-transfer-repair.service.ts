@@ -68,6 +68,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                     AND own_account.deleted_at IS NULL
                 INNER JOIN accounts counterpart_account ON
                     counterpart_account.deleted_at IS NOT NULL
+                    AND counterpart_account.deleted_at >= tx.operated_at
                     AND counterpart_account.type = 'BANK_SYNC'
                     AND counterpart_account.id != own_account.id
                     AND (${buildCardMaskPredicate('counterpart_account')})
@@ -82,6 +83,8 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                     AND (
                         SELECT COUNT(*) FROM accounts archived_account
                         WHERE archived_account.deleted_at IS NOT NULL
+                            AND archived_account.deleted_at >= tx.operated_at
+                            AND archived_account.id != own_account.id
                             AND archived_account.type = 'BANK_SYNC'
                             AND (${buildCardMaskPredicate('archived_account')})
                     ) = 1

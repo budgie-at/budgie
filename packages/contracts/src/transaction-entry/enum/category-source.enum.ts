@@ -3,6 +3,7 @@ export enum CategorySourceEnum {
     MCC_DEFAULT = 'MCC_DEFAULT',
     RULE = 'RULE',
     AI = 'AI',
+    INBOX = 'INBOX',
     FEE = 'FEE',
     DEBT_SETTLEMENT = 'DEBT_SETTLEMENT',
     MANUAL_EXPENSE_DUPLICATE = 'MANUAL_EXPENSE_DUPLICATE'

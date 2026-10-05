@@ -1,4 +1,5 @@
 import {
+    CategorizeInboxLabelKindEnum,
     CommentEmbeddingRepository,
     EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
     EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE,
@@ -241,7 +242,11 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                 const commentDocuments = new Map<string, KnnDocument>();
                 let knnIndexes: KnnDocument[][] = [];
                 let historyIndex = 0;
-                let categoryContext = categorizeInboxEngineService.buildContext([], defaultInstrumentId);
+                let categoryContext = categorizeInboxEngineService.buildContext(
+                    [],
+                    defaultInstrumentId,
+                    CategorizeInboxLabelKindEnum.CATEGORY
+                );
                 let tagContext = categoryContext;
 
                 const cases = evalEntries.map(evalEntry => {
@@ -267,8 +272,16 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                     });
 
                     if (historyIndex !== historyStartIndex) {
-                        categoryContext = categorizeInboxEngineService.buildContext([...categoryEvidence.values()], defaultInstrumentId);
-                        tagContext = categorizeInboxEngineService.buildContext([...tagEvidence.values()], defaultInstrumentId);
+                        categoryContext = categorizeInboxEngineService.buildContext(
+                            [...categoryEvidence.values()],
+                            defaultInstrumentId,
+                            CategorizeInboxLabelKindEnum.CATEGORY
+                        );
+                        tagContext = categorizeInboxEngineService.buildContext(
+                            [...tagEvidence.values()],
+                            defaultInstrumentId,
+                            CategorizeInboxLabelKindEnum.TAG
+                        );
                         knnIndexes = [[...merchantDocuments.values()], [...commentDocuments.values()]];
                     }
 

@@ -18,7 +18,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -90,9 +90,7 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                 })
             ]);
 
-            if (isNotEmptyArray(input.tagIds)) {
-                yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id));
-            }
+            yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input, transaction.id));
         });
 
         // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface

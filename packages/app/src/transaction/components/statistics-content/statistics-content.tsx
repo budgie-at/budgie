@@ -1,8 +1,9 @@
 import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Activity, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
+import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
@@ -28,17 +29,26 @@ export const StatisticsContent = ({ activeTab }: Props) => {
 
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
     const netWorth = useNetWorthQuery();
-    const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
     const isRunwayTab = activeTab === 'runway';
     const isCategoriesTab = activeTab === 'categories';
     const categoriesActivityMode = isCategoriesTab ? 'visible' : 'hidden';
     const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
 
-    const content = isRunwayTab ? (
-        <RunwayContent />
-    ) : (
-        <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
+    if (isRunwayTab) {
+        return <RunwayContent />;
+    }
+
+    return (
+        <ChromeScrollFrame>
+            <TransactionFilters
+                accountId={null}
+                filters={filters}
+                onChange={setFilters}
+                showTypeFilter={false}
+                hasFiltersSelected={checkIfFiltersSelected(null, filters)}
+            />
+
             <View className="gap-y-lg">
                 <Text className="uppercase text-secondary-foreground text-xs">
                     <Trans>Overview</Trans>
@@ -65,24 +75,6 @@ export const StatisticsContent = ({ activeTab }: Props) => {
             </Activity>
 
             <MenuSpacer />
-        </ScrollView>
-    );
-
-    return (
-        <>
-            {!isRunwayTab && (
-                <View className="pb-2xl">
-                    <TransactionFilters
-                        accountId={null}
-                        filters={filters}
-                        onChange={setFilters}
-                        showTypeFilter={false}
-                        hasFiltersSelected={hasFiltersSelected}
-                    />
-                </View>
-            )}
-
-            {content}
-        </>
+        </ChromeScrollFrame>
     );
 };

@@ -37,12 +37,12 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
                         return false;
                     }
 
-                    if (
-                        !(yield* consolidationEligibilityService.areCandidatesStillEligible(
-                            consolidationPlan.sourceTransactionIds,
-                            consolidationPlan.allowedMovedSourceTransactionIds
-                        ))
-                    ) {
+                    const sourceTransactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
+                        consolidationPlan.sourceTransactionIds,
+                        consolidationPlan.allowedMovedSourceTransactionIds
+                    );
+
+                    if (!isDefined(sourceTransactions)) {
                         return false;
                     }
 
@@ -50,6 +50,11 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
                         consolidationPlan.canonicalInput
                     );
 
+                    yield* consolidationMutationService.createTransferPairFeeEntries(
+                        [consolidationPlan.canonicalInput.fromAccountId, consolidationPlan.canonicalInput.toAccountId],
+                        sourceTransactions,
+                        canonicalTransaction.id
+                    );
                     yield* consolidationMutationService.moveSourcesToCanonical(
                         consolidationPlan.sourceTransactionIds,
                         canonicalTransaction.id

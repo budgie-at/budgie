@@ -1,4 +1,4 @@
-import { CategorySourceEnum } from '@budgie/contracts';
+import { CategorySourceEnum, PRECISION } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -9,11 +9,58 @@ import {
     fetchOwnLedgerEntries,
     snapshotSourceState
 } from '../harness/consolidation-revert-audit';
-import { seedManualExpenseDuplicateAccounts, seedManualExpenseDuplicatePair } from '../harness/manual-expense-duplicate-fixture';
+import {
+    buildManualExpenseDuplicateAmount,
+    seedManualExpenseDuplicateAccounts,
+    seedManualExpenseDuplicatePair
+} from '../harness/manual-expense-duplicate-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
 
+const APPROXIMATE_AMOUNT_DELTA = 0.5 * PRECISION;
+
+const seedApproximateDuplicatePairs = Effect.fnUntraced(function* () {
+    const accounts = yield* seedManualExpenseDuplicateAccounts();
+    const pairs = yield* Effect.forEach([0, 1, 2], index =>
+        seedManualExpenseDuplicatePair({ accounts, index, manualAmountDelta: index === 0 ? APPROXIMATE_AMOUNT_DELTA : 0 })
+    );
+
+    return { accountIds: [accounts.syncedAccount.id, accounts.manualAccount.id], manualAccountId: accounts.manualAccount.id, pairs };
+});
+
 layer(TestLayer)('consolidation/unconsolidate-manual-expense-duplicate-restores-sources', it => {
+    it.effect('hides only the hand-typed amount of an approximate duplicate and restores it exactly on revert', () =>
+        Effect.gen(function* () {
+            const { accountIds, manualAccountId, pairs } = yield* seedApproximateDuplicatePairs();
+            const [approximatePair] = pairs;
+            const [syncedBalanceBefore, manualBalanceBefore] = yield* fetchLedgerBalances(accountIds);
+            const stateBeforeConsolidation = yield* snapshotSourceState(pairs.flatMap(({ manual, synced }) => [manual.id, synced.id]));
+
+            expect((yield* runConsolidation()).consolidated).toBe(3);
+            expect(yield* fetchLedgerBalances(accountIds)).toEqual([syncedBalanceBefore, [manualAccountId, 0]]);
+            expect(manualBalanceBefore).toEqual([
+                manualAccountId,
+                -(
+                    buildManualExpenseDuplicateAmount(0) +
+                    APPROXIMATE_AMOUNT_DELTA +
+                    buildManualExpenseDuplicateAmount(1) +
+                    buildManualExpenseDuplicateAmount(2)
+                )
+            ]);
+            expect((yield* fetchOwnLedgerEntries(approximatePair.synced.id)).map(entry => entry.amount)).toEqual([
+                buildManualExpenseDuplicateAmount(0)
+            ]);
+
+            yield* unconsolidateById(approximatePair.synced.id);
+            yield* unconsolidateById(pairs[1].synced.id);
+            yield* unconsolidateById(pairs[2].synced.id);
+
+            yield* expectSourcesRestored(pairs.map(({ manual }) => manual.id));
+            yield* expectSourceStateRestored(stateBeforeConsolidation);
+            expect(yield* fetchLedgerBalances(accountIds)).toEqual([syncedBalanceBefore, manualBalanceBefore]);
+        })
+    );
+
     it.effect('restores the exact prior state of both the synced and the manual expense', () =>
         Effect.gen(function* () {
             const accounts = yield* seedManualExpenseDuplicateAccounts();

@@ -152,6 +152,19 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
 
                     yield* createCanonicalFeeEntries(candidate.sourceAccountId, [feeEntry], canonicalTransactionId);
                 }),
+                createTransferPairFeeEntries: Effect.fn('ConsolidationMutationService.createTransferPairFeeEntries')(function* (
+                    accountIds: number[],
+                    sourceTransactions: TransactionWithEntriesEntityInterface[],
+                    canonicalTransactionId: number
+                ) {
+                    for (const accountId of new Set(accountIds)) {
+                        const feeEntries = findFeeEntries(accountId, sourceTransactions);
+
+                        if (isNotEmptyArray(feeEntries)) {
+                            yield* createCanonicalFeeEntries(accountId, feeEntries, canonicalTransactionId);
+                        }
+                    }
+                }),
                 createP2pFiatTransferFeeEntries: Effect.fn('ConsolidationMutationService.createP2pFiatTransferFeeEntries')(function* (
                     candidate: P2pFiatTransferCandidateInterface,
                     sourceTransactions: TransactionWithEntriesEntityInterface[],

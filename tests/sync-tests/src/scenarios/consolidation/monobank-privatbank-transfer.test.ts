@@ -55,6 +55,7 @@ const importPrivatbankTransfer = Effect.fnUntraced(function* (privatbankAccountI
     const privatbankTransaction = privatbankTransactionMapper({
         rawDate: '20.05.2026 15:00:00',
         date: new Date(OPERATED_AT.getTime() + SLOW_WINDOW_OFFSET_MS),
+        deviceLocalDate: new Date(OPERATED_AT.getTime() + SLOW_WINDOW_OFFSET_MS),
         category: PRIVATBANK_TRANSFER_CATEGORY,
         card: privatbankCardId,
         description: 'Transfer from Monobank',

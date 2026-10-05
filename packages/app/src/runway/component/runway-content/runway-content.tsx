@@ -1,7 +1,8 @@
 import { RunwayDriverDimensionEnum } from '@budgie/contracts';
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 
+import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { RUNWAY_MINIMUM_MONTHS } from '../../constant/runway-minimum-months.constant';
 import { useLiquidBalanceQuery } from '../../query/use-liquid-balance.query';
@@ -19,39 +20,32 @@ export const RunwayContent = () => {
     const [isAllIn, setIsAllIn] = useState(false);
 
     const liquid = useLiquidBalanceQuery();
-    const { computation, drivers, series } = useRunwayQuery({ dimension, liquid });
+    const { computation, drivers, series } = useRunwayQuery({ dimension, liquid, isAllIn });
 
     const handleToggleAllIn = () => {
         setIsAllIn(current => !current);
     };
 
     if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
-        return <RunwayEmptyState monthsUsed={computation.monthsUsed} />;
+        return (
+            <ChromeScrollFrame>
+                <RunwayEmptyState monthsUsed={computation.monthsUsed} />
+            </ChromeScrollFrame>
+        );
     }
 
-    const forecastComputation = isAllIn
-        ? {
-              ...computation,
-              burn: computation.allInBurn,
-              net: computation.allInNet,
-              runwayMonths: computation.allInRunwayMonths,
-              runsOutAt: computation.allInRunsOutAt,
-              isPositive: computation.allInNet >= 0
-          }
-        : computation;
-
     return (
-        <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
+        <ChromeScrollFrame>
             <View className="gap-y-lg">
-                <RunwayVerdict computation={forecastComputation} />
+                <RunwayVerdict computation={computation} />
                 <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
             </View>
 
-            <RunwayFlowRow computation={forecastComputation} />
-            <RunwayForecastChart computation={forecastComputation} />
+            <RunwayFlowRow computation={computation} />
+            <RunwayForecastChart computation={computation} />
             <RunwayHistoryChart series={series} burn={computation.burn} />
             <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
             <MenuSpacer />
-        </ScrollView>
+        </ChromeScrollFrame>
     );
 };

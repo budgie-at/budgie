@@ -6,12 +6,13 @@ import {
     Db,
     InstrumentEntityTable,
     MccCategoryEntityTable,
+    TagSourceEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTagsEntityTable,
     insertTransactionTag
 } from '@budgie/contracts';
-import { and, desc, eq, inArray, isNotNull, isNull, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -136,7 +137,8 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                 }),
                 addTagByTransactionIds: Effect.fn('TransactionCategorizeInboxRepository.addTagByTransactionIds')(function* (
                     transactionIds: number[],
-                    tagId: number
+                    tagId: number,
+                    source: TagSourceEnum
                 ) {
                     return yield* writeInChunks(transactionIds, chunk =>
                         Db.query(db =>
@@ -147,7 +149,8 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                                     inArray(TransactionEntityTable.id, chunk),
                                     transactionFilters.buildVisibleTransactionCondition(),
                                     transactionFilters.buildCategorizableTypeCondition(null)
-                                )
+                                ),
+                                source
                             )
                         )
                     );
@@ -178,7 +181,11 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                     selectInboxRows(
                         buildInboxRowsWhere(
                             { ...filters, tagIds: [] },
-                            and(transactionFilters.buildCategorizableEntryCondition(), transactionFilters.buildNonDebtAccountCondition())
+                            and(
+                                transactionFilters.buildCategorizableEntryCondition(),
+                                transactionFilters.buildNonDebtAccountCondition(),
+                                sql`LENGTH(TRIM(${TransactionEntityTable.title})) > 0`
+                            )
                         )
                     ),
                 findCategoryEvidence: () =>
@@ -188,7 +195,10 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                             .where(
                                 buildEvidenceWhere([
                                     isNotNull(TransactionEntryEntityTable.categoryId),
-                                    ne(TransactionEntryEntityTable.categorySource, CategorySourceEnum.MCC_DEFAULT),
+                                    notInArray(TransactionEntryEntityTable.categorySource, [
+                                        CategorySourceEnum.MCC_DEFAULT,
+                                        CategorySourceEnum.INBOX
+                                    ]),
                                     eq(CategoryEntityTable.isSystemCategory, false),
                                     isNull(CategoryEntityTable.deletedAt)
                                 ])
@@ -199,7 +209,7 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                     Db.query(db =>
                         selectEvidence(db, sql<number>`${TransactionTagsEntityTable.tagId}`.mapWith(Number))
                             .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-                            .where(buildEvidenceWhere([]))
+                            .where(buildEvidenceWhere([eq(TransactionTagsEntityTable.source, TagSourceEnum.USER)]))
                             .groupBy(...buildEvidenceGroupBy(), TransactionTagsEntityTable.tagId)
                     )
             };
