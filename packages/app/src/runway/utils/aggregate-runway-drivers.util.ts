@@ -32,7 +32,8 @@ const isIrregularDriver = (monthlyAmounts: readonly number[]): boolean => {
 
 export const aggregateRunwayDrivers = (
     rows: readonly RunwayDriverSeriesRowInterface[],
-    monthlyBurn: number
+    monthlyBurn: number,
+    isAllIn: boolean
 ): RunwayDriverBreakdownInterface => {
     const monthKeys = [...new Set(rows.map(row => row.month))].sort();
     const monthIndexByKey = new Map(monthKeys.map((month, index) => [month, index]));
@@ -63,16 +64,17 @@ export const aggregateRunwayDrivers = (
         })
         .sort((left, right) => right.monthlyAmount - left.monthlyAmount);
     const irregularMonthlyAmount = drivers.filter(driver => driver.isIrregular).reduce((total, driver) => total + driver.monthlyAmount, 0);
+    const countedDrivers = isAllIn ? drivers : drivers.filter(driver => !driver.isIrregular);
     const minimumMonthlyAmount = monthlyBurn * RUNWAY_DRIVER_MIN_BURN_SHARE;
-    const foldedDrivers = drivers.filter(driver => driver.monthlyAmount < minimumMonthlyAmount);
+    const foldedDrivers = countedDrivers.filter(driver => driver.monthlyAmount < minimumMonthlyAmount);
 
     if (isEmptyArray(foldedDrivers)) {
-        return { drivers, irregularMonthlyAmount };
+        return { drivers: countedDrivers, irregularMonthlyAmount };
     }
 
     return {
         drivers: [
-            ...drivers.filter(driver => driver.monthlyAmount >= minimumMonthlyAmount),
+            ...countedDrivers.filter(driver => driver.monthlyAmount >= minimumMonthlyAmount),
             {
                 id: null,
                 title: '',
