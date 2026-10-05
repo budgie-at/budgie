@@ -7,6 +7,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
+import { buildPrefixLikeSql } from '../../../shared/util/build-prefix-like-sql.util';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
@@ -30,9 +31,6 @@ const buildStripPrefixesSql = (seedExpression: string, prefixes: readonly string
 
 const buildStripCommaSuffixSql = (seedExpression: string): string =>
     `TRIM(CASE WHEN INSTR(${seedExpression}, ',') > 0 THEN SUBSTR(${seedExpression}, 1, INSTR(${seedExpression}, ',') - 1) ELSE ${seedExpression} END)`;
-
-const buildPrefixLikeSql = (column: string, prefixes: readonly string[]): string =>
-    `(${prefixes.map(prefix => `${column} LIKE '${prefix}%'`).join(' OR ')})`;
 
 const buildPrivatbankOriginalAmountRefundSql = (): string => `inc.externalSource = '${ExternalSourceEnum.PRIVATBANK}'
     AND exp.externalSource = '${ExternalSourceEnum.PRIVATBANK}'

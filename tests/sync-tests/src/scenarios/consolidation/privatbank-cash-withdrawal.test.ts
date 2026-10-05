@@ -18,6 +18,7 @@ const importPrivatbankCashWithdrawal = Effect.fnUntraced(function* (privatbankAc
     const transaction = privatbankTransactionMapper({
         rawDate: '15.01.2026 12:00:00',
         date: WITHDRAWAL_OPERATED_AT,
+        deviceLocalDate: WITHDRAWAL_OPERATED_AT,
         category: PRIVATBANK_CASH_WITHDRAWAL_CATEGORY,
         card: PRIVATBANK_CARD_ID,
         description: 'ATM cash withdrawal',

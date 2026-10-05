@@ -25,6 +25,7 @@ const UNKNOWN_CARD_INCOME_TITLE = 'Зі своєї картки *9999';
 const OWN_CARD_AMOUNT = 10_000_000_000;
 const OWN_CARD_FEE_AMOUNT = 25_000_000;
 const OWN_CARD_OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
+const ARCHIVED_BEFORE_INCOME_AT = new Date('2026-03-01T09:15:00.000Z');
 const CONVERSION_FAILURE_MESSAGE = 'conversion failed';
 
 const seedPrivatbankCard = (cardEnding: string) =>
@@ -38,9 +39,9 @@ const seedPrivatbankCard = (cardEnding: string) =>
         });
     });
 
-const archiveAccount = (accountId: number) =>
+const archiveAccount = (accountId: number, archivedAt: Date = new Date()) =>
     Effect.gen(function* () {
-        yield* testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, accountId));
+        yield* testDb.update(AccountEntityTable).set({ deletedAt: archivedAt }).where(eq(AccountEntityTable.id, accountId));
     });
 
 const seedOwnCardIncome = (accountId: number, title: string = OWN_CARD_INCOME_TITLE) =>
@@ -152,6 +153,41 @@ describe('privatbank/own-card-transfer-repair', () => {
 
             expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
             expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves an own-card income from a card archived before the income untouched', () =>
+        Effect.gen(function* () {
+            const liveCard = yield* seedPrivatbankCard('1234');
+            const income = yield* seedOwnCardIncome(liveCard.id);
+            const archivedCard = yield* seedPrivatbankCard('4321');
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+
+            yield* archiveAccount(archivedCard.id, ARCHIVED_BEFORE_INCOME_AT);
+
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+            expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(0);
+            expect((yield* fetchTransactionById(income.id)).type).toBe(TransactionTypeEnum.INCOME);
+            expect(
+                yield* testDb
+                    .select()
+                    .from(TransactionEntryEntityTable)
+                    .where(and(eq(TransactionEntryEntityTable.accountId, archivedCard.id), isNull(TransactionEntryEntityTable.deletedAt)))
+            ).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('repairs against the card archived after the income when another card with the same ending was archived before it', () =>
+        Effect.gen(function* () {
+            const liveCard = yield* seedPrivatbankCard('1234');
+            const earlierArchivedCard = yield* seedPrivatbankCard('4321');
+            const laterArchivedCard = yield* seedPrivatbankCard('4321');
+            const income = yield* seedOwnCardIncome(liveCard.id);
+
+            yield* archiveAccount(earlierArchivedCard.id, ARCHIVED_BEFORE_INCOME_AT);
+            yield* archiveAccount(laterArchivedCard.id);
+
+            yield* expectRepairedFromCounterpart(laterArchivedCard, income);
         }).pipe(Effect.provide(TestLayer))
     );
 

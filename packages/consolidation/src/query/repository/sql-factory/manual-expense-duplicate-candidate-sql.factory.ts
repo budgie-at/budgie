@@ -6,6 +6,9 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS = 2 * 24 * 60 * 60;
 const MANUAL_EXPENSE_DUPLICATE_MIN_ACCOUNT_PAIR_SUPPORT = 3;
+const MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_TIME_WINDOW_SECONDS = 3 * 60 * 60;
+const MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_AMOUNT_PERCENT = 1;
+const PERCENT_DIVISOR = 100;
 
 const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
     WITH synced_expenses AS MATERIALIZED (
@@ -93,21 +96,33 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             synced.operatedAt AS syncedOperatedAt,
             manual.manualTransactionId AS manualTransactionId,
             manual.accountId AS manualAccountId,
-            COUNT(*) OVER (PARTITION BY synced.syncedTransactionId) AS syncedMatchCount,
-            COUNT(*) OVER (PARTITION BY manual.manualTransactionId) AS manualMatchCount
+            manual.amount = synced.amount AS isExactAmount,
+            MAX(manual.amount = synced.amount) OVER (PARTITION BY synced.syncedTransactionId) AS syncedHasExactAmount,
+            MAX(manual.amount = synced.amount) OVER (PARTITION BY manual.manualTransactionId) AS manualHasExactAmount,
+            COUNT(*) OVER (PARTITION BY synced.syncedTransactionId, manual.amount = synced.amount) AS syncedMatchCount,
+            COUNT(*) OVER (PARTITION BY manual.manualTransactionId, manual.amount = synced.amount) AS manualMatchCount
         FROM synced_expenses synced
         INNER JOIN manual_expenses manual
             ON manual.instrumentId = synced.instrumentId
-            AND manual.amount = synced.amount
             AND manual.operatedAt BETWEEN synced.operatedAt - ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
                 AND synced.operatedAt + ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
+            AND (
+                manual.amount = synced.amount
+                OR (
+                    ABS(manual.operatedAt - synced.operatedAt) <= ${MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_TIME_WINDOW_SECONDS}
+                    AND ABS(manual.amount - synced.amount) * ${PERCENT_DIVISOR} <= synced.amount * ${MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_AMOUNT_PERCENT}
+                )
+            )
     ),
     supported_pairs AS (
         SELECT
             *,
             COUNT(*) OVER (PARTITION BY manualAccountId, syncedAccountId, externalSource) AS accountPairSupport
         FROM eligible_pairs
-        WHERE syncedMatchCount = 1 AND manualMatchCount = 1
+        WHERE syncedMatchCount = 1
+            AND manualMatchCount = 1
+            AND isExactAmount = syncedHasExactAmount
+            AND isExactAmount = manualHasExactAmount
     )
     SELECT syncedTransactionId, manualTransactionId
     FROM supported_pairs

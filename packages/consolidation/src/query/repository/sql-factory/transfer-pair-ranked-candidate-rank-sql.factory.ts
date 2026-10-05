@@ -1,4 +1,5 @@
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
+import { TRANSFER_PAIR_CROSS_CURRENCY_BANK_RATE_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-cross-currency-bank-rate-time-window.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import {
     TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS,
@@ -50,7 +51,27 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                             THEN 1
                             ELSE 0
                         END
-                    ) OVER (PARTITION BY incomeTransactionId) as interbankIncomeCandidateCount
+                    ) OVER (PARTITION BY incomeTransactionId) as interbankIncomeCandidateCount,
+                    SUM(
+                        CASE
+                            WHEN bankRateAmountMatch = 1
+                                AND hasTransferMcc = 1
+                                AND sameBank = 0
+                                AND timeDiff <= ${TRANSFER_PAIR_CROSS_CURRENCY_BANK_RATE_TIME_WINDOW_SECONDS}
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) OVER (PARTITION BY expenseTransactionId) as bankRateExpenseCandidateCount,
+                    SUM(
+                        CASE
+                            WHEN bankRateAmountMatch = 1
+                                AND hasTransferMcc = 1
+                                AND sameBank = 0
+                                AND timeDiff <= ${TRANSFER_PAIR_CROSS_CURRENCY_BANK_RATE_TIME_WINDOW_SECONDS}
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) OVER (PARTITION BY incomeTransactionId) as bankRateIncomeCandidateCount
                 FROM scored_pairs_base
             ),
             compatible_pairs AS (
@@ -79,6 +100,13 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                             AND (incomeMccGroupId IS NULL OR incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID})
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_SAME_BANK_CROSS_CURRENCY'
+                        WHEN bankRateAmountMatch = 1
+                            AND hasTransferMcc = 1
+                            AND sameBank = 0
+                            AND timeDiff <= ${TRANSFER_PAIR_CROSS_CURRENCY_BANK_RATE_TIME_WINDOW_SECONDS}
+                            AND bankRateExpenseCandidateCount = 1
+                            AND bankRateIncomeCandidateCount = 1
+                        THEN 'AUTO_CROSS_CURRENCY_BANK_RATE'
                         WHEN sameBank = 1
                             AND sameCurrency = 1
                             AND expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID}
@@ -102,6 +130,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         WHEN impliedRateMatch = 1 THEN 'implied-rate'
                         WHEN p2pCrossCurrencyMatch = 1 THEN 'p2p-fiat'
                         WHEN sameBank = 1 AND sameCurrency = 0 THEN 'same-bank-cross-currency'
+                        WHEN bankRateAmountMatch = 1 THEN 'bank-rate'
                         WHEN hintedFeeAmountMatch = 1 THEN 'same-bank-hinted-fee'
                         WHEN interbankHintedFeeAmountMatch = 1 THEN 'interbank-hinted-fee'
                         ELSE 'amount'
@@ -120,9 +149,10 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
                                 WHEN 'AUTO_SAME_BANK_CROSS_CURRENCY' THEN 5
-                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 6
-                                WHEN 'AUTO_INTERBANK_HINTED_FEE' THEN 7
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 8
+                                WHEN 'AUTO_CROSS_CURRENCY_BANK_RATE' THEN 6
+                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 7
+                                WHEN 'AUTO_INTERBANK_HINTED_FEE' THEN 8
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 9
                                 ELSE 99
                             END,
                             timeDiff
@@ -136,9 +166,10 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
                                 WHEN 'AUTO_SAME_BANK_CROSS_CURRENCY' THEN 5
-                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 6
-                                WHEN 'AUTO_INTERBANK_HINTED_FEE' THEN 7
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 8
+                                WHEN 'AUTO_CROSS_CURRENCY_BANK_RATE' THEN 6
+                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 7
+                                WHEN 'AUTO_INTERBANK_HINTED_FEE' THEN 8
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 9
                                 ELSE 99
                             END,
                             timeDiff

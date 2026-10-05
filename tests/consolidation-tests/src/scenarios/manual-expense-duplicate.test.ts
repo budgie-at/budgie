@@ -18,6 +18,10 @@ import { testQueryService, testSeedService, TestLayer } from '../harness/test-co
 import type { ManualExpenseDuplicateAccountsInterface } from '../harness/interface/manual-expense-duplicate-accounts.interface';
 
 const SUPPORTING_PAIR_INDEXES = [0, 1, 2] as const;
+const APPROXIMATE_TIME_WINDOW_SECONDS = 3 * 60 * 60;
+const ONE_PERCENT_DIVISOR = 100;
+
+const buildOnePercentDelta = (index: number): number => buildManualExpenseDuplicateAmount(index) / ONE_PERCENT_DIVISOR;
 
 const expectManualExpenseDuplicateConsolidated = (syncedTransactionId: number, manualTransactionId: number) =>
     Effect.gen(function* () {
@@ -213,14 +217,97 @@ layer(TestLayer)('consolidation/manual-expense-duplicate', it => {
         })
     );
 
-    it.effect('requires exactly equal amounts', () =>
+    it.effect('requires exactly equal amounts when the expenses are more than three hours apart', () =>
         Effect.gen(function* () {
             const accounts = yield* seedManualExpenseDuplicateAccounts();
             yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
-            const offByOne = yield* seedManualExpenseDuplicatePair({ accounts, index: 3, manualAmountDelta: 1 });
+            const offByOne = yield* seedManualExpenseDuplicatePair({
+                accounts,
+                index: 3,
+                manualAmountDelta: 1,
+                manualOperatedAtOffsetSeconds: APPROXIMATE_TIME_WINDOW_SECONDS + 1
+            });
 
             expect((yield* runConsolidation()).consolidated).toBe(3);
             yield* expectUntouched([offByOne.synced.id, offByOne.manual.id]);
+        })
+    );
+
+    it.effect('matches a hand-typed amount up to one percent off when the expenses are at most three hours apart', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
+            const roundedUp = yield* seedManualExpenseDuplicatePair({
+                accounts,
+                index: 3,
+                manualAmountDelta: buildOnePercentDelta(3),
+                manualOperatedAtOffsetSeconds: -APPROXIMATE_TIME_WINDOW_SECONDS
+            });
+            const roundedDown = yield* seedManualExpenseDuplicatePair({
+                accounts,
+                index: 4,
+                manualAmountDelta: -buildOnePercentDelta(4),
+                manualOperatedAtOffsetSeconds: APPROXIMATE_TIME_WINDOW_SECONDS
+            });
+
+            expect((yield* runConsolidation()).consolidated).toBe(5);
+            yield* expectManualExpenseDuplicateConsolidated(roundedUp.synced.id, roundedUp.manual.id);
+            yield* expectManualExpenseDuplicateConsolidated(roundedDown.synced.id, roundedDown.manual.id);
+            expect((yield* fetchSyncedEntry(roundedUp.synced.id)).amount).toBe(buildManualExpenseDuplicateAmount(3));
+        })
+    );
+
+    it.effect('skips a hand-typed amount more than one percent off or more than three hours apart', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
+            const tooFarOff = yield* seedManualExpenseDuplicatePair({
+                accounts,
+                index: 3,
+                manualAmountDelta: buildOnePercentDelta(3) + 1
+            });
+            const tooLate = yield* seedManualExpenseDuplicatePair({
+                accounts,
+                index: 4,
+                manualAmountDelta: buildOnePercentDelta(4),
+                manualOperatedAtOffsetSeconds: APPROXIMATE_TIME_WINDOW_SECONDS + 1
+            });
+
+            expect((yield* runConsolidation()).consolidated).toBe(3);
+            yield* expectUntouched([tooFarOff.synced.id, tooFarOff.manual.id, tooLate.synced.id, tooLate.manual.id]);
+        })
+    );
+
+    it.effect('skips an approximate match when a second hand-typed expense also fits the synced one', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
+            const approximate = yield* seedManualExpenseDuplicatePair({ accounts, index: 3, manualAmountDelta: buildOnePercentDelta(3) });
+            const competingManual = yield* testSeedService.manualExpense({
+                accountId: accounts.manualAccount.id,
+                amount: buildManualExpenseDuplicateAmount(3) - buildOnePercentDelta(3),
+                operatedAt: new Date(approximate.synced.operatedAt.getTime() + 60_000)
+            });
+
+            expect((yield* runConsolidation()).consolidated).toBe(3);
+            yield* expectUntouched([approximate.synced.id, approximate.manual.id, competingManual.id]);
+        })
+    );
+
+    it.effect('prefers the exact manual match over a second hand-typed expense within one percent', () =>
+        Effect.gen(function* () {
+            const accounts = yield* seedManualExpenseDuplicateAccounts();
+            yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
+            const exact = yield* seedManualExpenseDuplicatePair({ accounts, index: 3 });
+            const approximateManual = yield* testSeedService.manualExpense({
+                accountId: accounts.manualAccount.id,
+                amount: buildManualExpenseDuplicateAmount(3) - buildOnePercentDelta(3),
+                operatedAt: new Date(exact.synced.operatedAt.getTime() + 60_000)
+            });
+
+            expect((yield* runConsolidation()).consolidated).toBe(4);
+            yield* expectManualExpenseDuplicateConsolidated(exact.synced.id, exact.manual.id);
+            yield* expectUntouched([approximateManual.id]);
         })
     );
 
