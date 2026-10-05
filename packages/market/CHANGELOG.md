@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+# [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
 ## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie/market

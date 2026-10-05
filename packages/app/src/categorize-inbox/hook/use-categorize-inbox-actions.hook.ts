@@ -1,4 +1,5 @@
 import { CategorizeInboxLabelKindEnum, CategorizeInboxService } from '@budgie/categorization';
+import { TagSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
@@ -84,7 +85,8 @@ export const useCategorizeInboxActions = (
                     const categorizeInboxService = yield* CategorizeInboxService;
                     const followUpAssignments = yield* categorizeInboxService.assign(
                         CategorizeInboxLabelKindEnum.TAG,
-                        tagIds.map(labelId => ({ ...write.assignments[0], labelId }))
+                        tagIds.map(labelId => ({ ...write.assignments[0], labelId })),
+                        TagSourceEnum.USER
                     );
 
                     setLastWrite(previous => (previous === write ? { ...write, followUpAssignments } : previous));

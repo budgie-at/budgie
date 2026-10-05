@@ -1,7 +1,8 @@
-import { ATM_CASH_WITHDRAWAL_MCC, LanguageEnum, PRECISION, TransactionTypeEnum } from '@budgie/contracts';
+import { ATM_CASH_WITHDRAWAL_MCC, LanguageEnum, PRECISION, REFUND_TITLE_PREFIXES, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
 
 import type { CategorizeInboxBuildContextInterface } from '../interface/categorize-inbox-build-context.interface';
@@ -14,7 +15,14 @@ import type { LabelEvidenceRowInterface } from '../interface/label-evidence-row.
 import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-item.type';
 
 class CategorizeInboxEngineService {
-    private static readonly LIMITS = { chipCount: 2, confidentShare: 0.85, confidentCount: 2, merchantTokenCount: 3 } as const;
+    private static readonly LIMITS = {
+        chipCount: 2,
+        confidentShare: 0.85,
+        confidentCount: 2,
+        merchantTokenCount: 3,
+        maxConfidentRowCount: 50
+    } as const;
+
     private static readonly LEGAL_FORM_TOKENS: Record<LanguageEnum, readonly string[]> = {
         [LanguageEnum.EN]: ['ltd', 'llc', 'inc', 'co', 'bv'],
         [LanguageEnum.UK]: ['тов', 'фоп', 'пп', 'ооо'],
@@ -30,6 +38,8 @@ class CategorizeInboxEngineService {
         [LanguageEnum.FR]: ['paiement\\s+carte', 'prélèvement', 'virement'],
         [LanguageEnum.ES]: ['pago\\s+con\\s+tarjeta', 'transferencia', 'compra']
     };
+
+    private static readonly REFUND_PREFIXES = REFUND_TITLE_PREFIXES.review.map(prefix => prefix.toUpperCase());
 
     private static readonly LEGAL_FORMS = new Set(Object.values(CategorizeInboxEngineService.LEGAL_FORM_TOKENS).flat());
     private static readonly PAYMENT_TYPE_PREFIX_PATTERN = new RegExp(
@@ -55,7 +65,11 @@ class CategorizeInboxEngineService {
     private static readonly RULE_WORD_PATTERN = /\p{L}{2,}/gu;
     private static readonly SECTION_ORDER = Object.values(CategorizeInboxSectionEnum);
 
-    buildContext(evidence: LabelEvidenceRowInterface[], defaultInstrumentId: number): CategorizeInboxBuildContextInterface {
+    buildContext(
+        evidence: LabelEvidenceRowInterface[],
+        defaultInstrumentId: number,
+        labelKind: CategorizeInboxLabelKindEnum
+    ): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
         const brandEvidence = titledEvidence.filter(row => isDefined(this.brandKey(row.title)));
         const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId));
@@ -65,7 +79,8 @@ class CategorizeInboxEngineService {
             merchant: this.groupBy(titledEvidence, row => `${row.type}|${this.merchantKey(row.title)}`),
             brand: this.groupBy(brandEvidence, row => `${row.type}|${this.brandKey(row.title)}`),
             mcc: this.groupBy(mccEvidence, row => `${row.type}|${row.mccCategoryId}`),
-            defaultInstrumentId
+            defaultInstrumentId,
+            labelKind
         };
     }
 
@@ -133,6 +148,15 @@ class CategorizeInboxEngineService {
 
     private isCashWithdrawal(row: Pick<CategorizeInboxRowInterface, 'type' | 'mcc'>): boolean {
         return row.type === TransactionTypeEnum.EXPENSE && row.mcc === ATM_CASH_WITHDRAWAL_MCC;
+    }
+
+    private isRefund(row: Pick<CategorizeInboxRowInterface, 'type' | 'title'>): boolean {
+        const normalizedTitle = row.title.trim().toUpperCase();
+
+        return (
+            row.type === TransactionTypeEnum.INCOME &&
+            CategorizeInboxEngineService.REFUND_PREFIXES.some(prefix => normalizedTitle.startsWith(prefix))
+        );
     }
 
     private sumBaseAmounts(rows: readonly CategorizeInboxRowInterface[], defaultInstrumentId: number): number | null {
@@ -241,6 +265,11 @@ class CategorizeInboxEngineService {
     private scoreRows(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxScoreInterface {
         const { LIMITS } = CategorizeInboxEngineService;
         const [{ type }] = rows;
+
+        if (context.labelKind === CategorizeInboxLabelKindEnum.TAG && rows.some(row => this.isRefund(row))) {
+            return { candidateLabelIds: [], isConfident: false };
+        }
+
         const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
         const merchantCounts = this.countLabels(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
         const brandKeys = new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')));
@@ -259,7 +288,11 @@ class CategorizeInboxEngineService {
 
         return {
             candidateLabelIds: this.rankLabelIds(counts).slice(0, LIMITS.chipCount),
-            isConfident: isDefined(historyCounts) && topCount >= LIMITS.confidentCount && topCount / total >= LIMITS.confidentShare
+            isConfident:
+                rows.length <= LIMITS.maxConfidentRowCount &&
+                isDefined(historyCounts) &&
+                topCount >= LIMITS.confidentCount &&
+                topCount / total >= LIMITS.confidentShare
         };
     }
 

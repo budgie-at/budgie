@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { Db } from '../../@generic/service/db.service';
 import { makeTranslatableRepository } from '../../@generic/util/make-translatable-repository.util';
+import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../../transaction-tags/constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
@@ -56,7 +57,7 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
         reassignTransactions: Effect.fn('TagRepository.reassignTransactions')(function* (fromTagId: number, toTagId: number) {
             const transactionsWithFromTag = yield* Db.query(db =>
                 db
-                    .select({ transactionId: TransactionTagsEntityTable.transactionId })
+                    .select({ transactionId: TransactionTagsEntityTable.transactionId, source: TransactionTagsEntityTable.source })
                     .from(TransactionTagsEntityTable)
                     .where(eq(TransactionTagsEntityTable.tagId, fromTagId))
             );
@@ -65,8 +66,10 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
                 yield* Db.query(db =>
                     db
                         .insert(TransactionTagsEntityTable)
-                        .values(transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId })))
-                        .onConflictDoNothing()
+                        .values(
+                            transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId, source: row.source }))
+                        )
+                        .onConflictDoUpdate(TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT)
                 );
             }
 

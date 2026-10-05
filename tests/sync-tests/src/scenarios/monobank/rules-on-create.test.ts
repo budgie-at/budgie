@@ -9,6 +9,7 @@ import {
     RuleConditionOperatorEnum,
     RuleEntityTable,
     TagEntityTable,
+    TagSourceEnum,
     TransactionEntryEntityTable,
     TransactionTagsEntityTable
 } from '@budgie/contracts';
@@ -78,6 +79,7 @@ describe('monobank/rules-on-create', () => {
 
             expect(entry.categoryId).toBe(category.id);
             expect(transactionTag.tagId).toBe(tag.id);
+            expect(transactionTag.source).toBe(TagSourceEnum.RULE);
         }).pipe(Effect.provide(TestLayer))
     );
 });

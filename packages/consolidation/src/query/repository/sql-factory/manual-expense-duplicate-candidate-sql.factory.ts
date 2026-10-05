@@ -16,6 +16,7 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             synced_tx.id AS syncedTransactionId,
             synced_tx.operated_at AS operatedAt,
             synced_tx.external_source AS externalSource,
+            synced_entry.account_id AS accountId,
             synced_entry.amount AS amount,
             synced_account.instrument_id AS instrumentId
         FROM transactions synced_tx INDEXED BY transactions_visible_type_operated_idx
@@ -91,6 +92,7 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
         SELECT
             synced.syncedTransactionId AS syncedTransactionId,
             synced.externalSource AS externalSource,
+            synced.accountId AS syncedAccountId,
             synced.operatedAt AS syncedOperatedAt,
             manual.manualTransactionId AS manualTransactionId,
             manual.accountId AS manualAccountId,
@@ -112,7 +114,7 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
     supported_pairs AS (
         SELECT
             *,
-            COUNT(*) OVER (PARTITION BY manualAccountId, externalSource) AS accountPairSupport
+            COUNT(*) OVER (PARTITION BY manualAccountId, syncedAccountId, externalSource) AS accountPairSupport
         FROM eligible_pairs
         WHERE syncedMatchCount = 1 AND manualMatchCount = 1
     )

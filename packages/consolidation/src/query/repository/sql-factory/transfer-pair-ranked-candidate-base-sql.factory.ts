@@ -2,6 +2,7 @@ import {
     AccountTypeEnum,
     InstrumentTypeEnum,
     REFUND_TIME_WINDOW_SECONDS,
+    REFUND_TITLE_PREFIXES,
     TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
@@ -10,7 +11,6 @@ import {
 
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { P2P_FIAT_BANK_ACCOUNT_TYPE_SQL } from '../../../shared/constant/p2p-fiat-bank-account-type-sql.constant';
-import { REFUND_TITLE_PREFIXES } from '../../../shared/constant/refund-title-prefixes.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH,

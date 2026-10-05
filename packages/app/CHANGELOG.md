@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **app:** show suggestion and transaction counts on inbox accept-all ([be2cf98](https://github.com/budgie-at/budgie/commit/be2cf9870e66fc985dd424b40c714b85d75a69a1))
+* **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
+* **categorization:** treat inbox category accepts as non-evidence ([089c379](https://github.com/budgie-at/budgie/commit/089c3796058ce6a1b7b9cc603d7658026dab2c02))
+
+
+
+
+
+## [6.92.1](https://github.com/budgie-at/budgie/compare/v6.92.0...v6.92.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **ledger:** convert only visible transfers when permanently deleting an account ([58e0b66](https://github.com/budgie-at/budgie/commit/58e0b6614cc8d87fd76711e3ac04e97a433a7326))
+
+
+### Features
+
+* **contracts:** add Transfer (account deleted) system category excluded from statistics ([17eab43](https://github.com/budgie-at/budgie/commit/17eab439fb16e2f60f1df346e51c3c7da136020f))
+
+
+
+
+
 ## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
 
 **Note:** Version bump only for package @budgie-at/app

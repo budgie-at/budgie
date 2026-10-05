@@ -24,7 +24,7 @@ const keepPresentTransactionIds = (transactionIds: Set<number>, rows: Categorize
 
 export const useCategorizeInbox = (
     filters: TransactionFilterInterface,
-    { rowsAtom, evidenceAtom }: Pick<CategorizeInboxStrategyInterface, 'rowsAtom' | 'evidenceAtom'>
+    { rowsAtom, evidenceAtom, labelKind }: Pick<CategorizeInboxStrategyInterface, 'rowsAtom' | 'evidenceAtom' | 'labelKind'>
 ): CategorizeInboxDataInterface => {
     const { defaultInstrument } = useSettingsContext();
     const inboxResult = AsyncResult.all([useLiveAtomValue(rowsAtom(filters)), useLiveAtomValue(evidenceAtom)]);
@@ -62,7 +62,10 @@ export const useCategorizeInbox = (
     };
     const isLoading = AsyncResult.isInitial(inboxResult);
     const { items, remainingCount, placements, clustersByKey } = categorizeInboxEngineService.placeClusters(
-        categorizeInboxEngineService.buildClusters(rows, categorizeInboxEngineService.buildContext(evidence, defaultInstrument.id)),
+        categorizeInboxEngineService.buildClusters(
+            rows,
+            categorizeInboxEngineService.buildContext(evidence, defaultInstrument.id, labelKind)
+        ),
         session,
         transactionIdSets.hidden,
         defaultInstrument.id
