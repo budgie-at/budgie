@@ -30,7 +30,7 @@ export const AddBankIntegrationAccountsContent = (props: Props) => {
     if (isLoading) {
         return (
             <View className="items-center py-7xl" testID={AddBankIntegrationAccountsContentSelector.Loading}>
-                <ActivityIndicator size="large" color="var(--color-primary)" />
+                <ActivityIndicator size="large" colorClassName="accent-primary" />
             </View>
         );
     }

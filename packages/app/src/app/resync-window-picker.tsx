@@ -9,7 +9,6 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { HorizontalCell } from '../@generic/component/horizontal-cell/horizontal-cell';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
@@ -27,10 +26,8 @@ const NINETY_DAYS = 90;
 export default function ResyncWindowPickerModal() {
     const { t } = useLingui();
     const [, resolveResyncWindowPicker] = useResyncWindowPickerModal();
-    const { backgroundColor } = useFormsheetListStyles();
 
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
-    const containerStyle = { flex: 1, backgroundColor };
 
     const labelByDays: Record<number, string> = {
         [SEVEN_DAYS]: t`Last 7 days`,
@@ -98,7 +95,7 @@ export default function ResyncWindowPickerModal() {
     };
 
     return (
-        <View style={containerStyle}>
+        <View className="flex-1 bg-primary-reverse">
             <FormsheetHeader size="md" title={t`Re-sync transactions`} description={t`Pick a window. Existing data is preserved.`} />
 
             <ScrollView contentContainerClassName="px-3xl pt-md gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>

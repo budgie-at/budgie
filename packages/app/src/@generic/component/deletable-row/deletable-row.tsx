@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import { styled } from 'nativewind';
 import { ReactNode, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -19,8 +18,6 @@ export interface DeleteConfirmation {
     readonly description?: string;
     readonly buttonText?: string;
 }
-
-const Swipable = styled(ReanimatedSwipeable, { containerClassName: 'containerStyle' });
 
 export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
@@ -54,7 +51,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
     );
 
     return (
-        <Swipable
+        <ReanimatedSwipeable
             ref={ref}
             friction={2}
             enableTrackpadTwoFingerGesture
@@ -64,6 +61,6 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
             onSwipeableClose={handleClose}
         >
             {children}
-        </Swipable>
+        </ReanimatedSwipeable>
     );
 };

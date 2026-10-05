@@ -2,8 +2,8 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link } from 'expo-router';
-import { styled } from 'nativewind';
 import { Text, View } from 'react-native';
+import { withUniwind } from 'uniwind';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -16,7 +16,7 @@ import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 
-const Gradient = styled(LinearGradient);
+const Gradient = withUniwind(LinearGradient);
 const colors = ['rgba(1, 255, 136, 0.10)', 'rgba(0, 0, 0, 0)'] as const;
 const locations = [0, 1] as const;
 const start = { x: 0, y: 0 };

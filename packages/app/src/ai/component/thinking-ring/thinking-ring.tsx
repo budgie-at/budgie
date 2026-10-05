@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
-import { Circle, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 
-import { BUTTON_SIZE, RING_SIZE, STROKE_WIDTH, THINKING_COLOR } from '../../constant/animated-record-button.constant';
+import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
+import { BUTTON_SIZE, RING_SIZE, STROKE_WIDTH } from '../../constant/animated-record-button.constant';
 
 const PULSE_DURATION = 1500;
 const MIN_OPACITY = 0.4;
@@ -31,11 +32,11 @@ export const ThinkingRing = () => {
     return (
         <Animated.View className="absolute left-0 top-0 items-center justify-center" style={animatedStyle}>
             <Svg width={RING_SIZE} height={RING_SIZE}>
-                <Circle
+                <StyledCircle
                     cx={INNER_RING_CENTER}
                     cy={INNER_RING_CENTER}
                     r={INNER_RING_RADIUS}
-                    stroke={THINKING_COLOR}
+                    strokeClassName="accent-default-foreground"
                     strokeWidth={STROKE_WIDTH}
                     strokeLinecap="round"
                     fill="none"

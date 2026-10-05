@@ -1,8 +1,8 @@
-import { cn } from 'cn';
 import { ComponentProps } from 'react';
 
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useIsAmountProtected } from '../../hook/use-is-amount-protected.hook';
+import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
 
 interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {

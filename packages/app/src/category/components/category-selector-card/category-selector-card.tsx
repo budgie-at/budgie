@@ -1,6 +1,5 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { cn } from 'cn';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -11,6 +10,7 @@ import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
 
@@ -37,7 +37,7 @@ const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 item
     }))
 });
 
-const textVariants = cva('font-medium text-xs text-center leading-tight', {
+const textVariants = cva('font-medium text-(length:--text-xs) text-center', {
     variants: {
         isSelected: {
             true: '',

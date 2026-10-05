@@ -1,5 +1,4 @@
 import { StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CollapsibleHeader } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
@@ -62,7 +61,6 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
 
 export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading, trailing, testID }: Props): ReactNode => {
     const { config } = useScreenChrome();
-    const insets = useSafeAreaInsets();
 
     const collapseDistance = config.collapseEnd - config.collapseStart;
     const motion = {
@@ -82,7 +80,6 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
             paddingRight: HEADER_HORIZONTAL_PADDING + trailingSlotWidth
         }
     ];
-    const containerStyle = [collapsibleChromeHeaderStyles.container, { paddingTop: insets.top }];
     const persistentContent = (
         <View style={collapsibleChromeHeaderStyles.persistentRow} pointerEvents="box-none">
             <View style={collapsibleChromeHeaderStyles.slot} pointerEvents="box-none">
@@ -105,7 +102,7 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
     );
 
     return (
-        <View style={containerStyle} pointerEvents="box-none">
+        <View className="pt-safe" style={collapsibleChromeHeaderStyles.container} pointerEvents="box-none">
             <CollapsibleHeader
                 testID={testID}
                 pointerEvents="box-none"

@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import { ClassValue, cn } from 'cn';
+import { ClassValue } from 'cn';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { CardSizeType } from '../../type/card-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { OnEventFn } from '@rnw-community/shared';

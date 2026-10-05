@@ -1,7 +1,7 @@
 import { View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { useFormsheetListStyles } from '../../hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useSkeletonPulseStyle } from '../../hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
 
 interface Props {
@@ -17,9 +17,8 @@ const COLUMN_KEYS = ['left', 'center', 'right'];
 
 export const SelectorGridSkeleton = ({ itemHeight, additionalBottomPadding = 0, topOffset, alignToBottom = false }: Props) => {
     const pulseStyle = useSkeletonPulseStyle();
-    const { flatListStyle, contentContainerStyle } = useFormsheetListStyles(additionalBottomPadding, topOffset);
+    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
     const cardStyle: ViewStyle = { height: itemHeight };
-    const outerStyle = [flatListStyle, pulseStyle];
     const contentStyle: ViewStyle = {
         ...contentContainerStyle,
         flex: 1,
@@ -27,7 +26,7 @@ export const SelectorGridSkeleton = ({ itemHeight, additionalBottomPadding = 0, 
     };
 
     return (
-        <Animated.View style={outerStyle} pointerEvents="none">
+        <Animated.View className="absolute inset-0 bg-primary-reverse" style={pulseStyle} pointerEvents="none">
             <View style={contentStyle} className="gap-y-lg">
                 {ROW_KEYS.map(rowKey => (
                     <View className="flex-row gap-x-lg" key={rowKey}>

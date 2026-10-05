@@ -1,6 +1,5 @@
 import { Text, View } from 'react-native';
 
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { RuleFormSelector } from '../rule/components/rule-form-layout/rule-form-layout.selector';
 import { RuleSelectorOptionRow } from '../rule/components/rule-selector-option-row/rule-selector-option-row';
 import { useRuleSelectorModal, useRuleSelectorModalParams } from '../rule/context/rule-selector-modal.context';
@@ -8,14 +7,12 @@ import { useRuleSelectorModal, useRuleSelectorModalParams } from '../rule/contex
 export default function RuleSelectorModal() {
     const [, resolveRuleSelector] = useRuleSelectorModal();
     const currentParams = useRuleSelectorModalParams();
-    const { backgroundColor } = useFormsheetListStyles();
 
     const options = currentParams?.options ?? [];
     const selectedValue = currentParams?.selectedValue ?? null;
-    const containerStyle = { flex: 1, backgroundColor };
 
     return (
-        <View style={containerStyle} className="p-5xl gap-y-lg">
+        <View className="flex-1 bg-primary-reverse p-5xl gap-y-lg">
             <Text className="text-primary text-lg font-semibold mb-lg">{currentParams?.title ?? ''}</Text>
 
             {options.map(option => (

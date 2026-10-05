@@ -1,10 +1,10 @@
 import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { cn } from 'cn';
 import { router } from 'expo-router';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props extends Pick<AccountEntityInterface, 'id'> {
     readonly className?: string;

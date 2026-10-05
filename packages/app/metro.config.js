@@ -1,5 +1,5 @@
 const { getDefaultConfig } = require('expo/metro-config');
-const { withNativewind } = require('nativewind/metro');
+const { withUniwindConfig } = require('uniwind/metro');
 
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
@@ -24,4 +24,8 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
     return context.resolveRequest(context, moduleName, platform);
 };
 
-module.exports = withNativewind(config);
+module.exports = withUniwindConfig(config, {
+    cssEntryFile: './src/global.css',
+    dtsFile: './uniwind-types.d.ts',
+    polyfills: { rem: 14 }
+});

@@ -2662,7 +2662,7 @@ msgstr "Autres catégories"
 msgid "More tags"
 msgstr "Plus d'étiquettes"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Most likely balance"
 msgstr "Solde le plus probable"
 
@@ -3240,7 +3240,7 @@ msgstr "Les notifications push sont désactivées"
 msgid "Quick rule"
 msgstr "Règle rapide"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Range across better and worse months"
 msgstr "Plage entre bons et mauvais mois"
 

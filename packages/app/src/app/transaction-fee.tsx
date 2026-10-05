@@ -8,16 +8,14 @@ import { useTransactionFeeModal, useTransactionFeeModalParams } from '../transac
 export default function TransactionFeeModal() {
     const [, resolveTransactionFee] = useTransactionFeeModal();
     const currentParams = useTransactionFeeModalParams();
-    const { backgroundColor, screenOptions } = useModalRouteState(currentParams, resolveTransactionFee, null);
-
-    const containerStyle = { backgroundColor };
+    const screenOptions = useModalRouteState(currentParams, resolveTransactionFee, null);
 
     if (!currentParams) {
         return null;
     }
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="bg-primary-reverse" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <TransactionFeeModalContent
                 accountId={currentParams.accountId}

@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
-import { cn } from 'cn';
 import { TextInput } from 'react-native';
+
+import { cn } from '../../utils/cn.util';
 
 import { TEXT_AREA_BASE_HEIGHTS } from './constant/text-area-base-heights.constant';
 import { TEXT_AREA_LINE_DELTAS } from './constant/text-area-line-deltas.constant';
@@ -19,7 +20,7 @@ interface Props extends BaseTextInputProps {
     readonly ref?: RefObject<TextInput | null>;
 }
 
-const textAreaVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
+const textAreaVariant = cva('text-primary rounded-2xl', {
     variants: {
         size: {
             sm: 'px-xl py-md text-md',
@@ -48,6 +49,7 @@ export const TextArea = (props: Props) => {
 
     return (
         <TextInput
+            placeholderTextColorClassName="accent-primary/50"
             {...rest}
             ref={ref}
             multiline

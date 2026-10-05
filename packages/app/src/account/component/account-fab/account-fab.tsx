@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CreateTransactionTrigger } from '../../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
@@ -15,7 +14,6 @@ interface Props {
 }
 
 export const AccountFab = ({ isMenuOpen, onPress }: Props) => {
-    const { bottom } = useSafeAreaInsets();
     const scale = useSharedValue(FAB_INITIAL_SCALE);
 
     useEffect(() => {
@@ -23,10 +21,9 @@ export const AccountFab = ({ isMenuOpen, onPress }: Props) => {
     }, [scale]);
 
     const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
-    const containerStyle = { paddingBottom: bottom };
 
     return (
-        <View className="absolute right-0 bottom-0 px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
+        <View className="absolute right-0 bottom-0 px-lg pb-safe" pointerEvents="box-none">
             <Animated.View style={animatedStyle}>
                 <CreateTransactionTrigger isOpen={isMenuOpen} onPress={onPress} />
             </Animated.View>

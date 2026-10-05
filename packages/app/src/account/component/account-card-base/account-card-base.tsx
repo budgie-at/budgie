@@ -1,5 +1,4 @@
 import { AccountEntityInterface } from '@budgie/contracts';
-import { cn } from 'cn';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
@@ -10,6 +9,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { AccountEditButton } from '../account-edit-button/account-edit-button';
 

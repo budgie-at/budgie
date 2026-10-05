@@ -531,7 +531,7 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 
 | Package       | Stack                                                                                                                                                    |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **app**       | Expo 58, React 19 + Compiler, Expo Router 58, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                      |
+| **app**       | Expo 58, React 19 + Compiler, Expo Router 58, Drizzle ORM, Uniwind 1.12, Lingui 6.5                                                                      |
 | **ai**        | Pure TypeScript, Effect                                                                                                                                  |
 | **contracts** | Drizzle ORM, Effect                                                                                                                                      |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                         |

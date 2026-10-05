@@ -1,6 +1,5 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { EdgeFade } from '../../@generic/component/edge-fade/edge-fade';
@@ -14,12 +13,9 @@ import { CreateTransactionTrigger } from '../../transaction/components/create-tr
 const TAB_BAR_Z_INDEX = 3;
 
 export default function TabsLayout() {
-    const { bottom } = useSafeAreaInsets();
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isOpen: isVoiceInputOpen, close: closeVoiceInput } = useVoiceInputContext();
     const isOnboardingActive = useIsOnboardingActive();
-
-    const containerStyle = { paddingBottom: bottom };
 
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
@@ -52,7 +48,7 @@ export default function TabsLayout() {
                     <>
                         <EdgeFade position="bottom" />
                         <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={tabBarWrapperStyle}>
-                            <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
+                            <View className="flex-row items-center justify-between px-lg pb-safe pt-md">
                                 <TabButtons />
 
                                 <CreateTransactionTrigger isOpen={isMenuOpen} onPress={openMenu} />

@@ -1,11 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { cn } from 'cn';
 import { ComponentProps } from 'react';
-import { Text, TextStyle, ViewStyle } from 'react-native';
+import { ColorValue, Text, TextStyle, ViewStyle } from 'react-native';
 import DateTimePicker, { CalendarComponents, CalendarDay, useDefaultClassNames } from 'react-native-ui-datepicker';
+import { useResolveClassNames } from 'uniwind';
 
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
-import { useThemeContext } from '../../../theme/context/theme.context';
+import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
 import { DatePickerSelector } from './date-picker.selector';
@@ -24,14 +24,18 @@ const renderDay = (day: CalendarDay, shouldShowTodayIndicator: boolean) => (
     </Text>
 );
 
+const RANGE_FILL_CLASSNAME = 'bg-primary/6 dark:bg-primary/8';
+const HEADER_CLASSNAME = 'py-md px-xl';
 const DAY_PILL_RADIUS = 9999;
 const DAY_PILL_SIZE = 40;
 const TODAY_BORDER_WIDTH = 1;
 
-const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
-    const primary = isDark ? '#ffffff' : '#000000';
-    const rangeFill = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
-
+const buildStyles = (
+    primary: ColorValue | undefined,
+    rangeFill: ColorValue | undefined,
+    header: ViewStyle,
+    shouldShowTodayIndicator: boolean
+) => {
     const compactCircle: ViewStyle = {
         alignSelf: 'center',
         flex: 0,
@@ -56,6 +60,7 @@ const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
     const today = shouldShowTodayIndicator ? todayRing : transparentView;
 
     return {
+        header,
         today,
         selected: pill,
         range_start: pill,
@@ -69,7 +74,9 @@ const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
 
 export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const { languageTag } = useLocaleInfo();
-    const { isDarkColorSchema } = useThemeContext();
+    const { backgroundColor: primary } = useResolveClassNames('bg-primary');
+    const { backgroundColor: rangeFill } = useResolveClassNames(RANGE_FILL_CLASSNAME);
+    const header = useResolveClassNames(HEADER_CLASSNAME);
     const defaultClassNames = useDefaultClassNames();
     const shouldShowTodayIndicator = props.mode !== 'range';
     const defaultComponents: CalendarComponents = {
@@ -78,12 +85,12 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
         Day: day => renderDay(day, shouldShowTodayIndicator)
     };
     const mergedComponents = { ...defaultComponents, ...props.components };
-    const themedStyles = buildStyles(isDarkColorSchema, shouldShowTodayIndicator);
+    const themedStyles = buildStyles(primary, rangeFill, header, shouldShowTodayIndicator);
 
     /* oxlint-disable lingui/no-unlocalized-strings */
     const classNames = {
         ...defaultClassNames,
-        header: 'py-md px-xl',
+        header: '',
         weekdays: 'border-b-0',
         weekday_label: 'text-xxs text-secondary-foreground font-semibold uppercase tracking-widest',
         day_cell: '',

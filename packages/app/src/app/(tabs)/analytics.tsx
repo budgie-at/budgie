@@ -1,7 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isString } from '@rnw-community/shared';
 
@@ -20,10 +19,8 @@ const isAnalyticsTab = (value: unknown): value is AnalyticsTabType => isString(v
 
 export default function AnalyticsPage() {
     const { tab } = useLocalSearchParams<{ tab?: string }>();
-    const insets = useSafeAreaInsets();
 
     const activeTab = isAnalyticsTab(tab) ? tab : DEFAULT_ANALYTICS_TAB;
-    const headerStyle = { paddingTop: insets.top };
 
     const handleChangeTab = (nextTab: AnalyticsTabType) => {
         router.setParams({ tab: nextTab });
@@ -39,7 +36,7 @@ export default function AnalyticsPage() {
                 </View>
             </GestureDetector>
 
-            <View className="absolute top-0 right-0 left-0 z-10" pointerEvents="box-none" style={headerStyle}>
+            <View className="absolute top-0 right-0 left-0 z-10 pt-safe" pointerEvents="box-none">
                 <AnalyticsPageHeader activeTab={activeTab} onChangeTab={handleChangeTab} />
             </View>
         </View>

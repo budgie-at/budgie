@@ -10,16 +10,15 @@ import { ConvertToRefundModalSelector } from './convert-to-refund-modal.selector
 export default function ConvertToRefundModal() {
     const [, resolveConvertToRefund] = useConvertToRefundModal();
     const currentParams = useConvertToRefundModalParams();
-    const { backgroundColor, screenOptions } = useModalRouteState(currentParams, resolveConvertToRefund, null);
+    const screenOptions = useModalRouteState(currentParams, resolveConvertToRefund, null);
     const refundIncomeTransactionId = currentParams?.refundIncomeTransactionId ?? 0;
-    const containerStyle = { flex: 1, backgroundColor };
 
     if (!currentParams) {
         return null;
     }
 
     return (
-        <View style={containerStyle} collapsable={false} testID={ConvertToRefundModalSelector.Page}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false} testID={ConvertToRefundModalSelector.Page}>
             <Stack.Screen options={screenOptions} />
             <ConvertToRefundContent refundIncomeTransactionId={refundIncomeTransactionId} resolveConvertToRefund={resolveConvertToRefund} />
         </View>
