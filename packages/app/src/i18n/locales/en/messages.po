@@ -184,6 +184,10 @@ msgstr "{newTransactionCount} new, {existingTransactionCount} already imported, 
 msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
 msgstr "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
 
+#: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
+msgid "{paidCount} of {installmentCount} paid"
+msgstr "{paidCount} of {installmentCount} paid"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -255,6 +259,10 @@ msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this s
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "+ Add fee"
+msgstr "+ Add fee"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -276,6 +284,10 @@ msgstr ">"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} mo"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "≈ {formattedPartAmount} per payment"
+msgstr "≈ {formattedPartAmount} per payment"
 
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -337,6 +349,11 @@ msgstr "About a minute"
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Account"
 msgstr "Account"
+
+#. placeholder {0}: primaryEntry.accountId
+#: ../ledger/src/installment/service/installment-plan.service.ts
+msgid "Account {0} not found"
+msgstr "Account {0} not found"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
@@ -1197,6 +1214,10 @@ msgstr "Could not create category"
 msgid "Could not create deposit account"
 msgstr "Could not create deposit account"
 
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Could not create plan"
+msgstr "Could not create plan"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Could not create rule"
@@ -1479,6 +1500,10 @@ msgstr "Create Category"
 #: src/app/contact-selector.tsx
 msgid "Create one to get started."
 msgstr "Create one to get started."
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Create plan"
+msgstr "Create plan"
 
 #: src/rule/components/rule-form-create/rule-form-create.tsx
 msgid "Create Rule"
@@ -2029,6 +2054,7 @@ msgstr "Failed to load contacts."
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Fee"
@@ -2308,6 +2334,10 @@ msgstr "Included in file imports"
 msgid "Includes crypto"
 msgstr "Includes crypto"
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "includes fee {formattedFeeAmount}"
+msgstr "includes fee {formattedFeeAmount}"
+
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -2334,6 +2364,12 @@ msgstr "Income by Tag"
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
+
+#: src/account/constant/account-debt-type.constant.ts
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+msgid "Installment plan"
+msgstr "Installment plan"
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
@@ -2406,6 +2442,10 @@ msgstr "Last error"
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
 msgstr "Last Month"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Last payment {lastPaymentDate}"
+msgstr "Last payment {lastPaymentDate}"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last sync"
@@ -2675,6 +2715,10 @@ msgstr "Move to cash"
 msgid "Moved to cash"
 msgstr "Moved to cash"
 
+#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+msgid "Name"
+msgstr "Name"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Navigate to Account → Statements"
@@ -2714,6 +2758,10 @@ msgstr "New Income"
 #: src/app/(main)/create-transaction/transfer.tsx
 msgid "New Transfer"
 msgstr "New Transfer"
+
+#: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
+msgid "Next {formattedNextAmount} · {nextDate}"
+msgstr "Next {formattedNextAmount} · {nextDate}"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account. No sign-up. Everything lives in an encrypted database on this device."
@@ -2971,6 +3019,10 @@ msgstr "One-offs"
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
 msgstr "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
 
+#: ../ledger/src/installment/service/installment-plan.service.ts
+msgid "Only an expense can become an installment plan"
+msgstr "Only an expense can become an installment plan"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
@@ -3108,6 +3160,10 @@ msgstr "Owed to you"
 msgid "Owes you"
 msgstr "Owes you"
 
+#: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
+msgid "Paid off"
+msgstr "Paid off"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
 msgstr "Paste the token into the field below"
@@ -3125,6 +3181,16 @@ msgstr "Paste your Binance API key:"
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 msgid "Paste your Binance API secret:"
 msgstr "Paste your Binance API secret:"
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Pay in parts"
+msgstr "Pay in parts"
+
+#: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
+msgid "Payments"
+msgstr "Payments"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -3166,6 +3232,10 @@ msgstr "Pick tags for this transaction"
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
+#: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
+msgid "Plan created"
+msgstr "Plan created"
+
 #: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
@@ -3181,6 +3251,7 @@ msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
 #: src/app/convert-to-transfer.tsx
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 msgid "Please try again"
 msgstr "Please try again"
 
@@ -4207,6 +4278,7 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
@@ -4246,6 +4318,7 @@ msgstr "Transaction must have a destination account"
 msgid "Transaction must have a source account"
 msgstr "Transaction must have a source account"
 
+#: ../ledger/src/installment/service/installment-plan.service.ts
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction must have exactly one primary entry"
 msgstr "Transaction must have exactly one primary entry"
@@ -4432,6 +4505,10 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Usually 0% up to 4 months"
+msgstr "Usually 0% up to 4 months"
+
 #: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
 msgid "Valuation unavailable"
 msgstr "Valuation unavailable"
@@ -4568,6 +4645,10 @@ msgstr "You have used {threshold}% of your budget for spending outside category 
 #: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "You owe"
 msgstr "You owe"
+
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
+msgid "You pay in parts"
+msgstr "You pay in parts"
 
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"

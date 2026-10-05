@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { Redirect } from 'expo-router';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
@@ -15,6 +15,7 @@ import { DebtSectionInterface } from '../../account/interface/debt-section.inter
 import { HomeSectionInterface } from '../../account/interface/home-section.interface';
 import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
 import { buildIntegrationProviderMap } from '../../account/utils/build-integration-provider-map.util';
+import { getDebtSectionKind } from '../../account/utils/get-debt-section-kind.util';
 import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
@@ -84,10 +85,7 @@ const buildHomePageSections = (
 
     accounts.forEach(account => {
         if (account.type === AccountTypeEnum.DEBT) {
-            const kind =
-                account.debtType === AccountDebtTypeEnum.BORROW ? HomeSectionKindEnum.DEBT_YOU_OWE : HomeSectionKindEnum.DEBT_OWED_TO_YOU;
-
-            appendAccount(debtGroups, kind, account);
+            appendAccount(debtGroups, getDebtSectionKind(account.debtType), account);
 
             return;
         }

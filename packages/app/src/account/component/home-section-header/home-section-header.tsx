@@ -1,6 +1,3 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
-
-import { HomeSectionKindEnum } from '../../enum/home-section-kind.enum';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isBankProviderSection } from '../../type-guard/is-bank-provider-section.type-guard';
@@ -14,11 +11,6 @@ interface Props {
     readonly balanceSummary: HomeAccountBalanceSummaryInterface;
 }
 
-const SECTION_KIND_TO_DEBT_TYPE: Record<HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU, AccountDebtTypeEnum> = {
-    [HomeSectionKindEnum.DEBT_OWED_TO_YOU]: AccountDebtTypeEnum.LENT,
-    [HomeSectionKindEnum.DEBT_YOU_OWE]: AccountDebtTypeEnum.BORROW
-};
-
 export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
     if (isBankProviderSection(section)) {
         const total = balanceSummary.bankProviderTotals.get(section.integrationId) ?? 0;
@@ -27,8 +19,7 @@ export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
     }
 
     if (isDebtSection(section)) {
-        const debtType = SECTION_KIND_TO_DEBT_TYPE[section.kind];
-        const total = balanceSummary.debtTypeTotals.get(debtType) ?? 0;
+        const total = balanceSummary.debtSectionTotals.get(section.kind) ?? 0;
 
         return <DebtSectionHeader sectionKind={section.kind} total={total} />;
     }

@@ -4,6 +4,7 @@ export const TransactionActionsMenuSelector = {
     ConvertToTransferButton: 'TransactionActionsMenu.ConvertToTransferButton',
     ConvertToRefundButton: 'TransactionActionsMenu.ConvertToRefundButton',
     StartDepositButton: 'TransactionActionsMenu.StartDepositButton',
+    ConvertToInstallmentButton: 'TransactionActionsMenu.ConvertToInstallmentButton',
     AttachDebtSettlementButton: 'TransactionActionsMenu.AttachDebtSettlementButton',
     DetachDebtSettlementButton: 'TransactionActionsMenu.DetachDebtSettlementButton',
     RevertButton: 'TransactionActionsMenu.RevertButton',

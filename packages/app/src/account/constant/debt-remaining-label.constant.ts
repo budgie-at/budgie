@@ -4,5 +4,6 @@ import { msg } from '@lingui/core/macro';
 
 export const DEBT_REMAINING_LABEL: Record<AccountDebtTypeEnum, MessageDescriptor> = {
     [AccountDebtTypeEnum.LENT]: msg`To receive`,
-    [AccountDebtTypeEnum.BORROW]: msg`To repay`
+    [AccountDebtTypeEnum.BORROW]: msg`To repay`,
+    [AccountDebtTypeEnum.INSTALLMENT]: msg`To repay`
 };

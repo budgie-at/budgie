@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
+import { useOpenConvertToInstallment } from '../../installment-plan/hook/use-open-convert-to-installment.hook';
 import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';
 
 import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
@@ -29,6 +30,7 @@ export const useSimpleTransactionActionsMenu = ({
     const [sourceEntry] = persistedCategoryEntries;
     const isConsolidated = isDefined(transaction.consolidationType);
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
+    const handleOpenConvertToInstallment = useOpenConvertToInstallment(transaction);
     const debtSettlementActions = useDebtSettlementTransactionActions({
         transaction,
         transactionId,
@@ -59,6 +61,10 @@ export const useSimpleTransactionActionsMenu = ({
     const transferConvertProps = canConvertToTransfer ? { onConvertToTransfer: handleOpenConvert } : {};
     const canStartDeposit = canConvertToTransfer && transactionType === TransactionTypeEnum.EXPENSE && !isConsolidated;
     const startDepositProps = canStartDeposit ? { onStartDeposit: handleOpenStartDeposit } : {};
+    const installmentConvertProps =
+        isDefined(handleOpenConvertToInstallment) && categoryEntryCount === 1
+            ? { onConvertToInstallment: handleOpenConvertToInstallment }
+            : {};
     const debtSettlementProps = debtSettlementActions.hasDebtSettlement
         ? { onDetachDebtSettlement: debtSettlementActions.handleDetachDebtSettlement }
         : {
@@ -77,6 +83,7 @@ export const useSimpleTransactionActionsMenu = ({
             ...refundConvertProps,
             ...transferConvertProps,
             ...startDepositProps,
+            ...installmentConvertProps,
             ...debtSettlementProps
         },
         debtSettlementAccountTitle: debtSettlementActions.debtSettlementAccountTitle

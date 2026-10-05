@@ -1,4 +1,4 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -24,6 +24,7 @@ import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
@@ -96,6 +97,10 @@ export default function AccountDetails() {
                     ) : (
                         <AccountBalance instrumentSymbol={account.instrument.symbol} balance={balance} />
                     )}
+
+                    {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
+                        <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={account.instrument.symbol} />
+                    ) : null}
 
                     {account.type === AccountTypeEnum.DEPOSIT ? (
                         <DepositDetailsCard

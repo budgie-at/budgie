@@ -15,6 +15,7 @@ export type AccountCreateEntityInterface = PartialByKeysType<
     | 'targetBaseExchangeRate'
     | 'targetBaseAmount'
     | 'interestRate'
+    | 'installmentCount'
     | 'externalSource'
     | 'integrationId'
     | 'includeInNetWorth'

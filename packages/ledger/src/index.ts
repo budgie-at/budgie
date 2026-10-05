@@ -15,6 +15,7 @@ export { ImportedTransactionEntryUpdateService } from './transaction/service/imp
 export { RefreshedImportedEntriesService } from './transaction/service/refreshed-imported-entries.service';
 export { TransactionBatchCreateService } from './transaction/service/transaction-batch-create.service';
 export { TransactionDebtSettlementService } from './transaction/service/transaction-debt-settlement.service';
+export { InstallmentPlanService } from './installment/service/installment-plan.service';
 export { TransactionDepositSafetyService } from './transaction/service/transaction-deposit-safety.service';
 export { TransactionImportService } from './transaction/service/transaction-import.service';
 export { TransactionService } from './transaction/service/transaction.service';
@@ -31,3 +32,4 @@ export { getTransactionCategoryEntries } from './transaction/util/get-transactio
 export { getTransactionFeeEntries } from './transaction/util/get-transaction-fee-entries.util';
 
 export type { ImportedBatchPreparationInterface } from './transaction/interface/imported-batch-preparation.interface';
+export type { InstallmentPlanConvertInputInterface } from './installment/interface/installment-plan-convert-input.interface';

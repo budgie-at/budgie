@@ -1,5 +1,6 @@
-import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum } from '@budgie/contracts';
 
+import { DebtSectionInterface } from './debt-section.interface';
 import { HomeAccountBalanceInterface } from './home-account-balance.interface';
 
 export interface HomeAccountBalanceSummaryInterface {
@@ -8,7 +9,7 @@ export interface HomeAccountBalanceSummaryInterface {
     readonly bankProviderTotals: ReadonlyMap<number, number>;
     readonly cryptoCount: number;
     readonly cryptoTotal: number;
-    readonly debtTypeTotals: ReadonlyMap<AccountDebtTypeEnum, number>;
+    readonly debtSectionTotals: ReadonlyMap<DebtSectionInterface['kind'], number>;
     readonly fiatCount: number;
     readonly fiatTotal: number;
     readonly netWorth: number;

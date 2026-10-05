@@ -6,6 +6,7 @@ import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-me
 import { TransactionListContextMenuContext } from '../../context/transaction-list-context-menu.context';
 import { useTransactionListContextMenuClose } from '../../hook/use-transaction-list-context-menu-close.hook';
 import { TransactionListAttachDebtMenuItem } from '../transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item';
+import { TransactionListConvertToInstallmentMenuItem } from '../transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item';
 import { TransactionListConvertToRefundMenuItem } from '../transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item';
 import { TransactionListConvertToTransferMenuItem } from '../transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item';
 import { TransactionListDeleteMenuItem } from '../transaction-list-delete-menu-item/transaction-list-delete-menu-item';
@@ -42,6 +43,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
                     <TransactionListConvertToRefundMenuItem />
                     <TransactionListConvertToTransferMenuItem />
                     <TransactionListStartDepositMenuItem />
+                    <TransactionListConvertToInstallmentMenuItem />
                     <TransactionListAttachDebtMenuItem />
                     <TransactionListDeleteMenuItem />
                     <TransactionListRevertMenuItem />

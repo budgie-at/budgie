@@ -13,7 +13,8 @@ import {
     TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    isBorrowLikeDebtType
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
@@ -81,11 +82,11 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
             ): DebtEventDirectionEnum => {
                 const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
 
-                if (debtAccount.debtType === AccountDebtTypeEnum.LENT) {
-                    return isExpense ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+                if (isBorrowLikeDebtType(debtAccount.debtType)) {
+                    return isExpense ? DebtEventDirectionEnum.CLOSE : DebtEventDirectionEnum.OPEN;
                 }
 
-                return isExpense ? DebtEventDirectionEnum.CLOSE : DebtEventDirectionEnum.OPEN;
+                return isExpense ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
             };
 
             const getTransactionOrFail = Effect.fnUntraced(function* (transactionId: number) {
@@ -175,7 +176,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 primaryEntry: TransactionEntryEntityInterface,
                 debtAccount: Pick<AccountEntityInterface, 'id' | 'debtType'>
             ) {
-                if (isDefined(primaryEntry.categoryId)) {
+                if (isDefined(primaryEntry.categoryId) || debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT) {
                     return false;
                 }
 

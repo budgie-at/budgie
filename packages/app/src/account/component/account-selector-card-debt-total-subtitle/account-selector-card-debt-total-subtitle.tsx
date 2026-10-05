@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, isBorrowLikeDebtType } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -26,7 +26,7 @@ export const AccountSelectorCardDebtTotalSubtitle = ({ accountId, debtType, inst
     const summary = useDebtAccountProgressSummaryQuery(accountId);
     const fallbackTotalAmount = convertFromMicroUnits(targetBalance);
     const totalAmount = isDefined(summary) && isPositiveNumber(summary.totalAmount) ? summary.totalAmount : fallbackTotalAmount;
-    const debtTotalLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Total borrowed` : t`Total lent`;
+    const debtTotalLabel = isBorrowLikeDebtType(debtType) ? t`Total borrowed` : t`Total lent`;
     const formattedTotalAmount = formatDigits(totalAmount, instrumentSymbol);
     const debtTotalTestID = AccountSelectorModalSelector.DebtTotal(title, totalAmount);
 

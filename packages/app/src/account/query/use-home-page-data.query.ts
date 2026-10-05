@@ -1,10 +1,4 @@
-import {
-    AccountBalanceRepository,
-    AccountDebtTypeEnum,
-    AccountTypeEnum,
-    DebtEventEntityTable,
-    InstrumentEntityTable
-} from '@budgie/contracts';
+import { AccountBalanceRepository, AccountTypeEnum, DebtEventEntityTable, InstrumentEntityTable } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined } from '@rnw-community/shared';
@@ -15,8 +9,10 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
+import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
 
+import type { DebtSectionInterface } from '../interface/debt-section.interface';
 import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
@@ -33,7 +29,7 @@ const createHomeAccountBalanceSummary = () => ({
     bankProviderTotals: new Map<number, number>(),
     cryptoCount: 0,
     cryptoTotal: 0,
-    debtTypeTotals: new Map<AccountDebtTypeEnum, number>(),
+    debtSectionTotals: new Map<DebtSectionInterface['kind'], number>(),
     fiatCount: 0,
     fiatTotal: 0,
     netWorth: 0
@@ -55,11 +51,11 @@ const addBankProviderTotal = (totals: Map<number, number>, integrationId: number
     }
 };
 
-const addDebtTypeTotal = (totals: Map<AccountDebtTypeEnum, number>, homeAccountBalance: HomeAccountBalanceInterface): void => {
+const addDebtSectionTotal = (totals: Map<DebtSectionInterface['kind'], number>, homeAccountBalance: HomeAccountBalanceInterface): void => {
     const { accountType, convertedDebtProgressSummary, debtType, isActive } = homeAccountBalance;
 
     if (isActive && accountType === AccountTypeEnum.DEBT) {
-        addTotal(totals, debtType, convertedDebtProgressSummary.outstandingAmount);
+        addTotal(totals, getDebtSectionKind(debtType), convertedDebtProgressSummary.outstandingAmount);
     }
 };
 
@@ -137,7 +133,7 @@ export const useHomePageDataQuery = () => {
         summary.balancesByAccountId.set(accountId, homeAccountBalance);
         addActiveTotal(summary.accountTypeTotals, accountType, convertedBalance, isActive);
         addBankProviderTotal(summary.bankProviderTotals, bankProviderGroup?.integrationId ?? null, convertedBalance, isActive);
-        addDebtTypeTotal(summary.debtTypeTotals, homeAccountBalance);
+        addDebtSectionTotal(summary.debtSectionTotals, homeAccountBalance);
         addNetWorthAssetTotals(summary, homeAccountBalance);
 
         return summary;

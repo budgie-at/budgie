@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, isBorrowLikeDebtType } from '@budgie/contracts';
 import { PropsWithChildren, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Easing, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -38,7 +38,7 @@ export const DebtProgressRing = ({ debtType, percentage, children }: PropsWithCh
         strokeDashoffset: RING_CIRCUMFERENCE * (1 - progress.get() / FULL_PERCENT)
     }));
 
-    const fillClassName = debtType === AccountDebtTypeEnum.BORROW ? 'accent-destructive-foreground' : 'accent-positive-foreground';
+    const fillClassName = isBorrowLikeDebtType(debtType) ? 'accent-destructive-foreground' : 'accent-positive-foreground';
 
     return (
         <View className="h-[46px] w-[46px] shrink-0 items-center justify-center">
