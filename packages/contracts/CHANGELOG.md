@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* give installment plans their own edit form and find earlier parts on convert ([2bc56a1](https://github.com/budgie-at/budgie/commit/2bc56a1a19cea3795382d1d53d70e17094a3e051))
+
+
+
+
+
 # [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
 
 

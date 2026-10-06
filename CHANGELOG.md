@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* anchor the installment look-back on the converted part and keep counts above paid parts ([6642d3f](https://github.com/budgie-at/budgie/commit/6642d3f9a823387a541682bb4a124b8b51e5754d))
+* **app:** keep the installment total editable above the keyboard ([67ca02b](https://github.com/budgie-at/budgie/commit/67ca02b41ecbdb3f9353e6881f839fcb7a7bae53))
+* **app:** keep the keyboard up when switching installment fields ([4d61dfb](https://github.com/budgie-at/budgie/commit/4d61dfb0240362747543a691190869d420d1722b))
+* give installment plans their own edit form and find earlier parts on convert ([2bc56a1](https://github.com/budgie-at/budgie/commit/2bc56a1a19cea3795382d1d53d70e17094a3e051))
+* keep debt event dates on edit and tighten installment part matching ([815c842](https://github.com/budgie-at/budgie/commit/815c842ae7da8aae027dcc259cd5ae90b9e2a05c))
+
+
+
+
+
 # [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
 
 
