@@ -5,6 +5,7 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { FormProvider, useForm } from 'react-hook-form';
 import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -68,22 +69,24 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
 
     return (
         <FormProvider {...form}>
-            <View className="px-xl pb-xl gap-y-2xl">
-                <FormsheetHeader size="md" title={t`Pay in parts`} className="pb-0" />
-                <ConvertToInstallmentSource params={params} />
-                <ConvertToInstallmentTotal params={params} />
-                <InstallmentCountChips amount={params.amount} />
-                <ConvertToInstallmentFee instrumentSymbol={params.instrumentSymbol} />
-                <ConvertToInstallmentTitleField />
-                <Button
-                    content={t`Create plan`}
-                    size="md"
-                    isLoading={form.formState.isSubmitting}
-                    disabled={!form.formState.isValid}
-                    onPress={handleCreate}
-                    testID={ConvertToInstallmentModalSelector.CreateButton}
-                />
-            </View>
+            <KeyboardAwareScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" bottomOffset={16}>
+                <View className="px-xl pb-xl gap-y-2xl">
+                    <FormsheetHeader size="md" title={t`Pay in parts`} className="pb-0" />
+                    <ConvertToInstallmentSource params={params} />
+                    <ConvertToInstallmentTotal params={params} />
+                    <InstallmentCountChips amount={params.amount} />
+                    <ConvertToInstallmentFee instrumentSymbol={params.instrumentSymbol} />
+                    <ConvertToInstallmentTitleField />
+                    <Button
+                        content={t`Create plan`}
+                        size="md"
+                        isLoading={form.formState.isSubmitting}
+                        disabled={!form.formState.isValid}
+                        onPress={handleCreate}
+                        testID={ConvertToInstallmentModalSelector.CreateButton}
+                    />
+                </View>
+            </KeyboardAwareScrollView>
         </FormProvider>
     );
 };

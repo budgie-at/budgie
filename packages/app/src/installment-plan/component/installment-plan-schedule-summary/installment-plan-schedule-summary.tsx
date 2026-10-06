@@ -46,7 +46,11 @@ export const InstallmentPlanScheduleSummary = ({ accountId, instrumentSymbol }: 
                     {paidCount} of {installmentCount} paid
                 </Trans>
             </Text>
-            <InstallmentPlanNextPayment accountId={accountId} instrumentSymbol={instrumentSymbol} />
+            <InstallmentPlanNextPayment
+                accountId={accountId}
+                instrumentSymbol={instrumentSymbol}
+                leading={<Text className="text-xs text-secondary-foreground">·</Text>}
+            />
         </View>
     );
 };

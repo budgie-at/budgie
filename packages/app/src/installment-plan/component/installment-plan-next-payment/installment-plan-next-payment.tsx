@@ -8,12 +8,15 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useInstallmentPlanScheduleQuery } from '../../query/use-installment-plan-schedule.query';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly accountId: number;
     readonly instrumentSymbol: string;
+    readonly leading?: ReactNode;
 }
 
-export const InstallmentPlanNextPayment = ({ accountId, instrumentSymbol }: Props) => {
+export const InstallmentPlanNextPayment = ({ accountId, instrumentSymbol, leading }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
     const { formatMonthAndDay } = useFormatDate();
@@ -28,7 +31,7 @@ export const InstallmentPlanNextPayment = ({ accountId, instrumentSymbol }: Prop
 
     return (
         <View className="shrink flex-row items-center gap-x-xs">
-            <Text className="text-xs text-secondary-foreground">·</Text>
+            {leading}
             <Text className="shrink text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
                 {t`Next ${formattedNextAmount} · ${nextDate}`}
             </Text>

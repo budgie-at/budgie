@@ -49,6 +49,7 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
             value={value}
             onChangeValue={onChange}
             autoFocus
+            minimumDecimalPlaces={2}
             selectTextOnFocus
             inputClassName="w-20 text-right"
             testID={ConvertToInstallmentModalSelector.FeeInput}
