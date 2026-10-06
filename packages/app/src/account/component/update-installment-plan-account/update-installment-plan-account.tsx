@@ -14,6 +14,7 @@ import { InstallmentPlanCountField } from '../../../installment-plan/component/i
 import { InstallmentPlanPaidSummary } from '../../../installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary';
 import { InstallmentPlanTotalField } from '../../../installment-plan/component/installment-plan-total-field/installment-plan-total-field';
 import { InstallmentPlanUpdateFormSchema } from '../../../installment-plan/constant/installment-plan-update-form-schema.constant';
+import { useInstallmentPlanScheduleQuery } from '../../../installment-plan/query/use-installment-plan-schedule.query';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useAccountEntityForm } from '../../hooks/use-account-entity-form.hook';
 import { DebtAccountService } from '../../service/debt-account.service';
@@ -31,6 +32,9 @@ const FALLBACK_INSTALLMENT_COUNT = 3;
 export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
     const stickyInstrument = useStickyDefinedValue(instrument);
+    const schedule = useInstallmentPlanScheduleQuery(account.id);
+    const hasRemainingBalance = isDefined(schedule) && schedule.remainingAmount > 0;
+    const minimumCount = hasRemainingBalance ? schedule.paidCount + 1 : 0;
     const initialTargetBalance = convertFromMicroUnits(account.targetBalance);
     const { control, handleSubmit, isSubmitting } = useAccountEntityForm(
         standardSchemaResolver(Schema.toStandardSchemaV1(InstallmentPlanUpdateFormSchema)),
@@ -38,15 +42,16 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
             icon: account.icon,
             title: account.title,
             targetBalance: initialTargetBalance,
-            installmentCount: account.installmentCount ?? FALLBACK_INSTALLMENT_COUNT,
+            installmentCount: Math.max(account.installmentCount ?? FALLBACK_INSTALLMENT_COUNT, minimumCount),
             includeInNetWorth: account.includeInNetWorth,
             isActive: account.isActive
         },
-        ({ targetBalance, ...values }: InstallmentPlanUpdateFormValues) =>
+        ({ targetBalance, installmentCount, ...values }: InstallmentPlanUpdateFormValues) =>
             appRuntime.runPromise(
                 Effect.flatMap(DebtAccountService, debtAccountService =>
                     debtAccountService.updateDebtById(account.id, {
                         ...values,
+                        installmentCount: Math.max(installmentCount, minimumCount),
                         ...(targetBalance !== initialTargetBalance && { targetBalance })
                     })
                 )
@@ -69,7 +74,7 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
                         <InstallmentPlanTotalField control={control} instrumentSymbol={stickyInstrument.symbol} />
                         <InstallmentPlanPaidSummary accountId={account.id} instrumentSymbol={stickyInstrument.symbol} />
                     </View>
-                    <InstallmentPlanCountField control={control} />
+                    <InstallmentPlanCountField control={control} minimumCount={minimumCount} />
                 </View>
             }
         >

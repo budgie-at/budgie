@@ -217,6 +217,21 @@ describe('installment plan', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('walks back from a month-end part to earlier parts paid on different days', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-anchor');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 0, 31, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 1, 25, 9));
+            const third = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 2, 31, 9));
+            const { accountId } = yield* convert(third.id, 3, 84_174.99);
+            const installmentPlanRepository = yield* InstallmentPlanRepository;
+            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, third.id]);
+            expect(schedule?.paidCount).toBe(3);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('attaches only same-title parts to a manual plan', () =>
         Effect.gen(function* () {
             const cash = yield* seedBankSyncAccount('Cash', null, 'UA-manual');

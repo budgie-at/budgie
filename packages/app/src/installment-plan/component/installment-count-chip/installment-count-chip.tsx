@@ -9,6 +9,7 @@ import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-insta
 interface Props {
     readonly count: number;
     readonly isSelected: boolean;
+    readonly minimumCount: number;
     readonly onSelect: (count: number) => void;
 }
 
@@ -17,6 +18,10 @@ const chipVariants = cva('min-w-12 flex-1 items-center rounded-full px-lg py-md'
         isSelected: {
             true: 'bg-primary',
             false: 'bg-secondary-background'
+        },
+        isDisabled: {
+            true: 'opacity-40',
+            false: ''
         }
     }
 });
@@ -30,9 +35,10 @@ const labelVariants = cva('text-md font-semibold tabular-nums', {
     }
 });
 
-export const InstallmentCountChip = ({ count, isSelected, onSelect }: Props) => {
+export const InstallmentCountChip = ({ count, isSelected, minimumCount, onSelect }: Props) => {
     const { t } = useLingui();
-    const accessibilityState = { selected: isSelected, checked: isSelected };
+    const isDisabled = count < minimumCount;
+    const accessibilityState = { selected: isSelected, checked: isSelected, disabled: isDisabled };
     const accessibilityLabel = t({ message: plural(count, { one: '# payment', other: '# payments' }) });
 
     const handlePress = () => {
@@ -41,8 +47,9 @@ export const InstallmentCountChip = ({ count, isSelected, onSelect }: Props) => 
 
     return (
         <HapticPressable
-            className={chipVariants({ isSelected })}
+            className={chipVariants({ isSelected, isDisabled })}
             onPress={handlePress}
+            disabled={isDisabled}
             accessibilityRole="radio"
             accessibilityLabel={accessibilityLabel}
             accessibilityState={accessibilityState}

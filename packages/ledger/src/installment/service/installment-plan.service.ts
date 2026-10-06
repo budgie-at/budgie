@@ -113,9 +113,9 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const findEarlierPart = Effect.fnUntraced(function* (
             transaction: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
-            laterPartAt: Date
+            dueAt: Date
         ) {
-            const candidates = yield* findDueCandidates(primaryEntry.accountId, getInstallmentDueDate(laterPartAt, -1));
+            const candidates = yield* findDueCandidates(primaryEntry.accountId, dueAt);
             const [match, ...ambiguousMatches] = candidates.filter(
                 candidate =>
                     Math.abs(candidate.amount - primaryEntry.amount) <= amountTolerance &&
@@ -131,17 +131,19 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             installmentCount: number
         ) {
             const earlierParts: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>> = [];
-            let laterPartAt = transaction.operatedAt;
 
             while (earlierParts.length < installmentCount - 1) {
-                const earlierPart = yield* findEarlierPart(transaction, primaryEntry, laterPartAt);
+                const earlierPart = yield* findEarlierPart(
+                    transaction,
+                    primaryEntry,
+                    getInstallmentDueDate(transaction.operatedAt, -(earlierParts.length + 1))
+                );
 
                 if (!isDefined(earlierPart)) {
                     break;
                 }
 
                 earlierParts.unshift({ id: earlierPart.transactionId, operatedAt: earlierPart.operatedAt });
-                laterPartAt = earlierPart.operatedAt;
             }
 
             return earlierParts;

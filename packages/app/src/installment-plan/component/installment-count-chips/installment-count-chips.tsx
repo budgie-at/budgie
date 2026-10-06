@@ -5,10 +5,11 @@ import { InstallmentCountChip } from '../installment-count-chip/installment-coun
 
 interface Props {
     readonly selectedCount: number;
+    readonly minimumCount?: number;
     readonly onSelect: (count: number) => void;
 }
 
-export const InstallmentCountChips = ({ selectedCount, onSelect }: Props) => (
+export const InstallmentCountChips = ({ selectedCount, minimumCount = 0, onSelect }: Props) => (
     <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -17,7 +18,13 @@ export const InstallmentCountChips = ({ selectedCount, onSelect }: Props) => (
         contentContainerClassName="flex-grow gap-x-xs px-xl"
     >
         {INSTALLMENT_COUNT_OPTIONS.map(count => (
-            <InstallmentCountChip key={count} count={count} isSelected={count === selectedCount} onSelect={onSelect} />
+            <InstallmentCountChip
+                key={count}
+                count={count}
+                isSelected={count === selectedCount}
+                minimumCount={minimumCount}
+                onSelect={onSelect}
+            />
         ))}
     </ScrollView>
 );

@@ -9,13 +9,14 @@ import type { UseControllerReturn } from 'react-hook-form';
 
 interface Props {
     readonly control: Control<InstallmentPlanUpdateFormValues>;
+    readonly minimumCount: number;
 }
 
-export const InstallmentPlanCountField = ({ control }: Props) => {
+export const InstallmentPlanCountField = ({ control, minimumCount }: Props) => {
     const { t } = useLingui();
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<InstallmentPlanUpdateFormValues, 'installmentCount'>) => (
-        <InstallmentCountChips selectedCount={value} onSelect={onChange} />
+        <InstallmentCountChips selectedCount={value} minimumCount={minimumCount} onSelect={onChange} />
     );
 
     return (
