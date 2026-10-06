@@ -1,5 +1,4 @@
 import {
-    AccountDebtTypeEnum,
     AccountRepository,
     AccountTypeEnum,
     DebtEventDirectionEnum,
@@ -11,7 +10,8 @@ import {
     TransactionEntryRepository,
     TransactionRepository,
     TransactionTagsRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    isBorrowLikeDebtType
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
@@ -44,7 +44,7 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
                 }, new Map());
 
             const getIncomeDebtEventDirection = (debtAccount: Pick<AccountEntityInterface, 'debtType'>): DebtEventDirectionEnum =>
-                debtAccount.debtType === AccountDebtTypeEnum.BORROW ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+                isBorrowLikeDebtType(debtAccount.debtType) ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
 
             const createDebtEvent = Effect.fnUntraced(function* (
                 input: TransactionCreateInputInterface,

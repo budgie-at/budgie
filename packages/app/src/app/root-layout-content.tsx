@@ -21,6 +21,7 @@ import { ScreenshotProtectionController } from '../@generic/component/screenshot
 import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
+import { CONVERT_TO_INSTALLMENT_MODAL_OPTIONS } from '../@generic/constant/convert-to-installment-modal-options.constant';
 import { CONVERT_TO_REFUND_MODAL_OPTIONS } from '../@generic/constant/convert-to-refund-modal-options.constant';
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATABASE_RESTORE_I18N } from '../@generic/constant/database-restore-i18n.constant';
@@ -193,6 +194,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen
                                                                         name="convert-to-transfer"
                                                                         options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="convert-to-installment"
+                                                                        options={CONVERT_TO_INSTALLMENT_MODAL_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="convert-to-refund"

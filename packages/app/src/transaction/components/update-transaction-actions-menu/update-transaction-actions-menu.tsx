@@ -11,12 +11,12 @@ import type { TransactionActionsMenuPropsInterface } from '../../interface/trans
 
 interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated' | 'onRevert'> {
     readonly onFeePress?: () => void;
-    readonly feeActionLabel?: string;
     readonly onAttachDebtSettlement?: () => void;
     readonly attachDebtSettlementLabel?: string;
     readonly onConvertToRefund?: () => void;
     readonly onConvertToTransfer?: () => void;
     readonly onStartDeposit?: () => void;
+    readonly onConvertToInstallment?: () => void;
     readonly onDetachDebtSettlement?: () => void;
 }
 
@@ -25,12 +25,12 @@ export const UpdateTransactionActionsMenu = ({
     isConsolidated,
     onRevert,
     onFeePress,
-    feeActionLabel,
     onAttachDebtSettlement,
     attachDebtSettlementLabel,
     onConvertToRefund,
     onConvertToTransfer,
     onStartDeposit,
+    onConvertToInstallment,
     onDetachDebtSettlement
 }: Props) => {
     const { t } = useLingui();
@@ -39,6 +39,7 @@ export const UpdateTransactionActionsMenu = ({
     const showConvertToRefund = isDefined(onConvertToRefund);
     const showConvertToTransfer = isDefined(onConvertToTransfer);
     const showStartDeposit = isDefined(onStartDeposit);
+    const showConvertToInstallment = isDefined(onConvertToInstallment);
     const showDetachDebtSettlement = isDefined(onDetachDebtSettlement);
 
     return (
@@ -46,7 +47,7 @@ export const UpdateTransactionActionsMenu = ({
             {showFee ? (
                 <TransactionConvertMenuItem
                     icon={UserIconNameEnum.ReceiptText}
-                    label={feeActionLabel ?? t`Set fee`}
+                    label={t`Set fee`}
                     onConvert={onFeePress}
                     testID={TransactionActionsMenuSelector.FeeButton}
                 />
@@ -81,6 +82,14 @@ export const UpdateTransactionActionsMenu = ({
                     label={t`Convert to Transfer`}
                     onConvert={onConvertToTransfer}
                     testID={TransactionActionsMenuSelector.ConvertToTransferButton}
+                />
+            ) : null}
+            {showConvertToInstallment ? (
+                <TransactionConvertMenuItem
+                    icon={UserIconNameEnum.CalendarClock}
+                    label={t`Pay in parts`}
+                    onConvert={onConvertToInstallment}
+                    testID={TransactionActionsMenuSelector.ConvertToInstallmentButton}
                 />
             ) : null}
             {showStartDeposit ? (

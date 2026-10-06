@@ -1,4 +1,4 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -20,10 +20,12 @@ import { DebtAccountBalance } from '../../../../account/component/debt-account-b
 import { DepositAccountActionsMenu } from '../../../../account/component/deposit-account-actions-menu/deposit-account-actions-menu';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
+import { ACCOUNT_DEBT_TYPE } from '../../../../account/constant/account-debt-type.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
@@ -52,7 +54,8 @@ export default function AccountDetails() {
         return <Redirect href="/" />;
     }
 
-    const accountVariant = ACCOUNT_COLOR[account.type];
+    const accountDescription =
+        account.debtType === AccountDebtTypeEnum.INSTALLMENT ? t(ACCOUNT_DEBT_TYPE[account.debtType]) : t(ACCOUNT_TYPE[account.type]);
     const headerRight =
         account.type === AccountTypeEnum.DEPOSIT ? (
             <DepositAccountActionsMenu accountId={id} balance={balance} instrumentSymbol={account.instrument.symbol} />
@@ -78,10 +81,10 @@ export default function AccountDetails() {
                         icon={account.icon}
                         onGoBack={handleGoBack}
                         title={account.title}
-                        iconVariant={accountVariant}
+                        iconVariant={ACCOUNT_COLOR[account.type]}
                         right={headerRight}
-                        description={t(ACCOUNT_TYPE[account.type])}
-                        descriptionClassName={descriptionVariants({ variant: accountVariant })}
+                        description={accountDescription}
+                        descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[account.type] })}
                     />
                 }
                 contentClassName="flex-1"
@@ -96,6 +99,10 @@ export default function AccountDetails() {
                     ) : (
                         <AccountBalance instrumentSymbol={account.instrument.symbol} balance={balance} />
                     )}
+
+                    {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
+                        <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={account.instrument.symbol} />
+                    ) : null}
 
                     {account.type === AccountTypeEnum.DEPOSIT ? (
                         <DepositDetailsCard

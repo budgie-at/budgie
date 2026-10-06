@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, UserIconNameEnum, isBorrowLikeDebtType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -31,15 +31,16 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
     }
 
     const { outstandingAmount, overpaidAmount, paidAmount, percentage, totalAmount } = summary;
-    const borrowed = debtType === AccountDebtTypeEnum.BORROW;
+    const borrowed = isBorrowLikeDebtType(debtType);
     const isOverpaid = isPositiveNumber(overpaidAmount);
+    const borrowedTotalLabel = debtType === AccountDebtTypeEnum.INSTALLMENT ? t`Total` : t`Borrowed`;
 
     const labels = {
         directionIcon: borrowed ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight,
         directionLabel: t(DEBT_REMAINING_LABEL[debtType]),
         overpaidLabel: t`Overpaid`,
         paidLabel: t(DEBT_SETTLED_LABEL[debtType]),
-        totalLabel: borrowed ? t`Borrowed` : t`Lent`
+        totalLabel: borrowed ? borrowedTotalLabel : t`Lent`
     };
     const formattedOverpaidAmount = protectAmount(overpaidAmount, instrumentSymbol);
     const formattedPaidAmount = protectAmount(paidAmount, instrumentSymbol);

@@ -110,6 +110,10 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
 msgstr "{count, plural, one {# відсутня категорія} few {# відсутні категорії} many {# відсутніх категорій} other {# відсутньої категорії}}"
 
+#: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
+msgid "{count, plural, one {# payment} other {# payments}}"
+msgstr "{count, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
+
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# виправлення синхронізації} few {# виправлення синхронізації} many {# виправлень синхронізації} other {# виправлення синхронізації}}"
@@ -186,6 +190,10 @@ msgstr "{newTransactionCount} нових, {existingTransactionCount} вже ім
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
 msgstr "{overdueDays, plural, one {Прострочено # день} few {Прострочено # дні} many {Прострочено # днів} other {Прострочено # дня}}"
+
+#: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
+msgid "{paidCount} of {installmentCount} paid"
+msgstr "Сплачено {paidCount} з {installmentCount}"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
@@ -280,6 +288,10 @@ msgstr ">"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
 
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "≈ {formattedPartAmount} per payment"
+msgstr "≈ {formattedPartAmount} за платіж"
+
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -340,6 +352,11 @@ msgstr "Близько хвилини"
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Account"
 msgstr "Рахунок"
+
+#. placeholder {0}: primaryEntry.accountId
+#: ../ledger/src/installment/service/installment-plan.service.ts
+msgid "Account {0} not found"
+msgstr "Рахунок {0} не знайдено"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
@@ -479,6 +496,10 @@ msgstr "Додайте свій перший рахунок, щоб почати
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Add your first expense"
 msgstr "Додайте свою першу витрату"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Adds the fee of the plan"
+msgstr "Додає комісію плану"
 
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Adjustment"
@@ -1200,6 +1221,10 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create deposit account"
 msgstr "Не вдалося створити депозитний рахунок"
 
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Could not create plan"
+msgstr "Не вдалося створити план"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Could not create rule"
@@ -1482,6 +1507,10 @@ msgstr "Створити категорію"
 #: src/app/contact-selector.tsx
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Create plan"
+msgstr "Створити план"
 
 #: src/rule/components/rule-form-create/rule-form-create.tsx
 msgid "Create Rule"
@@ -1801,6 +1830,14 @@ msgstr "Редагувати транзакцію"
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
+#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+msgid "Edits the name of the plan"
+msgstr "Змінює назву плану"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Edits the total of the plan"
+msgstr "Змінює загальну суму плану"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
 msgstr "Резервний фонд та цілі заощаджень"
@@ -2032,6 +2069,7 @@ msgstr "Не вдалося завантажити контакти."
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Комісія"
@@ -2043,6 +2081,14 @@ msgstr "Комісія · {formattedFeeAmount}"
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
 msgstr "Комісія {formattedAmount}"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Fee {formattedFeePercent}"
+msgstr "Комісія {formattedFeePercent}"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Fee, percent"
+msgstr "Комісія, відсоток"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
@@ -2311,6 +2357,10 @@ msgstr "Враховується в імпортах файлів"
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "includes fee {formattedFeeAmount}"
+msgstr "включно з комісією {formattedFeeAmount}"
+
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -2337,6 +2387,12 @@ msgstr "Доходи за тегами"
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
+
+#: src/account/constant/account-debt-type.constant.ts
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+msgid "Installment plan"
+msgstr "Оплата частинами"
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
@@ -2730,6 +2786,10 @@ msgstr "Новий дохід"
 msgid "New Transfer"
 msgstr "Новий переказ"
 
+#: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
+msgid "Next {formattedNextAmount} · {nextDate}"
+msgstr "Наступний {formattedNextAmount} · {nextDate}"
+
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account. No sign-up. Everything lives in an encrypted database on this device."
 msgstr "Без акаунту. Без реєстрації. Усе зберігається в зашифрованій базі даних на цьому пристрої."
@@ -2986,6 +3046,10 @@ msgstr "Разові витрати"
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
 msgstr "Одноразовий імпорт виписки з Приват24 — це не постійна синхронізація, і кожен експорт охоплює лише одну картку чи рахунок"
 
+#: ../ledger/src/installment/service/installment-plan.service.ts
+msgid "Only an expense can become an installment plan"
+msgstr "Оплатою частинами може стати лише витрата"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."
@@ -3123,6 +3187,10 @@ msgstr "Вам винні"
 msgid "Owes you"
 msgstr "Винен вам"
 
+#: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
+msgid "Paid off"
+msgstr "Сплачено"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
 msgstr "Вставте токен у поле нижче"
@@ -3140,6 +3208,16 @@ msgstr "Вставте свій API-ключ Binance:"
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 msgid "Paste your Binance API secret:"
 msgstr "Вставте свій API-секрет Binance:"
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Pay in parts"
+msgstr "Оплата частинами"
+
+#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
+msgid "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
+msgstr "Платежі з {firstPaymentLabel} по {lastPaymentLabel}"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -3181,6 +3259,14 @@ msgstr "Вибрати теги для цієї транзакції"
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
 
+#: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
+msgid "Plan created"
+msgstr "План створено"
+
+#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+msgid "Plan name"
+msgstr "Назва плану"
+
 #: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
@@ -3196,6 +3282,7 @@ msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
 #: src/app/convert-to-transfer.tsx
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -4222,8 +4309,11 @@ msgstr "Сьогодні"
 msgid "Token required"
 msgstr "Потрібен токен"
 
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Загалом"
@@ -4261,6 +4351,7 @@ msgstr "Транзакція повинна мати рахунок призна
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
+#: ../ledger/src/installment/service/installment-plan.service.ts
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction must have exactly one primary entry"
 msgstr "Транзакція повинна мати рівно один основний запис"
@@ -4451,6 +4542,10 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Usually 0% up to 4 months"
+msgstr "Зазвичай 0% до 4 місяців"
+
 #: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
 msgid "Valuation unavailable"
 msgstr "Оцінка недоступна"
@@ -4587,6 +4682,10 @@ msgstr "Ви використали {threshold}% бюджету на витра�
 #: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "You owe"
 msgstr "Ви винні"
+
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
+msgid "You pay in parts"
+msgstr "Ви платите частинами"
 
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"

@@ -14,7 +14,7 @@ export const FEATURE_METADATA = {
     metaDescription: msg`Track money lent or borrowed as first-class debt accounts. Lending and repayments book real income or expense, so they count in your monthly analytics.`,
     primaryKeyword: 'personal debt tracker app',
     seoKeywords: ['personal debt tracker app', 'loan tracker app', 'IOU tracker', 'debt direction tracker', 'lent and borrowed app'],
-    relatedFeatureSlugs: ['account-management', 'net-worth-tracker', 'multi-currency'],
+    relatedFeatureSlugs: ['installment-tracking', 'account-management', 'net-worth-tracker', 'multi-currency'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-29',
     updatedAt: '2026-09-21',

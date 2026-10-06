@@ -59,6 +59,7 @@ export type { AccountFilterInterface } from './account/interface/account-filter.
 export { AccountRepository } from './account/repository/account.repository';
 
 export { normalizeAccountIban } from './account/util/normalize-account-iban.util';
+export { isBorrowLikeDebtType } from './account/util/is-borrow-like-debt-type.util';
 
 export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
 
@@ -92,6 +93,10 @@ export type { DebtEventCreateEntityInterface } from './debt-event/entity/debt-ev
 export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/debt-event-with-relations-entity.interface';
 
 export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
+
+export { InstallmentPlanRepository } from './installment-plan/repository/installment-plan.repository';
+
+export type { InstallmentPlanScheduleInterface } from './installment-plan/interface/installment-plan-schedule.interface';
 
 export { BankIntegrationAssociationEnum } from './bank-integration/enum/bank-integration-association.enum';
 

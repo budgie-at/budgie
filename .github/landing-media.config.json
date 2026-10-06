@@ -355,6 +355,18 @@
             "flow": "flows/media/recurring-payments-calendar-2.flow.yaml"
         },
         {
+            "name": "installment-tracking-1",
+            "flow": "flows/media/installment-tracking-1.flow.yaml"
+        },
+        {
+            "name": "installment-tracking-2",
+            "flow": "flows/media/installment-tracking-2.flow.yaml"
+        },
+        {
+            "name": "installment-tracking-3",
+            "flow": "flows/media/installment-tracking-3.flow.yaml"
+        },
+        {
             "name": "split-transactions-1",
             "flow": "flows/media/split-transactions-1.flow.yaml"
         },

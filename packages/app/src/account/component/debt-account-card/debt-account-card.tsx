@@ -1,9 +1,11 @@
+import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { InstallmentPlanNextPayment } from '../../../installment-plan/component/installment-plan-next-payment/installment-plan-next-payment';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { DebtAccountCardDeadline } from '../debt-account-card-deadline/debt-account-card-deadline';
@@ -49,7 +51,7 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
     const isSettled = !isPositiveNumber(outstandingAmount) && percentage >= 100;
     const statusBadge = isSettled ? <DebtAccountCardSettled debtType={debtType} /> : deadlineBadge;
     const separator = isDefined(statusBadge) ? <Text className="text-xs text-secondary-foreground">·</Text> : null;
-    const subtitle = (
+    const progressSubtitle = (
         <View className="flex-row items-center gap-x-xs">
             <Text
                 className="shrink-0 text-xs text-secondary-foreground tabular-nums"
@@ -61,6 +63,12 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
             {statusBadge}
         </View>
     );
+    const subtitle =
+        debtType === AccountDebtTypeEnum.INSTALLMENT && !isSettled ? (
+            <InstallmentPlanNextPayment accountId={id} instrumentSymbol={instrumentSymbol} fallback={progressSubtitle} />
+        ) : (
+            progressSubtitle
+        );
     const trailing = isPositiveNumber(totalAmount) ? (
         <DebtAccountCardSummary
             instrumentSymbol={instrumentSymbol}

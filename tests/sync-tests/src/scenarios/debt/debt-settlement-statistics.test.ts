@@ -1269,7 +1269,8 @@ const DEBT_V2_TOTAL_AMOUNT = 500 * PRECISION;
 const DEBT_V2_REPAYMENT_AMOUNT = 200 * PRECISION;
 const DEBT_V2_CATEGORY_ID_BY_DEBT_TYPE: Record<AccountDebtTypeEnum, number> = {
     [AccountDebtTypeEnum.LENT]: LENDING_CATEGORY_ID,
-    [AccountDebtTypeEnum.BORROW]: BORROWING_CATEGORY_ID
+    [AccountDebtTypeEnum.BORROW]: BORROWING_CATEGORY_ID,
+    [AccountDebtTypeEnum.INSTALLMENT]: BORROWING_CATEGORY_ID
 };
 
 const getOppositeTransactionType = (

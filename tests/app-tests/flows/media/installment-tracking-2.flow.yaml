@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/installment/create-installment-plan.flow.yaml
+      env:
+          TRANSACTION_ID: '2600'
+          PROGRESS_ID: 'InstallmentPlanScheduleSummary.Progress.2_3'
+
+- extendedWaitUntil:
+      notVisible:
+          text: 'Plan created|Plan erstellt|Plan créé|Plan creado|План створено'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
