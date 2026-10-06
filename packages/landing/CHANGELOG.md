@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.93.2](https://github.com/budgie-at/budgie/compare/v6.93.1...v6.93.2) (2026-10-06)
+
+
+### Bug Fixes
+
+* translate all missing landing strings and fail i18n on missing translations ([d74687e](https://github.com/budgie-at/budgie/commit/d74687e2bc27114c11566ba8affe586c9162a2f6))
+
+
+
+
+
 ## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
 
 **Note:** Version bump only for package @budgie-at/landing

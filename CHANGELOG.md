@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.93.2](https://github.com/budgie-at/budgie/compare/v6.93.1...v6.93.2) (2026-10-06)
+
+
+### Bug Fixes
+
+* **app:** show consolidation toast and AI status badge text ([2014d22](https://github.com/budgie-at/budgie/commit/2014d22601440748bcf5e616fd65722f53c22ce1))
+* translate all missing landing strings and fail i18n on missing translations ([d74687e](https://github.com/budgie-at/budgie/commit/d74687e2bc27114c11566ba8affe586c9162a2f6))
+
+
+
+
+
 ## [6.93.1](https://github.com/budgie-at/budgie/compare/v6.93.0...v6.93.1) (2026-10-05)
 
 
