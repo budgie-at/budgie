@@ -658,6 +658,7 @@
                 "budgie/class-member-order": "error",
                 "budgie/effect-fn-name": "error",
                 "budgie/effect-service-id": "error",
+                "budgie/lingui-no-param-t": "error",
                 "@stylistic/lines-between-class-members": [
                     "error",
                     "always",

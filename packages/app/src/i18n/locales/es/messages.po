@@ -134,6 +134,10 @@ msgstr "{daysRemaining, plural, one {Queda # día} other {Quedan # días}}"
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "{downloadPercent}%"
+msgstr "{downloadPercent}%"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
@@ -2516,6 +2520,10 @@ msgstr "Cargando historial del mercado"
 msgid "Loading..."
 msgstr "Cargando..."
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Loading…"
+msgstr "Cargando…"
+
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
 msgstr "Asegúrala"
@@ -2585,6 +2593,10 @@ msgstr "Los ingresos coincidentes se convierten en una transferencia desde esta 
 msgid "matches"
 msgstr "coincide"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Matches consolidated"
+msgstr "Coincidencias consolidadas"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Coincide con regex"
@@ -2629,6 +2641,10 @@ msgstr "Fusionar con otra etiqueta"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Unir transferencias y reembolsos coincidentes"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "Se fusionaron {consolidated} de {foundPairsText}."
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
@@ -4432,6 +4448,10 @@ msgstr "mes típico {amount}"
 #: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Ucraniano"
+
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Unavailable"
+msgstr "No disponible"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx

@@ -134,6 +134,10 @@ msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "{downloadPercent}%"
+msgstr "{downloadPercent}%"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
@@ -2516,6 +2520,10 @@ msgstr "Marktverlauf wird geladen"
 msgid "Loading..."
 msgstr "Wird geladen..."
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Loading…"
+msgstr "Wird geladen…"
+
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
 msgstr "Sperren Sie es ab"
@@ -2585,6 +2593,10 @@ msgstr "Passende Einnahmen werden in eine Überweisung von diesem Konto umgewand
 msgid "matches"
 msgstr "entspricht"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Matches consolidated"
+msgstr "Treffer zusammengeführt"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Entspricht Regex"
@@ -2629,6 +2641,10 @@ msgstr "In einen anderen Tag zusammenführen"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Passende Überweisungen und Rückerstattungen zusammenführen"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "{consolidated} von {foundPairsText} zusammengeführt."
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
@@ -4432,6 +4448,10 @@ msgstr "typischer Monat {amount}"
 #: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Ukrainisch"
+
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Unavailable"
+msgstr "Nicht verfügbar"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx

@@ -134,6 +134,10 @@ msgstr "{daysRemaining, plural, one {# jour restant} other {# jours restants}}"
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "{downloadPercent}%"
+msgstr "{downloadPercent}%"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
@@ -2516,6 +2520,10 @@ msgstr "Chargement de l'historique du marché"
 msgid "Loading..."
 msgstr "Chargement..."
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Loading…"
+msgstr "Chargement…"
+
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
 msgstr "Verrouillez-la"
@@ -2585,6 +2593,10 @@ msgstr "Les revenus correspondants sont convertis en virement depuis ce compte."
 msgid "matches"
 msgstr "correspond"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Matches consolidated"
+msgstr "Correspondances consolidées"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Correspond au regex"
@@ -2629,6 +2641,10 @@ msgstr "Fusionner avec une autre étiquette"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Fusionner les virements et remboursements correspondants"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "{consolidated} sur {foundPairsText} fusionnées."
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
@@ -4432,6 +4448,10 @@ msgstr "mois typique {amount}"
 #: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Ukrainien"
+
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Unavailable"
+msgstr "Indisponible"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
