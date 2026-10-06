@@ -58,13 +58,15 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             hero={
-                <View>
-                    <InstallmentPlanTotalField control={control} instrumentSymbol={stickyInstrument.symbol} />
-                    <InstallmentPlanPaidSummary accountId={account.id} instrumentSymbol={stickyInstrument.symbol} />
+                <View className="gap-y-7xl pb-7xl">
+                    <View>
+                        <InstallmentPlanTotalField control={control} instrumentSymbol={stickyInstrument.symbol} />
+                        <InstallmentPlanPaidSummary accountId={account.id} instrumentSymbol={stickyInstrument.symbol} />
+                    </View>
+                    <InstallmentPlanCountField control={control} />
                 </View>
             }
         >
-            <InstallmentPlanCountField control={control} />
             <IncludeInNetWorthField control={control} />
         </UpdateAccountPage>
     );

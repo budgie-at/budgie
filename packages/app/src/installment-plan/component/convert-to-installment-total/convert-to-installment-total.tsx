@@ -35,8 +35,8 @@ export const ConvertToInstallmentTotal = ({ params }: Props) => {
         setIsEditing(true);
     };
 
-    const handleStopEditing = () => {
-        setIsEditing(false);
+    const handleEndEditing = () => {
+        setIsEditing(!isAmountProtected);
     };
 
     const formattedTotal = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatDigits(totalAmount, params.instrumentSymbol);
@@ -45,7 +45,7 @@ export const ConvertToInstallmentTotal = ({ params }: Props) => {
         <AmountInput
             value={value}
             onChangeValue={onChange}
-            onEndEditing={handleStopEditing}
+            onEndEditing={handleEndEditing}
             autoFocus
             selectTextOnFocus
             borderless
