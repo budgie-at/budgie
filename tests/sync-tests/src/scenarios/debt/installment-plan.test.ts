@@ -1,5 +1,8 @@
+import { DebtAccountService } from '@app/account/service/debt-account.service';
 import {
+    DebtEventDirectionEnum,
     DebtEventEntityTable,
+    DebtEventSourceEnum,
     ExternalSourceEnum,
     InstallmentPlanRepository,
     PRECISION,
@@ -10,7 +13,7 @@ import {
 import { InstallmentPlanService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -53,6 +56,24 @@ const fetchAttachedTransactionIds = Effect.fnUntraced(function* (debtAccountId: 
         .where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 
     return rows.map(row => row.transactionId).filter(isDefined);
+});
+
+const fetchDebtEventAmounts = Effect.fnUntraced(function* (debtAccountId: number, direction: DebtEventDirectionEnum) {
+    const rows = yield* testDb
+        .select({ source: DebtEventEntityTable.source, amount: DebtEventEntityTable.amount })
+        .from(DebtEventEntityTable)
+        .where(and(eq(DebtEventEntityTable.debtAccountId, debtAccountId), eq(DebtEventEntityTable.direction, direction)));
+
+    return rows;
+});
+
+const fetchManualDebtEventDates = Effect.fnUntraced(function* (debtAccountId: number) {
+    const rows = yield* testDb
+        .select({ direction: DebtEventEntityTable.direction, operatedAt: DebtEventEntityTable.operatedAt })
+        .from(DebtEventEntityTable)
+        .where(and(eq(DebtEventEntityTable.debtAccountId, debtAccountId), eq(DebtEventEntityTable.source, DebtEventSourceEnum.MANUAL)));
+
+    return rows;
 });
 
 describe('installment plan', () => {
@@ -128,6 +149,130 @@ describe('installment plan', () => {
             const { accountId } = yield* convert(first.id, 3, 84_175);
 
             expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('edits the total and payment count of a converted plan without touching its attached parts', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-edit');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.34, new Date(2026, 8, 12, 9));
+            const { accountId } = yield* convert(first.id, 3, 84_175);
+            const closeEventsBefore = yield* fetchDebtEventAmounts(accountId, DebtEventDirectionEnum.CLOSE);
+            const debtAccountService = yield* DebtAccountService;
+
+            yield* debtAccountService.updateDebtById(accountId, { title: 'Plan', targetBalance: 112_233.32, installmentCount: 4 });
+
+            const installmentPlanRepository = yield* InstallmentPlanRepository;
+            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+            expect(yield* fetchDebtEventAmounts(accountId, DebtEventDirectionEnum.CLOSE)).toEqual(closeEventsBefore);
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+            expect(yield* fetchDebtEventAmounts(accountId, DebtEventDirectionEnum.OPEN)).toEqual([
+                { source: DebtEventSourceEnum.MANUAL, amount: toMicroUnits(112_233.32) }
+            ]);
+            expect(schedule?.installmentCount).toBe(4);
+            expect(schedule?.paidCount).toBe(2);
+            expect(schedule?.totalAmount).toBe(toMicroUnits(112_233.32));
+            expect(schedule?.remainingAmount).toBe(toMicroUnits(56_116.65));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('converting a later part walks back to the earlier part and anchors the schedule on it', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-backward');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.34, new Date(2026, 8, 12, 9));
+            const { accountId } = yield* convert(second.id, 3, 84_175);
+            const installmentPlanRepository = yield* InstallmentPlanRepository;
+            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+            expect(schedule?.paidCount).toBe(2);
+            expect(schedule?.nextDueAt?.getMonth()).toBe(9);
+            expect(schedule?.nextDueAt?.getDate()).toBe(12);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('stops walking back when an earlier month has two matching parts', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-ambiguous');
+            yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 13, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.34, new Date(2026, 8, 12, 9));
+            const { accountId } = yield* convert(second.id, 3, 84_175);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([second.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('walks back from a month-end part across an earlier time of day', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-month-end');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 0, 31, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 1, 28, 9));
+            const { accountId } = yield* convert(second.id, 3, 84_175);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('walks back from a month-end part to earlier parts paid on different days', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-anchor');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 0, 31, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 1, 25, 9));
+            const third = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 2, 31, 9));
+            const { accountId } = yield* convert(third.id, 3, 84_174.99);
+            const installmentPlanRepository = yield* InstallmentPlanRepository;
+            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, third.id]);
+            expect(schedule?.paidCount).toBe(3);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('attaches only same-title parts to a manual plan', () =>
+        Effect.gen(function* () {
+            const cash = yield* seedBankSyncAccount('Cash', null, 'UA-manual');
+            const first = yield* seed.manualExpense({
+                accountId: cash.id,
+                title: 'Laptop',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 0, 12, 10)
+            });
+            const { accountId } = yield* convert(first.id, 3, 1_500);
+            const second = yield* seed.manualExpense({
+                accountId: cash.id,
+                title: '  laptop ',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 1, 12, 10)
+            });
+            yield* seed.manualExpense({
+                accountId: cash.id,
+                title: 'Groceries',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 1, 12, 11)
+            });
+
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the manual event dates when the plan settings are edited', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-rename');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            const { accountId } = yield* convert(first.id, 3, 84_175);
+            const datesBefore = yield* fetchManualDebtEventDates(accountId);
+            const debtAccountService = yield* DebtAccountService;
+
+            yield* debtAccountService.updateDebtById(accountId, { title: 'Renamed plan' });
+            yield* debtAccountService.updateDebtById(accountId, { targetBalance: 90_000 });
+
+            expect(yield* fetchManualDebtEventDates(accountId)).toEqual(datesBefore);
         }).pipe(Effect.provide(TestLayer))
     );
 });

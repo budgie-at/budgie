@@ -32,8 +32,8 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
     const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
     const formattedFeeAmount = formatDigits(feeAmount, feeCurrencySymbol);
     const feeLabel = t`Fee · ${formattedFeeAmount}`;
-    const debtSettlementAccountTitle = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT].title ?? null;
-    const hasDebtSettlement = isDefined(debtSettlementAccountTitle);
+    const debtSettlementAccount = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT] ?? null;
+    const hasDebtSettlement = isDefined(debtSettlementAccount);
     const isRefundTransaction = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
     if (!isRefundTransaction && !hasFee && !hasDebtSettlement) {
@@ -50,7 +50,7 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
 
             {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 
-            <DebtSettlementPill accountTitle={debtSettlementAccountTitle} testID={debtSettlementTestID} />
+            <DebtSettlementPill account={debtSettlementAccount} testID={debtSettlementTestID} />
         </View>
     );
 };

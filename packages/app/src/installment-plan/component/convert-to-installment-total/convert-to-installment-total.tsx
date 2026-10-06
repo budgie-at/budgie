@@ -1,13 +1,15 @@
 import { useLingui } from '@lingui/react/macro';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Pressable } from 'react-native';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
@@ -24,6 +26,7 @@ const heroInputStyle = { fontSize: HERO_FONT_SIZE, textAlign: 'center' } as cons
 
 export const ConvertToInstallmentTotal = ({ params }: Props) => {
     const { t } = useLingui();
+    const [, hapticImpact] = useVibration();
     const [isEditing, setIsEditing] = useState(false);
     const formatDigits = useDisplayFormatDigits();
     const isAmountProtected = useIsAmountProtected();
@@ -32,11 +35,12 @@ export const ConvertToInstallmentTotal = ({ params }: Props) => {
     const totalAmount = useWatch({ control, name: 'totalAmount' });
 
     const handleStartEditing = () => {
+        hapticImpact(ImpactFeedbackStyle.Light);
         setIsEditing(true);
     };
 
-    const handleStopEditing = () => {
-        setIsEditing(false);
+    const handleEndEditing = () => {
+        setIsEditing(!isAmountProtected);
     };
 
     const formattedTotal = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatDigits(totalAmount, params.instrumentSymbol);
@@ -45,7 +49,7 @@ export const ConvertToInstallmentTotal = ({ params }: Props) => {
         <AmountInput
             value={value}
             onChangeValue={onChange}
-            onEndEditing={handleStopEditing}
+            onEndEditing={handleEndEditing}
             autoFocus
             selectTextOnFocus
             borderless
@@ -62,8 +66,8 @@ export const ConvertToInstallmentTotal = ({ params }: Props) => {
     }
 
     return (
-        <HapticPressable
-            className="h-20 w-full justify-center"
+        <Pressable
+            className="active:scale-xs h-20 w-full justify-center"
             onPress={handleStartEditing}
             accessibilityRole="button"
             accessibilityLabel={formattedTotal}
@@ -78,6 +82,6 @@ export const ConvertToInstallmentTotal = ({ params }: Props) => {
             >
                 {totalAmount}
             </ProtectedMoney>
-        </HapticPressable>
+        </Pressable>
     );
 };

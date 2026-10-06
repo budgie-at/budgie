@@ -30,7 +30,7 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
     const entries = useWatch({ control: simpleTransaction.form.control, name: 'entries' });
     const categoryEntries = getTransactionCategoryEntries(entries);
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
-    const { actionsMenuProps, debtSettlementAccountTitle } = useSimpleTransactionActionsMenu({
+    const { actionsMenuProps, debtSettlementAccount } = useSimpleTransactionActionsMenu({
         transaction,
         transactionAccountId: fromAccountId,
         transactionType: TransactionTypeEnum.EXPENSE,
@@ -55,7 +55,7 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
                 accountFieldName="fromAccountId"
                 transactionTitle={transaction.title}
                 mccCategoryId={mccCategoryId}
-                debtSettlementAccountTitle={debtSettlementAccountTitle}
+                debtSettlementAccount={debtSettlementAccount}
                 amountTopContent={
                     <RefundedPill
                         key={`${transaction.id}-${transaction.consolidationType}`}

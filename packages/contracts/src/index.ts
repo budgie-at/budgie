@@ -95,6 +95,7 @@ export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/
 export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
 
 export { InstallmentPlanRepository } from './installment-plan/repository/installment-plan.repository';
+export { getInstallmentDueDate } from './installment-plan/util/get-installment-due-date.util';
 
 export type { InstallmentPlanScheduleInterface } from './installment-plan/interface/installment-plan-schedule.interface';
 

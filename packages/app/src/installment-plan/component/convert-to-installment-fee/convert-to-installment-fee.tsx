@@ -1,14 +1,15 @@
 import { Trans, useLingui } from '@lingui/react/macro';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -24,6 +25,7 @@ const PERCENT_DIVISOR = 100;
 
 export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
     const { t } = useLingui();
+    const [, hapticImpact] = useVibration();
     const [isExpanded, setIsExpanded] = useState(false);
     const { intl } = useI18nContext();
     const formatDigits = useDisplayFormatDigits();
@@ -31,6 +33,7 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
     const [feePercent, totalAmount] = useWatch({ control, name: ['feePercent', 'totalAmount'] });
 
     const handleExpand = () => {
+        hapticImpact(ImpactFeedbackStyle.Light);
         setIsExpanded(true);
     };
 
@@ -38,8 +41,8 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
 
     if (!isExpanded) {
         return (
-            <HapticPressable
-                className="self-center rounded-full bg-secondary-background px-xl py-sm"
+            <Pressable
+                className="active:scale-xs self-center rounded-full bg-secondary-background px-xl py-sm"
                 onPress={handleExpand}
                 accessibilityRole="button"
                 accessibilityHint={t`Adds the fee of the plan`}
@@ -48,7 +51,7 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
                 <Text className="text-sm font-medium text-secondary-foreground">
                     <Trans>Fee {formattedFeePercent}</Trans>
                 </Text>
-            </HapticPressable>
+            </Pressable>
         );
     }
 

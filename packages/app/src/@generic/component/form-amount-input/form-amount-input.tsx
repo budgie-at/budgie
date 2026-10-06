@@ -35,6 +35,9 @@ const textVariants = cva('', {
 });
 
 const styles = StyleSheet.create({
+    amountFill: {
+        flex: 1
+    },
     amountWithSuffix: {
         flex: 1,
         textAlign: 'right'
@@ -82,7 +85,7 @@ export const FormAmountInput = (props: Props) => {
     const fontSizeStyle = { fontSize };
     const suffixFontSizeStyle = { fontSize: Math.max(MINIMUM_SUFFIX_FONT_SIZE, Math.round(fontSize * SUFFIX_FONT_SIZE_RATIO)) };
     const amountInputClassName = cn(amountInputVariants(), textClassName);
-    const amountInputStyle = showInstrumentAfterAmount ? [fontSizeStyle, styles.amountWithSuffix] : fontSizeStyle;
+    const amountInputStyle = [fontSizeStyle, showInstrumentAfterAmount ? styles.amountWithSuffix : styles.amountFill];
 
     const handleToggleSign = () => {
         const newIsNegative = !isNegative;

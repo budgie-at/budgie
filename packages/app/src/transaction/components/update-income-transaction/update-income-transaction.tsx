@@ -27,7 +27,7 @@ export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateT
     const entries = useWatch({ control: simpleTransaction.form.control, name: 'entries' });
     const categoryEntries = getTransactionCategoryEntries(entries);
     const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
-    const { actionsMenuProps, debtSettlementAccountTitle } = useSimpleTransactionActionsMenu({
+    const { actionsMenuProps, debtSettlementAccount } = useSimpleTransactionActionsMenu({
         transaction,
         transactionAccountId: toAccountId,
         transactionType: TransactionTypeEnum.INCOME,
@@ -50,7 +50,7 @@ export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateT
                 accountFieldName="toAccountId"
                 transactionTitle={transaction.title}
                 mccCategoryId={mccCategoryId}
-                debtSettlementAccountTitle={debtSettlementAccountTitle}
+                debtSettlementAccount={debtSettlementAccount}
                 buildEntries={buildIncomeEntry}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
