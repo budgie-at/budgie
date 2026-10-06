@@ -45,7 +45,9 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
                 accessibilityHint={t`Adds the fee of the plan`}
                 testID={ConvertToInstallmentModalSelector.FeeButton}
             >
-                <Text className="text-sm font-medium text-secondary-foreground">{t`Fee ${formattedFeePercent}`}</Text>
+                <Text className="text-sm font-medium text-secondary-foreground">
+                    <Trans>Fee {formattedFeePercent}</Trans>
+                </Text>
             </HapticPressable>
         );
     }

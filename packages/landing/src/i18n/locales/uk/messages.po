@@ -4293,7 +4293,6 @@ msgid "Budgie date filter sheet with an August calendar above the row of preset 
 msgstr "Аркуш фільтра дати Budgie з календарем серпня над рядом чипів готових періодів"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
 msgstr "Екран боргу Budgie для «Позика Данилу»: 750 $ ще належить отримати, повернено 37,5 %, із підсумками поверненого й позиченого"
 
@@ -4398,7 +4397,6 @@ msgid "Budgie home screen scrolled to the savings, you owe and owed to you group
 msgstr "Головний екран Budgie, прогорнутий до груп заощаджень, «ви винні» та «винні вам», кожна з підсумком"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar"
 msgstr "Домашній екран Budgie, прокручений до розділів боргів «Ви винні» та «Вам винні», кожен із підсумком і смугою прогресу"
 
@@ -4936,7 +4934,6 @@ msgstr "Список транзакцій Budgie, де рядки з кільк�
 msgid "Budgie transaction list with a 14 missing categories pill above rows that carry no category chip"
 msgstr "Список транзакцій Budgie зі значком «14 відсутніх категорій» над рядками без чипа категорії"
 
-#: src/app/[lang]/features/installment-tracking/page.tsx
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
 msgstr "Список транзакцій Budgie з контекстним меню на картці: редагувати, перетворити на переказ, прикріпити борг, видалити"
@@ -7503,8 +7500,8 @@ msgid "Enhance documentation"
 msgstr "Вдосконалюйте документацію"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
-msgid "Enter the total your bank gave you, or add the fee percentage. The sheet shows how much of the total is the fee, and the parts are worked out from the total."
-msgstr "Введіть загальну суму від банку або додайте відсоток комісії. Аркуш покаже, яка частина суми припадає на комісію, а частини рахуються від загальної суми."
+msgid "Enter the total your bank shows. The fee field shows how much of that total is the fee, and the parts are worked out from the total."
+msgstr "Введіть загальну суму, яку показує банк. Поле комісії показує, яка частина цієї суми є комісією, а частини рахуються від загальної суми."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Enter transactions in both apps"
@@ -9211,8 +9208,8 @@ msgid "If your bank exports CSV, yes — you decide which column feeds each fiel
 msgstr "Якщо ваш банк експортує CSV, так — ви самі вирішуєте, який стовпець живить кожне поле. Дати мають читатися як MM/DD/YYYY HH:MM:SS або YYYY-MM-DD, а суми потребують крапки як десяткового роздільника."
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
-msgid "If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? Add the percentage and the sheet shows how much of the total is the fee."
-msgstr "Банк назвав іншу загальну суму? Введіть її, і Budgie розрахує частину від неї. Є комісія? Додайте відсоток, і аркуш покаже, скільки із суми становить комісія."
+msgid "If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? The sheet shows how much of that total is the fee."
+msgstr "Банк назвав іншу загальну суму? Введіть її, і Budgie розрахує частину від неї. Є комісія? Аркуш покаже, яка частина цієї суми є комісією."
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Illustration: a purchase becomes a plan of three payments, and the Home card shows the amount still owed and the next payment."
@@ -12631,8 +12628,8 @@ msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - C
 msgstr "Закон про захист персональної інформації та електронних документів (PIPEDA) — Канада"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
-msgid "Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also shows the date of the last payment, so you know when you are done."
-msgstr "Оберіть 2, 3, 4, 6, 10, 12 або 24 платежі, і загальна сума плану та розмір кожної частини зміняться одразу. Budgie також показує дату останнього платежу, тож ви знаєте, коли все закінчиться."
+msgid "Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also shows the month each payment falls in, so you know when you are done."
+msgstr "Оберіть 2, 3, 4, 6, 10, 12 або 24 платежі, і загальна сума плану та розмір кожної частини зміняться одразу. Budgie також показує місяць кожного платежу, тож ви знаєте, коли все закінчиться."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Pick a category and Budgie proposes tags you already use, ready to tap."

@@ -4293,7 +4293,6 @@ msgid "Budgie date filter sheet with an August calendar above the row of preset 
 msgstr "Hoja de filtro de fecha de Budgie con un calendario de agosto sobre la fila de chips de periodos predefinidos"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
 msgstr "Pantalla de deuda de Budgie para Prestado a Daniel con 750 $ aún por recibir y un 37,5 % ya devuelto, con los totales devueltos y prestados"
 
@@ -4398,7 +4397,6 @@ msgid "Budgie home screen scrolled to the savings, you owe and owed to you group
 msgstr "Pantalla de inicio de Budgie desplazada a los grupos de ahorros, lo que debes y lo que te deben, con un subtotal en cada uno"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar"
 msgstr "Pantalla de inicio de Budgie desplazada a las secciones de deuda «Debes» y «Te deben», cada una con subtotal y barra de progreso"
 
@@ -4936,7 +4934,6 @@ msgstr "Lista de transacciones de Budgie donde las filas con varias etiquetas mu
 msgid "Budgie transaction list with a 14 missing categories pill above rows that carry no category chip"
 msgstr "Lista de transacciones de Budgie con la píldora «14 categorías faltantes» sobre filas sin chip de categoría"
 
-#: src/app/[lang]/features/installment-tracking/page.tsx
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
 msgstr "Lista de transacciones de Budgie con un menú contextual en una tarjeta: editar, convertir a transferencia, vincular deuda y eliminar"
@@ -7503,8 +7500,8 @@ msgid "Enhance documentation"
 msgstr "Enriquece la documentación"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
-msgid "Enter the total your bank gave you, or add the fee percentage. The sheet shows how much of the total is the fee, and the parts are worked out from the total."
-msgstr "Introduzca el total que le dio su banco o añada el porcentaje de comisión. La hoja muestra qué parte del total es comisión, y los plazos se calculan a partir del total."
+msgid "Enter the total your bank shows. The fee field shows how much of that total is the fee, and the parts are worked out from the total."
+msgstr "Introduce el total que muestra tu banco. El campo de comisión muestra qué parte de ese total es la comisión, y las cuotas se calculan a partir del total."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Enter transactions in both apps"
@@ -9211,8 +9208,8 @@ msgid "If your bank exports CSV, yes — you decide which column feeds each fiel
 msgstr "Si tu banco exporta CSV, sí: tú decides qué columna alimenta cada campo. Las fechas deben leerse como MM/DD/YYYY HH:MM:SS o YYYY-MM-DD, y los importes necesitan el punto como separador decimal."
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
-msgid "If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? Add the percentage and the sheet shows how much of the total is the fee."
-msgstr "¿Su banco le indicó otro total? Escríbalo y Budgie calcula el plazo a partir de él. ¿Hay comisión? Añada el porcentaje y la hoja muestra qué parte del total es comisión."
+msgid "If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? The sheet shows how much of that total is the fee."
+msgstr "¿Tu banco indicó otro total? Introdúcelo y Budgie calcula la cuota a partir de él. ¿Hay comisión? La hoja muestra qué parte de ese total es la comisión."
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Illustration: a purchase becomes a plan of three payments, and the Home card shows the amount still owed and the next payment."
@@ -12631,8 +12628,8 @@ msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - C
 msgstr "Ley de Protección de la Información Personal y los Documentos Electrónicos (PIPEDA) - Canadá"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
-msgid "Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also shows the date of the last payment, so you know when you are done."
-msgstr "Elija 2, 3, 4, 6, 10, 12 o 24 plazos y el total del plan y el importe de cada plazo cambian al instante. Budgie también muestra la fecha del último pago, para que sepa cuándo termina."
+msgid "Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also shows the month each payment falls in, so you know when you are done."
+msgstr "Elige 2, 3, 4, 6, 10, 12 o 24 pagos y el total del plan y el importe de cada cuota cambian al instante. Budgie también muestra el mes de cada pago, para que sepas cuándo terminas."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Pick a category and Budgie proposes tags you already use, ready to tap."

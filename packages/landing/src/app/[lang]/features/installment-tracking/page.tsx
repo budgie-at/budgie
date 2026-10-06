@@ -122,13 +122,13 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                 <FeaturePageProse>
                     <Trans>
                         Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also
-                        shows the date of the last payment, so you know when you are done.
+                        shows the month each payment falls in, so you know when you are done.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? Add the
-                        percentage and the sheet shows how much of the total is the fee.
+                        If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? The sheet
+                        shows how much of that total is the fee.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -202,8 +202,8 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     question={<Trans>What if my bank charges a fee?</Trans>}
                     answer={
                         <Trans>
-                            Enter the total your bank gave you, or add the fee percentage. The sheet shows how much of the total is the fee,
-                            and the parts are worked out from the total.
+                            Enter the total your bank shows. The fee field shows how much of that total is the fee, and the parts are worked
+                            out from the total.
                         </Trans>
                     }
                 />

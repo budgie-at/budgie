@@ -32,7 +32,7 @@ const labelVariants = cva('text-md font-semibold tabular-nums', {
 
 export const InstallmentCountChip = ({ count, isSelected, onSelect }: Props) => {
     const { t } = useLingui();
-    const accessibilityState = { selected: isSelected };
+    const accessibilityState = { selected: isSelected, checked: isSelected };
     const accessibilityLabel = t({ message: plural(count, { one: '# payment', other: '# payments' }) });
 
     const handlePress = () => {
@@ -43,7 +43,7 @@ export const InstallmentCountChip = ({ count, isSelected, onSelect }: Props) => 
         <HapticPressable
             className={chipVariants({ isSelected })}
             onPress={handlePress}
-            accessibilityRole="button"
+            accessibilityRole="radio"
             accessibilityLabel={accessibilityLabel}
             accessibilityState={accessibilityState}
             testID={ConvertToInstallmentModalSelector.CountChip(count)}

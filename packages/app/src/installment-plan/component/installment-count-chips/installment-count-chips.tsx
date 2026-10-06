@@ -1,5 +1,5 @@
 import { useFormContext, useWatch } from 'react-hook-form';
-import { ScrollView } from 'react-native';
+import { Keyboard, ScrollView } from 'react-native';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { INSTALLMENT_COUNT_OPTIONS } from '../../constant/installment-count-options.constant';
@@ -16,6 +16,7 @@ export const InstallmentCountChips = ({ amount }: Props) => {
     const installmentCount = useWatch({ control, name: 'installmentCount' });
 
     const handleSelect = (count: number) => {
+        Keyboard.dismiss();
         setValue('installmentCount', count, { shouldValidate: true });
         setValue('totalAmount', convertFromMicroUnits(amount * count), { shouldValidate: true });
     };
