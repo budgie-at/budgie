@@ -134,6 +134,10 @@ msgstr "{daysRemaining, plural, one {Залишився # день} few {Зал�
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "{downloadPercent}%"
+msgstr "{downloadPercent}%"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
@@ -2476,6 +2480,10 @@ msgstr "Завантаження історії ринку"
 msgid "Loading..."
 msgstr "Завантаження..."
 
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Loading…"
+msgstr "Завантаження…"
+
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
 msgstr "Заблокуйте це"
@@ -2545,6 +2553,10 @@ msgstr "Відповідні надходження перетворюються
 msgid "matches"
 msgstr "збігається"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Matches consolidated"
+msgstr "Збіги консолідовано"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
@@ -2589,6 +2601,10 @@ msgstr "Об'єднати з іншим тегом"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Об'єднати відповідні перекази та повернення"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "Об'єднано {consolidated} з {foundPairsText}."
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
@@ -4358,6 +4374,10 @@ msgstr "типовий місяць {amount}"
 #: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Українська"
+
+#: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
+msgid "Unavailable"
+msgstr "Недоступно"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx

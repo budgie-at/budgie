@@ -56,7 +56,7 @@ msgstr "{initialCount, plural, one {#+ personne attend déjà} other {#+ personn
 
 #: src/generic/component/blog-card/blog-card.tsx
 msgid "{readingTimeMinutes} min read"
-msgstr ""
+msgstr "{readingTimeMinutes} min de lecture"
 
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx
 msgid "#vacation, #shared, #reimbursable — quantified."
@@ -64,7 +64,7 @@ msgstr "#vacation, #shared, #reimbursable — quantifiés."
 
 #: src/generic/component/footer/footer.tsx
 msgid "© {year} Budgie. All rights reserved."
-msgstr ""
+msgstr "© {year} Budgie. Tous droits réservés."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "<0/> left · <1/> done"
@@ -80,7 +80,7 @@ msgstr "<0>2022</0> : Problèmes de synchronisation croissants. Les connexions b
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Access</0>: Your data is always accessible within the app"
-msgstr ""
+msgstr "<0>Accès</0> : vos données sont toujours accessibles dans l'application"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Account information</0>: Account names, numbers (often masked), balances, and types"
@@ -229,11 +229,11 @@ msgstr "<0>Violation des conditions d'utilisation bancaires</0> : La plupart des
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "<0>Base amount</0> — The value of that entry in your current reporting currency, calculated from the exchange rate that belongs to the transaction date."
-msgstr ""
+msgstr "<0>Montant de base</0> — La valeur de cette écriture dans votre devise de référence actuelle, calculée à partir du taux de change correspondant à la date de la transaction."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "<0>Base exchange rate</0> — The rate used for that calculation, stored beside the entry so analytics do not need to recalculate every chart on every screen."
-msgstr ""
+msgstr "<0>Taux de change de base</0> — Le taux utilisé pour ce calcul, conservé à côté de l'écriture afin que les analyses n'aient pas à recalculer chaque graphique sur chaque écran."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Best case</0>: Data is deleted per the privacy policy"
@@ -373,15 +373,15 @@ msgstr "<0>Modèles de budget.</0> De nombreux modèles gratuits disponibles"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Budgie Licensing</0> Email: licensing@budgie.at General inquiries: hello@budgie.at Website: https://budgie.at GitHub: <1>github.com/budgie-at/budgie</1>"
-msgstr ""
+msgstr "<0>Licences Budgie</0> E-mail : licensing@budgie.at Demandes générales : hello@budgie.at Site web : https://budgie.at GitHub : <1>github.com/budgie-at/budgie</1>"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "<0>Budgie</0> Email: legal@budgie.at Website: https://budgie.at"
-msgstr ""
+msgstr "<0>Budgie</0> E-mail : legal@budgie.at Site web : https://budgie.at"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Budgie</0> Email: privacy@budgie.at Website: https://budgie.at"
-msgstr ""
+msgstr "<0>Budgie</0> E-mail : privacy@budgie.at Site web : https://budgie.at"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Business model drift</0> — Free tiers disappear. Subscription prices rise. Data-sharing policies get quietly updated. What the service is today is not what it will be in three years."
@@ -437,7 +437,7 @@ msgstr "<0>Cas courant</0> : Les donnees sont vendues comme actif pour couvrir l
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Competing SaaS</0>: Offering Budgie (or derivatives) as a hosted service to third parties"
-msgstr ""
+msgstr "<0>SaaS concurrents</0> : proposer Budgie (ou ses dérivés) comme service hébergé à des tiers"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Concentrated transaction history</0> — Aggregators hold not just credentials but also years of normalized transaction history. This data is valuable for identity fraud, account takeover, and social engineering attacks."
@@ -445,11 +445,11 @@ msgstr "<0>Historique de transactions concentré</0> — Les agrégateurs détie
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Contributions</0>: Contribute improvements back to the project"
-msgstr ""
+msgstr "<0>Contributions</0> : apporter vos améliorations au projet"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Correction</0>: You can edit or correct your data at any time"
-msgstr ""
+msgstr "<0>Rectification</0> : vous pouvez modifier ou corriger vos données à tout moment"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Credential collection</0> — For banks that do not support direct OAuth, Plaid historically used screen-scraping, which required your actual username and password. Many integrations have migrated to OAuth tokens, but the credential handling still flows through Plaid infrastructure."
@@ -555,7 +555,7 @@ msgstr "<0>Supprimez les anciens comptes</0> : Apres la migration, supprimez com
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Deletion</0>: You can delete your data by uninstalling the app or using the in-app data deletion feature"
-msgstr ""
+msgstr "<0>Suppression</0> : vous pouvez supprimer vos données en désinstallant l'application ou en utilisant la fonction de suppression des données intégrée à l'application"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Delta computation:</0> Determining the minimal set of changes to transmit."
@@ -739,7 +739,7 @@ msgstr "<0>Integration</0> : Les donnees peuvent etre fusionnees avec les donnee
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Internal Business Use</0>: Deploy Budgie within your company for employee use"
-msgstr ""
+msgstr "<0>Usage professionnel interne</0> : déployer Budgie au sein de votre entreprise à l'usage de vos employés"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Investment holdings</0>: Positions, quantities, cost basis, current values"
@@ -803,7 +803,7 @@ msgstr "<0>Latence</0> : Chaque operation necessite un aller-retour vers le serv
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Learning & Education</0>: Study the code for educational purposes"
-msgstr ""
+msgstr "<0>Apprentissage et enseignement</0> : étudier le code à des fins pédagogiques"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Liability details</0>: Loan amounts, interest rates, minimum payments, origination dates"
@@ -811,7 +811,7 @@ msgstr "<0>Details des engagements</0> : Montants des prets, taux d'interet, pai
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Lingui</0> MIT License - Internationalization framework"
-msgstr ""
+msgstr "<0>Lingui</0> Licence MIT - Framework d'internationalisation"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>llama.rn</0> MIT License - On-device language model runtime binding"
@@ -863,7 +863,7 @@ msgstr "<0>LWW-Register (Last-Writer-Wins)</0> gère les valeurs uniques où l'�
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Managed Services</0>: Providing Budgie as a managed, cloud-based product to customers"
-msgstr ""
+msgstr "<0>Services managés</0> : fournir Budgie à des clients sous forme de produit géré hébergé dans le cloud"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Manual entry only:</0> Most private, but requires more effort"
@@ -935,7 +935,7 @@ msgstr "<0>Pile technologique moderne et native</0> : une base de code propre et
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Modifications</0>: Create and use modified versions of Budgie"
-msgstr ""
+msgstr "<0>Modifications</0> : créer et utiliser des versions modifiées de Budgie"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Move the file</0>: You choose how the file reaches the new device, for example a cable, a file manager, or storage you control. Budgie has no part in this step"
@@ -983,7 +983,7 @@ msgstr "<0>Synchronisation multi-appareils</0> : Vos donnees existent sur un seu
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "<0>Native amount</0> — The exact amount in the account currency. This is what you spent, received, or transferred, and it never changes when rates refresh."
-msgstr ""
+msgstr "<0>Montant d'origine</0> — Le montant exact dans la devise du compte. C'est ce que vous avez dépensé, reçu ou transféré, et il ne change jamais lorsque les taux sont actualisés."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Native Apple design.</0> Feels right at home on iOS and macOS."
@@ -1003,7 +1003,7 @@ msgstr "<0>Couche réseau</0> : recherchez les clients HTTP, les appels fetch ou
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Next.js</0> MIT License - React framework for web applications"
-msgstr ""
+msgstr "<0>Next.js</0> Licence MIT - Framework React pour applications web"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>No accounts required</0>: The app functions without creating a user account or logging in"
@@ -1197,7 +1197,7 @@ msgstr "<0>Monarch Money</0>: Oui"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Opt-out</0>: Disable analytics and optional cloud features in app settings"
-msgstr ""
+msgstr "<0>Refus</0> : désactivez les statistiques d'utilisation et les fonctions cloud facultatives dans les paramètres de l'application"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Optional bank sync plugin.</0> SimpleFIN integration available for those who want it."
@@ -1245,7 +1245,7 @@ msgstr "<0>Acces persistant</0> : Les jetons permettent un acces continu aux don
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Personal Use</0>: Use Budgie for your own personal finance tracking"
-msgstr ""
+msgstr "<0>Usage personnel</0> : utiliser Budgie pour le suivi de vos finances personnelles"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Plaid Identity</0>: Identity verification using financial data"
@@ -1297,7 +1297,7 @@ msgstr "<0>Changements de politique</0> : Les politiques de confidentialite sont
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Portability</0>: Export your data in CSV format at any time"
-msgstr ""
+msgstr "<0>Portabilité</0> : exportez vos données au format CSV à tout moment"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Powerful reporting.</0> Detailed charts and insights about your spending."
@@ -1418,7 +1418,7 @@ msgstr "<0>Qwen3</0> Licence Apache 2.0 - Modèle de langage préentraîné util
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>React Native & Expo</0> MIT License - Cross-platform mobile application framework"
-msgstr ""
+msgstr "<0>React Native & Expo</0> Licence MIT - Framework de développement d'applications mobiles multiplateformes"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Real-time sync</0>: Unlike purely local apps, Actual can sync between devices if you run your own server."
@@ -1502,7 +1502,7 @@ msgstr "<0>Révocable</0> — Vous pouvez révoquer le jeton depuis votre portai
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Revoke consent</0>: Disconnect bank sync or disable cloud AI at any time"
-msgstr ""
+msgstr "<0>Retrait du consentement</0> : déconnectez la synchronisation bancaire ou désactivez l'IA dans le cloud à tout moment"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>RGA (Replicated Growable Array)</0> handles ordered sequences like text, enabling collaborative text editing."
@@ -1554,7 +1554,7 @@ msgstr "<0>Sécurité et confidentialité par défaut.</0> Puisque les données 
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Security Research</0>: Audit and review the code for security vulnerabilities"
-msgstr ""
+msgstr "<0>Recherche en sécurité</0> : auditer et examiner le code afin d'y déceler des vulnérabilités"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Self-hosted solutions.</0> Nextcloud with OnlyOffice"
@@ -1566,7 +1566,7 @@ msgstr "<0>Auto-hébergé :</0> Vous contrôlez le serveur où résident les don
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Self-Hosting</0>: Host Budgie on your own servers for yourself or your organization"
-msgstr ""
+msgstr "<0>Auto-hébergement</0> : héberger Budgie sur vos propres serveurs, pour vous-même ou votre organisation"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Service dependency</0>: If the company shuts down, gets acquired, or experiences extended outages, your access to your own financial history disappears."
@@ -1634,7 +1634,7 @@ msgstr "<0>Abonnement :</0> Revenus récurrents, pression potentielle pour moné
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>TanStack Query</0> MIT License - Data fetching and state management"
-msgstr ""
+msgstr "<0>TanStack Query</0> Licence MIT - Récupération de données et gestion d'état"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The backend services</0> - All server-side code for optional features like bank sync"
@@ -1714,7 +1714,7 @@ msgstr "<0>Véritable auto-hébergement</0> : Exécutez-le sur votre propre serv
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>TypeScript</0> Apache License 2.0 - Typed superset of JavaScript"
-msgstr ""
+msgstr "<0>TypeScript</0> Licence Apache 2.0 - Sur-ensemble typé de JavaScript"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Universal compatibility</0> — Every bank that has ever existed can produce a statement. CSV and PDF exports work with every financial institution on the planet, with no API access required."
@@ -1786,7 +1786,7 @@ msgstr "<0>Whisper</0> Licence MIT - Modèle de reconnaissance vocale préentra�
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>White-Label Solutions</0>: Rebranding Budgie and selling it as a SaaS product"
-msgstr ""
+msgstr "<0>Solutions en marque blanche</0> : rebaptiser Budgie et le vendre comme produit SaaS"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Who has access to raw data?</0> Red flag: Vague policies, no access logging. Green flag: Role-based access, audit logs, regular review"
@@ -1874,15 +1874,15 @@ msgstr "1 transaction"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "1. Agreement to Terms"
-msgstr ""
+msgstr "1. Acceptation des conditions"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "1. Commitment to Open Source"
-msgstr ""
+msgstr "1. Engagement envers l'open source"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "1. Copyright and Permission Notice"
-msgstr ""
+msgstr "1. Avis de droits d'auteur et d'autorisation"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "1. Data Ownership and Portability"
@@ -1890,7 +1890,7 @@ msgstr "Propriété et portabilité des données"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. Introduction"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "1. Local-First Architecture"
@@ -1902,15 +1902,15 @@ msgstr "Vos données sont toujours à risque"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "10. Changes to This Privacy Policy"
-msgstr ""
+msgstr "10. Modifications de la présente politique de confidentialité"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "10. Indemnification"
-msgstr ""
+msgstr "10. Indemnisation"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "10. Questions and Contact"
-msgstr ""
+msgstr "10. Questions et contact"
 
 #: src/app/[lang]/opengraph-image.tsx
 #: src/generic/component/comparison-section/comparison-table-body.tsx
@@ -1923,59 +1923,59 @@ msgstr "100 % sur l'appareil"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "11. Contact Us"
-msgstr ""
+msgstr "11. Nous contacter"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "11. Termination"
-msgstr ""
+msgstr "11. Résiliation"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "12. Governing Law and Dispute Resolution"
-msgstr ""
+msgstr "12. Droit applicable et règlement des litiges"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "12. Legal Framework Compliance"
-msgstr ""
+msgstr "12. Conformité au cadre juridique"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "12.1 Governing Law"
-msgstr ""
+msgstr "12.1 Droit applicable"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "12.2 Dispute Resolution"
-msgstr ""
+msgstr "12.2 Règlement des litiges"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "12.3 Class Action Waiver"
-msgstr ""
+msgstr "12.3 Renonciation aux actions collectives"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "13. General Provisions"
-msgstr ""
+msgstr "13. Dispositions générales"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "13.1 Entire Agreement"
-msgstr ""
+msgstr "13.1 Intégralité de l'accord"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "13.2 Severability"
-msgstr ""
+msgstr "13.2 Divisibilité"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "13.3 Waiver"
-msgstr ""
+msgstr "13.3 Absence de renonciation"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "13.4 Assignment"
-msgstr ""
+msgstr "13.4 Cession"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "13.5 Force Majeure"
-msgstr ""
+msgstr "13.5 Force majeure"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "14. Contact Information"
-msgstr ""
+msgstr "14. Coordonnées"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "2 transactions"
@@ -1987,15 +1987,15 @@ msgstr "Accès API"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "2. Data We Collect"
-msgstr ""
+msgstr "2. Données que nous collectons"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "2. Description of Service"
-msgstr ""
+msgstr "2. Description du Service"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "2. Non-Compete for SaaS"
-msgstr ""
+msgstr "2. Non-concurrence pour les SaaS"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "2. Optional Bank Sync with Zero Knowledge"
@@ -2003,7 +2003,7 @@ msgstr "Synchronisation bancaire optionnelle avec zéro connaissance"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "2. Software License"
-msgstr ""
+msgstr "2. Licence du logiciel"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "2. You’re Not in Control"
@@ -2011,19 +2011,19 @@ msgstr "Vous n'avez pas le contrôle"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "2.1 Information Stored Locally on Your Device"
-msgstr ""
+msgstr "2.1 Informations stockées localement sur votre appareil"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "2.1 O'Saasy License Agreement"
-msgstr ""
+msgstr "2.1 Contrat de licence O'Saasy"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "2.2 Information We May Collect"
-msgstr ""
+msgstr "2.2 Informations que nous pouvons collecter"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "2.2 License Conditions"
-msgstr ""
+msgstr "2.2 Conditions de la licence"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "3 transactions"
@@ -2031,7 +2031,7 @@ msgstr "3 transactions"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "3. How We Use Your Information"
-msgstr ""
+msgstr "3. Utilisation de vos informations"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "3. Multi-Currency Support Without Tracking"
@@ -2039,11 +2039,11 @@ msgstr "Support multi-devises sans suivi"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "3. No Liability"
-msgstr ""
+msgstr "3. Absence de responsabilité"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "3. Permitted Uses"
-msgstr ""
+msgstr "3. Utilisations autorisées"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "3. Privacy by Design"
@@ -2055,23 +2055,23 @@ msgstr "Les politiques de confidentialité peuvent changer du jour au lendemain"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "3. User Accounts and Eligibility"
-msgstr ""
+msgstr "3. Comptes utilisateurs et conditions d'éligibilité"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "3.1 Eligibility"
-msgstr ""
+msgstr "3.1 Éligibilité"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "3.2 Account Security"
-msgstr ""
+msgstr "3.2 Sécurité du compte"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "4. Data Storage and Security"
-msgstr ""
+msgstr "4. Stockage et sécurité des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "4. License and Permitted Use"
-msgstr ""
+msgstr "4. Licence et utilisation autorisée"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "4. Open Source Transparency"
@@ -2079,7 +2079,7 @@ msgstr "Transparence open source"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "4. Restricted Uses"
-msgstr ""
+msgstr "4. Utilisations restreintes"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "4. Technical Reliability"
@@ -2087,19 +2087,19 @@ msgstr "Fiabilité technique"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "4.1 Limited License"
-msgstr ""
+msgstr "4.1 Licence limitée"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "4.1 Local Storage"
-msgstr ""
+msgstr "4.1 Stockage local"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "4.2 Restrictions"
-msgstr ""
+msgstr "4.2 Restrictions"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "4.2 Third-Party Services"
-msgstr ""
+msgstr "4.2 Services tiers"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "5 · −€132.72"
@@ -2111,11 +2111,11 @@ msgstr "5 langues"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "5. Data Sharing and Disclosure"
-msgstr ""
+msgstr "5. Partage et divulgation des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "5. Financial Information and Disclaimers"
-msgstr ""
+msgstr "5. Informations financières et avertissements"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "5. Flexibility and Customization"
@@ -2123,79 +2123,79 @@ msgstr "Flexibilité et personnalisation"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "5. Third-Party Open Source Components"
-msgstr ""
+msgstr "5. Composants open source tiers"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "5.1 Not Financial Advice"
-msgstr ""
+msgstr "5.1 Absence de conseil financier"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "5.2 Data Accuracy"
-msgstr ""
+msgstr "5.2 Exactitude des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "5.3 Third-Party Services"
-msgstr ""
+msgstr "5.3 Services tiers"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "6. Contributing to Budgie"
-msgstr ""
+msgstr "6. Contribuer à Budgie"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "6. User Content and Data"
-msgstr ""
+msgstr "6. Contenu et données de l'utilisateur"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "6. Your Rights and Choices"
-msgstr ""
+msgstr "6. Vos droits et vos choix"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "6.1 Your Data"
-msgstr ""
+msgstr "6.1 Vos données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "6.2 Data Backup"
-msgstr ""
+msgstr "6.2 Sauvegarde des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "6.3 Prohibited Content"
-msgstr ""
+msgstr "6.3 Contenu interdit"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "7. Children's Privacy"
-msgstr ""
+msgstr "7. Protection de la vie privée des enfants"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "7. Intellectual Property Rights"
-msgstr ""
+msgstr "7. Droits de propriété intellectuelle"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "7. Source Code Access"
-msgstr ""
+msgstr "7. Accès au code source"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "8. International Data Transfers"
-msgstr ""
+msgstr "8. Transferts internationaux de données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "8. Payment Terms"
-msgstr ""
+msgstr "8. Conditions de paiement"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "8. Security Disclosures"
-msgstr ""
+msgstr "8. Divulgation des failles de sécurité"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "8.1 Free and Premium Features"
-msgstr ""
+msgstr "8.1 Fonctionnalités gratuites et Premium"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "8.2 Subscriptions"
-msgstr ""
+msgstr "8.2 Abonnements"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "8.3 Price Changes"
-msgstr ""
+msgstr "8.3 Modifications de prix"
 
 #: src/app/[lang]/offline-first/page.tsx
 #: src/generic/component/home-tour-section/home-tour-section.tsx
@@ -2204,23 +2204,23 @@ msgstr "81 transactions, aucune requête"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "9. Data Retention"
-msgstr ""
+msgstr "9. Conservation des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "9. Disclaimers and Limitation of Liability"
-msgstr ""
+msgstr "9. Exclusions de garantie et limitation de responsabilité"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "9. Trademark Usage"
-msgstr ""
+msgstr "9. Utilisation des marques"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "9.1 Disclaimer of Warranties"
-msgstr ""
+msgstr "9.1 Exclusion de garanties"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "9.2 Limitation of Liability"
-msgstr ""
+msgstr "9.2 Limitation de responsabilité"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "95% of the limit used"
@@ -2476,7 +2476,7 @@ msgstr "Une source de plantages liée à la restauration de sauvegarde, aux chan
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
-msgstr ""
+msgstr "Un rapport de dépenses doit comparer ce que l'argent valait le jour où vous l'avez dépensé. Budgie valorise chaque transaction importée ou nouvellement enregistrée dans votre devise de référence, en utilisant le taux de change de la date de la transaction."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "A steady list with pinned section headers showing each count and total"
@@ -2570,7 +2570,7 @@ msgstr "Les partages accidentels restent privés."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Account balances and banking information (if bank sync is enabled)"
-msgstr ""
+msgstr "Soldes des comptes et informations bancaires (si la synchronisation bancaire est activée)"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in Settings → Security."
@@ -2648,7 +2648,7 @@ msgstr "Accuser reception des rapports de vulnerabilite dans les 48 heures"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Acknowledgment"
-msgstr ""
+msgstr "Reconnaissance"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Acquisition Scenarios"
@@ -2722,7 +2722,7 @@ msgstr "Ajoutez des widgets de patrimoine net, de budget et d'ajout rapide à l'
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Add tests for new functionality"
-msgstr ""
+msgstr "Ajouter des tests pour les nouvelles fonctionnalités"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Add them to your Home Screen and your numbers are already there before you unlock your phone."
@@ -2833,7 +2833,7 @@ msgstr "ia"
 
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "AI auto-categorization app"
-msgstr ""
+msgstr "application de catégorisation automatique par IA"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "AI categorization"
@@ -2854,7 +2854,7 @@ msgstr "La suggestion de catégorie par IA comble les lacunes pour les transacti
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "AI chat conversations and financial insights"
-msgstr ""
+msgstr "Conversations avec l'IA et analyses financières"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "AI features have become standard in personal finance apps. Auto-categorization, spending insights, budget suggestions — the question is no longer whether your app uses AI, but where that AI runs. For most apps, the answer is: on a remote server, with your transaction data sent over the network to get there."
@@ -2874,7 +2874,7 @@ msgstr "Abonnement IA requis"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "AI-generated insights and recommendations"
-msgstr ""
+msgstr "Analyses et recommandations générées par l'IA"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "AI-powered insights"
@@ -2886,7 +2886,7 @@ msgstr "Le mode avion ne change rien"
 
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
 msgid "alerts"
-msgstr ""
+msgstr "alertes"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Alerts that never leave your phone"
@@ -3081,7 +3081,7 @@ msgstr "Les analyses ne lisent que les transactions de revenus et de dépenses :
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Analytics services (anonymous, opt-in only)"
-msgstr ""
+msgstr "Services d'analyse (anonymes, uniquement sur adhésion)"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Analytics, charts, and reports work entirely on-device"
@@ -3097,7 +3097,7 @@ msgstr "Exemple animé : six transactions bancaires sont regroupées par commer�
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Anonymous usage analytics (e.g., feature usage patterns, crash reports) - opt-in only"
-msgstr ""
+msgstr "Statistiques d'utilisation anonymes (par exemple, usage des fonctionnalités, rapports de plantage) - uniquement sur adhésion"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Another subscription to manage"
@@ -3126,19 +3126,19 @@ msgstr "N'importe quel ordre de colonnes convient"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any conduct or content of any third party on the Service"
-msgstr ""
+msgstr "Tout comportement ou contenu de tout tiers sur le Service"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any content obtained from the Service"
-msgstr ""
+msgstr "Tout contenu obtenu via le Service"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any disputes arising from or relating to these Terms or the Service shall be resolved through:"
-msgstr ""
+msgstr "Tout litige découlant des présentes Conditions ou du Service, ou s'y rapportant, sera réglé par :"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any errors in the Service will be corrected"
-msgstr ""
+msgstr "Que toute erreur du Service sera corrigée"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any future solution will maintain our core principle: your financial data remains on your device, encrypted, and under your control."
@@ -3154,7 +3154,7 @@ msgstr "Tout SDK qui necessite une connectivite reseau pour les fonctionnalites 
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any User Content you submit or transmit through the Service"
-msgstr ""
+msgstr "Tout Contenu utilisateur que vous soumettez ou transmettez via le Service"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Anyone can build the app from source"
@@ -3336,7 +3336,7 @@ msgstr "Attachés au virement"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Attempt to gain unauthorized access to any part of the Service"
-msgstr ""
+msgstr "Tenter d'obtenir un accès non autorisé à toute partie du Service"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Audio never leaves the device — no Siri-style cloud round-trip"
@@ -3344,7 +3344,7 @@ msgstr "L'audio ne quitte jamais l'appareil — pas d'aller-retour cloud à la S
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Audit our security and privacy implementations"
-msgstr ""
+msgstr "Auditer nos mises en œuvre de la sécurité et de la confidentialité"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Audit the codebase for vulnerabilities"
@@ -3352,11 +3352,11 @@ msgstr "Auditez la base de code pour détecter des vulnérabilités"
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "auditable budget app"
-msgstr ""
+msgstr "application de budget vérifiable"
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "auditable expense tracker"
-msgstr ""
+msgstr "suivi de dépenses vérifiable"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Authentication systems that remain secure even when examined"
@@ -3414,7 +3414,7 @@ msgstr "Consolidation automatique des virements — les deux côtés d'un vireme
 
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "automation"
-msgstr ""
+msgstr "automatisation"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Background FX-rate refresh converts every account to your base currency"
@@ -3633,7 +3633,7 @@ msgstr "Les données de synchronisation bancaire sont cryptées localement"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Bank sync providers (only with your explicit authorization)"
-msgstr ""
+msgstr "Prestataires de synchronisation bancaire (uniquement avec votre autorisation explicite)"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Bank sync reliability varies by institution"
@@ -3661,11 +3661,11 @@ msgstr "Synchronisation bancaire sans surveillance"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Bank synchronization data"
-msgstr ""
+msgstr "Données de synchronisation bancaire"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/opengraph-image.tsx
 msgid "bank-data-safety"
-msgstr ""
+msgstr "sécurité des données bancaires"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Bank-fee entries are included in category analytics even when attached to transfers"
@@ -3687,7 +3687,7 @@ msgstr "Au niveau bancaire uniquement"
 #: src/app/[lang]/blog/whats-new-august-september-2026/opengraph-image.tsx
 #: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
 msgid "bank-sync"
-msgstr ""
+msgstr "synchronisation bancaire"
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Bank-sync imports create fee entries instead of fake split expenses"
@@ -3860,7 +3860,7 @@ msgstr "CARREFOUR CITY 0421 PARIS 11/03"
 
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 msgid "binance"
-msgstr ""
+msgstr "Binance"
 
 #: src/app/[lang]/features/binance-sync/metadata.ts
 msgid "Binance Account Sync — Budgie"
@@ -3911,7 +3911,7 @@ msgstr "Authentification biométrique — Budgie"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "biometric finance app"
-msgstr ""
+msgstr "application de finances avec biométrie"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Biometric lock + on-device encryption with your PIN"
@@ -4033,11 +4033,11 @@ msgstr "Parcourir toutes les fonctionnalités"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Browse the source code online"
-msgstr ""
+msgstr "Parcourir le code source en ligne"
 
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
 msgid "budget"
-msgstr ""
+msgstr "budget"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budget alerts are off until you turn them on. Once enabled, a background task periodically compares what you have spent against your overall limit, each category limit, and the cap for everything else, and posts a local notification the first time a limit reaches 80% and again when it reaches 100%."
@@ -4061,7 +4061,7 @@ msgstr "Application budget sans connexion bancaire — API directe ou import de 
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "budget app without wifi"
-msgstr ""
+msgstr "application de budget sans wifi"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budget details puts the overall limit at the top and every category limit underneath, all worked out on the device from the transactions already in your ledger."
@@ -4201,7 +4201,7 @@ msgstr "Sélecteur de catégories de Budgie ouvert par-dessus le formulaire Modi
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
-msgstr ""
+msgstr "Licences commerciales Budgie"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Budgie compares what you earn and spend in a typical month with the money in your cash and bank accounts. If you spend more than you earn, it shows how many months are left and when the money runs out. If you earn more, it shows how much you add each month."
@@ -4411,7 +4411,7 @@ msgstr "Détail d'une transaction de revenu Budgie avec un sélecteur de comptes
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie incorporates and depends on numerous open source libraries and frameworks. We are deeply grateful to the open source community for their contributions. The following are some of the key open source components used in Budgie:"
-msgstr ""
+msgstr "Budgie intègre et s'appuie sur de nombreuses bibliothèques et frameworks open source. Nous sommes profondément reconnaissants envers la communauté open source pour ses contributions. Voici quelques-uns des principaux composants open source utilisés dans Budgie :"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio trackers don't model fiat side-by-side."
@@ -4463,7 +4463,7 @@ msgstr "Budgie repose sur le principe que vous ne devriez pas avoir à nous fair
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
-msgstr ""
+msgstr "Budgie s'engage en faveur de la transparence, de la sécurité et de la collaboration communautaire. Nous sommes convaincus que les logiciels open source sont essentiels pour instaurer la confiance, en particulier lorsqu'il s'agit d'applications financières qui traitent des données personnelles sensibles. En rendant notre code source public, nous permettons les audits de sécurité, les contributions de la communauté et la vérification par les utilisateurs de nos engagements en matière de confidentialité."
 
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Budgie is completely free — nothing to unlock later"
@@ -4483,7 +4483,7 @@ msgstr "Budgie est en bêta privée. Inscrivez-vous à la liste d’attente et n
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie is licensed under the O'Saasy License, a source-available license that allows free use, modification, and distribution while preventing direct SaaS competition. This license enables:"
-msgstr ""
+msgstr "Budgie est distribué sous la licence O'Saasy, une licence à code source disponible qui autorise l'utilisation, la modification et la distribution libres tout en empêchant la concurrence directe sous forme de SaaS. Cette licence permet :"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a local database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
@@ -4503,7 +4503,7 @@ msgstr "Budgie est open source. Les affirmations sur la confidentialité de cet 
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Budgie is operated by Budgie (\"we,\" \"us,\" or \"our\"). We reserve the right to update, change, or replace any part of these Terms by posting updates and changes to our website. Your continued use of the Service following the posting of any changes constitutes acceptance of those changes."
-msgstr ""
+msgstr "Budgie est exploité par Budgie (« nous », « notre » ou « nos »). Nous nous réservons le droit de mettre à jour, modifier ou remplacer toute partie des présentes Conditions en publiant les mises à jour et modifications sur notre site web. La poursuite de votre utilisation du Service après la publication de toute modification vaut acceptation de celle-ci."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie is our contribution to this future: a personal finance application that keeps your financial data where it belongs, on your device under your control."
@@ -4531,7 +4531,7 @@ msgstr "Budgie apprend séparément vos dépenses récurrentes et vos dépenses 
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
-msgstr ""
+msgstr "Budgie laisse la valeur de base vide tant qu'aucun taux adapté n'existe. C'est plus sûr que d'inventer une valeur, car les analyses peuvent repérer les lignes non valorisées au lieu de mélanger discrètement des totaux estimés et des totaux réels."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie lock screen on launch, showing Enter your PIN above four empty dots and a number keypad"
@@ -4639,7 +4639,7 @@ msgstr "Budgie ne fait ce travail que lorsque vous ajoutez ou modifiez une trans
 
 #: src/app/[lang]/legal/license/metadata.ts
 msgid "Budgie Open Source License - Learn about our O'Saasy License and open source commitments"
-msgstr ""
+msgstr "Licence open source de Budgie - Découvrez notre licence O'Saasy et nos engagements open source"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie parses and categorizes the transactions locally"
@@ -4647,7 +4647,7 @@ msgstr "Budgie analyse et categorise les transactions localement"
 
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
 msgid "Budgie Privacy Policy - Learn how we protect your financial data with our offline-first, privacy-focused approach"
-msgstr ""
+msgstr "Politique de confidentialité de Budgie - Découvrez comment nous protégeons vos données financières grâce à notre approche hors ligne d'abord, axée sur la confidentialité"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Budgie prompts you to migrate them to another account or wipe them. Archiving is the safer alternative — it hides the account from the home but keeps the data."
@@ -4760,7 +4760,7 @@ msgstr "Paramètres de Budgie avec la section Autonomie et les interrupteurs Aff
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
-msgstr ""
+msgstr "Budgie inclut des taux de change quotidiens historiques dans la migration de la base de données locale."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie ships under a source-available license that lets you read every line, fork it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
@@ -4973,7 +4973,7 @@ msgstr "L'IA de Budgie s'exécute sur votre téléphone, pas dans le cloud : sug
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie’s answer is transaction-date valuation. Each transaction entry keeps its original amount and currency, then stores a nullable base-currency value calculated from the best historical rate available for that date. The original record stays intact, while analytics can sum one consistent value."
-msgstr ""
+msgstr "La réponse de Budgie est la valorisation à la date de la transaction. Chaque écriture conserve son montant et sa devise d'origine, puis enregistre une valeur facultative dans la devise de référence, calculée à partir du meilleur taux historique disponible pour cette date. L'enregistrement d'origine reste intact, tandis que les analyses peuvent additionner une valeur cohérente."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Budgie’s Approach"
@@ -5037,7 +5037,7 @@ msgstr "Les scripts de build et la configuration CI"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Build the application from source"
-msgstr ""
+msgstr "Compiler l'application à partir des sources"
 
 #: src/app/[lang]/features/custom-categories/metadata.ts
 msgid "Build, merge, and reassign your own spending categories with mass-migration. Popularity-sorted selectors and MCC pre-fill keep the right category one tap away."
@@ -5113,15 +5113,15 @@ msgstr "Par"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "By accessing or using Budgie (\"Service,\" \"App,\" or \"Application\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, you may not access or use the Service. These Terms apply to all users of the Service, including without limitation users who are browsers, customers, and/or contributors of content."
-msgstr ""
+msgstr "En accédant à Budgie ou en l'utilisant (le « Service », l'« App » ou l'« Application »), vous acceptez d'être lié par les présentes Conditions d'utilisation (les « Conditions »). Si vous n'acceptez pas ces Conditions, vous ne pouvez ni accéder au Service ni l'utiliser. Les présentes Conditions s'appliquent à tous les utilisateurs du Service, y compris, sans s'y limiter, les visiteurs, les clients et/ou les contributeurs de contenu."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "BY USING THE SERVICE, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF SERVICE AND AGREE TO BE BOUND BY THEM."
-msgstr ""
+msgstr "EN UTILISANT LE SERVICE, VOUS RECONNAISSEZ AVOIR LU LES PRÉSENTES CONDITIONS D'UTILISATION ET ACCEPTEZ D'ÊTRE LIÉ PAR CELLES-CI."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Calculations and projections"
-msgstr ""
+msgstr "Calculs et projections"
 
 #: src/app/[lang]/features/recurring-payments-calendar/opengraph-image.tsx
 msgid "calendar"
@@ -5129,7 +5129,7 @@ msgstr "calendrier"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "California Consumer Privacy Act (CCPA) - United States"
-msgstr ""
+msgstr "California Consumer Privacy Act (CCPA) - États-Unis"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Can a transaction have no primary tag?"
@@ -5165,7 +5165,7 @@ msgstr "Les dépôts peuvent-ils être inclus dans le patrimoine net ?"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Can historical values be rebuilt after changing my main currency?"
-msgstr ""
+msgstr "Les valeurs historiques peuvent-elles être recalculées après un changement de devise principale ?"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Can I add new tags from the suggestion strip?"
@@ -5728,7 +5728,7 @@ msgstr "Cliquez sur le nom de votre budget"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Clone the repository for local development"
-msgstr ""
+msgstr "Cloner le dépôt pour le développement local"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close a deposit into a selected destination account with a transfer, then archive it"
@@ -5776,7 +5776,7 @@ msgstr "Assistants de budget IA cloud"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Cloud AI services (only when you enable cloud-assisted AI features)"
-msgstr ""
+msgstr "Services d'IA dans le cloud (uniquement si vous activez les fonctions d'IA assistées par le cloud)"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Cloud AI vs On-Device AI: The Key Difference"
@@ -5889,11 +5889,11 @@ msgstr "Les commentaires s’étendent verticalement jusqu’à deux lignes pour
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Commercial use except for competing SaaS offerings"
-msgstr ""
+msgstr "Usage commercial, à l'exception des offres SaaS concurrentes"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Commercial use of our trademarks requires explicit permission"
-msgstr ""
+msgstr "L'utilisation commerciale de nos marques requiert une autorisation explicite"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Common Myths About Offline-First Apps"
@@ -5913,7 +5913,7 @@ msgstr "Contributions communautaires et gouvernance"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Community contributions and improvements"
-msgstr ""
+msgstr "Contributions et améliorations de la communauté"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Community contributions welcome — features built by people who use the app"
@@ -6110,7 +6110,7 @@ msgstr "contacts"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Contains malicious code or harmful components"
-msgstr ""
+msgstr "Contient du code malveillant ou des composants nuisibles"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Context-aware menu — actions adapt to transaction type so you never see an invalid option"
@@ -6187,7 +6187,7 @@ msgstr "Copiez le fichier de sauvegarde via votre propre iCloud Drive, Google Dr
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Copyright © 2024-2026, Budgie"
-msgstr ""
+msgstr "Copyright © 2024-2026, Budgie"
 
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "Core Features"
@@ -6264,7 +6264,7 @@ msgstr "Les CRDTs résolvent le problème de résolution des conflits mais laiss
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Create a feature branch for your changes"
-msgstr ""
+msgstr "Créer une branche de fonctionnalité pour vos modifications"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Create an account in Budgie for each bank account or credit card you track. Set the correct currency for each account. You do not need to connect anything to your bank at this stage — the accounts are just containers for imported transactions."
@@ -6284,7 +6284,7 @@ msgstr "Créez, fusionnez, réassignez et réorganisez jusqu’à ce que l’arb
 
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 msgid "credentials"
-msgstr ""
+msgstr "identifiants"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Credit Karma is a legitimate company owned by Intuit. However, their business model relies on monetizing your financial data through targeted product recommendations. If privacy is a priority, it’s not the best choice. If you just want free credit monitoring and don’t mind targeted ads, it works fine."
@@ -6416,7 +6416,7 @@ msgstr "Les fichiers CSV et PDF déjà sur votre appareil peuvent être importé
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "CSV and PDF import"
-msgstr ""
+msgstr "Import CSV et PDF"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "CSV and PDF Import"
@@ -6453,7 +6453,7 @@ msgstr "Le CSV pour les tableurs. Sauvegarde complète de la base de données po
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "CSV import"
-msgstr ""
+msgstr "Import CSV"
 
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx
 msgid "CSV Import"
@@ -6632,7 +6632,7 @@ msgstr "Emplacement du stockage des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Data stored locally on your device will remain accessible"
-msgstr ""
+msgstr "Les données stockées localement sur votre appareil resteront accessibles"
 
 #: src/app/[lang]/features/database-backup/metadata.ts
 #: src/app/[lang]/features/database-backup/page.tsx
@@ -6645,7 +6645,7 @@ msgstr "Sauvegarde et restauration de la base de données"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Database backup and restore"
-msgstr ""
+msgstr "Sauvegarde et restauration de la base de données"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Database schemas and migration files"
@@ -6696,7 +6696,7 @@ msgstr "Suivi des dettes et prêts — Budgie"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Debt and loan information"
-msgstr ""
+msgstr "Informations sur les dettes et les prêts"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "Debt balance semantics are now unified across the debt tile and the underlying ledger, the progress indicator was redesigned around a neutral module instead of a colored bar that implied good or bad, and settling a debt now categorizes the resulting expense as a dedicated Debt Payment instead of falling into a generic category. A backfill hardened existing debt settlements against the old categorization. See <0>debt & loan tracking</0>."
@@ -6843,11 +6843,11 @@ msgstr "Les développeurs veulent intégrer leurs données financières avec d'a
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Device biometric authentication support"
-msgstr ""
+msgstr "Prise en charge de l'authentification biométrique de l'appareil"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Device information (type, operating system version) for debugging purposes"
-msgstr ""
+msgstr "Informations sur l'appareil (type, version du système d'exploitation) à des fins de débogage"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Device-Local Storage"
@@ -6986,7 +6986,7 @@ msgstr "Mes filtres d'analyse changent-ils le résultat ?"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Do not publicly disclose the vulnerability until we have addressed it"
-msgstr ""
+msgstr "Ne pas divulguer publiquement la vulnérabilité avant que nous l'ayons corrigée"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Do privacy-focused community members discuss the implementation?"
@@ -7034,7 +7034,7 @@ msgstr "Budgie cumule-t-il automatiquement les intérêts des dépôts ?"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Does Budgie change my original imported amounts?"
-msgstr ""
+msgstr "Budgie modifie-t-il les montants d'origine que j'ai importés ?"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Does Budgie distinguish transfers from expenses?"
@@ -7261,7 +7261,7 @@ msgstr "Chaque champ a son propre sélecteur listant les en-têtes trouvés dans
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
-msgstr ""
+msgstr "Chaque groupe est mis à jour en lot, ce qui reste pratique pour les imports volumineux, même lorsque des années de transactions doivent être valorisées."
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves both alongside the original — so search and suggestions find it either way."
@@ -7341,7 +7341,7 @@ msgstr "Huit fonctionnalités qui en font un remplaçant durable de Mint"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Email: licensing@budgie.at"
-msgstr ""
+msgstr "E-mail : licensing@budgie.at"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Embrace Eventual Consistency"
@@ -7365,7 +7365,7 @@ msgstr "Chiffré au repos"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted budget app"
-msgstr ""
+msgstr "application de budget chiffrée"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "Encrypted Budget App — Biometric Lock — Budgie"
@@ -7382,7 +7382,7 @@ msgstr "Sauvegarde de base de données chiffrée vers votre cloud — Budgie"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted finance app"
-msgstr ""
+msgstr "application de finances chiffrée"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
@@ -7552,7 +7552,7 @@ msgstr "Chaque ligne extraite apparaît dans la feuille de vérification avant l
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
-msgstr ""
+msgstr "Toute application financière doit choisir ce que représente une ligne de transaction. Budgie sépare deux notions souvent confondues :"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Every group carries a subtotal"
@@ -7676,7 +7676,7 @@ msgstr "Excellente expérience utilisateur"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "exchange rates"
-msgstr ""
+msgstr "taux de change"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Exchange rates are fetched and cached locally when you have connectivity. You can continue converting currencies offline using the last-fetched rates, with a visible timestamp so you always know their age."
@@ -7692,7 +7692,7 @@ msgstr "Les taux de change sont actualisés en arrière-plan et conservés sur v
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 msgid "exchange-rates"
-msgstr ""
+msgstr "taux de change"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Expected payout estimate"
@@ -7726,7 +7726,7 @@ msgstr "Suivi des dépenses, sans le poids du cloud — Budgie"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "expense-tracking"
-msgstr ""
+msgstr "suivi des dépenses"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Expensive at $14/month"
@@ -7840,7 +7840,7 @@ msgstr "Face ID ou Touch ID déverrouille instantanément l'écran de verrouilla
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
-msgstr ""
+msgstr "Faciliter la synchronisation bancaire facultative (avec votre consentement explicite)"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Falls back to PIN if biometrics are disabled or unavailable"
@@ -7907,7 +7907,7 @@ msgstr "Les pastilles de frais gardent la liste des transactions lisible sans ma
 
 #: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
 msgid "fees"
-msgstr ""
+msgstr "frais"
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Fees work on expenses, income, and transfers — not only card purchases"
@@ -7964,11 +7964,11 @@ msgstr "Les données financières sont parmi vos informations les plus sensibles
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Financial goals and targets"
-msgstr ""
+msgstr "Objectifs financiers"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Financial losses or decisions made based on the Service"
-msgstr ""
+msgstr "Pertes financières ou décisions prises sur la base du Service"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Financial management is inherently personal. Unlike collaborative documents or team projects, most people do not need to share their expense tracking with others in real-time. The single-user optimization of local-first is a feature, not a limitation."
@@ -7989,7 +7989,7 @@ msgstr "Un logiciel financier qui respecte votre vie privée ne devrait pas exig
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Financial transactions and expense records"
-msgstr ""
+msgstr "Transactions financières et relevés de dépenses"
 
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "Find missing categories before charts lie."
@@ -8051,7 +8051,7 @@ msgstr "Type de transaction Virement de première classe — jamais confondu ave
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "First, good-faith negotiation between the parties"
-msgstr ""
+msgstr "Premièrement, une négociation de bonne foi entre les parties"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "FITINN"
@@ -8115,7 +8115,7 @@ msgstr "Drapeau, nom et code sur chaque ligne"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "For a complete list of all open source dependencies and their respective licenses, please refer to the package.json files in our <0>GitHub repository</0>. Each component is used in accordance with its respective license terms."
-msgstr ""
+msgstr "Pour obtenir la liste complète de toutes les dépendances open source et de leurs licences respectives, veuillez consulter les fichiers package.json de notre <0>dépôt GitHub</0>. Chaque composant est utilisé conformément aux termes de sa licence."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "For Actual Budget:"
@@ -8155,7 +8155,7 @@ msgstr "Pour Firefly III :"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "For historical spending, Budgie keeps the transaction-date base value stable. If you change your main reporting currency, the app can rebuild those stored values against the new base currency. If a better historical data source is added, the same nullable columns can be recalculated without changing your original transaction amounts."
-msgstr ""
+msgstr "Pour les dépenses passées, Budgie conserve une valeur de base stable à la date de la transaction. Si vous changez de devise de référence principale, l'application peut recalculer ces valeurs enregistrées dans la nouvelle devise de base. Si une meilleure source de données historiques est ajoutée, les mêmes colonnes facultatives peuvent être recalculées sans modifier les montants d'origine de vos transactions."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "For indie developers and small teams, this changes the economics of software development. You can build sustainable software without venture capital to fund server infrastructure."
@@ -8171,11 +8171,11 @@ msgstr "Pour plus de details sur notre architecture de securite, visitez notre [
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "For more information about the O'Saasy license, visit <0>https://osaasy.dev</0>"
-msgstr ""
+msgstr "Pour en savoir plus sur la licence O'Saasy, rendez-vous sur <0>https://osaasy.dev</0>"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "For more information, see our <0>Security Policy</0>."
-msgstr ""
+msgstr "Pour plus d'informations, consultez notre <0>politique de sécurité</0>."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "For most personal productivity and finance applications, this trade-off is favorable. Users would rather work now and sync later than be blocked waiting for network access."
@@ -8255,7 +8255,7 @@ msgstr "Forkez-le si nous disparaissons. Le format de la base de données et l�
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Fork the repository on GitHub"
-msgstr ""
+msgstr "Forker le dépôt sur GitHub"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Forkable"
@@ -8275,7 +8275,7 @@ msgstr "Gratuit"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
-msgstr ""
+msgstr "Utilisation, copie, modification et partage libres, à des fins personnelles et professionnelles"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Free, no account, no subscription"
@@ -8339,7 +8339,7 @@ msgstr "Complet"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Full access to source code for review and security audits"
-msgstr ""
+msgstr "Accès complet au code source pour examen et audits de sécurité"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Full database backup file for a complete restore — encrypted if a PIN was set at export time"
@@ -8395,7 +8395,7 @@ msgstr "Prise en charge des taux de change"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "General Data Protection Regulation (GDPR) - European Union"
-msgstr ""
+msgstr "Règlement général sur la protection des données (RGPD) - Union européenne"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Generate it in Binance"
@@ -8419,7 +8419,7 @@ msgstr "Flux piloté par gestes — une seule main, pas de chasse à la barre d'
 
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "gestures"
-msgstr ""
+msgstr "gestes"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
@@ -8443,7 +8443,7 @@ msgstr "GitHub"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "GitHub: <0>https://github.com/budgie-at/budgie</0> License: <1>O'Saasy License</1>"
-msgstr ""
+msgstr "GitHub : <0>https://github.com/budgie-at/budgie</0> Licence : <1>Licence O'Saasy</1>"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "GnuCash"
@@ -8569,7 +8569,7 @@ msgstr "Les données historiques ne sont pas essentielles pour vos objectifs"
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Historical Exchange Rates in Budget Analytics"
-msgstr ""
+msgstr "Taux de change historiques dans les analyses budgétaires"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Hobbyist security researchers and bug hunters"
@@ -8846,7 +8846,7 @@ msgstr "Quelle est la rapidité du formulaire de saisie rapide ?"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "How Imported History Gets Repaired"
-msgstr ""
+msgstr "Comment l'historique importé est corrigé"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "How is Budgie different from a cloud budgeting app?"
@@ -9007,7 +9007,7 @@ msgstr "i18n"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Identify and fix bugs and technical issues"
-msgstr ""
+msgstr "Identifier et corriger les bugs et les problèmes techniques"
 
 #: src/app/[lang]/security/page.tsx
 msgid "If a PIN was set when you exported, yes — the backup is a copy of your already-encrypted data, so anyone with your cloud account sees an unreadable file. Export with no PIN set and the copy is unencrypted. Budgie never uploads anything itself; you choose where the file goes through the share sheet."
@@ -9015,11 +9015,11 @@ msgstr "Si un PIN était défini au moment de l'exportation, oui — la sauvegar
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect."
-msgstr ""
+msgstr "Si une disposition des présentes Conditions est jugée inapplicable ou invalide, cette disposition sera limitée ou supprimée dans la mesure minimale nécessaire afin que les autres dispositions des Conditions demeurent pleinement en vigueur."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If negotiation fails, binding arbitration in accordance with Austrian law"
-msgstr ""
+msgstr "En cas d'échec de la négociation, un arbitrage définitif conformément au droit autrichien"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "If privacy matters to you, we built Budgie for exactly that reason. No servers storing your transactions. No third parties with access to your spending habits. Just you and your budget, on your device."
@@ -9031,7 +9031,7 @@ msgstr "Si le code est public, les pirates ne peuvent-ils pas l'utiliser pour tr
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:"
-msgstr ""
+msgstr "Si le Service exige la création d'un compte, vous êtes responsable de la confidentialité des identifiants de votre compte et de toutes les activités effectuées sous votre compte. Vous vous engagez à :"
 
 #: src/app/[lang]/features/categorization-rules/metadata.ts
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
@@ -9064,15 +9064,15 @@ msgstr "Si vous avez exporté vos données Mint avant la fermeture, ou si vous a
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If you have any questions about these Terms, please contact us at:"
-msgstr ""
+msgstr "Pour toute question concernant les présentes Conditions, veuillez nous contacter à l'adresse suivante :"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:"
-msgstr ""
+msgstr "Si vous avez des questions, des préoccupations ou des demandes concernant la présente politique de confidentialité ou nos pratiques en matière de données, veuillez nous contacter à l'adresse suivante :"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "If you have questions about our open source license, commercial licensing options, or anything else related to Budgie's licensing:"
-msgstr ""
+msgstr "Si vous avez des questions sur notre licence open source, nos options de licence commerciale ou tout autre sujet lié aux licences de Budgie :"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "If you have set a PIN, yes: the file is encrypted with that PIN, so a provider sees encrypted bytes rather than your transactions. Without a PIN nothing is encrypted, so set one before the file leaves your device."
@@ -9092,7 +9092,7 @@ msgstr "Si vous n'avez plus votre export Mint, téléchargez les relevés direct
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If you purchase a subscription:"
-msgstr ""
+msgstr "Si vous souscrivez un abonnement :"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "If you still have a Mint CSV export, open it in a spreadsheet app and verify the column names: date, description, amount, and category. Budgie CSV importer maps standard Mint columns automatically."
@@ -9108,7 +9108,7 @@ msgstr "Si vous souhaitez verifier nos affirmations en matiere de confidentialit
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "If you wish to offer Budgie-based services that compete with our hosted offering, please contact us at:"
-msgstr ""
+msgstr "Si vous souhaitez proposer des services fondés sur Budgie qui concurrencent notre offre hébergée, veuillez nous contacter à l'adresse suivante :"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "If you’ve decided to make the switch, here’s how to move your financial data from YNAB to a privacy-focused alternative."
@@ -9128,7 +9128,7 @@ msgstr "Actions immediates"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Immediately notify us of any unauthorized use of your account"
-msgstr ""
+msgstr "Nous informer immédiatement de toute utilisation non autorisée de votre compte"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Implement features from the roadmap"
@@ -9190,7 +9190,7 @@ msgstr "Imports et réparations"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Improve and optimize app performance"
-msgstr ""
+msgstr "Améliorer et optimiser les performances de l'application"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Improve test coverage"
@@ -9222,7 +9222,7 @@ msgstr "Dans une application Offline-First :"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "In connection with a merger, acquisition, or sale of assets (users will be notified)"
-msgstr ""
+msgstr "Dans le cadre d'une fusion, d'une acquisition ou d'une cession d'actifs (les utilisateurs en seront informés)"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "In December 2023, Intuit announced they were shutting down Mint after 17 years. Users were given 90 days to export their data before it was deleted. This raises several concerns:"
@@ -9346,7 +9346,7 @@ msgstr "Suivi des investissements et du patrimoine net"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Investment portfolio data (stocks and cryptocurrency holdings)"
-msgstr ""
+msgstr "Données du portefeuille d'investissement (actions et cryptomonnaies)"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Investment tracking matters"
@@ -9358,7 +9358,7 @@ msgstr "iOS et Android"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Is “subscription-free” really durable?"
-msgstr ""
+msgstr "L'absence d'abonnement est-elle vraiment durable ?"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Is an adjustment just another transaction?"
@@ -9398,7 +9398,7 @@ msgstr "Face ID est-il plus sûr qu'un PIN ?"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Is illegal, fraudulent, or promotes illegal activity"
-msgstr ""
+msgstr "Est illégal, frauduleux ou encourage une activité illégale"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Is it legal for budgeting apps to collect and sell my financial data?"
@@ -9491,7 +9491,7 @@ msgstr "Est-ce la même chose que la liste des catégories manquantes ?"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Is used to facilitate money laundering or other financial crimes"
-msgstr ""
+msgstr "Est utilisé pour faciliter le blanchiment d'argent ou d'autres infractions financières"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Is YNAB safe to use?"
@@ -9638,7 +9638,7 @@ msgstr "« Mois dernier » s'installe comme puce dans la rangée de filtres et l
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Last Updated: {updatedAtText}"
-msgstr ""
+msgstr "Dernière mise à jour : {updatedAtText}"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Lastschrifteinzug FITINN GES.M.B.H. MDID:AT41ZZZ00000012345"
@@ -9670,7 +9670,7 @@ msgstr "Apprenez exactement comment fonctionne la budgétisation"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/metadata.ts
 msgid "Learn why budget analytics should value each transaction using the exchange rate from its real transaction date. Budgie stores base-currency values for accurate multi-currency history."
-msgstr ""
+msgstr "Découvrez pourquoi les analyses budgétaires doivent valoriser chaque transaction au taux de change de sa date réelle. Budgie enregistre des valeurs dans la devise de référence pour un historique multidevise précis."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/metadata.ts
 msgid "Learn why offline-first architecture is the only way to guarantee financial privacy. Discover the hidden dangers of cloud apps and how Budgie protects your data."
@@ -9759,7 +9759,7 @@ msgstr "Limité ou aucun"
 
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
 msgid "limits"
-msgstr ""
+msgstr "limites"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Linear"
@@ -9799,7 +9799,7 @@ msgstr "Stockage local de la base de données chiffré dès que vous définissez
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "local expense tracker"
-msgstr ""
+msgstr "suivi de dépenses local"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Local notifications, opt-in, deduped per period"
@@ -9860,7 +9860,7 @@ msgstr "Les systèmes local-first choisissent la disponibilité. Vous pouvez tou
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
 msgid "local-llm"
-msgstr ""
+msgstr "LLM local"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Locked when you are, current when it matters"
@@ -9974,11 +9974,11 @@ msgstr "Lunch Money : le budget orienté développeurs"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Maintain and promptly update your account information"
-msgstr ""
+msgstr "Maintenir et mettre à jour rapidement les informations de votre compte"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Maintain the security of your password and device"
-msgstr ""
+msgstr "Préserver la sécurité de votre mot de passe et de votre appareil"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Major features are discussed in public GitHub issues before implementation"
@@ -9986,7 +9986,7 @@ msgstr "Les fonctionnalités majeures sont discutées dans des issues GitHub pub
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Make your changes with clear, descriptive commit messages"
-msgstr ""
+msgstr "Rédiger vos modifications avec des messages de commit clairs et descriptifs"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Make your final decision with real data"
@@ -10095,11 +10095,11 @@ msgstr "Associé à votre arborescence"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Market data and pricing information"
-msgstr ""
+msgstr "Données de marché et informations de prix"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Market data providers for investment pricing"
-msgstr ""
+msgstr "Fournisseurs de données de marché pour la valorisation des investissements"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Market history without a live ticker"
@@ -10297,7 +10297,7 @@ msgstr "Fermeture de Mint : Vers quelles solutions les développeurs migrent-ils
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/opengraph-image.tsx
 msgid "mint-alternatives"
-msgstr ""
+msgstr "alternatives à Mint"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Mint’s export format was a CSV file with these columns:"
@@ -10369,11 +10369,11 @@ msgstr "Interface moderne et épurée"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Modified versions must be clearly identified as such"
-msgstr ""
+msgstr "Les versions modifiées doivent être clairement identifiées comme telles"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Modify, reverse engineer, decompile, or disassemble the Application"
-msgstr ""
+msgstr "Modifier, désassembler, décompiler ou faire de l'ingénierie inverse de l'Application"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -10442,7 +10442,7 @@ msgstr "Synchronisation automatique Monobank — Budgie"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Monobank bank sync"
-msgstr ""
+msgstr "Synchronisation bancaire Monobank"
 
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
 msgid "Monobank Bank Sync"
@@ -10642,7 +10642,7 @@ msgstr "multi-devises"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Multi-currency"
-msgstr ""
+msgstr "Multidevise"
 
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "Multi-Currency"
@@ -10664,7 +10664,7 @@ msgstr "Multidevise : les cryptos cotées en euros, celles cotées en dollars et
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Multi-currency budgets fail quietly when they convert old spending with today’s rate. A coffee bought in hryvnia ten years ago, a rent payment in dollars last month, and a bank import from yesterday cannot be added together fairly unless every row carries a value in the same reporting currency."
-msgstr ""
+msgstr "Les budgets multidevises dérapent en silence lorsqu'ils convertissent d'anciennes dépenses au taux du jour. Un café acheté en hryvnias il y a dix ans, un loyer payé en dollars le mois dernier et un import bancaire d'hier ne peuvent être additionnés équitablement que si chaque ligne porte une valeur dans la même devise de référence."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Multi-currency exchange rates cached locally for offline use"
@@ -10760,7 +10760,7 @@ msgstr "Patrimoine net"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Net worth and account balances answer a different question from spending analytics. Net worth asks, “What are my holdings worth now?” Spending analytics asks, “What did this cost me then?” Those questions should not share the same conversion rule."
-msgstr ""
+msgstr "Le patrimoine net et les soldes des comptes répondent à une autre question que les analyses de dépenses. Le patrimoine net demande : « Que valent mes avoirs aujourd'hui ? » Les analyses de dépenses demandent : « Combien cela m'a-t-il coûté à l'époque ? » Ces deux questions ne doivent pas partager la même règle de conversion."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail underneath. Quick add is one size, sized for its three tiles."
@@ -10772,7 +10772,7 @@ msgstr "Le patrimoine net respecte la direction de la dette : les passifs la ré
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Net worth tracker"
-msgstr ""
+msgstr "Suivi du patrimoine net"
 
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
 msgid "Net Worth Tracker"
@@ -10829,7 +10829,7 @@ msgstr "Les nouvelles installations démarrent avec la carte IA sur l'appareil d
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
-msgstr ""
+msgstr "Les nouvelles transactions suivent la même règle au moment de l'enregistrement. Les saisies manuelles, les imports CSV et les transactions de la <0>synchronisation bancaire</0> enregistrent leur montant de base lors de leur insertion lorsque la source ne fournit pas déjà une valorisation exploitable."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Newer app, still building feature parity with established players"
@@ -10857,7 +10857,7 @@ msgstr "Pas de récupération « PIN oublié » — c’est la garantie de confi
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "no account budget app"
-msgstr ""
+msgstr "application de budget sans compte"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "No account is required. You open the app and start tracking immediately. There is no sign-up screen, no email address collected, and no session token ever sent to our servers."
@@ -10917,7 +10917,7 @@ msgstr "Aucune version disponible pour le moment"
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "no cloud budget app"
-msgstr ""
+msgstr "application de budget sans cloud"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
@@ -10950,7 +10950,7 @@ msgstr "Pas de collecte de données cachée"
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "no internet budget app"
-msgstr ""
+msgstr "application de budget sans internet"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No internet? No problem"
@@ -10958,7 +10958,7 @@ msgstr "Pas d'internet ? Pas de problème"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "No licensee or downstream recipient may use the Software (including any modified or derivative versions) to directly compete with the original Licensor by offering it to third parties as a hosted, managed, or Software-as-a-Service (SaaS) product or cloud service where the primary value of the service is the functionality of the Software itself."
-msgstr ""
+msgstr "Aucun licencié ni destinataire en aval ne peut utiliser le Logiciel (y compris toute version modifiée ou dérivée) pour concurrencer directement le Concédant d'origine en le proposant à des tiers sous forme de produit ou de service cloud hébergé, géré ou de type Software-as-a-Service (SaaS) dont la valeur principale réside dans les fonctionnalités du Logiciel lui-même."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "No limit. Add as many split rows as you need; the total must equal the original transaction amount."
@@ -11050,7 +11050,7 @@ msgstr "Aucun abonnement requis pour accéder à vos propres informations"
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "no telemetry finance app"
-msgstr ""
+msgstr "application de finances sans télémétrie"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "No third party ever sees your bank data. No credentials are shared with anyone. The process is:"
@@ -11086,7 +11086,7 @@ msgstr "Aucune visibilité sur le traitement des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "No waiver of any term of these Terms shall be deemed a further or continuing waiver of such term or any other term, and our failure to assert any right or provision under these Terms shall not constitute a waiver of such right or provision."
-msgstr ""
+msgstr "Aucune renonciation à une stipulation des présentes Conditions ne sera réputée constituer une renonciation ultérieure ou continue à cette stipulation ou à toute autre, et le fait que nous n'exercions pas un droit ou une disposition prévu par les présentes Conditions ne constituera pas une renonciation à ce droit ou à cette disposition."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "No Way to Verify Security Claims"
@@ -11098,7 +11098,7 @@ msgstr "Pas d’éclair blanc au démarrage à froid — l’écran de démarrag
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "no-server"
-msgstr ""
+msgstr "sans serveur"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable."
@@ -11194,7 +11194,7 @@ msgstr "Non. Le changement de langue réaffiche l’interface en place, sans ré
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "No. The account-currency amount remains the source of truth. Base-currency fields are derived values used for reporting and can be recalculated later."
-msgstr ""
+msgstr "Non. Le montant dans la devise du compte reste la référence. Les champs en devise de base sont des valeurs dérivées utilisées pour les rapports et pouvant être recalculées ultérieurement."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "No. The app only calls Binance read endpoints, and the setup instructions ask you to create a key with reading permission only. Permissions are set on Binance's side, so a key without trading or withdrawal rights simply cannot be used for either."
@@ -11319,7 +11319,7 @@ msgstr "Ne pas engager de poursuites judiciaires contre les recherches en securi
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Not share your account credentials with any third party"
-msgstr ""
+msgstr "Ne pas partager les identifiants de votre compte avec un tiers"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Not yet. The menu surfaces the most common actions; let us know on GitHub if you want a custom slot."
@@ -11401,7 +11401,7 @@ msgstr "Rien où se connecter"
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "November 6, 2024"
-msgstr ""
+msgstr "6 novembre 2024"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Number and date formatting follows the language you choose in Settings"
@@ -11413,7 +11413,7 @@ msgstr "Les nombres et les dates suivent le format de la langue active dans les 
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "O'Saasy License Agreement"
-msgstr ""
+msgstr "Contrat de licence O'Saasy"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "OAuth tokens for direct bank sync are stored in your local database on your device alongside your transaction data, protected the same way — encrypted with your PIN if you have one set. Revoking a token from your bank portal immediately terminates all sync access without requiring any action inside Budgie."
@@ -11457,11 +11457,11 @@ msgstr "suivi de dépenses avec IA hors ligne"
 
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "offline AI finance app"
-msgstr ""
+msgstr "application de finances avec IA hors ligne"
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "offline budget app"
-msgstr ""
+msgstr "application de budget hors ligne"
 
 #: src/app/[lang]/offline-first/metadata.ts
 #: src/app/[lang]/offline-first/page.tsx
@@ -11478,7 +11478,7 @@ msgstr "La capacité hors ligne compte"
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "offline expense tracker"
-msgstr ""
+msgstr "suivi de dépenses hors ligne"
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "offline expense tracker app"
@@ -11536,7 +11536,7 @@ msgstr "Suivi des dépenses hors ligne d’abord"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Offline-first expense tracking"
-msgstr ""
+msgstr "Suivi des dépenses hors ligne d'abord"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "offline-first finance, bank data safety, Plaid alternative, no bank login budget app"
@@ -11576,7 +11576,7 @@ msgstr "Souvent oui"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Older exports often contain the account currency and amount, but no exchange-rate snapshot. Budgie treats that as incomplete valuation data, not as corrupt transaction data. The entry is still usable; it simply needs a base value before it should affect multi-currency charts."
-msgstr ""
+msgstr "Les anciens exports contiennent souvent la devise et le montant du compte, mais pas de taux de change. Budgie considère cela comme une valorisation incomplète, et non comme des données de transaction corrompues. L'écriture reste utilisable ; il lui faut simplement une valeur de base avant d'influer sur les graphiques multidevises."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Older history backfills from CoinGecko one day at a time, with a visible progress indicator"
@@ -11648,7 +11648,7 @@ msgstr "IA sur l'appareil"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device AI auto-categorization"
-msgstr ""
+msgstr "Catégorisation automatique par IA sur l'appareil"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/metadata.ts
@@ -11673,7 +11673,7 @@ msgstr "Catégorisation par IA sur l’appareil"
 
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "on-device AI finance"
-msgstr ""
+msgstr "finances avec IA sur l'appareil"
 
 #: src/app/[lang]/ai-features/metadata.ts
 #: src/app/[lang]/ai-features/page.tsx
@@ -11704,16 +11704,16 @@ msgstr "L'IA embarquée signifie que le traitement a lieu sur le téléphone que
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device encryption"
-msgstr ""
+msgstr "Chiffrement sur l'appareil"
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "on-device expense tracker"
-msgstr ""
+msgstr "suivi de dépenses sur l'appareil"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
 msgid "on-device-ai"
-msgstr ""
+msgstr "IA sur l'appareil"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "One account per wallet and asset, each with its own balance, history, and place in net worth"
@@ -12116,7 +12116,7 @@ msgstr "Licence open source"
 
 #: src/app/[lang]/legal/license/metadata.ts
 msgid "Open Source License | Budgie"
-msgstr ""
+msgstr "Licence open source | Budgie"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Open source software depends on a chain of dependencies, and any link in that chain could introduce vulnerabilities or privacy issues. Our security practices include:"
@@ -12283,7 +12283,7 @@ msgstr "Taux de change d’origine conservé par leg"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Other applicable data protection and privacy laws"
-msgstr ""
+msgstr "Autres lois applicables en matière de protection des données et de la vie privée"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Other developers who need to understand the code"
@@ -12303,7 +12303,7 @@ msgstr "Notre code est open source, ce qui signifie :"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Our Commitment"
-msgstr ""
+msgstr "Notre engagement"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Our commitments:"
@@ -12319,7 +12319,7 @@ msgstr "Notre feuille de route de développement est publique et régulièrement
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Our Service is not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately."
-msgstr ""
+msgstr "Notre Service n'est pas destiné aux personnes de moins de 18 ans. Nous ne collectons pas sciemment de données personnelles auprès d'enfants. Si vous êtes parent ou tuteur légal et pensez que votre enfant nous a fourni des données personnelles, veuillez nous contacter immédiatement."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Our Solution"
@@ -12327,7 +12327,7 @@ msgstr "Notre solution :"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE SERVICE SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR ONE HUNDRED DOLLARS ($100), WHICHEVER IS GREATER."
-msgstr ""
+msgstr "NOTRE RESPONSABILITÉ TOTALE ENVERS VOUS POUR L'ENSEMBLE DES RÉCLAMATIONS DÉCOULANT DU SERVICE OU S'Y RAPPORTANT NE POURRA EXCÉDER LE MONTANT QUE VOUS NOUS AVEZ PAYÉ AU COURS DES DOUZE (12) MOIS PRÉCÉDANT LA RÉCLAMATION, OU CENT DOLLARS (100 $), LE MONTANT LE PLUS ÉLEVÉ ÉTANT RETENU."
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Override once, remember forever"
@@ -12431,7 +12431,7 @@ msgstr "Le plus important, peut-être : Credit Karma appartient à la même entr
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
-msgstr ""
+msgstr "Il est accordé par les présentes, à titre gratuit, à toute personne obtenant une copie de ce logiciel et des fichiers de documentation associés (le « Logiciel »), le droit d'utiliser le Logiciel sans restriction, y compris, sans s'y limiter, les droits d'utiliser, copier, modifier, fusionner, publier, distribuer, concéder en sous-licence et/ou vendre des copies du Logiciel, et d'autoriser les personnes auxquelles le Logiciel est fourni à le faire, sous réserve des conditions suivantes :"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Persists across app relaunch and device restarts"
@@ -12455,7 +12455,7 @@ msgstr "Les finances personnelles sont un domaine idéal pour l'architecture loc
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
-msgstr ""
+msgstr "Loi sur la protection des renseignements personnels et les documents électroniques (LPRPDE / PIPEDA) - Canada"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Pick a category and Budgie proposes tags you already use, ready to tap."
@@ -12503,7 +12503,7 @@ msgstr "pin"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "PIN and biometric lock"
-msgstr ""
+msgstr "Verrouillage par code PIN et biométrie"
 
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "PIN App Lock"
@@ -12522,7 +12522,7 @@ msgstr "Le PIN est la clé de chiffrement de la base de données — pas seuleme
 
 #: src/app/[lang]/security/metadata.ts
 msgid "PIN lock budget app"
-msgstr ""
+msgstr "application de budget avec verrouillage par PIN"
 
 #: src/app/[lang]/security/page.tsx
 msgid "PIN lock enforced before any transaction or balance is visible"
@@ -12626,7 +12626,7 @@ msgstr "Veuillez saisir une adresse e-mail valide."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Please report it responsibly by emailing security@budgie.at"
-msgstr ""
+msgstr "Veuillez le signaler de manière responsable par e-mail à security@budgie.at"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Plus, amount, save. The account, today's date and the likely category are already filled in for you."
@@ -12690,7 +12690,7 @@ msgstr "Le cours et son dernier mouvement"
 
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 msgid "pricing"
-msgstr ""
+msgstr "tarifs"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pricing"
@@ -12802,7 +12802,7 @@ msgstr "Politique de confidentialité"
 
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
 msgid "Privacy Policy | Budgie"
-msgstr ""
+msgstr "Politique de confidentialité | Budgie"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Privacy Rating: Average (cloud-based)"
@@ -12880,7 +12880,7 @@ msgstr "Les étiquettes MCC propriétaires de PrivatBank sont associées automat
 
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "private AI budget app"
-msgstr ""
+msgstr "application de budget avec IA privée"
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "private alternative cloud budget app"
@@ -12896,7 +12896,7 @@ msgstr "Application budget privée — Une alternative sans cloud"
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "private expense tracker"
-msgstr ""
+msgstr "suivi de dépenses privé"
 
 #: src/app/[lang]/privacy/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
@@ -12913,7 +12913,7 @@ msgstr "Chef de produit"
 
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "productivity"
-msgstr ""
+msgstr "productivité"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Professional penetration testers and security consultants"
@@ -12941,19 +12941,19 @@ msgstr "Avantages :"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Provide accurate, current, and complete information"
-msgstr ""
+msgstr "Fournir des informations exactes, à jour et complètes"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Provide and maintain the Service"
-msgstr ""
+msgstr "Fournir et maintenir le Service"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Provide customer support"
-msgstr ""
+msgstr "Assurer le support client"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Provide detailed information to help us reproduce and fix the issue"
-msgstr ""
+msgstr "Fournir des informations détaillées pour nous aider à reproduire et corriger le problème"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Provide regular updates on fix progress"
@@ -12974,7 +12974,7 @@ msgstr "Code source public"
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "public source budget app"
-msgstr ""
+msgstr "application de budget à code source public"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, encryption at rest, and zero-telemetry design are all visible in the repository for any developer to verify."
@@ -13253,7 +13253,7 @@ msgstr "Des coûts d'infrastructure réduits"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Refunds are subject to the policies of the app store (Apple App Store or Google Play Store)"
-msgstr ""
+msgstr "Les remboursements sont soumis aux politiques de la boutique d'applications (Apple App Store ou Google Play Store)"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier expense. Budgie consolidates clear refund matches automatically and leaves uncertain cases exactly as they arrived."
@@ -13297,7 +13297,7 @@ msgstr "Supprimez les imports bancaires en double."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Remove, alter, or obscure any proprietary notices or labels"
-msgstr ""
+msgstr "Supprimer, modifier ou masquer toute mention ou étiquette de propriété"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Rename it, nothing unlinks"
@@ -13341,7 +13341,7 @@ msgstr "Signalez les vulnérabilités via notre canal de sécurité dédié"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Repository Information"
-msgstr ""
+msgstr "Informations sur le dépôt"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Reproducible Builds"
@@ -13373,7 +13373,7 @@ msgstr "Nécessite une configuration technique (pas du plug-and-play)"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Resell, redistribute, or sublicense the Service"
-msgstr ""
+msgstr "Revendre, redistribuer ou sous-licencier le Service"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Reset and pull everything again"
@@ -13442,7 +13442,7 @@ msgstr "Examinez les dépendances"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Review our commit history and development process"
-msgstr ""
+msgstr "Consulter notre historique de commits et notre processus de développement"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Review our cryptographic implementations"
@@ -13498,7 +13498,7 @@ msgstr "Automatisation de la catégorisation basée sur des règles"
 
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "rules"
-msgstr ""
+msgstr "règles"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Rules and on-device AI do different jobs"
@@ -13646,7 +13646,7 @@ msgstr "Flou des captures d'écran sur les champs de solde et les aperçus du s�
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Screenshot protection"
-msgstr ""
+msgstr "Protection contre les captures d'écran"
 
 #: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
 msgid "Screenshot Protection"
@@ -13716,11 +13716,11 @@ msgstr "Les en-têtes de section restent fixés avec leur nombre et leur total. 
 
 #: src/app/[lang]/security/metadata.ts
 msgid "secure expense tracker"
-msgstr ""
+msgstr "suivi de dépenses sécurisé"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Secure keychain/keystore for sensitive credentials"
-msgstr ""
+msgstr "Trousseau ou coffre sécurisé pour les identifiants sensibles"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
@@ -13823,7 +13823,7 @@ msgstr "Les pièces autogérées se regroupent par devise avec un solde combiné
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "self-hosted"
-msgstr ""
+msgstr "auto-hébergé"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Self-Hosted Budget App Mobile — No Server Needed — Budgie"
@@ -13839,7 +13839,7 @@ msgstr "Application finance auto-hébergée sur mobile — Sans faire tourner un
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Self-hosting and internal use without restrictions"
-msgstr ""
+msgstr "Auto-hébergement et usage interne sans restriction"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Self-hosting complexity (PHP application with database)"
@@ -13871,7 +13871,7 @@ msgstr "Auto-amélioration — les suggestions acceptées ou corrigées affinent
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Send important updates about the Service (security notices, policy changes)"
-msgstr ""
+msgstr "Envoyer des informations importantes sur le Service (avis de sécurité, modifications de la politique)"
 
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
 msgid "Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen."
@@ -14055,7 +14055,7 @@ msgstr "Configurez simplement vos comptes avec les soldes actuels et commencez �
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Since your financial data is stored locally on your device, international data transfers are minimal. However, if you use optional cloud features, your data may be processed in countries where our service providers operate. We ensure appropriate safeguards are in place to protect your data in compliance with applicable data protection laws including GDPR and CCPA."
-msgstr ""
+msgstr "Vos données financières étant stockées localement sur votre appareil, les transferts internationaux de données sont minimes. Toutefois, si vous utilisez des fonctions cloud facultatives, vos données peuvent être traitées dans les pays où nos prestataires de services exercent leur activité. Nous veillons à mettre en place des garanties appropriées pour protéger vos données conformément aux lois applicables en matière de protection des données, notamment le RGPD et le CCPA."
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Single-currency apps can't model how most people actually save and spend — a UK current account, a Wise USD pot, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing."
@@ -14174,7 +14174,7 @@ msgstr "application mobile de budget au code source disponible"
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "source available personal finance"
-msgstr ""
+msgstr "finances personnelles à code source disponible"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Source code"
@@ -14491,15 +14491,15 @@ msgstr "Confidentialité solide grâce à l'auto-hébergement"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Subject to the open source license under which the software is distributed (see our Open Source License page), you may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer or attempt to extract the source code of that software, except as permitted by law or with our written permission."
-msgstr ""
+msgstr "Sous réserve de la licence open source en vertu de laquelle le logiciel est distribué (voir notre page Licence open source), vous n'êtes pas autorisé à copier, modifier, distribuer, vendre ou louer toute partie de notre Service ou des logiciels inclus, ni à procéder à l'ingénierie inverse ou tenter d'extraire le code source de ces logiciels, sauf dans les cas permis par la loi ou avec notre autorisation écrite."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to download, install, and use the Application on your personal mobile device solely for your personal, non-commercial use."
-msgstr ""
+msgstr "Sous réserve du respect des présentes Conditions, nous vous accordons une licence limitée, non exclusive, non transférable et révocable pour télécharger, installer et utiliser l'Application sur votre appareil mobile personnel, exclusivement pour votre usage personnel et non commercial."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Submit a pull request with a detailed description"
-msgstr ""
+msgstr "Soumettre une pull request accompagnée d'une description détaillée"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Subpoena risk"
@@ -14527,7 +14527,7 @@ msgstr "Abonnement requis (10 $/mois)"
 
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 msgid "subscription-free"
-msgstr ""
+msgstr "sans abonnement"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Subscription-Free Budget App"
@@ -14549,7 +14549,7 @@ msgstr "Les abonnements sont la fuite lente de tout budget. Budgie analyse votre
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period"
-msgstr ""
+msgstr "Les abonnements se renouvellent automatiquement, sauf résiliation au moins 24 heures avant la fin de la période en cours"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Suggest features and improvements"
@@ -14566,7 +14566,7 @@ msgstr "Qualité des suggestions"
 #: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "suggestions"
-msgstr ""
+msgstr "suggestions"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you ignore them. Settings → AI shows what the on-device AI is doing and how far along it is."
@@ -14845,7 +14845,7 @@ msgstr "Conditions d'utilisation"
 
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "Terms of Service | Budgie"
-msgstr ""
+msgstr "Conditions d'utilisation | Budgie"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Test our data handling practices"
@@ -14874,11 +14874,11 @@ msgstr "Cette facture de 87 € de supermarché contenait des courses et un char
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "That gives Budgie two strengths at once. You can audit the original bank or CSV data, and <0>spending analytics</0> can still sum categories, tags, and periods without guessing which rate to use."
-msgstr ""
+msgstr "Budgie bénéficie ainsi de deux atouts à la fois. Vous pouvez vérifier les données bancaires ou CSV d'origine, et les <0>analyses de dépenses</0> peuvent toujours additionner catégories, étiquettes et périodes sans deviner quel taux utiliser."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "That is the point of <0>multi-currency accounts</0>: show today’s portfolio with today’s rates, but show historical expenses with historical rates."
-msgstr ""
+msgstr "C'est tout l'intérêt des <0>comptes multidevises</0> : afficher le portefeuille actuel avec les taux du jour, mais les dépenses passées avec les taux de l'époque."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "That last point is significant. Your data, in aggregate form, may inform products you never agreed to."
@@ -14966,7 +14966,7 @@ msgstr "Le code source de l’application est publié sous licence O’SAASY : c
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The arbitration shall be conducted in English in Vienna, Austria"
-msgstr ""
+msgstr "L'arbitrage se déroulera en anglais à Vienne, en Autriche"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
@@ -15078,7 +15078,7 @@ msgstr "Le code source complet de l'application mobile"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The complete source code for Budgie is available on GitHub. You can:"
-msgstr ""
+msgstr "Le code source complet de Budgie est disponible sur GitHub. Vous pouvez :"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The connection to your bank happens directly from your phone"
@@ -15098,11 +15098,11 @@ msgstr "La valeur convertie est enregistrée avec le taux de change de la date d
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
-msgstr ""
+msgstr "L'avis de droits d'auteur ci-dessus et le présent avis d'autorisation doivent être inclus dans toutes les copies ou parties substantielles du Logiciel."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The core features of the Service are provided free of charge. We may offer premium features, subscriptions, or in-app purchases (\"Premium Services\") that require payment. All fees are clearly disclosed before purchase."
-msgstr ""
+msgstr "Les fonctionnalités de base du Service sont fournies gratuitement. Nous pouvons proposer des fonctionnalités Premium, des abonnements ou des achats intégrés (les « Services Premium ») qui nécessitent un paiement. Tous les frais sont clairement indiqués avant l'achat."
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "The correction carries the exchange rate of the day it was booked, so net worth stays consistent"
@@ -15202,11 +15202,11 @@ msgstr "La première synchronisation remonte jusqu'à cinq ans d'historique par 
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
-msgstr ""
+msgstr "Les données suivantes sont stockées exclusivement sur votre appareil et ne sont jamais transmises à nos serveurs, sauf si vous activez explicitement des fonctions cloud facultatives :"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The following uses require explicit permission or a separate commercial license:"
-msgstr ""
+msgstr "Les utilisations suivantes nécessitent une autorisation explicite ou une licence commerciale distincte :"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "The footer button doubles as your running total — it reads \"$X left to assign\" until the split is fully allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split entries underneath."
@@ -15352,7 +15352,7 @@ msgstr "Dès que l'application passe en arrière-plan. Il n'y a ni délai de gr�
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
-msgstr ""
+msgstr "La mise à niveau des données financières analyse les écritures dont la valeur en devise de base est manquante et les regroupe par date, devise du compte et devise de base."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The most private way to get bank data into Budgie is manual import. Most banks allow you to download transaction history in standard formats like CSV, OFX, or QIF. You download this file directly from your bank, and Budgie imports it locally on your device."
@@ -15380,7 +15380,7 @@ msgstr "Les neuf plus grands actifs crypto sont livrés avec un an de cours quot
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The O'Saasy license allows you to:"
-msgstr ""
+msgstr "La licence O'Saasy vous permet de :"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The obvious pairs merge on import"
@@ -15570,7 +15570,7 @@ msgstr "Le depot comprend :"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The results obtained from the Service will be accurate or reliable"
-msgstr ""
+msgstr "Que les résultats obtenus grâce au Service seront exacts ou fiables"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "The row lands and the balance updates before a network app finishes its request."
@@ -15578,7 +15578,7 @@ msgstr "La ligne apparaît et le solde se met à jour avant qu'une app en résea
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Rule: Store Original Truth and Reporting Value"
-msgstr ""
+msgstr "La règle : conserver la valeur d'origine et la valeur de référence"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Rules screen has a ranked search that looks at every condition, every action, and the related category, tag, and account names, so you can find the rule responsible for a category in a couple of keystrokes."
@@ -15642,23 +15642,23 @@ msgstr "Le serveur ne peut pas etre compromis parce qu'il n'y a pas de serveur. 
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "THE SERVICE IS FOR INFORMATIONAL AND ORGANIZATIONAL PURPOSES ONLY. NOTHING IN THE SERVICE CONSTITUTES FINANCIAL, INVESTMENT, LEGAL, OR TAX ADVICE. We are not licensed financial advisors, accountants, or tax professionals. You should consult with appropriate professionals before making any financial decisions."
-msgstr ""
+msgstr "LE SERVICE EST FOURNI À TITRE INFORMATIF ET ORGANISATIONNEL UNIQUEMENT. RIEN DANS LE SERVICE NE CONSTITUE UN CONSEIL FINANCIER, D'INVESTISSEMENT, JURIDIQUE OU FISCAL. Nous ne sommes ni conseillers financiers agréés, ni comptables, ni professionnels de la fiscalité. Vous devriez consulter des professionnels compétents avant de prendre toute décision financière."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "THE SERVICE IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND ACCURACY. WE DO NOT WARRANT THAT:"
-msgstr ""
+msgstr "LE SERVICE EST FOURNI « EN L'ÉTAT » ET « SELON DISPONIBILITÉ », SANS GARANTIE D'AUCUNE SORTE, EXPRESSE OU IMPLICITE, Y COMPRIS, SANS S'Y LIMITER, LES GARANTIES IMPLICITES DE QUALITÉ MARCHANDE, D'ADÉQUATION À UN USAGE PARTICULIER, DE NON-CONTREFAÇON ET D'EXACTITUDE. NOUS NE GARANTISSONS PAS :"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The Service is provided \"as is\" and we reserve the right to modify, suspend, or discontinue any aspect of the Service at any time without notice."
-msgstr ""
+msgstr "Le Service est fourni « en l'état » et nous nous réservons le droit de modifier, suspendre ou interrompre tout aspect du Service à tout moment et sans préavis."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The Service will be uninterrupted, timely, secure, or error-free"
-msgstr ""
+msgstr "Que le Service sera ininterrompu, rapide, sécurisé ou exempt d'erreurs"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The Service will meet your requirements"
-msgstr ""
+msgstr "Que le Service répondra à vos besoins"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The service won’t be shut down"
@@ -15666,7 +15666,7 @@ msgstr "Le service ne sera pas arrêté"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The Service, including its original content, features, and functionality, is owned by Budgie and is protected by international copyright, trademark, patent, trade secret, and other intellectual property laws. Our trademarks and trade dress may not be used without our prior written permission."
-msgstr ""
+msgstr "Le Service, y compris son contenu original, ses caractéristiques et ses fonctionnalités, appartient à Budgie et est protégé par les lois internationales relatives au droit d'auteur, aux marques, aux brevets, au secret des affaires et à la propriété intellectuelle. Nos marques et notre habillage commercial ne peuvent être utilisés sans notre autorisation écrite préalable."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "The share sheet is the last step Budgie takes part in. Send the file to Files, iCloud Drive, a Drive folder or a USB stick, and keep as many dated copies as you want — the name carries the date and time, so exports never collide."
@@ -15686,7 +15686,7 @@ msgstr "La fuite lente de chaque budget"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr ""
+msgstr "LE LOGICIEL EST FOURNI « TEL QUEL », SANS GARANTIE D'AUCUNE SORTE, EXPRESSE OU IMPLICITE, Y COMPRIS, MAIS SANS S'Y LIMITER, LES GARANTIES DE QUALITÉ MARCHANDE, D'ADAPTATION À UN USAGE PARTICULIER ET D'ABSENCE DE CONTREFAÇON. EN AUCUN CAS LES AUTEURS OU TITULAIRES DES DROITS D'AUTEUR NE POURRONT ÊTRE TENUS RESPONSABLES DE TOUTE RÉCLAMATION, DE TOUT DOMMAGE OU DE TOUTE AUTRE RESPONSABILITÉ, QUE CE SOIT DANS LE CADRE D'UNE ACTION CONTRACTUELLE, DÉLICTUELLE OU AUTRE, DÉCOULANT DU LOGICIEL, DE SON UTILISATION OU D'AUTRES TRANSACTIONS PORTANT SUR LE LOGICIEL, OU EN LIEN AVEC CEUX-CI."
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
@@ -15774,7 +15774,7 @@ msgstr "La ligne « Sans étiquette », c'est le trou"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Upgrade Flow"
-msgstr ""
+msgstr "Le déroulement de la mise à niveau"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "The wallet itself reads in the coin: a balance in BTC, and under it the purchases that add up to it. Each row carries the coin amount it bought, the amount you actually paid in your own currency, and the rate that implies — so the cost stays recorded at the moment of the trade instead of being recomputed from today's price."
@@ -15864,15 +15864,15 @@ msgstr "Il n'y a pas de mur d'abonnement dans le suivi des dépenses ; toutes le
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
-msgstr ""
+msgstr "Ces services ont leurs propres politiques de confidentialité, et nous sélectionnons avec soin des partenaires qui répondent à nos exigences élevées en matière de confidentialité."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "These Terms shall be governed by and construed in accordance with the laws of Austria, without regard to its conflict of law provisions."
-msgstr ""
+msgstr "Les présentes Conditions sont régies et interprétées conformément au droit autrichien, à l'exclusion de ses règles de conflit de lois."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "These Terms, together with our Privacy Policy and any other legal notices published by us, constitute the entire agreement between you and Budgie concerning the Service."
-msgstr ""
+msgstr "Les présentes Conditions, ainsi que notre Politique de confidentialité et toute autre mention légale que nous publions, constituent l'intégralité de l'accord entre vous et Budgie concernant le Service."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "They are income or expense transactions without a category. Budgie calls them missing categories in the app because the next action is to assign a category and clean up your reports."
@@ -16020,7 +16020,7 @@ msgstr "Ce manifeste a profondément touché les développeurs frustrés par les
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "This matters most after a migration. If you import years of spending from a previous app through <0>CSV import</0>, Budgie can rebuild the base values from historical exchange rates instead of treating old rows as if they happened today."
-msgstr ""
+msgstr "Cela compte surtout après une migration. Si vous importez des années de dépenses depuis une ancienne application via l'<0>import CSV</0>, Budgie peut reconstruire les valeurs de base à partir des taux de change historiques au lieu de traiter les anciennes lignes comme si elles dataient d'aujourd'hui."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "This means more than just a privacy policy. True privacy requires:"
@@ -16048,7 +16048,7 @@ msgstr "Ce principe s'étend à des structures de données plus complexes :"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "This Privacy Policy is designed to comply with:"
-msgstr ""
+msgstr "La présente politique de confidentialité est conçue pour être conforme à :"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "This risk is not theoretical. Major financial data aggregators and fintech intermediaries have experienced significant security incidents over the years, exposing consumer banking credentials, account numbers, and transaction history. Each incident affected users of multiple apps simultaneously, because the breach was at the aggregator layer rather than any individual application."
@@ -16156,7 +16156,7 @@ msgstr "La saisie des données prend du temps"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "To comply with legal obligations (e.g., court orders, regulatory requirements)"
-msgstr ""
+msgstr "Pour respecter des obligations légales (par exemple, décisions de justice, exigences réglementaires)"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "To fully disconnect, you must:"
@@ -16168,7 +16168,7 @@ msgstr "Pour la prevention de la fraude"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "To protect our rights, property, or safety, or that of our users or the public"
-msgstr ""
+msgstr "Pour protéger nos droits, nos biens ou notre sécurité, ou ceux de nos utilisateurs ou du public"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "To provide services to other Plaid customers"
@@ -16176,7 +16176,7 @@ msgstr "Pour fournir des services a d'autres clients Plaid"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL BUDGIE, ITS DIRECTORS, EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM:"
-msgstr ""
+msgstr "DANS TOUTE LA MESURE PERMISE PAR LA LOI, BUDGIE, SES DIRIGEANTS, EMPLOYÉS, PARTENAIRES, AGENTS, FOURNISSEURS OU AFFILIÉS NE SAURAIENT EN AUCUN CAS ÊTRE TENUS RESPONSABLES DE TOUT DOMMAGE INDIRECT, ACCESSOIRE, SPÉCIAL, CONSÉCUTIF OU PUNITIF, Y COMPRIS, SANS S'Y LIMITER, LA PERTE DE BÉNÉFICES, DE DONNÉES, D'UTILISATION, DE CLIENTÈLE OU D'AUTRES PERTES IMMATÉRIELLES, RÉSULTANT :"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "To your own iCloud / Google Drive"
@@ -16361,7 +16361,7 @@ msgstr "Progression de la traduction et de l’apprentissage"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Transmit viruses, malware, or any malicious code"
-msgstr ""
+msgstr "Transmettre des virus, logiciels malveillants ou tout code malveillant"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
@@ -16374,7 +16374,7 @@ msgstr "La transparence comme propriété de sécurité"
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "transparent finance app"
-msgstr ""
+msgstr "application de finances transparente"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Transparent roadmap and public issue tracker"
@@ -16507,7 +16507,7 @@ msgstr "Deux appuis de l'ouverture à l'enregistrement."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Two taps to saved"
-msgstr ""
+msgstr "Deux appuis pour enregistrer"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Two taps to the window you want"
@@ -16557,7 +16557,7 @@ msgstr "L'interface semble datée comparée aux applications modernes"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Unauthorized access, use, or alteration of your content"
-msgstr ""
+msgstr "De tout accès, utilisation ou altération non autorisés de votre contenu"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
 msgid "Uncategorized or untagged bank transactions grouped by merchant, with suggestions learned from your own choices. One tap per group."
@@ -16641,7 +16641,7 @@ msgstr "Utilisez Ajouter un élément pour ajouter une ligne ; l'étiquette sous
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Use automated systems to access the Service without permission"
-msgstr ""
+msgstr "Utiliser des systèmes automatisés pour accéder au Service sans autorisation"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Use Budgie CSV import screen to map your file columns to Budgie fields. The importer shows a preview of the first few rows so you can verify the mapping before committing. Budgie deduplicates transactions on import, so overlapping date ranges between files will not create duplicates."
@@ -16653,11 +16653,11 @@ msgstr "Utilisez l’action Clôturer le dépôt, sélectionnez le compte de des
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Use the Service for any illegal or unauthorized purpose"
-msgstr ""
+msgstr "Utiliser le Service à des fins illégales ou non autorisées"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Use the Service to provide services to third parties"
-msgstr ""
+msgstr "Utiliser le Service pour fournir des services à des tiers"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "User consent and control remain primary considerations"
@@ -16677,7 +16677,7 @@ msgstr "Les utilisateurs remarquent la différence immédiatement. Les applicati
 
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "ux"
-msgstr ""
+msgstr "UX"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Vendor can be compelled"
@@ -16717,15 +16717,15 @@ msgstr "Voir tous les articles"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Violate any laws in your jurisdiction"
-msgstr ""
+msgstr "Enfreindre toute loi applicable dans votre juridiction"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Violates the rights of others"
-msgstr ""
+msgstr "Porte atteinte aux droits d'autrui"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Visit our GitHub repository at <0>github.com/budgie-at/budgie</0>"
-msgstr ""
+msgstr "Visitez notre dépôt GitHub à l'adresse <0>github.com/budgie-at/budgie</0>"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Visit our GitHub repository to get started."
@@ -16769,7 +16769,7 @@ msgstr "La voix est le mode de saisie le plus rapide pour une dépense — mais 
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Voice transaction entry"
-msgstr ""
+msgstr "Saisie vocale des transactions"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
@@ -16811,7 +16811,7 @@ msgstr "Nous croyons en la transparence. Voici une comparaison honnête avec d'a
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "We believe in transparent, ethical software development. By keeping Budgie open source, we ensure that our privacy and security claims can be independently verified. We are committed to maintaining Budgie as an open source project and fostering a welcoming community for contributors and users alike."
-msgstr ""
+msgstr "Nous croyons à un développement logiciel transparent et éthique. En maintenant Budgie en open source, nous garantissons que nos engagements en matière de confidentialité et de sécurité peuvent être vérifiés de manière indépendante. Nous nous engageons à maintenir Budgie comme projet open source et à cultiver une communauté accueillante pour les contributeurs comme pour les utilisateurs."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "We believe that welcoming security research makes Budgie safer for everyone. Researchers who examine our code are doing us and our users a service."
@@ -16847,11 +16847,11 @@ msgstr "Nous n'avons pas pu enregistrer votre adresse e-mail. Veuillez réessaye
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We do not sell, trade, or rent your personal information to third parties. We may share limited information only in the following circumstances:"
-msgstr ""
+msgstr "Nous ne vendons, n'échangeons ni ne louons vos données personnelles à des tiers. Nous pouvons partager des informations limitées uniquement dans les circonstances suivantes :"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We do NOT use your financial data for advertising, profiling, or any commercial purposes beyond providing the Service to you."
-msgstr ""
+msgstr "Nous n'utilisons PAS vos données financières à des fins publicitaires, de profilage ou à toute autre fin commerciale au-delà de la fourniture du Service."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "We have described our approach in detail not because we think everyone needs to understand database architectures, but because we believe you deserve to know exactly what an app does with your sensitive data. We invite you to verify our claims, examine our code, and hold us accountable to the privacy standards we have set."
@@ -16863,15 +16863,15 @@ msgstr "Nous ne pouvons littéralement pas voir vos transactions parce que nous 
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "We may delete any cloud-stored data in accordance with our data retention policy"
-msgstr ""
+msgstr "Nous pouvons supprimer toute donnée stockée dans le cloud conformément à notre politique de conservation des données"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "We may terminate or suspend your access to the Service immediately, without prior notice or liability, for any reason, including without limitation if you breach these Terms. Upon termination:"
-msgstr ""
+msgstr "Nous pouvons résilier ou suspendre votre accès au Service immédiatement, sans préavis ni responsabilité, pour quelque motif que ce soit, y compris, sans s'y limiter, si vous enfreignez les présentes Conditions. En cas de résiliation :"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date. For significant changes, we will provide prominent notice within the app. Your continued use of the Service after changes become effective constitutes acceptance of the revised policy."
-msgstr ""
+msgstr "Nous pouvons mettre à jour la présente politique de confidentialité de temps à autre. Nous vous informerons de toute modification importante en publiant la nouvelle politique sur cette page et en mettant à jour la date de « dernière mise à jour ». En cas de modification significative, nous afficherons un avis visible dans l'application. En continuant à utiliser le Service après l'entrée en vigueur des modifications, vous acceptez la politique révisée."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "We never see your banking credentials or transaction data"
@@ -16879,15 +16879,15 @@ msgstr "Nous ne voyons jamais vos identifiants bancaires ou données de transact
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "We reserve the right to change our prices at any time. Price changes will not affect existing subscriptions until renewal. We will provide reasonable notice of price changes."
-msgstr ""
+msgstr "Nous nous réservons le droit de modifier nos prix à tout moment. Les modifications de prix n'affecteront pas les abonnements en cours avant leur renouvellement. Nous vous en informerons moyennant un préavis raisonnable."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "We shall not be liable for any failure to perform our obligations where such failure results from circumstances beyond our reasonable control, including but not limited to acts of God, war, riot, embargoes, acts of civil or military authorities, fire, floods, accidents, pandemics, or strikes."
-msgstr ""
+msgstr "Nous ne saurions être tenus responsables de tout manquement à nos obligations lorsque ce manquement résulte de circonstances échappant à notre contrôle raisonnable, y compris, sans s'y limiter, les cas fortuits, guerres, émeutes, embargos, actes d'autorités civiles ou militaires, incendies, inondations, accidents, pandémies ou grèves."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "We take security seriously. If you discover a security vulnerability in Budgie:"
-msgstr ""
+msgstr "Nous prenons la sécurité très au sérieux. Si vous découvrez une faille de sécurité dans Budgie :"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "We take security vulnerabilities seriously and have established processes for responsible disclosure:"
@@ -16899,11 +16899,11 @@ msgstr "Nous pensons qu'il y a de la place dans l'écosystème pour tous ces out
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We use the limited information we collect to:"
-msgstr ""
+msgstr "Nous utilisons les informations limitées que nous collectons pour :"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "We welcome contributions from the community! By contributing to Budgie, you agree that:"
-msgstr ""
+msgstr "Les contributions de la communauté sont les bienvenues ! En contribuant à Budgie, vous acceptez que :"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "We welcome security researchers, privacy advocates, and technically curious users to examine our code. If you find something that contradicts our privacy claims, we want to know about it."
@@ -16911,7 +16911,7 @@ msgstr "Nous invitons les chercheurs en securite, les defenseurs de la vie prive
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "We will acknowledge your report within 48 hours"
-msgstr ""
+msgstr "Nous accuserons réception de votre signalement dans un délai de 48 heures"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to move a file yourself. Changes propagate automatically in the background."
@@ -16947,7 +16947,7 @@ msgstr "Webhooks pour les intégrations en temps réel"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Website: https://budgie.at"
-msgstr ""
+msgstr "Site web : https://budgie.at"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Well-designed export functionality"
@@ -17120,7 +17120,7 @@ msgstr "Que se passe-t-il lors d'un virement en devises étrangères ?"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "What happens if a historical rate is missing?"
-msgstr ""
+msgstr "Que se passe-t-il s'il manque un taux historique ?"
 
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "What happens if a sync fails partway through?"
@@ -17604,7 +17604,7 @@ msgstr "Lorsque vous ouvrez la plupart des applications de suivi de depenses, qu
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "When you opt into optional features, we may use the following trusted third-party services:"
-msgstr ""
+msgstr "Lorsque vous activez des fonctions facultatives, nous pouvons recourir aux services tiers de confiance suivants :"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "When you spend more than you earn, Runway divides your balance by the gap and names the month it runs out."
@@ -17616,7 +17616,7 @@ msgstr "Lorsque vous utilisez une application financière à code fermé, vous n
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "When you use optional features such as bank synchronization or market data feeds, you are also subject to the terms and conditions of those third-party service providers. We are not responsible for the availability, accuracy, or reliability of third-party services."
-msgstr ""
+msgstr "Lorsque vous utilisez des fonctionnalités facultatives telles que la synchronisation bancaire ou les flux de données de marché, vous êtes également soumis aux conditions générales de ces prestataires tiers. Nous ne sommes pas responsables de la disponibilité, de l'exactitude ou de la fiabilité des services tiers."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "When you want to move your data to a new device, you export a backup on the old one and import it on the new one. Here is the process:"
@@ -17800,15 +17800,15 @@ msgstr "Bien que Figma soit principalement hébergé dans le cloud, sa technolog
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "While the Budgie source code is available under the O'Saasy License, the \"Budgie\" name and logo are trademarks of Budgie. Use of these trademarks is subject to the following guidelines:"
-msgstr ""
+msgstr "Bien que le code source de Budgie soit disponible sous la licence O'Saasy, le nom et le logo « Budgie » sont des marques de Budgie. L'utilisation de ces marques est soumise aux règles suivantes :"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "While the upgrade runs, the settings screen shows progress and blocks interaction so analytics cannot be read halfway through a rebuild."
-msgstr ""
+msgstr "Pendant la mise à niveau, l'écran des paramètres affiche la progression et bloque toute interaction afin que les analyses ne puissent pas être lues en plein milieu d'une reconstruction."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "While we strive to provide accurate information, we do not warrant the accuracy, completeness, or reliability of:"
-msgstr ""
+msgstr "Bien que nous nous efforcions de fournir des informations exactes, nous ne garantissons pas l'exactitude, l'exhaustivité ou la fiabilité :"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "While you are burning, a meter counts the months left on a one-year scale. While you are growing there is nothing to count down, so the meter steps aside."
@@ -17848,7 +17848,7 @@ msgstr "Pourquoi un coup d'œil au sélecteur d'applications est une vraie fuite
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/metadata.ts
 msgid "Why a multi-currency expense tracker needs transaction-date valuation, not today's exchange rate, and how Budgie keeps imported history comparable in your base currency."
-msgstr ""
+msgstr "Pourquoi un suivi de dépenses multidevise a besoin d'une valorisation à la date de la transaction plutôt que du taux de change du jour, et comment Budgie garde l'historique importé comparable dans votre devise de référence."
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Why a single-currency app can't model real life"
@@ -17868,7 +17868,7 @@ msgstr "Pourquoi la biométrie a sa place dans une application financière que v
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Why Budgie Does Not Revalue Everything Every Day"
-msgstr ""
+msgstr "Pourquoi Budgie ne revalorise pas tout chaque jour"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Why Budgie Takes a Different Approach"
@@ -18076,7 +18076,7 @@ msgstr "Pourquoi parcourir une longue liste pour une étiquette est difficile"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Why store the base amount if it can be recalculated?"
-msgstr ""
+msgstr "Pourquoi enregistrer le montant de base s'il peut être recalculé ?"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Why subscriptions need their own view"
@@ -18215,7 +18215,7 @@ msgstr "Avec la synchronisation directe offline-first, les données bancaires ar
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "With service providers who assist in operating the Service (bound by strict confidentiality agreements)"
-msgstr ""
+msgstr "Avec les prestataires de services qui nous aident à exploiter le Service (tenus par des accords de confidentialité stricts)"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "With these criteria in mind, let’s evaluate the alternatives."
@@ -18223,11 +18223,11 @@ msgstr "Avec ces critères en tête, évaluons les alternatives."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "With your explicit consent"
-msgstr ""
+msgstr "Avec votre consentement explicite"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "With your explicit consent, we may collect the following minimal information:"
-msgstr ""
+msgstr "Avec votre consentement explicite, nous pouvons collecter les informations minimales suivantes :"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Without a backup file, your data is gone — that's the privacy trade-off. Budgie exports a copy of the database file — encrypted if your PIN was set — that you can save to iCloud Drive, Google Drive, or anywhere else. Restoring it on a new device takes a few steps: pick the file, confirm the replace, enter that backup's PIN, and let the app restart."
@@ -18669,7 +18669,7 @@ msgstr "Oui. Le dépôt est livré avec des instructions de compilation pour iOS
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Yes. The stored base fields are nullable derived data. Budgie can clear and rebuild them from historical rates while preserving the original transaction amounts."
-msgstr ""
+msgstr "Oui. Les champs de base enregistrés sont des données dérivées facultatives. Budgie peut les effacer et les reconstruire à partir des taux historiques tout en préservant les montants d'origine des transactions."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Yes. The suggestion engine runs on every form variant — expense, income, and transfer."
@@ -18738,23 +18738,23 @@ msgstr "Reglement Yodlee - 2024"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You agree not to use the Service to store or transmit any content that:"
-msgstr ""
+msgstr "Vous vous engagez à ne pas utiliser le Service pour stocker ou transmettre un contenu qui :"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You agree NOT to:"
-msgstr ""
+msgstr "Vous vous engagez à NE PAS :"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You agree that any dispute resolution proceedings will be conducted only on an individual basis and not in a class, consolidated, or representative action."
-msgstr ""
+msgstr "Vous acceptez que toute procédure de règlement des litiges soit menée uniquement à titre individuel et non dans le cadre d'une action collective, groupée ou représentative."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You agree to defend, indemnify, and hold harmless Budgie and its licensors, affiliates, and service providers, and their respective officers, directors, employees, contractors, agents, licensors, suppliers, successors, and assigns from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to:"
-msgstr ""
+msgstr "Vous vous engagez à défendre, indemniser et garantir Budgie, ses concédants de licence, affiliés et prestataires de services, ainsi que leurs dirigeants, administrateurs, employés, sous-traitants, agents, fournisseurs, successeurs et ayants droit respectifs, contre toute réclamation, responsabilité, dommage, jugement, condamnation, perte, coût, dépense ou frais (y compris les honoraires raisonnables d'avocat) découlant des éléments suivants ou s'y rapportant :"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You agree to follow our code of conduct and contribution guidelines"
-msgstr ""
+msgstr "Vous acceptez de respecter notre code de conduite et nos directives de contribution"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "You agreed to one company’s privacy policy. After acquisition, a different company with different policies controls your data. The legal basis for this is usually buried in the original terms of service."
@@ -18762,11 +18762,11 @@ msgstr "Vous avez accepte la politique de confidentialite d'une entreprise. Apre
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You are responsible for verifying all financial information and calculations provided by the Service."
-msgstr ""
+msgstr "Vous êtes responsable de la vérification de toutes les informations financières et de tous les calculs fournis par le Service."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting your data using the built-in export features."
-msgstr ""
+msgstr "VOUS ÊTES SEUL RESPONSABLE DE LA SAUVEGARDE DE VOS DONNÉES. Bien que le Service stocke les données localement sur votre appareil et puisse proposer des fonctionnalités facultatives de sauvegarde dans le cloud, nous ne sommes pas responsables de toute perte de données. Nous vous recommandons vivement d'exporter régulièrement vos données à l'aide des fonctionnalités d'exportation intégrées."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "You become the product, not the customer"
@@ -18782,7 +18782,7 @@ msgstr "Vous pouvez enregistrer une dépense à 9 000 mètres d'altitude, trav
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You can manage subscriptions and turn off auto-renewal in your device's account settings"
-msgstr ""
+msgstr "Vous pouvez gérer vos abonnements et désactiver le renouvellement automatique dans les paramètres de compte de votre appareil"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "You can modify the app for your own use"
@@ -18842,31 +18842,31 @@ msgstr "Vous saisissez le montant une seule fois et choisissez les deux comptes 
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "You have the following rights regarding your data:"
-msgstr ""
+msgstr "Vous disposez des droits suivants concernant vos données :"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You have the right to make the contribution and grant us the rights to use it"
-msgstr ""
+msgstr "Vous avez le droit d'apporter la contribution et de nous accorder les droits de l'utiliser"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You may not assign or transfer these Terms or your rights hereunder, in whole or in part, without our prior written consent. We may assign these Terms at any time without notice."
-msgstr ""
+msgstr "Vous ne pouvez pas céder ou transférer les présentes Conditions ou vos droits à ce titre, en tout ou en partie, sans notre consentement écrit préalable. Nous pouvons céder les présentes Conditions à tout moment et sans préavis."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You may not use our trademarks in a way that suggests endorsement"
-msgstr ""
+msgstr "Vous ne pouvez pas utiliser nos marques d'une manière laissant entendre un parrainage ou une approbation"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You may terminate your use of the Service at any time by uninstalling the Application and ceasing to access the Service."
-msgstr ""
+msgstr "Vous pouvez mettre fin à votre utilisation du Service à tout moment en désinstallant l'Application et en cessant d'accéder au Service."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You may use the name \"Budgie\" to refer to the software project"
-msgstr ""
+msgstr "Vous pouvez utiliser le nom « Budgie » pour désigner le projet logiciel"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You must be at least 18 years of age to use this Service. By using the Service, you represent and warrant that you are at least 18 years old and have the legal capacity to enter into these Terms. If you are using the Service on behalf of an organization, you represent that you have the authority to bind that organization to these Terms."
-msgstr ""
+msgstr "Vous devez avoir au moins 18 ans pour utiliser ce Service. En utilisant le Service, vous déclarez et garantissez avoir au moins 18 ans et avoir la capacité juridique de souscrire aux présentes Conditions. Si vous utilisez le Service pour le compte d'une organisation, vous déclarez avoir le pouvoir d'engager cette organisation au titre des présentes Conditions."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You Need A Budget (YNAB) has been a household name in personal finance software for over a decade. Its zero-based budgeting methodology has helped millions take control of their finances. But in recent years, a growing number of users have started looking for alternatives—and privacy is often the driving factor."
@@ -18890,11 +18890,11 @@ msgstr "Vous préférez garder vos données sur votre appareil"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You retain all rights to the financial data and content you input into the Service (\"User Content\"). By using the Service, you grant us a limited license to process your User Content solely for the purpose of providing the Service to you."
-msgstr ""
+msgstr "Vous conservez tous les droits sur les données financières et le contenu que vous saisissez dans le Service (le « Contenu utilisateur »). En utilisant le Service, vous nous accordez une licence limitée pour traiter votre Contenu utilisateur dans le seul but de vous fournir le Service."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You should cease all use of the Service"
-msgstr ""
+msgstr "Vous devez cesser toute utilisation du Service"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "You switch it on in Settings"
@@ -18974,7 +18974,7 @@ msgstr "Vous êtes très patient"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your access to or use of (or inability to access or use) the Service"
-msgstr ""
+msgstr "Votre accès ou votre utilisation du Service (ou votre impossibilité d'y accéder ou de l'utiliser)"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your account can be locked or deleted"
@@ -18982,7 +18982,7 @@ msgstr "Votre compte peut être verrouillé ou supprimé"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your account will be charged for renewal within 24 hours prior to the end of the current period"
-msgstr ""
+msgstr "Votre compte sera débité pour le renouvellement dans les 24 heures précédant la fin de la période en cours"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Your bank account balances and account numbers"
@@ -19010,11 +19010,11 @@ msgstr "Votre carte, vos cagnottes et le dépôt que vous avez ouvert le mois de
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Your contribution does not violate any third-party rights"
-msgstr ""
+msgstr "Votre contribution ne porte atteinte à aucun droit de tiers"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Your contributions will be licensed under the same O'Saasy License"
-msgstr ""
+msgstr "Vos contributions seront placées sous la même licence O'Saasy"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Your corrections are the training"
@@ -19142,7 +19142,7 @@ msgstr "Vos relations et connexions sociales"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your right to use the Service will immediately cease"
-msgstr ""
+msgstr "Votre droit d'utiliser le Service prendra fin immédiatement"
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Your setting is unchanged. What changed is timing: models now load only while a feature is actually running instead of every time you open the app."
@@ -19186,15 +19186,15 @@ msgstr "Vos transactions restent sur votre téléphone"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your use or misuse of the Service"
-msgstr ""
+msgstr "Votre utilisation ou mauvaise utilisation du Service"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your violation of any law or the rights of a third party"
-msgstr ""
+msgstr "Votre violation de toute loi ou des droits d'un tiers"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your violation of these Terms"
-msgstr ""
+msgstr "Votre violation des présentes Conditions"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Your VPS / Docker host"

@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/sync';
-import { plural } from '@lingui/core/macro';
+import { msg, plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import Toast from 'react-native-toast-message';
@@ -19,8 +19,8 @@ const showConsolidationSuccessToast = (consolidated: number, found: number, t: R
 
     Toast.show({
         type: 'success',
-        text1: t`Matches consolidated`,
-        text2: t`Merged ${consolidated} of ${foundPairsText}.`
+        text1: t(msg`Matches consolidated`),
+        text2: t(msg`Merged ${consolidated} of ${foundPairsText}.`)
     });
 };
 
