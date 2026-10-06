@@ -1,6 +1,6 @@
 {
     "name": "@budgie/market",
-    "version": "6.93.0",
+    "version": "6.94.0",
     "private": true,
     "description": "Exchange rates, market data and base valuation services",
     "sideEffects": false,

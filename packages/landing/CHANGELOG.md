@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
+
+### Bug Fixes
+
+* keep the chosen installment total in sync and correct landing fee copy ([d20cbdf](https://github.com/budgie-at/budgie/commit/d20cbdf767751e72545fbcbc9d4403dc5c916f17))
+
+
+### Features
+
+* **landing:** add installment tracking media ([747b4b5](https://github.com/budgie-at/budgie/commit/747b4b5f19106df3c0006338310f0217e6cdd2da))
+* **landing:** add the installment tracking feature page ([9d065be](https://github.com/budgie-at/budgie/commit/9d065beacd82503eca2ff5c2df1171bbe11900ec))
+
+
+
+
+
 ## [6.93.2](https://github.com/budgie-at/budgie/compare/v6.93.1...v6.93.2) (2026-10-06)
 
 

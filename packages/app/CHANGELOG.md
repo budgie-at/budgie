@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
+
+### Bug Fixes
+
+* **app:** keep installment progress on the home card when no next payment shows ([7298822](https://github.com/budgie-at/budgie/commit/72988226eddef4a406c848eb68d54e2735fb17f5))
+* **app:** label installment totals and the French next-payment line ([4c1eda8](https://github.com/budgie-at/budgie/commit/4c1eda8eff206cd9186f677a3e100a6eb59cf92e))
+* **app:** polish the pay-in-parts sheet, home card and plan header ([3421d11](https://github.com/budgie-at/budgie/commit/3421d115fe060e52b5c5c5a9ef2b22558f67326b))
+* keep the chosen installment total in sync and correct landing fee copy ([d20cbdf](https://github.com/budgie-at/budgie/commit/d20cbdf767751e72545fbcbc9d4403dc5c916f17))
+
+
+### Features
+
+* **app:** redesign the pay-in-parts sheet after the split sheet ([edb1b51](https://github.com/budgie-at/budgie/commit/edb1b51b8bd3d3727cf2fd5b366fca252e8bd668))
+* convert an expense into an installment plan ([3d67479](https://github.com/budgie-at/budgie/commit/3d67479b1137528cffef6679c39e3a0bbd9cc516))
+
+
+
+
+
 ## [6.93.2](https://github.com/budgie-at/budgie/compare/v6.93.1...v6.93.2) (2026-10-06)
 
 
