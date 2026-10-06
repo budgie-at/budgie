@@ -11,23 +11,14 @@ interface Props {
     readonly locale: string;
     readonly alt: string;
     readonly priority?: boolean;
-    readonly fallback?: ReactNode;
     readonly children?: ReactNode;
 }
 
-export const FeatureStoryShot = ({ index, slug, scene, locale, alt, priority = false, fallback, children }: Props) => (
+export const FeatureStoryShot = ({ index, slug, scene, locale, alt, priority = false, children }: Props) => (
     <figure className="story-stage" data-callout-count={Children.count(children)} data-index={index} data-story-stage>
         <span aria-hidden="true" className="story-bloom" />
         <div className="story-frame">
-            <AppShot
-                alt={alt}
-                fallback={fallback}
-                locale={locale}
-                priority={priority}
-                scene={scene}
-                sizes="(min-width: 1024px) 18rem, 88vw"
-                slug={slug}
-            />
+            <AppShot alt={alt} locale={locale} priority={priority} scene={scene} sizes="(min-width: 1024px) 18rem, 88vw" slug={slug} />
             {children}
         </div>
     </figure>

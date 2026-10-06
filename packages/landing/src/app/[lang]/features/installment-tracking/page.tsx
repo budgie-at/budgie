@@ -15,7 +15,6 @@ import { FeaturePageShell } from '../../../../feature/component/feature-page-she
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { InstallmentPreview } from '../../../../feature/component/installment-preview/installment-preview';
 import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
@@ -84,18 +83,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Pay in parts sheet for an electronics purchase with three payments selected and the plan total`}
-                    fallback={
-                        <AppShot
-                            alt={t(
-                                i18n
-                            )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`}
-                            locale={lang}
-                            priority
-                            scene="transaction-long-press-menu-1"
-                            sizes="(min-width: 1024px) 18rem, 88vw"
-                            slug="transaction-long-press-menu"
-                        />
-                    }
                     index={0}
                     locale={lang}
                     priority
@@ -108,17 +95,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie installment plan screen showing two of three payments paid, the next amount and its date`}
-                    fallback={
-                        <AppShot
-                            alt={t(
-                                i18n
-                            )`Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals`}
-                            locale={lang}
-                            scene="debt-tracking-2"
-                            sizes="(min-width: 1024px) 18rem, 88vw"
-                            slug="debt-tracking"
-                        />
-                    }
                     index={1}
                     locale={lang}
                     scene="installment-tracking-2"
@@ -132,17 +108,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     alt={t(
                         i18n
                     )`Budgie home screen with an installment plan card under You owe showing the next payment and the amount left`}
-                    fallback={
-                        <AppShot
-                            alt={t(
-                                i18n
-                            )`Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar`}
-                            locale={lang}
-                            scene="debt-tracking-1"
-                            sizes="(min-width: 1024px) 18rem, 88vw"
-                            slug="debt-tracking"
-                        />
-                    }
                     index={2}
                     locale={lang}
                     scene="installment-tracking-3"

@@ -6,6 +6,11 @@ appId: ${APP_ID}
           TRANSACTION_ID: '2600'
           PROGRESS_ID: 'InstallmentPlanScheduleSummary.Progress.2_3'
 
+- extendedWaitUntil:
+      notVisible:
+          text: 'Plan created|Plan erstellt|Plan créé|Plan creado|План створено'
+      timeout: 15000
+
 - waitForAnimationToEnd
 
 - takeScreenshot: scene

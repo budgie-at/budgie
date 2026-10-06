@@ -321,6 +321,27 @@ export const MEDIA_MANIFEST: readonly MediaManifestEntryInterface[] = [
         themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
     },
     {
+        slug: 'installment-tracking',
+        scene: 'installment-tracking-1',
+        kind: MediaKindEnum.STILL,
+        locales: ['de', 'en', 'es', 'fr', 'uk'],
+        themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
+    },
+    {
+        slug: 'installment-tracking',
+        scene: 'installment-tracking-2',
+        kind: MediaKindEnum.STILL,
+        locales: ['de', 'en', 'es', 'fr', 'uk'],
+        themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
+    },
+    {
+        slug: 'installment-tracking',
+        scene: 'installment-tracking-3',
+        kind: MediaKindEnum.STILL,
+        locales: ['de', 'en', 'es', 'fr', 'uk'],
+        themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
+    },
+    {
         slug: 'mcc-auto-category',
         scene: 'mcc-auto-category-1',
         kind: MediaKindEnum.STILL,
