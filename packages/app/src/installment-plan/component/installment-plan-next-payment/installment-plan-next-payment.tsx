@@ -14,16 +14,17 @@ interface Props {
     readonly accountId: number;
     readonly instrumentSymbol: string;
     readonly leading?: ReactNode;
+    readonly fallback?: ReactNode;
 }
 
-export const InstallmentPlanNextPayment = ({ accountId, instrumentSymbol, leading }: Props) => {
+export const InstallmentPlanNextPayment = ({ accountId, instrumentSymbol, leading, fallback = null }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
     const { formatMonthAndDay } = useFormatDate();
     const schedule = useInstallmentPlanScheduleQuery(accountId);
 
     if (!isDefined(schedule?.nextAmount) || !isDefined(schedule.nextDueAt)) {
-        return null;
+        return fallback;
     }
 
     const formattedNextAmount = protectAmount(convertFromMicroUnits(schedule.nextAmount), instrumentSymbol);

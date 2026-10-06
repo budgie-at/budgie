@@ -50,14 +50,8 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
     const displayPercentage = percentage >= 100 ? 100 : Math.floor(percentage);
     const isSettled = !isPositiveNumber(outstandingAmount) && percentage >= 100;
     const statusBadge = isSettled ? <DebtAccountCardSettled debtType={debtType} /> : deadlineBadge;
-    const installmentNextPayment =
-        debtType === AccountDebtTypeEnum.INSTALLMENT && !isSettled ? (
-            <InstallmentPlanNextPayment accountId={id} instrumentSymbol={instrumentSymbol} />
-        ) : null;
     const separator = isDefined(statusBadge) ? <Text className="text-xs text-secondary-foreground">·</Text> : null;
-    const subtitle = isDefined(installmentNextPayment) ? (
-        <View className="flex-row items-center">{installmentNextPayment}</View>
-    ) : (
+    const progressSubtitle = (
         <View className="flex-row items-center gap-x-xs">
             <Text
                 className="shrink-0 text-xs text-secondary-foreground tabular-nums"
@@ -67,9 +61,14 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
             </Text>
             {separator}
             {statusBadge}
-            {installmentNextPayment}
         </View>
     );
+    const subtitle =
+        debtType === AccountDebtTypeEnum.INSTALLMENT && !isSettled ? (
+            <InstallmentPlanNextPayment accountId={id} instrumentSymbol={instrumentSymbol} fallback={progressSubtitle} />
+        ) : (
+            progressSubtitle
+        );
     const trailing = isPositiveNumber(totalAmount) ? (
         <DebtAccountCardSummary
             instrumentSymbol={instrumentSymbol}
