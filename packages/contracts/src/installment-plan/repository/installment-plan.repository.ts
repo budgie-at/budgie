@@ -16,6 +16,7 @@ import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.t
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { getInstallmentDueDate } from '../util/get-installment-due-date.util';
 
 import type { InstallmentPlanScheduleInterface } from '../interface/installment-plan-schedule.interface';
 
@@ -25,21 +26,6 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const transactionFilters = new BaseTransactionFilterRepository();
         const queryBuilder = new QueryBuilder();
-
-        const getDueDate = (firstPartAt: Date, monthOffset: number): Date => {
-            const year = firstPartAt.getFullYear();
-            const month = firstPartAt.getMonth() + monthOffset;
-            const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
-
-            return new Date(
-                year,
-                month,
-                Math.min(firstPartAt.getDate(), lastDayOfMonth),
-                firstPartAt.getHours(),
-                firstPartAt.getMinutes(),
-                firstPartAt.getSeconds()
-            );
-        };
 
         const findParts = (debtAccountId: number) =>
             Db.query(db =>
@@ -135,7 +121,7 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                     totalAmount,
                     paidAmount: progress?.paidAmount ?? 0,
                     remainingAmount,
-                    nextDueAt: isOpen && isDefined(firstPart) ? getDueDate(firstPart.operatedAt, parts.length) : null,
+                    nextDueAt: isOpen && isDefined(firstPart) ? getInstallmentDueDate(firstPart.operatedAt, parts.length) : null,
                     nextAmount: isOpen ? nextAmount : null,
                     instrumentId: account.instrumentId
                 };

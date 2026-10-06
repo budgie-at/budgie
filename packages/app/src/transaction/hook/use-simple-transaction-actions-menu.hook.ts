@@ -69,8 +69,8 @@ export const useSimpleTransactionActionsMenu = ({
         ? { onDetachDebtSettlement: debtSettlementActions.handleDetachDebtSettlement }
         : {
               onAttachDebtSettlement: debtSettlementActions.handleOpenDebtSettlement,
-              ...(isDefined(debtSettlementActions.debtSettlementAccountTitle) && {
-                  attachDebtSettlementLabel: debtSettlementActions.debtSettlementAccountTitle
+              ...(isDefined(debtSettlementActions.debtSettlementAccount) && {
+                  attachDebtSettlementLabel: debtSettlementActions.debtSettlementAccount.title
               })
           };
 
@@ -86,6 +86,6 @@ export const useSimpleTransactionActionsMenu = ({
             ...installmentConvertProps,
             ...debtSettlementProps
         },
-        debtSettlementAccountTitle: debtSettlementActions.debtSettlementAccountTitle
+        debtSettlementAccount: debtSettlementActions.debtSettlementAccount
     };
 };

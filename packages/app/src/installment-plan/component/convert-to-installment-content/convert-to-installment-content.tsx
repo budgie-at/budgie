@@ -3,7 +3,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
@@ -49,6 +49,13 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
         }
     });
 
+    const installmentCount = useWatch({ control: form.control, name: 'installmentCount' });
+
+    const handleSelectCount = (count: number) => {
+        form.setValue('installmentCount', count, { shouldValidate: true });
+        form.setValue('totalAmount', convertFromMicroUnits(params.amount * count), { shouldValidate: true });
+    };
+
     const handleCreate = () =>
         void form.handleSubmit(values =>
             appRuntime
@@ -86,7 +93,7 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                     </View>
 
                     <View className="gap-y-xl">
-                        <InstallmentCountChips amount={params.amount} />
+                        <InstallmentCountChips selectedCount={installmentCount} onSelect={handleSelectCount} />
                         <InstallmentTimeline operatedAt={params.operatedAt} />
                     </View>
 

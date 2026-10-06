@@ -13,7 +13,8 @@ import {
     TransactionEntryKindEnum,
     TransactionRepository,
     TransactionTypeEnum,
-    UserIconNameEnum
+    UserIconNameEnum,
+    getInstallmentDueDate
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
@@ -27,6 +28,7 @@ import { AccountBalanceIncrementalService } from '../../account/service/account-
 import { TransactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
 
 import type { InstallmentPlanConvertInputInterface } from '../interface/installment-plan-convert-input.interface';
+import type { TransactionEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
 export class InstallmentPlanService extends Context.Service<InstallmentPlanService>()('@budgie/ledger/InstallmentPlanService', {
     make: Effect.gen(function* () {
@@ -40,12 +42,18 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
         const dueDateToleranceMs = 3 * 24 * 60 * 60 * 1000;
         const amountTolerance = 10_000;
-        const partTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string) => boolean> = new Map([
+        const nextPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string) => boolean> = new Map([
             [ExternalSourceEnum.MONOBANK, (title: string) => title.startsWith('Щомісячний платіж ')]
         ]);
+        const earlierPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string) => boolean> = new Map([
+            [ExternalSourceEnum.MONOBANK, (title: string) => title.startsWith('Платіж ') || title.startsWith('Щомісячний платіж ')]
+        ]);
 
-        const matchesBankSignal = (externalSource: ExternalSourceEnum | null, title: string): boolean =>
-            !isDefined(externalSource) || (partTitleMatchers.get(externalSource)?.(title) ?? true);
+        const matchesBankSignal = (
+            titleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string) => boolean>,
+            externalSource: ExternalSourceEnum | null,
+            title: string
+        ): boolean => !isDefined(externalSource) || (titleMatchers.get(externalSource)?.(title) ?? true);
 
         const getExpensePrimaryEntryOrFail = Effect.fnUntraced(function* (transactionId: number) {
             const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
@@ -83,7 +91,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             const [match, ...ambiguousMatches] = candidates.filter(
                 candidate =>
                     (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
-                    matchesBankSignal(firstPart.externalSource, candidate.title)
+                    matchesBankSignal(nextPartTitleMatchers, firstPart.externalSource, candidate.title)
             );
 
             if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {
@@ -93,6 +101,54 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             yield* transactionDebtSettlementService.attach({ debtAccountId, transactionId: match.transactionId });
 
             return true;
+        });
+
+        const findEarlierPart = Effect.fnUntraced(function* (
+            accountId: number,
+            amount: number,
+            externalSource: ExternalSourceEnum | null,
+            laterPartAt: Date
+        ) {
+            const dueAt = getInstallmentDueDate(laterPartAt, -1).getTime();
+            const candidates = yield* installmentPlanRepository.findCandidates(
+                accountId,
+                new Date(dueAt - dueDateToleranceMs),
+                new Date(dueAt + dueDateToleranceMs)
+            );
+            const [match, ...ambiguousMatches] = candidates.filter(
+                candidate =>
+                    Math.abs(candidate.amount - amount) <= amountTolerance &&
+                    matchesBankSignal(earlierPartTitleMatchers, externalSource, candidate.title)
+            );
+
+            return isDefined(match) && !isNotEmptyArray(ambiguousMatches) ? match : null;
+        });
+
+        const findEarlierParts = Effect.fnUntraced(function* (
+            transaction: Pick<TransactionEntityInterface, 'operatedAt' | 'externalSource'>,
+            primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
+            installmentCount: number
+        ) {
+            const earlierParts: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>> = [];
+            let laterPartAt = transaction.operatedAt;
+
+            while (earlierParts.length < installmentCount - 1) {
+                const earlierPart = yield* findEarlierPart(
+                    primaryEntry.accountId,
+                    primaryEntry.amount,
+                    transaction.externalSource,
+                    laterPartAt
+                );
+
+                if (!isDefined(earlierPart)) {
+                    break;
+                }
+
+                earlierParts.unshift({ id: earlierPart.transactionId, operatedAt: earlierPart.operatedAt });
+                laterPartAt = earlierPart.operatedAt;
+            }
+
+            return earlierParts;
         });
 
         const attachPlanDueParts = (debtAccountId: number) =>
@@ -127,6 +183,8 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                         return yield* Effect.die(new Error(t`Account ${primaryEntry.accountId} not found`));
                     }
 
+                    const earlierParts = yield* findEarlierParts(transaction, primaryEntry, input.installmentCount);
+                    const planStartedAt = earlierParts.at(0)?.operatedAt ?? transaction.operatedAt;
                     const [{ count }] = yield* accountRepository.count();
                     const account = yield* accountRepository.create({
                         title: input.title,
@@ -142,7 +200,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                     const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                         accountId: account.id,
                         amount: input.totalAmount,
-                        operatedAt: transaction.operatedAt
+                        operatedAt: planStartedAt
                     });
 
                     yield* accountRepository.updateById(account.id, {
@@ -160,9 +218,13 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                         baseInstrumentId: valuation.baseInstrumentId,
                         baseExchangeRate: valuation.baseExchangeRate,
                         baseAmount: valuation.baseAmount,
-                        operatedAt: transaction.operatedAt
+                        operatedAt: planStartedAt
                     });
-                    yield* transactionDebtSettlementService.attach({ debtAccountId: account.id, transactionId: transaction.id });
+                    yield* Effect.forEach(
+                        [...earlierParts.map(earlierPart => earlierPart.id), transaction.id],
+                        transactionId => transactionDebtSettlementService.attach({ debtAccountId: account.id, transactionId }),
+                        { discard: true }
+                    );
                     yield* attachPlanDueParts(account.id);
 
                     return { accountId: account.id };

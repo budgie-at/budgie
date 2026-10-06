@@ -1,5 +1,8 @@
+import { DebtAccountService } from '@app/account/service/debt-account.service';
 import {
+    DebtEventDirectionEnum,
     DebtEventEntityTable,
+    DebtEventSourceEnum,
     ExternalSourceEnum,
     InstallmentPlanRepository,
     PRECISION,
@@ -10,7 +13,7 @@ import {
 import { InstallmentPlanService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -53,6 +56,15 @@ const fetchAttachedTransactionIds = Effect.fnUntraced(function* (debtAccountId: 
         .where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 
     return rows.map(row => row.transactionId).filter(isDefined);
+});
+
+const fetchDebtEventAmounts = Effect.fnUntraced(function* (debtAccountId: number, direction: DebtEventDirectionEnum) {
+    const rows = yield* testDb
+        .select({ source: DebtEventEntityTable.source, amount: DebtEventEntityTable.amount })
+        .from(DebtEventEntityTable)
+        .where(and(eq(DebtEventEntityTable.debtAccountId, debtAccountId), eq(DebtEventEntityTable.direction, direction)));
+
+    return rows;
 });
 
 describe('installment plan', () => {
@@ -128,6 +140,60 @@ describe('installment plan', () => {
             const { accountId } = yield* convert(first.id, 3, 84_175);
 
             expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('edits the total and payment count of a converted plan without touching its attached parts', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-edit');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.34, new Date(2026, 8, 12, 9));
+            const { accountId } = yield* convert(first.id, 3, 84_175);
+            const closeEventsBefore = yield* fetchDebtEventAmounts(accountId, DebtEventDirectionEnum.CLOSE);
+            const debtAccountService = yield* DebtAccountService;
+
+            yield* debtAccountService.updateDebtById(accountId, { title: 'Plan', targetBalance: 112_233.32, installmentCount: 4 });
+
+            const installmentPlanRepository = yield* InstallmentPlanRepository;
+            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+            expect(yield* fetchDebtEventAmounts(accountId, DebtEventDirectionEnum.CLOSE)).toEqual(closeEventsBefore);
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+            expect(yield* fetchDebtEventAmounts(accountId, DebtEventDirectionEnum.OPEN)).toEqual([
+                { source: DebtEventSourceEnum.MANUAL, amount: toMicroUnits(112_233.32) }
+            ]);
+            expect(schedule?.installmentCount).toBe(4);
+            expect(schedule?.paidCount).toBe(2);
+            expect(schedule?.totalAmount).toBe(toMicroUnits(112_233.32));
+            expect(schedule?.remainingAmount).toBe(toMicroUnits(56_116.65));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('converting a later part walks back to the earlier part and anchors the schedule on it', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-backward');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.34, new Date(2026, 8, 12, 9));
+            const { accountId } = yield* convert(second.id, 3, 84_175);
+            const installmentPlanRepository = yield* InstallmentPlanRepository;
+            const schedule = yield* installmentPlanRepository.getSchedule(accountId);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+            expect(schedule?.paidCount).toBe(2);
+            expect(schedule?.nextDueAt?.getMonth()).toBe(9);
+            expect(schedule?.nextDueAt?.getDate()).toBe(12);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('stops walking back when an earlier month has two matching parts', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-ambiguous');
+            yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 13, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.34, new Date(2026, 8, 12, 9));
+            const { accountId } = yield* convert(second.id, 3, 84_175);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([second.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

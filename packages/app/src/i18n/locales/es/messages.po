@@ -379,7 +379,7 @@ msgstr "Nombre e icono de la cuenta"
 msgid "transaction.accountNotFound"
 msgstr "Cuenta no encontrada"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx
+#: src/account/component/update-account-page/update-account-page.tsx
 msgid "Account Settings"
 msgstr "Configuración de la cuenta"
 
@@ -1596,13 +1596,10 @@ msgstr "Días restantes"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Debt"
 msgstr "Deuda"
-
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
-msgid "Debt · {accountTitle}"
-msgstr "Deuda · {accountTitle}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/create-account/index.tsx
@@ -2391,6 +2388,7 @@ msgstr "PIN incorrecto"
 #: src/account/constant/account-debt-type.constant.ts
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Installment plan"
 msgstr "Pago a plazos"
 
@@ -3187,6 +3185,10 @@ msgstr "Te deben"
 msgid "Owes you"
 msgstr "Te debe"
 
+#: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
+msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
+msgstr "Pagado {paidAmount} · {paidCount} de {installmentCount}"
+
 #: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
 msgid "Paid off"
 msgstr "Pagado"
@@ -3214,6 +3216,10 @@ msgstr "Pega tu secreto API de Binance:"
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Pay in parts"
 msgstr "Pagar a plazos"
+
+#: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
+msgid "Payments"
+msgstr "Pagos"
 
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
@@ -4314,6 +4320,7 @@ msgstr "Token requerido"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+#: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Total"
@@ -4509,7 +4516,7 @@ msgstr "Actualizado"
 msgid "Upcoming"
 msgstr "Próximos"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx
+#: src/account/component/update-account-page/update-account-page.tsx
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 

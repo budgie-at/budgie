@@ -10,6 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
 
+import type { DebtSettlementAccountInterface } from '../interface/debt-settlement-account.interface';
 import type { DebtSettlementTransactionActionsParamsInterface } from '../interface/debt-settlement-transaction-actions-params.interface';
 
 export const useDebtSettlementTransactionActions = ({
@@ -21,15 +22,14 @@ export const useDebtSettlementTransactionActions = ({
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
     const transactionDebtEvent = transaction.debtEvents.at(0);
-    const transactionDebtSettlementAccountTitle = transactionDebtEvent?.[DebtEventAssociationEnum.DEBT_ACCOUNT].title ?? null;
-    const [localDebtSettlementAccountTitle, setLocalDebtSettlementAccountTitle] = useState<string | null>(
-        transactionDebtSettlementAccountTitle
+    const transactionDebtSettlementAccount = transactionDebtEvent?.[DebtEventAssociationEnum.DEBT_ACCOUNT] ?? null;
+    const [localDebtSettlementAccount, setLocalDebtSettlementAccount] = useState<DebtSettlementAccountInterface | null>(
+        transactionDebtSettlementAccount
     );
-    const hasDebtSettlement = isDefined(localDebtSettlementAccountTitle);
-    const debtSettlementAccountTitle = hasDebtSettlement ? localDebtSettlementAccountTitle : null;
+    const hasDebtSettlement = isDefined(localDebtSettlementAccount);
 
     const attachDebtSettlement = async (debtAccountId: number) => {
-        const debtAccountTitle = await appRuntime.runPromise(
+        const debtAccount = await appRuntime.runPromise(
             Effect.gen(function* () {
                 const accountService = yield* AccountService;
                 const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
@@ -37,10 +37,10 @@ export const useDebtSettlementTransactionActions = ({
 
                 yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
 
-                return debtAccount.title;
+                return debtAccount;
             })
         );
-        setLocalDebtSettlementAccountTitle(debtAccountTitle);
+        setLocalDebtSettlementAccount(debtAccount);
     };
 
     const handleOpenDebtSettlement = () => {
@@ -74,13 +74,13 @@ export const useDebtSettlementTransactionActions = ({
                     transactionDebtSettlementService.detach(transactionId)
                 )
             )
-            .then(() => void setLocalDebtSettlementAccountTitle(null))
+            .then(() => void setLocalDebtSettlementAccount(null))
             .catch(() => void Toast.show({ type: 'error', text1: t`Could not update transaction.` }));
 
     return {
         handleOpenDebtSettlement,
         handleDetachDebtSettlement,
         hasDebtSettlement,
-        debtSettlementAccountTitle
+        debtSettlementAccount: localDebtSettlementAccount
     };
 };

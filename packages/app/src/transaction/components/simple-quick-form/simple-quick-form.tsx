@@ -13,6 +13,7 @@ import { SimpleQuickFormAmountBottomContent } from '../simple-quick-form-amount-
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
 import { SimpleQuickFormDisplay } from '../simple-quick-form-display/simple-quick-form-display';
 
+import type { DebtSettlementAccountInterface } from '../../interface/debt-settlement-account.interface';
 import type { QuickFormAccountFieldName } from '../../interface/quick-form-account-field-name.type';
 import type { QuickFormBuildEntryParamsInterface } from '../../interface/quick-form-build-entry-params.interface';
 import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
@@ -30,7 +31,7 @@ interface Props {
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
-    readonly debtSettlementAccountTitle?: string | null;
+    readonly debtSettlementAccount?: DebtSettlementAccountInterface | null;
     readonly amountTopContent?: ReactNode;
     readonly showInlineFeeAction?: boolean;
     readonly buildEntries: (params: QuickFormBuildEntryParamsInterface) => TransactionEntryCreateInputInterface[];
@@ -46,7 +47,7 @@ const getEntryTypeForTransaction = (transactionType: TransactionTypeEnum): Trans
     transactionType === TransactionTypeEnum.EXPENSE ? EXPENSE_ENTRY_TYPE : INCOME_ENTRY_TYPE;
 
 export const SimpleQuickForm = (props: Props) => {
-    const { debtSettlementAccountTitle = null, ref, rulePillSlotProps, showInlineFeeAction = true, ...formProps } = props;
+    const { debtSettlementAccount = null, ref, rulePillSlotProps, showInlineFeeAction = true, ...formProps } = props;
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { accountFieldName } = props;
     const { displayValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
@@ -87,7 +88,7 @@ export const SimpleQuickForm = (props: Props) => {
     });
     const amountBottomContent = (
         <SimpleQuickFormAmountBottomContent
-            debtSettlementAccountTitle={debtSettlementAccountTitle}
+            debtSettlementAccount={debtSettlementAccount}
             feeAmount={feeAmount}
             feeCurrencySymbol={currencySymbol}
             feeInstrumentType={instrumentType}

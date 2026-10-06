@@ -18,6 +18,7 @@ import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
+import type { DebtAccountUpdateInputInterface } from '../interface/debt-account-update-input.interface';
 import type { AccountEntityInterface, DebtAccountCreateInputInterface, DebtEventEntityInterface } from '@budgie/contracts';
 
 export class DebtAccountService extends Context.Service<DebtAccountService>()('@budgie/app/DebtAccountService', {
@@ -30,7 +31,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
         const getDebtNature = (debtType: AccountDebtTypeEnum): AccountNatureEnum =>
             debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
 
-        const shouldSyncManualDebtEvents = (input: Partial<DebtAccountCreateInputInterface>): boolean =>
+        const shouldSyncManualDebtEvents = (input: DebtAccountUpdateInputInterface): boolean =>
             isNumber(input.currentBalance) || isNumber(input.targetBalance) || isNumber(input.instrumentId);
 
         const getManualDebtBaseAmount = (account: AccountEntityInterface, amount: number): number | null => {
@@ -60,7 +61,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
 
         const updateDebtAccountFields = Effect.fn('DebtAccountService.updateDebtAccountFields')(function* (
             id: number,
-            input: Partial<DebtAccountCreateInputInterface>,
+            input: DebtAccountUpdateInputInterface,
             operatedAt: Date
         ) {
             const { currentBalance: _currentBalance, targetBalance, ...accountInput } = input;
@@ -178,7 +179,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
                 effect => Db.transaction(effect)
             ),
             updateDebtById: Effect.fn('DebtAccountService.updateDebtById')(
-                function* (id: number, input: Partial<DebtAccountCreateInputInterface>) {
+                function* (id: number, input: DebtAccountUpdateInputInterface) {
                     const { currentBalance } = input;
                     const operatedAt = new Date();
                     const valuedAccount = yield* updateDebtAccountFields(id, input, operatedAt);
