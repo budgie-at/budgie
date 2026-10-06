@@ -1828,6 +1828,10 @@ msgstr "<0>Резервна копія у вашій власній хмарі</
 msgid "<0>Zero-knowledge bank sync</0>: If you want automatic transaction imports, Budgie’s bank sync uses end-to-end encryption. Your credentials are encrypted on your device, and sync happens directly between your phone and your bank. Budgie never sees your banking credentials or transaction data."
 msgstr "<0>Банківська синхронізація з нульовим знанням</0>: Якщо ви хочете автоматичний імпорт транзакцій, банківська синхронізація Budgie використовує наскрізне шифрування. Ваші облікові дані шифруються на вашому пристрої, а синхронізація відбувається безпосередньо між вашим телефоном та банком. Budgie ніколи не бачить ваших банківських облікових даних чи даних про транзакції."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "−$1,870.53"
+msgstr "−₴28 058"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "−€14.00"
 msgstr "−250,00 ₴"
@@ -1860,9 +1864,17 @@ msgstr "−186,40 ₴"
 msgid "$0"
 msgstr "$0"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "$1,870.53"
+msgstr "₴28 058"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "$300+ recurring"
 msgstr "$300+ регулярно"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "$5,611.59"
+msgstr "₴84 174"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "1 · −€14.00"
@@ -2024,6 +2036,10 @@ msgstr "2.2 Інформація, яку ми можемо збирати"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "2.2 License Conditions"
 msgstr "2.2 Умови ліцензії"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "3 × $1,870.53"
+msgstr "3 × ₴28 058"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "3 transactions"
@@ -2434,6 +2450,10 @@ msgstr "Вікно повторної синхронізації підтягу�
 msgid "A refund is not income"
 msgstr "Повернення коштів — це не дохід"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "A refunded purchase closes its plan at what you already paid"
+msgstr "Повернена покупка закриває свій план на сумі, яку ви вже сплатили"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
 msgstr "Екран перевірки показує кожен рядок перед збереженням — «Вибрати всі категорії» та «Ввести всі суми» виправляють весь пакет одразу"
@@ -2755,6 +2775,10 @@ msgstr "Після 17 років допомоги мільйонам людей 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "After each import, anything left without a category is ready for <0>bulk categorization</0>: one tap on a suggestion sorts a whole merchant group."
 msgstr "Після кожного імпорту все, що лишилося без категорії, чекає на <0>категоризацію гуртом</0>: один дотик до підказки розподіляє всю групу продавця."
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "After each sync it looks on the same account for an expense within three days of the due date with the amount of the next part. If exactly one matches, it is attached to the plan. If several could match, Budgie leaves them alone rather than guess."
+msgstr "Після кожної синхронізації Budgie шукає на тому ж рахунку витрату в межах трьох днів від дати платежу на суму наступної частини. Якщо збіг рівно один, його додано до плану. Якщо підходять кілька, Budgie їх не чіпає, щоб не вгадувати."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "After evaluating all these options, we built Budgie because none of them fully satisfied what we wanted as developers."
@@ -3140,6 +3164,14 @@ msgstr "Будь-які спори, що виникають із цих Умов
 msgid "Any errors in the Service will be corrected"
 msgstr "Будь-які помилки в Сервісі буде виправлено"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Any expense can become a plan, from a bank's pay-in-parts service to a store's installment offer"
+msgstr "Планом може стати будь-яка витрата: від банківської оплати частинами до розстрочки в магазині"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Any expense with a single category that is not already linked to a debt or merged into another transaction. Typical examples are monobank Покупка частинами, PrivatBank Оплата частинами and store installment offers."
+msgstr "Будь-яка витрата з однією категорією, яку ще не прив’язано до боргу і не об’єднано з іншою транзакцією. Типові приклади: monobank Покупка частинами, PrivatBank Оплата частинами та розстрочка в магазині."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any future solution will maintain our core principle: your financial data remains on your device, encrypted, and under your control."
 msgstr "Будь-яке майбутнє рішення збереже наш базовий принцип: ваші фінансові дані залишаються на вашому пристрої, зашифровані й під вашим контролем."
@@ -3192,6 +3224,10 @@ msgstr "Додаток запитує підключення до вашого �
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Apple Notes and Reminders"
 msgstr "Apple Notes та Reminders"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Apple Store"
+msgstr "Comfy"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Apple-only (no Android or web)"
@@ -4257,6 +4293,7 @@ msgid "Budgie date filter sheet with an August calendar above the row of preset 
 msgstr "Аркуш фільтра дати Budgie з календарем серпня над рядом чипів готових періодів"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
 msgstr "Екран боргу Budgie для «Позика Данилу»: 750 $ ще належить отримати, повернено 37,5 %, із підсумками поверненого й позиченого"
 
@@ -4361,6 +4398,7 @@ msgid "Budgie home screen scrolled to the savings, you owe and owed to you group
 msgstr "Головний екран Budgie, прогорнутий до груп заощаджень, «ви винні» та «винні вам», кожна з підсумком"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar"
 msgstr "Домашній екран Budgie, прокручений до розділів боргів «Ви винні» та «Вам винні», кожен із підсумком і смугою прогресу"
 
@@ -4379,6 +4417,10 @@ msgstr "Головний екран Budgie із загальним баланс�
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
 msgstr "Головний екран Budgie з рахунками, згрупованими в секції «Банк» і «Готівка», кожен заголовок із власним проміжним підсумком"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Budgie home screen with an installment plan card under You owe showing the next payment and the amount left"
+msgstr "Головний екран Budgie з карткою плану оплати частинами в розділі Ви винні, де видно наступний платіж і залишок"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with the total balance header above every account section"
@@ -4412,6 +4454,10 @@ msgstr "Деталі транзакції доходу Budgie з вибором 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie incorporates and depends on numerous open source libraries and frameworks. We are deeply grateful to the open source community for their contributions. The following are some of the key open source components used in Budgie:"
 msgstr "Budgie містить і використовує численні бібліотеки та фреймворки з відкритим кодом. Ми глибоко вдячні спільноті відкритого коду за її внесок. Нижче наведено деякі з ключових компонентів з відкритим кодом, що використовуються в Budgie:"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Budgie installment plan screen showing two of three payments paid, the next amount and its date"
+msgstr "Екран плану оплати частинами в Budgie: сплачено два платежі з трьох, сума наступного платежу та його дата"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio trackers don't model fiat side-by-side."
@@ -4644,6 +4690,10 @@ msgstr "Ліцензія Budgie з відкритим кодом — дізна�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie parses and categorizes the transactions locally"
 msgstr "Budgie розбирає та категоризує транзакції локально"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Budgie Pay in parts sheet for an electronics purchase with three payments selected and the plan total"
+msgstr "Аркуш Оплата частинами в Budgie для покупки електроніки з вибраними трьома платежами та загальною сумою плану"
 
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
 msgid "Budgie Privacy Policy - Learn how we protect your financial data with our offline-first, privacy-focused approach"
@@ -4886,6 +4936,7 @@ msgstr "Список транзакцій Budgie, де рядки з кільк�
 msgid "Budgie transaction list with a 14 missing categories pill above rows that carry no category chip"
 msgstr "Список транзакцій Budgie зі значком «14 відсутніх категорій» над рядками без чипа категорії"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
 msgstr "Список транзакцій Budgie з контекстним меню на картці: редагувати, перетворити на переказ, прикріпити борг, видалити"
@@ -5680,6 +5731,10 @@ msgstr "Оберіть Copilot, якщо:"
 msgid "Choose Firefly III if:"
 msgstr "Оберіть Firefly III, якщо:"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Choose from 2 to 24 payments and watch the total and each part update live"
+msgstr "Оберіть від 2 до 24 платежів і одразу бачте загальну суму та розмір кожної частини"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Monarch Money if:"
 msgstr "Оберіть Monarch Money, якщо:"
@@ -6147,6 +6202,10 @@ msgstr "Перетворити дохід на повернення"
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Convert it to a transfer"
 msgstr "Перетворіть її на переказ"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Convert the purchase once. Budgie follows the monthly parts and tells you what is left."
+msgstr "Перетворіть покупку на план один раз. Budgie стежить за щомісячними частинами й показує, скільки лишилося."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Convert to Transfer opens with the amount already carried over. Pick the account on the other side and you are back on the list."
@@ -6682,6 +6741,7 @@ msgstr "Залишок днів і очікувана виплата на осн
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
 msgid "debt"
 msgstr "борг"
 
@@ -7020,6 +7080,10 @@ msgstr "Чи дійсно ви хочете, щоб усе це було на ч
 msgid "Docker deployment with compose files provided"
 msgstr "Розгортання через Docker з готовими compose-файлами"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Does a plan change my spending analytics?"
+msgstr "Чи впливає план на аналітику витрат?"
+
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Does an adjustment count as income or spending?"
 msgstr "Чи вважається коригування доходом чи витратою?"
@@ -7271,6 +7335,10 @@ msgstr "Кожна нова категорія чи тег потрапляє в
 msgid "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 msgstr "Кожна з цих груп привносить різні перспективи, навички та мотивацію. Дослідник конфіденційності може помітити патерни збору даних, які пропустить аудитор безпеки. Розробник, що інтегрується з проєктом, може виявити граничні випадки, які пропустили оригінальні автори. Ця різноманітність уваги — це перевага, яку жодна окрема команда безпеки не може повторити."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Each part stays an ordinary expense in its category, so monthly spending shows what really left your account"
+msgstr "Кожна частина лишається звичайною витратою у своїй категорії, тож місячні витрати показують, що справді пішло з рахунку"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated."
 msgstr "Кожен тип джерела записується у вашу локальну базу даних одразу після завершення, тож усе зроблене зберігається. Наступний запуск знову запитує ці вікна в Binance, але кожен запис має свій ідентифікатор Binance, тож дублікатів не виникає."
@@ -7338,6 +7406,10 @@ msgstr "правки"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Eight Features That Make It a Durable Mint Replacement"
 msgstr "Вісім функцій, що роблять його надійною заміною Mint"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Electronics & Gadgets"
+msgstr "Електроніка та гаджети"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Email: licensing@budgie.at"
@@ -7429,6 +7501,10 @@ msgstr "Англійська, українська, французька, нім
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Enhance documentation"
 msgstr "Вдосконалюйте документацію"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Enter the total your bank gave you, or add the fee percentage. The sheet shows how much of the total is the fee, and the parts are worked out from the total."
+msgstr "Введіть загальну суму від банку або додайте відсоток комісії. Аркуш покаже, яка частина суми припадає на комісію, а частини рахуються від загальної суми."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Enter transactions in both apps"
@@ -7573,6 +7649,10 @@ msgstr "Кожне об'єднання зберігає свої джерела"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
 msgstr "Кожна картка Monobank і кожна банка повертаються як окремий рахунок — із перемикачем, щоб зайві не імпортувати."
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Every open plan appears under You owe on Home, next to your other debts"
+msgstr "Кожен відкритий план з’являється в розділі Ви винні на головному екрані, поруч з іншими боргами"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Every promise here has a file behind it"
@@ -7896,6 +7976,10 @@ msgstr "функції"
 #: src/generic/component/mobile-menu/mobile-menu.tsx
 msgid "Features"
 msgstr "Можливості"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Fee 0%"
+msgstr "Комісія 0%"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Fee entries on the original transaction carry over to the transfer automatically"
@@ -8795,6 +8879,10 @@ msgstr "Як AI покращується з часом?"
 msgid "How does bank sync work without an aggregator?"
 msgstr "Як працює синхронізація з банком без агрегатора?"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "How does Budgie find the monthly parts?"
+msgstr "Як Budgie знаходить щомісячні частини?"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "How does Budgie handle bank synchronization without compromising privacy?"
 msgstr "Як Budgie обробляє банківську синхронізацію без шкоди для конфіденційності?"
@@ -9122,6 +9210,14 @@ msgstr "Якщо ви потрапили на цю статтю, вас, ймо�
 msgid "If your bank exports CSV, yes — you decide which column feeds each field. Dates need to read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts need a dot as the decimal separator."
 msgstr "Якщо ваш банк експортує CSV, так — ви самі вирішуєте, який стовпець живить кожне поле. Дати мають читатися як MM/DD/YYYY HH:MM:SS або YYYY-MM-DD, а суми потребують крапки як десяткового роздільника."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? Add the percentage and the sheet shows how much of the total is the fee."
+msgstr "Банк назвав іншу загальну суму? Введіть її, і Budgie розрахує частину від неї. Є комісія? Додайте відсоток, і аркуш покаже, скільки із суми становить комісія."
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Illustration: a purchase becomes a plan of three payments, and the Home card shows the amount still owed and the next payment."
+msgstr "Ілюстрація: покупка стає планом із трьох платежів, а картка на головному екрані показує залишок боргу та наступний платіж."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Immediate Actions"
 msgstr "Негайні дії"
@@ -9311,6 +9407,14 @@ msgstr "Встановити на iPhone"
 #: src/app/[lang]/beta/page.tsx
 msgid "Install the latest development build over-the-air on a registered iPhone."
 msgstr "Встановіть останню розробницьку збірку по повітрю (OTA) на зареєстрований iPhone."
+
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Installment Tracker for Pay in Parts Purchases"
+msgstr "Трекер покупок частинами та розстрочок"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "installments"
+msgstr "розстрочка"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Instant Performance"
@@ -9609,6 +9713,14 @@ msgstr "Ключові слова для пошуку"
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Keywords you can search by"
 msgstr "Слова для пошуку"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Know exactly what you still owe on things you bought in parts"
+msgstr "Знайте точно, скільки ще винні за покупки частинами"
+
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Know what you still owe on things you bought in parts. Turn the purchase into a plan, and Budgie attaches each monthly part and shows the next payment."
+msgstr "Знайте, скільки ще винні за покупки частинами. Перетворіть покупку на план, а Budgie додасть кожну щомісячну частину й покаже наступний платіж."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Labels"
@@ -10498,6 +10610,14 @@ msgstr "Місячна історія позначає місяці з разо�
 msgid "Monthly limits, a home-screen widget, and 80% / 100% alerts computed and deduplicated on your device."
 msgstr "Місячні ліміти, віджет на головному екрані та сповіщення на 80% / 100%, які обчислюються й дедуплікуються на Вашому пристрої."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Monthly parts are attached after each sync, matched by account, amount and due date"
+msgstr "Щомісячні частини додаються після кожної синхронізації за рахунком, сумою та датою платежу"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Monthly parts attach themselves"
+msgstr "Щомісячні частини додаються самі"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 msgid "Monthly recurring"
@@ -10839,6 +10959,10 @@ msgstr "Новіший додаток, все ще нарощує функціо
 msgid "Newer to market compared to established alternatives"
 msgstr "Новіший на ринку порівняно з усталеними альтернативами"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Next $1,870.53 · Nov 6"
+msgstr "Наступний ₴28 058 · 6 лист."
+
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
@@ -11140,6 +11264,10 @@ msgstr "Ні. Імпорт CSV перебудовує облік із файлу
 msgid "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
 msgstr "Ні. Депозитні рахунки виключено зі звичайного вибору джерела витрат, і Budgie не дає їхнім балансам ставати від'ємними."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "No. Each part stays an ordinary expense in its category on the day it left your account. The plan only keeps score of what is paid and what is left."
+msgstr "Ні. Кожна частина лишається звичайною витратою у своїй категорії в день, коли гроші пішли з рахунку. План лише рахує, що сплачено і що лишилося."
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "No. Every transaction, category, and balance lives in a database on your device, encrypted with your PIN once you set one. Budgie has no backend that receives financial data."
 msgstr "Ні. Кожна транзакція, категорія та баланс зберігаються в базі даних на вашому пристрої, зашифрованій вашим PIN-кодом, щойно ви його встановите. У Budgie немає бекенду, який отримує фінансові дані."
@@ -11435,6 +11563,10 @@ msgstr "Obsidian"
 msgid "Obsidian is a note-taking application that stores notes as plain Markdown files on your local filesystem. There is no server. Your notes are files on your disk that you can open with any text editor."
 msgstr "Obsidian — це застосунок для нотаток, який зберігає нотатки як звичайні Markdown-файли у вашій локальній файловій системі. Сервера немає. Ваші нотатки — це файли на вашому диску, які можна відкрити будь-яким текстовим редактором."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "of $5,611.59"
+msgstr "з ₴84 174"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Off by default — nothing is hidden until you turn it on"
 msgstr "Вимкнено за замовчуванням — нічого не приховується, доки ви не увімкнете це"
@@ -11602,6 +11734,10 @@ msgstr "На холодному старті Budgie просить систем�
 msgid "On a server that mirrors your transactions"
 msgstr "На сервері, що дублює ваші транзакції"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "On Home under You owe, where each plan shows the next payment. Open a plan to see how many parts are paid. When the last part arrives, it shows Paid off."
+msgstr "На головному екрані в розділі Ви винні, де кожен план показує наступний платіж. Відкрийте план, щоб побачити, скільки частин сплачено. Коли надійде остання частина, план покаже Сплачено."
+
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "On iOS 18 and later, restart your iPhone once after installing if the app fails to open."
 msgstr "На iOS 18 і новіших версіях перезавантажте iPhone один раз після встановлення, якщо застосунок не відкривається."
@@ -11714,6 +11850,10 @@ msgstr "трекер витрат на пристрої"
 #: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
 msgid "on-device-ai"
 msgstr "ШІ на пристрої"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Once the refund is linked to the purchase in Budgie, the plan closes at the amount you already paid and no longer shows a next payment."
+msgstr "Щойно повернення прив’язано до покупки в Budgie, план закривається на сумі, яку ви вже сплатили, і більше не показує наступний платіж."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "One account per wallet and asset, each with its own balance, history, and place in net worth"
@@ -11842,6 +11982,10 @@ msgstr "Один PIN. Справжнє шифрування."
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "One popover menu on every platform — no modal, no full-screen form to open first"
 msgstr "Одне спливаюче меню на всіх платформах — без модального вікна, без повноекранної форми, яку треба спершу відкрити"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "One purchase, one plan, no spreadsheet"
+msgstr "Одна покупка, один план, жодних таблиць"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "One question, answered on Home"
@@ -12160,6 +12304,10 @@ msgstr "Відкрийте форму витрати — і Budgie запроп�
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, and amount, all filled in."
 msgstr "Відкрийте форму витрати — і Budgie запропонує підказки з вашої власної історії у вигляді кнопок: категорія, теги, коментар і сума — усе вже заповнено."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Open the expense, choose Pay in parts and pick the number of payments. The total updates as you tap."
+msgstr "Відкрийте витрату, оберіть Оплата частинами і вкажіть кількість платежів. Загальна сума змінюється одразу."
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open the list behind the inbox"
 msgstr "Список за екраном категоризації"
@@ -12353,6 +12501,10 @@ msgstr "P2P без подвійного обліку"
 msgid "Page Not Found"
 msgstr "Сторінку не знайдено"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Paid for a new phone in three parts? Turn the purchase into a plan in a few taps. Budgie attaches every monthly part as it arrives and keeps the next payment on Home."
+msgstr "Купили новий телефон частинами? Перетворіть покупку на план за кілька дотиків. Budgie додає кожну щомісячну частину, щойно вона надходить, і тримає наступний платіж на головному екрані."
+
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
 msgstr "Пари збігаються, якщо очікуваний обмінний курс потрапляє у прийнятний діапазон допуску. Обидві частини все одно мають потрапити в те саме дванадцятигодинне вікно, що й пари в одній валюті. Початкові суми в обох валютах зберігаються для кожної частини."
@@ -12380,6 +12532,27 @@ msgstr "Вставте один персональний токен"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Pause this one, keep the rest"
 msgstr "Призупиніть цей, решта працює"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "pay in parts"
+msgstr "оплата частинами"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Pay in parts"
+msgstr "Оплата частинами"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "Pay in Parts"
+msgstr "Оплата частинами"
+
+#: src/app/[lang]/bank-sync/page.tsx
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Pay in Parts: Installment Tracking"
+msgstr "Оплата частинами: облік розстрочок"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Payments"
+msgstr "Платежі"
 
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "pdf"
@@ -12456,6 +12629,10 @@ msgstr "Особисті фінанси — це ідеальна сфера д�
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr "Закон про захист персональної інформації та електронних документів (PIPEDA) — Канада"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also shows the date of the last payment, so you know when you are done."
+msgstr "Оберіть 2, 3, 4, 6, 10, 12 або 24 платежі, і загальна сума плану та розмір кожної частини зміняться одразу. Budgie також показує дату останнього платежу, тож ви знаєте, коли все закінчиться."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Pick a category and Budgie proposes tags you already use, ready to tap."
@@ -12619,6 +12796,10 @@ msgstr "Політика конфіденційності Plaid прямо за�
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Planned API for power users to build custom integrations"
 msgstr "Планований API для досвідчених користувачів для створення власних інтеграцій"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Plans sit under You owe on Home, with what is left to pay and the amount and date of the next part."
+msgstr "Плани розміщені в розділі Ви винні на головному екрані: скільки лишилося сплатити, а також сума й дата наступної частини."
 
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "Please enter a valid email address."
@@ -13424,6 +13605,10 @@ msgstr "Відновлення замінює наявне"
 msgid "Restoring a PIN-protected backup now asks for that backup’s PIN and adopts it as your app PIN, instead of leaving the restored data unreadable behind your old PIN."
 msgstr "Відновлення резервної копії, захищеної PIN-кодом, тепер запитує PIN-код цієї копії та встановлює його як PIN-код застосунку, замість того щоб залишати відновлені дані нечитабельними за вашим старим PIN-кодом."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Returned it? The plan closes too"
+msgstr "Повернули товар? План теж закриється"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Returned vs lent"
 msgstr "Повернено порівняно з позиченим"
@@ -13781,6 +13966,10 @@ msgstr "Дізнайтеся, на скільки місяців вистачи�
 msgid "See income and spending per tag in a dedicated Analytics tab, each with its share of the period. The Untagged row finds every transaction missing a label."
 msgstr "Доходи й витрати за тегами в окремій вкладці аналітики, кожне зі своєю часткою періоду. Рядок «Без тегу» знаходить кожну транзакцію без позначки."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "See the total before you commit"
+msgstr "Загальна сума ще до підтвердження"
+
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "See what merged, and undo it"
 msgstr "Подивіться, що об'єдналося, і скасуйте це"
@@ -13880,6 +14069,10 @@ msgstr "Чутливі баланси та суми автоматично ро�
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Sensitivity of Financial Data"
 msgstr "Чутливість фінансових даних"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Sent the phone back? Once the refund is linked to the purchase, Budgie closes the plan at the amount you already paid. It stops showing a next payment and drops out of what you owe."
+msgstr "Повернули телефон? Щойно повернення прив’язано до покупки, Budgie закриває план на сумі, яку ви вже сплатили. Він більше не показує наступний платіж і зникає з ваших боргів."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Server to maintain"
@@ -15284,6 +15477,10 @@ msgstr "Ключ створюється в Binance"
 msgid "The keypad opens first. Type the amount, keep the account Budgie already picked, and save."
 msgstr "Спершу відкривається клавіатура. Введіть суму, залиште рахунок, який обрав Budgie, і збережіть."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "The last part is simply whatever is left on the plan, so rounding never leaves a plan open by a few cents."
+msgstr "Остання частина — це просто залишок плану, тож округлення ніколи не залишить план відкритим через кілька копійок."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
 msgstr "Життєвий цикл ваших фінансових даних виходить далеко за межі вашого активного використання додатку."
@@ -15373,6 +15570,10 @@ msgstr "Віджет чистого капіталу відкриває «Гол
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "The newest rate for every currency pair is stored on your device"
 msgstr "Найновіший курс для кожної валютної пари зберігається на вашому пристрої"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "The next payment, right on Home"
+msgstr "Наступний платіж просто на головному екрані"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "The nine largest crypto assets ship with a year of daily prices in euro and dollar. Anything beyond that is pulled from CoinGecko's public market data, one missing day at a time, and only for the crypto accounts you hold."
@@ -15471,6 +15672,10 @@ msgstr "PIN-код розблоковує застосунок і розблок
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Plaid Problem: Third-Party Data Aggregation Risks"
 msgstr "Проблема Plaid: ризики агрегації даних третіми сторонами"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "The plan shows how many parts are paid, plus the next amount and its date"
+msgstr "План показує, скільки частин сплачено, а також суму наступного платежу та його дату"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The Price Increases"
@@ -16417,6 +16622,18 @@ msgstr "Справжня конфіденційність за дизайном"
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Спробуйте налаштувати пошуковий запит або перегляньте всі статті."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Turn a purchase into a plan"
+msgstr "Перетворіть покупку на план"
+
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Turn a purchase paid in parts into a plan. Budgie attaches each monthly part and shows the next payment on Home."
+msgstr "Перетворіть покупку частинами на план. Budgie додає кожну щомісячну частину й показує наступний платіж на головному екрані."
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Turn a purchase paid in parts into a plan. Each synced monthly part attaches itself."
+msgstr "Перетворіть покупку частинами на план. Кожна синхронізована щомісячна частина додається сама."
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Turn it on and account balances and net worth swap to a placeholder the moment Budgie stops being the active app — most visible in the app switcher."
 msgstr "Увімкніть це, і баланси рахунків та загальна вартість заміняться заповнювачем, щойно Budgie перестане бути активним застосунком — найпомітніше це у перемикачі застосунків."
@@ -17134,6 +17351,10 @@ msgstr "Що станеться, якщо я закрию один з рахун
 msgid "What happens if I lose my phone?"
 msgstr "Що відбудеться, якщо я втрачу телефон?"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "What happens if I return the item?"
+msgstr "Що буде, якщо я поверну товар?"
+
 #: src/app/[lang]/security/page.tsx
 msgid "What happens if someone picks up my unlocked phone?"
 msgstr "А якщо хтось візьме мій розблокований телефон?"
@@ -17226,6 +17447,10 @@ msgstr "Що робити, якщо він мене неправильно по�
 msgid "What if Monobank's API changes?"
 msgstr "Що якщо API Monobank зміниться?"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "What if my bank charges a fee?"
+msgstr "А якщо банк бере комісію?"
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "What if my bank requires an aggregator for the app I currently use?"
 msgstr "Що якщо мій банк вимагає агрегатора для додатку, який я зараз використовую?"
@@ -17245,6 +17470,10 @@ msgstr "Що, якщо застосунок закриється посеред 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "What if the expense is on another account?"
 msgstr "Що, якщо витрата на іншому рахунку?"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "What if the last payment is a few cents different?"
+msgstr "А якщо останній платіж відрізняється на кілька копійок?"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "What if the loan was in a different currency?"
@@ -17385,6 +17614,7 @@ msgstr "Які компроміси розглядаються"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/installment-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -17427,6 +17657,10 @@ msgstr "Те, що ви дали в борг, додається до чисто
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "What you owe subtracts"
 msgstr "Те, що ви винні, віднімається"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "What you still owe, and when the next part is due."
+msgstr "Скільки ще винні і коли наступна частина."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "What's an “Untagged” bucket?"
@@ -17626,6 +17860,10 @@ msgstr "Коли ви хочете перенести дані на новий �
 msgid "When you’re paid and when you’re broke"
 msgstr "Коли вам платять і коли у вас закінчуються гроші"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "When your bank syncs, Budgie finds next month's part on the same account and adds it to the plan."
+msgstr "Коли банк синхронізується, Budgie знаходить частину наступного місяця на тому ж рахунку й додає її до плану."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "When your database is encrypted, the file on disk appears as random binary data. Without the correct key, it is computationally infeasible to extract any meaningful information."
 msgstr "Коли ваша база даних зашифрована, файл на диску виглядає як випадкові бінарні дані. Без правильного ключа обчислювально неможливо витягти будь-яку змістовну інформацію."
@@ -17661,6 +17899,10 @@ msgstr "Де зберігаються дані"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Where do exchange rates come from?"
 msgstr "Звідки беруться обмінні курси?"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Where do I see what I still owe?"
+msgstr "Де побачити, скільки я ще винен?"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Where do I turn it on?"
@@ -17777,6 +18019,10 @@ msgstr "Які мови підтримуються?"
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Which languages does voice entry support?"
 msgstr "Які мови підтримує голосове введення?"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Which purchases can I turn into a plan?"
+msgstr "Які покупки можна перетворити на план?"
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Which scripts are supported?"
@@ -18879,6 +19125,10 @@ msgstr "Вам потрібна розширена звітність"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You need web/desktop access"
 msgstr "Вам потрібен доступ через веб/десктоп"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "You owe"
+msgstr "Ви винні"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You prefer a clean slate"

@@ -138,6 +138,12 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                         }
                         title={<Trans>Binance Sync — Read-Only Keys, Real Balances</Trans>}
                     />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/installment-tracking`}
+                        index={9}
+                        tagline={<Trans>Turn a purchase paid in parts into a plan. Each synced monthly part attaches itself.</Trans>}
+                        title={<Trans>Pay in Parts: Installment Tracking</Trans>}
+                    />
                 </PillarHubFeatureGrid>
             </PillarHubSection>
 

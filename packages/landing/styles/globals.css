@@ -1785,3 +1785,174 @@ section[data-density='COMPACT'] .story-intro {
         display: none;
     }
 }
+
+.ipv {
+    position: relative;
+    width: 100%;
+    max-width: 21rem;
+    margin: 0 auto;
+    aspect-ratio: 21 / 26;
+    isolation: isolate;
+}
+
+.ipv-scene {
+    position: absolute;
+    inset: 0;
+}
+
+.ipv-glow {
+    position: absolute;
+    inset: -12% -18%;
+    z-index: -2;
+    background:
+        radial-gradient(38% 32% at 70% 30%, color-mix(in srgb, hsl(var(--primary)) 26%, transparent), transparent 70%),
+        radial-gradient(42% 36% at 25% 78%, color-mix(in srgb, rgb(16 185 129) 22%, transparent), transparent 72%);
+    filter: blur(1.5rem);
+}
+
+.ipv-grid {
+    position: absolute;
+    inset: -4%;
+    z-index: -1;
+    background-image: radial-gradient(color-mix(in srgb, hsl(var(--foreground)) 14%, transparent) 1px, transparent 1px);
+    background-size: 14px 14px;
+    mask-image: radial-gradient(closest-side, black, transparent);
+}
+
+.ipv-card {
+    position: absolute;
+    border: 1px solid hsl(var(--border));
+    border-radius: 1.25rem;
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    box-shadow:
+        0 1px 2px color-mix(in srgb, black 6%, transparent),
+        0 18px 40px -16px color-mix(in srgb, black 28%, transparent);
+}
+
+.ipv-amount {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.ipv-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, hsl(var(--primary)) 12%, transparent);
+    color: hsl(var(--primary));
+}
+
+.ipv-purchase {
+    --hero-enter-delay: 80ms;
+    --ipv-shift: -14px;
+
+    top: 0;
+    left: 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    width: 88%;
+    padding: 0.75rem;
+    rotate: -3deg;
+    opacity: 0.92;
+}
+
+.ipv-sheet {
+    --hero-enter-delay: 160ms;
+    --ipv-shift: -36px;
+
+    top: 15%;
+    right: 0;
+    width: 84%;
+    padding: 1.125rem;
+}
+
+.ipv-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.5rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.ipv-chip-selected {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+
+.ipv-plan {
+    --hero-enter-delay: 240ms;
+    --ipv-shift: -64px;
+
+    bottom: 0;
+    left: 0;
+    width: 92%;
+    padding: 0.875rem 1rem 1rem;
+    rotate: 1.5deg;
+}
+
+.ipv-track {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+}
+
+.ipv-segment {
+    flex: 1;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: hsl(var(--muted));
+}
+
+.ipv-segment[data-paid='true'] {
+    background: linear-gradient(90deg, hsl(var(--primary)), rgb(16 185 129));
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .ipv {
+            view-timeline-name: --ipv-scroll;
+        }
+
+        .ipv-card,
+        .ipv-glow {
+            animation: ipv-depth linear both;
+            animation-timeline: --ipv-scroll;
+            animation-range: exit 0% exit 100%;
+            will-change: transform;
+        }
+
+        .ipv-glow {
+            --ipv-shift: 28px;
+        }
+
+        .ipv-grid {
+            --ipv-shift: 10px;
+
+            animation: ipv-depth linear both;
+            animation-timeline: --ipv-scroll;
+            animation-range: exit 0% exit 100%;
+        }
+    }
+}
+
+@keyframes ipv-depth {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(0, var(--ipv-shift, 0), 0);
+    }
+}

@@ -1828,6 +1828,10 @@ msgstr "<0>Backup in Ihrer eigenen Cloud</0> — Backups, verschlüsselt, wenn S
 msgid "<0>Zero-knowledge bank sync</0>: If you want automatic transaction imports, Budgie’s bank sync uses end-to-end encryption. Your credentials are encrypted on your device, and sync happens directly between your phone and your bank. Budgie never sees your banking credentials or transaction data."
 msgstr "<0>Zero-Knowledge-Banksynchronisierung</0>: Wenn Sie automatische Transaktionsimporte wollen, nutzt Budgies Banksynchronisierung Ende-zu-Ende-Verschlüsselung. Ihre Zugangsdaten werden auf Ihrem Gerät verschlüsselt, und die Synchronisierung erfolgt direkt zwischen Ihrem Telefon und Ihrer Bank. Budgie sieht niemals Ihre Bankzugangsdaten oder Transaktionsdaten."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "−$1,870.53"
+msgstr "−1.720,89 €"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "−€14.00"
 msgstr "−14,00 €"
@@ -1860,9 +1864,17 @@ msgstr "−8,47 €"
 msgid "$0"
 msgstr "0 $"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "$1,870.53"
+msgstr "1.720,89 €"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "$300+ recurring"
 msgstr "300 $+ wiederkehrend"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "$5,611.59"
+msgstr "5.162,67 €"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "1 · −€14.00"
@@ -2024,6 +2036,10 @@ msgstr "2.2 Informationen, die wir erheben können"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "2.2 License Conditions"
 msgstr "2.2 Lizenzbedingungen"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "3 × $1,870.53"
+msgstr "3 × 1.720,89 €"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "3 transactions"
@@ -2434,6 +2450,10 @@ msgstr "Ein Resync-Zeitfenster ergänzt aktuelle Daten, ohne Ihre manuellen Änd
 msgid "A refund is not income"
 msgstr "Eine Erstattung ist kein Einkommen"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "A refunded purchase closes its plan at what you already paid"
+msgstr "Ein erstatteter Kauf schließt seinen Plan beim bereits gezahlten Betrag"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
 msgstr "Ein Prüfbildschirm listet jede Zeile vor dem Speichern auf – „Alle Kategorien auswählen“ und „Alle Beträge eingeben“ korrigieren einen ganzen Stapel auf einmal"
@@ -2755,6 +2775,10 @@ msgstr "Nach 17 Jahren, in denen Mint Millionen von Menschen beim Ausgabentracki
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "After each import, anything left without a category is ready for <0>bulk categorization</0>: one tap on a suggestion sorts a whole merchant group."
 msgstr "Nach jedem Import ist alles, was noch keine Kategorie hat, bereit zum <0>gesammelten Kategorisieren</0>: Ein Tipp auf einen Vorschlag ordnet die ganze Händlergruppe zu."
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "After each sync it looks on the same account for an expense within three days of the due date with the amount of the next part. If exactly one matches, it is attached to the plan. If several could match, Budgie leaves them alone rather than guess."
+msgstr "Nach jeder Synchronisierung sucht Budgie auf demselben Konto nach einer Ausgabe, die höchstens drei Tage vom Fälligkeitsdatum entfernt liegt und dem Betrag der nächsten Rate entspricht. Passt genau eine, wird sie dem Plan zugeordnet. Kommen mehrere infrage, lässt Budgie sie unberührt, statt zu raten."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "After evaluating all these options, we built Budgie because none of them fully satisfied what we wanted as developers."
@@ -3140,6 +3164,14 @@ msgstr "Streitigkeiten, die sich aus diesen Bedingungen oder dem Dienst ergeben 
 msgid "Any errors in the Service will be corrected"
 msgstr "Dass etwaige Fehler im Dienst behoben werden"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Any expense can become a plan, from a bank's pay-in-parts service to a store's installment offer"
+msgstr "Jede Ausgabe kann zum Plan werden, vom Ratenkauf Ihrer Bank bis zur Finanzierung im Geschäft"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Any expense with a single category that is not already linked to a debt or merged into another transaction. Typical examples are monobank Покупка частинами, PrivatBank Оплата частинами and store installment offers."
+msgstr "Jede Ausgabe mit genau einer Kategorie, die noch nicht mit einer Schuld verknüpft oder mit einer anderen Transaktion zusammengeführt ist. Typische Beispiele sind monobank Покупка частинами, PrivatBank Оплата частинами und Ratenangebote im Handel."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any future solution will maintain our core principle: your financial data remains on your device, encrypted, and under your control."
 msgstr "Jede zukünftige Lösung hält an unserem Kernprinzip fest: Deine Finanzdaten bleiben auf deinem Gerät, verschlüsselt und unter deiner Kontrolle."
@@ -3192,6 +3224,10 @@ msgstr "Die App fordert die Verbindung zu Ihrer Bank an"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Apple Notes and Reminders"
 msgstr "Apple Notes und Reminders"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Apple Store"
+msgstr "MediaMarkt"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Apple-only (no Android or web)"
@@ -4257,6 +4293,7 @@ msgid "Budgie date filter sheet with an August calendar above the row of preset 
 msgstr "Budgie-Datumsfilter-Sheet mit einem August-Kalender über der Reihe der voreingestellten Zeitraum-Chips"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
 msgstr "Budgie-Schuldenkonto „Verliehen an Daniel“ mit 750 $, die noch zu erhalten sind, bei 37,5 % zurückgezahlt, samt zurückgezahltem und verliehenem Gesamtbetrag"
 
@@ -4361,6 +4398,7 @@ msgid "Budgie home screen scrolled to the savings, you owe and owed to you group
 msgstr "Budgie-Startbildschirm gescrollt zu den Gruppen Sparen, Du schuldest und Dir wird geschuldet, jede mit Zwischensumme"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar"
 msgstr "Budgie-Startbildschirm, gescrollt zu den Schuldenbereichen „Sie schulden“ und „Ihnen geschuldet“, jeweils mit Zwischensumme und Fortschrittsbalken"
 
@@ -4379,6 +4417,10 @@ msgstr "Budgie-Startbildschirm mit Gesamtsaldo, Sparkonten sowie geliehenem und 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
 msgstr "Budgie-Startseite mit Konten, gruppiert in die Abschnitte Bank und Bargeld, jede Überschrift mit eigener Zwischensumme"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Budgie home screen with an installment plan card under You owe showing the next payment and the amount left"
+msgstr "Budgie-Startbildschirm mit einer Ratenplan-Karte unter Sie schulden, die die nächste Zahlung und den offenen Betrag zeigt"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with the total balance header above every account section"
@@ -4412,6 +4454,10 @@ msgstr "Budgie-Einnahmetransaktion mit einer Schuldenkonto-Auswahl, die „Verli
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie incorporates and depends on numerous open source libraries and frameworks. We are deeply grateful to the open source community for their contributions. The following are some of the key open source components used in Budgie:"
 msgstr "Budgie verwendet zahlreiche Open-Source-Bibliotheken und Frameworks und baut auf ihnen auf. Wir sind der Open-Source-Community für ihre Beiträge zutiefst dankbar. Im Folgenden finden Sie einige der wichtigsten in Budgie verwendeten Open-Source-Komponenten:"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Budgie installment plan screen showing two of three payments paid, the next amount and its date"
+msgstr "Budgie-Ratenplan mit zwei von drei bezahlten Raten, dem Betrag der nächsten Rate und ihrem Datum"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio trackers don't model fiat side-by-side."
@@ -4644,6 +4690,10 @@ msgstr "Budgie Open-Source-Lizenz – Informieren Sie sich über unsere O'Saasy-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie parses and categorizes the transactions locally"
 msgstr "Budgie analysiert und kategorisiert die Transaktionen lokal"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Budgie Pay in parts sheet for an electronics purchase with three payments selected and the plan total"
+msgstr "Budgie-Ansicht In Raten zahlen für einen Elektronikkauf mit drei ausgewählten Raten und der Gesamtsumme des Plans"
 
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
 msgid "Budgie Privacy Policy - Learn how we protect your financial data with our offline-first, privacy-focused approach"
@@ -4886,6 +4936,7 @@ msgstr "Budgie-Transaktionsliste, in der Zeilen mit mehreren Tags einen umrandet
 msgid "Budgie transaction list with a 14 missing categories pill above rows that carry no category chip"
 msgstr "Budgie-Transaktionsliste mit der Pille „14 fehlende Kategorien“ über Zeilen ohne Kategorie-Chip"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
 msgstr "Budgie-Transaktionsliste mit einem Kontextmenü auf einer Karte: bearbeiten, in Überweisung umwandeln, Schuld verknüpfen, löschen"
@@ -5680,6 +5731,10 @@ msgstr "Wählen Sie Copilot, wenn:"
 msgid "Choose Firefly III if:"
 msgstr "Wählen Sie Firefly III, wenn:"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Choose from 2 to 24 payments and watch the total and each part update live"
+msgstr "Wählen Sie 2 bis 24 Raten und sehen Sie Gesamtsumme und Ratenhöhe sofort"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Monarch Money if:"
 msgstr "Wählen Sie Monarch Money, wenn:"
@@ -6147,6 +6202,10 @@ msgstr "Einnahme in Rückerstattung umwandeln"
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Convert it to a transfer"
 msgstr "In eine Überweisung umwandeln"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Convert the purchase once. Budgie follows the monthly parts and tells you what is left."
+msgstr "Wandeln Sie den Kauf einmal um. Budgie verfolgt die Monatsraten und zeigt, was noch offen ist."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Convert to Transfer opens with the amount already carried over. Pick the account on the other side and you are back on the list."
@@ -6682,6 +6741,7 @@ msgstr "Verbleibende Tage und erwartete Auszahlung werden aus Saldo, Zinssatz un
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
 msgid "debt"
 msgstr "Schulden"
 
@@ -7020,6 +7080,10 @@ msgstr "Wollen Sie wirklich, dass all das auf dem Server eines anderen ist?"
 msgid "Docker deployment with compose files provided"
 msgstr "Docker-Deployment mit bereitgestellten Compose-Dateien"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Does a plan change my spending analytics?"
+msgstr "Verändert ein Plan meine Ausgabenanalyse?"
+
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Does an adjustment count as income or spending?"
 msgstr "Zählt eine Anpassung als Einnahme oder Ausgabe?"
@@ -7271,6 +7335,10 @@ msgstr "Jede neue Kategorie oder jeder neue Tag reiht sich in eine Übersetzungs
 msgid "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 msgstr "Jede dieser Gruppen bringt unterschiedliche Perspektiven, Fähigkeiten und Motivationen mit. Ein Datenschutzforscher bemerkt möglicherweise Datensammlungsmuster, die ein Sicherheitsauditor übersieht. Ein Entwickler, der das Projekt integriert, entdeckt möglicherweise Grenzfälle, die die ursprünglichen Autoren übersehen haben. Diese Vielfalt der Aufmerksamkeit ist eine Stärke, die kein einzelnes Sicherheitsteam replizieren kann."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Each part stays an ordinary expense in its category, so monthly spending shows what really left your account"
+msgstr "Jede Rate bleibt eine normale Ausgabe in ihrer Kategorie, sodass Ihre Monatsausgaben zeigen, was wirklich vom Konto abging"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated."
 msgstr "Jede Quellenart wird sofort nach Abschluss in Ihre lokale Datenbank geschrieben, sodass alles Fertige erhalten bleibt. Der nächste Lauf fragt diese Zeitfenster erneut bei Binance ab, aber jeder Eintrag trägt seine Binance-ID, sodass nichts doppelt entsteht."
@@ -7338,6 +7406,10 @@ msgstr "Bearbeitungen"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Eight Features That Make It a Durable Mint Replacement"
 msgstr "Acht Funktionen, die es zu einem dauerhaften Mint-Ersatz machen"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Electronics & Gadgets"
+msgstr "Elektronik & Gadgets"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Email: licensing@budgie.at"
@@ -7429,6 +7501,10 @@ msgstr "Englisch, Ukrainisch, Französisch, Deutsch, Spanisch – vollständige 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Enhance documentation"
 msgstr "Erweitern Sie die Dokumentation"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Enter the total your bank gave you, or add the fee percentage. The sheet shows how much of the total is the fee, and the parts are worked out from the total."
+msgstr "Geben Sie die Gesamtsumme Ihrer Bank ein oder fügen Sie den Gebührensatz hinzu. Die Ansicht zeigt, welcher Teil der Summe Gebühr ist, und die Raten werden aus der Gesamtsumme berechnet."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Enter transactions in both apps"
@@ -7573,6 +7649,10 @@ msgstr "Jede Zusammenführung behält ihre Quellen"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
 msgstr "Jede Monobank-Karte und jeder Topf kommt als eigenes Konto zurück – mit einem Schalter, um einzelne wegzulassen."
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Every open plan appears under You owe on Home, next to your other debts"
+msgstr "Jeder offene Plan erscheint unter Sie schulden auf dem Startbildschirm, neben Ihren anderen Schulden"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Every promise here has a file behind it"
@@ -7896,6 +7976,10 @@ msgstr "Funktionen"
 #: src/generic/component/mobile-menu/mobile-menu.tsx
 msgid "Features"
 msgstr "Funktionen"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Fee 0%"
+msgstr "Gebühr 0 %"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Fee entries on the original transaction carry over to the transfer automatically"
@@ -8795,6 +8879,10 @@ msgstr "Wie verbessert sich die KI im Laufe der Zeit?"
 msgid "How does bank sync work without an aggregator?"
 msgstr "Wie funktioniert die Banksynchronisation ohne Aggregator?"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "How does Budgie find the monthly parts?"
+msgstr "Wie findet Budgie die Monatsraten?"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "How does Budgie handle bank synchronization without compromising privacy?"
 msgstr "Wie handhabt Budgie die Banksynchronisation ohne die Privatsphäre zu kompromittieren?"
@@ -9122,6 +9210,14 @@ msgstr "Wenn Sie auf diesen Artikel gestoßen sind, fragen Sie sich wahrscheinli
 msgid "If your bank exports CSV, yes — you decide which column feeds each field. Dates need to read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts need a dot as the decimal separator."
 msgstr "Wenn deine Bank CSV exportiert, ja — du entscheidest, welche Spalte welches Feld füllt. Datumswerte müssen als MM/DD/YYYY HH:MM:SS oder YYYY-MM-DD lesbar sein, und Beträge brauchen einen Punkt als Dezimaltrennzeichen."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? Add the percentage and the sheet shows how much of the total is the fee."
+msgstr "Hat Ihre Bank eine andere Gesamtsumme genannt? Tippen Sie sie ein, und Budgie berechnet die Rate daraus. Fällt eine Gebühr an? Fügen Sie den Prozentsatz hinzu, und die Ansicht zeigt, wie viel der Summe Gebühr ist."
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Illustration: a purchase becomes a plan of three payments, and the Home card shows the amount still owed and the next payment."
+msgstr "Illustration: Ein Kauf wird zu einem Plan mit drei Raten, und die Karte auf dem Startbildschirm zeigt den offenen Betrag und die nächste Zahlung."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Immediate Actions"
 msgstr "Sofortmaßnahmen"
@@ -9311,6 +9407,14 @@ msgstr "Auf dem iPhone installieren"
 #: src/app/[lang]/beta/page.tsx
 msgid "Install the latest development build over-the-air on a registered iPhone."
 msgstr "Installieren Sie den neuesten Entwicklungs-Build kabellos (OTA) auf einem registrierten iPhone."
+
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Installment Tracker for Pay in Parts Purchases"
+msgstr "Ratenkauf-Tracker für Käufe in Raten"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "installments"
+msgstr "Raten"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Instant Performance"
@@ -9609,6 +9713,14 @@ msgstr "Suchbegriffe für die Auswahl"
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Keywords you can search by"
 msgstr "Suchbegriffe zum Finden"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Know exactly what you still owe on things you bought in parts"
+msgstr "Wissen Sie genau, was Sie für Ratenkäufe noch schulden"
+
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Know what you still owe on things you bought in parts. Turn the purchase into a plan, and Budgie attaches each monthly part and shows the next payment."
+msgstr "Wissen Sie, was Sie für Ratenkäufe noch schulden. Wandeln Sie den Kauf in einen Plan um, und Budgie ordnet jede Monatsrate zu und zeigt die nächste Zahlung."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Labels"
@@ -10498,6 +10610,14 @@ msgstr "Der Monatsverlauf markiert Ausreißermonate, und Ihre größten Kategori
 msgid "Monthly limits, a home-screen widget, and 80% / 100% alerts computed and deduplicated on your device."
 msgstr "Monatslimits, ein Widget für den Startbildschirm sowie 80-%- und 100-%-Warnungen, die auf Ihrem Gerät berechnet und dedupliziert werden."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Monthly parts are attached after each sync, matched by account, amount and due date"
+msgstr "Monatsraten werden nach jeder Synchronisierung zugeordnet, abgeglichen nach Konto, Betrag und Fälligkeit"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Monthly parts attach themselves"
+msgstr "Monatsraten ordnen sich selbst zu"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 msgid "Monthly recurring"
@@ -10839,6 +10959,10 @@ msgstr "Neuere App, baut noch die Funktionsparität mit etablierten Anbietern au
 msgid "Newer to market compared to established alternatives"
 msgstr "Neuer auf dem Markt im Vergleich zu etablierten Alternativen"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Next $1,870.53 · Nov 6"
+msgstr "Nächste 1.720,89 € · 6. Nov."
+
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
@@ -11140,6 +11264,10 @@ msgstr "Nein. Der CSV-Import baut das Kontobuch aus der Datei neu auf: vorhanden
 msgid "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
 msgstr "Nein. Festgeldkonten sind von der normalen Auswahl als Ausgabenquelle ausgeschlossen, und Budgie verhindert, dass Festgeldsalden negativ werden."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "No. Each part stays an ordinary expense in its category on the day it left your account. The plan only keeps score of what is paid and what is left."
+msgstr "Nein. Jede Rate bleibt eine normale Ausgabe in ihrer Kategorie, an dem Tag, an dem das Geld abging. Der Plan zählt nur, was bezahlt und was noch offen ist."
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "No. Every transaction, category, and balance lives in a database on your device, encrypted with your PIN once you set one. Budgie has no backend that receives financial data."
 msgstr "Nein. Jede Transaktion, jede Kategorie und jeder Kontostand liegt in einer Datenbank auf Ihrem Gerät, verschlüsselt mit Ihrer PIN, sobald Sie eine festlegen. Budgie hat kein Backend, das Finanzdaten empfängt."
@@ -11435,6 +11563,10 @@ msgstr "Obsidian"
 msgid "Obsidian is a note-taking application that stores notes as plain Markdown files on your local filesystem. There is no server. Your notes are files on your disk that you can open with any text editor."
 msgstr "Obsidian ist eine Notiz-Anwendung, die Notizen als einfache Markdown-Dateien in Ihrem lokalen Dateisystem speichert. Es gibt keinen Server. Ihre Notizen sind Dateien auf Ihrer Festplatte, die Sie mit jedem Texteditor öffnen können."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "of $5,611.59"
+msgstr "von 5.162,67 €"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Off by default — nothing is hidden until you turn it on"
 msgstr "Standardmäßig deaktiviert — nichts wird verborgen, bis du es aktivierst"
@@ -11602,6 +11734,10 @@ msgstr "Beim Kaltstart bittet Budgie das System um Ihre Authentifizierung, sobal
 msgid "On a server that mirrors your transactions"
 msgstr "Auf einem Server, der Ihre Transaktionen spiegelt"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "On Home under You owe, where each plan shows the next payment. Open a plan to see how many parts are paid. When the last part arrives, it shows Paid off."
+msgstr "Auf dem Startbildschirm unter Sie schulden, wo jeder Plan die nächste Zahlung zeigt. Öffnen Sie einen Plan, um zu sehen, wie viele Raten bezahlt sind. Nach der letzten Rate steht dort Abbezahlt."
+
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "On iOS 18 and later, restart your iPhone once after installing if the app fails to open."
 msgstr "Ab iOS 18 müssen Sie Ihr iPhone nach der Installation einmal neu starten, falls sich die App nicht öffnen lässt."
@@ -11714,6 +11850,10 @@ msgstr "Ausgaben-Tracker auf dem Gerät"
 #: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
 msgid "on-device-ai"
 msgstr "KI auf dem Gerät"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Once the refund is linked to the purchase in Budgie, the plan closes at the amount you already paid and no longer shows a next payment."
+msgstr "Sobald die Erstattung in Budgie mit dem Kauf verknüpft ist, schließt der Plan beim bereits gezahlten Betrag und zeigt keine nächste Zahlung mehr."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "One account per wallet and asset, each with its own balance, history, and place in net worth"
@@ -11842,6 +11982,10 @@ msgstr "Eine PIN. Echte Verschlüsselung."
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "One popover menu on every platform — no modal, no full-screen form to open first"
 msgstr "Ein Popover-Menü auf jeder Plattform – kein Modal, kein Vollbildformular, das zuerst geöffnet werden muss"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "One purchase, one plan, no spreadsheet"
+msgstr "Ein Kauf, ein Plan, keine Tabelle"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "One question, answered on Home"
@@ -12160,6 +12304,10 @@ msgstr "Beim Öffnen des Ausgabenformulars bietet Budgie pillenförmige Vorschl�
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, and amount, all filled in."
 msgstr "Beim Öffnen des Ausgabenformulars bietet Budgie pillenförmige Vorschläge aus dem eigenen Verlauf — Kategorie, Tags, Kommentar und Betrag, alles ausgefüllt."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Open the expense, choose Pay in parts and pick the number of payments. The total updates as you tap."
+msgstr "Öffnen Sie die Ausgabe, wählen Sie In Raten zahlen und die Anzahl der Raten. Die Gesamtsumme aktualisiert sich sofort."
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open the list behind the inbox"
 msgstr "Die Liste hinter dem Bildschirm"
@@ -12353,6 +12501,10 @@ msgstr "P2P ohne Doppelzählung"
 msgid "Page Not Found"
 msgstr "Seite nicht gefunden"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Paid for a new phone in three parts? Turn the purchase into a plan in a few taps. Budgie attaches every monthly part as it arrives and keeps the next payment on Home."
+msgstr "Ein neues Handy in drei Raten gekauft? Machen Sie aus dem Kauf mit wenigen Tippern einen Plan. Budgie ordnet jede Monatsrate bei Eingang zu und zeigt die nächste Zahlung auf dem Startbildschirm."
+
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
 msgstr "Paare werden zusammengeführt, wenn der implizite Wechselkurs innerhalb einer plausiblen Toleranzspanne liegt. Beide Buchungen müssen weiterhin innerhalb desselben Zwölf-Stunden-Fensters liegen wie Paare in derselben Währung. Die ursprünglichen Beträge in beiden Währungen bleiben auf jeder Buchung erhalten."
@@ -12380,6 +12532,27 @@ msgstr "Ein persönliches Token einfügen"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Pause this one, keep the rest"
 msgstr "Dieses hier pausieren, der Rest läuft"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "pay in parts"
+msgstr "Ratenzahlung"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Pay in parts"
+msgstr "In Raten zahlen"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "Pay in Parts"
+msgstr "In Raten zahlen"
+
+#: src/app/[lang]/bank-sync/page.tsx
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Pay in Parts: Installment Tracking"
+msgstr "In Raten zahlen: Ratenkäufe im Blick"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Payments"
+msgstr "Raten"
 
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "pdf"
@@ -12456,6 +12629,10 @@ msgstr "Persönliche Finanzen sind ein idealer Bereich für die Local-First-Arch
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr "Personal Information Protection and Electronic Documents Act (PIPEDA) – Kanada"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also shows the date of the last payment, so you know when you are done."
+msgstr "Wählen Sie 2, 3, 4, 6, 10, 12 oder 24 Raten, und Gesamtsumme und Ratenhöhe ändern sich sofort. Budgie zeigt auch das Datum der letzten Rate, damit Sie wissen, wann Sie fertig sind."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Pick a category and Budgie proposes tags you already use, ready to tap."
@@ -12619,6 +12796,10 @@ msgstr "Die Datenschutzrichtlinie von Plaid besagt ausdrücklich, dass sie diese
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Planned API for power users to build custom integrations"
 msgstr "Geplante API für Power-User zum Erstellen eigener Integrationen"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Plans sit under You owe on Home, with what is left to pay and the amount and date of the next part."
+msgstr "Pläne stehen unter Sie schulden auf dem Startbildschirm, mit dem offenen Betrag sowie Betrag und Datum der nächsten Rate."
 
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "Please enter a valid email address."
@@ -13424,6 +13605,10 @@ msgstr "Wiederherstellen ersetzt das Vorhandene"
 msgid "Restoring a PIN-protected backup now asks for that backup’s PIN and adopts it as your app PIN, instead of leaving the restored data unreadable behind your old PIN."
 msgstr "Beim Wiederherstellen eines PIN-geschützten Backups wird jetzt nach der PIN dieses Backups gefragt, die dann als App-PIN übernommen wird, statt die wiederhergestellten Daten hinter Ihrer alten PIN unlesbar zu belassen."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Returned it? The plan closes too"
+msgstr "Zurückgegeben? Dann schließt auch der Plan"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Returned vs lent"
 msgstr "Zurückgezahlt vs. verliehen"
@@ -13781,6 +13966,10 @@ msgstr "Sehen Sie, wie viele Monate Ihr Bargeld- und Bankguthaben im aktuellen T
 msgid "See income and spending per tag in a dedicated Analytics tab, each with its share of the period. The Untagged row finds every transaction missing a label."
 msgstr "Einnahmen und Ausgaben pro Tag in einem eigenen Analyse-Tab, jeweils mit ihrem Anteil am Zeitraum. Die Zeile „Ohne Tag“ findet jede Transaktion ohne Label."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "See the total before you commit"
+msgstr "Die Gesamtsumme sehen, bevor Sie zusagen"
+
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "See what merged, and undo it"
 msgstr "Sehen, was zusammengeführt wurde — und es rückgängig machen"
@@ -13880,6 +14069,10 @@ msgstr "Sensible Salden und Beträge werden in Screenshots und in der App-Wechsl
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Sensitivity of Financial Data"
 msgstr "Sensibilität finanzieller Daten"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Sent the phone back? Once the refund is linked to the purchase, Budgie closes the plan at the amount you already paid. It stops showing a next payment and drops out of what you owe."
+msgstr "Handy zurückgeschickt? Sobald die Erstattung mit dem Kauf verknüpft ist, schließt Budgie den Plan beim bereits gezahlten Betrag. Er zeigt keine nächste Zahlung mehr und verschwindet aus Ihren Schulden."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Server to maintain"
@@ -15284,6 +15477,10 @@ msgstr "Der Schlüssel entsteht bei Binance"
 msgid "The keypad opens first. Type the amount, keep the account Budgie already picked, and save."
 msgstr "Das Zahlenfeld öffnet sich zuerst. Betrag eintippen, das von Budgie gewählte Konto behalten und speichern."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "The last part is simply whatever is left on the plan, so rounding never leaves a plan open by a few cents."
+msgstr "Die letzte Rate ist einfach der Restbetrag des Plans, sodass Rundungen einen Plan nie wegen ein paar Cent offen lassen."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
 msgstr "Der Lebenszyklus Ihrer Finanzdaten reicht weit über Ihre aktive Nutzung einer App hinaus."
@@ -15373,6 +15570,10 @@ msgstr "Das Nettovermögen-Widget öffnet die Startseite, das Budget-Widget öff
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "The newest rate for every currency pair is stored on your device"
 msgstr "Der neueste Kurs für jedes Währungspaar liegt auf deinem Gerät"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "The next payment, right on Home"
+msgstr "Die nächste Zahlung direkt auf dem Startbildschirm"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "The nine largest crypto assets ship with a year of daily prices in euro and dollar. Anything beyond that is pulled from CoinGecko's public market data, one missing day at a time, and only for the crypto accounts you hold."
@@ -15471,6 +15672,10 @@ msgstr "Die PIN entsperrt die App und entsperrt Ihre Daten — keine PIN, keine 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Plaid Problem: Third-Party Data Aggregation Risks"
 msgstr "Das Plaid-Problem: Risiken der Datenaggregation durch Dritte"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "The plan shows how many parts are paid, plus the next amount and its date"
+msgstr "Der Plan zeigt, wie viele Raten bezahlt sind, sowie Betrag und Datum der nächsten Rate"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The Price Increases"
@@ -16417,6 +16622,18 @@ msgstr "Echte Privacy by Design"
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Versuchen Sie, Ihre Suchanfrage anzupassen oder alle Artikel zu durchsuchen."
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Turn a purchase into a plan"
+msgstr "Einen Kauf in einen Plan umwandeln"
+
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Turn a purchase paid in parts into a plan. Budgie attaches each monthly part and shows the next payment on Home."
+msgstr "Machen Sie aus einem Ratenkauf einen Plan. Budgie ordnet jede Monatsrate zu und zeigt die nächste Zahlung auf dem Startbildschirm."
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Turn a purchase paid in parts into a plan. Each synced monthly part attaches itself."
+msgstr "Machen Sie aus einem Ratenkauf einen Plan. Jede synchronisierte Monatsrate wird automatisch zugeordnet."
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Turn it on and account balances and net worth swap to a placeholder the moment Budgie stops being the active app — most visible in the app switcher."
 msgstr "Aktiviere ihn, und Kontostände sowie Gesamtvermögen werden durch einen Platzhalter ersetzt, sobald Budgie nicht mehr die aktive App ist — am deutlichsten im App-Umschalter."
@@ -17134,6 +17351,10 @@ msgstr "Was passiert, wenn ich eines der Konten schließe?"
 msgid "What happens if I lose my phone?"
 msgstr "Was passiert, wenn ich mein Telefon verliere?"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "What happens if I return the item?"
+msgstr "Was passiert, wenn ich den Artikel zurückgebe?"
+
 #: src/app/[lang]/security/page.tsx
 msgid "What happens if someone picks up my unlocked phone?"
 msgstr "Was, wenn jemand mein entsperrtes Smartphone nimmt?"
@@ -17226,6 +17447,10 @@ msgstr "Was, wenn sie sich verhört?"
 msgid "What if Monobank's API changes?"
 msgstr "Was passiert, wenn sich die API von Monobank ändert?"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "What if my bank charges a fee?"
+msgstr "Was, wenn meine Bank eine Gebühr verlangt?"
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "What if my bank requires an aggregator for the app I currently use?"
 msgstr "Was, wenn meine Bank für die App, die ich aktuell verwende, einen Aggregator voraussetzt?"
@@ -17245,6 +17470,10 @@ msgstr "Was passiert, wenn die App mitten in der Synchronisierung geschlossen wi
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "What if the expense is on another account?"
 msgstr "Was, wenn die Ausgabe auf einem anderen Konto liegt?"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "What if the last payment is a few cents different?"
+msgstr "Was, wenn die letzte Rate um ein paar Cent abweicht?"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "What if the loan was in a different currency?"
@@ -17385,6 +17614,7 @@ msgstr "Welche Kompromisse in Betracht gezogen werden"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/installment-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -17427,6 +17657,10 @@ msgstr "Was Sie verliehen haben, erhöht Ihr Vermögen. Was Sie schulden, senkt 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "What you owe subtracts"
 msgstr "Was du schuldest, wird abgezogen"
+
+#: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
+msgid "What you still owe, and when the next part is due."
+msgstr "Was Sie noch schulden und wann die nächste Rate fällig ist."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "What's an “Untagged” bucket?"
@@ -17626,6 +17860,10 @@ msgstr "Wenn Sie Ihre Daten auf ein neues Gerät übertragen möchten, exportier
 msgid "When you’re paid and when you’re broke"
 msgstr "Wann Sie bezahlt werden und wann Sie knapp bei Kasse sind"
 
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "When your bank syncs, Budgie finds next month's part on the same account and adds it to the plan."
+msgstr "Wenn Ihre Bank synchronisiert, findet Budgie die Rate des nächsten Monats auf demselben Konto und fügt sie dem Plan hinzu."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "When your database is encrypted, the file on disk appears as random binary data. Without the correct key, it is computationally infeasible to extract any meaningful information."
 msgstr "Wenn Ihre Datenbank verschlüsselt ist, erscheint die Datei auf der Festplatte als zufällige Binärdaten. Ohne den richtigen Schlüssel ist es rechnerisch unmöglich, aussagekräftige Informationen zu extrahieren."
@@ -17661,6 +17899,10 @@ msgstr "Wo Daten leben"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Where do exchange rates come from?"
 msgstr "Woher kommen die Wechselkurse?"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Where do I see what I still owe?"
+msgstr "Wo sehe ich, was ich noch schulde?"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Where do I turn it on?"
@@ -17777,6 +18019,10 @@ msgstr "Welche Sprachen werden unterstützt?"
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Which languages does voice entry support?"
 msgstr "Welche Sprachen unterstützt die Spracheingabe?"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Which purchases can I turn into a plan?"
+msgstr "Welche Käufe kann ich in einen Plan umwandeln?"
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Which scripts are supported?"
@@ -18879,6 +19125,10 @@ msgstr "Sie erweiterte Berichte benötigen"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You need web/desktop access"
 msgstr "Sie Web-/Desktop-Zugang benötigen"
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "You owe"
+msgstr "Sie schulden"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You prefer a clean slate"

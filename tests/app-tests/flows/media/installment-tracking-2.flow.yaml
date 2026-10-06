@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/installment/create-installment-plan.flow.yaml
+      env:
+          TRANSACTION_ID: '2600'
+          PROGRESS_ID: 'InstallmentPlanScheduleSummary.Progress.2_3'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
