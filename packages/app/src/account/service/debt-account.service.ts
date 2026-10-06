@@ -99,8 +99,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
                 amount,
                 baseInstrumentId: account.targetBaseInstrumentId,
                 baseExchangeRate: account.targetBaseExchangeRate,
-                baseAmount: getManualDebtBaseAmount(account, amount),
-                operatedAt
+                baseAmount: getManualDebtBaseAmount(account, amount)
             };
 
             if (isDefined(currentDebtEvent)) {
@@ -115,6 +114,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
                 transactionEntryId: null,
                 direction,
                 source: DebtEventSourceEnum.MANUAL,
+                operatedAt,
                 ...fields
             });
         });

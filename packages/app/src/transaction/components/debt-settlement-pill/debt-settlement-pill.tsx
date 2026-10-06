@@ -3,7 +3,7 @@ import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
@@ -34,6 +34,8 @@ export const DebtSettlementPill = ({ account, testID }: Props) => {
     }
 
     const label = `${t(DEBT_SETTLEMENT_LABEL[account.debtType])} · ${account.title}`;
+    const hasOwnIcon = account.debtType === AccountDebtTypeEnum.INSTALLMENT && isNotEmptyString(account.icon);
+    const icon = hasOwnIcon ? account.icon : DEBT_SETTLEMENT_ICON[account.debtType];
 
-    return <TransactionMetaPill icon={DEBT_SETTLEMENT_ICON[account.debtType]} label={label} testID={testID} variant="warning" />;
+    return <TransactionMetaPill icon={icon} label={label} testID={testID} variant="warning" />;
 };

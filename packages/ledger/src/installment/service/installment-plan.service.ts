@@ -18,6 +18,7 @@ import {
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
+import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -40,20 +41,31 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
 
-        const dueDateToleranceMs = 3 * 24 * 60 * 60 * 1000;
+        const dueDateToleranceDays = 3;
         const amountTolerance = 10_000;
-        const nextPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string) => boolean> = new Map([
+        const normalizeTitle = (title: string) => title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
+        const matchesReferenceTitle = (title: string, referenceTitle: string) => normalizeTitle(title) === normalizeTitle(referenceTitle);
+        const nextPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean> = new Map([
             [ExternalSourceEnum.MONOBANK, (title: string) => title.startsWith('Щомісячний платіж ')]
         ]);
-        const earlierPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string) => boolean> = new Map([
+        const earlierPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean> = new Map([
             [ExternalSourceEnum.MONOBANK, (title: string) => title.startsWith('Платіж ') || title.startsWith('Щомісячний платіж ')]
         ]);
 
-        const matchesBankSignal = (
-            titleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string) => boolean>,
+        const matchesPartTitle = (
+            titleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean>,
             externalSource: ExternalSourceEnum | null,
-            title: string
-        ): boolean => !isDefined(externalSource) || (titleMatchers.get(externalSource)?.(title) ?? true);
+            title: string,
+            referenceTitle: string
+        ): boolean =>
+            ((isDefined(externalSource) ? titleMatchers.get(externalSource) : null) ?? matchesReferenceTitle)(title, referenceTitle);
+
+        const findDueCandidates = (accountId: number, dueAt: Date) =>
+            installmentPlanRepository.findCandidates(
+                accountId,
+                startOfDay(subDays(dueAt, dueDateToleranceDays)),
+                endOfDay(addDays(dueAt, dueDateToleranceDays))
+            );
 
         const getExpensePrimaryEntryOrFail = Effect.fnUntraced(function* (transactionId: number) {
             const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
@@ -82,16 +94,11 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             }
 
             const { nextAmount, remainingAmount } = schedule;
-            const dueAt = schedule.nextDueAt.getTime();
-            const candidates = yield* installmentPlanRepository.findCandidates(
-                firstPart.accountId,
-                new Date(dueAt - dueDateToleranceMs),
-                new Date(dueAt + dueDateToleranceMs)
-            );
+            const candidates = yield* findDueCandidates(firstPart.accountId, schedule.nextDueAt);
             const [match, ...ambiguousMatches] = candidates.filter(
                 candidate =>
                     (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
-                    matchesBankSignal(nextPartTitleMatchers, firstPart.externalSource, candidate.title)
+                    matchesPartTitle(nextPartTitleMatchers, firstPart.externalSource, candidate.title, firstPart.title)
             );
 
             if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {
@@ -104,28 +111,22 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         });
 
         const findEarlierPart = Effect.fnUntraced(function* (
-            accountId: number,
-            amount: number,
-            externalSource: ExternalSourceEnum | null,
+            transaction: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
+            primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
             laterPartAt: Date
         ) {
-            const dueAt = getInstallmentDueDate(laterPartAt, -1).getTime();
-            const candidates = yield* installmentPlanRepository.findCandidates(
-                accountId,
-                new Date(dueAt - dueDateToleranceMs),
-                new Date(dueAt + dueDateToleranceMs)
-            );
+            const candidates = yield* findDueCandidates(primaryEntry.accountId, getInstallmentDueDate(laterPartAt, -1));
             const [match, ...ambiguousMatches] = candidates.filter(
                 candidate =>
-                    Math.abs(candidate.amount - amount) <= amountTolerance &&
-                    matchesBankSignal(earlierPartTitleMatchers, externalSource, candidate.title)
+                    Math.abs(candidate.amount - primaryEntry.amount) <= amountTolerance &&
+                    matchesPartTitle(earlierPartTitleMatchers, transaction.externalSource, candidate.title, transaction.title)
             );
 
             return isDefined(match) && !isNotEmptyArray(ambiguousMatches) ? match : null;
         });
 
         const findEarlierParts = Effect.fnUntraced(function* (
-            transaction: Pick<TransactionEntityInterface, 'operatedAt' | 'externalSource'>,
+            transaction: Pick<TransactionEntityInterface, 'operatedAt' | 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
             installmentCount: number
         ) {
@@ -133,12 +134,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             let laterPartAt = transaction.operatedAt;
 
             while (earlierParts.length < installmentCount - 1) {
-                const earlierPart = yield* findEarlierPart(
-                    primaryEntry.accountId,
-                    primaryEntry.amount,
-                    transaction.externalSource,
-                    laterPartAt
-                );
+                const earlierPart = yield* findEarlierPart(transaction, primaryEntry, laterPartAt);
 
                 if (!isDefined(earlierPart)) {
                     break;

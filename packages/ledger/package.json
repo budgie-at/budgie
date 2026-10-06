@@ -32,6 +32,7 @@
         "@budgie/market": "workspace:*",
         "@lingui/core": "6.6.0",
         "@rnw-community/shared": "^2.2.0",
+        "date-fns": "^4.3.0",
         "effect": "4.0.0"
     },
     "devDependencies": {

@@ -67,6 +67,15 @@ const fetchDebtEventAmounts = Effect.fnUntraced(function* (debtAccountId: number
     return rows;
 });
 
+const fetchManualDebtEventDates = Effect.fnUntraced(function* (debtAccountId: number) {
+    const rows = yield* testDb
+        .select({ direction: DebtEventEntityTable.direction, operatedAt: DebtEventEntityTable.operatedAt })
+        .from(DebtEventEntityTable)
+        .where(and(eq(DebtEventEntityTable.debtAccountId, debtAccountId), eq(DebtEventEntityTable.source, DebtEventSourceEnum.MANUAL)));
+
+    return rows;
+});
+
 describe('installment plan', () => {
     it.effect('converts the itbox first part, attaches existing and synced parts and keeps their category', () =>
         Effect.gen(function* () {
@@ -194,6 +203,61 @@ describe('installment plan', () => {
             const { accountId } = yield* convert(second.id, 3, 84_175);
 
             expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([second.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('walks back from a month-end part across an earlier time of day', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-month-end');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 0, 31, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж itbox.ua', 28_058.33, new Date(2026, 1, 28, 9));
+            const { accountId } = yield* convert(second.id, 3, 84_175);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('attaches only same-title parts to a manual plan', () =>
+        Effect.gen(function* () {
+            const cash = yield* seedBankSyncAccount('Cash', null, 'UA-manual');
+            const first = yield* seed.manualExpense({
+                accountId: cash.id,
+                title: 'Laptop',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 0, 12, 10)
+            });
+            const { accountId } = yield* convert(first.id, 3, 1_500);
+            const second = yield* seed.manualExpense({
+                accountId: cash.id,
+                title: '  laptop ',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 1, 12, 10)
+            });
+            yield* seed.manualExpense({
+                accountId: cash.id,
+                title: 'Groceries',
+                amount: toMicroUnits(500),
+                operatedAt: new Date(2026, 1, 12, 11)
+            });
+
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the manual event dates when the plan settings are edited', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-rename');
+            const first = yield* seedPart(card.id, 'Платіж itbox.ua', 28_058.33, new Date(2026, 7, 12, 10));
+            const { accountId } = yield* convert(first.id, 3, 84_175);
+            const datesBefore = yield* fetchManualDebtEventDates(accountId);
+            const debtAccountService = yield* DebtAccountService;
+
+            yield* debtAccountService.updateDebtById(accountId, { title: 'Renamed plan' });
+            yield* debtAccountService.updateDebtById(accountId, { targetBalance: 90_000 });
+
+            expect(yield* fetchManualDebtEventDates(accountId)).toEqual(datesBefore);
         }).pipe(Effect.provide(TestLayer))
     );
 });

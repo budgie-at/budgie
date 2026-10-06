@@ -31,19 +31,25 @@ const FALLBACK_INSTALLMENT_COUNT = 3;
 export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
     const stickyInstrument = useStickyDefinedValue(instrument);
+    const initialTargetBalance = convertFromMicroUnits(account.targetBalance);
     const { control, handleSubmit, isSubmitting } = useAccountEntityForm(
         standardSchemaResolver(Schema.toStandardSchemaV1(InstallmentPlanUpdateFormSchema)),
         {
             icon: account.icon,
             title: account.title,
-            targetBalance: convertFromMicroUnits(account.targetBalance),
+            targetBalance: initialTargetBalance,
             installmentCount: account.installmentCount ?? FALLBACK_INSTALLMENT_COUNT,
             includeInNetWorth: account.includeInNetWorth,
             isActive: account.isActive
         },
-        (values: InstallmentPlanUpdateFormValues) =>
+        ({ targetBalance, ...values }: InstallmentPlanUpdateFormValues) =>
             appRuntime.runPromise(
-                Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.updateDebtById(account.id, values))
+                Effect.flatMap(DebtAccountService, debtAccountService =>
+                    debtAccountService.updateDebtById(account.id, {
+                        ...values,
+                        ...(targetBalance !== initialTargetBalance && { targetBalance })
+                    })
+                )
             )
     );
 
