@@ -1,3 +1,5 @@
+import { plural } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
@@ -10,16 +12,16 @@ interface Props {
     readonly onSelect: (count: number) => void;
 }
 
-const chipVariants = cva('flex-1 items-center rounded-full border py-md', {
+const chipVariants = cva('min-w-12 flex-1 items-center rounded-full px-lg py-md', {
     variants: {
         isSelected: {
-            true: 'border-primary bg-primary',
-            false: 'border-secondary-corner'
+            true: 'bg-primary',
+            false: 'bg-secondary-background'
         }
     }
 });
 
-const labelVariants = cva('text-sm font-semibold tabular-nums', {
+const labelVariants = cva('text-md font-semibold tabular-nums', {
     variants: {
         isSelected: {
             true: 'text-primary-reverse',
@@ -29,7 +31,9 @@ const labelVariants = cva('text-sm font-semibold tabular-nums', {
 });
 
 export const InstallmentCountChip = ({ count, isSelected, onSelect }: Props) => {
+    const { t } = useLingui();
     const accessibilityState = { selected: isSelected };
+    const accessibilityLabel = t({ message: plural(count, { one: '# payment', other: '# payments' }) });
 
     const handlePress = () => {
         onSelect(count);
@@ -40,6 +44,7 @@ export const InstallmentCountChip = ({ count, isSelected, onSelect }: Props) => 
             className={chipVariants({ isSelected })}
             onPress={handlePress}
             accessibilityRole="button"
+            accessibilityLabel={accessibilityLabel}
             accessibilityState={accessibilityState}
             testID={ConvertToInstallmentModalSelector.CountChip(count)}
         >

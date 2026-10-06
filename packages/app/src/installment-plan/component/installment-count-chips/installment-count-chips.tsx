@@ -1,6 +1,5 @@
-import { Trans } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { INSTALLMENT_COUNT_OPTIONS } from '../../constant/installment-count-options.constant';
@@ -22,15 +21,16 @@ export const InstallmentCountChips = ({ amount }: Props) => {
     };
 
     return (
-        <View className="gap-y-md">
-            <Text className="text-secondary-foreground uppercase text-xs">
-                <Trans>Payments</Trans>
-            </Text>
-            <View className="flex-row gap-x-xs">
-                {INSTALLMENT_COUNT_OPTIONS.map(count => (
-                    <InstallmentCountChip key={count} count={count} isSelected={count === installmentCount} onSelect={handleSelect} />
-                ))}
-            </View>
-        </View>
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            className="-mx-xl"
+            contentContainerClassName="flex-grow gap-x-xs px-xl"
+        >
+            {INSTALLMENT_COUNT_OPTIONS.map(count => (
+                <InstallmentCountChip key={count} count={count} isSelected={count === installmentCount} onSelect={handleSelect} />
+            ))}
+        </ScrollView>
     );
 };

@@ -1,7 +1,9 @@
+import { ACCOUNT_TITLE_MAX_LENGTH, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, useFormContext } from 'react-hook-form';
+import { View } from 'react-native';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { Input } from '../../../@generic/component/input/input';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 
@@ -13,16 +15,22 @@ export const ConvertToInstallmentTitleField = () => {
     const { control } = useFormContext<ConvertToInstallmentFormValues>();
 
     const render = ({ field: { value, onChange, onBlur } }: UseControllerReturn<ConvertToInstallmentFormValues, 'title'>) => (
-        <FormItem label={t`Name`}>
+        <View className="flex-row items-center gap-x-sm">
             <Input
-                size="md"
+                borderless
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
+                maxLength={ACCOUNT_TITLE_MAX_LENGTH}
+                returnKeyType="done"
                 placeholder={t`Installment plan`}
+                accessibilityLabel={t`Plan name`}
+                accessibilityHint={t`Edits the name of the plan`}
+                className="h-auto min-w-0 flex-shrink px-0 py-xxs text-(length:--text-3xl) font-semibold"
                 testID={ConvertToInstallmentModalSelector.TitleInput}
             />
-        </FormItem>
+            <Icon icon={UserIconNameEnum.Pencil} size={16} className="text-secondary-foreground" />
+        </View>
     );
 
     return <Controller control={control} name="title" render={render} />;

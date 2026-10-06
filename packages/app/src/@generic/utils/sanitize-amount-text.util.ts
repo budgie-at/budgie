@@ -12,9 +12,9 @@ export const sanitizeAmountText = (
         return '';
     }
 
-    const separators = decimalSeparator === digitGroupingSeparator ? [decimalSeparator] : [decimalSeparator, digitGroupingSeparator];
-    const chars = Array.from(text).filter(char => isDigit(char) || separators.includes(char));
-    const lastSeparatorIndex = chars.reduce((lastIndex, char, index) => (separators.includes(char) ? index : lastIndex), -1);
+    const separators = new Set([decimalSeparator, digitGroupingSeparator, '.', ',']);
+    const chars = Array.from(text).filter(char => isDigit(char) || separators.has(char));
+    const lastSeparatorIndex = chars.reduce((lastIndex, char, index) => (separators.has(char) ? index : lastIndex), -1);
     const digitCountAfterLastSeparator = chars.slice(lastSeparatorIndex + 1).filter(isDigit).length;
     const decimalChar = chars[lastSeparatorIndex];
     const canKeepDecimalSeparator = isPositiveNumber(decimalPlaces);

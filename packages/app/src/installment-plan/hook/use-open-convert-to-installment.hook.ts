@@ -32,6 +32,7 @@ export const useOpenConvertToInstallment = (transaction: TransactionWithRelation
             title: transaction.title,
             amount: Math.abs(sourceEntry.amount),
             instrumentSymbol: sourceEntry.account.instrument.symbol,
+            accountTitle: sourceEntry.account.title,
             operatedAt: transaction.operatedAt
         }).then(accountId => {
             if (isDefined(accountId)) {

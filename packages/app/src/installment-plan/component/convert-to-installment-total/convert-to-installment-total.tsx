@@ -1,61 +1,83 @@
 import { useLingui } from '@lingui/react/macro';
-import { addMonths, isAfter } from 'date-fns';
+import { useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
 
-import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
-import { useDebtDeadlineDate } from '../../../account/hook/use-debt-deadline-date.hook';
+import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 
 import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
 import type { ConvertToInstallmentModalParamsInterface } from '../../interface/convert-to-installment-modal-params.interface';
 import type { UseControllerReturn } from 'react-hook-form';
 
 interface Props {
-    readonly params: Pick<ConvertToInstallmentModalParamsInterface, 'amount' | 'instrumentSymbol' | 'operatedAt'>;
+    readonly params: Pick<ConvertToInstallmentModalParamsInterface, 'amount' | 'instrumentSymbol'>;
 }
+
+const HERO_FONT_SIZE = 48;
+const heroInputStyle = { fontSize: HERO_FONT_SIZE, textAlign: 'center' } as const;
 
 export const ConvertToInstallmentTotal = ({ params }: Props) => {
     const { t } = useLingui();
+    const [isEditing, setIsEditing] = useState(false);
     const formatDigits = useDisplayFormatDigits();
-    const { formatMonthAndDay } = useFormatDate();
-    const today = useDebtDeadlineDate();
+    const isAmountProtected = useIsAmountProtected();
+    const reducedMotion = useReducedMotion();
     const { control } = useFormContext<ConvertToInstallmentFormValues>();
-    const [installmentCount, totalAmount] = useWatch({ control, name: ['installmentCount', 'totalAmount'] });
+    const totalAmount = useWatch({ control, name: 'totalAmount' });
 
-    const isEqualParts = convertToMicroUnits(totalAmount) === params.amount * installmentCount;
-    const partAmount = isEqualParts ? convertFromMicroUnits(params.amount) : totalAmount / installmentCount;
-    const formattedPartAmount = formatDigits(partAmount, params.instrumentSymbol);
-    const partsLabel = isEqualParts ? `${installmentCount} × ${formattedPartAmount}` : t`≈ ${formattedPartAmount} per payment`;
-    const lastPaymentAt = addMonths(params.operatedAt, installmentCount - 1);
-    const lastPaymentDate = formatMonthAndDay(lastPaymentAt);
-    const hasUpcomingPayments = isAfter(lastPaymentAt, today);
+    const handleStartEditing = () => {
+        setIsEditing(true);
+    };
+
+    const handleStopEditing = () => {
+        setIsEditing(false);
+    };
+
+    const formattedTotal = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatDigits(totalAmount, params.instrumentSymbol);
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<ConvertToInstallmentFormValues, 'totalAmount'>) => (
-        <FormAmountInput
+        <AmountInput
             value={value}
-            onChange={onChange}
-            instrumentSymbol={params.instrumentSymbol}
-            variant="default"
+            onChangeValue={onChange}
+            onEndEditing={handleStopEditing}
+            autoFocus
+            selectTextOnFocus
+            borderless
+            valuePrefix={`${params.instrumentSymbol} `}
+            inputClassName="h-20 w-full px-0 font-extralight text-primary"
+            style={heroInputStyle}
+            accessibilityLabel={t`Total`}
             testID={ConvertToInstallmentModalSelector.TotalInput}
         />
     );
 
+    if (isEditing) {
+        return <Controller control={control} name="totalAmount" render={render} />;
+    }
+
     return (
-        <View className="items-center gap-y-xs">
-            <Controller control={control} name="totalAmount" render={render} />
-            <ProtectedText
-                className="text-md font-medium text-secondary-foreground tabular-nums"
-                testID={ConvertToInstallmentModalSelector.PartsLabel}
+        <HapticPressable
+            className="h-20 w-full justify-center"
+            onPress={handleStartEditing}
+            accessibilityRole="button"
+            accessibilityLabel={formattedTotal}
+            accessibilityHint={t`Edits the total of the plan`}
+            testID={ConvertToInstallmentModalSelector.TotalButton}
+        >
+            <ProtectedMoney
+                instrumentSymbol={params.instrumentSymbol}
+                fontSize={HERO_FONT_SIZE}
+                maxFontSize={HERO_FONT_SIZE}
+                {...(reducedMotion && { hasAnimation: false })}
             >
-                {partsLabel}
-            </ProtectedText>
-            {hasUpcomingPayments ? <Text className="text-sm text-secondary-foreground">{t`Last payment ${lastPaymentDate}`}</Text> : null}
-        </View>
+                {totalAmount}
+            </ProtectedMoney>
+        </HapticPressable>
     );
 };

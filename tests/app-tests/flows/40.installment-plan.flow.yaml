@@ -68,7 +68,7 @@ appId: ${APP_ID}
           id: 'ConvertToInstallment.Page'
       timeout: 10000
 - assertVisible:
-      id: 'ConvertToInstallment.TotalInput'
+      id: 'ConvertToInstallment.TotalButton'
       text: '.*90.*'
 - assertVisible:
       id: 'ConvertToInstallment.PartsLabel'

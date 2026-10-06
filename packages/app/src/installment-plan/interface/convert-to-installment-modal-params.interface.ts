@@ -3,5 +3,6 @@ export interface ConvertToInstallmentModalParamsInterface {
     readonly title: string;
     readonly amount: number;
     readonly instrumentSymbol: string;
+    readonly accountTitle: string;
     readonly operatedAt: Date;
 }

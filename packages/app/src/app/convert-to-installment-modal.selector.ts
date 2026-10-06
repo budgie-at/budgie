@@ -1,10 +1,12 @@
 export const ConvertToInstallmentModalSelector = {
     Page: 'ConvertToInstallment.Page',
+    TitleInput: 'ConvertToInstallment.TitleInput',
+    TotalButton: 'ConvertToInstallment.TotalButton',
     TotalInput: 'ConvertToInstallment.TotalInput',
     PartsLabel: 'ConvertToInstallment.PartsLabel',
     CountChip: (count: number) => `ConvertToInstallment.CountChip.${count}` as const,
-    AddFeeButton: 'ConvertToInstallment.AddFeeButton',
+    Timeline: 'ConvertToInstallment.Timeline',
+    FeeButton: 'ConvertToInstallment.FeeButton',
     FeeInput: 'ConvertToInstallment.FeeInput',
-    TitleInput: 'ConvertToInstallment.TitleInput',
     CreateButton: 'ConvertToInstallment.CreateButton'
 } as const;

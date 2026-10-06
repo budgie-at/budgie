@@ -2,6 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
+import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -9,6 +10,7 @@ import { AmountInput } from '../../../@generic/component/amount-input/amount-inp
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
+import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
@@ -22,8 +24,9 @@ const PERCENT_DIVISOR = 100;
 
 export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
     const [isExpanded, setIsExpanded] = useState(false);
+    const { intl } = useI18nContext();
+    const formatDigits = useDisplayFormatDigits();
     const { control } = useFormContext<ConvertToInstallmentFormValues>();
     const [feePercent, totalAmount] = useWatch({ control, name: ['feePercent', 'totalAmount'] });
 
@@ -31,12 +34,18 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
         setIsExpanded(true);
     };
 
+    const formattedFeePercent = intl.formatNumber(feePercent / PERCENT_DIVISOR, { style: 'percent', maximumFractionDigits: 2 });
+
     if (!isExpanded) {
         return (
-            <HapticPressable className="self-start py-xs" onPress={handleExpand} testID={ConvertToInstallmentModalSelector.AddFeeButton}>
-                <Text className="text-sm font-medium text-secondary-foreground">
-                    <Trans>+ Add fee</Trans>
-                </Text>
+            <HapticPressable
+                className="self-center rounded-full bg-secondary-background px-xl py-sm"
+                onPress={handleExpand}
+                accessibilityRole="button"
+                accessibilityHint={t`Adds the fee of the plan`}
+                testID={ConvertToInstallmentModalSelector.FeeButton}
+            >
+                <Text className="text-sm font-medium text-secondary-foreground">{t`Fee ${formattedFeePercent}`}</Text>
             </HapticPressable>
         );
     }
@@ -51,28 +60,33 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
             autoFocus
             minimumDecimalPlaces={2}
             selectTextOnFocus
-            inputClassName="w-20 text-right"
+            borderless
+            placeholder="0"
+            inputClassName="h-auto w-16 px-0 text-right text-md font-semibold text-primary"
+            accessibilityLabel={t`Fee, percent`}
             testID={ConvertToInstallmentModalSelector.FeeInput}
         />
     );
 
     return (
-        <View className="gap-y-xs">
-            <View className="flex-row items-center gap-x-md">
-                <Text className="text-sm text-primary">
+        <Animated.View entering={FadeIn} layout={LinearTransition} className="gap-y-xs">
+            <View className="flex-row items-center gap-x-xs rounded-3xl bg-secondary-background px-3xl py-lg">
+                <Text className="flex-1 text-md font-semibold text-primary">
                     <Trans>Fee</Trans>
                 </Text>
                 <Controller control={control} name="feePercent" render={render} />
-                <Text className="text-sm text-primary">%</Text>
+                <Text className="text-md font-semibold text-primary">%</Text>
+            </View>
+            <View className="flex-row items-center gap-x-md px-3xl">
+                <Text className="flex-1 text-xs text-secondary-foreground">
+                    <Trans>Usually 0% up to 4 months</Trans>
+                </Text>
                 {isPositiveNumber(feePercent) ? (
-                    <ProtectedText className="flex-1 text-right text-sm text-secondary-foreground tabular-nums" numberOfLines={1}>
+                    <ProtectedText className="text-xs font-medium text-secondary-foreground tabular-nums" numberOfLines={1}>
                         {t`includes fee ${formattedFeeAmount}`}
                     </ProtectedText>
                 ) : null}
             </View>
-            <Text className="text-xs text-secondary-foreground">
-                <Trans>Usually 0% up to 4 months</Trans>
-            </Text>
-        </View>
+        </Animated.View>
     );
 };

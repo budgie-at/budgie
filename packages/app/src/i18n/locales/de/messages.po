@@ -110,6 +110,10 @@ msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} ot
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
 msgstr "{count, plural, one {# fehlende Kategorie} other {# fehlende Kategorien}}"
 
+#: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
+msgid "{count, plural, one {# payment} other {# payments}}"
+msgstr "{count, plural, one {# Zahlung} other {# Zahlungen}}"
+
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# Synchronisations-Reparatur} other {# Synchronisations-Reparaturen}}"
@@ -262,10 +266,6 @@ msgstr "{taggedCount, plural, one {# in dieser Sitzung getaggt} other {# in dies
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 
-#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "+ Add fee"
-msgstr "+ Gebühr hinzufügen"
-
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -288,7 +288,7 @@ msgstr ">"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
 
-#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "≈ {formattedPartAmount} per payment"
 msgstr "≈ {formattedPartAmount} pro Zahlung"
 
@@ -496,6 +496,10 @@ msgstr "Fügen Sie Ihr erstes Konto hinzu, um Ihre Finanzen zu verfolgen"
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Add your first expense"
 msgstr "Fügen Sie Ihre erste Ausgabe hinzu"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Adds the fee of the plan"
+msgstr "Fügt die Gebühr des Plans hinzu"
 
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Adjustment"
@@ -1826,6 +1830,14 @@ msgstr "Transaktion bearbeiten"
 msgid "Edit Transfer"
 msgstr "Überweisung bearbeiten"
 
+#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+msgid "Edits the name of the plan"
+msgstr "Ändert den Namen des Plans"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Edits the total of the plan"
+msgstr "Ändert den Gesamtbetrag des Plans"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
 msgstr "Notfallfonds und Sparziele"
@@ -2069,6 +2081,14 @@ msgstr "Gebühr · {formattedFeeAmount}"
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
 msgstr "Gebühr {formattedAmount}"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Fee {formattedFeePercent}"
+msgstr "Gebühr {formattedFeePercent}"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Fee, percent"
+msgstr "Gebühr in Prozent"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
@@ -2446,10 +2466,6 @@ msgstr "Letzter Fehler"
 msgid "Last Month"
 msgstr "Letzter Monat"
 
-#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
-msgid "Last payment {lastPaymentDate}"
-msgstr "Letzte Zahlung am {lastPaymentDate}"
-
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last sync"
 msgstr "Letzte Synchronisation"
@@ -2729,10 +2745,6 @@ msgstr "Ins Bargeld"
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "Moved to cash"
 msgstr "Ins Bargeld verschoben"
-
-#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
-msgid "Name"
-msgstr "Name"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -3203,9 +3215,9 @@ msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 msgid "Pay in parts"
 msgstr "In Raten zahlen"
 
-#: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
-msgid "Payments"
-msgstr "Zahlungen"
+#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
+msgid "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
+msgstr "Zahlungen von {firstPaymentLabel} bis {lastPaymentLabel}"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -3250,6 +3262,10 @@ msgstr "PINs stimmen nicht überein"
 #: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
 msgid "Plan created"
 msgstr "Plan erstellt"
+
+#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+msgid "Plan name"
+msgstr "Name des Plans"
 
 #: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
@@ -4297,6 +4313,7 @@ msgstr "Token erforderlich"
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Gesamt"

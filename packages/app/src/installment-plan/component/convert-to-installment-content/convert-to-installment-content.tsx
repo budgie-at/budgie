@@ -1,27 +1,28 @@
 import { InstallmentPlanService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { Text, View } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { ConvertToInstallmentFormSchema } from '../../constant/convert-to-installment-form-schema.constant';
 import { ConvertToInstallmentFee } from '../convert-to-installment-fee/convert-to-installment-fee';
+import { ConvertToInstallmentParts } from '../convert-to-installment-parts/convert-to-installment-parts';
 import { ConvertToInstallmentSource } from '../convert-to-installment-source/convert-to-installment-source';
 import { ConvertToInstallmentTitleField } from '../convert-to-installment-title-field/convert-to-installment-title-field';
 import { ConvertToInstallmentTotal } from '../convert-to-installment-total/convert-to-installment-total';
 import { InstallmentCountChips } from '../installment-count-chips/installment-count-chips';
+import { InstallmentTimeline } from '../installment-timeline/installment-timeline';
 
 import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
 import type { ConvertToInstallmentModalParamsInterface } from '../../interface/convert-to-installment-modal-params.interface';
@@ -69,14 +70,30 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
 
     return (
         <FormProvider {...form}>
-            <KeyboardAwareScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" bottomOffset={16}>
-                <View className="px-xl pb-xl gap-y-2xl">
-                    <FormsheetHeader size="md" title={t`Pay in parts`} className="pb-0" />
-                    <ConvertToInstallmentSource params={params} />
-                    <ConvertToInstallmentTotal params={params} />
-                    <InstallmentCountChips amount={params.amount} />
+            <KeyboardAvoidingView behavior="padding">
+                <View className="gap-y-3xl px-xl pt-3xl">
+                    <View className="gap-y-xxs">
+                        <Text className="text-sm font-medium text-secondary-foreground" accessibilityRole="header">
+                            <Trans>Pay in parts</Trans>
+                        </Text>
+                        <ConvertToInstallmentTitleField />
+                        <ConvertToInstallmentSource params={params} />
+                    </View>
+
+                    <View className="items-center gap-y-xs">
+                        <ConvertToInstallmentTotal params={params} />
+                        <ConvertToInstallmentParts params={params} />
+                    </View>
+
+                    <View className="gap-y-xl">
+                        <InstallmentCountChips amount={params.amount} />
+                        <InstallmentTimeline operatedAt={params.operatedAt} />
+                    </View>
+
                     <ConvertToInstallmentFee instrumentSymbol={params.instrumentSymbol} />
-                    <ConvertToInstallmentTitleField />
+                </View>
+
+                <View className="px-xl pt-2xl pb-xl">
                     <Button
                         content={t`Create plan`}
                         size="md"
@@ -86,7 +103,7 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                         testID={ConvertToInstallmentModalSelector.CreateButton}
                     />
                 </View>
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingView>
         </FormProvider>
     );
 };
