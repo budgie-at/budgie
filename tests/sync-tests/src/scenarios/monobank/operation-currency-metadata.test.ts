@@ -1,4 +1,4 @@
-import { CurrencyEnum, PRECISION, TransactionEntityTable, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { CurrencyEnum, PRECISION, TransactionEntityTable, TransactionEntryEntityTable, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -108,6 +108,38 @@ describe('monobank/operation-currency-metadata', () => {
 
             expect(primaryEntry.operationInstrumentId).toBeNull();
             expect(primaryEntry.operationAmount).toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([EUR_NUMERIC_CODE, UNKNOWN_NUMERIC_CODE])('refreshes the operation pair together for currency %s', currencyCode =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const { account } = yield* setupMonobankFixture();
+            const report = buildMonobank.transaction({
+                id: 'tx-operation-refresh',
+                amount: -4_500_000,
+                operationAmount: -200_000,
+                currencyCode,
+                hold: false
+            });
+            const transaction = yield* seed.bankPairExpense(
+                { externalId: report.id, operatedAt: new Date(report.time * 1000) },
+                { accountId: account.id, amount: 45_000 * PRECISION, exchangeRate: 45 }
+            );
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ operationInstrumentId: euro.id, operationAmount: 1000 * PRECISION })
+                .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+            monobankStub.statement([report]);
+
+            yield* monobankSyncService.sync();
+
+            const entry = yield* fetchPrimaryEntry(report.id);
+
+            expect(entry.exchangeRate).toBe(22.5);
+            expect(entry.operationInstrumentId).toBe(currencyCode === EUR_NUMERIC_CODE ? euro.id : null);
+            expect(entry.operationAmount).toBe(currencyCode === EUR_NUMERIC_CODE ? 2000 * PRECISION : null);
         }).pipe(Effect.provide(TestLayer))
     );
 

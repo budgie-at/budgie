@@ -10,6 +10,7 @@ import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.
 import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
+import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
 
 import type { BuildRefreshedImportedEntriesInputInterface } from '../interface/build-refreshed-imported-entries-input.interface';
 import type {
@@ -43,10 +44,7 @@ export class RefreshedImportedEntriesService extends Context.Service<RefreshedIm
                 matchingInput: TransactionEntryCreateInputInterface,
                 transactionId: number
             ): TransactionEntryCreateEntityInterface => {
-                const operationEntry =
-                    isDefined(matchingInput.operationInstrumentId) && isDefined(matchingInput.operationAmount)
-                        ? matchingInput
-                        : existingEntry;
+                const operationEntry = transactionResolveImportedOperationMetadata(existingEntry, matchingInput);
                 const hasOperationMetadata =
                     existingEntry.accountId === matchingInput.accountId &&
                     existingEntry.amount === convertToMicroUnits(matchingInput.amount) &&

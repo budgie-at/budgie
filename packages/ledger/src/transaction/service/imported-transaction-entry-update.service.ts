@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
+import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
 
 import { TransactionDepositSafetyService } from './transaction-deposit-safety.service';
 
@@ -173,8 +174,8 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                 const nextAmount = convertToMicroUnits(entry.amount);
                 const nextBaseValuation = yield* resolveValuation(entry, input, context);
                 const nextMccCategoryId = entry.mccCategoryId ?? existingEntry.mccCategoryId;
-                const nextOperationInstrumentId = entry.operationInstrumentId ?? existingEntry.operationInstrumentId;
-                const nextOperationAmount = entry.operationAmount ?? existingEntry.operationAmount;
+                const { operationInstrumentId: nextOperationInstrumentId, operationAmount: nextOperationAmount } =
+                    transactionResolveImportedOperationMetadata(existingEntry, entry);
 
                 if (
                     existingEntry.amount === nextAmount &&

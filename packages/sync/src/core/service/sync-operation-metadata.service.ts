@@ -40,13 +40,17 @@ export class SyncOperationMetadataService extends Context.Service<SyncOperationM
                 const transaction = transactionById.get(input.externalId ?? '');
                 const operation = isDefined(transaction) ? resolveOperation(transaction, instrumentIdByCode) : null;
 
-                if (!isDefined(transaction) || !isDefined(operation)) {
+                if (!isDefined(transaction) || !isDefined(transaction.operationCurrencyCode)) {
                     return input;
                 }
 
                 return {
                     ...input,
-                    entries: input.entries.map(entry => (entry.externalId === transaction.id ? { ...entry, ...operation } : entry))
+                    entries: input.entries.map(entry =>
+                        entry.externalId === transaction.id
+                            ? { ...entry, ...(operation ?? { operationInstrumentId: null, operationAmount: null }) }
+                            : entry
+                    )
                 };
             };
 

@@ -5,6 +5,8 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { fetchExpenseEntries, makeStubFileBankSyncService, requireInstrument, seed, testDb, TestLayer } from '../../harness';
 
 import type { PrivatbankRowInterface } from '@budgie/sync';
@@ -27,10 +29,20 @@ const buildDepositRow = (): PrivatbankRowInterface => ({
     balanceCurrency: 'UAH'
 });
 
-const importDepositStatement = () =>
+const importDepositStatement = (operationCurrencyCode?: number) =>
     Effect.gen(function* () {
         const client = new PrivatbankFileClient([buildDepositRow()]);
-        const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
+        const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, {
+            getAccounts: () => client.getAccounts(),
+            getTransactions: accountId =>
+                client.getTransactions(accountId).map(transaction => {
+                    const { operationCurrencyCode: originalCurrencyCode, ...legacyTransaction } = transaction;
+
+                    return operationCurrencyCode === originalCurrencyCode
+                        ? transaction
+                        : { ...legacyTransaction, ...(isDefined(operationCurrencyCode) && { operationCurrencyCode }) };
+                })
+        });
 
         yield* syncService.executeImportForSelectedAccounts('deposit-statement.xlsx', [buildDepositRow().card]);
 
@@ -43,7 +55,7 @@ describe('privatbank/operation-metadata-reimport', () => {
     it.effect.each([false, true])('retains operation currency after reimport with legacy metadata missing=%s', legacy =>
         Effect.gen(function* () {
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
-            const transaction = yield* importDepositStatement();
+            const transaction = yield* importDepositStatement(978);
             const [entry] = yield* fetchExpenseEntries(transaction.id);
 
             expect(entry).toMatchObject({ operationInstrumentId: euro.id, operationAmount: 1000 * PRECISION });
@@ -59,8 +71,8 @@ describe('privatbank/operation-metadata-reimport', () => {
                     .where(eq(TransactionEntityTable.id, transaction.id));
             }
 
-            yield* importDepositStatement();
-            yield* importDepositStatement();
+            yield* importDepositStatement(978);
+            yield* importDepositStatement(978);
 
             const [refreshed] = yield* fetchExpenseEntries(transaction.id);
 
@@ -73,10 +85,32 @@ describe('privatbank/operation-metadata-reimport', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect.each([undefined, 840, 999])('refreshes a matched file entry with operation currency %s', operationCurrencyCode =>
+        Effect.gen(function* () {
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const dollar = yield* requireInstrument(CurrencyEnum.USD);
+            const transaction = yield* importDepositStatement(978);
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ importFingerprint: null })
+                .where(eq(TransactionEntityTable.id, transaction.id));
+
+            yield* importDepositStatement(operationCurrencyCode);
+
+            const [refreshed] = yield* fetchExpenseEntries(transaction.id);
+            const expectedInstrumentId = !isDefined(operationCurrencyCode) ? euro.id : dollar.id;
+
+            expect(refreshed.amount).toBe(FUNDING_AMOUNT * PRECISION);
+            expect(refreshed.operationInstrumentId).toBe(operationCurrencyCode === 999 ? null : expectedInstrumentId);
+            expect(refreshed.operationAmount).toBe(operationCurrencyCode === 999 ? null : 1000 * PRECISION);
+            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('does not backfill operation metadata for a retained user-edited amount', () =>
         Effect.gen(function* () {
             const transactionService = yield* TransactionService;
-            const transaction = yield* importDepositStatement();
+            const transaction = yield* importDepositStatement(978);
             const [entry] = yield* fetchExpenseEntries(transaction.id);
             const category = yield* seed.category('Funding');
 
@@ -94,7 +128,7 @@ describe('privatbank/operation-metadata-reimport', () => {
                     }
                 ]
             });
-            yield* importDepositStatement();
+            yield* importDepositStatement(978);
 
             const [refreshed] = yield* fetchExpenseEntries(transaction.id);
 
