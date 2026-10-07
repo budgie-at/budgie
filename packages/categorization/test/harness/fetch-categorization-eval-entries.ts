@@ -64,8 +64,5 @@ export const fetchCategorizationEvalEntries = Effect.fnUntraced(function* () {
         tagIdsByTransactionId.set(transactionId, [...(tagIdsByTransactionId.get(transactionId) ?? []), tagId])
     );
 
-    return {
-        entries: entries.map(entry => ({ ...entry, tagIds: tagIdsByTransactionId.get(entry.transactionId) ?? [] })),
-        tagIdsByTransactionId
-    };
+    return entries.map(entry => ({ ...entry, tagIds: tagIdsByTransactionId.get(entry.transactionId) ?? [] }));
 });

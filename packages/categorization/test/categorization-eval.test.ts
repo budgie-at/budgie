@@ -33,7 +33,7 @@ import { backupDatabasePath, TestLayer, testDb, testSeedService } from './harnes
 
 import type { LabelEvidenceRowInterface } from '@budgie/categorization';
 
-type EvalEntry = Effect.Success<ReturnType<typeof fetchCategorizationEvalEntries>>['entries'][number];
+type EvalEntry = Effect.Success<ReturnType<typeof fetchCategorizationEvalEntries>>[number];
 type KnnDocument = { readonly vector: Float32Array; readonly categoryId: number; readonly tagIds: Set<number> };
 
 const subtractMonths = (date: Date, months: number): Date =>
@@ -221,7 +221,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                 const ruleRepository = yield* RuleRepository;
                 const settingsRepository = yield* SettingsRepository;
                 const defaultInstrumentId = (yield* settingsRepository.getSettings()).defaultInstrumentId ?? 0;
-                const { entries, tagIdsByTransactionId } = yield* fetchCategorizationEvalEntries();
+                const entries = yield* fetchCategorizationEvalEntries();
                 const rules = yield* ruleRepository.findEnabledWithRelations();
                 const ruleMatches = yield* Effect.forEach(rules, rule =>
                     Effect.map(ruleMatcherService.collectMatchingTransactionIds(rule), transactionIds => new Set(transactionIds))
@@ -258,17 +258,9 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                             addEvidence(categoryEvidence, historyEntry, historyEntry.categoryId);
                         }
 
-                        addKnnDocument(
-                            historyEntry,
-                            documentVectors,
-                            merchantDocuments,
-                            commentDocuments,
-                            tagIdsByTransactionId.get(historyEntry.transactionId) ?? []
-                        );
+                        addKnnDocument(historyEntry, documentVectors, merchantDocuments, commentDocuments, historyEntry.tagIds);
 
-                        (tagIdsByTransactionId.get(historyEntry.transactionId) ?? []).forEach(tagId =>
-                            addEvidence(tagEvidence, historyEntry, tagId)
-                        );
+                        historyEntry.tagIds.forEach(tagId => addEvidence(tagEvidence, historyEntry, tagId));
                     });
 
                     if (historyIndex !== historyStartIndex) {
@@ -307,7 +299,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                         categoryId: evalEntry.categoryId,
                         hasRuleCategory: isDefined(ruleOutcome.categoryId),
                         autoApply: predictAutoApplyCategory(queryVector, knnIndexes),
-                        tagIds: tagIdsByTransactionId.get(evalEntry.transactionId) ?? [],
+                        tagIds: evalEntry.tagIds,
                         categories: {
                             rules: ruleCategoryIds,
                             history: historyCategoryIds,
@@ -417,7 +409,7 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
                     )
             );
 
-            const { entries } = yield* fetchCategorizationEvalEntries();
+            const entries = yield* fetchCategorizationEvalEntries();
             const mccMerchantEntry = entries.find(entry => entry.transactionId === mccMerchant.id);
             const userMerchantEntry = entries.find(entry => entry.transactionId === userMerchant.id);
             const userTargetEntry = entries.find(entry => entry.transactionId === userTarget.id);
