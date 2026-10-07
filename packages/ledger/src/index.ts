@@ -33,3 +33,4 @@ export { getTransactionFeeEntries } from './transaction/util/get-transaction-fee
 
 export type { ImportedBatchPreparationInterface } from './transaction/interface/imported-batch-preparation.interface';
 export type { InstallmentPlanConvertInputInterface } from './installment/interface/installment-plan-convert-input.interface';
+export type { StartDepositInputInterface } from './transaction/interface/start-deposit-input.interface';

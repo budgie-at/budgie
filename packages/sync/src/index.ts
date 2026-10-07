@@ -61,6 +61,7 @@ export { SyncWorkload } from './core/port/sync-workload.port';
 export { SyncFileReader } from './core/port/sync-file-reader.port';
 export { SyncHistoryDepthEnum } from './core/enum/sync-history-depth.enum';
 export { ResyncService } from './core/service/resync.service';
+export { SyncOperationMetadataService } from './core/service/sync-operation-metadata.service';
 export { SyncProviderRegistryService } from './core/service/sync-provider-registry.service';
 export { SyncRepairService } from './core/service/sync-repair.service';
 export { TransferConsolidationService } from './core/service/transfer-consolidation.service';

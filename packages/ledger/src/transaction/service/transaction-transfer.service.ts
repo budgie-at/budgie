@@ -1,5 +1,6 @@
 import {
     AccountBalanceRepository,
+    AccountTypeEnum,
     CategorySourceEnum,
     Db,
     DebtEventRepository,
@@ -20,6 +21,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/util/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
 import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -37,6 +39,7 @@ import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-
 import { TransferCreationService } from './transfer-creation.service';
 
 import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
+import type { StartDepositInputInterface } from '../interface/start-deposit-input.interface';
 import type { TransactionEntryEntityInterface } from '@budgie/contracts';
 import type { EntryBaseValuationInterface } from '@budgie/market';
 
@@ -130,7 +133,8 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
 
         const buildTransferConversion = Effect.fnUntraced(function* (
             direction: 'expense' | 'income',
-            params: ConvertToTransferParamsInterface
+            params: ConvertToTransferParamsInterface,
+            counterAmount: number | null
         ) {
             const transaction = yield* getTransferConversionTransaction(params.id, direction);
             const [transactionEntry] = getTransactionCategoryEntries(transaction.entries);
@@ -148,11 +152,13 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
 
             yield* assertTransferAccountsAreNotDebt([fromAccount, toAccount]);
 
-            const conversion = yield* exchangeRatesService.convert(
-                isExpense ? fromAccount.instrumentId : toAccount.instrumentId,
-                isExpense ? toAccount.instrumentId : fromAccount.instrumentId,
-                transactionEntry.amount
-            );
+            const conversion = isPositiveNumber(counterAmount)
+                ? { exchangeRate: transactionEntry.amount / counterAmount, amount: counterAmount }
+                : yield* exchangeRatesService.convert(
+                      isExpense ? fromAccount.instrumentId : toAccount.instrumentId,
+                      isExpense ? toAccount.instrumentId : fromAccount.instrumentId,
+                      transactionEntry.amount
+                  );
             const exchangeRate =
                 hasCustomRate && isDefined(params.customExchangeRate) ? params.customExchangeRate : conversion.exchangeRate;
             const convertedAmount =
@@ -170,7 +176,11 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                 operatedAt: transaction.operatedAt,
                 toAccountId,
                 transactionType: TransactionTypeEnum.TRANSFER,
-                feeEntries: getTransactionFeeEntries(transaction.entries)
+                feeEntries: getTransactionFeeEntries(transaction.entries),
+                operation: {
+                    operationInstrumentId: transactionEntry.operationInstrumentId,
+                    operationAmount: transactionEntry.operationAmount
+                }
             } satisfies TransferConversionResultInterface;
         });
 
@@ -200,8 +210,8 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
         });
 
         const convertToTransfer = Effect.fnUntraced(
-            function* (params: ConvertToTransferParamsInterface, direction: 'expense' | 'income') {
-                const conversion = yield* buildTransferConversion(direction, params);
+            function* (params: ConvertToTransferParamsInterface, direction: 'expense' | 'income', counterAmount: number | null) {
+                const conversion = yield* buildTransferConversion(direction, params, counterAmount);
                 const debtEvent = yield* debtEventRepository.findByTransactionId(params.id);
                 const updated = yield* transactionRepository.updateById(params.id, {
                     type: conversion.transactionType,
@@ -229,21 +239,29 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
 
                 yield* debtEventRepository.deleteByTransactionId(params.id);
                 yield* transactionEntryRepository.deleteByTransactionId(params.id);
+                const isExpense = direction === 'expense';
+
                 yield* transactionEntryRepository.bulkCreate([
-                    buildTransferEntryCreateEntity({
-                        transactionId: params.id,
-                        accountId: conversion.creditAccountId,
-                        type: TransactionEntryTypeEnum.CREDIT,
-                        amount: conversion.creditAmount,
-                        valuation: creditValuation
-                    }),
-                    buildTransferEntryCreateEntity({
-                        transactionId: params.id,
-                        accountId: conversion.debitAccountId,
-                        type: TransactionEntryTypeEnum.DEBIT,
-                        amount: conversion.debitAmount,
-                        valuation: debitValuation
-                    }),
+                    {
+                        ...buildTransferEntryCreateEntity({
+                            transactionId: params.id,
+                            accountId: conversion.creditAccountId,
+                            type: TransactionEntryTypeEnum.CREDIT,
+                            amount: conversion.creditAmount,
+                            valuation: creditValuation
+                        }),
+                        ...(isExpense && conversion.operation)
+                    },
+                    {
+                        ...buildTransferEntryCreateEntity({
+                            transactionId: params.id,
+                            accountId: conversion.debitAccountId,
+                            type: TransactionEntryTypeEnum.DEBIT,
+                            amount: conversion.debitAmount,
+                            valuation: debitValuation
+                        }),
+                        ...(!isExpense && conversion.operation)
+                    },
                     ...feeEntries
                 ]);
 
@@ -311,13 +329,47 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             convertExpenseToTransfer: Effect.fn('TransactionTransferService.convertExpenseToTransfer')(function* (
                 params: ConvertToTransferParamsInterface
             ) {
-                return yield* convertToTransfer(params, 'expense');
+                return yield* convertToTransfer(params, 'expense', null);
             }),
             convertIncomeToTransfer: Effect.fn('TransactionTransferService.convertIncomeToTransfer')(function* (
                 params: ConvertToTransferParamsInterface
             ) {
-                return yield* convertToTransfer(params, 'income');
+                return yield* convertToTransfer(params, 'income', null);
             }),
+            startDepositFromExpense: Effect.fn('TransactionTransferService.startDepositFromExpense')(
+                function* (transactionId: number, input: StartDepositInputInterface) {
+                    const { receivingAmount, ...depositInput } = input;
+                    const transaction = yield* getTransferConversionTransaction(transactionId, 'expense');
+
+                    if (isDefined(transaction.consolidationType)) {
+                        return yield* Effect.die(new Error(t`Consolidated transactions cannot start a deposit`));
+                    }
+
+                    if (!isPositiveNumber(receivingAmount)) {
+                        return yield* Effect.die(new Error(t`Receiving amount must be greater than zero`));
+                    }
+
+                    const sourceAccount = yield* accountService.findByIdOrFail(
+                        yield* requireTransferAccountId(transaction.fromAccountId, 'source')
+                    );
+                    const depositAccount = yield* accountService.createDeposit({
+                        ...depositInput,
+                        type: AccountTypeEnum.DEPOSIT,
+                        iban: null,
+                        integrationId: sourceAccount.integrationId,
+                        currentBalance: 0
+                    });
+
+                    yield* convertToTransfer(
+                        { id: transactionId, accountId: depositAccount.id, customExchangeRate: 0, feeEntries: [] },
+                        'expense',
+                        convertToMicroUnits(receivingAmount)
+                    );
+
+                    return depositAccount;
+                },
+                effect => Db.transaction(effect)
+            ),
             closeDepositTo: Effect.fn('TransactionTransferService.closeDepositTo')(
                 function* (depositAccountId: number, destinationAccountId: number) {
                     const depositBalanceRows = yield* accountBalanceRepository.getByAccountId(depositAccountId);

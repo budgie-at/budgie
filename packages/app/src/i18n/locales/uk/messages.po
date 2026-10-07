@@ -1097,6 +1097,10 @@ msgstr "Консолідувати"
 msgid "Consolidate Matches"
 msgstr "Консолідувати збіги"
 
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
+msgid "Consolidated transactions cannot start a deposit"
+msgstr "Неможливо відкрити депозит із консолідованих транзакцій"
+
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Consolidation"
 msgstr "Консолідація"
@@ -1216,10 +1220,6 @@ msgstr "Не вдалося створити бюджет"
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
-
-#: src/account/hooks/use-deposit-create-action.hook.ts
-msgid "Could not create deposit account"
-msgstr "Не вдалося створити депозитний рахунок"
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 msgid "Could not create plan"
@@ -1663,8 +1663,8 @@ msgstr "Видалити правило"
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/constant/account-type.constant.ts
-#: src/account/hooks/use-deposit-create-action.hook.ts
 msgid "Deposit"
 msgstr "Депозит"
 
@@ -1990,6 +1990,7 @@ msgstr "Кожна транзакція має тег."
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
 
+#: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Exchange rate"
 msgstr "Обмінний курс"
@@ -2170,7 +2171,11 @@ msgstr "Сума з"
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/account/hooks/use-deposit-create-action.hook.ts
+#: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
+msgid "Funding account"
+msgstr "Рахунок списання"
+
+#: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 msgid "Funding amount"
 msgstr "Сума поповнення"
 
@@ -2767,10 +2772,6 @@ msgstr "Новий рахунок"
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "New borrowed debt"
 msgstr "Новий позичений борг"
-
-#: src/account/hooks/use-deposit-create-action.hook.ts
-msgid "New deposit account"
-msgstr "Новий депозитний рахунок"
 
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
@@ -3429,6 +3430,14 @@ msgstr "Перерахунок балансів"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
+msgid "Receiving amount"
+msgstr "Сума зарахування"
+
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
+msgid "Receiving amount must be greater than zero"
+msgstr "Сума зарахування має бути більшою за нуль"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 msgid "Recurring"
 msgstr "Регулярні"
@@ -3979,15 +3988,11 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
-#: src/app/convert-to-transfer.tsx
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Start Deposit"
 msgstr "Розпочати депозит"
-
-#: src/app/convert-to-transfer.tsx
-msgid "Start Deposit?"
-msgstr "Розпочати депозит?"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Start from scratch and set every limit yourself"
@@ -4170,6 +4175,10 @@ msgstr "Торкніться для вибору"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
+msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
+msgstr "Банк не передав валюту депозиту. Підтвердіть валюту та суму зарахування."
+
 #: src/rule/util/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Правило збережено, але жодна наявна транзакція не потребувала оновлення."
@@ -4237,10 +4246,6 @@ msgstr "Це конвертує витрату у переказ між раху
 #: src/app/convert-to-transfer.tsx
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will create a new deposit account and convert this expense into a transfer into it."
-msgstr "Це створить новий депозитний рахунок і перетворить цю витрату на переказ на нього."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
