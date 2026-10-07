@@ -17,6 +17,8 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import type { DB, DbError, TransactionFilterInterface, TransactionTagsEntityInterface } from '@budgie/contracts';
 import type { SQL } from 'drizzle-orm';
 
@@ -83,6 +85,10 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                             baseAmount: TransactionEntryEntityTable.baseAmount,
                             baseInstrumentId: TransactionEntryEntityTable.baseInstrumentId,
                             mccCategoryId: TransactionEntryEntityTable.mccCategoryId,
+                            categoryId: TransactionEntryEntityTable.categoryId,
+                            tagIds: sql<string>`(SELECT COALESCE(group_concat(${TransactionTagsEntityTable.tagId}), '') FROM ${TransactionTagsEntityTable} WHERE ${TransactionTagsEntityTable.transactionId} = ${TransactionEntityTable.id})`.mapWith(
+                                (tagIds: string) => tagIds.split(',').filter(isNotEmptyString).map(Number)
+                            ),
                             mcc: MccCategoryEntityTable.mcc,
                             instrumentSymbol: InstrumentEntityTable.symbol
                         })

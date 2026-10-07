@@ -22,6 +22,8 @@ const buildRow = (transactionId: number, type: TransactionTypeEnum, title: strin
     baseInstrumentId: null,
     instrumentSymbol: 'EUR',
     mccCategoryId: null,
+    categoryId: null,
+    tagIds: [],
     mcc: null
 });
 

@@ -40,6 +40,8 @@ const buildAssignment = (transactionId: number, title: string, labelId: number):
             baseInstrumentId: null,
             instrumentSymbol: 'EUR',
             mccCategoryId: null,
+            categoryId: null,
+            tagIds: [],
             mcc: null
         }
     ]

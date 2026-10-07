@@ -48,6 +48,40 @@ appId: ${APP_ID}
       id: 'CategorizeInboxAcceptAllButton.Button'
 
 - tapOn:
+      id: 'CategorizeInboxOneOffRow.Open.EXPENSE\|categorize filler'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 5000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+- assertVisible: '3 left.*'
+
+- tapOn:
+      id: 'CategorizeInboxClusterCard.Toggle.EXPENSE\|confident coffee'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxClusterRow.Open.3'
+      timeout: 5000
+- tapOn:
+      id: 'CategorizeInboxClusterRow.Open.3'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 5000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+- assertVisible: '3 left.*'
+
+- tapOn:
       id: 'CategorizeInboxSuggestionChip.EXPENSE\|confident coffee.0'
 - assertVisible: '1 left.*'
 - assertNotVisible:
@@ -65,6 +99,29 @@ appId: ${APP_ID}
       notVisible:
           id: 'TagPickerBottomSheet.Card.E2E Coffee Tag'
       timeout: 5000
+
+- tapOn:
+      id: 'CategorizeInboxUndoBar.RuleButton'
+- extendedWaitUntil:
+      visible:
+          id: 'RuleForm.Footer.SubmitButton'
+      timeout: 5000
+- extendedWaitUntil:
+      visible:
+          id: 'RuleForm.Action.0.CategorySelector.Value'
+          text: 'Restaurants & Cafes'
+      timeout: 5000
+- assertVisible:
+      id: 'RuleForm.Action.1.TagSelector.Value'
+      text: 'E2E Coffee Tag'
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      notVisible:
+          id: 'RuleForm.Footer.SubmitButton'
+      timeout: 5000
+- assertVisible:
+      id: 'CategorizeInboxUndoBar'
 
 - tapOn:
       id: 'CategorizeInboxPage.ShowListButton'
@@ -143,6 +200,29 @@ appId: ${APP_ID}
 - tapOn:
       id: 'CategorizeInboxSuggestionChip.EXPENSE\|tagged grocer.0'
 - assertVisible: '1 left.*'
+
+- tapOn:
+      id: 'CategorizeInboxUndoBar.RuleButton'
+- extendedWaitUntil:
+      visible:
+          id: 'RuleForm.Footer.SubmitButton'
+      timeout: 5000
+- extendedWaitUntil:
+      visible:
+          id: 'RuleForm.Action.0.CategorySelector.Value'
+          text: 'Groceries'
+      timeout: 5000
+- assertVisible:
+      id: 'RuleForm.Action.1.TagSelector.Value'
+      text: 'E2E Grocer Tag'
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      notVisible:
+          id: 'RuleForm.Footer.SubmitButton'
+      timeout: 5000
+- assertVisible:
+      id: 'CategorizeInboxUndoBar'
 
 - tapOn:
       id: 'CategorizeInboxPage.ShowListButton'

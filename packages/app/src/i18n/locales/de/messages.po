@@ -3098,6 +3098,11 @@ msgstr "Öffnen Sie Privat24 und wählen Sie die Karte oder das Konto aus, das S
 msgid "Open settings"
 msgstr "Einstellungen öffnen"
 
+#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-one-off-row/categorize-inbox-one-off-row.tsx
+msgid "Open transaction"
+msgstr "Transaktion öffnen"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Operator"

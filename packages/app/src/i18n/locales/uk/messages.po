@@ -3098,6 +3098,11 @@ msgstr "Відкрийте Приват24 і виберіть картку аб�
 msgid "Open settings"
 msgstr "Відкрити налаштування"
 
+#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-one-off-row/categorize-inbox-one-off-row.tsx
+msgid "Open transaction"
+msgstr "Відкрити транзакцію"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Оператор"
