@@ -12,7 +12,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { TransactionTransferService } from '@budgie/ledger';
+import { DepositReceivingAmountMismatchError, TransactionTransferService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -72,6 +72,18 @@ const syncSingleExpense = (externalId: string, currencyCode: number, operationAm
 
 const fetchDepositAccounts = () => testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.type, AccountTypeEnum.DEPOSIT));
 
+const seedHryvniaCashExpense = (externalId: string, amount: number) =>
+    Effect.gen(function* () {
+        const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
+        const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: hryvnia.id });
+        const transaction = yield* seed.bankPairExpense(
+            { externalId, operatedAt: new Date('2026-06-02T12:00:00.000Z') },
+            { accountId: cashAccount.id, amount: amount * PRECISION }
+        );
+
+        return { hryvnia, cashAccount, transaction };
+    });
+
 describe('account/start-deposit-from-expense', () => {
     it.effect('creates an EUR deposit from a Monobank UAH expense with EUR operation metadata', () =>
         Effect.gen(function* () {
@@ -125,12 +137,7 @@ describe('account/start-deposit-from-expense', () => {
         Effect.gen(function* () {
             const transactionTransferService = yield* TransactionTransferService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
-            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: hryvnia.id });
-            const transaction = yield* seed.bankPairExpense(
-                { externalId: 'manual-deposit', operatedAt: new Date('2026-06-02T12:00:00.000Z') },
-                { accountId: cashAccount.id, amount: 250 * PRECISION }
-            );
+            const { hryvnia, cashAccount, transaction } = yield* seedHryvniaCashExpense('manual-deposit', 250);
             const [sourceEntry] = yield* fetchExpenseEntries(transaction.id);
 
             const depositAccount = yield* transactionTransferService.startDepositFromExpense(
@@ -147,6 +154,26 @@ describe('account/start-deposit-from-expense', () => {
             expect(converted.exchangeRate).toBe(1);
             expect(ledgerBalances.get(cashAccount.id)).toBe(-250 * PRECISION);
             expect(ledgerBalances.get(depositAccount.id)).toBe(250 * PRECISION);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('rejects a same-currency deposit whose receiving amount differs from the funding amount', () =>
+        Effect.gen(function* () {
+            const transactionTransferService = yield* TransactionTransferService;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const { hryvnia, cashAccount, transaction } = yield* seedHryvniaCashExpense('same-currency-mismatch', 45_000);
+
+            const error = yield* Effect.flip(
+                transactionTransferService.startDepositFromExpense(transaction.id, buildDepositInput(hryvnia.id, 50_000))
+            );
+
+            const [unchanged] = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, transaction.id));
+            const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances([cashAccount.id]);
+
+            expect(error).toBeInstanceOf(DepositReceivingAmountMismatchError);
+            expect(yield* fetchDepositAccounts()).toEqual([]);
+            expect(unchanged.type).toBe(TransactionTypeEnum.EXPENSE);
+            expect(ledgerBalances.get(cashAccount.id)).toBe(-45_000 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 

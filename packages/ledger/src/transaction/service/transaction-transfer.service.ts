@@ -23,6 +23,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { convertFromMicroUnits } from '../../@generic/util/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
+import { DepositReceivingAmountMismatchError } from '../../account/error/deposit-receiving-amount-mismatch.error';
 import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AccountService } from '../../account/service/account.service';
@@ -341,7 +342,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     const { receivingAmount, ...depositInput } = input;
                     const transaction = yield* getTransferConversionTransaction(transactionId, 'expense');
 
-                    if (isDefined(transaction.consolidationType)) {
+                    if (isDefined(transaction.consolidationType) || isDefined(transaction.consolidationParentTransactionId)) {
                         return yield* Effect.die(new Error(t`Consolidated transactions cannot start a deposit`));
                     }
 
@@ -352,6 +353,12 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     const sourceAccount = yield* accountService.findByIdOrFail(
                         yield* requireTransferAccountId(transaction.fromAccountId, 'source')
                     );
+                    const [sourceEntry] = getTransactionCategoryEntries(transaction.entries);
+                    const receivingMicroUnits = convertToMicroUnits(receivingAmount);
+
+                    if (depositInput.instrumentId === sourceAccount.instrumentId && receivingMicroUnits !== sourceEntry.amount) {
+                        return yield* new DepositReceivingAmountMismatchError();
+                    }
                     const depositAccount = yield* accountService.createDeposit({
                         ...depositInput,
                         type: AccountTypeEnum.DEPOSIT,
@@ -363,7 +370,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     yield* convertToTransfer(
                         { id: transactionId, accountId: depositAccount.id, customExchangeRate: 0, feeEntries: [] },
                         'expense',
-                        convertToMicroUnits(receivingAmount)
+                        receivingMicroUnits
                     );
 
                     return depositAccount;

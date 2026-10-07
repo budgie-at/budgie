@@ -3,6 +3,7 @@ import {
     Db,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
+    type TransactionEntryEntityInterface,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -19,6 +20,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
@@ -50,6 +52,22 @@ export class TransactionService extends Context.Service<TransactionService>()('@
         const getAccountIdsFromTransactions = (transactions: readonly TransactionWithEntriesEntityInterface[]): number[] => [
             ...new Set(transactions.flatMap(transaction => transaction.entries.map(entry => entry.accountId)))
         ];
+
+        const dropChangedOperationMetadata = (
+            entries: TransactionCreateInputInterface['entries'],
+            existingEntries: readonly TransactionEntryEntityInterface[]
+        ): TransactionCreateInputInterface['entries'] =>
+            entries.map(entry =>
+                existingEntries.some(
+                    existingEntry =>
+                        existingEntry.accountId === entry.accountId &&
+                        existingEntry.amount === convertToMicroUnits(entry.amount) &&
+                        existingEntry.operationInstrumentId === entry.operationInstrumentId &&
+                        existingEntry.operationAmount === entry.operationAmount
+                )
+                    ? entry
+                    : { ...entry, operationInstrumentId: null, operationAmount: null }
+            );
 
         const unconsolidateByIdInTransaction = (transactionId: number) =>
             Db.transaction(unconsolidationService.unconsolidateById(transactionId));
@@ -255,7 +273,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
 
                     yield* upsertTransactionEntriesAndTags({
                         transactionId: id,
-                        input,
+                        input: { ...input, entries: dropChangedOperationMetadata(input.entries, existingTransaction?.entries ?? []) },
                         operatedAt: transaction.operatedAt,
                         isConsolidated
                     });
