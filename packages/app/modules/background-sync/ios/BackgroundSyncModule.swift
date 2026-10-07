@@ -5,6 +5,7 @@ import UIKit
 public final class BackgroundSyncModule: Module {
   private var identifier: String?
   private var task: BGTask?
+  private var isDismissed = false
   private let progress = Progress(totalUnitCount: 1)
 
   public func definition() -> ModuleDefinition {
@@ -15,7 +16,7 @@ public final class BackgroundSyncModule: Module {
       self.progress.completedUnitCount = Int64(completed)
       self.applyProgress()
 
-      if self.identifier == nil, UIApplication.shared.applicationState == .active {
+      if self.identifier == nil, !self.isDismissed, UIApplication.shared.applicationState == .active {
         self.submit(title: title, subtitle: subtitle)
       }
     }.runOnQueue(.main)
@@ -27,6 +28,7 @@ public final class BackgroundSyncModule: Module {
       self.task?.setTaskCompleted(success: true)
       self.task = nil
       self.identifier = nil
+      self.isDismissed = false
     }.runOnQueue(.main)
   }
 
@@ -43,10 +45,17 @@ public final class BackgroundSyncModule: Module {
       }
 
       self.task = task
-      task.expirationHandler = { [weak self] in
-        task.setTaskCompleted(success: false)
-        self?.task = nil
-        self?.identifier = nil
+      task.expirationHandler = { [weak self, weak task] in
+        DispatchQueue.main.async {
+          guard let self, let task, self.task === task else {
+            return
+          }
+
+          task.setTaskCompleted(success: false)
+          self.task = nil
+          self.identifier = nil
+          self.isDismissed = true
+        }
       }
       self.applyProgress()
     }
