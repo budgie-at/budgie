@@ -9,7 +9,8 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 export const runConsolidation = (scope: ConsolidationScanScopeInterface | null = null) =>
     rebuildStoredBalances.pipe(
         Effect.andThen(ConsolidationCoordinatorService),
-        Effect.flatMap(consolidationCoordinatorService => consolidationCoordinatorService.consolidate(scope))
+        Effect.flatMap(consolidationCoordinatorService => consolidationCoordinatorService.consolidate(scope)),
+        Effect.tap(() => rebuildStoredBalances)
     );
 
 export const expectSecondConsolidationRunStable = Effect.fnUntraced(function* () {
