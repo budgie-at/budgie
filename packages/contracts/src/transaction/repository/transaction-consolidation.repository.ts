@@ -44,15 +44,13 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
 
                     return yield* Db.query(db =>
                         db
-                            .select({
-                                id: TransactionEntityTable.id,
-                                consolidationParentTransactionId: TransactionEntityTable.consolidationParentTransactionId
-                            })
+                            .select({ id: TransactionEntityTable.id })
                             .from(TransactionEntityTable)
                             .where(
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
                                     isNull(TransactionEntityTable.deletedAt),
+                                    isNull(TransactionEntityTable.consolidationParentTransactionId),
                                     or(
                                         inArray(TransactionEntityTable.fromAccountId, accountIds),
                                         inArray(TransactionEntityTable.toAccountId, accountIds),
@@ -84,6 +82,7 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
                                     isNull(TransactionEntityTable.deletedAt),
+                                    isNull(TransactionEntityTable.consolidationParentTransactionId),
                                     inArray(TransactionEntryEntityTable.accountId, accountIds),
                                     isNotNull(TransactionEntryEntityTable.originalTransactionId),
                                     isNull(TransactionEntryEntityTable.deletedAt),

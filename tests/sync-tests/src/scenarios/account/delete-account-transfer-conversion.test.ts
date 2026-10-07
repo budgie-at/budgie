@@ -3,6 +3,7 @@ import {
     AccountBalanceRepository,
     AccountTypeEnum,
     DEFAULT_TRANSACTION_FILTER,
+    ExternalSourceEnum,
     LanguageEnum,
     PRECISION,
     StatisticsRepository,
@@ -13,6 +14,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
+import { ResyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -210,6 +212,33 @@ describe('account/delete-account-transfer-conversion', () => {
             expect(yield* fetchEntries(transfer.id)).toEqual(archivedEntryBefore);
             expect(yield* accountBalanceRepository.getLedgerBalances([cashAccount.id])).toEqual(ledgerBefore);
             expect(yield* fetchStatistics()).toEqual(statisticsBefore);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('resync and archive keep a consolidation hidden inside another one nested', () =>
+        Effect.gen(function* () {
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const resyncService = yield* ResyncService;
+            const account = yield* seed.account({ title: 'erste bank EUR', type: AccountTypeEnum.BANK });
+            const bankAccount = yield* seed.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK });
+            const cashAccount = yield* seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
+            const { canonical, child, grandchild } = yield* seedHiddenTransferChild(account.id, bankAccount.id, cashAccount.id);
+            const snapshot = Effect.all({
+                childParentId: Effect.map(fetchTransactionById(child.id), transaction => transaction.consolidationParentTransactionId),
+                grandchild: fetchTransactionById(grandchild.id),
+                canonicalEntries: fetchEntries(canonical.id),
+                ledger: accountBalanceRepository.getLedgerBalances([bankAccount.id, cashAccount.id]),
+                statistics: fetchStatistics()
+            });
+            const before = yield* snapshot;
+
+            yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE });
+            yield* resyncService.resync({ accountId: account.id, sinceDays: null });
+            expect(yield* snapshot).toEqual(before);
+
+            yield* accountArchiveService.archiveById(account.id);
+            expect(yield* snapshot).toEqual(before);
         }).pipe(Effect.provide(TestLayer))
     );
 });
