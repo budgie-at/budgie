@@ -1,6 +1,6 @@
 {
     "name": "@budgie/rules",
-    "version": "6.94.1",
+    "version": "6.94.2",
     "private": true,
     "description": "Rules engine domain services",
     "sideEffects": false,

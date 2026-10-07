@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
+
+
+### Bug Fixes
+
+* **consolidation:** keep nested consolidations intact when archiving or resyncing an account ([9bc4669](https://github.com/budgie-at/budgie/commit/9bc4669b43227bc2d36ee6ac6ca2449737e0fc9f)), closes [#1385](https://github.com/budgie-at/budgie/issues/1385)
+
+
+
+
+
 ## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
 
 
