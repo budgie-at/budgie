@@ -21,14 +21,15 @@ interface Props {
 }
 
 export const CategoryStatisticsCard = ({ category, amount, totalAmount, variant, filters, isIncome }: Props) => {
-    const press = useStatisticsCardPress(filters, isIncome, AnalyticsTransactionsModeEnum.CATEGORIZE);
-
     const isCategorized = isPositiveNumber(category.id);
     const cardTestID = isCategorized ? CategoryStatisticsCardSelector.Card(category.title) : CategoryStatisticsCardSelector.Uncategorized;
 
-    const handlePress = () => {
-        press(isCategorized ? { categoryId: String(category.id) } : null);
-    };
+    const handlePress = useStatisticsCardPress(
+        filters,
+        isIncome,
+        AnalyticsTransactionsModeEnum.CATEGORIZE,
+        isCategorized ? { categoryId: String(category.id) } : null
+    );
 
     return (
         <StatisticsCard

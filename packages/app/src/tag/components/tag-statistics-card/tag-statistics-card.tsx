@@ -20,14 +20,15 @@ interface Props {
 }
 
 export const TagStatisticsCard = ({ tag, amount, totalAmount, variant, filters, isIncome }: Props) => {
-    const press = useStatisticsCardPress(filters, isIncome, AnalyticsTransactionsModeEnum.TAG_INBOX);
-
     const isTagged = isDefined(tag.id);
     const cardTestID = isTagged ? TagStatisticsCardSelector.Card(tag.title) : TagStatisticsCardSelector.Untagged;
 
-    const handlePress = () => {
-        press(isTagged ? { tagId: String(tag.id) } : null);
-    };
+    const handlePress = useStatisticsCardPress(
+        filters,
+        isIncome,
+        AnalyticsTransactionsModeEnum.TAG_INBOX,
+        isTagged ? { tagId: String(tag.id) } : null
+    );
 
     return (
         <StatisticsCard

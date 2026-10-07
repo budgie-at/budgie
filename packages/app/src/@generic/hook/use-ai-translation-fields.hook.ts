@@ -70,17 +70,10 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
         }
     };
 
-    const handleTitleEnPress = async (): Promise<void> => {
-        const result = await openNoteInput({ initialValue: titleEn ?? '' });
+    const handleNoteEdit = (current: string | null, setField: (value: string | null) => void) => async (): Promise<void> => {
+        const result = await openNoteInput({ initialValue: current ?? '' });
         if (isDefined(result)) {
-            setTitleEn(result);
-        }
-    };
-
-    const handleTitleTagsPress = async (): Promise<void> => {
-        const result = await openNoteInput({ initialValue: titleTags ?? '' });
-        if (isDefined(result)) {
-            setTitleTags(result);
+            setField(result);
         }
     };
 
@@ -89,8 +82,8 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
         titleTags,
         disabled: isGenerateDisabled,
         onRegenerate: handleRegenerate,
-        onTitleEnPress: handleTitleEnPress,
-        onTitleTagsPress: handleTitleTagsPress
+        onTitleEnPress: handleNoteEdit(titleEn, setTitleEn),
+        onTitleTagsPress: handleNoteEdit(titleTags, setTitleTags)
     };
 
     return { titleEn, titleTags, handleTitleBlur, translationFieldsProps };

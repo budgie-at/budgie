@@ -9,11 +9,12 @@ import { buildUncategorizedRouteParams } from '../../transaction/utils/build-unc
 export const useStatisticsCardPress = (
     filters: TransactionFilterInterface,
     isIncome: boolean,
-    inboxMode: AnalyticsTransactionsModeEnum
+    inboxMode: AnalyticsTransactionsModeEnum,
+    entityParams: Record<string, string> | null
 ) => {
     const router = useRouter();
 
-    return (entityParams: Record<string, string> | null) => {
+    return () => {
         const type = isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
         const params = isDefined(entityParams)
             ? {
