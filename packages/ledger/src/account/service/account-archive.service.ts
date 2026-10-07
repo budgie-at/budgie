@@ -13,8 +13,6 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
 import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
@@ -80,9 +78,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
             }),
             deleteById: Effect.fn('AccountArchiveService.deleteById')(
                 function* (id: number) {
-                    const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
-
-                    yield* unconsolidateCanonicals(canonicals.filter(canonical => !isDefined(canonical.consolidationParentTransactionId)));
+                    yield* unconsolidateCanonicals(yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]));
                     yield* accountTransferConversionService.convertAccountTransfers(id);
                     yield* transactionRepository.detachTransfersFromAccount(id);
                     yield* debtEventRepository.deleteByAccountId(id);
