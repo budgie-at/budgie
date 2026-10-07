@@ -2,7 +2,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
+import { ConsolidationMutationService } from '../../executor/service/consolidation-mutation.service';
 import { AtmCashWithdrawalRepository } from '../../query/repository/atm-cash-withdrawal.repository';
 import { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
@@ -23,6 +23,7 @@ import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-c
 import { RefundPairConsolidationFamilyService } from './refund-pair-consolidation-family.service';
 import { TransferPairConsolidationFamilyService } from './transfer-pair-consolidation-family.service';
 
+import type { FeeEntrySourceInterface } from '../../query/interface/fee-entry-source.interface';
 import type { ConsolidationFamilyStrategyInterface } from '../interface/consolidation-family-strategy.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type {
@@ -39,7 +40,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const existingTransferRepository = yield* ExistingTransferRepository;
             const refundPairRepository = yield* RefundPairRepository;
             const transferPairRepository = yield* TransferPairRepository;
-            const consolidationRepairExecutorService = yield* ConsolidationRepairExecutorService;
+            const consolidationMutationService = yield* ConsolidationMutationService;
             const existingTransferIncomeDuplicateFamily = yield* ExistingTransferIncomeDuplicateConsolidationFamilyService;
             const bridgeClaimRepairFamily = yield* BridgeClaimRepairConsolidationFamilyService;
             const atmCashWithdrawalFamily = yield* AtmCashWithdrawalConsolidationFamilyService;
@@ -101,6 +102,9 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 
                 return existingTransferIncomeDuplicateCandidates;
             });
+
+            const countCanonicals = (movedFeeEntries: readonly FeeEntrySourceInterface[]): number =>
+                new Set(movedFeeEntries.map(feeEntry => feeEntry.transactionId)).size;
 
             const findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
                 function* () {
@@ -209,21 +213,14 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 countMissingTransferFeeRepairCandidates: Effect.fn(
                     'ConsolidationCoordinatorService.countMissingTransferFeeRepairCandidates'
                 )(function* () {
-                    return (yield* transferPairRepository.findMissingTransferFeeRepairCandidates()).length;
+                    return countCanonicals(yield* transferPairRepository.findMissingTransferFeeEntries());
                 }),
                 repairMissingTransferFees: Effect.fn('ConsolidationCoordinatorService.repairMissingTransferFees')(function* () {
-                    const candidates = yield* transferPairRepository.findMissingTransferFeeRepairCandidates();
-                    let repairedCount = 0;
+                    const movedFeeEntries = yield* transferPairRepository.findMissingTransferFeeEntries();
 
-                    for (const candidate of candidates) {
-                        if (yield* consolidationRepairExecutorService.restoreMissingTransferFees(candidate.canonicalTransferId)) {
-                            repairedCount += 1;
-                        }
+                    yield* consolidationMutationService.restoreMovedFeeEntries(movedFeeEntries);
 
-                        yield* CONSOLIDATION_YIELD;
-                    }
-
-                    return repairedCount;
+                    return countCanonicals(movedFeeEntries);
                 }),
                 repairBridgeClaimedTransferPairs: Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(
                     function* () {
@@ -247,7 +244,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             ExistingTransferRepository.layer,
             RefundPairRepository.layer,
             TransferPairRepository.layer,
-            ConsolidationRepairExecutorService.layer,
+            ConsolidationMutationService.layer,
             AtmCashWithdrawalConsolidationFamilyService.layer,
             BridgeClaimRepairConsolidationFamilyService.layer,
             ExistingTransferBridgeConsolidationFamilyService.layer,

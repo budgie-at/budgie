@@ -6,14 +6,14 @@ import * as Layer from 'effect/Layer';
 import { buildP2pFiatAtomicCandidateSql } from './sql-factory/p2p-fiat-atomic-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeCandidateSql } from './sql-factory/p2p-fiat-authoritative-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeRepairCandidateSql } from './sql-factory/p2p-fiat-authoritative-repair-candidate-sql.factory';
-import { MISSING_TRANSFER_FEE_REPAIR_CANDIDATES_SQL } from './sql-factory/transfer-fee-repair-sql.factory';
+import { MISSING_TRANSFER_FEE_ENTRIES_SQL } from './sql-factory/transfer-fee-repair-sql.factory';
 import { BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL } from './sql-factory/transfer-pair-bridge-claim-repair-sql.factory';
 import {
     buildTransferPairCandidatesSql,
     buildTransferPairManualReviewCandidatesSql
 } from './sql-factory/transfer-pair-candidate-sql.factory';
 
-import type { MissingTransferFeeRepairCandidateInterface } from '../interface/missing-transfer-fee-repair-candidate.interface';
+import type { FeeEntrySourceInterface } from '../interface/fee-entry-source.interface';
 import type { P2pFiatAtomicCandidateInterface } from '../interface/p2p-fiat-atomic-candidate.interface';
 import type { P2pFiatAuthoritativeCandidateInterface } from '../interface/p2p-fiat-authoritative-candidate.interface';
 import type { P2pFiatAuthoritativeRepairCandidateInterface } from '../interface/p2p-fiat-authoritative-repair-candidate.interface';
@@ -30,8 +30,7 @@ export class TransferPairRepository extends Context.Service<TransferPairReposito
             Db.query(db => db.$client.unsafe<TransferPairCandidateInterface>(buildTransferPairCandidatesSql(scope))),
         findBridgeClaimedRepairCandidates: () =>
             Db.query(db => db.$client.unsafe<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL)),
-        findMissingTransferFeeRepairCandidates: () =>
-            Db.query(db => db.$client.unsafe<MissingTransferFeeRepairCandidateInterface>(MISSING_TRANSFER_FEE_REPAIR_CANDIDATES_SQL)),
+        findMissingTransferFeeEntries: () => Db.query(db => db.$client.unsafe<FeeEntrySourceInterface>(MISSING_TRANSFER_FEE_ENTRIES_SQL)),
         findP2pFiatAtomicCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
             Db.query(db => db.$client.unsafe<P2pFiatAtomicCandidateInterface>(buildP2pFiatAtomicCandidateSql(scope))),
         findP2pFiatAuthoritativeCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>

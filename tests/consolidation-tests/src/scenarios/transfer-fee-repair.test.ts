@@ -43,6 +43,14 @@ const deleteLiveFeeEntries = (canonicalId: number) =>
 const fetchLiveFeeEntries = (canonicalId: number) =>
     Effect.map(fetchOwnLedgerEntries(canonicalId), entries => entries.filter(entry => entry.type === TransactionEntryTypeEnum.FEE));
 
+const expectFeeRestoredOnce = Effect.fnUntraced(function* (canonicalId: number, accountId: number, feeAmount: number) {
+    expect(yield* countCandidates).toBe(1);
+    expect(yield* repair).toBe(1);
+    expect((yield* fetchLiveFeeEntries(canonicalId)).map(entry => [entry.accountId, entry.amount])).toEqual([[accountId, feeAmount]]);
+    expect(yield* countCandidates).toBe(0);
+    expect(yield* repair).toBe(0);
+});
+
 const seedLegacyTransferPairCanonical = () =>
     Effect.gen(function* () {
         const transferMcc = yield* testQueryService.findMccByCode('4829');
@@ -62,34 +70,12 @@ const seedLegacyTransferPairCanonical = () =>
     });
 
 layer(TestLayer)('consolidation/transfer-fee-repair', it => {
-    it.effect('restores the fee of a legacy transfer pair canonical on the paying account only', () =>
+    it.effect('restores the fee of a legacy transfer pair canonical on the paying account only, once', () =>
         Effect.gen(function* () {
             const { balancesBeforeConsolidation, canonicalId, fromAccount, toAccount } = yield* seedLegacyTransferPairCanonical();
-            const [[, fromBalanceWithoutFee], [, toBalanceWithoutFee]] = yield* fetchLedgerBalances([fromAccount.id, toAccount.id]);
 
-            expect(yield* countCandidates).toBe(1);
-            expect(yield* repair).toBe(1);
-
-            const feeEntries = yield* fetchLiveFeeEntries(canonicalId);
-
-            expect(feeEntries.map(entry => [entry.accountId, entry.amount])).toEqual([[fromAccount.id, TRANSFER_FEE_AMOUNT]]);
-            expect(yield* fetchLedgerBalances([fromAccount.id, toAccount.id])).toEqual([
-                [fromAccount.id, fromBalanceWithoutFee - TRANSFER_FEE_AMOUNT],
-                [toAccount.id, toBalanceWithoutFee]
-            ]);
+            yield* expectFeeRestoredOnce(canonicalId, fromAccount.id, TRANSFER_FEE_AMOUNT);
             expect(yield* fetchLedgerBalances([fromAccount.id, toAccount.id])).toEqual(balancesBeforeConsolidation);
-        })
-    );
-
-    it.effect('is stable on a second pass', () =>
-        Effect.gen(function* () {
-            const { canonicalId } = yield* seedLegacyTransferPairCanonical();
-
-            yield* repair;
-
-            expect(yield* countCandidates).toBe(0);
-            expect(yield* repair).toBe(0);
-            expect(yield* fetchLiveFeeEntries(canonicalId)).toHaveLength(1);
         })
     );
 
@@ -137,12 +123,7 @@ layer(TestLayer)('consolidation/transfer-fee-repair', it => {
 
             yield* deleteLiveFeeEntries(canonicalId);
 
-            expect(yield* countCandidates).toBe(1);
-            expect(yield* repair).toBe(1);
-            expect((yield* fetchLiveFeeEntries(canonicalId)).map(entry => [entry.accountId, entry.amount])).toEqual([
-                [bankAccount.id, ATM_FEE_AMOUNT]
-            ]);
-            expect(yield* repair).toBe(0);
+            yield* expectFeeRestoredOnce(canonicalId, bankAccount.id, ATM_FEE_AMOUNT);
         })
     );
 });

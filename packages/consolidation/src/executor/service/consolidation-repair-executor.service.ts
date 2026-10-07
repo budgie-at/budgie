@@ -141,25 +141,6 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     },
                     effect => Db.transaction(effect)
                 ),
-                restoreMissingTransferFees: Effect.fnUntraced(
-                    function* (canonicalTransactionId: number) {
-                        const canonical = (yield* transactionRepository.findByIdsWithRefundConsolidationHistory([
-                            canonicalTransactionId
-                        ])).at(0);
-
-                        if (
-                            !isDefined(canonical) ||
-                            canonical.type !== TransactionTypeEnum.TRANSFER ||
-                            isDefined(canonical.deletedAt) ||
-                            isDefined(canonical.consolidationParentTransactionId)
-                        ) {
-                            return false;
-                        }
-
-                        return yield* consolidationMutationService.restoreMissingTransferFeeEntries(canonical);
-                    },
-                    effect => Db.transaction(effect)
-                ),
                 unconsolidateBridgeClaimedTransferPair: Effect.fnUntraced(
                     function* (candidate: BridgeClaimRepairCandidateInterface) {
                         const canonical = yield* transactionRepository.getByIdRaw(candidate.canonicalTransferId);
