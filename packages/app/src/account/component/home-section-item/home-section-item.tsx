@@ -1,20 +1,19 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 import { AccountRowInterface } from '../../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
-import { DebtAccountItemInterface } from '../../interface/debt-account-item.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
+import { isAccountItem } from '../../type-guard/is-account-item.type-guard';
 import { isBankProviderSection } from '../../type-guard/is-bank-provider-section.type-guard';
 import { isCryptoCurrencyGroup } from '../../type-guard/is-crypto-currency-group.type-guard';
-import { isDebtAccountItem } from '../../type-guard/is-debt-account-item.type-guard';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
 import { AccountGridRow } from '../account-grid-row/account-grid-row';
 import { CryptoCurrencyGroupCard } from '../crypto-currency-group-card/crypto-currency-group-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 
 interface Props {
-    readonly item: AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountItemInterface;
+    readonly item: AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
     readonly section: HomeSectionInterface;
     readonly balanceSummary: HomeAccountBalanceSummaryInterface;
 }
@@ -29,14 +28,12 @@ export const HomeSectionItem = ({ item, section, balanceSummary }: Props) => {
         return <CryptoCurrencyGroupCard group={item} balance={balance} balancesByAccountId={balanceSummary.balancesByAccountId} />;
     }
 
-    if (isDebtAccountItem(item)) {
-        const { debtAccount } = item;
-
+    if (isAccountItem(item)) {
         return (
             <DebtAccountCard
-                account={debtAccount}
-                instrumentSymbol={debtAccount.instrument.symbol}
-                debtProgressSummary={balanceSummary.balancesByAccountId.get(debtAccount.id)?.debtProgressSummary ?? null}
+                account={item}
+                instrumentSymbol={item.instrument.symbol}
+                debtProgressSummary={balanceSummary.balancesByAccountId.get(item.id)?.debtProgressSummary ?? null}
             />
         );
     }

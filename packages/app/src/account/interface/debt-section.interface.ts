@@ -1,8 +1,8 @@
-import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
+import { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
-import { DebtAccountItemInterface } from './debt-account-item.interface';
+import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 
 export interface DebtSectionInterface {
     readonly kind: HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU;
-    readonly data: DebtAccountItemInterface[];
+    readonly data: AccountWithSyncEntityInterface[];
 }
