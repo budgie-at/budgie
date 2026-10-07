@@ -34,6 +34,9 @@ const BAND_MAX_RATIO = 1.2;
 const MIN_FUZZY_LENGTH = 5;
 const FUZZY_DICE_THRESHOLD = 0.85;
 const MIN_PREFIX_TOKENS = 2;
+const RENAME_OVERLAP_DAYS = 31;
+const BILLING_DAY_GAP = 3;
+const MAX_MONTH_DAYS = 31;
 const DISPLAY_TOKEN_COUNT = 3;
 const NOISE_TAIL_PATTERN = /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)/iu;
 const LEGAL_FORM_PATTERN = /\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu;
@@ -100,9 +103,24 @@ const groupSimilarLabels = (charges: readonly RecurringChargeInterface[]): Recur
         }
     }
 
+    const span = (label: string): number[] => {
+        const timestamps = (chargesByLabel.get(label) ?? []).map(charge => charge.operatedAt.getTime());
+
+        return [Math.min(...timestamps), Math.max(...timestamps)];
+    };
+    const isRename = (first: string, second: string): boolean => {
+        const [firstStart, firstEnd] = span(first);
+        const [secondStart, secondEnd] = span(second);
+
+        return (
+            (first.startsWith(`${second} `) || second.startsWith(`${first} `)) &&
+            (firstStart >= secondEnd - RENAME_OVERLAP_DAYS * DAY_MS || secondStart >= firstEnd - RENAME_OVERLAP_DAYS * DAY_MS)
+        );
+    };
+
     let clusters: string[][] = [];
     for (const label of chargesByLabel.keys()) {
-        const linked = clusters.filter(cluster => cluster.some(member => areSimilarLabels(member, label)));
+        const linked = clusters.filter(cluster => cluster.some(member => areSimilarLabels(member, label) || isRename(member, label)));
         clusters = [...clusters.filter(cluster => !linked.includes(cluster)), [label, ...linked.flat()]];
     }
 
@@ -121,6 +139,24 @@ const splitIntoAmountBands = (charges: readonly RecurringChargeInterface[]): Rec
     }
 
     return bands;
+};
+
+const splitIntoBillingDays = (charges: readonly RecurringChargeInterface[]): RecurringChargeInterface[][] => {
+    const phases: RecurringChargeInterface[][] = [];
+    for (const charge of [...charges].sort((first, second) => first.operatedAt.getDate() - second.operatedAt.getDate())) {
+        const phase = phases[phases.length - 1];
+        if (isDefined(phase) && charge.operatedAt.getDate() - phase[phase.length - 1].operatedAt.getDate() <= BILLING_DAY_GAP) {
+            phase.push(charge);
+        } else {
+            phases.push([charge]);
+        }
+    }
+    const [first, ...rest] = phases;
+    const last = rest.pop();
+
+    return isDefined(last) && first[0].operatedAt.getDate() + MAX_MONTH_DAYS - last[last.length - 1].operatedAt.getDate() <= BILLING_DAY_GAP
+        ? [[...last, ...first], ...rest]
+        : phases;
 };
 
 const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeriesEventInterface[] => {
@@ -184,12 +220,12 @@ const findMerchantKey = (labels: readonly string[]): string => {
 const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface | null => {
     const events = toEvents(charges);
     const medianGap = events.length < MIN_EVENTS ? null : measureMedianGap(events);
-    if (!isDefined(medianGap)) {
+    const period = PERIOD_DAYS_BY_MONTHS.find(([, days]) => isDefined(medianGap) && Math.abs(medianGap - days) <= days * PERIOD_TOLERANCE);
+    if (!isDefined(medianGap) || (!isDefined(period) && medianGap > MONTHLY_MAX_GAP_DAYS)) {
         return null;
     }
 
     const latest = charges.reduce((current, charge) => (charge.operatedAt.getTime() > current.operatedAt.getTime() ? charge : current));
-    const period = PERIOD_DAYS_BY_MONTHS.find(([, days]) => Math.abs(medianGap - days) <= days * PERIOD_TOLERANCE);
     const labels = charges.map(chargeLabel);
     const stepIndex = findPriceStepIndex(events);
     const recentEvents = events.slice(Math.max(stepIndex ?? 0, events.length - RECENT_AMOUNT_COUNT));
@@ -211,12 +247,19 @@ const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSer
     };
 };
 
-const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
-    const whole = buildSeries(charges);
-    const monthlyBands = splitIntoAmountBands(charges)
-        .map(band => buildSeries(band))
+const detectMonthlySeries = (groups: readonly RecurringChargeInterface[][]): RecurringSeriesInterface[] =>
+    groups
+        .map(group => buildSeries(group))
         .filter(isDefined)
         .filter(series => series.periodMonths === 1);
+
+const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
+    const whole = buildSeries(charges);
+    const monthlyBands = splitIntoAmountBands(charges).flatMap(band => {
+        const [bandSeries] = detectMonthlySeries([band]);
+
+        return isDefined(bandSeries) ? [bandSeries] : detectMonthlySeries(splitIntoBillingDays(band));
+    });
 
     if (monthlyBands.length > 1 || (!isDefined(whole) && isNotEmptyArray(monthlyBands))) {
         return monthlyBands.map(series => {
