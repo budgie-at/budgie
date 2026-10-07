@@ -2440,7 +2440,7 @@ msgstr "PIN, а не вхід в акаунт"
 
 #: src/app/[lang]/page.tsx
 msgid "A private budget app alternative"
-msgstr "Приватна альтернатива для бюджету"
+msgstr "Приватна альтернатива бюджетним застосункам"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
