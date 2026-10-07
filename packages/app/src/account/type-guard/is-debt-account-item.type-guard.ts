@@ -1,9 +1,7 @@
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 import { AccountRowInterface } from '../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../interface/crypto-currency-group.interface';
 import { DebtAccountItemInterface } from '../interface/debt-account-item.interface';
 
-export const isCryptoCurrencyGroup = (
+export const isDebtAccountItem = (
     item: AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountItemInterface
-): item is CryptoCurrencyGroupInterface => 'accounts' in item && isNotEmptyArray(item.accounts);
+): item is DebtAccountItemInterface => 'debtAccount' in item;

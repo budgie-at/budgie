@@ -8,11 +8,11 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { AccountRowInterface } from '../../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
-import { DebtAccountGroupInterface } from '../../interface/debt-account-group.interface';
+import { DebtAccountItemInterface } from '../../interface/debt-account-item.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isCryptoCurrencyGroup } from '../../type-guard/is-crypto-currency-group.type-guard';
-import { isDebtAccountGroup } from '../../type-guard/is-debt-account-group.type-guard';
+import { isDebtAccountItem } from '../../type-guard/is-debt-account-item.type-guard';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
@@ -49,13 +49,13 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
         item,
         section
     }: {
-        item: AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountGroupInterface;
+        item: AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountItemInterface;
         section: HomeSectionInterface;
     }) => <HomeSectionItem item={item} section={section} balanceSummary={balanceSummary} />;
 
-    const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountGroupInterface) => {
-        if (isDebtAccountGroup(item)) {
-            return item.kind;
+    const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountItemInterface) => {
+        if (isDebtAccountItem(item)) {
+            return `debt-${item.debtAccount.id}`;
         }
 
         return isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id);
@@ -71,7 +71,7 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
     }
 
     return (
-        <AnimatedSectionList<AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountGroupInterface, HomeSectionInterface>
+        <AnimatedSectionList<AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountItemInterface, HomeSectionInterface>
             key={listFormatKey}
             scrollY={scrollY}
             sections={sections}
