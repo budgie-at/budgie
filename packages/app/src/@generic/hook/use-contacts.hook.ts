@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { NativeCallError } from '../error/native-call.error';
 import { appRuntime } from '../runtime/app.runtime';
 
 export type Contact = Contacts.ExistingContact;
@@ -32,17 +33,22 @@ export const useContacts = () => {
         const fiber = appRuntime.runFork(
             Effect.gen(function* () {
                 setState(prev => ({ ...prev, loading: true, error: null }));
-                const { status } = yield* Effect.tryPromise(() => Contacts.requestPermissionsAsync());
+                const { status } = yield* Effect.tryPromise({
+                    try: () => Contacts.requestPermissionsAsync(),
+                    catch: cause => new NativeCallError({ cause })
+                });
 
                 if (status !== Contacts.PermissionStatus.GRANTED) {
                     return { contacts: [], error: t`Permission to access contacts was denied.` };
                 }
 
-                const { data } = yield* Effect.tryPromise(() =>
-                    Contacts.getContactsAsync({
-                        fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Image]
-                    })
-                );
+                const { data } = yield* Effect.tryPromise({
+                    try: () =>
+                        Contacts.getContactsAsync({
+                            fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Image]
+                        }),
+                    catch: cause => new NativeCallError({ cause })
+                });
 
                 return { contacts: data, error: isEmptyArray(data) ? t`No contacts found on this device.` : null };
             }).pipe(

@@ -6,6 +6,7 @@ import * as Atom from 'effect/reactivity/Atom';
 import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { LlamaConfigInterface } from '../interface/llama-config.interface';
@@ -73,10 +74,12 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
         return appAtomRegistry.get(this.snapshot).status === AiSubsystemStatusEnum.READY;
     }
 
-    private releaseContext(): Effect.Effect<void, Cause.UnknownError> {
+    private releaseContext(): Effect.Effect<void, NativeCallError> {
         const { context } = this;
         this.context = null;
 
-        return isDefined(context) ? Effect.tryPromise(() => context.release()) : Effect.void;
+        return isDefined(context)
+            ? Effect.tryPromise({ try: () => context.release(), catch: cause => new NativeCallError({ cause }) })
+            : Effect.void;
     }
 }
