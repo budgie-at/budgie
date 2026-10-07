@@ -25,8 +25,6 @@ interface UseAiTranslationFieldsParams {
 interface UseAiTranslationFieldsReturn {
     titleEn: string | null;
     titleTags: string | null;
-    isGenerateDisabled: boolean;
-    handleRegenerate: () => Promise<void>;
     handleTitleBlur: () => void;
     translationFieldsProps: {
         titleEn: string | null;
@@ -95,5 +93,5 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
         onTitleTagsPress: handleTitleTagsPress
     };
 
-    return { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur, translationFieldsProps };
+    return { titleEn, titleTags, handleTitleBlur, translationFieldsProps };
 };
