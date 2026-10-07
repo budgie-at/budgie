@@ -25,6 +25,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { UNKNOWN_SYNC_ERROR } from '../../core/constant/unknown-sync-error.constant';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.enum';
+import { SyncRateLimitedError } from '../../core/error/sync-rate-limited.error';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
@@ -201,6 +202,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             provider,
             accountType: AccountTypeEnum.BANK_SYNC,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
+            isRateLimitError: error => error instanceof SyncRateLimitedError,
             shouldRequestSyncWhenEnabled: true,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),

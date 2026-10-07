@@ -7,10 +7,7 @@ import { testDb } from './setup';
 
 export const SYNC_ERROR_THRESHOLD = 3;
 
-export const httpFailureCases = [
-    { label: '401 unauthorized', status: 401 },
-    { label: '429 rate limited', status: 429 }
-] as const;
+export const httpFailureCases = [{ label: '401 unauthorized', status: 401 }] as const;
 
 export const expectSyncFailedAndDisabled = (syncId: number, minimumErrorCount = SYNC_ERROR_THRESHOLD) =>
     Effect.gen(function* () {

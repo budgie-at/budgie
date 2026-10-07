@@ -4094,6 +4094,10 @@ msgstr "Synchronisez vos soldes et transactions Binance"
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisez vos comptes et transactions Monobank"
 
+#: src/sync/service/background-sync-session.service.ts
+msgid "Syncing bank history"
+msgstr "Synchronisation de l’historique bancaire"
+
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Syncing history..."
 msgstr "Synchronisation de l'historique..."
@@ -4741,3 +4745,7 @@ msgstr "Votre jeton est stocké en toute sécurité dans la base de données. La
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."
 msgstr "Votre fichier de transactions est prêt à être partagé."
+
+#: src/sync/service/background-sync-session.service.ts
+msgid "Your transactions keep importing in the background"
+msgstr "Vos transactions continuent d’être importées en arrière-plan"

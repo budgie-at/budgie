@@ -20,6 +20,7 @@ export interface PollingSyncServiceDefinitionInterface extends Omit<SyncServiceD
     readonly isRunDeferred?: () => boolean;
     readonly validateToken?: (token: string) => Effect.Effect<unknown, Schema.SchemaError>;
     readonly isRetryableError?: (error: unknown) => boolean;
+    readonly isRateLimitError?: (error: unknown) => boolean;
     readonly isCredentialWideError?: (error: unknown) => boolean;
     readonly shouldKeepSyncsEnabledAfterError?: (error: unknown) => boolean;
 }

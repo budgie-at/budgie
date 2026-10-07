@@ -17,6 +17,7 @@ import { BINANCE_SYNC_TASK } from '../../sync/constant/binance-sync-task.constan
 import { MONOBANK_SYNC_TASK } from '../../sync/constant/monobank-sync-task.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../../sync/constant/transfer-consolidation-task.constant';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
+import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { appRuntime } from '../runtime/app.runtime';
 import { Workload } from '../service/workload.service';
@@ -72,9 +73,11 @@ const initializeAppServices = Effect.gen(function* () {
     const appDataSyncService = yield* AppDataSyncService;
     const onboardingService = yield* OnboardingService;
     const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+    const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
 
     yield* registerBackgroundTasks;
     yield* widgetSnapshotService.start();
+    yield* backgroundSyncSessionService.start();
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
     yield* logAndContinue(onboardingService.initializeLocale());
     yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());

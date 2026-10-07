@@ -2,6 +2,7 @@ import { AccountRepository, SyncModeEnum, SyncRepository, SyncStatusEnum } from 
 import { TransactionService } from '@budgie/ledger';
 import { subMonths } from 'date-fns/subMonths';
 import * as Cause from 'effect/Cause';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -40,15 +41,28 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         ((sync: SyncEntityInterface, result: SyncBatchResultInterface) =>
             Effect.asVoid(syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result))));
     let runDeadlineAtMs = Number.POSITIVE_INFINITY;
+    const claimedSyncIds = new Set<number>();
     let failedSyncId: number | null = null;
+    let lastRequestStartedAtMs: number | null = null;
 
-    const shouldStopProcessing = (): boolean => definition.isRunDeferred?.() === true || Date.now() >= runDeadlineAtMs;
+    const shouldStopProcessing = Effect.fnUntraced(function* () {
+        return definition.isRunDeferred?.() === true || (yield* Clock.currentTimeMillis) >= runDeadlineAtMs;
+    });
+
+    const resolveRateLimitWaitMs = Effect.fnUntraced(function* () {
+        const nowMs = yield* Clock.currentTimeMillis;
+        const waitMs = Math.max(0, definition.rateLimitMs - (isDefined(lastRequestStartedAtMs) ? nowMs - lastRequestStartedAtMs : 0));
+        lastRequestStartedAtMs = null;
+
+        return nowMs + waitMs > runDeadlineAtMs ? null : waitMs;
+    });
 
     const resolveSyncToken = (sync: SyncEntityInterface) =>
         syncIntegrationTokenService.resolveAccountToken(definition.provider, sync.accountId);
 
     const claimPendingSync = Effect.fnUntraced(function* (sync: SyncEntityInterface) {
         yield* syncRepository.setStatus(sync.id, SyncStatusEnum.SYNCING);
+        claimedSyncIds.add(sync.id);
 
         return sync;
     });
@@ -67,6 +81,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const processPendingSync = Effect.fnUntraced(function* (pendingSync: SyncEntityInterface) {
         failedSyncId = pendingSync.id;
+        lastRequestStartedAtMs = yield* Clock.currentTimeMillis;
         const result = yield* definition.executeSyncBatch(pendingSync);
         yield* applyProgressUpdate(pendingSync, result);
         if (pendingSync.mode === SyncModeEnum.FORWARD && result.completed) {
@@ -80,20 +95,22 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return true;
         }
 
-        return yield* Effect.raceFirst(
-            Effect.as(Effect.sleep(definition.rateLimitMs), false),
-            Effect.as(syncWorkload.awaitQueuedUserWork, true)
-        );
+        const waitMs = yield* resolveRateLimitWaitMs();
+        if (!isDefined(waitMs)) {
+            return true;
+        }
+
+        return yield* Effect.raceFirst(Effect.as(Effect.sleep(waitMs), false), Effect.as(syncWorkload.awaitQueuedUserWork, true));
     });
 
     const runSyncPass = Effect.fnUntraced(function* () {
         const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
-        if (!isNotEmptyArray(enabledSyncs) || shouldStopProcessing()) {
+        if (!isNotEmptyArray(enabledSyncs) || (yield* shouldStopProcessing())) {
             return true;
         }
 
         yield* (definition.beforeProcessRun ?? (() => Effect.void))(yield* resolveSyncToken(enabledSyncs[0]));
-        if (shouldStopProcessing()) {
+        if (yield* shouldStopProcessing()) {
             return true;
         }
 
@@ -104,9 +121,16 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
         yield* processPendingSync(pendingSync);
 
-        const isRunFinished = definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || shouldStopProcessing());
+        const isRunFinished =
+            definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing()));
 
         return isRunFinished ? true : null;
+    });
+
+    const waitBeforeRetry = Effect.fnUntraced(function* () {
+        const waitMs = yield* resolveRateLimitWaitMs();
+
+        return isDefined(waitMs) ? yield* Effect.as(Effect.sleep(waitMs), true) : null;
     });
 
     const retryAfterError = Effect.fnUntraced(function* (enabledSyncs: SyncEntityInterface[], errorMessage: string) {
@@ -116,9 +140,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         }
 
         yield* syncRepository.recordError(syncToRetry.id, errorMessage);
-        yield* Effect.sleep(definition.rateLimitMs);
 
-        return true;
+        return yield* waitBeforeRetry();
     });
 
     const resolveSyncsToDisable = Effect.fnUntraced(function* (enabledSyncs: SyncEntityInterface[], error: unknown) {
@@ -142,14 +165,23 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     });
 
     const handleError = Effect.fnUntraced(function* (error: unknown) {
+        if (definition.isRateLimitError?.(error) === true) {
+            return (yield* waitBeforeRetry()) === true ? null : true;
+        }
+
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
         const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
         if (!isNotEmptyArray(enabledSyncs)) {
             return false;
         }
 
-        if (definition.isRetryableError?.(error) !== false && (yield* retryAfterError(enabledSyncs, errorMessage))) {
+        const retryOutcome = definition.isRetryableError?.(error) === false ? false : yield* retryAfterError(enabledSyncs, errorMessage);
+        if (retryOutcome === true) {
             return null;
+        }
+
+        if (!isDefined(retryOutcome)) {
+            return true;
         }
 
         if (definition.shouldKeepSyncsEnabledAfterError?.(error) === true) {
@@ -171,6 +203,15 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         return false;
     });
 
+    const releaseClaimedSyncs = Effect.fnUntraced(function* () {
+        const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
+        yield* Effect.forEach(
+            enabledSyncs.filter(sync => claimedSyncIds.has(sync.id) && sync.status === SyncStatusEnum.SYNCING),
+            sync => syncRepository.setStatus(sync.id, SyncStatusEnum.IDLE),
+            { discard: true }
+        );
+    }, Effect.ignore);
+
     const runSyncLoop = Effect.fnUntraced(function* () {
         yield* definition.beforeSyncRun(runDeadlineAtMs);
 
@@ -187,13 +228,17 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const sync = Effect.fn('AbstractPollingSyncService.sync')(function* (deadlineAtMs: number = Number.POSITIVE_INFINITY) {
         runDeadlineAtMs = deadlineAtMs;
         failedSyncId = null;
+        lastRequestStartedAtMs = null;
         processedForwardSyncIds.clear();
+        claimedSyncIds.clear();
 
         return yield* Effect.ensuring(
             runSyncLoop(),
-            Effect.sync(() => {
-                definition.afterSyncRun?.();
-            })
+            Effect.andThen(releaseClaimedSyncs(), () =>
+                Effect.sync(() => {
+                    definition.afterSyncRun?.();
+                })
+            )
         );
     });
 

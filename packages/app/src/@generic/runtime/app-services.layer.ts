@@ -114,6 +114,7 @@ import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-tit
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
 import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
+import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
 import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
@@ -220,6 +221,7 @@ export const appServicesLayer = Layer.mergeAll(
     SyncProviderRegistryService.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
+    BackgroundSyncSessionService.layer,
     AuthService.layer,
     BudgetAlertMonitorService.layer,
     OnboardingService.layer,
