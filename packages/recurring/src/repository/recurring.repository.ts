@@ -1,4 +1,5 @@
 import {
+    buildCategoryTranslationJoinCondition,
     AccountEntityTable,
     BaseTransactionFilterRepository,
     CategoryEntityTable,
@@ -59,13 +60,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                         .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                         .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
                         .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-                        .leftJoin(
-                            DefaultCategoryTranslationEntityTable,
-                            and(
-                                eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                                eq(DefaultCategoryTranslationEntityTable.language, language)
-                            )
-                        )
+                        .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                         .where(
                             and(
                                 or(
