@@ -34,7 +34,12 @@ export class BackgroundSyncSessionService extends Context.Service<BackgroundSync
                     yield* Effect.forkDetach(
                         logAndContinue(
                             Stream.runForEach(
-                                Stream.zipWithIndex(reactivity.stream([getTableName(SyncEntityTable)], pendingBackwardSyncs)),
+                                reactivity.stream([getTableName(SyncEntityTable)], pendingBackwardSyncs).pipe(
+                                    Stream.mapAccum(
+                                        () => 0,
+                                        (completed, syncs) => [isNotEmptyArray(syncs) ? completed + 1 : 0, [[syncs, completed] as const]]
+                                    )
+                                ),
                                 ([syncs, completed]) =>
                                     Effect.promise(() =>
                                         isNotEmptyArray(syncs)
