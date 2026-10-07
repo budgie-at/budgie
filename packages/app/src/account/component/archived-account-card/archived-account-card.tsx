@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
@@ -17,7 +16,6 @@ import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
 
 import { ArchivedAccountCardSelector } from './archived-account-card.selector';
-/* jscpd:ignore-end */
 
 interface Props {
     readonly account: AccountWithInstrumentEntityInterface;

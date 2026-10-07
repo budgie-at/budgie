@@ -1,7 +1,6 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
@@ -10,16 +9,14 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
-import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
+import { ModalFormFooter } from '../../../@generic/component/modal-form-footer/modal-form-footer';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
-import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
-import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
@@ -48,7 +45,6 @@ export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const [openTagsSelector] = useTagsSelectorModal();
-    const [openNoteInput] = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
     const { isChatReady, modelStatus } = useChatModelStatus();
 
@@ -56,7 +52,7 @@ export const TagForm = (props: Props) => {
 
     const isEditing = isDefined(tag?.id);
 
-    const { titleEn, titleTags, setTitleEn, setTitleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+    const { titleEn, titleTags, handleTitleBlur, translationFieldsProps } = useAiTranslationFields({
         entity: tag ?? null,
         entityId: tag?.id ?? 0,
         currentTitle: title,
@@ -67,20 +63,6 @@ export const TagForm = (props: Props) => {
 
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
-
-    const handleTitleEnPress = async () => {
-        const result = await openNoteInput({ initialValue: titleEn ?? '' });
-        if (isDefined(result)) {
-            setTitleEn(result);
-        }
-    };
-
-    const handleTitleTagsPress = async () => {
-        const result = await openNoteInput({ initialValue: titleTags ?? '' });
-        if (isDefined(result)) {
-            setTitleTags(result);
-        }
-    };
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
@@ -172,28 +154,19 @@ export const TagForm = (props: Props) => {
                     </FormItem>
                 </Animated.View>
 
-                <AiTranslationFields
-                    titleEn={titleEn}
-                    titleTags={titleTags}
-                    isRegenerating={isRegenerating}
-                    disabled={isGenerateDisabled}
-                    onRegenerate={handleRegenerate}
-                    onTitleEnPress={handleTitleEnPress}
-                    onTitleTagsPress={handleTitleTagsPress}
-                    modelStatus={modelStatus}
-                />
+                <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} modelStatus={modelStatus} />
             </KeyboardAwareScrollView>
 
-            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+            <ModalFormFooter
+                onCancel={onCancel}
+                onSave={handleFormSubmit}
+                isSaveDisabled={isSaveDisabled}
+                saveTestID={TagFormSelector.Submit}
+            >
                 {isEditing ? (
                     <ModalFormMergeButton testID={TagFormSelector.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
                 ) : null}
-
-                <View className="flex-row gap-x-md">
-                    <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelector.Submit} />
-                </View>
-            </View>
+            </ModalFormFooter>
         </ModalPage>
     );
 };

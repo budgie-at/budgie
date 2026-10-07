@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { CategoryService } from '@budgie/ledger';
 import { plural } from '@lingui/core/macro';
@@ -108,4 +107,3 @@ export default function Categories() {
         />
     );
 }
-/* jscpd:ignore-end */
