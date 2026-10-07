@@ -2438,6 +2438,10 @@ msgstr "Список за з'єднаннями, хоча зіставлені �
 msgid "A PIN, not a login"
 msgstr "PIN, а не вхід в акаунт"
 
+#: src/app/[lang]/page.tsx
+msgid "A private budget app alternative"
+msgstr "Приватна альтернатива для бюджету"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
 msgstr "Проєкт, який ігнорує питання безпеки або відкидає занепокоєння користувачів, посилає чіткі сигнали про свої пріоритети. І навпаки, проєкт із продуманими та своєчасними відповідями на питання демонструє справжню відданість своїм користувачам."
@@ -2915,10 +2919,6 @@ msgstr "сповіщення"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Alerts that never leave your phone"
 msgstr "Сповіщення, які ніколи не залишають ваш телефон"
-
-#: src/app/[lang]/page.tsx
-msgid "All Budgie features"
-msgstr "Усі можливості Budgie"
 
 #: src/app/[lang]/features/opengraph-image.tsx
 #: src/app/[lang]/features/page.tsx
@@ -4404,6 +4404,10 @@ msgstr "Домашній екран Budgie, прокручений до розд
 msgid "Budgie home screen with a euro-denominated account listed under a total balance shown in dollars"
 msgstr "Головний екран Budgie з рахунком у євро під загальним балансом у доларах"
 
+#: src/app/[lang]/page.tsx
+msgid "Budgie home screen with a microphone button recording a voice entry over the accounts list"
+msgstr "Головний екран Budgie з кнопкою мікрофона, що записує голосовий запис над списком рахунків"
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Budgie home screen with a total balance above the Bank and Cash account groups, each group carrying its own subtotal and each account card its own currency"
 msgstr "Головний екран Budgie із загальним балансом над групами рахунків «Банк» і «Готівка», де кожна група має власний проміжний підсумок, а кожна картка рахунку — власну валюту"
@@ -4768,6 +4772,10 @@ msgstr "Екран налаштувань Budgie з повним набором 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
 msgstr "Екран налаштувань Budgie з розділом «Безпека»: картка блокування PIN-кодом над увімкненим перемикачем захисту від скриншотів"
+
+#: src/app/[lang]/page.tsx
+msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device"
+msgstr "Екран налаштувань Budgie з карткою приватності, яка повідомляє, що всі фінансові дані зберігаються локально на пристрої"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
@@ -13789,6 +13797,10 @@ msgstr "Скажіть «дванадцять за каву, сорок за т�
 msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. Transcription and parsing both happen on your phone — the audio never leaves it."
 msgstr "Скажіть «дванадцять за каву, сорок за таксі й вісім євро за паркування» — і Budgie запише всі три. І розпізнавання, і розбір відбуваються прямо на вашому телефоні — аудіо ніколи його не залишає."
 
+#: src/app/[lang]/page.tsx
+msgid "Say what you spent and Budgie logs it. The audio never leaves the device."
+msgstr "Скажіть, що ви витратили, і Budgie це запише. Аудіо ніколи не залишає пристрій."
+
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "scanning"
 msgstr "сканування"
@@ -16966,8 +16978,8 @@ msgid "Voice entry downloads what it needs once and keeps it on the device — o
 msgstr "Голосове введення завантажує потрібне один раз і зберігає на пристрої — лише після того, як ви увімкнете On-device AI в налаштуваннях, і лише при першому записі. Воно охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а ще десятки інших, і автоматично слідує за мовою вашого телефону."
 
 #: src/app/[lang]/page.tsx
-msgid "Voice entry, split transactions, tags, multi-currency, PDF and CSV imports and more."
-msgstr "Голосове введення, розділені транзакції, теги, мультивалютність, імпорт PDF і CSV та інше."
+msgid "Voice entry, transcribed on your phone"
+msgstr "Голосовий ввід, розпізнаний на вашому телефоні"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Voice Entry: Speak It, Budgie Logs It"
@@ -19314,6 +19326,10 @@ msgstr "UDID вашого пристрою вже має бути зареєст
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Your file, your storage"
 msgstr "Ваш файл, ваше сховище"
+
+#: src/app/[lang]/page.tsx
+msgid "Your finances stay on your device, with app lock and screenshot protection built in."
+msgstr "Ваші фінанси залишаються на вашому пристрої, з блокуванням застосунку та захистом від скриншотів."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your financial data belongs to you. Period. A good budget app should:"

@@ -130,9 +130,27 @@ export default async function LandingPage(props: PageLangParam) {
                     <Trans>Detected subscriptions laid out by date, so renewals stop surprising you.</Trans>
                 </CapabilityBento.Cell>
 
-                <CapabilityBento.Band href={`/${lang}/features`} title={<Trans>All Budgie features</Trans>}>
-                    <Trans>Voice entry, split transactions, tags, multi-currency, PDF and CSV imports and more.</Trans>
-                </CapabilityBento.Band>
+                <CapabilityBento.Cell
+                    alt={t(i18n)`Budgie home screen with a microphone button recording a voice entry over the accounts list`}
+                    href={`/${lang}/features/voice-transaction-entry`}
+                    locale={lang}
+                    scene="voice-transaction-entry-1"
+                    slug="voice-transaction-entry"
+                    title={<Trans>Voice entry, transcribed on your phone</Trans>}
+                >
+                    <Trans>Say what you spent and Budgie logs it. The audio never leaves the device.</Trans>
+                </CapabilityBento.Cell>
+
+                <CapabilityBento.Cell
+                    alt={t(i18n)`Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device`}
+                    href={`/${lang}/privacy`}
+                    locale={lang}
+                    scene="private-budget-app-alternative-1"
+                    slug="private-budget-app-alternative"
+                    title={<Trans>A private budget app alternative</Trans>}
+                >
+                    <Trans>Your finances stay on your device, with app lock and screenshot protection built in.</Trans>
+                </CapabilityBento.Cell>
             </CapabilityBento>
 
             <ComparisonSection />
