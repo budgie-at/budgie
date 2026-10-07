@@ -117,7 +117,7 @@ const buildHomePageSections = (
         if (isNotEmptyArray(groupAccounts)) {
             sections.push({
                 kind,
-                data: groupAccounts.map(debtAccount => ({ kind, debtAccount }))
+                data: groupAccounts
             });
         }
     });
