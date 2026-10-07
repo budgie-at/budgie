@@ -5572,7 +5572,7 @@ msgstr "Kategorisierungsregeln — deterministisch, kein Rätselraten"
 
 #: src/app/[lang]/page.tsx
 msgid "Categorization that runs on your phone"
-msgstr "Kategorisierung, die auf deinem Handy läuft"
+msgstr "Kategorisierung, die auf Ihrem Handy läuft"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Categorize"
@@ -5644,7 +5644,7 @@ msgstr "Kategoriebereinigung über dieselben Transaktionskarten, die Sie bereits
 
 #: src/app/[lang]/page.tsx
 msgid "Category suggestions are computed on-device, so your transactions are never sent to a server."
-msgstr "Kategorievorschläge werden auf dem Gerät berechnet, deine Transaktionen werden nie an einen Server gesendet."
+msgstr "Kategorievorschläge werden auf dem Gerät berechnet, Ihre Transaktionen werden nie an einen Server gesendet."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category suggestions drawn from your own history — never from a cloud service"
@@ -13811,7 +13811,7 @@ msgstr "Einfach sagen: „zwölf für Kaffee, vierzig für das Taxi und acht Eur
 
 #: src/app/[lang]/page.tsx
 msgid "Say what you spent and Budgie logs it. The audio never leaves the device."
-msgstr "Sag, was du ausgegeben hast, und Budgie bucht es. Das Audio verlässt nie das Gerät."
+msgstr "Sagen Sie, was Sie ausgegeben haben, und Budgie bucht es. Das Audio verlässt nie das Gerät."
 
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "scanning"
@@ -16991,7 +16991,7 @@ msgstr "Die Spracheingabe lädt, was sie braucht, einmalig herunter und behält 
 
 #: src/app/[lang]/page.tsx
 msgid "Voice entry, transcribed on your phone"
-msgstr "Spracheingabe, auf deinem Handy transkribiert"
+msgstr "Spracheingabe, auf Ihrem Handy transkribiert"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Voice Entry: Speak It, Budgie Logs It"
@@ -19341,7 +19341,7 @@ msgstr "Deine Datei, dein Speicher"
 
 #: src/app/[lang]/page.tsx
 msgid "Your finances stay on your device, with app lock and screenshot protection built in."
-msgstr "Deine Finanzen bleiben auf deinem Gerät, mit App-Sperre und Screenshot-Schutz."
+msgstr "Ihre Finanzen bleiben auf Ihrem Gerät, mit App-Sperre und Screenshot-Schutz."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your financial data belongs to you. Period. A good budget app should:"
