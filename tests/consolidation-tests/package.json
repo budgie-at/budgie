@@ -12,6 +12,7 @@
         "@budgie-at/test-kit": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
+        "@budgie/ledger": "workspace:*",
         "@effect/sql-sqlite-node": "4.0.0",
         "@effect/vitest": "4.0.0",
         "@rnw-community/shared": "^2.2.0",
