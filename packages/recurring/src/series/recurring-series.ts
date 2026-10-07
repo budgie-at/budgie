@@ -22,13 +22,11 @@ const PERIOD_TOLERANCE = 0.2;
 const MONTHLY_DAYS = 30;
 const BIMONTHLY_DAYS = 61;
 const QUARTERLY_DAYS = 91;
-const FOUR_MONTHLY_DAYS = 122;
 const SEMIANNUAL_DAYS = 182;
 const PERIOD_DAYS_BY_MONTHS: readonly (readonly [number, number])[] = [
     [1, MONTHLY_DAYS],
     [2, BIMONTHLY_DAYS],
     [3, QUARTERLY_DAYS],
-    [4, FOUR_MONTHLY_DAYS],
     [6, SEMIANNUAL_DAYS]
 ];
 
@@ -118,11 +116,7 @@ const groupSimilarLabels = (charges: readonly RecurringChargeInterface[]): Recur
         const [firstStart, firstEnd] = span(first);
         const [secondStart, secondEnd] = span(second);
 
-        return (
-            (chargesByLabel.get(first) ?? []).length >= MIN_EVENTS &&
-            (chargesByLabel.get(second) ?? []).length >= MIN_EVENTS &&
-            (firstStart >= secondEnd - RENAME_OVERLAP_DAYS * DAY_MS || secondStart >= firstEnd - RENAME_OVERLAP_DAYS * DAY_MS)
-        );
+        return firstStart >= secondEnd - RENAME_OVERLAP_DAYS * DAY_MS || secondStart >= firstEnd - RENAME_OVERLAP_DAYS * DAY_MS;
     };
 
     let clusters: string[][] = [];
@@ -152,7 +146,7 @@ const splitIntoBillingDays = (charges: readonly RecurringChargeInterface[]): Rec
     const phases: RecurringChargeInterface[][] = [];
     for (const charge of [...charges].sort((first, second) => first.operatedAt.getDate() - second.operatedAt.getDate())) {
         const phase = phases[phases.length - 1];
-        if (isDefined(phase) && charge.operatedAt.getDate() - phase[0].operatedAt.getDate() <= BILLING_DAY_GAP) {
+        if (isDefined(phase) && charge.operatedAt.getDate() - phase[phase.length - 1].operatedAt.getDate() <= BILLING_DAY_GAP) {
             phase.push(charge);
         } else {
             phases.push([charge]);
@@ -265,13 +259,7 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
     const monthlyBands = splitIntoAmountBands(charges).flatMap(band => {
         const [bandSeries] = detectMonthlySeries([band]);
 
-        if (isDefined(bandSeries)) {
-            return [bandSeries];
-        }
-
-        const daySeries = detectMonthlySeries(splitIntoBillingDays(band));
-
-        return daySeries.length > 1 ? daySeries : [];
+        return isDefined(bandSeries) ? [bandSeries] : detectMonthlySeries(splitIntoBillingDays(band));
     });
 
     if (monthlyBands.length > 1 || (!isDefined(whole) && isNotEmptyArray(monthlyBands))) {
