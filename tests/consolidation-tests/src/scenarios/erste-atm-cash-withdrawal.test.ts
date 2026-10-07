@@ -4,7 +4,7 @@ import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { expectConsolidationParent, fetchLedgerEntry, fetchSingleCanonicalId } from '../harness/consolidation-revert-audit';
-import { runConsolidation } from '../harness/run-consolidation';
+import { rebuildStoredBalances, runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
@@ -70,6 +70,7 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
                     ...unpairedTransactions.map(transaction => transaction.id)
                 ])
             ).toBe(1);
+            yield* rebuildStoredBalances();
 
             const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 
@@ -117,6 +118,7 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
                 ])
             ).toEqual([legacyAtmWithdrawal.id]);
             expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([legacyAtmWithdrawal.id])).toBe(1);
+            yield* rebuildStoredBalances();
 
             const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 
