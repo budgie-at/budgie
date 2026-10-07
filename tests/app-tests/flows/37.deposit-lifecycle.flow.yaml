@@ -1,6 +1,5 @@
 appId: ${APP_ID}
 ---
-
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
@@ -257,8 +256,28 @@ appId: ${APP_ID}
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
       visible:
-          id: 'TransactionInfo.Page'
+          id: 'TransactionInfo.Row.ToAccount'
       timeout: 5000
+- tapOn:
+      id: 'TransactionInfo.EditButton'
+- extendedWaitUntil:
+      visible: 'Edit Transfer'
+      timeout: 5000
+- assertVisible:
+      id: 'TransferForm.SelectedFromAccount.E2E Expense Target'
+- assertVisible:
+      id: 'TransferForm.SelectedToAccount.Deposit'
+- runFlow:
+      file: subflows/transactions/edit-comment.flow.yaml
+      env:
+          COMMENT: 'E2E Deposit Converted Transfer'
+- tapOn:
+      id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Row.ToAccount'
+      timeout: 5000
+- assertVisible: 'E2E Deposit Converted Transfer'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:

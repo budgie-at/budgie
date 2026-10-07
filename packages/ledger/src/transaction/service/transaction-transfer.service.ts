@@ -346,7 +346,9 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                         return yield* Effect.die(new Error(t`Consolidated transactions cannot start a deposit`));
                     }
 
-                    if (!isPositiveNumber(receivingAmount)) {
+                    const receivingMicroUnits = convertToMicroUnits(receivingAmount);
+
+                    if (!isPositiveNumber(receivingMicroUnits) || !Number.isSafeInteger(receivingMicroUnits)) {
                         return yield* Effect.die(new Error(t`Receiving amount must be greater than zero`));
                     }
 
@@ -354,7 +356,10 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                         yield* requireTransferAccountId(transaction.fromAccountId, 'source')
                     );
                     const [sourceEntry] = getTransactionCategoryEntries(transaction.entries);
-                    const receivingMicroUnits = convertToMicroUnits(receivingAmount);
+
+                    if (!isPositiveNumber(sourceEntry.amount) || !Number.isSafeInteger(sourceEntry.amount)) {
+                        return yield* Effect.die(new Error('Invalid funding amount'));
+                    }
 
                     if (depositInput.instrumentId === sourceAccount.instrumentId && receivingMicroUnits !== sourceEntry.amount) {
                         return yield* new DepositReceivingAmountMismatchError();

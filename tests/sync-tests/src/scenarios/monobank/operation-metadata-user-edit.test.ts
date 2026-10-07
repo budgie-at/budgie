@@ -1,3 +1,4 @@
+import { buildExpenseEntry } from '@app/transaction/utils/build-expense-entry.util';
 import { CurrencyEnum, PRECISION, TransactionEntityTable, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
@@ -16,10 +17,13 @@ import {
     testDb,
     TestLayer
 } from '../../harness';
+import { seed } from '../../harness/seed/seed';
 
 import type { TransactionEntryEntityInterface } from '@budgie/contracts';
 
 const EUR_NUMERIC_CODE = 978;
+const FUNDING_AMOUNT = 45_000;
+const EDITED_FUNDING_AMOUNT = 40_000;
 
 const syncEuroExpense = (externalId: string) =>
     Effect.gen(function* () {
@@ -28,7 +32,7 @@ const syncEuroExpense = (externalId: string) =>
         monobankStub.statement([
             buildMonobank.transaction({
                 id: externalId,
-                amount: -4_500_000,
+                amount: -FUNDING_AMOUNT * 100,
                 operationAmount: -100_000,
                 currencyCode: EUR_NUMERIC_CODE,
                 hold: false
@@ -79,10 +83,62 @@ describe('monobank/operation-metadata-user-edit', () => {
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
             const { transaction, primaryEntry } = yield* syncEuroExpense('tx-edit-same');
 
-            const editedEntry = yield* editPrimaryEntry(transaction.id, primaryEntry, 45_000);
+            const editedEntry = yield* editPrimaryEntry(transaction.id, primaryEntry, FUNDING_AMOUNT);
 
             expect(editedEntry?.operationInstrumentId).toBe(euro.id);
             expect(editedEntry?.operationAmount).toBe(1000 * PRECISION);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps operation metadata after a comment-only quick-form edit', () =>
+        Effect.gen(function* () {
+            const transactionService = yield* TransactionService;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const { transaction, primaryEntry } = yield* syncEuroExpense('tx-quick-comment');
+            const category = yield* seed.category('Deposit funding');
+
+            yield* transactionService.updateById(transaction.id, {
+                comment: 'Edited note',
+                tagIds: [],
+                entries: buildExpenseEntry({
+                    accountId: primaryEntry.accountId,
+                    categoryId: category.id,
+                    mccCategoryId: primaryEntry.mccCategoryId,
+                    amount: FUNDING_AMOUNT
+                })
+            });
+
+            const [editedEntry] = yield* fetchExpenseEntries(transaction.id);
+
+            expect(editedEntry.operationInstrumentId).toBe(euro.id);
+            expect(editedEntry.operationAmount).toBe(1000 * PRECISION);
+            expect(editedEntry.amount).toBe(primaryEntry.amount);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('clears operation metadata when the quick-form edit changes the funding account', () =>
+        Effect.gen(function* () {
+            const transactionService = yield* TransactionService;
+            const { transaction, primaryEntry } = yield* syncEuroExpense('tx-edit-account');
+            const category = yield* seed.category('Deposit funding');
+            const otherAccount = yield* seed.account({ title: 'Other funding account' });
+
+            yield* transactionService.updateById(transaction.id, {
+                fromAccountId: otherAccount.id,
+                tagIds: [],
+                entries: buildExpenseEntry({
+                    accountId: otherAccount.id,
+                    categoryId: category.id,
+                    mccCategoryId: primaryEntry.mccCategoryId,
+                    amount: FUNDING_AMOUNT
+                })
+            });
+
+            const [editedEntry] = yield* fetchExpenseEntries(transaction.id);
+
+            expect(editedEntry.accountId).toBe(otherAccount.id);
+            expect(editedEntry.operationInstrumentId).toBeNull();
+            expect(editedEntry.operationAmount).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -90,9 +146,9 @@ describe('monobank/operation-metadata-user-edit', () => {
         Effect.gen(function* () {
             const { transaction, primaryEntry } = yield* syncEuroExpense('tx-edit-amount');
 
-            const editedEntry = yield* editPrimaryEntry(transaction.id, primaryEntry, 40_000);
+            const editedEntry = yield* editPrimaryEntry(transaction.id, primaryEntry, EDITED_FUNDING_AMOUNT);
 
-            expect(editedEntry?.amount).toBe(40_000 * PRECISION);
+            expect(editedEntry?.amount).toBe(EDITED_FUNDING_AMOUNT * PRECISION);
             expect(editedEntry?.operationInstrumentId).toBeNull();
             expect(editedEntry?.operationAmount).toBeNull();
         }).pipe(Effect.provide(TestLayer))
