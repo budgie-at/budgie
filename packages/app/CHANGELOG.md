@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.95.0](https://github.com/budgie-at/budgie/compare/v6.94.3...v6.95.0) (2026-10-07)
+
+
+### Bug Fixes
+
+* **app:** keep a dismissed continued sync task dismissed until the backfill ends ([9c07449](https://github.com/budgie-at/budgie/commit/9c07449f091b0e52184eb70308612209f5e5fa31))
+* **app:** restart background sync progress for each backfill and cover 429 at the deadline ([f8bcfae](https://github.com/budgie-at/budgie/commit/f8bcfae00c184521a844aa12044c7422c87ef0c7))
+
+
+### Features
+
+* keep bank sync running in the background on iOS ([45fbc6d](https://github.com/budgie-at/budgie/commit/45fbc6db6c0310dc0b0a9ab76c7208838bd9baeb))
+
+
+
+
+
 ## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
 
 **Note:** Version bump only for package @budgie-at/app
