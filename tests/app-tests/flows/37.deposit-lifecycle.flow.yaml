@@ -248,6 +248,24 @@ appId: ${APP_ID}
       enabled: true
       retryTapIfNoChange: true
 
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 10000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 5000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 10000
+
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:

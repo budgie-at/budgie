@@ -1,6 +1,7 @@
 import { isExpenseTransaction } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { Redirect } from 'expo-router';
+import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -14,13 +15,18 @@ interface Props {
 }
 
 export const StartDepositAccount = ({ transaction }: Props) => {
-    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
+    const [openedTransaction] = useState(transaction);
+    const categoryEntries = getTransactionCategoryEntries(openedTransaction.entries);
     const [sourceEntry] = categoryEntries;
-    const isEligible = isExpenseTransaction(transaction) && !isDefined(transaction.consolidationType) && categoryEntries.length === 1;
+    const isEligible =
+        isExpenseTransaction(openedTransaction) &&
+        !isDefined(openedTransaction.consolidationType) &&
+        !isDefined(openedTransaction.consolidationParentTransactionId) &&
+        categoryEntries.length === 1;
 
     if (!isEligible || !isDefined(sourceEntry)) {
-        return <Redirect href={getTransactionHref(transaction)} />;
+        return <Redirect href={getTransactionHref(openedTransaction)} />;
     }
 
-    return <StartDepositForm transactionId={transaction.id} sourceEntry={sourceEntry} />;
+    return <StartDepositForm transactionId={openedTransaction.id} sourceEntry={sourceEntry} />;
 };

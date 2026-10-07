@@ -316,6 +316,10 @@ msgstr "100% local"
 msgid "A balanced starter budget with common categories"
 msgstr "Un presupuesto inicial equilibrado con categorías comunes"
 
+#: ../ledger/src/account/error/deposit-receiving-amount-mismatch.error.ts
+msgid "A deposit in the funding account currency must receive the full funding amount"
+msgstr "Un depósito en la moneda de la cuenta de origen debe recibir el importe completo"
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "A rule matches incoming bank transactions and applies a category and tags for you."
 msgstr "Una regla identifica las transacciones bancarias entrantes y les asigna una categoría y etiquetas."
@@ -3274,6 +3278,7 @@ msgstr "Plan creado"
 msgid "Plan name"
 msgstr "Nombre del plan"
 
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
@@ -3435,6 +3440,7 @@ msgid "Receiving amount"
 msgstr "Importe recibido"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "Receiving amount must be greater than zero"
 msgstr "El importe recibido debe ser mayor que cero"
 

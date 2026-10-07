@@ -317,6 +317,10 @@ msgstr "100% on-device"
 msgid "A balanced starter budget with common categories"
 msgstr "A balanced starter budget with common categories"
 
+#: ../ledger/src/account/error/deposit-receiving-amount-mismatch.error.ts
+msgid "A deposit in the funding account currency must receive the full funding amount"
+msgstr "A deposit in the funding account currency must receive the full funding amount"
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "A rule matches incoming bank transactions and applies a category and tags for you."
 msgstr "A rule matches incoming bank transactions and applies a category and tags for you."
@@ -3275,6 +3279,7 @@ msgstr "Plan created"
 msgid "Plan name"
 msgstr "Plan name"
 
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
@@ -3436,6 +3441,7 @@ msgid "Receiving amount"
 msgstr "Receiving amount"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "Receiving amount must be greater than zero"
 msgstr "Receiving amount must be greater than zero"
 
