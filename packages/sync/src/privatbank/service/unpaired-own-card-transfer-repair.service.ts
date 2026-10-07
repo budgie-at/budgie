@@ -1,4 +1,11 @@
-import { Db, PRECISION, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionRepository, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    Db,
+    PRECISION,
+    TRANSFER_PAIR_TIME_WINDOW_SECONDS,
+    TransactionEntryRepository,
+    TransactionRepository,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { TransactionTransferService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -6,6 +13,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import type { PostArchiveOwnCardTransferCandidateInterface } from '../interface/post-archive-own-card-transfer-candidate.interface';
 import type { UnpairedOwnCardTransferCandidateInterface } from '../interface/unpaired-own-card-transfer-candidate.interface';
 
 export class UnpairedOwnCardTransferRepairService extends Context.Service<UnpairedOwnCardTransferRepairService>()(
@@ -13,6 +21,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
     {
         make: Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
+            const transactionEntryRepository = yield* TransactionEntryRepository;
             const transactionTransferService = yield* TransactionTransferService;
             const counterpartAmountTolerance = 500 * PRECISION;
 
@@ -106,6 +115,47 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                     )
             `;
 
+            const postArchiveTransfersSql = String.raw`
+                SELECT
+                    tx.id AS transactionId,
+                    CASE WHEN from_account.deleted_at IS NOT NULL THEN 'INCOME' ELSE 'EXPENSE' END AS healedType,
+                    CASE WHEN from_account.deleted_at IS NOT NULL THEN from_account.id ELSE to_account.id END AS archivedAccountId
+                FROM transactions tx
+                INNER JOIN accounts from_account ON from_account.id = tx.from_account_id
+                INNER JOIN accounts to_account ON to_account.id = tx.to_account_id
+                WHERE tx.deleted_at IS NULL
+                    AND tx.consolidation_parent_transaction_id IS NULL
+                    AND tx.consolidation_type IS NULL
+                    AND tx.external_source = 'PRIVATBANK'
+                    AND tx.type = 'TRANSFER'
+                    AND INSTR(tx.title, '*') > 0
+                    AND (tx.title LIKE '%своєї картки%' OR tx.title LIKE '%свою картку%' OR tx.title LIKE '%мою картку%')
+                    AND (
+                        (from_account.deleted_at IS NOT NULL AND from_account.deleted_at < tx.operated_at AND to_account.deleted_at IS NULL)
+                        OR (to_account.deleted_at IS NOT NULL AND to_account.deleted_at < tx.operated_at AND from_account.deleted_at IS NULL)
+                    )
+            `;
+
+            const findPostArchiveTransfers = Effect.fnUntraced(function* () {
+                return yield* Db.query(db => db.$client.unsafe<PostArchiveOwnCardTransferCandidateInterface>(postArchiveTransfersSql));
+            });
+
+            const healPostArchiveTransfer = Effect.fnUntraced(
+                function* (candidate: PostArchiveOwnCardTransferCandidateInterface) {
+                    yield* transactionEntryRepository.deleteLedgerByTransactionIdAndAccountId(
+                        candidate.transactionId,
+                        candidate.archivedAccountId
+                    );
+                    yield* transactionRepository.updateById(
+                        candidate.transactionId,
+                        candidate.healedType === TransactionTypeEnum.INCOME
+                            ? { type: TransactionTypeEnum.INCOME, fromAccountId: null, exchangeRate: 1 }
+                            : { type: TransactionTypeEnum.EXPENSE, toAccountId: null, exchangeRate: 1 }
+                    );
+                },
+                effect => Db.transaction(effect)
+            );
+
             const findCandidates = Effect.fnUntraced(function* () {
                 return yield* Db.query(db => db.$client.unsafe<UnpairedOwnCardTransferCandidateInterface>(candidatesSql));
             });
@@ -131,7 +181,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
 
             return {
                 countCandidates: Effect.fn('UnpairedOwnCardTransferRepairService.countCandidates')(function* () {
-                    return (yield* findCandidates()).length;
+                    return (yield* findCandidates()).length + (yield* findPostArchiveTransfers()).length;
                 }),
                 repair: Effect.fn('UnpairedOwnCardTransferRepairService.repair')(function* () {
                     const candidates = yield* findCandidates();
@@ -140,13 +190,19 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                         yield* convertCandidate(candidate);
                     }
 
-                    return candidates.length;
+                    const postArchiveTransfers = yield* findPostArchiveTransfers();
+
+                    for (const postArchiveTransfer of postArchiveTransfers) {
+                        yield* healPostArchiveTransfer(postArchiveTransfer);
+                    }
+
+                    return candidates.length + postArchiveTransfers.length;
                 })
             };
         })
     }
 ) {
     static readonly layer = Layer.effect(UnpairedOwnCardTransferRepairService, UnpairedOwnCardTransferRepairService.make).pipe(
-        Layer.provide([TransactionRepository.layer, TransactionTransferService.layer])
+        Layer.provide([TransactionEntryRepository.layer, TransactionRepository.layer, TransactionTransferService.layer])
     );
 }

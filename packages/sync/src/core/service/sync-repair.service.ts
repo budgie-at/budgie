@@ -109,9 +109,10 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         const repairConsolidationDuplicates = Effect.fnUntraced(function* () {
             const incomeDuplicateRepairCount = yield* consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
             const bridgeClaimRepairCount = yield* consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
+            const missingTransferFeeRepairCount = yield* consolidationCoordinatorService.repairMissingTransferFees();
             const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
 
-            return incomeDuplicateRepairCount + bridgeClaimRepairCount + ownCardTransferRepairCount;
+            return incomeDuplicateRepairCount + bridgeClaimRepairCount + missingTransferFeeRepairCount + ownCardTransferRepairCount;
         });
 
         const rebuildBalancesWhenNeeded = Effect.fnUntraced(function* (result: SyncDuplicateRepairResultInterface) {
@@ -135,6 +136,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             const consolidationRepairCount =
                 (yield* consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()) +
                 (yield* consolidationCoordinatorService.countBridgeClaimRepairCandidates()) +
+                (yield* consolidationCoordinatorService.countMissingTransferFeeRepairCandidates()) +
                 (yield* unpairedOwnCardTransferRepairService.countCandidates());
 
             return buildPreviewFromCandidates(candidates, consolidationRepairCount);

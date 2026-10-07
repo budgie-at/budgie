@@ -15,12 +15,19 @@ import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.t
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
 import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
+import type { SQL } from 'drizzle-orm';
 
 export class TransactionEntryRepository extends Context.Service<TransactionEntryRepository>()(
     '@budgie/contracts/TransactionEntryRepository',
     {
         make: Effect.sync(() => {
             const filters = new BaseTransactionFilterRepository();
+            const deleteLiveEntries = (...conditions: SQL[]) =>
+                Db.query(db =>
+                    db
+                        .delete(TransactionEntryEntityTable)
+                        .where(and(isNull(TransactionEntryEntityTable.originalTransactionId), ...conditions))
+                );
             const buildPendingBaseValuationWhere = (baseInstrumentId: number) =>
                 and(
                     or(
@@ -253,17 +260,13 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                     Db.query(db =>
                         db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId))
                     ),
-                deleteLedgerByTransactionId: (transactionId: number) =>
-                    Db.query(db =>
-                        db
-                            .delete(TransactionEntryEntityTable)
-                            .where(
-                                and(
-                                    eq(TransactionEntryEntityTable.transactionId, transactionId),
-                                    isNull(TransactionEntryEntityTable.originalTransactionId)
-                                )
-                            )
+                deleteLedgerByTransactionIdAndAccountId: (transactionId: number, accountId: number) =>
+                    deleteLiveEntries(
+                        eq(TransactionEntryEntityTable.transactionId, transactionId),
+                        eq(TransactionEntryEntityTable.accountId, accountId)
                     ),
+                deleteLedgerByTransactionId: (transactionId: number) =>
+                    deleteLiveEntries(eq(TransactionEntryEntityTable.transactionId, transactionId)),
                 truncate: () => Db.query(db => db.delete(TransactionEntryEntityTable)),
                 archiveByAccountIds: (accountIds: number[]) =>
                     Db.query(db =>
