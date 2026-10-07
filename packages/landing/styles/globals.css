@@ -1248,6 +1248,12 @@
     }
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+    .bento-grid > * {
+        grid-column: span 6;
+    }
+}
+
 .mobile-menu {
     opacity: 1;
     translate: 0 0;
