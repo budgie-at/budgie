@@ -4645,6 +4645,10 @@ msgstr "Budgie-Formular für ein neues Festgeldkonto mit Feldern für Währung, 
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 msgstr "Budgie-Formular für eine neue Ausgabe mit geöffnetem Tag-Sheet und durchsuchbarem Raster aus Tag-Chips"
 
+#: src/app/[lang]/page.tsx
+msgid "Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad"
+msgstr "Budgie-Bildschirm für neue Ausgaben, der über dem Zahlenblock die Kategorien Transport und Lebensmittel vorschlägt"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Budgie new expense screen that a tap on the quick add expense tile opens directly"
 msgstr "Budgie-Bildschirm „Neue Ausgabe“, den ein Tipp auf die Schnelleingabe-Kachel „Ausgabe“ direkt öffnet"
@@ -5566,6 +5570,10 @@ msgstr "Kategorisierung und Vorschläge funktionieren in jeder Sprache, weil sie
 msgid "Categorization Rules — Deterministic, Not Guesswork"
 msgstr "Kategorisierungsregeln — deterministisch, kein Rätselraten"
 
+#: src/app/[lang]/page.tsx
+msgid "Categorization that runs on your phone"
+msgstr "Kategorisierung, die auf deinem Handy läuft"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Categorize"
 msgstr "Kategorisieren"
@@ -5633,6 +5641,10 @@ msgstr "Kategorie lokal gewählt"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Category cleanup from the same transaction cards you already use for editing"
 msgstr "Kategoriebereinigung über dieselben Transaktionskarten, die Sie bereits zum Bearbeiten verwenden"
+
+#: src/app/[lang]/page.tsx
+msgid "Category suggestions are computed on-device, so your transactions are never sent to a server."
+msgstr "Kategorievorschläge werden auf dem Gerät berechnet, deine Transaktionen werden nie an einen Server gesendet."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category suggestions drawn from your own history — never from a cloud service"

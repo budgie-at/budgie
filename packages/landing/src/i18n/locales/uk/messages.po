@@ -4645,6 +4645,10 @@ msgstr "Форма нового депозитного рахунку Budgie з 
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 msgstr "Форма нової витрати в Budgie з відкритою панеллю тегів і сіткою тегів із пошуком"
 
+#: src/app/[lang]/page.tsx
+msgid "Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad"
+msgstr "Екран нової витрати Budgie, що пропонує категорії «Транспорт» і «Продукти» над цифровою клавіатурою"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Budgie new expense screen that a tap on the quick add expense tile opens directly"
 msgstr "Екран нової витрати Budgie, який відкриває дотик по плитці витрати у віджеті швидкого додавання"
@@ -5566,6 +5570,10 @@ msgstr "Категоризація та підказки працюють буд
 msgid "Categorization Rules — Deterministic, Not Guesswork"
 msgstr "Правила категоризації — детерміновано, а не навмання"
 
+#: src/app/[lang]/page.tsx
+msgid "Categorization that runs on your phone"
+msgstr "Категоризація, що працює на вашому телефоні"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Categorize"
 msgstr "Категоризувати"
@@ -5633,6 +5641,10 @@ msgstr "Категорію обрано на пристрої"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Category cleanup from the same transaction cards you already use for editing"
 msgstr "Очищення категорій з тих самих карток транзакцій, які вже використовуються для редагування"
+
+#: src/app/[lang]/page.tsx
+msgid "Category suggestions are computed on-device, so your transactions are never sent to a server."
+msgstr "Підказки категорій обчислюються на пристрої, тож ваші транзакції ніколи не надсилаються на сервер."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category suggestions drawn from your own history — never from a cloud service"

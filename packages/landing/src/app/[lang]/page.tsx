@@ -151,6 +151,17 @@ export default async function LandingPage(props: PageLangParam) {
                 >
                     <Trans>Your finances stay on your device, with app lock and screenshot protection built in.</Trans>
                 </CapabilityBento.Cell>
+
+                <CapabilityBento.Cell
+                    alt={t(i18n)`Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad`}
+                    href={`/${lang}/features/ai-auto-categorization`}
+                    locale={lang}
+                    scene="ai-auto-categorization-1"
+                    slug="ai-auto-categorization"
+                    title={<Trans>Categorization that runs on your phone</Trans>}
+                >
+                    <Trans>Category suggestions are computed on-device, so your transactions are never sent to a server.</Trans>
+                </CapabilityBento.Cell>
             </CapabilityBento>
 
             <ComparisonSection />

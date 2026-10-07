@@ -4644,6 +4644,10 @@ msgstr "Budgie new deposit account form with currency, interest rate and maturit
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 msgstr "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 
+#: src/app/[lang]/page.tsx
+msgid "Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad"
+msgstr "Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Budgie new expense screen that a tap on the quick add expense tile opens directly"
 msgstr "Budgie new expense screen that a tap on the quick add expense tile opens directly"
@@ -5565,6 +5569,10 @@ msgstr "Categorization and suggestions work in any language because they are dri
 msgid "Categorization Rules — Deterministic, Not Guesswork"
 msgstr "Categorization Rules — Deterministic, Not Guesswork"
 
+#: src/app/[lang]/page.tsx
+msgid "Categorization that runs on your phone"
+msgstr "Categorization that runs on your phone"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Categorize"
 msgstr "Categorize"
@@ -5632,6 +5640,10 @@ msgstr "Category chosen on device"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Category cleanup from the same transaction cards you already use for editing"
 msgstr "Category cleanup from the same transaction cards you already use for editing"
+
+#: src/app/[lang]/page.tsx
+msgid "Category suggestions are computed on-device, so your transactions are never sent to a server."
+msgstr "Category suggestions are computed on-device, so your transactions are never sent to a server."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category suggestions drawn from your own history — never from a cloud service"
