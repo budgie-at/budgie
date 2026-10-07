@@ -2,6 +2,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import { AtmCashWithdrawalRepository } from '../../query/repository/atm-cash-withdrawal.repository';
 import { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
@@ -38,6 +39,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const existingTransferRepository = yield* ExistingTransferRepository;
             const refundPairRepository = yield* RefundPairRepository;
             const transferPairRepository = yield* TransferPairRepository;
+            const consolidationRepairExecutorService = yield* ConsolidationRepairExecutorService;
             const existingTransferIncomeDuplicateFamily = yield* ExistingTransferIncomeDuplicateConsolidationFamilyService;
             const bridgeClaimRepairFamily = yield* BridgeClaimRepairConsolidationFamilyService;
             const atmCashWithdrawalFamily = yield* AtmCashWithdrawalConsolidationFamilyService;
@@ -204,6 +206,25 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                         return (yield* findBridgeClaimedRepairCandidates()).length;
                     }
                 ),
+                countMissingTransferFeeRepairCandidates: Effect.fn(
+                    'ConsolidationCoordinatorService.countMissingTransferFeeRepairCandidates'
+                )(function* () {
+                    return (yield* transferPairRepository.findMissingTransferFeeRepairCandidates()).length;
+                }),
+                repairMissingTransferFees: Effect.fn('ConsolidationCoordinatorService.repairMissingTransferFees')(function* () {
+                    const candidates = yield* transferPairRepository.findMissingTransferFeeRepairCandidates();
+                    let repairedCount = 0;
+
+                    for (const candidate of candidates) {
+                        if (yield* consolidationRepairExecutorService.restoreMissingTransferFees(candidate.canonicalTransferId)) {
+                            repairedCount += 1;
+                        }
+
+                        yield* CONSOLIDATION_YIELD;
+                    }
+
+                    return repairedCount;
+                }),
                 repairBridgeClaimedTransferPairs: Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(
                     function* () {
                         const candidates = yield* findBridgeClaimedRepairCandidates();
@@ -226,6 +247,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             ExistingTransferRepository.layer,
             RefundPairRepository.layer,
             TransferPairRepository.layer,
+            ConsolidationRepairExecutorService.layer,
             AtmCashWithdrawalConsolidationFamilyService.layer,
             BridgeClaimRepairConsolidationFamilyService.layer,
             ExistingTransferBridgeConsolidationFamilyService.layer,

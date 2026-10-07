@@ -165,6 +165,31 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                         }
                     }
                 }),
+                restoreMissingTransferFeeEntries: Effect.fn('ConsolidationMutationService.restoreMissingTransferFeeEntries')(function* (
+                    canonicalTransaction: TransactionWithEntriesEntityInterface
+                ) {
+                    const accountIds = [canonicalTransaction.fromAccountId, canonicalTransaction.toAccountId].filter(isDefined);
+                    let restored = false;
+
+                    for (const accountId of new Set(accountIds)) {
+                        const hasLiveFeeEntry = canonicalTransaction.entries.some(
+                            entry =>
+                                entry.accountId === accountId &&
+                                entry.type === TransactionEntryTypeEnum.FEE &&
+                                !isDefined(entry.originalTransactionId)
+                        );
+                        const movedFeeEntries = findFeeEntries(accountId, [canonicalTransaction]).filter(entry =>
+                            isDefined(entry.originalTransactionId)
+                        );
+
+                        if (!hasLiveFeeEntry && isNotEmptyArray(movedFeeEntries)) {
+                            yield* createCanonicalFeeEntries(accountId, movedFeeEntries, canonicalTransaction.id);
+                            restored = true;
+                        }
+                    }
+
+                    return restored;
+                }),
                 createP2pFiatTransferFeeEntries: Effect.fn('ConsolidationMutationService.createP2pFiatTransferFeeEntries')(function* (
                     candidate: P2pFiatTransferCandidateInterface,
                     sourceTransactions: TransactionWithEntriesEntityInterface[],
