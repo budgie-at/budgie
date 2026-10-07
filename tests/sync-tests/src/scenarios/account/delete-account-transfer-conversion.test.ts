@@ -97,29 +97,6 @@ const fetchStatistics = Effect.fnUntraced(function* () {
     return { totals, incomeByCategory, expenseByCategory, incomeTransactions, expenseTransactions };
 });
 
-const expectNestedConsolidationKept = <E, R>(accountLifecycleAction: (accountId: number) => Effect.Effect<void, E, R>) =>
-    Effect.gen(function* () {
-        const accountBalanceRepository = yield* AccountBalanceRepository;
-        const account = yield* seed.account({ title: 'erste bank EUR', type: AccountTypeEnum.BANK });
-        const bankAccount = yield* seed.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK });
-        const cashAccount = yield* seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
-        const liveAccountIds = [bankAccount.id, cashAccount.id];
-        const { canonical, child, grandchild } = yield* seedHiddenTransferChild(account.id, bankAccount.id, cashAccount.id);
-        const snapshot = Effect.all({
-            grandchild: fetchTransactionById(grandchild.id),
-            canonicalEntries: fetchEntries(canonical.id),
-            ledger: accountBalanceRepository.getLedgerBalances(liveAccountIds),
-            statistics: fetchStatistics()
-        });
-        const before = yield* snapshot;
-
-        yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE });
-        yield* accountLifecycleAction(account.id);
-
-        expect((yield* fetchTransactionById(child.id)).consolidationParentTransactionId).toBe(canonical.id);
-        expect(yield* snapshot).toEqual(before);
-    });
-
 describe('account/delete-account-transfer-conversion', () => {
     it.effect('converts only visible transfers into excluded income and expense and leaves hidden and archived ones intact', () =>
         Effect.gen(function* () {
@@ -238,15 +215,30 @@ describe('account/delete-account-transfer-conversion', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('archiving an account keeps a consolidation hidden inside another one nested', () =>
-        Effect.flatMap(AccountArchiveService, accountArchiveService =>
-            expectNestedConsolidationKept(accountId => accountArchiveService.archiveById(accountId))
-        ).pipe(Effect.provide(TestLayer))
-    );
+    it.effect('resync and archive keep a consolidation hidden inside another one nested', () =>
+        Effect.gen(function* () {
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const resyncService = yield* ResyncService;
+            const account = yield* seed.account({ title: 'erste bank EUR', type: AccountTypeEnum.BANK });
+            const bankAccount = yield* seed.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK });
+            const cashAccount = yield* seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
+            const { canonical, child, grandchild } = yield* seedHiddenTransferChild(account.id, bankAccount.id, cashAccount.id);
+            const snapshot = Effect.all({
+                childParentId: Effect.map(fetchTransactionById(child.id), transaction => transaction.consolidationParentTransactionId),
+                grandchild: fetchTransactionById(grandchild.id),
+                canonicalEntries: fetchEntries(canonical.id),
+                ledger: accountBalanceRepository.getLedgerBalances([bankAccount.id, cashAccount.id]),
+                statistics: fetchStatistics()
+            });
+            const before = yield* snapshot;
 
-    it.effect('resyncing an account keeps a consolidation hidden inside another one nested', () =>
-        Effect.flatMap(ResyncService, resyncService =>
-            expectNestedConsolidationKept(accountId => resyncService.resync({ accountId, sinceDays: null }))
-        ).pipe(Effect.provide(TestLayer))
+            yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE });
+            yield* resyncService.resync({ accountId: account.id, sinceDays: null });
+            expect(yield* snapshot).toEqual(before);
+
+            yield* accountArchiveService.archiveById(account.id);
+            expect(yield* snapshot).toEqual(before);
+        }).pipe(Effect.provide(TestLayer))
     );
 });

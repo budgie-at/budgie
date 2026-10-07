@@ -6,8 +6,7 @@ import {
     SettingsRepository,
     TransactionEntryRepository,
     TransactionRepository,
-    TransactionConsolidationRepository,
-    TransactionEntityInterface
+    TransactionConsolidationRepository
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -34,9 +33,11 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         const ledgerWorkload = yield* LedgerWorkload;
         const unconsolidationBatchSize = 25;
 
-        const unconsolidateCanonicals = Effect.fn('AccountArchiveService.unconsolidateCanonicals')(function* (
-            canonicals: Array<Pick<TransactionEntityInterface, 'id'>>
+        const unconsolidateActiveAutoByAccountId = Effect.fn('AccountArchiveService.unconsolidateActiveAutoByAccountId')(function* (
+            id: number
         ) {
+            const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
+
             yield* processInputWithBatches(canonicals, unconsolidationBatchSize, batch =>
                 Effect.forEach(batch, canonical => Db.transaction(unconsolidationService.unconsolidateById(canonical.id)), {
                     discard: true
@@ -45,7 +46,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         });
 
         const archiveByIdInTransaction = Effect.fn('AccountArchiveService.archiveByIdInTransaction')(function* (id: number) {
-            yield* unconsolidateCanonicals(yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]));
+            yield* unconsolidateActiveAutoByAccountId(id);
 
             yield* accountRepository.archiveById(id);
             yield* debtEventRepository.archiveByAccountIds([id]);
@@ -78,7 +79,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
             }),
             deleteById: Effect.fn('AccountArchiveService.deleteById')(
                 function* (id: number) {
-                    yield* unconsolidateCanonicals(yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]));
+                    yield* unconsolidateActiveAutoByAccountId(id);
                     yield* accountTransferConversionService.convertAccountTransfers(id);
                     yield* transactionRepository.detachTransfersFromAccount(id);
                     yield* debtEventRepository.deleteByAccountId(id);
