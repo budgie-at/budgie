@@ -2,10 +2,12 @@ import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-ki
 import * as Effect from 'effect/Effect';
 import { afterAll, afterEach, beforeEach } from 'vitest';
 
-import { testDb, testDbHandle } from './test-context';
+import { rebuildStoredBalances, testDb, testDbHandle, TestLayer } from './test-context';
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
-afterEach(() => Effect.runPromise(assertStoredBalancesMatchLedger(testDb)));
+afterEach(() =>
+    Effect.runPromise(rebuildStoredBalances.pipe(Effect.andThen(assertStoredBalancesMatchLedger(testDb)), Effect.provide(TestLayer)))
+);
 
 afterAll(() => testDbHandle.dispose());

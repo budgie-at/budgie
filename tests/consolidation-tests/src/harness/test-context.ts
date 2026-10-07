@@ -65,10 +65,11 @@ export const TestLayer = Layer.mergeAll(
     Layer.provideMerge(Layer.succeed(Clock.Clock, Clock.Clock.defaultValue()))
 );
 
-export const unconsolidateById = Effect.fn('unconsolidateById')(function* (transactionId: number) {
-    const unconsolidationService = yield* UnconsolidationService;
-    const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalService, accountBalanceIncrementalService =>
+    accountBalanceIncrementalService.updateAllBalances(false)
+);
 
-    yield* Db.transaction(unconsolidationService.unconsolidateById(transactionId));
-    yield* accountBalanceIncrementalService.updateAllBalances(false);
-});
+export const unconsolidateById = (transactionId: number) =>
+    Effect.flatMap(UnconsolidationService, unconsolidationService =>
+        Db.transaction(unconsolidationService.unconsolidateById(transactionId))
+    );
