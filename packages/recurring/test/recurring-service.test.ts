@@ -157,11 +157,23 @@ layer(TestLayer)('recurringService', it => {
     it.effect('ignores visits that repeat at an interval matching no billing period', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
-            yield* Effect.forEach([12, 8, 4, 0], monthsAgo => seed('EISSALON', monthsAgo, 10, 4.6), { discard: true });
+            yield* Effect.forEach([27, 18, 9, 0], monthsAgo => seed('EISSALON', monthsAgo, 10, 4.6), { discard: true });
 
             const months = yield* Effect.forEach([2, 4, JUNE, JULY, 9], calendar);
 
             expect(months.flatMap(allEntries)).toEqual([]);
+        })
+    );
+
+    it.effect('keeps concurrent monthly series of a merchant and its extended label separate', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'A1', 5, 9.9);
+            yield* seedMonthly(seed, 'A1 SHOP', 20, 31.5);
+
+            const months = yield* Effect.forEach([2, 3, 4, JUNE, JULY], calendar);
+
+            expect(new Set(months.flatMap(allEntries).map(entry => entry.seriesId)).size).toBe(2);
         })
     );
 
