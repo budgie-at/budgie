@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
+
+
+### Bug Fixes
+
+* restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+
+
+
+
+
 ## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
 
 **Note:** Version bump only for package @budgie/consolidation
