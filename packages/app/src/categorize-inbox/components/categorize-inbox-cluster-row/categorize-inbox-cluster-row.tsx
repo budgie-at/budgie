@@ -54,6 +54,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
             <Link href={getCategorizeInboxRowHref(row)} asChild>
                 <HapticPressable
                     className="flex-1 flex-row items-center gap-x-xs"
+                    hitSlop={0}
                     accessibilityRole="link"
                     accessibilityLabel={t`Open transaction`}
                     {...testID(CategorizeInboxClusterRowSelector.Open, row.transactionId)}

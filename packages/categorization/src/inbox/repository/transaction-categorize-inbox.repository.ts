@@ -85,7 +85,7 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                             baseAmount: TransactionEntryEntityTable.baseAmount,
                             baseInstrumentId: TransactionEntryEntityTable.baseInstrumentId,
                             mccCategoryId: TransactionEntryEntityTable.mccCategoryId,
-                            categoryId: TransactionEntryEntityTable.categoryId,
+                            categoryId: CategoryEntityTable.id,
                             tagIds: sql<string>`(SELECT COALESCE(group_concat(${TransactionTagsEntityTable.tagId}), '') FROM ${TransactionTagsEntityTable} WHERE ${TransactionTagsEntityTable.transactionId} = ${TransactionEntityTable.id})`.mapWith(
                                 (tagIds: string) => tagIds.split(',').filter(isNotEmptyString).map(Number)
                             ),
@@ -97,6 +97,18 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                         .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
                         .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
                         .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
+                        .leftJoin(
+                            CategoryEntityTable,
+                            and(
+                                eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId),
+                                notInArray(TransactionEntryEntityTable.categorySource, [
+                                    CategorySourceEnum.MCC_DEFAULT,
+                                    CategorySourceEnum.INBOX
+                                ]),
+                                eq(CategoryEntityTable.isSystemCategory, false),
+                                isNull(CategoryEntityTable.deletedAt)
+                            )
+                        )
                         .where(where)
                         .orderBy(desc(TransactionEntityTable.operatedAt))
                 );

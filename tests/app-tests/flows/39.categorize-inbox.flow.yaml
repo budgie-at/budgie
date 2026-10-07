@@ -99,6 +99,11 @@ appId: ${APP_ID}
       notVisible:
           id: 'TagPickerBottomSheet.Card.E2E Coffee Tag'
       timeout: 5000
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxUndoBar.FollowUpButton'
+          enabled: false
+      timeout: 5000
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.RuleButton'

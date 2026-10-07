@@ -67,6 +67,25 @@ describe('categorization/inbox-tag', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('loads the existing tag ids of an uncategorized row', () =>
+        Effect.gen(function* () {
+            const inboxRepository = yield* TransactionCategorizeInboxRepository;
+            const account = yield* testSeedService.account();
+            const coffee = yield* testSeedService.tag('Coffee');
+            const work = yield* testSeedService.tag('Work');
+            const expense = yield* testSeedService.bankPairExpense(
+                { externalId: 'tagged', operatedAt: new Date('2026-01-03T09:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+            yield* testSeedService.transactionTag(expense.id, coffee.id, TagSourceEnum.USER);
+            yield* testSeedService.transactionTag(expense.id, work.id, TagSourceEnum.USER);
+
+            const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
+
+            expect(rows.find(row => row.transactionId === expense.id)?.tagIds.toSorted()).toEqual([coffee.id, work.id].toSorted());
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('promotes an existing rule tag to USER on a user pick and leaves a USER tag untouched by inbox accepts', () =>
         Effect.gen(function* () {
             const inboxRepository = yield* TransactionCategorizeInboxRepository;
