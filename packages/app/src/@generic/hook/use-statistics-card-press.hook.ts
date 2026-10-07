@@ -1,6 +1,8 @@
 import { TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { AnalyticsTransactionsModeEnum } from '../../transaction/enum/analytics-transactions-mode.enum';
 import { buildUncategorizedRouteParams } from '../../transaction/utils/build-uncategorized-route-params.util';
 
@@ -13,7 +15,7 @@ export const useStatisticsCardPress = (
 
     return (entityParams: Record<string, string> | null) => {
         const type = isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
-        const params = entityParams
+        const params = isDefined(entityParams)
             ? {
                   type,
                   ...entityParams,

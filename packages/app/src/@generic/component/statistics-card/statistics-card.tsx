@@ -2,6 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 import { PropsWithChildren } from 'react';
 import { Text, View } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { statsAmountVariants } from '../../constant/stats-variants.constant';
@@ -26,7 +28,7 @@ export const StatisticsCard = ({ amount, totalAmount, variant, isIncome, cardTes
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const microAmount = convertFromMicroUnits(amount);
-    const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
+    const percentage = Number((isPositiveNumber(totalAmount) ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
 
     return (
         <HapticPressable onPress={onPress} className="gap-y-md" testID={cardTestID}>
