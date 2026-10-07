@@ -3435,7 +3435,7 @@ msgstr "Salden werden neu berechnet"
 msgid "Receiving {toCode}"
 msgstr "Empfang {toCode}"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 msgid "Receiving amount"
 msgstr "Empfangsbetrag"
 
@@ -3994,7 +3994,7 @@ msgstr "Ausgegeben"
 msgid "Split"
 msgstr "Aufteilen"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Start Deposit"
@@ -4181,7 +4181,7 @@ msgstr "Zum Auswählen tippen"
 msgid "Target balance"
 msgstr "Zielsaldo"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Die Bank hat die Währung der Einlage nicht übermittelt. Bestätige die Währung und den Empfangsbetrag."
 

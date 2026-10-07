@@ -3435,7 +3435,7 @@ msgstr "Перерахунок балансів"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 msgid "Receiving amount"
 msgstr "Сума зарахування"
 
@@ -3994,7 +3994,7 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Start Deposit"
@@ -4181,7 +4181,7 @@ msgstr "Торкніться для вибору"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Банк не передав валюту депозиту. Підтвердіть валюту та суму зарахування."
 

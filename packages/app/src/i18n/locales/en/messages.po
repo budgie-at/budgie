@@ -3436,7 +3436,7 @@ msgstr "Recalculating balances"
 msgid "Receiving {toCode}"
 msgstr "Receiving {toCode}"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 msgid "Receiving amount"
 msgstr "Receiving amount"
 
@@ -3995,7 +3995,7 @@ msgstr "Spent"
 msgid "Split"
 msgstr "Split"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Start Deposit"
@@ -4182,7 +4182,7 @@ msgstr "Tap to select"
 msgid "Target balance"
 msgstr "Target balance"
 
-#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 
