@@ -1,4 +1,3 @@
-import { useLingui } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -22,7 +21,6 @@ interface Props {
 }
 
 export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
-    const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
     const { formatDayAndMonthAndYear } = useFormatDate();
 
@@ -38,7 +36,6 @@ export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
                 <HapticPressable
                     className="flex-row items-center gap-x-xl"
                     accessibilityRole="link"
-                    accessibilityLabel={t`Open transaction`}
                     {...testID(CategorizeInboxOneOffRowSelector.Open, cluster.key)}
                 >
                     <Text className="text-primary text-sm font-semibold flex-1" numberOfLines={1}>

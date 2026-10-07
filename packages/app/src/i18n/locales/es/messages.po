@@ -3098,11 +3098,6 @@ msgstr "Abre Privat24 y selecciona la tarjeta o cuenta que quieres importar"
 msgid "Open settings"
 msgstr "Abrir configuración"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
-#: src/categorize-inbox/components/categorize-inbox-one-off-row/categorize-inbox-one-off-row.tsx
-msgid "Open transaction"
-msgstr "Abrir transacción"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Operador"

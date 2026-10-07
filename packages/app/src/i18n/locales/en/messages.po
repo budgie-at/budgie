@@ -3099,11 +3099,6 @@ msgstr "Open Privat24 and select the card or account you want to import"
 msgid "Open settings"
 msgstr "Open settings"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
-#: src/categorize-inbox/components/categorize-inbox-one-off-row/categorize-inbox-one-off-row.tsx
-msgid "Open transaction"
-msgstr "Open transaction"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Operator"
