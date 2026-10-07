@@ -15,6 +15,9 @@ appId: ${APP_ID}
           ACTION_ITEM_ID: 'ActionItem.Expense'
           FORM_TITLE: 'New Expense'
 
+- assertVisible:
+      id: 'TransactionForm.SelectedAccount.E2E_Txn_Account'
+
 - tapOn:
       id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Expense'
