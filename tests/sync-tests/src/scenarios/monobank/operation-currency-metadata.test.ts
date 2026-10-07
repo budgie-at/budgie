@@ -19,6 +19,7 @@ import {
 
 const EUR_NUMERIC_CODE = 978;
 const UNKNOWN_NUMERIC_CODE = 999;
+const JPY_NUMERIC_CODE = 392;
 
 const fetchPrimaryEntry = (externalId: string) =>
     Effect.gen(function* () {
@@ -58,6 +59,32 @@ describe('monobank/operation-currency-metadata', () => {
             expect(primaryEntry.exchangeRate).toBe(45);
             expect(primaryEntry.operationInstrumentId).toBe(euro.id);
             expect(primaryEntry.operationAmount).toBe(1000 * PRECISION);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('reads Monobank zero-decimal operation amounts in whole units', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const yen = yield* requireInstrument(CurrencyEnum.JPY);
+            yield* setupMonobankFixture();
+            monobankStub.statement([
+                buildMonobank.transaction({
+                    id: 'tx-jpy',
+                    amount: -50_000,
+                    operationAmount: -1500,
+                    currencyCode: JPY_NUMERIC_CODE,
+                    hold: false
+                })
+            ]);
+
+            yield* monobankSyncService.sync();
+
+            const primaryEntry = yield* fetchPrimaryEntry('tx-jpy');
+
+            expect(primaryEntry.amount).toBe(500 * PRECISION);
+            expect(primaryEntry.exchangeRate).toBeCloseTo(500 / 1500);
+            expect(primaryEntry.operationInstrumentId).toBe(yen.id);
+            expect(primaryEntry.operationAmount).toBe(1500 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 

@@ -21,7 +21,10 @@ export class SyncOperationMetadataService extends Context.Service<SyncOperationM
                 transaction: SyncTransactionInterface,
                 instrumentIdByCode: ReadonlyMap<string, number>
             ): Required<Pick<TransactionEntryCreateInputInterface, 'operationInstrumentId' | 'operationAmount'>> | null => {
-                const operationInstrumentId = instrumentIdByCode.get(CURRENCY_CODE_BY_NUMERIC_CODE.get(transaction.currencyCode) ?? '');
+                const currencyCode = isDefined(transaction.operationCurrencyCode)
+                    ? CURRENCY_CODE_BY_NUMERIC_CODE.get(transaction.operationCurrencyCode)
+                    : null;
+                const operationInstrumentId = instrumentIdByCode.get(currencyCode ?? '');
                 const operationAmount = Math.abs(transaction.operationAmount);
 
                 return isDefined(operationInstrumentId) && isPositiveNumber(operationAmount)

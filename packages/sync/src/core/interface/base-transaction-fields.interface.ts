@@ -8,6 +8,7 @@ export interface BaseTransactionFieldsInterface {
     readonly amount: number;
     readonly operationAmount: number;
     readonly currencyCode: number;
+    readonly operationCurrencyCode?: number;
     readonly commissionRate: number;
     readonly cashbackAmount: number;
     readonly balance: number;
