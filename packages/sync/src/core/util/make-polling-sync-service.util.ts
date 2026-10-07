@@ -2,6 +2,7 @@ import { AccountRepository, SyncModeEnum, SyncRepository, SyncStatusEnum } from 
 import { TransactionService } from '@budgie/ledger';
 import { subMonths } from 'date-fns/subMonths';
 import * as Cause from 'effect/Cause';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -45,8 +46,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const shouldStopProcessing = (): boolean => definition.isRunDeferred?.() === true || Date.now() >= runDeadlineAtMs;
 
-    const sleepWithinDeadline = Effect.suspend(() =>
-        Effect.sleep(Math.min(definition.rateLimitMs, Math.max(0, runDeadlineAtMs - Date.now())))
+    const sleepWithinDeadline = Effect.flatMap(Clock.currentTimeMillis, nowMs =>
+        Effect.sleep(Math.min(definition.rateLimitMs, Math.max(0, runDeadlineAtMs - nowMs)))
     );
 
     const resolveSyncToken = (sync: SyncEntityInterface) =>
@@ -81,7 +82,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     });
 
     const shouldYieldAfterBatch = Effect.fnUntraced(function* () {
-        if ((yield* syncWorkload.hasQueuedWork) || Date.now() + definition.rateLimitMs > runDeadlineAtMs) {
+        if ((yield* syncWorkload.hasQueuedWork) || (yield* Clock.currentTimeMillis) + definition.rateLimitMs > runDeadlineAtMs) {
             return true;
         }
 
@@ -148,7 +149,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const handleError = Effect.fnUntraced(function* (error: unknown) {
         if (error instanceof SyncRateLimitedError) {
-            return yield* Effect.as(sleepWithinDeadline, null);
+            return (yield* shouldYieldAfterBatch()) ? true : null;
         }
 
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
