@@ -61,7 +61,11 @@ export const useSimpleTransactionActionsMenu = ({
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const canConvertToTransfer = persistedCategoryEntries.length === 1 && categoryEntryCount === 1;
     const transferConvertProps = canConvertToTransfer ? { onConvertToTransfer: handleOpenConvert } : {};
-    const canStartDeposit = canConvertToTransfer && transactionType === TransactionTypeEnum.EXPENSE && !isConsolidated;
+    const canStartDeposit =
+        canConvertToTransfer &&
+        transactionType === TransactionTypeEnum.EXPENSE &&
+        !isConsolidated &&
+        !isDefined(transaction.consolidationParentTransactionId);
     const startDepositProps = canStartDeposit ? { onStartDeposit: handleOpenStartDeposit } : {};
     const installmentConvertProps =
         isDefined(handleOpenConvertToInstallment) && categoryEntryCount === 1

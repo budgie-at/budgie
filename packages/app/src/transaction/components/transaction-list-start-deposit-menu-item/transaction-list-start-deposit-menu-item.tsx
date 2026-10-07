@@ -15,6 +15,7 @@ export const TransactionListStartDepositMenuItem = () => {
 
     const isVisible =
         !isDefined(transaction.consolidationType) &&
+        !isDefined(transaction.consolidationParentTransactionId) &&
         isExpenseTransaction(transaction) &&
         getTransactionCategoryEntries(transaction.entries).length === 1;
 
