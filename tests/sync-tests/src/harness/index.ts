@@ -86,7 +86,3 @@ export { fetchCachedBalanceAmount } from './db/fetch-cached-balance-amount';
 export { seedUsdtFundingAccount } from './binance/seed-usdt-funding-account';
 export { expectParentedToCanonical } from './consolidation/expect-parented-to-canonical';
 export { seedEuroBaseUahAccount } from './seed/seed-euro-base-uah-account';
-export { seedTransferAtFixedDate } from './seed/seed-transfer-at-fixed-date';
-export { seedNestedTransferConsolidation } from './seed/seed-nested-transfer-consolidation';
-export { fetchEntriesByTransactionId } from './db/fetch-entries-by-transaction-id';
-export { fetchDefaultStatistics } from './db/fetch-default-statistics';
