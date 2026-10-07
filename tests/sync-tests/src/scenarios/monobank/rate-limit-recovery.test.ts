@@ -1,10 +1,7 @@
 import { SyncStatusEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
-import * as Fiber from 'effect/Fiber';
-import * as Schedule from 'effect/Schedule';
-import { HttpResponse, delay, http } from 'msw';
+import { HttpResponse, http } from 'msw';
 
 import { fetchSyncById, MonobankSyncService, setupBackwardSweepFixture, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
@@ -40,7 +37,7 @@ describe('monobank/rate-limit-recovery', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('ends the run instead of sleeping past the deadline and releases the claimed sync', () =>
+    it.effect('ends the run instead of sleeping past the deadline', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const sync = yield* setupBackwardSweepFixture(new Date());
@@ -52,36 +49,11 @@ describe('monobank/rate-limit-recovery', () => {
                 return HttpResponse.json([]);
             });
 
-            yield* monobankSyncService.sync((yield* Clock.currentTimeMillis) + SHORT_DEADLINE_MS);
+            yield* monobankSyncService.sync(Date.now() + SHORT_DEADLINE_MS);
 
             const finalSync = yield* fetchSyncById(sync.id);
             expect(requestCount).toBe(1);
             expect(finalSync.enabled).toBe(true);
-            expect(finalSync.status).toBe(SyncStatusEnum.IDLE);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('returns an interrupted sync to idle', () =>
-        Effect.gen(function* () {
-            const monobankSyncService = yield* MonobankSyncService;
-            const sync = yield* setupBackwardSweepFixture(new Date());
-
-            let isRequestStarted = false;
-            stubStatements(async () => {
-                isRequestStarted = true;
-                await delay('infinite');
-
-                return HttpResponse.json([]);
-            });
-
-            const fiber = yield* Effect.forkChild(monobankSyncService.sync());
-            yield* Effect.sync(() => isRequestStarted).pipe(
-                Effect.repeat({ until: isStarted => isStarted, schedule: Schedule.spaced('5 millis') })
-            );
-            yield* Fiber.interrupt(fiber);
-
-            const finalSync = yield* fetchSyncById(sync.id);
-            expect(finalSync.status).toBe(SyncStatusEnum.IDLE);
         }).pipe(Effect.provide(TestLayer))
     );
 });

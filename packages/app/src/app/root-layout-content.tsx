@@ -59,7 +59,6 @@ import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
-import { BackgroundSyncSessionService } from '../sync/service/background-sync-session.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -81,11 +80,7 @@ const handleAppStateChange = (isActive: boolean): void => {
             const workload = yield* Workload;
 
             if (!isActive) {
-                const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
-
-                if (!(yield* backgroundSyncSessionService.isContinued)) {
-                    yield* workload.interruptBackground;
-                }
+                yield* workload.interruptBackground;
 
                 return;
             }

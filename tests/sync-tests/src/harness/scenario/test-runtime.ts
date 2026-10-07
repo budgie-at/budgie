@@ -14,15 +14,12 @@ import { sleepMode } from './sleep-mode';
 
 import type * as Context from 'effect/Context';
 
-const rateLimitDurationsMs = [MONOBANK_RATE_LIMIT_MS, BINANCE_RATE_LIMIT_MS];
-
-const isRateLimitWait = (durationMs: number): boolean =>
-    rateLimitDurationsMs.some(rateLimitMs => durationMs > rateLimitMs / 2 && durationMs <= rateLimitMs);
+const rateLimitDurationsMs = new Set([MONOBANK_RATE_LIMIT_MS, BINANCE_RATE_LIMIT_MS]);
 
 const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock =>
     Object.assign(Object.create(clock), {
         sleep: (duration: Parameters<Clock.Clock['sleep']>[0]) =>
-            sleepMode.isRateLimitInstant && !vi.isFakeTimers() && isRateLimitWait(Duration.toMillis(duration))
+            sleepMode.isRateLimitInstant && !vi.isFakeTimers() && rateLimitDurationsMs.has(Duration.toMillis(duration))
                 ? Effect.yieldNow
                 : clock.sleep(duration)
     });
