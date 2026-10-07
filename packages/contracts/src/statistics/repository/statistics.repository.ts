@@ -38,7 +38,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
     make: Effect.sync(() => {
         const transactionFilters = new BaseTransactionFilterRepository();
 
-        const buildSpendingTransactionIdsQuery = (db: DB, baseWhere: SQL | undefined, ...typeConditions: SQL[]) =>
+        const buildSpendingTransactionIdsQuery = (db: DB, baseWhere: SQL | undefined, type: TransactionTypeEnum | null) =>
             db
                 .selectDistinct({ id: TransactionEntityTable.id })
                 .from(TransactionEntityTable)
@@ -50,12 +50,9 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         transactionFilters.buildPrimaryLedgerEntryCondition(),
                         transactionFilters.buildNonDebtAccountCondition(),
                         buildSpendingEntryCondition(),
-                        ...typeConditions
+                        ...(isDefined(type) ? [eq(TransactionEntityTable.type, type)] : [])
                     )
                 );
-
-        const buildStatisticsTransactionsQuery = (db: DB, filters: TransactionFilterInterface, type: TransactionTypeEnum) =>
-            buildSpendingTransactionIdsQuery(db, transactionFilters.buildFilterWhere(filters), eq(TransactionEntityTable.type, type));
 
         const buildExcludedCategoryCondition = (db: DB, categoryIds: number[]) =>
             inArray(
@@ -79,22 +76,6 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 transactionFilters.buildFilterWhere(filters),
                 ...(isNotEmptyArray(filters.excludedCategoryIds) ? [buildExcludedCategoryCondition(db, filters.excludedCategoryIds)] : [])
             );
-
-        const buildStatisticsTransactionIdsQuery = (db: DB, filters: StatisticsFilterInterface) =>
-            buildSpendingTransactionIdsQuery(
-                db,
-                buildStatisticsFilterWhere(db, filters),
-                ...(isDefined(filters.type) ? [eq(TransactionEntityTable.type, filters.type)] : [])
-            );
-
-        const buildTransactionIdsQuery = (db: DB, filters: TransactionFilterInterface, type: TransactionTypeEnum) => {
-            const baseWhere = transactionFilters.buildFilterWhere(filters);
-
-            return db
-                .selectDistinct({ transactionId: TransactionEntityTable.id })
-                .from(TransactionEntityTable)
-                .where(and(baseWhere, eq(TransactionEntityTable.type, type)));
-        };
 
         const buildConversionRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL) =>
             sql`COALESCE(
@@ -199,7 +180,15 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
 
         const buildIncomeBreakdownWhere = (db: DB, filters: TransactionFilterInterface) =>
             and(
-                inArray(TransactionEntityTable.id, buildTransactionIdsQuery(db, filters, TransactionTypeEnum.INCOME)),
+                inArray(
+                    TransactionEntityTable.id,
+                    db
+                        .selectDistinct({ transactionId: TransactionEntityTable.id })
+                        .from(TransactionEntityTable)
+                        .where(
+                            and(transactionFilters.buildFilterWhere(filters), eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME))
+                        )
+                ),
                 transactionFilters.buildPrimaryLedgerEntryCondition(),
                 transactionFilters.buildNonDebtAccountCondition(),
                 buildSpendingEntryCondition()
@@ -211,13 +200,13 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             return and(baseWhere, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT), buildSpendingEntryCondition());
         };
 
-        const buildExpenseBreakdownWhere = (filters: TransactionFilterInterface, ...extraConditions: Array<SQL | undefined>) =>
+        const buildExpenseBreakdownWhere = (filters: TransactionFilterInterface, extraCondition?: SQL) =>
             and(
                 buildStatisticsWhere(filters),
                 transactionFilters.buildExpenseAnalyticsEntryCondition(),
                 transactionFilters.buildPrimaryLedgerEntryCondition(),
                 transactionFilters.buildNonDebtAccountCondition(),
-                ...extraConditions
+                extraCondition
             );
 
         const buildVisibleNonDebtEntryCondition = (type: TransactionEntryTypeEnum) =>
@@ -332,7 +321,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         return {
             getTransactions: (filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) =>
                 Db.query(db => {
-                    const transactionIds = buildStatisticsTransactionIdsQuery(db, filters);
+                    const transactionIds = buildSpendingTransactionIdsQuery(db, buildStatisticsFilterWhere(db, filters), filters.type);
 
                     return db.query.TransactionEntityTable.findMany({
                         with: transactionFilters.buildFullTransactionRelations(language),
@@ -400,10 +389,14 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 ),
 
             getIncomeTransactionsQuery: (filters: TransactionFilterInterface) =>
-                Db.query(db => buildStatisticsTransactionsQuery(db, filters, TransactionTypeEnum.INCOME)),
+                Db.query(db =>
+                    buildSpendingTransactionIdsQuery(db, transactionFilters.buildFilterWhere(filters), TransactionTypeEnum.INCOME)
+                ),
 
             getExpenseTransactionsQuery: (filters: TransactionFilterInterface) =>
-                Db.query(db => buildStatisticsTransactionsQuery(db, filters, TransactionTypeEnum.EXPENSE))
+                Db.query(db =>
+                    buildSpendingTransactionIdsQuery(db, transactionFilters.buildFilterWhere(filters), TransactionTypeEnum.EXPENSE)
+                )
         };
     })
 }) {
