@@ -4095,6 +4095,10 @@ msgstr "Sync your Binance balances and transactions"
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
+#: src/sync/service/background-sync-session.service.ts
+msgid "Syncing bank history"
+msgstr "Syncing bank history"
+
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Syncing history..."
 msgstr "Syncing history..."
@@ -4742,3 +4746,7 @@ msgstr "Your token is stored securely in the database. Sync continues in the bac
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."
 msgstr "Your transaction file is ready to share."
+
+#: src/sync/service/background-sync-session.service.ts
+msgid "Your transactions keep importing in the background"
+msgstr "Your transactions keep importing in the background"

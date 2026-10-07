@@ -4094,6 +4094,10 @@ msgstr "Синхронізуйте свої баланси та транзакц
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
 
+#: src/sync/service/background-sync-session.service.ts
+msgid "Syncing bank history"
+msgstr "Синхронізація банківської історії"
+
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
@@ -4741,3 +4745,7 @@ msgstr "Ваш токен зберігається в безпечній баз�
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."
 msgstr "Ваш файл транзакцій готовий до поширення."
+
+#: src/sync/service/background-sync-session.service.ts
+msgid "Your transactions keep importing in the background"
+msgstr "Ваші транзакції й далі імпортуються у фоновому режимі"

@@ -2,12 +2,14 @@ import { AccountRepository, SyncModeEnum, SyncRepository, SyncStatusEnum } from 
 import { TransactionService } from '@budgie/ledger';
 import { subMonths } from 'date-fns/subMonths';
 import * as Cause from 'effect/Cause';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
+import { SyncRateLimitedError } from '../error/sync-rate-limited.error';
 import { SyncWorkload } from '../port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../service/sync-integration-token.service';
 
@@ -44,6 +46,10 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const shouldStopProcessing = (): boolean => definition.isRunDeferred?.() === true || Date.now() >= runDeadlineAtMs;
 
+    const sleepWithinDeadline = Effect.flatMap(Clock.currentTimeMillis, nowMs =>
+        Effect.sleep(Math.min(definition.rateLimitMs, Math.max(0, runDeadlineAtMs - nowMs)))
+    );
+
     const resolveSyncToken = (sync: SyncEntityInterface) =>
         syncIntegrationTokenService.resolveAccountToken(definition.provider, sync.accountId);
 
@@ -76,7 +82,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     });
 
     const shouldYieldAfterBatch = Effect.fnUntraced(function* () {
-        if (yield* syncWorkload.hasQueuedWork) {
+        if ((yield* syncWorkload.hasQueuedWork) || (yield* Clock.currentTimeMillis) + definition.rateLimitMs > runDeadlineAtMs) {
             return true;
         }
 
@@ -116,7 +122,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         }
 
         yield* syncRepository.recordError(syncToRetry.id, errorMessage);
-        yield* Effect.sleep(definition.rateLimitMs);
+        yield* sleepWithinDeadline;
 
         return true;
     });
@@ -142,6 +148,10 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     });
 
     const handleError = Effect.fnUntraced(function* (error: unknown) {
+        if (error instanceof SyncRateLimitedError) {
+            return (yield* shouldYieldAfterBatch()) ? true : null;
+        }
+
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
         const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
         if (!isNotEmptyArray(enabledSyncs)) {

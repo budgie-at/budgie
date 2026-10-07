@@ -1,4 +1,9 @@
 export const TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL = `
+            scoped_instruments AS (
+                SELECT instrument_id FROM accounts WHERE deleted_at IS NULL
+                UNION
+                SELECT default_instrument_id FROM settings
+            ),
             latest_exchange_rates AS (
                 SELECT
                     base_instrument_id,
@@ -11,6 +16,8 @@ export const TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL = `
                 FROM exchange_rates
                 WHERE deleted_at IS NULL
                     AND rate > 0
+                    AND base_instrument_id IN (SELECT instrument_id FROM scoped_instruments)
+                    AND quote_instrument_id IN (SELECT instrument_id FROM scoped_instruments)
             ),
             direct_exchange_rates AS (
                 SELECT base_instrument_id, quote_instrument_id, rate, 0 as direction

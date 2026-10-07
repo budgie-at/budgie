@@ -1,0 +1,1 @@
+export const BACKGROUND_SYNC_RUN_BUDGET_MS = 25 * 1000;

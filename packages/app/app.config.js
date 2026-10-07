@@ -60,6 +60,10 @@ export default ({ config }) => ({
         config: {
             usesNonExemptEncryption: false
         },
+        infoPlist: {
+            BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
+            UIBackgroundModes: ['processing']
+        },
         associatedDomains: ['applinks:budgie.at'],
         entitlements: {
             'com.apple.developer.kernel.extended-virtual-addressing': true,
