@@ -6,6 +6,7 @@ import {
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { expect, layer } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -108,7 +109,7 @@ layer(TestLayer)('consolidation/transfer-fee-repair', it => {
 
     it.effect('restores the fee of a legacy ATM cash withdrawal canonical', () =>
         Effect.gen(function* () {
-            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const bankAccount = yield* testSeedService.account({ title: 'Atm Bank', type: AccountTypeEnum.BANK_SYNC });
             yield* testSeedService.account({ title: 'Atm Cash', type: AccountTypeEnum.CASH });
             const expense = yield* testSeedService.bankPairExpense(
@@ -117,7 +118,7 @@ layer(TestLayer)('consolidation/transfer-fee-repair', it => {
             );
 
             yield* testSeedService.feeEntry(expense.id, 'tx-atm-legacy-fee', { accountId: bankAccount.id, amount: ATM_FEE_AMOUNT });
-            yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id]);
+            yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([expense.id]);
 
             const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 
