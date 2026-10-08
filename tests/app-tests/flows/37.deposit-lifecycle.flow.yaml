@@ -277,7 +277,7 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionInfo.Row.ToAccount'
       timeout: 5000
-- assertVisible: 'E2E Deposit Converted Transfer'
+- assertVisible: 'E2E Deposit Converted Transfer.*'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
