@@ -11752,7 +11752,7 @@ msgstr "Офлайн-перший. Приватний. На базі AI."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Offline, private, and card-code aware"
-msgstr "Офлайн, приватно та з урахуванням кодів карток"
+msgstr "Офлайн, приватно та з урахуванням кодів категорій продавців (MCC)"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Often dropped or recomputed"

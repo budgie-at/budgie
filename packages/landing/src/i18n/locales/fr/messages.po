@@ -11752,7 +11752,7 @@ msgstr "Hors ligne d’abord. Privé. Propulsé par l’IA."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Offline, private, and card-code aware"
-msgstr "Hors ligne, privé et attentif aux codes de carte"
+msgstr "Hors ligne, privé et attentif aux codes MCC"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Often dropped or recomputed"

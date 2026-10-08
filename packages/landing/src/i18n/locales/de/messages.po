@@ -11394,7 +11394,7 @@ msgstr "Nein. Die App ruft ausschließlich Lese-Endpunkte von Binance auf, und d
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "No. The Categorize inbox works with On-device AI switched off and needs no extra download."
-msgstr "Nein. Der Kategorisieren-Bildschirm funktioniert auch bei ausgeschaltetem „On-Device-KI“ und braucht keinen zusätzlichen Download."
+msgstr "Nein. Der Kategorisieren-Bildschirm funktioniert auch, wenn der Schalter „On-Device-KI“ ausgeschaltet ist, und braucht keinen zusätzlichen Download."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
@@ -19024,7 +19024,7 @@ msgstr "Ja. Direkt nachdem Sie eine einzelne Gruppe kategorisiert haben, erschei
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch that turns the whole subsystem on or off. Switch it off and nothing downloads, nothing loads, and no suggestion runs — the rest of Budgie is unaffected. New installs start with it off; if you were already using AI before the switch existed, it stays on."
-msgstr "Ja. Die Einstellungen enthalten einen KI-Bereich mit einem einzigen „On-Device-KI“-Schalter, der das gesamte Teilsystem ein- oder ausschaltet. Ist er aus, wird nichts heruntergeladen, nichts geladen und keine Vorhersage ausgeführt — der Rest von Budgie bleibt unberührt. Neuinstallationen starten damit ausgeschaltet; wenn Sie KI schon vor dem Schalter genutzt haben, bleibt sie an."
+msgstr "Ja. Die Einstellungen enthalten einen KI-Bereich mit einem einzigen „On-Device-KI“-Schalter, der das gesamte Teilsystem ein- oder ausschaltet. Ist er aus, wird nichts heruntergeladen, nichts geladen und kein KI-Vorschlag erstellt — der Rest von Budgie bleibt unberührt. Neuinstallationen starten damit ausgeschaltet; wenn Sie KI schon vor dem Schalter genutzt haben, bleibt sie an."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."
