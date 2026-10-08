@@ -63,7 +63,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     scene="voice-transaction-entry-1"
                     slug="voice-transaction-entry"
                 >
-                    <FeatureStory.Callout index={0} y={0.878}>
+                    <FeatureStory.Callout index={0} x={0.5} y={0.878}>
                         <Trans>Tap the mic and speak</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
