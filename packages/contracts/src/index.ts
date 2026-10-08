@@ -16,6 +16,7 @@ export type { DateRangeInterface } from './@generic/interface/date-range.interfa
 
 export { BaseTransactionFilterRepository } from './@generic/repository/base-transaction-filter.repository';
 export { buildTranslatedCategoryRelation } from './@generic/util/build-translated-category-relation.util';
+export { buildCategoryTranslationJoinCondition } from './@generic/util/build-category-translation-join-condition.util';
 
 export type { DB, DbConnectionType } from './@generic/type/db.type';
 export type { EffectSqliteClientOptionsInterface } from './@generic/interface/effect-sqlite-client-options.interface';
