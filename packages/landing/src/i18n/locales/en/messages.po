@@ -2437,6 +2437,10 @@ msgstr "A per-source list, though paired own-card transfers are folded into one 
 msgid "A PIN, not a login"
 msgstr "A PIN, not a login"
 
+#: src/app/[lang]/page.tsx
+msgid "A private budget app alternative"
+msgstr "A private budget app alternative"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
 msgstr "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
@@ -2914,10 +2918,6 @@ msgstr "alerts"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Alerts that never leave your phone"
 msgstr "Alerts that never leave your phone"
-
-#: src/app/[lang]/page.tsx
-msgid "All Budgie features"
-msgstr "All Budgie features"
 
 #: src/app/[lang]/features/opengraph-image.tsx
 #: src/app/[lang]/features/page.tsx
@@ -4403,6 +4403,10 @@ msgstr "Budgie home screen scrolled to the You owe and Owed to you debt sections
 msgid "Budgie home screen with a euro-denominated account listed under a total balance shown in dollars"
 msgstr "Budgie home screen with a euro-denominated account listed under a total balance shown in dollars"
 
+#: src/app/[lang]/page.tsx
+msgid "Budgie home screen with a microphone button recording a voice entry over the accounts list"
+msgstr "Budgie home screen with a microphone button recording a voice entry over the accounts list"
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Budgie home screen with a total balance above the Bank and Cash account groups, each group carrying its own subtotal and each account card its own currency"
 msgstr "Budgie home screen with a total balance above the Bank and Cash account groups, each group carrying its own subtotal and each account card its own currency"
@@ -4640,6 +4644,10 @@ msgstr "Budgie new deposit account form with currency, interest rate and maturit
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 msgstr "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 
+#: src/app/[lang]/page.tsx
+msgid "Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad"
+msgstr "Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Budgie new expense screen that a tap on the quick add expense tile opens directly"
 msgstr "Budgie new expense screen that a tap on the quick add expense tile opens directly"
@@ -4767,6 +4775,10 @@ msgstr "Budgie settings screen showing the full option set with no paywall and n
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
 msgstr "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
+
+#: src/app/[lang]/page.tsx
+msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device"
+msgstr "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
@@ -5557,6 +5569,10 @@ msgstr "Categorization and suggestions work in any language because they are dri
 msgid "Categorization Rules — Deterministic, Not Guesswork"
 msgstr "Categorization Rules — Deterministic, Not Guesswork"
 
+#: src/app/[lang]/page.tsx
+msgid "Categorization that runs on your phone"
+msgstr "Categorization that runs on your phone"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Categorize"
 msgstr "Categorize"
@@ -5624,6 +5640,10 @@ msgstr "Category chosen on device"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Category cleanup from the same transaction cards you already use for editing"
 msgstr "Category cleanup from the same transaction cards you already use for editing"
+
+#: src/app/[lang]/page.tsx
+msgid "Category suggestions are computed on-device, so your transactions are never sent to a server."
+msgstr "Category suggestions are computed on-device, so your transactions are never sent to a server."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category suggestions drawn from your own history — never from a cloud service"
@@ -13788,6 +13808,10 @@ msgstr "Say \"twelve for coffee, forty for the taxi, and eight euros for parking
 msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. Transcription and parsing both happen on your phone — the audio never leaves it."
 msgstr "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. Transcription and parsing both happen on your phone — the audio never leaves it."
 
+#: src/app/[lang]/page.tsx
+msgid "Say what you spent and Budgie logs it. The audio never leaves the device."
+msgstr "Say what you spent and Budgie logs it. The audio never leaves the device."
+
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "scanning"
 msgstr "scanning"
@@ -16965,8 +16989,8 @@ msgid "Voice entry downloads what it needs once and keeps it on the device — o
 msgstr "Voice entry downloads what it needs once and keeps it on the device — only after you switch On-device AI on in Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more, and follows your phone's language automatically."
 
 #: src/app/[lang]/page.tsx
-msgid "Voice entry, split transactions, tags, multi-currency, PDF and CSV imports and more."
-msgstr "Voice entry, split transactions, tags, multi-currency, PDF and CSV imports and more."
+msgid "Voice entry, transcribed on your phone"
+msgstr "Voice entry, transcribed on your phone"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Voice Entry: Speak It, Budgie Logs It"
@@ -19313,6 +19337,10 @@ msgstr "Your device UDID must already be registered in the ad-hoc provisioning p
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Your file, your storage"
 msgstr "Your file, your storage"
+
+#: src/app/[lang]/page.tsx
+msgid "Your finances stay on your device, with app lock and screenshot protection built in."
+msgstr "Your finances stay on your device, with app lock and screenshot protection built in."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your financial data belongs to you. Period. A good budget app should:"
