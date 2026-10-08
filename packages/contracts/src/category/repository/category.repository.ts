@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { Db } from '../../@generic/service/db.service';
+import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
 import { makeTranslatableRepository } from '../../@generic/util/make-translatable-repository.util';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -35,13 +36,7 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                     title: sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`.as('title')
                 })
                 .from(CategoryEntityTable)
-                .leftJoin(
-                    DefaultCategoryTranslationEntityTable,
-                    and(
-                        eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                        eq(DefaultCategoryTranslationEntityTable.language, language)
-                    )
-                );
+                .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language));
 
         const buildSearchPatterns = (search: string): string[] => {
             const lowerSearch = search.toLowerCase();

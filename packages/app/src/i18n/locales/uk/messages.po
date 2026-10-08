@@ -195,13 +195,11 @@ msgstr "{overdueDays, plural, one {Прострочено # день} few {Пр�
 msgid "{paidCount} of {installmentCount} paid"
 msgstr "Сплачено {paidCount} з {installmentCount}"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
+#: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% витрат"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
+#: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 

@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -11,6 +12,7 @@ import { FeaturePageHero } from '../../../../feature/component/feature-page-hero
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -37,6 +39,59 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Suggestions before you type</Trans>}>
+                    <Trans>The pills on the expense form, and the On-device AI section in Settings that powers them.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Pills appear on the empty form</Trans>}>
+                    <Trans>
+                        Open a new expense and suggestion pills are already waiting above the action buttons, before an amount is entered.
+                        Nothing is filled in until you tap one, and the form works as usual if you ignore them.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie new expense screen with an amount of zero and Transportation and Groceries suggestion pills above the action buttons`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="ai-transaction-suggestions-1"
+                    slug="ai-transaction-suggestions"
+                >
+                    <FeatureStory.Callout index={0} y={0.448}>
+                        <Trans>Tappable suggestion pills</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.302}>
+                        <Trans>Amount still yours to enter</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Powered by the on-device AI</Trans>}>
+                    <Trans>
+                        Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date.
+                        Suggestions come from your own history on this device.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date`}
+                    index={1}
+                    locale={lang}
+                    scene="on-device-ai-budget-app-1"
+                    slug="on-device-ai-budget-app"
+                >
+                    <FeatureStory.Callout index={0} y={0.623}>
+                        <Trans>On-device AI switch</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.84}>
+                        <Trans>Learning up to date</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>

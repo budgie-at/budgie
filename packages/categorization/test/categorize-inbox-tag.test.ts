@@ -22,6 +22,8 @@ const buildRow = (transactionId: number, type: TransactionTypeEnum, title: strin
     baseInstrumentId: null,
     instrumentSymbol: 'EUR',
     mccCategoryId: null,
+    categoryId: null,
+    tagIds: [],
     mcc: null
 });
 
@@ -62,6 +64,25 @@ describe('categorization/inbox-tag', () => {
 
             expect(rows.map(row => row.transactionId)).toContain(titled.id);
             expect(rows.map(row => row.transactionId)).not.toContain(untitled.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('loads the existing tag ids of an uncategorized row', () =>
+        Effect.gen(function* () {
+            const inboxRepository = yield* TransactionCategorizeInboxRepository;
+            const account = yield* testSeedService.account();
+            const coffee = yield* testSeedService.tag('Coffee');
+            const work = yield* testSeedService.tag('Work');
+            const expense = yield* testSeedService.bankPairExpense(
+                { externalId: 'tagged', operatedAt: new Date('2026-01-03T09:00:00Z') },
+                { accountId: account.id, amount: 1_000 }
+            );
+            yield* testSeedService.transactionTag(expense.id, coffee.id, TagSourceEnum.USER);
+            yield* testSeedService.transactionTag(expense.id, work.id, TagSourceEnum.USER);
+
+            const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
+
+            expect(rows.find(row => row.transactionId === expense.id)?.tagIds.toSorted()).toEqual([coffee.id, work.id].toSorted());
         }).pipe(Effect.provide(TestLayer))
     );
 

@@ -913,6 +913,9 @@ importers:
       '@budgie/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
+      '@budgie/ledger':
+        specifier: workspace:*
+        version: link:../../packages/ledger
       '@effect/sql-sqlite-node':
         specifier: 4.0.0
         version: 4.0.0(effect@4.0.0)
