@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -103,4 +102,3 @@ export default function Tags() {
         />
     );
 }
-/* jscpd:ignore-end */

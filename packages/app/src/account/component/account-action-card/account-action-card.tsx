@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Alert, View } from 'react-native';
@@ -12,7 +11,6 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-/* jscpd:ignore-end */
 
 interface Props {
     readonly account: AccountEntityInterface | AccountWithInstrumentEntityInterface;
