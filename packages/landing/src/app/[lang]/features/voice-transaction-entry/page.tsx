@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -11,6 +12,7 @@ import { FeaturePageHero } from '../../../../feature/component/feature-page-hero
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -37,6 +39,59 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Speak it, review it, save it</Trans>}>
+                    <Trans>
+                        Two screens: the mic in the quick-entry sheet, and the Settings switch that keeps transcription on your phone.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One tap on the mic</Trans>}>
+                    <Trans>
+                        The quick-entry sheet opens over your accounts with a mic button in the middle of the bottom bar. Tap it and talk —
+                        one sentence can hold several expenses, and a review sheet shows every extracted row before anything is saved.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie home screen dimmed behind the quick-entry sheet, with a ringed microphone button in the centre of the bottom bar and a close button on the right`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="voice-transaction-entry-1"
+                    slug="voice-transaction-entry"
+                >
+                    <FeatureStory.Callout index={0} y={0.878}>
+                        <Trans>Tap the mic and speak</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Transcribed on the phone, never uploaded</Trans>}>
+                    <Trans>
+                        Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this
+                        device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a
+                        server.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows`}
+                    index={1}
+                    locale={lang}
+                    scene="on-device-ai-budget-app-1"
+                    slug="on-device-ai-budget-app"
+                >
+                    <FeatureStory.Callout index={0} y={0.62}>
+                        <Trans>On-device AI switch</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.68}>
+                        <Trans>Models download once</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>

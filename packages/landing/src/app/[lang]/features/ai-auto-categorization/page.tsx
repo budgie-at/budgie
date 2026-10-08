@@ -9,12 +9,11 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
@@ -41,16 +40,81 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Categories proposed on your phone</Trans>}>
+                    <Trans>Pill suggestions on the expense form, the privacy notice in Settings, and the On-device AI section.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Category pills on the expense form</Trans>}>
+                    <Trans>
+                        Open a new expense and Budgie offers categories as pills above the action buttons, drawn from transactions you have
+                        already categorized. Tapping a pill picks the category, and the Category button still opens the full list.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie new expense screen with Transportation and Groceries category pills above the Split, Date, Note, Tags and Category buttons`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="ai-auto-categorization-1"
+                    slug="ai-auto-categorization"
+                >
+                    <FeatureStory.Callout index={0} y={0.448}>
+                        <Trans>Suggested category pills</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} x={0.8} y={0.494}>
+                        <Trans>The full category list is one tap away</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Offline, private, and card-code aware</Trans>}>
+                    <Trans>
+                        Settings opens with a Privacy card stating that your financial data is stored locally on your device. Further down,
+                        a toggle assigns default categories from the merchant category codes your bank sends with card payments.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle`}
+                    index={1}
                     locale={lang}
                     scene="ai-auto-categorization-2"
                     slug="ai-auto-categorization"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout index={0} y={0.259}>
+                        <Trans>100% Offline &amp; Private</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.856}>
+                        <Trans>Auto-assign categories from MCC</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>One switch for the on-device AI</Trans>}>
+                    <Trans>
+                        The AI section of Settings holds the On-device AI switch, which says it categorizes transactions on this device and
+                        downloads about 2.5 GB of models once. Below it, a Learning row shows whether learning is up to date.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date`}
+                    index={2}
+                    locale={lang}
+                    scene="on-device-ai-budget-app-1"
+                    slug="on-device-ai-budget-app"
+                >
+                    <FeatureStory.Callout index={0} y={0.623}>
+                        <Trans>On-device AI</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.84}>
+                        <Trans>Learning up to date</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
