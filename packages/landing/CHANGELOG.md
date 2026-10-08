@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.97.0](https://github.com/budgie-at/budgie/compare/v6.96.1...v6.97.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **landing:** anchor the voice mic callout on the mic button ([af21e03](https://github.com/budgie-at/budgie/commit/af21e0371ba8c5d00862d227d6b169e7c5779544))
+* **landing:** correct German grammar and MCC wording in story translations ([83cc224](https://github.com/budgie-at/budgie/commit/83cc22473e16c8e58a55106a799ff55e7e9233f3))
+* **landing:** localize on-device AI labels and tighten story copy ([dd876e0](https://github.com/budgie-at/budgie/commit/dd876e0fa0ec8606bd20be52254547abb8d30d50))
+
+
+### Features
+
+* **landing:** story layouts for voice entry and AI categorization pages ([77d7063](https://github.com/budgie-at/budgie/commit/77d7063103089a4324d06b9ee18de1241667700f))
+
+
+
+
+
 # [6.96.0](https://github.com/budgie-at/budgie/compare/v6.95.1...v6.96.0) (2026-10-08)
 
 
