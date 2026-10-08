@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.98.0](https://github.com/budgie-at/budgie/compare/v6.97.1...v6.98.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **app:** let inbox transaction links announce their row content ([bbfe8f7](https://github.com/budgie-at/budgie/commit/bbfe8f7b53b130362d614a845736989c5782f7ff))
+* **app:** prefill only user-chosen categories and stabilize inbox E2E ([e0c8ae6](https://github.com/budgie-at/budgie/commit/e0c8ae60a3593bdc47831434c121e6b025115619))
+* **recurring:** address review — 4-month period, anchored billing days, rename guards ([c3b8f57](https://github.com/budgie-at/budgie/commit/c3b8f571c7b7d9ff808b7cb615c4d3d8ef029a9b))
+* **recurring:** merge renamed merchants, split same-band subscriptions by billing day ([ed81103](https://github.com/budgie-at/budgie/commit/ed81103bf05f92c51142a36b9fa1f131f5dbbc77)), closes [#1400](https://github.com/budgie-at/budgie/issues/1400)
+* **recurring:** revert review tweaks that lowered precision on real data ([d4a53ac](https://github.com/budgie-at/budgie/commit/d4a53aca4067842e1d99adb76a422ed01f22d59b))
+
+
+### Features
+
+* **app:** open transactions from the inbox and prefill quick rules with category and tags ([827bdeb](https://github.com/budgie-at/budgie/commit/827bdeb0919de3a64d7ba7ae0c4a9c4128bdce9a))
+
+
+
+
+
 ## [6.97.1](https://github.com/budgie-at/budgie/compare/v6.97.0...v6.97.1) (2026-10-08)
 
 
