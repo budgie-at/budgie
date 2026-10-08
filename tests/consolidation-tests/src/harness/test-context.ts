@@ -27,7 +27,7 @@ import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 export const testDbHandle = await buildTestDb();
 
@@ -73,12 +73,10 @@ export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalSer
 );
 
 export const seedStoredBalancesOnce = Effect.gen(function* () {
-    const accountRepository = yield* AccountRepository;
     const accountBalanceRepository = yield* AccountBalanceRepository;
-    const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative();
-    const storedBalances = yield* accountBalanceRepository.getByAccountIds(accounts.map(({ id }) => id));
+    const [{ updatedAt }] = yield* accountBalanceRepository.getLatestUpdatedAt();
 
-    if (isEmptyArray(storedBalances)) {
+    if (!isDefined(updatedAt)) {
         yield* rebuildStoredBalances;
     }
 });
