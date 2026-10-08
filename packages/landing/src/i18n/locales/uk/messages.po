@@ -1929,6 +1929,10 @@ msgstr "10. Запитання та контакти"
 msgid "100% Offline"
 msgstr "100% офлайн"
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "100% Offline & Private"
+msgstr "100% офлайн і приватно"
+
 #: src/generic/component/trust-banner/trust-banner.tsx
 msgid "100% on-device"
 msgstr "100% на пристрої"
@@ -2438,6 +2442,10 @@ msgstr "Список за з'єднаннями, хоча зіставлені �
 msgid "A PIN, not a login"
 msgstr "PIN, а не вхід в акаунт"
 
+#: src/app/[lang]/page.tsx
+msgid "A private budget app alternative"
+msgstr "Приватна альтернатива бюджетним застосункам"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
 msgstr "Проєкт, який ігнорує питання безпеки або відкидає занепокоєння користувачів, посилає чіткі сигнали про свої пріоритети. І навпаки, проєкт із продуманими та своєчасними відповідями на питання демонструє справжню відданість своїм користувачам."
@@ -2548,7 +2556,7 @@ msgstr "Близько 1,6 ГБ для категоризації та підк�
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "About 1.6 GB for categorization and suggestions, plus a further 0.9 GB if you use voice entry. Nothing downloads until you switch On-device AI on in Settings, and then only when you first use the feature that needs it. Each download happens once and is kept on the device afterwards."
-msgstr "Близько 1,6 ГБ для категоризації та підказок, плюс ще 0,9 ГБ, якщо використовувати голосове введення. Нічого не завантажується, поки ви не увімкнете On-device AI в налаштуваннях, і навіть тоді — лише при першому використанні відповідної функції. Кожне завантаження відбувається один раз і надалі залишається на пристрої."
+msgstr "Близько 1,6 ГБ для категоризації та підказок, плюс ще 0,9 ГБ, якщо використовувати голосове введення. Нічого не завантажується, поки ви не увімкнете ШІ на пристрої в налаштуваннях, і навіть тоді — лише при першому використанні відповідної функції. Кожне завантаження відбувається один раз і надалі залишається на пристрої."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Academic researchers studying software security"
@@ -2916,10 +2924,6 @@ msgstr "сповіщення"
 msgid "Alerts that never leave your phone"
 msgstr "Сповіщення, які ніколи не залишають ваш телефон"
 
-#: src/app/[lang]/page.tsx
-msgid "All Budgie features"
-msgstr "Усі можливості Budgie"
-
 #: src/app/[lang]/features/opengraph-image.tsx
 #: src/app/[lang]/features/page.tsx
 msgid "All Budgie Features"
@@ -3009,6 +3013,10 @@ msgstr "Зіставлення за сумою і часовим вікном з
 msgid "Amount first, no form"
 msgstr "Спершу сума, без форми"
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Amount still yours to enter"
+msgstr "Суму, як і раніше, вводите ви"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Amount, category, tag and account chips narrow the Categories and Tags tabs from the same filter row"
 msgstr "Чіпи суми, категорії, тегу й рахунку звужують вкладки Категорії та Теги з того самого рядка фільтрів"
@@ -3032,6 +3040,10 @@ msgstr "Архівований рахунок зникає з головного
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "An audited trail — the past is corrected in the open, never silently overwritten"
 msgstr "Прозорий слід — минуле виправляється відкрито, а не тихо перезаписується"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "An English form and search keywords"
+msgstr "Англійська форма та ключові слова для пошуку"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "An expense pairs with an income when the counter-IBAN lines up, or when the amounts match — same currency, or an implied exchange rate inside a tolerance band — and both legs fall within twelve hours of each other. The match becomes one transfer carrying a debit and a credit entry, so it stops counting as spending. Pairs Budgie is not sure about are left alone as two rows rather than guessed at."
@@ -4155,6 +4167,10 @@ msgstr "Налаштування рахунку Budgie для рахунку з 
 msgid "Budgie Account Settings screen for a Monobank card with the re-sync sheet open on entire history, 90, 30 and 7 days"
 msgstr "Екран Налаштування рахунку Budgie для картки Monobank із відкритим меню повторної синхронізації: уся історія, 90, 30 і 7 днів"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Budgie adds an English translation and a list of search keywords next to the original name. Both are saved with the category, so search and suggestions can find it whichever form you remember."
+msgstr "Budgie додає поруч з оригінальною назвою англійський переклад і список ключових слів для пошуку. Обидва зберігаються разом із категорією, тож пошук і підказки знайдуть її, яку б форму ви не пам’ятали."
+
 #: src/app/[lang]/page.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
 msgstr "Екран аналітики Budgie з розподілом витрат за категоріями, сумами та відсотками"
@@ -4312,6 +4328,10 @@ msgstr "Budgie робить навпаки. Ви вводите справжні
 msgid "Budgie Edit Category form showing the icon tile, the name field and the AI-generated translation and search keywords"
 msgstr "Форма «Редагувати категорію» у Budgie зі значком, полем назви та згенерованими ШІ перекладом і ключовими словами"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Budgie Edit Category screen for a category named Сільпо, with an AI-generated metadata block showing the English translation silpo supermarket and the search keywords groceries, supermarket, food, market, store, silpo"
+msgstr "Екран редагування категорії Budgie для категорії Сільпо з блоком метаданих, згенерованим ШІ, що показує англійський переклад silpo supermarket і ключові слова для пошуку groceries, supermarket, food, market, store, silpo"
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Budgie edit category screen showing an AI-generated metadata block with an English translation and search keywords"
 msgstr "Екран редагування категорії Budgie з блоком метаданих, згенерованих ШІ: англійський переклад і пошукові слова"
@@ -4392,6 +4412,10 @@ msgstr "Budgie має безкоштовний рівень, що охоплює
 msgid "Budgie has a minimal learning curve with a familiar interface and quick setup. Actual Budget is moderate as envelope budgeting takes adjustment. Firefly III has a steep curve but is powerful and feature-rich. Lunch Money is low with a clean, intuitive interface. YNAB is moderate to steep as the methodology requires commitment. Monarch provides a low curve with a very Mint-like experience."
 msgstr "Budgie легко освоїти, бо він відчувається як звичайний мобільний застосунок. Actual Budget потребує більше звикання, якщо envelope budgeting для вас новий. Firefly III має найкрутішу криву навчання, зате й найбільшу глибину. Lunch Money легко стартувати завдяки чистому вебінтерфейсу. YNAB вимагає відданості своїй методиці. Monarch буде знайомим, якщо вам подобався Mint."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Budgie home screen dimmed behind the quick-entry sheet, with a ringed microphone button in the centre of the bottom bar and a close button on the right"
+msgstr "Головний екран Budgie, затемнений позаду панелі швидкого введення, з кнопкою мікрофона в кільці посередині нижньої панелі та кнопкою закриття праворуч"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen scrolled to the savings, you owe and owed to you groups with a subtotal on each one"
 msgstr "Головний екран Budgie, прогорнутий до груп заощаджень, «ви винні» та «винні вам», кожна з підсумком"
@@ -4403,6 +4427,10 @@ msgstr "Домашній екран Budgie, прокручений до розд
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with a euro-denominated account listed under a total balance shown in dollars"
 msgstr "Головний екран Budgie з рахунком у євро під загальним балансом у доларах"
+
+#: src/app/[lang]/page.tsx
+msgid "Budgie home screen with a microphone button recording a voice entry over the accounts list"
+msgstr "Головний екран Budgie з кнопкою мікрофона, що записує голосовий запис над списком рахунків"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Budgie home screen with a total balance above the Bank and Cash account groups, each group carrying its own subtotal and each account card its own currency"
@@ -4641,9 +4669,17 @@ msgstr "Форма нового депозитного рахунку Budgie з 
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 msgstr "Форма нової витрати в Budgie з відкритою панеллю тегів і сіткою тегів із пошуком"
 
+#: src/app/[lang]/page.tsx
+msgid "Budgie new expense screen suggesting Transportation and Groceries categories above the amount keypad"
+msgstr "Екран нової витрати Budgie, що пропонує категорії «Транспорт» і «Продукти» над цифровою клавіатурою"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Budgie new expense screen that a tap on the quick add expense tile opens directly"
 msgstr "Екран нової витрати Budgie, який відкриває дотик по плитці витрати у віджеті швидкого додавання"
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Budgie new expense screen with an amount of zero and Transportation and Groceries suggestion pills above the action buttons"
+msgstr "Екран нової витрати Budgie із сумою нуль і підказками Transportation та Groceries над кнопками дій"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie New Expense screen with the amount keypad open and Main Checking preselected as the account"
@@ -4660,6 +4696,10 @@ msgstr "Екран нової витрати в Budgie з клавіатурою
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions"
 msgstr "Екран нової витрати Budgie з обраною категорією Продукти та трьома запропонованими тегами над діями"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Budgie new expense screen with Transportation and Groceries category pills above the Split, Date, Note, Tags and Category buttons"
+msgstr "Екран нової витрати Budgie з підказками категорій Transportation та Groceries над кнопками «Розділити», «Дата», «Примітка», «Теги» й «Категорія»"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
@@ -4749,6 +4789,11 @@ msgstr "Вкладка «Запас» у Budgie з вердиктом «Зрос
 msgid "Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar."
 msgstr "Budgie сканує вашу історію на предмет сум і періодичності та позначає кожен повторюваний платіж у календарі на місяць."
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date"
+msgstr "Розділ ШІ в налаштуваннях Budgie з перемикачем «ШІ на пристрої», рядком перекладу і рядком навчання з позначкою, що навчання актуальне"
+
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
 msgstr "Екран налаштувань Budgie зі списком параметрів приватності, безпеки та загальних параметрів, які має застосунок"
@@ -4768,6 +4813,10 @@ msgstr "Екран налаштувань Budgie з повним набором 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
 msgstr "Екран налаштувань Budgie з розділом «Безпека»: картка блокування PIN-кодом над увімкненим перемикачем захисту від скриншотів"
+
+#: src/app/[lang]/page.tsx
+msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device"
+msgstr "Екран налаштувань Budgie з карткою приватності, яка повідомляє, що всі фінансові дані зберігаються локально на пристрої"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
@@ -4789,6 +4838,10 @@ msgstr "Екран налаштувань Budgie з розділом «Зага�
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
 msgstr "Екран налаштувань Budgie з повідомленням про офлайн-роботу та приватність над перемикачем автоматичного призначення категорій за MCC-кодом"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows"
+msgstr "Екран налаштувань Budgie з перемикачем «ШІ на пристрої», описаним як категоризація транзакцій, підказки тегів і транскрибування голосових нотаток на цьому пристрої, над рядками прогресу перекладу й навчання"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
@@ -5535,6 +5588,10 @@ msgstr "Категорії ще до введення"
 msgid "Categories cannot answer every question"
 msgstr "Категорії відповідають не на все"
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Categories proposed on your phone"
+msgstr "Категорії, запропоновані на вашому телефоні"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Categories tab: per-category totals, with drill-down to every transaction in the row"
 msgstr "Вкладка «Категорії»: підсумки за категоріями з переходом до кожної транзакції рядка"
@@ -5557,6 +5614,10 @@ msgstr "Категоризація та підказки працюють буд
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Categorization Rules — Deterministic, Not Guesswork"
 msgstr "Правила категоризації — детерміновано, а не навмання"
+
+#: src/app/[lang]/page.tsx
+msgid "Categorization that runs on your phone"
+msgstr "Категоризація, що працює на вашому телефоні"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Categorize"
@@ -5625,6 +5686,14 @@ msgstr "Категорію обрано на пристрої"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Category cleanup from the same transaction cards you already use for editing"
 msgstr "Очищення категорій з тих самих карток транзакцій, які вже використовуються для редагування"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Category pills on the expense form"
+msgstr "Підказки категорій у формі витрати"
+
+#: src/app/[lang]/page.tsx
+msgid "Category suggestions are computed on-device, so your transactions are never sent to a server."
+msgstr "Підказки категорій обчислюються на пристрої, тож ваші транзакції ніколи не надсилаються на сервер."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category suggestions drawn from your own history — never from a cloud service"
@@ -7027,7 +7096,7 @@ msgstr "Чи потрібно тримати Budgie відкритим, щоб �
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Do I need to turn on On-device AI?"
-msgstr "Чи треба вмикати «On-device AI»?"
+msgstr "Чи треба вмикати «ШІ на пристрої»?"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Do jars sync as well?"
@@ -7324,10 +7393,6 @@ msgstr "Кожне поле має власний селектор із заго
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
 msgstr "Кожна група оновлюється пакетно, тож навіть великі імпорти лишаються зручними, коли оцінки потребують транзакції за багато років."
 
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves both alongside the original — so search and suggestions find it either way."
-msgstr "Кожна нова категорія чи тег потрапляє в чергу перекладу. Budgie пропонує англійську форму та ключові слова для пошуку і зберігає обидва варіанти поруч з оригіналом — щоб пошук і підказки знаходили це в будь-якому вигляді."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 msgstr "Кожна з цих груп привносить різні перспективи, навички та мотивацію. Дослідник конфіденційності може помітити патерни збору даних, які пропустить аудитор безпеки. Розробник, що інтегрується з проєктом, може виявити граничні випадки, які пропустили оригінальні автори. Ця різноманітність уваги — це перевага, яку жодна окрема команда безпеки не може повторити."
@@ -7486,6 +7551,10 @@ msgstr "Наскрізне шифрування: пояснення"
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "English (source), Ukrainian, French, German, Spanish. More on the roadmap as the community contributes translations."
 msgstr "Англійська (оригінал), українська, французька, німецька, іспанська. Більше мов у планах, коли спільнота додасть переклади."
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "English translation"
+msgstr "Англійський переклад"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "English, Ukrainian, French, German and Spanish."
@@ -8166,10 +8235,6 @@ msgstr "П'ять дотиків — це на чотири дотики біл�
 msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
 msgstr "П'ять років для поповнень, виведень, угод, Convert та винагород Earn. Історія P2P-замовлень обмежена шістьма місяцями, бо саме настільки назад видає власний ендпоінт Binance."
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
-msgstr "Виправте рядок або скористайтеся «Вибрати всі категорії», щоб виправити весь пакет одразу"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Fix bugs and submit pull requests"
 msgstr "Виправляйте помилки та надсилайте pull requests"
@@ -8397,10 +8462,6 @@ msgstr "Так, для банківських підключень. Підклю
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
 msgstr "Від одного токена до головного екрана"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "From speech to a saved batch"
-msgstr "Від мовлення до збереженого пакета"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "From the month's total to one receipt"
@@ -8965,11 +9026,8 @@ msgstr "Чим це відрізняється від аналітики кат�
 msgid "How is this different from Plaid-based apps?"
 msgstr "Чим це відрізняється від додатків на основі Plaid?"
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-category-translation/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
 msgstr "Як це працює"
 
@@ -9801,6 +9859,11 @@ msgstr "З ваших минулих рішень"
 msgid "Learning curve for the methodology"
 msgstr "Крива навчання для методології"
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Learning up to date"
+msgstr "Навчання актуальне"
+
 #: src/app/[lang]/legal/layout.tsx
 #: src/generic/component/footer/footer.tsx
 msgid "Legal"
@@ -10459,6 +10522,10 @@ msgstr "Мобільний досвід обмежений веб-інтерфе
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Mobile-focused (no web app currently)"
 msgstr "Орієнтований на мобільні пристрої (наразі без веб-додатку)"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Models download once"
+msgstr "Моделі завантажуються лише раз"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Modern software depends on many external libraries and frameworks. An app might have excellent code internally while relying on problematic dependencies. You can evaluate dependency health by looking at:"
@@ -11327,7 +11394,7 @@ msgstr "Ні. Застосунок звертається лише до кінц
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "No. The Categorize inbox works with On-device AI switched off and needs no extra download."
-msgstr "Ні. Екран категоризації працює з вимкненим «On-device AI» і не потребує жодних додаткових завантажень."
+msgstr "Ні. Екран категоризації працює з вимкненим «ШІ на пристрої» і не потребує жодних додаткових завантажень."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
@@ -11683,6 +11750,10 @@ msgstr "Офлайн-перший підхід фундаментально пе
 msgid "Offline-first. Private. AI-powered."
 msgstr "Офлайн-перший. Приватний. На базі AI."
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Offline, private, and card-code aware"
+msgstr "Офлайн, приватно та з урахуванням кодів категорій продавців (MCC)"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Often dropped or recomputed"
 msgstr "Часто відкидається або перераховується"
@@ -11779,6 +11850,10 @@ msgstr "локальний ші"
 msgid "on-device AI"
 msgstr "AI на пристрої"
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "On-device AI"
+msgstr "ШІ на пристрої"
+
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device AI auto-categorization"
 msgstr "Автокатегоризація ШІ на пристрої"
@@ -11835,6 +11910,11 @@ msgstr "Локальний ШІ повернувся для тих, хто вс�
 msgid "On-device AI means the work happens on the phone in your hand rather than on somebody else's computer. When Budgie suggests a category, your transaction is read and answered on the device, without a single network call."
 msgstr "On-device AI означає, що обробка відбувається на телефоні у вашій руці, а не на чужому комп'ютері. Коли Budgie пропонує категорію, ваша транзакція читається й опрацьовується прямо на пристрої, без жодного мережевого запиту."
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "On-device AI switch"
+msgstr "Перемикач «ШІ на пристрої»"
+
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device encryption"
 msgstr "Шифрування на пристрої"
@@ -11879,6 +11959,10 @@ msgstr "Одне банківське підключення утримує об
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "One card per merchant"
 msgstr "Одна картка на продавця"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "One category, translated on your phone"
+msgstr "Одна категорія, перекладена на вашому телефоні"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "One coin, three screens"
@@ -12020,6 +12104,10 @@ msgstr "Один екран на банк"
 msgid "One screen to finish it"
 msgstr "Один екран — і готово"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it."
+msgstr "Один екран: категорія з українською назвою, англійська форма та ключові слова для пошуку, які Budgie згенерував для неї."
+
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "One screen: the Tags tab beside Categories, income totalled tag by tag, then spending, each with its share of the period."
 msgstr "Один екран: вкладка «Теги» поруч із «Категоріями», доходи, підсумовані тег за тегом, потім витрати — кожне зі своєю часткою періоду."
@@ -12047,6 +12135,10 @@ msgstr "Один аркуш на екрані налаштувань самог�
 #: src/app/[lang]/ai-features/page.tsx
 msgid "One switch for every AI feature"
 msgstr "Один перемикач для всього ШІ"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "One switch for the on-device AI"
+msgstr "Один перемикач для ШІ на пристрої"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch in Settings → Security, right under the PIN-lock card"
@@ -12083,6 +12175,10 @@ msgstr "Один тег на транзакцію можна зробити «о
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
 msgstr "Один дотик експортує всю історію — не треба обирати період і потім зводити неповний файл"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "One tap on the mic"
+msgstr "Одне торкання мікрофона"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "One total, your base currency"
@@ -12196,6 +12292,14 @@ msgstr "Відкрийте борг, щоб побачити, скільки щ�
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Open a deposit straight from the connection, so it inherits the bank it belongs to"
 msgstr "Відкривайте депозит прямо з підключення, щоб він успадкував банк, якому належить"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Open a new expense and Budgie offers categories as pills above the action buttons, drawn from transactions you have already categorized. Tapping a pill picks the category, and the Category button still opens the full list."
+msgstr "Відкрийте нову витрату, і Budgie покаже категорії у вигляді підказок над кнопками дій — на основі транзакцій, які ви вже категоризували. Торкання підказки обирає категорію, а кнопка «Категорія», як і раніше, відкриває повний список."
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Open a new expense and suggestion pills are already waiting above the action buttons, before an amount is entered. Nothing is filled in until you tap one, and the form works as usual if you ignore them."
+msgstr "Відкрийте нову витрату, і підказки вже чекають над кнопками дій, ще до введення суми. Нічого не заповнюється, доки ви не торкнетеся однієї з них, а форма працює як завжди, якщо їх ігнорувати."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
@@ -12425,6 +12529,10 @@ msgstr "Початкові записи залишаються пов’язан
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Original FX kept per leg"
 msgstr "Оригінальний курс FX зберігається для кожної ноги"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Original name, untouched"
+msgstr "Оригінальна назва без змін"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Other applicable data protection and privacy laws"
@@ -12671,6 +12779,14 @@ msgstr "Оберіть ту, що залишиться"
 msgid "Picking Deposit opens the deposit form: opening balance, name, currency — then an interest rate and a maturity date that only this type asks for."
 msgstr "Вибір «Депозит» відкриває його форму: початковий баланс, назва, валюта — а також відсоткова ставка й дата погашення, які запитує лише цей тип."
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Pill suggestions on the expense form, the privacy notice in Settings, and the On-device AI section."
+msgstr "Підказки у формі витрати, повідомлення про приватність у налаштуваннях і розділ «ШІ на пристрої»."
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Pills appear on the empty form"
+msgstr "Підказки з’являються в порожній формі"
+
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "pin"
 msgstr "PIN"
@@ -12825,6 +12941,10 @@ msgstr "Потенційно навіть надіслати виправлен�
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "Power-User Features"
 msgstr "Функції для досвідчених користувачів"
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Powered by the on-device AI"
+msgstr "Працює на ШІ на пристрої"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Practical Steps for Privacy Protection"
@@ -13634,10 +13754,6 @@ msgstr "Перевіряйте наші криптографічні реалі�
 msgid "Review the import preview"
 msgstr "Перегляньте попередній перегляд імпорту"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Review the table of three extracted rows, each with its own amount and category"
-msgstr "Перегляньте таблицю з трьох розпізнаних рядків, кожен зі своєю сумою та категорією"
-
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Відкликати доступ через налаштування підключених додатків вашого банку"
@@ -13789,6 +13905,10 @@ msgstr "Скажіть «дванадцять за каву, сорок за т�
 msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. Transcription and parsing both happen on your phone — the audio never leaves it."
 msgstr "Скажіть «дванадцять за каву, сорок за таксі й вісім євро за паркування» — і Budgie запише всі три. І розпізнавання, і розбір відбуваються прямо на вашому телефоні — аудіо ніколи його не залишає."
 
+#: src/app/[lang]/page.tsx
+msgid "Say what you spent and Budgie logs it. The audio never leaves the device."
+msgstr "Скажіть, що ви витратили, і Budgie це запише. Аудіо ніколи не залишає пристрій."
+
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "scanning"
 msgstr "сканування"
@@ -13879,6 +13999,10 @@ msgstr "Рядок пошуку над списком"
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Search by merchant or account"
 msgstr "Пошук за продавцем або рахунком"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Search keywords"
+msgstr "Ключові слова для пошуку"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Search what you archived"
@@ -14151,6 +14275,10 @@ msgstr "Налаштування → Перерахувати баланси о�
 msgid "Settings → Security, directly below the PIN-lock card. It's a single switch, off by default, with no per-screen configuration."
 msgstr "Налаштування → Безпека, одразу під карткою блокування PIN-кодом. Це один перемикач, вимкнений за замовчуванням, без налаштування для кожного екрана."
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date. Suggestions come from your own history on this device."
+msgstr "У налаштуваннях є розділ ШІ з перемикачем «ШІ на пристрої» і рядком «Навчання», що показує, чи навчання актуальне. Підказки походять з вашої власної історії на цьому пристрої."
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
 msgstr "Налаштування містять обидва експорти звичайними рядками, і кожен стоїть поряд з імпортом, який читає цей файл назад."
@@ -14158,6 +14286,10 @@ msgstr "Налаштування містять обидва експорти з
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Settings keeps Export Database and Import Database as two neighbouring rows. Between them they do everything a hosted account would have done."
 msgstr "У налаштуваннях «Експортувати базу даних» та «Імпортувати базу даних» стоять сусідніми рядками. Разом вони роблять усе, що робив би розміщений на сервері обліковий запис."
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Settings opens with a Privacy card stating that your financial data is stored locally on your device. Further down, a toggle assigns default categories from the merchant category codes your bank sends with card payments."
+msgstr "Налаштування відкриваються карткою «Приватність», де сказано, що ваші фінансові дані зберігаються локально на вашому пристрої. Нижче перемикач призначає категорії за замовчуванням на основі кодів категорій продавців, які ваш банк надсилає з оплатами карткою."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Setup asks for one credential and spells out how to scope it — for Binance, an API key and secret with reading enabled and trading and withdrawals switched off. Budgie stores it on the bank, not on an account, and fetches whatever that key can see."
@@ -14422,6 +14554,10 @@ msgstr "Особисті фінанси з доступним кодом — П�
 msgid "Source-Available Personal Finance App — Budgie"
 msgstr "Застосунок для особистих фінансів із доступним кодом — Budgie"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Speak it, review it, save it"
+msgstr "Скажіть, перевірте, збережіть"
+
 #: src/app/[lang]/features/voice-transaction-entry/opengraph-image.tsx
 msgid "Speak it. Budgie logs it. Audio never leaves your phone."
 msgstr "Скажіть це. Budgie запише. Аудіо ніколи не залишає ваш телефон."
@@ -14430,10 +14566,6 @@ msgstr "Скажіть це. Budgie запише. Аудіо ніколи не �
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Speak it. Budgie logs it. Speech is transcribed on your phone — the audio never leaves it."
 msgstr "Скажіть — Budgie запише. Мовлення розпізнається прямо на вашому телефоні — аудіо ніколи його не залишає."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Speak naturally — “twelve for coffee, forty for the taxi, and eight euros for parking”"
-msgstr "Говоріть природно — «дванадцять за каву, сорок за таксі і вісім євро за парковку»"
 
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Spending Analytics & Charts"
@@ -14745,6 +14877,10 @@ msgstr "Підписки автоматично поновлюються, якщ
 msgid "Suggest features and improvements"
 msgstr "Пропонуйте функції та покращення"
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Suggested category pills"
+msgstr "Запропоновані підказки категорій"
+
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Suggested tag pills"
 msgstr "Запропоновані теги"
@@ -14761,6 +14897,10 @@ msgstr "підказки"
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you ignore them. Settings → AI shows what the on-device AI is doing and how far along it is."
 msgstr "Підказки — це лише пропозиції: нічого не застосовується, поки ви не торкнетесь однієї з них, і кожна форма працює точнісінько так само, якщо їх ігнорувати. Розділ «Налаштування → AI» показує, чим зайнятий on-device AI і на якому він етапі."
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Suggestions before you type"
+msgstr "Підказки ще до введення"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Support for 150+ currencies"
@@ -14980,21 +15120,13 @@ msgstr "Торкніть Імпорт → Erste PDF. Оберіть файл і�
 msgid "Tap it, the rule exists"
 msgstr "Торкнись — правило створене"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap Save 3 — all three transactions commit together in one database transaction"
-msgstr "Натисніть «Зберегти 3» — усі три транзакції записуються разом однією транзакцією бази даних"
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Tap the mic and say what you spent. Your speech becomes text on the phone, and the audio is never sent anywhere. One sentence can produce several transactions — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, each with its own amount and category."
 msgstr "Торкніться мікрофона й скажіть, на що ви витратили гроші. Ваше мовлення перетворюється на текст прямо на телефоні, а аудіо нікуди не надсилається. Одне речення може дати кілька транзакцій — «дванадцять за каву, сорок за таксі й вісім євро за паркування» повернеться як три окремі рядки, кожен зі своєю сумою та категорією."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet"
-msgstr "Торкніть мікрофон на аркуші швидкого введення"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. Your speech becomes text on the phone, and one or more transactions are pulled out of it — each with its own amount, category, and the account matching the currency you said — then a review sheet opens before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
-msgstr "Торкніться мікрофона на екрані швидкого введення. Ваше мовлення перетворюється на текст прямо на телефоні, з якого виокремлюється одна чи кілька транзакцій — кожна зі своєю сумою, категорією й рахунком відповідно до названої валюти — а потім, перед збереженням, відкривається екран перевірки. Виправте будь-який рядок вручну, або торкніться «перезаписати», щоб замінити всю партію, якщо розпізнавання пішло не так."
+msgid "Tap the mic and speak"
+msgstr "Торкніться мікрофона й говоріть"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap the missing categories pill above your transaction list, or Uncategorized in Analytics. The Categorize inbox groups every uncategorized transaction by merchant, so one tap on a suggestion categorizes the whole group, and a single button accepts every confident suggestion in one go."
@@ -15003,6 +15135,10 @@ msgstr "Торкніться плашки відсутніх категорій 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap to open the inbox"
 msgstr "Торкніться, щоб відкрити"
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Tappable suggestion pills"
+msgstr "Підказки, які можна торкнути"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
@@ -15109,6 +15245,10 @@ msgstr "Шаблон агрегатора: що робить Plaid і що ві�
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Aggregator Persistence Problem"
 msgstr "Проблема стійкості агрегаторів"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "The AI section of Settings holds the On-device AI switch, which says it categorizes transactions on this device and downloads about 2.5 GB of models once. Below it, a Learning row shows whether learning is up to date."
+msgstr "У розділі ШІ налаштувань є перемикач «ШІ на пристрої», який, за його описом, категоризує транзакції на цьому пристрої й одноразово завантажує близько 2,5 ГБ моделей. Під ним рядок «Навчання» показує, чи навчання актуальне."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
@@ -15234,6 +15374,10 @@ msgstr "Екран категоризації перетворює цю рути
 msgid "The category and the tags you set are never part of what a re-sync writes"
 msgstr "Категорія й теги, які ви задали, ніколи не входять до того, що записує повторна синхронізація"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "The category is called Сільпо, exactly as it was created. Below the name sits a block of AI-generated metadata, produced on your phone."
+msgstr "Категорія називається Сільпо — точно так, як її створили. Під назвою розташований блок метаданих, згенерованих ШІ на вашому телефоні."
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The category it sets"
 msgstr "Категорія, яку воно ставить"
@@ -15346,10 +15490,6 @@ msgstr "Запасний код пристрою вимкнено навмисн
 msgid "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
 msgstr "Ця відмінність має значення, тому що вона змінює фундаментальні припущення щодо власності, доступності та приватності."
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "The download happens the first time you use the feature that needs it, and only after you have switched On-device AI on in Settings. Budgie then keeps that capability ready just while you are using it and releases it about half a minute after you stop — so the first suggestion after a pause waits a moment, and the ones that follow do not. For each new transaction Budgie looks through your own history first; if nothing close enough is there, the merchant code your bank sent points at the right area instead. Your response — accept, edit, or reject — feeds straight back in, with no network call."
-msgstr "Завантаження відбувається при першому використанні відповідної функції, і лише після того, як ви увімкнули On-device AI в налаштуваннях. Далі Budgie підтримує цю можливість готовою лише поки ви нею користуєтесь, і «відпускає» її приблизно за півхвилини після завершення — тож перша підказка після паузи трохи затримується, а наступні — ні. Для кожної нової транзакції Budgie спершу переглядає вашу власну історію; якщо нічого достатньо близького не знайдено, замість цього орієнтиром слугує код продавця, надісланий вашим банком. Ваша реакція — прийняти, змінити чи відхилити — одразу враховується, без жодного мережевого запиту."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The ecosystem grows stronger through shared knowledge"
 msgstr "Екосистема стає сильнішою завдяки обміну знаннями"
@@ -15413,6 +15553,10 @@ msgstr "Чотири цифри — це ключ"
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The fourth digit submits"
 msgstr "Четверта цифра підтверджує"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "The full category list is one tap away"
+msgstr "Повний список категорій — за одне торкання"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "The full list renders with the radio off. No spinner, no retry."
@@ -15552,6 +15696,10 @@ msgstr "Оновлення грошових даних сканує записи
 msgid "The most private way to get bank data into Budgie is manual import. Most banks allow you to download transaction history in standard formats like CSV, OFX, or QIF. You download this file directly from your bank, and Budgie imports it locally on your device."
 msgstr "Найбільш приватний спосіб отримати банківські дані в Budgie — це ручний імпорт. Більшість банків дозволяють завантажити історію транзакцій у стандартних форматах, таких як CSV, OFX або QIF. Ви завантажуєте цей файл безпосередньо з вашого банку, і Budgie імпортує його локально на вашому пристрої."
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "The name stays as you wrote it"
+msgstr "Назва залишається такою, як ви її написали"
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "The native splash screen reads the OS theme directly so the transition into the app stays in dark mode without an intermediate light state."
 msgstr "Нативний екран запуску безпосередньо зчитує тему ОС, тож перехід у застосунок залишається в темному режимі без проміжного світлого стану."
@@ -15652,6 +15800,10 @@ msgstr "Плашка рахує те, що ви пропустили"
 msgid "The pill opens the <0>Categorize inbox</0> for bulk work. The list button in its header shows only these rows, with your filters carried across."
 msgstr "Плашка відкриває <0>екран категоризації</0> для роботи гуртом. Кнопка списку в його заголовку показує лише ці рядки з тими самими фільтрами."
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "The pills on the expense form, and the On-device AI section in Settings that powers them."
+msgstr "Підказки у формі витрати та розділ «ШІ на пристрої» в налаштуваннях, який їх забезпечує."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
 msgstr "PIN є ключем шифрування — механізму відновлення немає за задумом. Зберігайте PIN у безпечному місці (менеджер паролів підходить) або використовуйте функцію резервної копії бази даних для відновлення зі відомого справного стану."
@@ -15741,6 +15893,10 @@ msgstr "Значок «Швидке правило» напише його за 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Quick rule pill writes the rule for you"
 msgstr "Пігулка \"Швидке правило\" пише правило за вас"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "The quick-entry sheet opens over your accounts with a mic button in the middle of the bottom bar. Tap it and talk — one sentence can hold several expenses, and a review sheet shows every extracted row before anything is saved."
+msgstr "Панель швидкого введення відкривається над вашими рахунками з кнопкою мікрофона посередині нижньої панелі. Торкніться її й говоріть: одне речення може містити кілька витрат, а панель перегляду показує кожен розпізнаний рядок, перш ніж щось буде збережено."
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "The rate it converted at"
@@ -16528,6 +16684,10 @@ msgstr "транзакції"
 msgid "Transactions: amount-range filtering and a read-only detail view"
 msgstr "Транзакції: фільтрація за діапазоном суми та деталі лише для читання"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Transcribed on the phone, never uploaded"
+msgstr "Транскрибується на телефоні, ніколи не завантажується"
+
 #: src/app/[lang]/features/account-transfers/metadata.ts
 msgid "Transfer between your own accounts as a first-class transaction type with automatic FX conversion and dual-amount display. Spending stats stay clean; balance reconciliation stays exact."
 msgstr "Переказ між власними рахунками як першокласний тип транзакції з автоматичною конверсією FX та подвійним відображенням суми. Статистика витрат залишається чистою; узгодження балансу залишається точним."
@@ -16694,6 +16854,10 @@ msgstr "Два екрани: аркуш мов з усіма п'ятьма ва�
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Two screens: the list where a matched pair reads as a single transfer, and the sheet that still holds both originals behind it."
 msgstr "Два екрани: список, де виявлена пара читається як один переказ, і аркуш, що досі тримає позаду обидва оригінали."
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Two screens: the mic in the quick-entry sheet, and the Settings switch that keeps transcription on your phone."
+msgstr "Два екрани: мікрофон на панелі швидкого введення та перемикач у налаштуваннях, що залишає транскрибування на вашому телефоні."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
@@ -16963,11 +17127,15 @@ msgstr "Голосове введення"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Voice entry downloads what it needs once and keeps it on the device — only after you switch On-device AI on in Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more, and follows your phone's language automatically."
-msgstr "Голосове введення завантажує потрібне один раз і зберігає на пристрої — лише після того, як ви увімкнете On-device AI в налаштуваннях, і лише при першому записі. Воно охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а ще десятки інших, і автоматично слідує за мовою вашого телефону."
+msgstr "Голосове введення завантажує потрібне один раз і зберігає на пристрої — лише після того, як ви увімкнете ШІ на пристрої в налаштуваннях, і лише при першому записі. Воно охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а ще десятки інших, і автоматично слідує за мовою вашого телефону."
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a server."
+msgstr "Голосове введення працює завдяки перемикачу «ШІ на пристрої» в налаштуваннях. За його описом, він транскрибує голосові нотатки на цьому пристрої та одноразово завантажує моделі, найкраще через Wi-Fi. Ваше аудіо перетворюється на текст на телефоні й ніколи не надсилається на сервер."
 
 #: src/app/[lang]/page.tsx
-msgid "Voice entry, split transactions, tags, multi-currency, PDF and CSV imports and more."
-msgstr "Голосове введення, розділені транзакції, теги, мультивалютність, імпорт PDF і CSV та інше."
+msgid "Voice entry, transcribed on your phone"
+msgstr "Голосовий ввід, розпізнаний на вашому телефоні"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Voice Entry: Speak It, Budgie Logs It"
@@ -18856,11 +19024,11 @@ msgstr "Так. Одразу після того, як ви категоризу
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch that turns the whole subsystem on or off. Switch it off and nothing downloads, nothing loads, and no suggestion runs — the rest of Budgie is unaffected. New installs start with it off; if you were already using AI before the switch existed, it stays on."
-msgstr "Так. У Налаштуваннях є розділ ШІ з єдиним перемикачем «On-device AI», який вмикає або вимикає всю підсистему. Вимкніть його — і нічого не завантажується, нічого не вантажиться в пам’ять і жодна підказка не виконується; решта Budgie працює як звично. Нові встановлення починають із вимкненим перемикачем; якщо ви користувалися ШІ ще до появи перемикача, він лишається увімкненим."
+msgstr "Так. У Налаштуваннях є розділ ШІ з єдиним перемикачем «ШІ на пристрої», який вмикає або вимикає всю підсистему. Вимкніть його — і нічого не завантажується, нічого не вантажиться в пам’ять і жодна підказка не виконується; решта Budgie працює як звично. Нові встановлення починають із вимкненим перемикачем; якщо ви користувалися ШІ ще до появи перемикача, він лишається увімкненим."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."
-msgstr "Так. У налаштуваннях є розділ AI з одним перемикачем On-device AI. Вимкніть його — і нічого не завантажується, нічого не завантажується в пам'ять, жодна підказка не працює — категоризація повертається до ваших правил і власних кодів продавців вашого банку. На нових встановленнях перемикач спершу вимкнений; якщо ви користувалися AI ще до появи цього перемикача, він залишиться увімкненим."
+msgstr "Так. У налаштуваннях є розділ AI з одним перемикачем ШІ на пристрої. Вимкніть його — і нічого не завантажується, нічого не завантажується в пам'ять, жодна підказка не працює — категоризація повертається до ваших правил і власних кодів продавців вашого банку. На нових встановленнях перемикач спершу вимкнений; якщо ви користувалися AI ще до появи цього перемикача, він залишиться увімкненим."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."
@@ -19314,6 +19482,10 @@ msgstr "UDID вашого пристрою вже має бути зареєст
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Your file, your storage"
 msgstr "Ваш файл, ваше сховище"
+
+#: src/app/[lang]/page.tsx
+msgid "Your finances stay on your device, with app lock and screenshot protection built in."
+msgstr "Ваші фінанси залишаються на вашому пристрої, з блокуванням застосунку та захистом від скриншотів."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your financial data belongs to you. Period. A good budget app should:"

@@ -3,6 +3,8 @@ import { useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { useNoteInputModal } from '../../transaction/context/note-input-modal.context';
+
 interface AiTranslationEntity {
     title: string;
     titleEn: string | null;
@@ -23,16 +25,21 @@ interface UseAiTranslationFieldsParams {
 interface UseAiTranslationFieldsReturn {
     titleEn: string | null;
     titleTags: string | null;
-    setTitleEn: (value: string | null) => void;
-    setTitleTags: (value: string | null) => void;
-    isGenerateDisabled: boolean;
-    handleRegenerate: () => Promise<void>;
     handleTitleBlur: () => void;
+    translationFieldsProps: {
+        titleEn: string | null;
+        titleTags: string | null;
+        disabled: boolean;
+        onRegenerate: () => Promise<void>;
+        onTitleEnPress: () => Promise<void>;
+        onTitleTagsPress: () => Promise<void>;
+    };
 }
 
 export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): UseAiTranslationFieldsReturn => {
     const { entity, entityId, currentTitle, regenerate, isRegenerating, isModelReady } = params;
 
+    const [openNoteInput] = useNoteInputModal();
     const [titleEn, setTitleEn] = useState<string | null>(entity?.titleEn ?? null);
     const [titleTags, setTitleTags] = useState<string | null>(entity?.titleTags ?? null);
 
@@ -63,5 +70,21 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
         }
     };
 
-    return { titleEn, titleTags, setTitleEn, setTitleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur };
+    const handleNoteEdit = (current: string | null, setField: (value: string | null) => void) => async (): Promise<void> => {
+        const result = await openNoteInput({ initialValue: current ?? '' });
+        if (isDefined(result)) {
+            setField(result);
+        }
+    };
+
+    const translationFieldsProps = {
+        titleEn,
+        titleTags,
+        disabled: isGenerateDisabled,
+        onRegenerate: handleRegenerate,
+        onTitleEnPress: handleNoteEdit(titleEn, setTitleEn),
+        onTitleTagsPress: handleNoteEdit(titleTags, setTitleTags)
+    };
+
+    return { titleEn, titleTags, handleTitleBlur, translationFieldsProps };
 };

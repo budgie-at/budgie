@@ -119,6 +119,64 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
+    it.effect('keeps a merchant renamed from a short brand label in one series', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4], monthsAgo => seed('A1', monthsAgo, 20, 25), { discard: true });
+            yield* Effect.forEach([3, 2, 1], monthsAgo => seed('A1 Telekom Austria AG, WIEN', monthsAgo, 20, 25), { discard: true });
+
+            const months = yield* Effect.forEach([0, 1, 2, 3, 4, JUNE, JULY], calendar);
+
+            expect(new Set(months.flatMap(allEntries).map(entry => entry.seriesId)).size).toBe(1);
+            expect(forecastedAmounts(months[months.length - 1], 20)).toEqual([25 * PRECISION]);
+        })
+    );
+
+    it.effect('detects four subscriptions at one merchant within one amount band', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach(
+                [
+                    [3, 8.49],
+                    [10, 8.99],
+                    [18, 9.49],
+                    [26, 9.99]
+                ],
+                ([day, amount]) => seedMonthly(seed, 'Apple', day, amount),
+                { discard: true }
+            );
+
+            const data = yield* calendar(JULY);
+
+            expect([3, 10, 18, 26].flatMap(day => forecastedAmounts(data, day))).toEqual(
+                [8.49, 8.99, 9.49, 9.99].map(amount => amount * PRECISION)
+            );
+        })
+    );
+
+    it.effect('ignores visits that repeat at an interval matching no billing period', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([27, 18, 9, 0], monthsAgo => seed('EISSALON', monthsAgo, 10, 4.6), { discard: true });
+
+            const months = yield* Effect.forEach([2, 4, JUNE, JULY, 9], calendar);
+
+            expect(months.flatMap(allEntries)).toEqual([]);
+        })
+    );
+
+    it.effect('keeps concurrent monthly series of a merchant and its extended label separate', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'A1', 5, 9.9);
+            yield* seedMonthly(seed, 'A1 SHOP', 20, 31.5);
+
+            const months = yield* Effect.forEach([2, 3, 4, JUNE, JULY], calendar);
+
+            expect(new Set(months.flatMap(allEntries).map(entry => entry.seriesId)).size).toBe(2);
+        })
+    );
+
     it.effect('ignores irregular shopping visits', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();

@@ -1,9 +1,10 @@
+import { AccountWithSyncEntityInterface } from '@budgie/contracts';
+
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { AccountRowInterface } from '../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../interface/crypto-currency-group.interface';
-import { DebtAccountGroupInterface } from '../interface/debt-account-group.interface';
 
 export const isCryptoCurrencyGroup = (
-    item: AccountRowInterface | CryptoCurrencyGroupInterface | DebtAccountGroupInterface
+    item: AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface
 ): item is CryptoCurrencyGroupInterface => 'accounts' in item && isNotEmptyArray(item.accounts);

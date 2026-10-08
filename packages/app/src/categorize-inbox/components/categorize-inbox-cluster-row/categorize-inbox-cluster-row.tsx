@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,6 +12,7 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';
 
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
 
@@ -49,18 +51,27 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
                 <Icon icon={checkboxIcon} size={20} className="text-primary" />
             </HapticPressable>
 
-            <View className="flex-1 gap-y-xxs">
-                {isDefined(ownTitle) ? (
-                    <Text className="text-primary text-sm" numberOfLines={1}>
-                        {ownTitle}
-                    </Text>
-                ) : null}
-                <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
-            </View>
+            <Link href={getCategorizeInboxRowHref(row)} asChild>
+                <HapticPressable
+                    className="flex-1 flex-row items-center gap-x-xs"
+                    hitSlop={0}
+                    accessibilityRole="link"
+                    {...testID(CategorizeInboxClusterRowSelector.Open, row.transactionId)}
+                >
+                    <View className="flex-1 gap-y-xxs">
+                        {isDefined(ownTitle) ? (
+                            <Text className="text-primary text-sm" numberOfLines={1}>
+                                {ownTitle}
+                            </Text>
+                        ) : null}
+                        <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
+                    </View>
 
-            <Text className="text-primary text-sm font-medium">
-                {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
-            </Text>
+                    <Text className="text-primary text-sm font-medium">
+                        {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
+                    </Text>
+                </HapticPressable>
+            </Link>
 
             <HapticPressable
                 onPress={handlePickLabelsPress}

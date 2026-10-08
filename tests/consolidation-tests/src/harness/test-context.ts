@@ -23,6 +23,7 @@ import {
     TransactionRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -49,6 +50,7 @@ export const TestLayer = Layer.mergeAll(
     TransferPairRepository.layer,
     AccountRepository.layer,
     AccountBalanceRepository.layer,
+    AccountBalanceIncrementalService.layer,
     StatisticsRepository.layer,
     TransactionRepository.layer,
     TransactionEntryRepository.layer,
@@ -61,6 +63,10 @@ export const TestLayer = Layer.mergeAll(
     ),
     Layer.provideMerge(makeTestPlatformLayer(testDb)),
     Layer.provideMerge(Layer.succeed(Clock.Clock, Clock.Clock.defaultValue()))
+);
+
+export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalService, accountBalanceIncrementalService =>
+    accountBalanceIncrementalService.updateAllBalances(false)
 );
 
 export const unconsolidateById = (transactionId: number) =>

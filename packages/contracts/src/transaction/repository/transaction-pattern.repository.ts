@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
+import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -30,12 +31,6 @@ const MIN_OCCURRENCES = 2;
 const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id);
 const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
 const CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id);
-
-const buildCategoryTranslationJoinCondition = (language: LanguageEnum) =>
-    and(
-        eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-        eq(DefaultCategoryTranslationEntityTable.language, language)
-    );
 
 type PatternGroupColumn = 'title' | 'comment';
 
