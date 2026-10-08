@@ -1,5 +1,6 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -22,7 +23,7 @@ const seedErsteAndCashAccounts = Effect.fnUntraced(function* () {
 layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
     it.effect('moves an Erste AUTOMAT withdrawal to the cash account only on request and leaves cash back and deposits unpaired', () =>
         Effect.gen(function* () {
-            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, cashAccount } = yield* seedErsteAndCashAccounts();
             const seedErsteTransaction = (title: string, transaction: TransactionEntityInterface) =>
                 Effect.gen(function* () {
@@ -65,7 +66,7 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
 
             expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
             expect(
-                yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([
+                yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([
                     atmWithdrawal.id,
                     ...unpairedTransactions.map(transaction => transaction.id)
                 ])
@@ -86,6 +87,7 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
         Effect.gen(function* () {
             const { bankAccount, cashAccount } = yield* seedErsteAndCashAccounts();
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const seedMcclessExpense = (externalId: string, title: string, externalSource: ExternalSourceEnum) =>
                 Effect.gen(function* () {
                     const expense = yield* testSeedService.bankPairExpense(
@@ -116,7 +118,7 @@ layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
                     ersteNearMiss.id
                 ])
             ).toEqual([legacyAtmWithdrawal.id]);
-            expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([legacyAtmWithdrawal.id])).toBe(1);
+            expect(yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([legacyAtmWithdrawal.id])).toBe(1);
 
             const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 

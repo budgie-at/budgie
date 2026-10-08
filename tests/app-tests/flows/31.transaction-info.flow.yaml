@@ -67,3 +67,33 @@ appId: ${APP_ID}
       id: 'TransactionInfo.SimilarBar.5'
 - assertNotVisible:
       id: 'TransactionInfo.Row.Source'
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/5/expense/edit'
+- extendedWaitUntil:
+      visible: 'Edit Expense'
+      timeout: 10000
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionKeypad.Digit.1'
+- waitForAnimationToEnd
+- longPressOn:
+      id: 'TransactionKeypad.Backspace'
+- tapOn:
+      id: 'TransactionKeypad.Digit.2'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+- tapOn:
+      id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 15000
+- assertVisible: '-$10'
+- extendedWaitUntil:
+      visible: '$30'
+      timeout: 10000
+- assertVisible: '2 similar transactions'
+- assertVisible: '$15'

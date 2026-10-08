@@ -916,6 +916,9 @@ importers:
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../../packages/ledger
+      '@budgie/sync':
+        specifier: workspace:*
+        version: link:../../packages/sync
       '@effect/sql-sqlite-node':
         specifier: 4.0.0
         version: 4.0.0(effect@4.0.0)
