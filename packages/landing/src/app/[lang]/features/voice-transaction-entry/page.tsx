@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -11,6 +12,7 @@ import { FeaturePageHero } from '../../../../feature/component/feature-page-hero
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -37,6 +39,59 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Speak it, review it, save it</Trans>}>
+                    <Trans>
+                        Two screens: the mic in the quick-entry sheet, and the Settings switch that keeps transcription on your phone.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One tap on the mic</Trans>}>
+                    <Trans>
+                        The quick-entry sheet opens over your accounts with a mic button in the middle of the bottom bar. Tap it and talk —
+                        one sentence can hold several expenses, and a review sheet shows every extracted row before anything is saved.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie home screen dimmed behind the quick-entry sheet, with a ringed microphone button in the centre of the bottom bar and a close button on the right`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="voice-transaction-entry-1"
+                    slug="voice-transaction-entry"
+                >
+                    <FeatureStory.Callout index={0} x={0.5} y={0.878}>
+                        <Trans>Tap the mic and speak</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Transcribed on the phone, never uploaded</Trans>}>
+                    <Trans>
+                        Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this
+                        device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a
+                        server.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows`}
+                    index={1}
+                    locale={lang}
+                    scene="on-device-ai-budget-app-1"
+                    slug="on-device-ai-budget-app"
+                >
+                    <FeatureStory.Callout index={0} y={0.62}>
+                        <Trans>On-device AI switch</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.68}>
+                        <Trans>Models download once</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -89,43 +144,6 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>The record button shows a progress ring while the one-time download finishes</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Tap the mic in the quick-entry sheet. Your speech becomes text on the phone, and one or more transactions are pulled
-                        out of it — each with its own amount, category, and the account matching the currency you said — then a review sheet
-                        opens before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the
-                        transcription went wrong.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>From speech to a saved batch</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0} key="step-0">
-                        <Trans>Tap the mic in the quick-entry sheet</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1} key="step-1">
-                        <Trans>Speak naturally — &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo;</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2} key="step-2">
-                        <Trans>Review the table of three extracted rows, each with its own amount and category</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3} key="step-3">
-                        <Trans>Fix a row, or use &ldquo;Select all categories&rdquo; to fix the whole batch at once</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4} key="step-4">
-                        <Trans>Tap Save 3 — all three transactions commit together in one database transaction</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
