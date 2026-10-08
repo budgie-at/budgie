@@ -1156,6 +1156,30 @@
         },
         {
             "files": [
+                "packages/app/src/**/*.{ts,tsx}"
+            ],
+            "rules": {
+                "budgie/no-unwrapped-try-promise": "error"
+            }
+        },
+        {
+            "files": [
+                "packages/**/*.tsx"
+            ],
+            "rules": {
+                "budgie/no-registry-context-provider": "error"
+            }
+        },
+        {
+            "files": [
+                "packages/app/src/app/_layout.tsx"
+            ],
+            "rules": {
+                "budgie/no-registry-context-provider": "off"
+            }
+        },
+        {
+            "files": [
                 "packages/app/src/widget/widget/**/*.tsx"
             ],
             "rules": {
