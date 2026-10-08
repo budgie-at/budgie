@@ -59,15 +59,23 @@ export const CategorizeInboxUndoBar = ({ lastWrite, onUndo, onFollowUp }: Props)
     const description = t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) });
 
     const handleUndoPress = (): void => void onUndo(lastWrite);
-    const handleRulePress = (): void =>
+    const handleRulePress = (): void => {
+        const ruleActions = strategy.buildRuleActions(labels.map(label => label.id));
+        const [firstRow, ...otherRows] = assignments[0].rows;
+        const sharedCategoryId = otherRows.every(row => row.categoryId === firstRow.categoryId) ? firstRow.categoryId : null;
+        const sharedTagIds = firstRow.tagIds.filter(tagId => otherRows.every(row => row.tagIds.includes(tagId)));
+        const followUpTagIds = lastWrite.followUpAssignments.map(assignment => assignment.labelId);
+
         void openRuleForm({
             prefillData: {
                 conditions: [
                     { field: RuleConditionFieldEnum.TITLE, operator: RuleConditionOperatorEnum.CONTAINS, value: ruleConditionValue }
                 ],
-                ...strategy.buildRuleActions(labels.map(label => label.id))
+                categoryId: ruleActions.categoryId ?? sharedCategoryId,
+                tagIds: [...new Set([...ruleActions.tagIds, ...followUpTagIds, ...sharedTagIds])]
             }
         });
+    };
 
     return (
         <CategorizeInboxUndoLayout icon={icon} title={title} description={description} onUndo={handleUndoPress}>
