@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.97.1](https://github.com/budgie-at/budgie/compare/v6.97.0...v6.97.1) (2026-10-08)
+
+
+### Performance Improvements
+
+* **app:** virtualize home debt rows one item per account ([9ed92ec](https://github.com/budgie-at/budgie/commit/9ed92ecd21bdf519dd05fd24fda6802add85dc03))
+
+
+
+
+
 ## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
 
 **Note:** Version bump only for package @budgie-at/app
