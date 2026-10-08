@@ -7,7 +7,6 @@ import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { extractTransMessage } from '../../../i18n/util/extract-trans-message.util';
 import { BASE_URL } from '../../constant/seo.constant';
 import { CapabilityBentoAnchor } from '../capability-bento-anchor/capability-bento-anchor';
-import { CapabilityBentoBand } from '../capability-bento-band/capability-bento-band';
 import { CapabilityBentoCell } from '../capability-bento-cell/capability-bento-cell';
 import { JsonLd } from '../json-ld/json-ld';
 
@@ -52,6 +51,5 @@ const CapabilityBentoRoot = ({ locale, heading, lede, children }: Props) => {
 
 export const CapabilityBento = Object.assign(CapabilityBentoRoot, {
     Anchor: CapabilityBentoAnchor,
-    Band: CapabilityBentoBand,
     Cell: CapabilityBentoCell
 });
