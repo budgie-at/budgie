@@ -66,10 +66,7 @@ export class RepeatedTransactionService extends Context.Service<RepeatedTransact
             };
             const amountCacheKey = `amount:${language}:${JSON.stringify(amountQuery)}`;
 
-            return patternCacheService.memoizeAmount(
-                amountCacheKey,
-                transactionPatternRepository.findAmountBasedPatterns(amountQuery, language)
-            );
+            return patternCacheService.memoize(amountCacheKey, transactionPatternRepository.findAmountBasedPatterns(amountQuery, language));
         };
 
         return {
@@ -85,7 +82,7 @@ export class RepeatedTransactionService extends Context.Service<RepeatedTransact
                     limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
                 };
                 const repeatedCacheKey = `repeated:${language}:${JSON.stringify(repeatedQuery)}`;
-                const timeQuery = patternCacheService.memoizeRepeated(
+                const timeQuery = patternCacheService.memoize(
                     repeatedCacheKey,
                     transactionPatternRepository.findRepeatedPatterns(repeatedQuery, language)
                 );

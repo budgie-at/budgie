@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { GestureResponderEvent, View } from 'react-native';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -10,11 +10,11 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
+import { useTransactionListContextMenuClose } from '../../hook/use-transaction-list-context-menu-close.hook';
 
 import { TransactionActionsMenuSelector } from './transaction-actions-menu.selector';
 
 import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
-import type { EmptyFn } from '@rnw-community/shared';
 
 const TRIGGER_SIZE = 40;
 
@@ -22,7 +22,6 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
-    const pendingActionRef = useRef<EmptyFn | null>(null);
     const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
     const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;
     const actionTestID = isConsolidated ? TransactionActionsMenuSelector.RevertButton : TransactionActionsMenuSelector.DeleteButton;
@@ -31,21 +30,13 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
         setIsMenuOpen(true);
     };
 
-    const closeMenu = (afterClose?: EmptyFn) => {
-        if (!isMenuOpen) {
-            return;
-        }
-
-        pendingActionRef.current = afterClose ?? null;
-        setIsMenuOpen(false);
-    };
-
-    const handleCloseComplete = () => {
-        if (isDefined(pendingActionRef.current)) {
-            pendingActionRef.current();
-            pendingActionRef.current = null;
-        }
-    };
+    const { closeMenu, handleCloseComplete } = useTransactionListContextMenuClose({
+        isOpen: isMenuOpen,
+        onClose: () => {
+            setIsMenuOpen(false);
+        },
+        onCloseComplete: emptyFn
+    });
 
     const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {

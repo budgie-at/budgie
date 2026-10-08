@@ -8,11 +8,12 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { useCreateAction } from '../../@generic/hook/use-create-action.hook';
-import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';
+
+import { useFocusKey } from './use-focus-key.hook';
 
 export const useRulesListPageActions = () => {
     const { t } = useLingui();
