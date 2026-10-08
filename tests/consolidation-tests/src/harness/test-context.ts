@@ -17,16 +17,18 @@ import {
 import {
     AccountBalanceRepository,
     AccountRepository,
-    Db,
     StatisticsRepository,
     TransactionEntryRepository,
     TransactionRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, LedgerWorkload, TransactionService } from '@budgie/ledger';
+import { TransferConsolidationService } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isEmptyArray } from '@rnw-community/shared';
 
 export const testDbHandle = await buildTestDb();
 
@@ -51,6 +53,8 @@ export const TestLayer = Layer.mergeAll(
     AccountRepository.layer,
     AccountBalanceRepository.layer,
     AccountBalanceIncrementalService.layer,
+    TransferConsolidationService.layer,
+    TransactionService.layer,
     StatisticsRepository.layer,
     TransactionRepository.layer,
     TransactionEntryRepository.layer,
@@ -61,6 +65,7 @@ export const TestLayer = Layer.mergeAll(
             direction === P2pFiatDirectionEnum.BUY ? `Binance P2P buy ${assetCode}` : `Binance P2P sell ${assetCode}`
         )
     ),
+    Layer.provideMerge(Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect }))),
     Layer.provideMerge(makeTestPlatformLayer(testDb)),
     Layer.provideMerge(Layer.succeed(Clock.Clock, Clock.Clock.defaultValue()))
 );
@@ -69,7 +74,16 @@ export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalSer
     accountBalanceIncrementalService.updateAllBalances(false)
 );
 
+export const seedStoredBalancesOnce = Effect.gen(function* () {
+    const accountRepository = yield* AccountRepository;
+    const accountBalanceRepository = yield* AccountBalanceRepository;
+    const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative();
+    const storedBalances = yield* accountBalanceRepository.getByAccountIds(accounts.map(({ id }) => id));
+
+    if (isEmptyArray(storedBalances)) {
+        yield* rebuildStoredBalances;
+    }
+});
+
 export const unconsolidateById = (transactionId: number) =>
-    Effect.flatMap(UnconsolidationService, unconsolidationService =>
-        Db.transaction(unconsolidationService.unconsolidateById(transactionId))
-    );
+    Effect.flatMap(TransactionService, transactionService => transactionService.unconsolidateById(transactionId));

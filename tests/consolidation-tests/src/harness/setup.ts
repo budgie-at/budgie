@@ -7,7 +7,13 @@ import { rebuildStoredBalances, testDb, testDbHandle, TestLayer } from './test-c
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
 afterEach(() =>
-    Effect.runPromise(rebuildStoredBalances.pipe(Effect.andThen(assertStoredBalancesMatchLedger(testDb)), Effect.provide(TestLayer)))
+    Effect.runPromise(
+        assertStoredBalancesMatchLedger(testDb).pipe(
+            Effect.andThen(rebuildStoredBalances),
+            Effect.andThen(assertStoredBalancesMatchLedger(testDb)),
+            Effect.provide(TestLayer)
+        )
+    )
 );
 
 afterAll(() => testDbHandle.dispose());

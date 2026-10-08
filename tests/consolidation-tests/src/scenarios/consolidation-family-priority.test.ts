@@ -1,5 +1,4 @@
 import {
-    ConsolidationCoordinatorService,
     ExistingTransferRepository,
     IbanBridgeTransferRepository,
     ManualExpenseDuplicateRepository,
@@ -7,6 +6,7 @@ import {
     TransferPairRepository
 } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { afterEach, expect, layer, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -25,7 +25,7 @@ layer(TestLayer)('consolidation/family-priority', it => {
 
     it.effect('processes automatic consolidation families in the explicit priority order', () =>
         Effect.gen(function* () {
-            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const existingTransferRepository = yield* ExistingTransferRepository;
             const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
             const manualExpenseDuplicateRepository = yield* ManualExpenseDuplicateRepository;
@@ -45,7 +45,7 @@ layer(TestLayer)('consolidation/family-priority', it => {
                 MANUAL_EXPENSE_DUPLICATE: vi.spyOn(manualExpenseDuplicateRepository, 'findCandidates')
             };
 
-            yield* consolidationCoordinatorService.consolidate();
+            yield* transferConsolidationService.consolidate(null);
 
             const queriedFamilyKeys = Object.entries(familyQueries)
                 .toSorted(([, left], [, right]) => left.mock.invocationCallOrder[0] - right.mock.invocationCallOrder[0])
@@ -69,14 +69,14 @@ layer(TestLayer)('consolidation/family-priority', it => {
 
     it.effect('lets the IBAN bridge chain family claim overlapping legs before the plain IBAN bridge family', () =>
         Effect.gen(function* () {
-            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const topology = yield* seedIbanBridgeTopology();
             const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
 
             yield* seedIbanBridgeSourceExpense(topology.sourceAccount.id, topology.transferMccId);
             yield* seedIbanBridgeTargetIncome(topology.targetAccount.id, topology.transferMccId);
 
-            expect(yield* consolidationCoordinatorService.consolidate()).toEqual({ consolidated: 1, found: 1 });
+            expect(yield* transferConsolidationService.consolidate(null)).toEqual({ consolidated: 1, found: 1 });
 
             const [chainCanonical] = yield* testQueryService.fetchCanonicalsOfType(
                 TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER
