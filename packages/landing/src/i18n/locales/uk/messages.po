@@ -7393,10 +7393,6 @@ msgstr "Кожне поле має власний селектор із заго
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
 msgstr "Кожна група оновлюється пакетно, тож навіть великі імпорти лишаються зручними, коли оцінки потребують транзакції за багато років."
 
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves both alongside the original — so search and suggestions find it either way."
-msgstr "Кожна нова категорія чи тег потрапляє в чергу перекладу. Budgie пропонує англійську форму та ключові слова для пошуку і зберігає обидва варіанти поруч з оригіналом — щоб пошук і підказки знаходили це в будь-якому вигляді."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 msgstr "Кожна з цих груп привносить різні перспективи, навички та мотивацію. Дослідник конфіденційності може помітити патерни збору даних, які пропустить аудитор безпеки. Розробник, що інтегрується з проєктом, може виявити граничні випадки, які пропустили оригінальні автори. Ця різноманітність уваги — це перевага, яку жодна окрема команда безпеки не може повторити."
@@ -8239,10 +8235,6 @@ msgstr "П'ять дотиків — це на чотири дотики біл�
 msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
 msgstr "П'ять років для поповнень, виведень, угод, Convert та винагород Earn. Історія P2P-замовлень обмежена шістьма місяцями, бо саме настільки назад видає власний ендпоінт Binance."
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
-msgstr "Виправте рядок або скористайтеся «Вибрати всі категорії», щоб виправити весь пакет одразу"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Fix bugs and submit pull requests"
 msgstr "Виправляйте помилки та надсилайте pull requests"
@@ -8470,10 +8462,6 @@ msgstr "Так, для банківських підключень. Підклю
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
 msgstr "Від одного токена до головного екрана"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "From speech to a saved batch"
-msgstr "Від мовлення до збереженого пакета"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "From the month's total to one receipt"
@@ -9038,11 +9026,8 @@ msgstr "Чим це відрізняється від аналітики кат�
 msgid "How is this different from Plaid-based apps?"
 msgstr "Чим це відрізняється від додатків на основі Plaid?"
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-category-translation/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
 msgstr "Як це працює"
 
@@ -13769,10 +13754,6 @@ msgstr "Перевіряйте наші криптографічні реалі�
 msgid "Review the import preview"
 msgstr "Перегляньте попередній перегляд імпорту"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Review the table of three extracted rows, each with its own amount and category"
-msgstr "Перегляньте таблицю з трьох розпізнаних рядків, кожен зі своєю сумою та категорією"
-
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Відкликати доступ через налаштування підключених додатків вашого банку"
@@ -14586,10 +14567,6 @@ msgstr "Скажіть це. Budgie запише. Аудіо ніколи не �
 msgid "Speak it. Budgie logs it. Speech is transcribed on your phone — the audio never leaves it."
 msgstr "Скажіть — Budgie запише. Мовлення розпізнається прямо на вашому телефоні — аудіо ніколи його не залишає."
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Speak naturally — “twelve for coffee, forty for the taxi, and eight euros for parking”"
-msgstr "Говоріть природно — «дванадцять за каву, сорок за таксі і вісім євро за парковку»"
-
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Spending Analytics & Charts"
 msgstr "Аналітика витрат та графіки"
@@ -15143,10 +15120,6 @@ msgstr "Торкніть Імпорт → Erste PDF. Оберіть файл і�
 msgid "Tap it, the rule exists"
 msgstr "Торкнись — правило створене"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap Save 3 — all three transactions commit together in one database transaction"
-msgstr "Натисніть «Зберегти 3» — усі три транзакції записуються разом однією транзакцією бази даних"
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Tap the mic and say what you spent. Your speech becomes text on the phone, and the audio is never sent anywhere. One sentence can produce several transactions — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, each with its own amount and category."
 msgstr "Торкніться мікрофона й скажіть, на що ви витратили гроші. Ваше мовлення перетворюється на текст прямо на телефоні, а аудіо нікуди не надсилається. Одне речення може дати кілька транзакцій — «дванадцять за каву, сорок за таксі й вісім євро за паркування» повернеться як три окремі рядки, кожен зі своєю сумою та категорією."
@@ -15154,14 +15127,6 @@ msgstr "Торкніться мікрофона й скажіть, на що в�
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Tap the mic and speak"
 msgstr "Торкніться мікрофона й говоріть"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet"
-msgstr "Торкніть мікрофон на аркуші швидкого введення"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. Your speech becomes text on the phone, and one or more transactions are pulled out of it — each with its own amount, category, and the account matching the currency you said — then a review sheet opens before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
-msgstr "Торкніться мікрофона на екрані швидкого введення. Ваше мовлення перетворюється на текст прямо на телефоні, з якого виокремлюється одна чи кілька транзакцій — кожна зі своєю сумою, категорією й рахунком відповідно до названої валюти — а потім, перед збереженням, відкривається екран перевірки. Виправте будь-який рядок вручну, або торкніться «перезаписати», щоб замінити всю партію, якщо розпізнавання пішло не так."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap the missing categories pill above your transaction list, or Uncategorized in Analytics. The Categorize inbox groups every uncategorized transaction by merchant, so one tap on a suggestion categorizes the whole group, and a single button accepts every confident suggestion in one go."
@@ -15524,10 +15489,6 @@ msgstr "Запасний код пристрою вимкнено навмисн
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
 msgstr "Ця відмінність має значення, тому що вона змінює фундаментальні припущення щодо власності, доступності та приватності."
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "The download happens the first time you use the feature that needs it, and only after you have switched On-device AI on in Settings. Budgie then keeps that capability ready just while you are using it and releases it about half a minute after you stop — so the first suggestion after a pause waits a moment, and the ones that follow do not. For each new transaction Budgie looks through your own history first; if nothing close enough is there, the merchant code your bank sent points at the right area instead. Your response — accept, edit, or reject — feeds straight back in, with no network call."
-msgstr "Завантаження відбувається при першому використанні відповідної функції, і лише після того, як ви увімкнули ШІ на пристрої в налаштуваннях. Далі Budgie підтримує цю можливість готовою лише поки ви нею користуєтесь, і «відпускає» її приблизно за півхвилини після завершення — тож перша підказка після паузи трохи затримується, а наступні — ні. Для кожної нової транзакції Budgie спершу переглядає вашу власну історію; якщо нічого достатньо близького не знайдено, замість цього орієнтиром слугує код продавця, надісланий вашим банком. Ваша реакція — прийняти, змінити чи відхилити — одразу враховується, без жодного мережевого запиту."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The ecosystem grows stronger through shared knowledge"

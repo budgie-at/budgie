@@ -7393,10 +7393,6 @@ msgstr "Chaque champ a son propre sélecteur listant les en-têtes trouvés dans
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
 msgstr "Chaque groupe est mis à jour en lot, ce qui reste pratique pour les imports volumineux, même lorsque des années de transactions doivent être valorisées."
 
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves both alongside the original — so search and suggestions find it either way."
-msgstr "Chaque nouvelle catégorie ou nouveau tag rejoint une file de traduction. Budgie propose une forme anglaise et des mots-clés de recherche, puis enregistre les deux à côté de l'original — pour que la recherche et les suggestions le trouvent de toute façon."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 msgstr "Chacun de ces groupes apporte des perspectives, des compétences et des motivations différentes. Un chercheur en protection de la vie privée pourrait remarquer des schémas de collecte de données qu'un auditeur de sécurité ne verrait pas. Un développeur intégrant le projet pourrait découvrir des cas limites que les auteurs originaux ont manqués. Cette diversité d'attention est une force qu'aucune équipe de sécurité isolée ne peut reproduire."
@@ -8239,10 +8235,6 @@ msgstr "Cinq appuis, c'est quatre de trop"
 msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
 msgstr "Cinq ans pour les dépôts, retraits, transactions, Convert et récompenses Earn. L'historique des ordres P2P est limité à six mois, car c'est là que s'arrête le point de terminaison de Binance lui-même."
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
-msgstr "Corrigez une ligne, ou utilisez « Sélectionner toutes les catégories » pour corriger tout le lot en une fois"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Fix bugs and submit pull requests"
 msgstr "Corrigez des bugs et soumettez des pull requests"
@@ -8470,10 +8462,6 @@ msgstr "Depuis les connexions bancaires, oui. Les connexions aux plateformes cry
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
 msgstr "D’un jeton à votre écran d’accueil"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "From speech to a saved batch"
-msgstr "De la parole à un lot enregistré"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "From the month's total to one receipt"
@@ -9038,11 +9026,8 @@ msgstr "En quoi est-ce différent des analytiques par catégorie ?"
 msgid "How is this different from Plaid-based apps?"
 msgstr "En quoi est-ce différent des applications basées sur Plaid ?"
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-category-translation/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
 msgstr "Comment ça fonctionne"
 
@@ -13769,10 +13754,6 @@ msgstr "Examinez nos implémentations cryptographiques"
 msgid "Review the import preview"
 msgstr "Vérifiez l'aperçu de l'importation"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Review the table of three extracted rows, each with its own amount and category"
-msgstr "Vérifiez le tableau des trois lignes extraites, chacune avec son propre montant et sa propre catégorie"
-
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Revoquer l'acces via les parametres des applications connectees de votre banque"
@@ -14586,10 +14567,6 @@ msgstr "Dites-le. Budgie l'enregistre. L'audio ne quitte jamais votre téléphon
 msgid "Speak it. Budgie logs it. Speech is transcribed on your phone — the audio never leaves it."
 msgstr "Dites-le. Budgie l'enregistre. La parole est transcrite sur votre téléphone — l'audio ne le quitte jamais."
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Speak naturally — “twelve for coffee, forty for the taxi, and eight euros for parking”"
-msgstr "Parlez naturellement — « douze pour le café, quarante pour le taxi et huit euros pour le parking »"
-
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Spending Analytics & Charts"
 msgstr "Analytiques et graphiques de dépenses"
@@ -15143,10 +15120,6 @@ msgstr "Touchez Importer → PDF Erste. Choisissez le fichier depuis Fichiers. B
 msgid "Tap it, the rule exists"
 msgstr "Touche-la, la règle existe"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap Save 3 — all three transactions commit together in one database transaction"
-msgstr "Appuyez sur Enregistrer 3 — les trois transactions sont validées ensemble en une seule transaction de base de données"
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Tap the mic and say what you spent. Your speech becomes text on the phone, and the audio is never sent anywhere. One sentence can produce several transactions — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, each with its own amount and category."
 msgstr "Touchez le micro et dites ce que vous avez dépensé. Votre voix devient du texte sur le téléphone, et l'audio n'est jamais envoyé nulle part. Une seule phrase peut produire plusieurs transactions — « douze pour le café, quarante pour le taxi et huit euros pour le stationnement » revient sous forme de trois lignes distinctes, chacune avec son propre montant et sa propre catégorie."
@@ -15154,14 +15127,6 @@ msgstr "Touchez le micro et dites ce que vous avez dépensé. Votre voix devient
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Tap the mic and speak"
 msgstr "Touchez le micro et parlez"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet"
-msgstr "Touchez le micro dans la feuille de saisie rapide"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. Your speech becomes text on the phone, and one or more transactions are pulled out of it — each with its own amount, category, and the account matching the currency you said — then a review sheet opens before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
-msgstr "Touchez le micro dans la feuille de saisie rapide. Votre voix devient du texte sur le téléphone, et une ou plusieurs transactions en sont extraites — chacune avec son propre montant, sa catégorie, et le compte correspondant à la devise énoncée — puis une feuille de vérification s'ouvre avant tout enregistrement. Modifiez n'importe quelle ligne manuellement, ou touchez réenregistrer pour remplacer tout le lot si la transcription s'est trompée."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap the missing categories pill above your transaction list, or Uncategorized in Analytics. The Categorize inbox groups every uncategorized transaction by merchant, so one tap on a suggestion categorizes the whole group, and a single button accepts every confident suggestion in one go."
@@ -15524,10 +15489,6 @@ msgstr "Le repli sur le code de l’appareil est désactivé volontairement — 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
 msgstr "Cette distinction est importante car elle change les hypothèses fondamentales concernant la propriété, la disponibilité et la confidentialité."
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "The download happens the first time you use the feature that needs it, and only after you have switched On-device AI on in Settings. Budgie then keeps that capability ready just while you are using it and releases it about half a minute after you stop — so the first suggestion after a pause waits a moment, and the ones that follow do not. For each new transaction Budgie looks through your own history first; if nothing close enough is there, the merchant code your bank sent points at the right area instead. Your response — accept, edit, or reject — feeds straight back in, with no network call."
-msgstr "Le téléchargement a lieu la première fois que vous utilisez la fonctionnalité concernée, et seulement après avoir activé l'IA embarquée dans les Réglages. Budgie garde ensuite cette capacité prête pendant que vous l'utilisez et la relâche environ une demi-minute après l'arrêt — si bien que la première suggestion après une pause prend un instant, contrairement aux suivantes. Pour chaque nouvelle transaction, Budgie parcourt d'abord votre propre historique ; si rien n'est assez proche, le code commerçant envoyé par votre banque indique la bonne catégorie à la place. Votre réponse — accepter, modifier ou rejeter — est réinjectée directement, sans aucun appel réseau."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The ecosystem grows stronger through shared knowledge"

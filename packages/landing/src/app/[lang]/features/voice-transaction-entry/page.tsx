@@ -148,43 +148,6 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Tap the mic in the quick-entry sheet. Your speech becomes text on the phone, and one or more transactions are pulled
-                        out of it — each with its own amount, category, and the account matching the currency you said — then a review sheet
-                        opens before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the
-                        transcription went wrong.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>From speech to a saved batch</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0} key="step-0">
-                        <Trans>Tap the mic in the quick-entry sheet</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1} key="step-1">
-                        <Trans>Speak naturally — &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo;</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2} key="step-2">
-                        <Trans>Review the table of three extracted rows, each with its own amount and category</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3} key="step-3">
-                        <Trans>Fix a row, or use &ldquo;Select all categories&rdquo; to fix the whole batch at once</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4} key="step-4">
-                        <Trans>Tap Save 3 — all three transactions commit together in one database transaction</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>Which languages does voice entry support?</Trans>}

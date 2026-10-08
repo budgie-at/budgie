@@ -180,22 +180,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        The download happens the first time you use the feature that needs it, and only after you have switched On-device AI
-                        on in Settings. Budgie then keeps that capability ready just while you are using it and releases it about half a
-                        minute after you stop — so the first suggestion after a pause waits a moment, and the ones that follow do not. For
-                        each new transaction Budgie looks through your own history first; if nothing close enough is there, the merchant
-                        code your bank sent points at the right area instead. Your response — accept, edit, or reject — feeds straight back
-                        in, with no network call.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>Does the AI work offline?</Trans>}

@@ -124,18 +124,6 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves
-                        both alongside the original — so search and suggestions find it either way.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>Which scripts are supported?</Trans>}
