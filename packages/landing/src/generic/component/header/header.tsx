@@ -1,9 +1,9 @@
 'use client';
 
 import { Trans } from '@lingui/react/macro';
-import { ChevronRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { ChevronRight, Menu, X } from 'reicon-react';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 

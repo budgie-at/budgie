@@ -2,7 +2,7 @@
 
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { CheckCircle2, Sparkles } from 'lucide-react';
+import { CheckCircle as CheckCircle2, Sparkles } from 'reicon-react';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 

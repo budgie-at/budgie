@@ -8,6 +8,7 @@
     "scripts": {
         "build": "turbo run build",
         "build:force": "turbo run build --force",
+        "check:reicon-icons": "node packages/app/scripts/check-reicon-icons.mjs",
         "clear": "turbo run clear",
         "cpd": "jscpd . --pattern \"**/*.{ts,tsx}\"",
         "deadcode": "KNIP_DISABLE_RAW_TRANSFER=1 knip",
@@ -27,7 +28,7 @@
         "media:manifest": "pnpm --filter @budgie-at/landing media:manifest",
         "release": "lerna publish --yes --conventional-commits --create-release=github -m \"chore: release %s [skip ci]\"",
         "test": "turbo run test",
-        "ts": "turbo run ts",
+        "ts": "pnpm check:reicon-icons && turbo run ts",
         "verify:backup": "sh -c 'set -e; test -f \"$1\"; mkdir -p \"$HOME/.cache\" && BUDGIE_BACKUP_DB=\"$(realpath \"$1\")\" TMPDIR=\"$HOME/.cache\" pnpm --filter @budgie-at/sync-tests exec vitest run src/scenarios/database/backup-replay.test.ts' verify-backup"
     },
     "devDependencies": {
@@ -64,10 +65,10 @@
     "engines": {
         "node": ">=22.22.1"
     },
-    "postinstall": "node ./scripts/after-install.cjs",
     "op-sqlite": {
         "sqlcipher": true,
         "sqliteVec": true,
         "fts5": true
-    }
+    },
+    "postinstall": "node ./scripts/after-install.cjs"
 }

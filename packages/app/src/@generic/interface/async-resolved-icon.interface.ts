@@ -1,7 +1,7 @@
-import type { StyledLucideIconType } from '../type/styled-lucide-icon.type';
+import type { StyledReiconType } from '../type/styled-reicon.type';
 import type { UserIconNameEnum } from '@budgie/contracts';
 
 export interface AsyncResolvedIconInterface {
     readonly icon: UserIconNameEnum;
-    readonly styledIcon: StyledLucideIconType;
+    readonly styledIcon: StyledReiconType;
 }

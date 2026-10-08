@@ -1,4 +1,4 @@
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle as CheckCircle2 } from 'reicon-react';
 
 import { Motion } from '../../../generic/component/motion/motion';
 

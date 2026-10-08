@@ -5,8 +5,8 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
-import { ArrowRight, Loader2, Users } from 'lucide-react';
 import { useState } from 'react';
+import { ArrowRight, Loader as Loader2, Users } from 'reicon-react';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 

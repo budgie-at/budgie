@@ -40,7 +40,6 @@
         "eas-build-cache-provider",
         "@types/react-dom",
         "rimraf",
-        "lucide-static",
         "emojibase-data"
     ],
     "ignoreBinaries": ["build"],

@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { GitBranch, Shield, Smartphone } from 'lucide-react';
+import { BranchUp as GitBranch, Mobile as Smartphone, Shield } from 'reicon-react';
 
 export const TrustBanner = () => (
     <section className="w-full border-b border-border/40 bg-muted/20 py-6">

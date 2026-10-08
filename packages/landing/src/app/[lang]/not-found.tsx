@@ -1,9 +1,9 @@
 'use client';
 
 import { Trans } from '@lingui/react/macro';
-import { BookOpen, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { BookOpen, Home } from 'reicon-react';
 
 import { isString } from '@rnw-community/shared';
 

@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'reicon-react';
 
 import { Card } from '../../../ui/card/card';
 import { CardContent } from '../../../ui/card/card-content';

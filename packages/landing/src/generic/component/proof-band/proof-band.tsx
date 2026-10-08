@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
+import { BranchUp as GitBranch } from 'reicon-react';
 
 import { Button } from '../../../ui/button';
 import { ProofBandLink } from '../proof-band-link/proof-band-link';

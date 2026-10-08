@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { ArrowRight } from 'reicon-react';
 
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { resolveArticleShot } from '../../../blog/util/resolve-article-shot.util';

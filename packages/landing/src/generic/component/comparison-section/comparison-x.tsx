@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X } from 'reicon-react';
 
 export const ComparisonX = () => (
     <div className="inline-flex items-center justify-center size-8 rounded-full bg-red-100 dark:bg-red-900/30">

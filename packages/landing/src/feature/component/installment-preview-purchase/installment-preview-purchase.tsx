@@ -1,4 +1,4 @@
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 

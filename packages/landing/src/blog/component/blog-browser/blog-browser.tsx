@@ -1,8 +1,8 @@
 'use client';
 
 import { Trans } from '@lingui/react/macro';
-import { Search } from 'lucide-react';
 import { useState } from 'react';
+import { Search } from 'reicon-react';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 

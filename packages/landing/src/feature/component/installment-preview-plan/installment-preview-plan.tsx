@@ -1,4 +1,4 @@
-import { CalendarClock } from 'lucide-react';
+import { CalendarTick as CalendarClock } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 
