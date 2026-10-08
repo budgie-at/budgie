@@ -1,4 +1,4 @@
-import { TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { SyncModeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
@@ -110,6 +110,36 @@ const IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_BASE_SQL = `
                     AND superseded_tx.consolidation_parent_transaction_id IS NULL
                     AND superseded_tx.updated_by IS NULL
                     AND superseded_tx.consolidation_type IN (${IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL})
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM bank_syncs calibrated_sync
+                        LEFT JOIN transactions calibrated_adjustment ON
+                            calibrated_adjustment.id = calibrated_sync.balance_adjustment_transaction_id
+                            AND calibrated_adjustment.deleted_at IS NULL
+                            AND calibrated_adjustment.updated_by IS NULL
+                            AND calibrated_adjustment.type = '${TransactionTypeEnum.ADJUSTMENT}'
+                            AND (
+                                calibrated_adjustment.from_account_id = calibrated_sync.account_id
+                                OR calibrated_adjustment.to_account_id = calibrated_sync.account_id
+                            )
+                        WHERE calibrated_sync.account_id IN (source_account.id, bridge_account.id)
+                            AND calibrated_sync.deleted_at IS NULL
+                            AND calibrated_sync.mode = '${SyncModeEnum.FORWARD}'
+                            AND calibrated_sync.setup_balance IS NULL
+                            AND calibrated_sync.forward_sync_from_at IS NOT NULL
+                            AND superseded_tx.operated_at <= calibrated_sync.forward_sync_from_at
+                            AND (
+                                (
+                                    calibrated_sync.balance_adjustment_transaction_id IS NOT NULL
+                                    AND calibrated_adjustment.id IS NOT NULL
+                                    AND superseded_tx.created_at <= calibrated_adjustment.created_at
+                                )
+                                OR (
+                                    calibrated_sync.balance_adjustment_transaction_id IS NULL
+                                    AND superseded_tx.created_at <= calibrated_sync.forward_sync_from_at
+                                )
+                            )
+                    )
                     ${SUPERSEDED_SCOPE_SQL_PLACEHOLDER}
             )
             WHERE supersededMatchCount = 1

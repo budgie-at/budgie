@@ -1,4 +1,4 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { CategorySourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
@@ -18,15 +18,7 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_SCOPE_EXPRESSIONS = new Map([
 ]);
 
 const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
-            SELECT
-                'AUTO_IBAN_BRIDGE_CANONICAL_DUPLICATE' as confidenceBucket,
-                expenseTransactionId,
-                incomeTransactionId,
-                existingCanonicalTransferId,
-                sourceAccountId,
-                targetAccountId,
-                timeDiff
-            FROM (
+            WITH candidate_rows AS (
                 SELECT
                     source_expense_tx.id as expenseTransactionId,
                     target_income_tx.id as incomeTransactionId,
@@ -34,22 +26,71 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     source_account.id as sourceAccountId,
                     target_account.id as targetAccountId,
                     ABS(target_income_tx.operated_at - source_expense_tx.operated_at) as timeDiff,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY source_expense_tx.id
-                        ORDER BY
-                            ABS(target_income_tx.operated_at - source_expense_tx.operated_at),
-                            ABS(canonical_tx.operated_at - source_expense_tx.operated_at),
-                            canonical_tx.id,
-                            target_income_tx.id
-                    ) as expenseRank,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY target_income_tx.id
-                        ORDER BY
-                            ABS(target_income_tx.operated_at - source_expense_tx.operated_at),
-                            ABS(canonical_tx.operated_at - source_expense_tx.operated_at),
-                            canonical_tx.id,
-                            source_expense_tx.id
-                    ) as incomeRank
+                    CASE
+                        WHEN target_account.iban = source_expense_entry.to_iban THEN 1
+                        ELSE 0
+                    END as directTargetMatch,
+                    CASE
+                        WHEN target_account.iban != source_expense_entry.to_iban
+                            AND source_expense_tx.updated_by IS NULL
+                            AND target_income_tx.updated_by IS NULL
+                            AND canonical_tx.updated_by IS NULL
+                            AND NOT EXISTS (
+                                SELECT 1
+                                FROM transaction_entries source_fee_entry
+                                WHERE source_fee_entry.transaction_id IN (source_expense_tx.id, target_income_tx.id)
+                                    AND source_fee_entry.deleted_at IS NULL
+                                    AND (
+                                        source_fee_entry.type = '${TransactionEntryTypeEnum.FEE}'
+                                        OR source_fee_entry.category_source = '${CategorySourceEnum.FEE}'
+                                    )
+                            )
+                            AND EXISTS (
+                                SELECT 1
+                                FROM accounts canonical_bridge_account
+                                WHERE canonical_bridge_account.deleted_at IS NULL
+                                    AND canonical_bridge_account.is_active = 1
+                                    AND canonical_bridge_account.id != source_account.id
+                                    AND canonical_bridge_account.id != target_account.id
+                                    AND canonical_bridge_account.iban = source_expense_entry.to_iban
+                                    AND EXISTS (
+                                        SELECT 1
+                                        FROM transaction_entries canonical_bridge_expense_entry
+                                        INNER JOIN transactions canonical_bridge_expense_tx ON
+                                            canonical_bridge_expense_tx.id = canonical_bridge_expense_entry.original_transaction_id
+                                            AND canonical_bridge_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+                                            AND canonical_bridge_expense_tx.deleted_at IS NULL
+                                            AND canonical_bridge_expense_tx.updated_by IS NULL
+                                            AND canonical_bridge_expense_tx.consolidation_parent_transaction_id = canonical_tx.id
+                                        WHERE canonical_bridge_expense_entry.transaction_id = canonical_tx.id
+                                            AND canonical_bridge_expense_entry.deleted_at IS NULL
+                                            AND canonical_bridge_expense_entry.original_transaction_id IS NOT NULL
+                                            AND canonical_bridge_expense_entry.account_id = canonical_bridge_account.id
+                                            AND canonical_bridge_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                                            AND canonical_bridge_expense_entry.amount = target_income_entry.amount
+                                            AND canonical_bridge_expense_entry.to_iban = target_account.iban
+                                    )
+                                    AND EXISTS (
+                                        SELECT 1
+                                        FROM transaction_entries canonical_bridge_income_entry
+                                        INNER JOIN transactions canonical_bridge_income_tx ON
+                                            canonical_bridge_income_tx.id = canonical_bridge_income_entry.original_transaction_id
+                                            AND canonical_bridge_income_tx.type = '${TransactionTypeEnum.INCOME}'
+                                            AND canonical_bridge_income_tx.deleted_at IS NULL
+                                            AND canonical_bridge_income_tx.updated_by IS NULL
+                                            AND canonical_bridge_income_tx.consolidation_parent_transaction_id = canonical_tx.id
+                                        WHERE canonical_bridge_income_entry.transaction_id = canonical_tx.id
+                                            AND canonical_bridge_income_entry.deleted_at IS NULL
+                                            AND canonical_bridge_income_entry.original_transaction_id IS NOT NULL
+                                            AND canonical_bridge_income_entry.account_id = canonical_bridge_account.id
+                                            AND canonical_bridge_income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                                            AND canonical_bridge_income_entry.amount = target_income_entry.amount
+                                            AND canonical_bridge_income_entry.to_iban = source_account.iban
+                                    )
+                            )
+                        THEN 1
+                        ELSE 0
+                    END as bridgeTopologyMatch
                 FROM transaction_entries source_expense_entry
                 INNER JOIN transactions source_expense_tx ON
                     source_expense_entry.transaction_id = source_expense_tx.id
@@ -63,8 +104,7 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     AND source_account.iban IS NOT NULL
                     AND source_account.iban != ''
                 INNER JOIN accounts target_account ON
-                    target_account.iban = source_expense_entry.to_iban
-                    AND target_account.deleted_at IS NULL
+                    target_account.deleted_at IS NULL
                     AND target_account.is_active = 1
                     AND target_account.id != source_account.id
                 INNER JOIN transactions target_income_tx ON
@@ -100,6 +140,8 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     ${SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
                     AND source_expense_entry.to_iban IS NOT NULL
                     AND source_expense_entry.to_iban != ''
+                    AND source_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND target_income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                     AND (
                         source_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
                         OR target_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
@@ -124,9 +166,51 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                             AND canonical_target_entry.account_id = target_account.id
                             AND canonical_target_entry.amount = target_income_entry.amount
                     )
+            ),
+            ranked_rows AS (
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY expenseTransactionId
+                        ORDER BY
+                            timeDiff,
+                            existingCanonicalTransferId,
+                            incomeTransactionId
+                    ) as expenseRank,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY incomeTransactionId
+                        ORDER BY
+                            timeDiff,
+                            existingCanonicalTransferId,
+                            expenseTransactionId
+                    ) as incomeRank,
+                    SUM(bridgeTopologyMatch) OVER (PARTITION BY expenseTransactionId) as bridgeExpenseMatchCount,
+                    SUM(bridgeTopologyMatch) OVER (PARTITION BY incomeTransactionId) as bridgeIncomeMatchCount,
+                    SUM(bridgeTopologyMatch) OVER (PARTITION BY existingCanonicalTransferId) as bridgeCanonicalMatchCount
+                FROM candidate_rows
+                WHERE directTargetMatch = 1
+                    OR bridgeTopologyMatch = 1
             )
+            SELECT
+                'AUTO_IBAN_BRIDGE_CANONICAL_DUPLICATE' as confidenceBucket,
+                expenseTransactionId,
+                incomeTransactionId,
+                existingCanonicalTransferId,
+                sourceAccountId,
+                targetAccountId,
+                timeDiff
+            FROM ranked_rows
             WHERE expenseRank = 1
                 AND incomeRank = 1
+                AND (
+                    directTargetMatch = 1
+                    OR (
+                        bridgeTopologyMatch = 1
+                        AND bridgeExpenseMatchCount = 1
+                        AND bridgeIncomeMatchCount = 1
+                        AND bridgeCanonicalMatchCount = 1
+                    )
+                )
 `;
 
 export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
