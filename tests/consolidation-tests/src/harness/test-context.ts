@@ -11,8 +11,7 @@ import {
     P2pTransferTitleResolver,
     RefundConsolidationService,
     RefundPairRepository,
-    TransferPairRepository,
-    UnconsolidationService
+    TransferPairRepository
 } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
@@ -43,7 +42,6 @@ export const TestLayer = Layer.mergeAll(
     ConsolidationExecutorService.layer,
     ConsolidationRepairExecutorService.layer,
     RefundConsolidationService.layer,
-    UnconsolidationService.layer,
     AtmCashWithdrawalRepository.layer,
     ExistingTransferRepository.layer,
     IbanBridgeTransferRepository.layer,
