@@ -87,9 +87,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     <FeatureStory.Callout index={0} y={0.259}>
                         <Trans>100% Offline &amp; Private</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout index={1} y={0.856}>
-                        <Trans>Auto-assign categories from MCC</Trans>
-                    </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
                 <FeatureStory.Step index={2} title={<Trans>One switch for the on-device AI</Trans>}>
@@ -101,7 +98,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 <FeatureStory.Shot
                     alt={t(
                         i18n
-                    )`Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date`}
+                    )`Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date`}
                     index={2}
                     locale={lang}
                     scene="on-device-ai-budget-app-1"

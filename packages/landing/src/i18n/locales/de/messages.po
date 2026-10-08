@@ -3414,10 +3414,6 @@ msgstr "Authentifizierungssysteme, die auch bei Überprüfung sicher bleiben"
 msgid "Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)"
 msgstr "Authentifizierungstoken für optionale Bank-Synchronisierungsdienste (in der lokalen Datenbank gespeichert, verschlüsselt, wenn eine PIN festgelegt ist)"
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Auto-assign categories from MCC"
-msgstr "Kategorien automatisch per MCC zuweisen"
-
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Auto-detected from device locale on first launch"
 msgstr "Beim ersten Start automatisch aus dem Gerätestandard erkannt"
@@ -4683,7 +4679,7 @@ msgstr "Budgie-Bildschirm „Neue Ausgabe“, den ein Tipp auf die Schnelleingab
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Budgie new expense screen with an amount of zero and Transportation and Groceries suggestion pills above the action buttons"
-msgstr "Budgie-Bildschirm für eine neue Ausgabe mit dem Betrag null und den Vorschlags-Pills Transportation und Groceries über den Aktionstasten"
+msgstr "Budgie-Bildschirm für eine neue Ausgabe mit dem Betrag null und den Vorschlags-Pillen Transportation und Groceries über den Aktionstasten"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie New Expense screen with the amount keypad open and Main Checking preselected as the account"
@@ -4703,7 +4699,7 @@ msgstr "Budgie-Bildschirm für neue Ausgaben mit gewählter Kategorie Lebensmitt
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Budgie new expense screen with Transportation and Groceries category pills above the Split, Date, Note, Tags and Category buttons"
-msgstr "Budgie-Bildschirm für eine neue Ausgabe mit den Kategorie-Pills Transportation und Groceries über den Tasten Aufteilen, Datum, Notiz, Tags und Kategorie"
+msgstr "Budgie-Bildschirm für eine neue Ausgabe mit den Kategorie-Pillen Transportation und Groceries über den Tasten Aufteilen, Datum, Notiz, Tags und Kategorie"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
@@ -4795,8 +4791,8 @@ msgstr "Budgie durchsucht Ihre Historie nach Betrags- und Rhythmusmustern und tr
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date"
-msgstr "Budgie-Einstellungen, KI-Bereich mit dem Schalter „On-device AI“, einer Zeile Übersetzung bei 100 % und einer Zeile Lernen mit dem Hinweis, dass das Lernen aktuell ist"
+msgid "Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date"
+msgstr "Budgie-Einstellungen, KI-Bereich mit dem Schalter „On-Device-KI“, einer Zeile Übersetzung und einer Zeile Lernen mit dem Hinweis, dass das Lernen aktuell ist"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
@@ -4845,7 +4841,7 @@ msgstr "Budgie-Einstellungen mit dem Offline- und Datenschutzhinweis über dem S
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows"
-msgstr "Budgie-Einstellungen mit dem Schalter „On-device AI“, der beschrieben wird als Kategorisierung von Transaktionen, Vorschlag von Tags und Transkription von Sprachnotizen auf diesem Gerät, über den Fortschrittszeilen für Übersetzung und Lernen"
+msgstr "Budgie-Einstellungen mit dem Schalter „On-Device-KI“, der beschrieben wird als Kategorisierung von Transaktionen, Vorschlag von Tags und Transkription von Sprachnotizen auf diesem Gerät, über den Fortschrittszeilen für Übersetzung und Lernen"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
@@ -5693,7 +5689,7 @@ msgstr "Kategoriebereinigung über dieselben Transaktionskarten, die Sie bereits
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Category pills on the expense form"
-msgstr "Kategorie-Pills im Ausgabeformular"
+msgstr "Kategorie-Pillen im Ausgabeformular"
 
 #: src/app/[lang]/page.tsx
 msgid "Category suggestions are computed on-device, so your transactions are never sent to a server."
@@ -7100,7 +7096,7 @@ msgstr "Muss Budgie geöffnet bleiben, damit die Zahlen stimmen?"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Do I need to turn on On-device AI?"
-msgstr "Muss ich „On-device AI“ einschalten?"
+msgstr "Muss ich „On-Device-KI“ einschalten?"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Do jars sync as well?"
@@ -11413,7 +11409,7 @@ msgstr "Nein. Die App ruft ausschließlich Lese-Endpunkte von Binance auf, und d
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "No. The Categorize inbox works with On-device AI switched off and needs no extra download."
-msgstr "Nein. Der Kategorisieren-Bildschirm funktioniert auch bei ausgeschaltetem „On-device AI“ und braucht keinen zusätzlichen Download."
+msgstr "Nein. Der Kategorisieren-Bildschirm funktioniert auch bei ausgeschaltetem „On-Device-KI“ und braucht keinen zusätzlichen Download."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
@@ -11871,7 +11867,7 @@ msgstr "geräteeigene KI"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "On-device AI"
-msgstr "On-device AI"
+msgstr "On-Device-KI"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device AI auto-categorization"
@@ -11932,7 +11928,7 @@ msgstr "On-Device-KI bedeutet, dass die Arbeit auf dem Gerät in der Hand geschi
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "On-device AI switch"
-msgstr "Schalter „On-device AI“"
+msgstr "Schalter „On-Device-KI“"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device encryption"
@@ -12314,11 +12310,11 @@ msgstr "Ein Festgeld direkt aus der Verbindung heraus eröffnen, sodass es autom
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Open a new expense and Budgie offers categories as pills above the action buttons, drawn from transactions you have already categorized. Tapping a pill picks the category, and the Category button still opens the full list."
-msgstr "Öffnen Sie eine neue Ausgabe, und Budgie bietet Kategorien als Pills über den Aktionstasten an, abgeleitet aus Transaktionen, die Sie bereits kategorisiert haben. Ein Tipp auf eine Pill wählt die Kategorie, und die Taste „Kategorie“ öffnet weiterhin die vollständige Liste."
+msgstr "Öffnen Sie eine neue Ausgabe, und Budgie bietet Kategorien als Pillen über den Aktionstasten an, abgeleitet aus Transaktionen, die Sie bereits kategorisiert haben. Ein Tipp auf eine Pille wählt die Kategorie, und die Taste „Kategorie“ öffnet weiterhin die vollständige Liste."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Open a new expense and suggestion pills are already waiting above the action buttons, before an amount is entered. Nothing is filled in until you tap one, and the form works as usual if you ignore them."
-msgstr "Öffnen Sie eine neue Ausgabe, und die Vorschlags-Pills warten bereits über den Aktionstasten, noch bevor ein Betrag eingegeben wurde. Nichts wird ausgefüllt, bis Sie eine antippen, und das Formular funktioniert wie gewohnt, wenn Sie sie ignorieren."
+msgstr "Öffnen Sie eine neue Ausgabe, und die Vorschlags-Pillen warten bereits über den Aktionstasten, noch bevor ein Betrag eingegeben wurde. Nichts wird ausgefüllt, bis Sie eine antippen, und das Formular funktioniert wie gewohnt, wenn Sie sie ignorieren."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
@@ -12800,11 +12796,11 @@ msgstr "Die Auswahl „Festgeld“ öffnet das passende Formular: Anfangssaldo, 
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Pill suggestions on the expense form, the privacy notice in Settings, and the On-device AI section."
-msgstr "Pill-Vorschläge im Ausgabeformular, der Datenschutzhinweis in den Einstellungen und der Bereich „On-device AI“."
+msgstr "Pillen-Vorschläge im Ausgabeformular, der Datenschutzhinweis in den Einstellungen und der Bereich „On-Device-KI“."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Pills appear on the empty form"
-msgstr "Pills erscheinen im leeren Formular"
+msgstr "Pillen erscheinen im leeren Formular"
 
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "pin"
@@ -12963,7 +12959,7 @@ msgstr "Power-User-Funktionen"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Powered by the on-device AI"
-msgstr "Betrieben von der KI auf dem Gerät"
+msgstr "Mit KI auf dem Gerät"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Practical Steps for Privacy Protection"
@@ -14300,7 +14296,7 @@ msgstr "Einstellungen → Sicherheit, direkt unter der PIN-Sperre-Karte. Es ist 
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date. Suggestions come from your own history on this device."
-msgstr "Die Einstellungen enthalten einen KI-Bereich mit dem Schalter „On-device AI“ und einer Zeile „Lernen“, die anzeigt, ob das Lernen aktuell ist. Die Vorschläge stammen aus Ihrem eigenen Verlauf auf diesem Gerät."
+msgstr "Die Einstellungen enthalten einen KI-Bereich mit dem Schalter „On-Device-KI“ und einer Zeile „Lernen“, die anzeigt, ob das Lernen aktuell ist. Die Vorschläge stammen aus Ihrem eigenen Verlauf auf diesem Gerät."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
@@ -14579,7 +14575,7 @@ msgstr "Source-Available App für persönliche Finanzen — Budgie"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Speak it, review it, save it"
-msgstr "Aussprechen, prüfen, speichern"
+msgstr "Sprechen, prüfen, speichern"
 
 #: src/app/[lang]/features/voice-transaction-entry/opengraph-image.tsx
 msgid "Speak it. Budgie logs it. Audio never leaves your phone."
@@ -14906,7 +14902,7 @@ msgstr "Schlagen Sie Funktionen und Verbesserungen vor"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Suggested category pills"
-msgstr "Vorgeschlagene Kategorie-Pills"
+msgstr "Vorgeschlagene Kategorie-Pillen"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Suggested tag pills"
@@ -15177,7 +15173,7 @@ msgstr "Antippen zum Öffnen"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Tappable suggestion pills"
-msgstr "Antippbare Vorschlags-Pills"
+msgstr "Antippbare Vorschlags-Pillen"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
@@ -15287,7 +15283,7 @@ msgstr "Das Aggregator-Persistenzproblem"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "The AI section of Settings holds the On-device AI switch, which says it categorizes transactions on this device and downloads about 2.5 GB of models once. Below it, a Learning row shows whether learning is up to date."
-msgstr "Der KI-Bereich der Einstellungen enthält den Schalter „On-device AI“, laut dem Transaktionen auf diesem Gerät kategorisiert werden und einmalig etwa 2,5 GB an Modellen geladen werden. Darunter zeigt eine Zeile „Lernen“, ob das Lernen aktuell ist."
+msgstr "Der KI-Bereich der Einstellungen enthält den Schalter „On-Device-KI“, laut dem Transaktionen auf diesem Gerät kategorisiert werden und einmalig etwa 2,5 GB an Modellen geladen werden. Darunter zeigt eine Zeile „Lernen“, ob das Lernen aktuell ist."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
@@ -15845,7 +15841,7 @@ msgstr "Der Hinweis öffnet den <0>Kategorisieren-Bildschirm</0> für die gesamm
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The pills on the expense form, and the On-device AI section in Settings that powers them."
-msgstr "Die Pills im Ausgabeformular und der Bereich „On-device AI“ in den Einstellungen, der sie antreibt."
+msgstr "Die Pillen im Ausgabeformular und der Bereich „On-Device-KI“ in den Einstellungen, der sie antreibt."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
@@ -17174,7 +17170,7 @@ msgstr "Die Spracheingabe lädt, was sie braucht, einmalig herunter und behält 
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a server."
-msgstr "Die Spracheingabe läuft über den Schalter „On-device AI“ in den Einstellungen. Laut dessen Beschreibung werden Sprachnotizen auf diesem Gerät transkribiert und die Modelle einmalig geladen, am besten über WLAN. Ihr Audio wird auf dem Telefon in Text umgewandelt und nie an einen Server gesendet."
+msgstr "Die Spracheingabe läuft über den Schalter „On-Device-KI“ in den Einstellungen. Laut dessen Beschreibung werden Sprachnotizen auf diesem Gerät transkribiert und die Modelle einmalig geladen, am besten über WLAN. Ihr Audio wird auf dem Telefon in Text umgewandelt und nie an einen Server gesendet."
 
 #: src/app/[lang]/page.tsx
 msgid "Voice entry, transcribed on your phone"
@@ -19067,7 +19063,7 @@ msgstr "Ja. Direkt nachdem Sie eine einzelne Gruppe kategorisiert haben, erschei
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch that turns the whole subsystem on or off. Switch it off and nothing downloads, nothing loads, and no suggestion runs — the rest of Budgie is unaffected. New installs start with it off; if you were already using AI before the switch existed, it stays on."
-msgstr "Ja. Die Einstellungen enthalten einen KI-Bereich mit einem einzigen „On-device AI“-Schalter, der das gesamte Teilsystem ein- oder ausschaltet. Ist er aus, wird nichts heruntergeladen, nichts geladen und keine Vorhersage ausgeführt — der Rest von Budgie bleibt unberührt. Neuinstallationen starten damit ausgeschaltet; wenn Sie KI schon vor dem Schalter genutzt haben, bleibt sie an."
+msgstr "Ja. Die Einstellungen enthalten einen KI-Bereich mit einem einzigen „On-Device-KI“-Schalter, der das gesamte Teilsystem ein- oder ausschaltet. Ist er aus, wird nichts heruntergeladen, nichts geladen und keine Vorhersage ausgeführt — der Rest von Budgie bleibt unberührt. Neuinstallationen starten damit ausgeschaltet; wenn Sie KI schon vor dem Schalter genutzt haben, bleibt sie an."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."

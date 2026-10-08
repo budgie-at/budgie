@@ -78,7 +78,7 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 <FeatureStory.Shot
                     alt={t(
                         i18n
-                    )`Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date`}
+                    )`Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date`}
                     index={1}
                     locale={lang}
                     scene="on-device-ai-budget-app-1"

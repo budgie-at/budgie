@@ -2556,7 +2556,7 @@ msgstr "Близько 1,6 ГБ для категоризації та підк�
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "About 1.6 GB for categorization and suggestions, plus a further 0.9 GB if you use voice entry. Nothing downloads until you switch On-device AI on in Settings, and then only when you first use the feature that needs it. Each download happens once and is kept on the device afterwards."
-msgstr "Близько 1,6 ГБ для категоризації та підказок, плюс ще 0,9 ГБ, якщо використовувати голосове введення. Нічого не завантажується, поки ви не увімкнете On-device AI в налаштуваннях, і навіть тоді — лише при першому використанні відповідної функції. Кожне завантаження відбувається один раз і надалі залишається на пристрої."
+msgstr "Близько 1,6 ГБ для категоризації та підказок, плюс ще 0,9 ГБ, якщо використовувати голосове введення. Нічого не завантажується, поки ви не увімкнете ШІ на пристрої в налаштуваннях, і навіть тоді — лише при першому використанні відповідної функції. Кожне завантаження відбувається один раз і надалі залишається на пристрої."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Academic researchers studying software security"
@@ -3413,10 +3413,6 @@ msgstr "Системи автентифікації, які залишаютьс
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)"
 msgstr "Токени автентифікації для необов’язкових сервісів банківської синхронізації (зберігаються в локальній базі даних, шифруються за наявності PIN)"
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Auto-assign categories from MCC"
-msgstr "Автоматично призначайте категорії за MCC"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Auto-detected from device locale on first launch"
@@ -4795,8 +4791,8 @@ msgstr "Budgie сканує вашу історію на предмет сум �
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date"
-msgstr "Розділ ШІ в налаштуваннях Budgie з перемикачем «On-device AI», рядком перекладу на 100% і рядком навчання з позначкою, що навчання актуальне"
+msgid "Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date"
+msgstr "Розділ ШІ в налаштуваннях Budgie з перемикачем «ШІ на пристрої», рядком перекладу і рядком навчання з позначкою, що навчання актуальне"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
@@ -4845,7 +4841,7 @@ msgstr "Екран налаштувань Budgie з повідомленням �
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows"
-msgstr "Екран налаштувань Budgie з перемикачем «On-device AI», описаним як категоризація транзакцій, підказки тегів і транскрибування голосових нотаток на цьому пристрої, над рядками прогресу перекладу й навчання"
+msgstr "Екран налаштувань Budgie з перемикачем «ШІ на пристрої», описаним як категоризація транзакцій, підказки тегів і транскрибування голосових нотаток на цьому пристрої, над рядками прогресу перекладу й навчання"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
@@ -7100,7 +7096,7 @@ msgstr "Чи потрібно тримати Budgie відкритим, щоб �
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Do I need to turn on On-device AI?"
-msgstr "Чи треба вмикати «On-device AI»?"
+msgstr "Чи треба вмикати «ШІ на пристрої»?"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Do jars sync as well?"
@@ -11413,7 +11409,7 @@ msgstr "Ні. Застосунок звертається лише до кінц
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "No. The Categorize inbox works with On-device AI switched off and needs no extra download."
-msgstr "Ні. Екран категоризації працює з вимкненим «On-device AI» і не потребує жодних додаткових завантажень."
+msgstr "Ні. Екран категоризації працює з вимкненим «ШІ на пристрої» і не потребує жодних додаткових завантажень."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
@@ -11871,7 +11867,7 @@ msgstr "AI на пристрої"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "On-device AI"
-msgstr "On-device AI"
+msgstr "ШІ на пристрої"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device AI auto-categorization"
@@ -11932,7 +11928,7 @@ msgstr "On-device AI означає, що обробка відбуваєтьс�
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "On-device AI switch"
-msgstr "Перемикач «On-device AI»"
+msgstr "Перемикач «ШІ на пристрої»"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device encryption"
@@ -12800,7 +12796,7 @@ msgstr "Вибір «Депозит» відкриває його форму: п
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Pill suggestions on the expense form, the privacy notice in Settings, and the On-device AI section."
-msgstr "Підказки у формі витрати, повідомлення про приватність у налаштуваннях і розділ «On-device AI»."
+msgstr "Підказки у формі витрати, повідомлення про приватність у налаштуваннях і розділ «ШІ на пристрої»."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Pills appear on the empty form"
@@ -14300,7 +14296,7 @@ msgstr "Налаштування → Безпека, одразу під кар�
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date. Suggestions come from your own history on this device."
-msgstr "У налаштуваннях є розділ ШІ з перемикачем «On-device AI» і рядком «Навчання», що показує, чи навчання актуальне. Підказки походять з вашої власної історії на цьому пристрої."
+msgstr "У налаштуваннях є розділ ШІ з перемикачем «ШІ на пристрої» і рядком «Навчання», що показує, чи навчання актуальне. Підказки походять з вашої власної історії на цьому пристрої."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
@@ -15177,7 +15173,7 @@ msgstr "Торкніться, щоб відкрити"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Tappable suggestion pills"
-msgstr "Підказки, на які можна торкнутися"
+msgstr "Підказки, які можна торкнути"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
@@ -15287,7 +15283,7 @@ msgstr "Проблема стійкості агрегаторів"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "The AI section of Settings holds the On-device AI switch, which says it categorizes transactions on this device and downloads about 2.5 GB of models once. Below it, a Learning row shows whether learning is up to date."
-msgstr "У розділі ШІ налаштувань є перемикач «On-device AI», який, за його описом, категоризує транзакції на цьому пристрої й одноразово завантажує близько 2,5 ГБ моделей. Під ним рядок «Навчання» показує, чи навчання актуальне."
+msgstr "У розділі ШІ налаштувань є перемикач «ШІ на пристрої», який, за його описом, категоризує транзакції на цьому пристрої й одноразово завантажує близько 2,5 ГБ моделей. Під ним рядок «Навчання» показує, чи навчання актуальне."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
@@ -15531,7 +15527,7 @@ msgstr "Ця відмінність має значення, тому що во�
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "The download happens the first time you use the feature that needs it, and only after you have switched On-device AI on in Settings. Budgie then keeps that capability ready just while you are using it and releases it about half a minute after you stop — so the first suggestion after a pause waits a moment, and the ones that follow do not. For each new transaction Budgie looks through your own history first; if nothing close enough is there, the merchant code your bank sent points at the right area instead. Your response — accept, edit, or reject — feeds straight back in, with no network call."
-msgstr "Завантаження відбувається при першому використанні відповідної функції, і лише після того, як ви увімкнули On-device AI в налаштуваннях. Далі Budgie підтримує цю можливість готовою лише поки ви нею користуєтесь, і «відпускає» її приблизно за півхвилини після завершення — тож перша підказка після паузи трохи затримується, а наступні — ні. Для кожної нової транзакції Budgie спершу переглядає вашу власну історію; якщо нічого достатньо близького не знайдено, замість цього орієнтиром слугує код продавця, надісланий вашим банком. Ваша реакція — прийняти, змінити чи відхилити — одразу враховується, без жодного мережевого запиту."
+msgstr "Завантаження відбувається при першому використанні відповідної функції, і лише після того, як ви увімкнули ШІ на пристрої в налаштуваннях. Далі Budgie підтримує цю можливість готовою лише поки ви нею користуєтесь, і «відпускає» її приблизно за півхвилини після завершення — тож перша підказка після паузи трохи затримується, а наступні — ні. Для кожної нової транзакції Budgie спершу переглядає вашу власну історію; якщо нічого достатньо близького не знайдено, замість цього орієнтиром слугує код продавця, надісланий вашим банком. Ваша реакція — прийняти, змінити чи відхилити — одразу враховується, без жодного мережевого запиту."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The ecosystem grows stronger through shared knowledge"
@@ -15845,7 +15841,7 @@ msgstr "Плашка відкриває <0>екран категоризації
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The pills on the expense form, and the On-device AI section in Settings that powers them."
-msgstr "Підказки у формі витрати та розділ «On-device AI» в налаштуваннях, який їх забезпечує."
+msgstr "Підказки у формі витрати та розділ «ШІ на пристрої» в налаштуваннях, який їх забезпечує."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
@@ -17170,11 +17166,11 @@ msgstr "Голосове введення"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Voice entry downloads what it needs once and keeps it on the device — only after you switch On-device AI on in Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more, and follows your phone's language automatically."
-msgstr "Голосове введення завантажує потрібне один раз і зберігає на пристрої — лише після того, як ви увімкнете On-device AI в налаштуваннях, і лише при першому записі. Воно охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а ще десятки інших, і автоматично слідує за мовою вашого телефону."
+msgstr "Голосове введення завантажує потрібне один раз і зберігає на пристрої — лише після того, як ви увімкнете ШІ на пристрої в налаштуваннях, і лише при першому записі. Воно охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а ще десятки інших, і автоматично слідує за мовою вашого телефону."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a server."
-msgstr "Голосове введення працює завдяки перемикачу «On-device AI» в налаштуваннях. За його описом, він транскрибує голосові нотатки на цьому пристрої та одноразово завантажує моделі, найкраще через Wi-Fi. Ваше аудіо перетворюється на текст на телефоні й ніколи не надсилається на сервер."
+msgstr "Голосове введення працює завдяки перемикачу «ШІ на пристрої» в налаштуваннях. За його описом, він транскрибує голосові нотатки на цьому пристрої та одноразово завантажує моделі, найкраще через Wi-Fi. Ваше аудіо перетворюється на текст на телефоні й ніколи не надсилається на сервер."
 
 #: src/app/[lang]/page.tsx
 msgid "Voice entry, transcribed on your phone"
@@ -19067,11 +19063,11 @@ msgstr "Так. Одразу після того, як ви категоризу
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch that turns the whole subsystem on or off. Switch it off and nothing downloads, nothing loads, and no suggestion runs — the rest of Budgie is unaffected. New installs start with it off; if you were already using AI before the switch existed, it stays on."
-msgstr "Так. У Налаштуваннях є розділ ШІ з єдиним перемикачем «On-device AI», який вмикає або вимикає всю підсистему. Вимкніть його — і нічого не завантажується, нічого не вантажиться в пам’ять і жодна підказка не виконується; решта Budgie працює як звично. Нові встановлення починають із вимкненим перемикачем; якщо ви користувалися ШІ ще до появи перемикача, він лишається увімкненим."
+msgstr "Так. У Налаштуваннях є розділ ШІ з єдиним перемикачем «ШІ на пристрої», який вмикає або вимикає всю підсистему. Вимкніть його — і нічого не завантажується, нічого не вантажиться в пам’ять і жодна підказка не виконується; решта Budgie працює як звично. Нові встановлення починають із вимкненим перемикачем; якщо ви користувалися ШІ ще до появи перемикача, він лишається увімкненим."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."
-msgstr "Так. У налаштуваннях є розділ AI з одним перемикачем On-device AI. Вимкніть його — і нічого не завантажується, нічого не завантажується в пам'ять, жодна підказка не працює — категоризація повертається до ваших правил і власних кодів продавців вашого банку. На нових встановленнях перемикач спершу вимкнений; якщо ви користувалися AI ще до появи цього перемикача, він залишиться увімкненим."
+msgstr "Так. У налаштуваннях є розділ AI з одним перемикачем ШІ на пристрої. Вимкніть його — і нічого не завантажується, нічого не завантажується в пам'ять, жодна підказка не працює — категоризація повертається до ваших правил і власних кодів продавців вашого банку. На нових встановленнях перемикач спершу вимкнений; якщо ви користувалися AI ще до появи цього перемикача, він залишиться увімкненим."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."

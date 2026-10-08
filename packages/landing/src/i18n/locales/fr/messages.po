@@ -3015,7 +3015,7 @@ msgstr "Le montant d'abord, pas de formulaire"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Amount still yours to enter"
-msgstr "Le montant reste à saisir par vous"
+msgstr "C'est toujours vous qui saisissez le montant"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Amount, category, tag and account chips narrow the Categories and Tags tabs from the same filter row"
@@ -3413,10 +3413,6 @@ msgstr "Des systèmes d'authentification qui restent sûrs même lorsqu'ils sont
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)"
 msgstr "Jetons d'authentification pour les services optionnels de synchronisation bancaire (stockés dans la base de données locale, chiffrés lorsqu'un code PIN est défini)"
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Auto-assign categories from MCC"
-msgstr "Attribuer automatiquement les catégories à partir du MCC"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Auto-detected from device locale on first launch"
@@ -4795,8 +4791,8 @@ msgstr "Budgie analyse votre historique à la recherche de montants et de rythme
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date"
-msgstr "Section IA des réglages de Budgie avec l’interrupteur « On-device AI », une ligne Traduction à 100 % et une ligne Apprentissage indiquant que l’apprentissage est à jour"
+msgid "Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date"
+msgstr "Section IA des réglages de Budgie avec l’interrupteur « IA sur l'appareil », une ligne Traduction et une ligne Apprentissage indiquant que l’apprentissage est à jour"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
@@ -4845,7 +4841,7 @@ msgstr "Écran des paramètres de Budgie avec la mention hors ligne et privé au
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows"
-msgstr "Écran des réglages de Budgie avec l’interrupteur « On-device AI », décrit comme catégorisant les transactions, suggérant des tags et transcrivant les notes vocales sur cet appareil, au-dessus des lignes de progression de la traduction et de l’apprentissage"
+msgstr "Écran des réglages de Budgie avec l’interrupteur « IA sur l'appareil », décrit comme catégorisant les transactions, suggérant des tags et transcrivant les notes vocales sur cet appareil, au-dessus des lignes de progression de la traduction et de l’apprentissage"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
@@ -7100,7 +7096,7 @@ msgstr "Dois-je garder Budgie ouvert pour que les chiffres restent justes ?"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Do I need to turn on On-device AI?"
-msgstr "Faut-il activer « On-device AI » ?"
+msgstr "Faut-il activer « IA sur l'appareil » ?"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Do jars sync as well?"
@@ -11413,7 +11409,7 @@ msgstr "Non. L'application n'appelle que des points d'accès en lecture chez Bin
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "No. The Categorize inbox works with On-device AI switched off and needs no extra download."
-msgstr "Non. L’écran de catégorisation fonctionne avec « On-device AI » désactivé et ne nécessite aucun téléchargement supplémentaire."
+msgstr "Non. L’écran de catégorisation fonctionne avec « IA sur l'appareil » désactivé et ne nécessite aucun téléchargement supplémentaire."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
@@ -11871,7 +11867,7 @@ msgstr "IA sur l'appareil"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "On-device AI"
-msgstr "On-device AI"
+msgstr "IA sur l'appareil"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device AI auto-categorization"
@@ -11932,7 +11928,7 @@ msgstr "L'IA embarquée signifie que le traitement a lieu sur le téléphone que
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "On-device AI switch"
-msgstr "Interrupteur « On-device AI »"
+msgstr "Interrupteur « IA sur l'appareil »"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "On-device encryption"
@@ -12800,7 +12796,7 @@ msgstr "Choisir Dépôt ouvre son formulaire : solde initial, nom, devise — pu
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Pill suggestions on the expense form, the privacy notice in Settings, and the On-device AI section."
-msgstr "Suggestions en pastilles sur le formulaire de dépense, l’avis de confidentialité dans les Réglages et la section « On-device AI »."
+msgstr "Suggestions en pastilles sur le formulaire de dépense, l’avis de confidentialité dans les Réglages et la section « IA sur l'appareil »."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Pills appear on the empty form"
@@ -14300,7 +14296,7 @@ msgstr "Paramètres → Sécurité, juste sous la carte de verrouillage par code
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date. Suggestions come from your own history on this device."
-msgstr "Les Réglages comportent une section IA avec l’interrupteur « On-device AI » et une ligne Apprentissage qui indique si l’apprentissage est à jour. Les suggestions proviennent de votre propre historique sur cet appareil."
+msgstr "Les Réglages comportent une section IA avec l’interrupteur « IA sur l'appareil » et une ligne Apprentissage qui indique si l’apprentissage est à jour. Les suggestions proviennent de votre propre historique sur cet appareil."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
@@ -15177,7 +15173,7 @@ msgstr "Touchez pour ouvrir"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Tappable suggestion pills"
-msgstr "Pastilles de suggestion cliquables"
+msgstr "Pastilles de suggestion à toucher"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
@@ -15287,7 +15283,7 @@ msgstr "Le probleme de persistance de l'agregateur"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "The AI section of Settings holds the On-device AI switch, which says it categorizes transactions on this device and downloads about 2.5 GB of models once. Below it, a Learning row shows whether learning is up to date."
-msgstr "La section IA des Réglages contient l’interrupteur « On-device AI », qui indique qu’il catégorise les transactions sur cet appareil et télécharge une seule fois environ 2,5 Go de modèles. En dessous, une ligne Apprentissage indique si l’apprentissage est à jour."
+msgstr "La section IA des Réglages contient l’interrupteur « IA sur l'appareil », qui indique qu’il catégorise les transactions sur cet appareil et télécharge une seule fois environ 2,5 Go de modèles. En dessous, une ligne Apprentissage indique si l’apprentissage est à jour."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
@@ -15339,7 +15335,7 @@ msgstr "L'arbitrage se déroulera en anglais à Vienne, en Autriche"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
-msgstr "L'utilisateur moyen enregistre le même marchand plus de trente fois par an. Saisir la catégorie, choisir une étiquette, entrer le montant habituel et sélectionner le bon compte pour le même café est un effort gaspillé — l'information est déjà dans votre historique. Budgie la présente sous forme de pastilles cliquables dès l'ouverture du formulaire, de sorte que confirmer une dépense familière prend un toucher au lieu de sept."
+msgstr "L'utilisateur moyen enregistre le même marchand plus de trente fois par an. Saisir la catégorie, choisir une étiquette, entrer le montant habituel et sélectionner le bon compte pour le même café est un effort gaspillé — l'information est déjà dans votre historique. Budgie la présente sous forme de pastilles à toucher dès l'ouverture du formulaire, de sorte que confirmer une dépense familière prend un toucher au lieu de sept."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "The backfill reports its progress per asset, so you can see how much of the older history is still filling in and when it has finished."
@@ -15845,7 +15841,7 @@ msgstr "La pastille ouvre l’<0>écran de catégorisation</0> pour le travail e
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The pills on the expense form, and the On-device AI section in Settings that powers them."
-msgstr "Les pastilles du formulaire de dépense et la section « On-device AI » des Réglages qui les alimente."
+msgstr "Les pastilles du formulaire de dépense et la section « IA sur l'appareil » des Réglages qui les alimente."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
@@ -17174,7 +17170,7 @@ msgstr "La saisie vocale télécharge ce dont elle a besoin une fois et le conse
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a server."
-msgstr "La saisie vocale fonctionne grâce à l’interrupteur « On-device AI » des Réglages. Sa description indique qu’il transcrit les notes vocales sur cet appareil et télécharge les modèles une seule fois, de préférence en Wi-Fi. Votre audio devient du texte sur le téléphone et n’est jamais envoyé à un serveur."
+msgstr "La saisie vocale fonctionne grâce à l’interrupteur « IA sur l'appareil » des Réglages. Sa description indique qu’il transcrit les notes vocales sur cet appareil et télécharge les modèles une seule fois, de préférence en Wi-Fi. Votre audio devient du texte sur le téléphone et n’est jamais envoyé à un serveur."
 
 #: src/app/[lang]/page.tsx
 msgid "Voice entry, transcribed on your phone"
@@ -19067,7 +19063,7 @@ msgstr "Oui. Juste après que vous avez catégorisé un seul groupe, + Étiquett
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch that turns the whole subsystem on or off. Switch it off and nothing downloads, nothing loads, and no suggestion runs — the rest of Budgie is unaffected. New installs start with it off; if you were already using AI before the switch existed, it stays on."
-msgstr "Oui. Les Réglages comportent une section IA avec un unique interrupteur « On-device AI » qui active ou désactive tout le sous-système. Désactivez-le et plus rien n’est téléchargé, plus rien n’est chargé et aucune suggestion ne s’exécute — le reste de Budgie n’est pas affecté. Les nouvelles installations démarrent désactivées ; si vous utilisiez déjà l’IA avant l’existence de l’interrupteur, elle reste active."
+msgstr "Oui. Les Réglages comportent une section IA avec un unique interrupteur « IA sur l'appareil » qui active ou désactive tout le sous-système. Désactivez-le et plus rien n’est téléchargé, plus rien n’est chargé et aucune suggestion ne s’exécute — le reste de Budgie n’est pas affecté. Les nouvelles installations démarrent désactivées ; si vous utilisiez déjà l’IA avant l’existence de l’interrupteur, elle reste active."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."

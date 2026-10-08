@@ -3413,10 +3413,6 @@ msgstr "Authentication systems that remain secure even when examined"
 msgid "Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)"
 msgstr "Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)"
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Auto-assign categories from MCC"
-msgstr "Auto-assign categories from MCC"
-
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Auto-detected from device locale on first launch"
 msgstr "Auto-detected from device locale on first launch"
@@ -4794,8 +4790,8 @@ msgstr "Budgie scans your history for amount and cadence patterns and plots ever
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date"
-msgstr "Budgie settings AI section with the On-device AI switch, a Translation row at 100% and a Learning row reading learning up to date"
+msgid "Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date"
+msgstr "Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
