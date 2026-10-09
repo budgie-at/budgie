@@ -15,9 +15,9 @@ import {
     malformedBridgeTopologyScenario,
     preCalibrationDuplicateScenario,
     repairDuplicateTransferScenario,
-    staleBalanceSnapshotScenario,
-    unchangedLedgerScenario
+    staleBalanceSnapshotScenario
 } from './data-migration-money-impact.scenario';
+import { unchangedLedgerScenario } from './unchanged-ledger.scenario';
 
 const MIGRATIONS_FOLDER = resolve(process.cwd(), '../../packages/app/drizzle');
 const DATA_CHANGE_PATTERN = /\b(?:UPDATE\s+\S+\s+SET|INSERT(?:\s+OR\s+\w+)?\s+INTO|DELETE\s+FROM)\b/iu;

@@ -32,37 +32,30 @@ export const seedIbanBridgeTopology = () =>
     });
 
 export const seedIbanBridgeIncomeLeg = (bridgeAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairIncome(
-            { externalId: 'reclaim-bridge-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: bridgeAccountId,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                exchangeRate: IBAN_BRIDGE_EUR_TO_UAH_RATE,
-                mccCategoryId: transferMccId,
-                toIban: IBAN_BRIDGE_SOURCE_IBAN
-            }
-        );
-    });
-
-const seedIbanBridgeExpenseLeg = (bridgeAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairExpense(
-            { externalId: 'reclaim-bridge-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: bridgeAccountId,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                mccCategoryId: transferMccId,
-                toIban: IBAN_BRIDGE_TARGET_IBAN
-            }
-        );
-    });
+    testSeedService.bankPairIncome(
+        { externalId: 'reclaim-bridge-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+        {
+            accountId: bridgeAccountId,
+            amount: IBAN_BRIDGE_UAH_AMOUNT,
+            exchangeRate: IBAN_BRIDGE_EUR_TO_UAH_RATE,
+            mccCategoryId: transferMccId,
+            toIban: IBAN_BRIDGE_SOURCE_IBAN
+        }
+    );
 
 export const seedIbanBridgeLegs = (bridgeAccountId: number, transferMccId: number) =>
     Effect.gen(function* () {
         return {
             bridgeIncome: yield* seedIbanBridgeIncomeLeg(bridgeAccountId, transferMccId),
-            bridgeExpense: yield* seedIbanBridgeExpenseLeg(bridgeAccountId, transferMccId)
+            bridgeExpense: yield* testSeedService.bankPairExpense(
+                { externalId: 'reclaim-bridge-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+                {
+                    accountId: bridgeAccountId,
+                    amount: IBAN_BRIDGE_UAH_AMOUNT,
+                    mccCategoryId: transferMccId,
+                    toIban: IBAN_BRIDGE_TARGET_IBAN
+                }
+            )
         };
     });
 
@@ -71,30 +64,26 @@ export const seedIbanBridgeSourceExpense = (
     transferMccId: number,
     toIban: string | null = IBAN_BRIDGE_TARGET_IBAN
 ) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairExpense(
-            { externalId: 'reclaim-source-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: sourceAccountId,
-                amount: IBAN_BRIDGE_EUR_AMOUNT,
-                exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
-                mccCategoryId: transferMccId,
-                toIban
-            }
-        );
-    });
+    testSeedService.bankPairExpense(
+        { externalId: 'reclaim-source-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+        {
+            accountId: sourceAccountId,
+            amount: IBAN_BRIDGE_EUR_AMOUNT,
+            exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
+            mccCategoryId: transferMccId,
+            toIban
+        }
+    );
 
 export const seedIbanBridgeTargetIncome = (targetAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairIncome(
-            { externalId: 'reclaim-target-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: targetAccountId,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                mccCategoryId: transferMccId
-            }
-        );
-    });
+    testSeedService.bankPairIncome(
+        { externalId: 'reclaim-target-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+        {
+            accountId: targetAccountId,
+            amount: IBAN_BRIDGE_UAH_AMOUNT,
+            mccCategoryId: transferMccId
+        }
+    );
 
 export const seedIbanBridgeCanonicalTransfer = (sourceAccountId: number, targetAccountId: number, toIban: string | null) =>
     testSeedService.directTransfer({

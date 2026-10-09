@@ -52,9 +52,6 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
             return normalizeTitle(isDefined(matchingPrefix) ? title.slice(matchingPrefix.length) : title);
         };
-        const matchesMonobankEarlyPayoffTitle = (title: string, referenceTitle: string) =>
-            title.startsWith(monobankEarlyPayoffPrefix) &&
-            normalizeTitle(title.slice(monobankEarlyPayoffPrefix.length)) === getMonobankPaymentMerchant(referenceTitle);
         const matchesPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
             externalSource === ExternalSourceEnum.MONOBANK
                 ? title.startsWith(monobankMonthlyPartPrefix) ||
@@ -184,7 +181,8 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                     candidate.externalSource === ExternalSourceEnum.MONOBANK &&
                     firstPart.externalSource === ExternalSourceEnum.MONOBANK &&
                     Math.abs(candidate.amount - schedule.remainingAmount) <= amountTolerance &&
-                    matchesMonobankEarlyPayoffTitle(candidate.title, firstPart.title)
+                    candidate.title.startsWith(monobankEarlyPayoffPrefix) &&
+                    normalizeTitle(candidate.title.slice(monobankEarlyPayoffPrefix.length)) === getMonobankPaymentMerchant(firstPart.title)
             );
 
             if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {

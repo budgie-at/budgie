@@ -11,8 +11,7 @@ SELECT
     source_entry.amount AS source_amount,
     target_entry.amount AS target_amount,
     COUNT(*) AS transfer_count,
-    SUM(CASE WHEN tx.consolidation_type = 'IBAN_BRIDGE_TRANSFER' THEN 1 ELSE 0 END) AS bridge_count,
-    SUM(CASE WHEN tx.consolidation_type = 'TRANSFER_PAIR' THEN 1 ELSE 0 END) AS pair_count
+    SUM(CASE WHEN tx.consolidation_type = 'IBAN_BRIDGE_TRANSFER' THEN 1 ELSE 0 END) AS bridge_count
 FROM transactions tx
 INNER JOIN transaction_entries source_entry ON source_entry.transaction_id = tx.id
     AND source_entry.deleted_at IS NULL
@@ -229,11 +228,8 @@ WITH safe_signatures AS (
     )
     WHERE signature_counts.transfer_count = 2
         AND signature_counts.bridge_count = 1
-        AND signature_counts.pair_count = 1
     GROUP BY source_account_id, target_account_id, source_amount, target_amount
     HAVING COUNT(*) = 2
-        AND SUM(CASE WHEN consolidation_type = 'IBAN_BRIDGE_TRANSFER' THEN 1 ELSE 0 END) = 1
-        AND SUM(CASE WHEN consolidation_type = 'TRANSFER_PAIR' THEN 1 ELSE 0 END) = 1
 )
 SELECT
     bridge.id AS keeper_id,

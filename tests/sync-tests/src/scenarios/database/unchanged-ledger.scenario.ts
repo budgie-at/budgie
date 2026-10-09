@@ -1,8 +1,11 @@
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
-import { AccountDebtTypeEnum, AccountTypeEnum, PRECISION, UserIconNameEnum } from '@budgie/contracts';
+import { AccountBalanceRepository, AccountDebtTypeEnum, AccountTypeEnum, PRECISION, UserIconNameEnum } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { TransferConsolidationService } from '@budgie/sync';
+import { expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { seed, seedBankPair, testDb } from '../../harness';
+import { applyMigration, seed, seedBankPair, testDb, TestLayer } from '../../harness';
 
 import { OPERATED_AT } from './data-migration-money-impact.constant';
 
@@ -13,7 +16,7 @@ const TRANSFER_AMOUNT = 150 * PRECISION;
 const DEBT_TARGET_BALANCE = 90;
 const ONE_DAY_SECONDS = 86_400;
 
-export const seedLedgerFixture = Effect.fnUntraced(function* () {
+const seedLedgerFixture = Effect.fnUntraced(function* () {
     const accountDebtOpeningService = yield* AccountDebtOpeningService;
     const bankAccount = yield* seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
     const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
@@ -59,3 +62,19 @@ export const seedLedgerFixture = Effect.fnUntraced(function* () {
 
     return [bankAccount.id, cashAccount.id, debtAccount.id];
 });
+
+export const unchangedLedgerScenario = (migrationName: string) =>
+    Effect.gen(function* () {
+        const accountBalanceRepository = yield* AccountBalanceRepository;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+        const transferConsolidationService = yield* TransferConsolidationService;
+        const accountIds = yield* seedLedgerFixture();
+        yield* transferConsolidationService.consolidate(null);
+        const ledgerBefore = yield* accountBalanceRepository.getLedgerBalances(accountIds);
+
+        yield* applyMigration(migrationName);
+        yield* transferConsolidationService.consolidate(null);
+        yield* accountBalanceIncrementalService.updateAllBalances(false);
+
+        expect(yield* accountBalanceRepository.getLedgerBalances(accountIds)).toEqual(ledgerBefore);
+    }).pipe(Effect.provide(TestLayer));

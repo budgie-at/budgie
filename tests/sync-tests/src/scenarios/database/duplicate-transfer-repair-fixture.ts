@@ -231,16 +231,14 @@ export const seedAdjustedDuplicatePair = Effect.fnUntraced(function* (
     return { ...accounts, duplicate };
 });
 
-export const seedCompetingTransferPairCanonical = Effect.fnUntraced(function* (input: SeedCompetingTransferPairCanonicalInputInterface) {
-    return yield* seedCanonicalTransfer({
+export const seedCompetingTransferPairCanonical = (input: SeedCompetingTransferPairCanonicalInputInterface) =>
+    seedCanonicalTransfer({
         ...input,
         consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
         sourceAmount: SOURCE_AMOUNT,
         targetAmount: TARGET_AMOUNT,
-        suffix: input.suffix,
         createdAt: DUPLICATE_CREATED_AT
     });
-});
 
 export const upsertRepairStoredBalances = Effect.fnUntraced(function* (input: UpsertRepairStoredBalancesInputInterface) {
     const accountBalanceRepository = yield* AccountBalanceRepository;

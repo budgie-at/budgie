@@ -1,12 +1,4 @@
-import {
-    AccountBalanceRepository,
-    AccountEntityInterface,
-    PRECISION,
-    TransactionEntityTable,
-    TransactionEntryEntityTable
-} from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
-import { TransferConsolidationService } from '@budgie/sync';
+import { AccountEntityInterface, PRECISION, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import { expect } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -41,7 +33,6 @@ import {
     stampTransactions,
     upsertRepairStoredBalances
 } from './duplicate-transfer-repair-fixture';
-import { seedLedgerFixture } from './migration-money-impact-ledger-fixture';
 
 const seedCompetingCanonicalForFixture = (
     fixture: {
@@ -76,22 +67,6 @@ const applyMigrationAndExpectPreparedDuplicatePair = (input: {
         bridgeCanonicalId: input.bridgeCanonicalId,
         pairCanonicalId: input.pairCanonicalId
     });
-
-export const unchangedLedgerScenario = (migrationName: string) =>
-    Effect.gen(function* () {
-        const accountBalanceRepository = yield* AccountBalanceRepository;
-        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-        const transferConsolidationService = yield* TransferConsolidationService;
-        const accountIds = yield* seedLedgerFixture();
-        yield* transferConsolidationService.consolidate(null);
-        const ledgerBefore = yield* accountBalanceRepository.getLedgerBalances(accountIds);
-
-        yield* applyMigration(migrationName);
-        yield* transferConsolidationService.consolidate(null);
-        yield* accountBalanceIncrementalService.updateAllBalances(false);
-
-        expect(yield* accountBalanceRepository.getLedgerBalances(accountIds)).toEqual(ledgerBefore);
-    }).pipe(Effect.provide(TestLayer));
 
 export const repairDuplicateTransferScenario = () =>
     Effect.gen(function* () {
