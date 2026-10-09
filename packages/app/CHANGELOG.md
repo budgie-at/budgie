@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* **app:** hide Start Deposit for consolidated children ([e92fa52](https://github.com/budgie-at/budgie/commit/e92fa520fe54c3d31dd21f3454dea4cc7e00ad58))
+* **app:** refresh start deposit catalog references ([57d1c62](https://github.com/budgie-at/budgie/commit/57d1c62fc1cda6080a3817049136119111f4dd9d))
+* **app:** validate the start deposit form and open the created deposit ([666b03b](https://github.com/budgie-at/budgie/commit/666b03bbdafaecbbb9d7a1c7d2bf24b82b9366ec))
+* preserve deposit funding metadata and reject invalid amounts ([6a10d8f](https://github.com/budgie-at/budgie/commit/6a10d8f42519f2f4d4aa52438aef04f2dbebdbf9))
+
+
+### Features
+
+* start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+
+
+
+
+
 # [6.98.0](https://github.com/budgie-at/budgie/compare/v6.97.1...v6.98.0) (2026-10-08)
 
 

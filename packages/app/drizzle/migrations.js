@@ -6,17 +6,18 @@ import m0002 from './20261004064254_transaction_import_fingerprint/migration.sql
 import m0003 from './20261004090619_seed_account_deleted_transfer_category/migration.sql';
 import m0004 from './20261004121613_transaction_tag_source/migration.sql';
 import m0005 from './20261005210950_account_installment_count/migration.sql';
-import m0006 from './20261009005433_duplicate_transfer_repair/migration.sql';
+import m0006 from './20261007190655_transaction_entry_operation_metadata/migration.sql';
+import m0007 from './20261009005433_duplicate_transfer_repair/migration.sql';
 
-  export default {
+export default {
     migrations: {
-      "20261001084501_baseline": m0000,
-"20261002214604_recurring_series": m0001,
-"20261004064254_transaction_import_fingerprint": m0002,
-"20261004090619_seed_account_deleted_transfer_category": m0003,
-"20261004121613_transaction_tag_source": m0004,
-"20261005210950_account_installment_count": m0005,
-"20261009005433_duplicate_transfer_repair": m0006
-}
-  }
-
+        '20261001084501_baseline': m0000,
+        '20261002214604_recurring_series': m0001,
+        '20261004064254_transaction_import_fingerprint': m0002,
+        '20261004090619_seed_account_deleted_transfer_category': m0003,
+        '20261004121613_transaction_tag_source': m0004,
+        '20261005210950_account_installment_count': m0005,
+        '20261007190655_transaction_entry_operation_metadata': m0006,
+        '20261009005433_duplicate_transfer_repair': m0007,
+    },
+};

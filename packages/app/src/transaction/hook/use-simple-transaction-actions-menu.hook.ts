@@ -1,5 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
+import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -37,7 +38,7 @@ export const useSimpleTransactionActionsMenu = ({
         transactionAccountId
     });
 
-    const handleOpenConvert = (startDeposit = false) => {
+    const handleOpenConvert = () => {
         if (!isDefined(sourceEntry)) {
             return;
         }
@@ -48,18 +49,23 @@ export const useSimpleTransactionActionsMenu = ({
             excludeAccountId: (transactionType === TransactionTypeEnum.EXPENSE ? transaction.fromAccountId : transaction.toAccountId) ?? 0,
             sourceAmount: convertFromMicroUnits(sourceEntry.amount),
             sourceInstrumentId: sourceEntry.account.instrumentId,
-            sourceCode: sourceEntry.account.instrument.code,
-            startDeposit
+            sourceCode: sourceEntry.account.instrument.code
         });
     };
-    const handleOpenStartDeposit = () => void handleOpenConvert(true);
+    const handleOpenStartDeposit = () => {
+        router.push({ pathname: '/transactions/[id]/start-deposit', params: { id: String(transactionId) } });
+    };
 
     const canConvertToRefund =
         transactionType === TransactionTypeEnum.INCOME && !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const canConvertToTransfer = persistedCategoryEntries.length === 1 && categoryEntryCount === 1;
     const transferConvertProps = canConvertToTransfer ? { onConvertToTransfer: handleOpenConvert } : {};
-    const canStartDeposit = canConvertToTransfer && transactionType === TransactionTypeEnum.EXPENSE && !isConsolidated;
+    const canStartDeposit =
+        canConvertToTransfer &&
+        transactionType === TransactionTypeEnum.EXPENSE &&
+        !isConsolidated &&
+        !isDefined(transaction.consolidationParentTransactionId);
     const startDepositProps = canStartDeposit ? { onStartDeposit: handleOpenStartDeposit } : {};
     const installmentConvertProps =
         isDefined(handleOpenConvertToInstallment) && categoryEntryCount === 1

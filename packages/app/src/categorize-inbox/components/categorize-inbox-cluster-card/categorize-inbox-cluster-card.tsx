@@ -74,11 +74,7 @@ export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
                 {isDefined(amountText) ? <Text className="text-primary text-sm font-semibold">{amountText}</Text> : null}
             </View>
 
-            <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerClassName="flex-row items-center gap-x-sm"
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="flex-row items-center gap-x-sm">
                 {cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? (
                     <CategorizeInboxCashWithdrawalChips cluster={cluster} />
                 ) : null}

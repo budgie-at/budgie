@@ -314,6 +314,10 @@ msgstr "100% lokal"
 msgid "A balanced starter budget with common categories"
 msgstr "Ein ausgewogenes Startbudget mit gängigen Kategorien"
 
+#: ../ledger/src/account/error/deposit-receiving-amount-mismatch.error.ts
+msgid "A deposit in the funding account currency must receive the full funding amount"
+msgstr "Eine Einlage in der Währung des Finanzierungskontos muss den vollen Finanzierungsbetrag erhalten"
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "A rule matches incoming bank transactions and applies a category and tags for you."
 msgstr "Eine Regel erkennt eingehende Banktransaktionen und weist automatisch eine Kategorie und Tags zu."
@@ -1095,6 +1099,10 @@ msgstr "Konsolidieren"
 msgid "Consolidate Matches"
 msgstr "Treffer konsolidieren"
 
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
+msgid "Consolidated transactions cannot start a deposit"
+msgstr "Aus konsolidierten Transaktionen kann keine Einlage eröffnet werden"
+
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Consolidation"
 msgstr "Konsolidierung"
@@ -1214,10 +1222,6 @@ msgstr "Budget konnte nicht erstellt werden"
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not create category"
 msgstr "Kategorie konnte nicht erstellt werden"
-
-#: src/account/hooks/use-deposit-create-action.hook.ts
-msgid "Could not create deposit account"
-msgstr "Einlagenkonto konnte nicht erstellt werden"
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 msgid "Could not create plan"
@@ -1661,8 +1665,8 @@ msgstr "Regel löschen"
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/constant/account-type.constant.ts
-#: src/account/hooks/use-deposit-create-action.hook.ts
 msgid "Deposit"
 msgstr "Termineinlage"
 
@@ -1988,6 +1992,7 @@ msgstr "Jede Transaktion hat einen Tag."
 msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
 
+#: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Exchange rate"
 msgstr "Wechselkurs"
@@ -2168,7 +2173,11 @@ msgstr "Von Betrag"
 msgid "From Currency"
 msgstr "Von Währung"
 
-#: src/account/hooks/use-deposit-create-action.hook.ts
+#: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
+msgid "Funding account"
+msgstr "Finanzierungskonto"
+
+#: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 msgid "Funding amount"
 msgstr "Einzahlungsbetrag"
 
@@ -2766,10 +2775,6 @@ msgstr "Neues Konto"
 msgid "New borrowed debt"
 msgstr "Neue geliehene Schuld"
 
-#: src/account/hooks/use-deposit-create-action.hook.ts
-msgid "New deposit account"
-msgstr "Neues Einlagenkonto"
-
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
 msgstr "Neue Ausgabe"
@@ -3271,6 +3276,7 @@ msgstr "Plan erstellt"
 msgid "Plan name"
 msgstr "Name des Plans"
 
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
@@ -3426,6 +3432,15 @@ msgstr "Salden werden neu berechnet"
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
 msgstr "Empfang {toCode}"
+
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+msgid "Receiving amount"
+msgstr "Empfangsbetrag"
+
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
+msgid "Receiving amount must be greater than zero"
+msgstr "Der Empfangsbetrag muss größer als null sein"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 msgid "Recurring"
@@ -3977,15 +3992,11 @@ msgstr "Ausgegeben"
 msgid "Split"
 msgstr "Aufteilen"
 
-#: src/app/convert-to-transfer.tsx
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Start Deposit"
 msgstr "Einzahlung starten"
-
-#: src/app/convert-to-transfer.tsx
-msgid "Start Deposit?"
-msgstr "Einzahlung starten?"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Start from scratch and set every limit yourself"
@@ -4168,6 +4179,10 @@ msgstr "Zum Auswählen tippen"
 msgid "Target balance"
 msgstr "Zielsaldo"
 
+#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
+msgstr "Die Bank hat die Währung der Einlage nicht übermittelt. Bestätige die Währung und den Empfangsbetrag."
+
 #: src/rule/util/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen mussten aktualisiert werden."
@@ -4235,10 +4250,6 @@ msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
 #: src/app/convert-to-transfer.tsx
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewandelt."
-
-#: src/app/convert-to-transfer.tsx
-msgid "This will create a new deposit account and convert this expense into a transfer into it."
-msgstr "Dadurch wird ein neues Einlagenkonto erstellt und diese Ausgabe in eine Überweisung darauf umgewandelt."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."

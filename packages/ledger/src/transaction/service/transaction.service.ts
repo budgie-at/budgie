@@ -3,6 +3,8 @@ import {
     Db,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
+    type TransactionEntryEntityInterface,
+    TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -19,6 +21,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
@@ -50,6 +53,31 @@ export class TransactionService extends Context.Service<TransactionService>()('@
         const getAccountIdsFromTransactions = (transactions: readonly TransactionWithEntriesEntityInterface[]): number[] => [
             ...new Set(transactions.flatMap(transaction => transaction.entries.map(entry => entry.accountId)))
         ];
+
+        const resolveOperationMetadata = (
+            entries: TransactionCreateInputInterface['entries'],
+            existingEntries: readonly TransactionEntryEntityInterface[]
+        ): TransactionCreateInputInterface['entries'] =>
+            entries.map(entry => {
+                const matchingEntries = existingEntries.filter(
+                    existingEntry =>
+                        existingEntry.accountId === entry.accountId &&
+                        existingEntry.amount === convertToMicroUnits(entry.amount) &&
+                        existingEntry.type === entry.type &&
+                        existingEntry.kind === (entry.kind ?? TransactionEntryKindEnum.PRIMARY)
+                );
+                const [existingEntry] = matchingEntries;
+                const hasOperationMetadata =
+                    matchingEntries.length === 1 &&
+                    isDefined(existingEntry.operationInstrumentId) &&
+                    isDefined(existingEntry.operationAmount);
+
+                return {
+                    ...entry,
+                    operationInstrumentId: hasOperationMetadata ? existingEntry.operationInstrumentId : null,
+                    operationAmount: hasOperationMetadata ? existingEntry.operationAmount : null
+                };
+            });
 
         const unconsolidateByIdInTransaction = (transactionId: number) =>
             Db.transaction(unconsolidationService.unconsolidateById(transactionId));
@@ -255,7 +283,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
 
                     yield* upsertTransactionEntriesAndTags({
                         transactionId: id,
-                        input,
+                        input: { ...input, entries: resolveOperationMetadata(input.entries, existingTransaction?.entries ?? []) },
                         operatedAt: transaction.operatedAt,
                         isConsolidated
                     });

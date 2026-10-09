@@ -10,7 +10,6 @@ export interface ConvertToTransferModalParams {
     readonly sourceInstrumentId: number;
     readonly sourceCode: string;
     readonly skipPostConvertNavigation?: boolean;
-    readonly startDeposit?: boolean;
 }
 
 export const [ConvertToTransferModalContext, useConvertToTransferModal, useConvertToTransferModalParams] = createModalContext<

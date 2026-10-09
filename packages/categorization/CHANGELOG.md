@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
 # [6.98.0](https://github.com/budgie-at/budgie/compare/v6.97.1...v6.98.0) (2026-10-08)
 
 

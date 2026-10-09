@@ -6,18 +6,12 @@ import { useLocalSearchParams } from 'expo-router';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
-import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
-import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
-import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
-import { DepositInterestRateField } from '../deposit-interest-rate-field/deposit-interest-rate-field';
-import { DepositMaturityDateField } from '../deposit-maturity-date-field/deposit-maturity-date-field';
+import { DepositAccountFormScreen } from '../deposit-account-form-screen/deposit-account-form-screen';
 
 export const CreateDepositAccount = () => {
     const { defaultInstrument } = useSettingsContext();
@@ -45,20 +39,13 @@ export const CreateDepositAccount = () => {
         appRuntime.runPromise(Effect.flatMap(AccountService, accountService => accountService.createDeposit(values)))
     );
 
-    const variant = ACCOUNT_COLOR[AccountTypeEnum.DEPOSIT];
-    const stickyInstrument = useStickyDefinedValue(instrument);
-
-    if (!isDefined(stickyInstrument)) {
-        return <EmptyScreen />;
-    }
-
     return (
-        <CreateAccountScreen variant={variant} title={t`Deposit Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
-            <CreateAccountCoreFields variant={variant} control={control} instrumentSymbol={stickyInstrument.symbol}>
-                <DepositInterestRateField control={control} />
-
-                <DepositMaturityDateField control={control} variant={variant} />
-            </CreateAccountCoreFields>
-        </CreateAccountScreen>
+        <DepositAccountFormScreen
+            title={t`Deposit Account`}
+            control={control}
+            instrument={instrument}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+        />
     );
 };
