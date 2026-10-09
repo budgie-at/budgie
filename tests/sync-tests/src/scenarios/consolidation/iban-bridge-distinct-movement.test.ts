@@ -100,6 +100,7 @@ it.effect.each(
                     .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
                     .from(TransactionEntityTable)
                     .where(inArray(TransactionEntityTable.id, [secondExpense.id, secondIncome.id]))
+                    .orderBy(TransactionEntityTable.id)
             ).toEqual([
                 { id: secondExpense.id, externalId: secondExpense.externalId },
                 { id: secondIncome.id, externalId: secondIncome.externalId }

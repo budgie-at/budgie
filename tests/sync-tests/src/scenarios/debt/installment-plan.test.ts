@@ -143,6 +143,68 @@ describe('installment plan', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect.each([
+        ...[
+            {
+                scenario: 'same-month purchase',
+                firstAt: new Date(2026, 0, 28, 10),
+                purchaseAt: new Date(2026, 0, 28, 11),
+                monthlyAt: new Date(2026, 1, 28, 10)
+            },
+            {
+                scenario: 'older purchase',
+                firstAt: new Date(2026, 0, 28, 10),
+                purchaseAt: new Date(2025, 11, 28, 11),
+                monthlyAt: new Date(2026, 1, 28, 10)
+            },
+            {
+                scenario: 'late month-end payment',
+                firstAt: new Date(2026, 0, 31, 10),
+                purchaseAt: new Date(2026, 0, 31, 11),
+                monthlyAt: new Date(2026, 2, 1, 10)
+            },
+            {
+                scenario: 'early month-start payment',
+                firstAt: new Date(2026, 0, 1, 10),
+                purchaseAt: new Date(2026, 0, 1, 11),
+                monthlyAt: new Date(2026, 0, 30, 10)
+            }
+        ].flatMap(scenario => [false, true].map(duringConversion => ({ ...scenario, duringConversion }))),
+        {
+            scenario: 'earlier monthly payment',
+            firstAt: new Date(2026, 2, 28, 10),
+            purchaseAt: new Date(2026, 0, 28, 11),
+            monthlyAt: new Date(2026, 1, 28, 10),
+            duringConversion: true
+        }
+    ])(
+        'leaves an unrelated monthly part unlinked before its plan exists ($scenario, duringConversion=$duringConversion)',
+        ({ firstAt, purchaseAt, monthlyAt, duringConversion }) =>
+            Effect.gen(function* () {
+                const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-unconverted-plan');
+                const first = yield* seedPart(card.id, 'Платіж Camera Store', 100, firstAt);
+                yield* seedPart(card.id, 'Платіж Other Store', 100, purchaseAt);
+                const seedMonthlyPart = seedPart(card.id, 'Щомісячний платіж Other Store', 100, monthlyAt);
+
+                if (duringConversion) {
+                    yield* seedMonthlyPart;
+                }
+
+                const { accountId } = yield* convert(first.id, 3, 300);
+
+                if (!duringConversion) {
+                    yield* seedMonthlyPart;
+                }
+
+                yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id]);
+                yield* runPostSync();
+
+                expect((yield* fetchDebtProgress(accountId)).paidAmount).toBe(toMicroUnits(100));
+                expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(toMicroUnits(200));
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+            }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('attaches an early payoff after the latest monthly installment', () =>
         Effect.gen(function* () {
             const { card, first, second } = yield* seedMonthlyPayoffParts('UA-early-payoff', 'Tech Shop');

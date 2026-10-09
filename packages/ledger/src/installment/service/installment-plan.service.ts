@@ -18,7 +18,7 @@ import {
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
-import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
+import { addDays, differenceInCalendarMonths, endOfDay, startOfDay, subDays } from 'date-fns';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -70,6 +70,38 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 endOfDay(addDays(dueAt, dueDateToleranceDays))
             );
 
+        const hasUnconvertedMonthlyOwner = Effect.fnUntraced(function* (
+            accountId: number,
+            candidate: Effect.Success<ReturnType<typeof installmentPlanRepository.findCandidates>>[number],
+            planTransactionIds: readonly number[]
+        ) {
+            if (candidate.externalSource !== ExternalSourceEnum.MONOBANK || !candidate.title.startsWith(monobankMonthlyPartPrefix)) {
+                return false;
+            }
+
+            const purchases = yield* installmentPlanRepository.findCandidates(accountId, new Date(0), candidate.operatedAt);
+
+            return purchases.some(purchase => {
+                const monthOffset = differenceInCalendarMonths(candidate.operatedAt, purchase.operatedAt);
+
+                return (
+                    !planTransactionIds.includes(purchase.transactionId) &&
+                    purchase.externalSource === ExternalSourceEnum.MONOBANK &&
+                    purchase.title.startsWith(monobankLegacyPaymentPrefix) &&
+                    Math.abs(purchase.amount - candidate.amount) <= amountTolerance &&
+                    [monthOffset - 1, monthOffset, monthOffset + 1].some(offset => {
+                        const dueAt = getInstallmentDueDate(purchase.operatedAt, offset);
+
+                        return (
+                            isPositiveNumber(offset) &&
+                            candidate.operatedAt >= startOfDay(subDays(dueAt, dueDateToleranceDays)) &&
+                            candidate.operatedAt <= endOfDay(addDays(dueAt, dueDateToleranceDays))
+                        );
+                    })
+                );
+            });
+        });
+
         const findNextPartMatches = Effect.fnUntraced(function* (debtAccountId: number) {
             const schedule = yield* installmentPlanRepository.getSchedule(debtAccountId);
             const [firstPart] = yield* installmentPlanRepository.findParts(debtAccountId);
@@ -81,11 +113,17 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             const { nextAmount, remainingAmount } = schedule;
             const candidates = yield* findDueCandidates(firstPart.accountId, schedule.nextDueAt);
 
-            return candidates.filter(
+            return yield* Effect.filter(
+                candidates.filter(
+                    candidate =>
+                        candidate.externalSource === firstPart.externalSource &&
+                        (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
+                        matchesNextPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
+                ),
                 candidate =>
-                    candidate.externalSource === firstPart.externalSource &&
-                    (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
-                    matchesNextPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
+                    hasUnconvertedMonthlyOwner(firstPart.accountId, candidate, [firstPart.transactionId]).pipe(
+                        Effect.map(hasOwner => !hasOwner)
+                    )
             );
         });
 
@@ -124,11 +162,11 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         });
 
         const findEarlierParts = Effect.fnUntraced(function* (
-            transaction: Pick<TransactionEntityInterface, 'operatedAt' | 'externalSource' | 'title'>,
+            transaction: Pick<TransactionEntityInterface, 'id' | 'operatedAt' | 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
             installmentCount: number
         ) {
-            const earlierParts: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>> = [];
+            const earlierParts: Array<Effect.Success<ReturnType<typeof installmentPlanRepository.findCandidates>>[number]> = [];
 
             while (earlierParts.length < installmentCount - 1) {
                 const earlierPart = yield* findEarlierPart(
@@ -141,10 +179,18 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                     break;
                 }
 
-                earlierParts.unshift({ id: earlierPart.transactionId, operatedAt: earlierPart.operatedAt });
+                earlierParts.unshift(earlierPart);
             }
 
-            return earlierParts;
+            const planTransactionIds = [transaction.id, ...earlierParts.map(part => part.transactionId)];
+
+            for (const earlierPart of earlierParts) {
+                if (yield* hasUnconvertedMonthlyOwner(primaryEntry.accountId, earlierPart, planTransactionIds)) {
+                    return [];
+                }
+            }
+
+            return earlierParts.map(part => ({ id: part.transactionId, operatedAt: part.operatedAt }));
         });
 
         const findEarlyPayoffMatches = Effect.fnUntraced(function* (debtAccountId: number) {
