@@ -1,4 +1,3 @@
-import { IbanBridgeTransferRepository } from '@budgie/consolidation';
 import {
     CategorySourceEnum,
     ExternalSourceEnum,
@@ -8,7 +7,7 @@ import {
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import {
@@ -22,7 +21,9 @@ import {
     IBAN_BRIDGE_EUR_AMOUNT,
     IBAN_BRIDGE_OPERATED_AT,
     IBAN_BRIDGE_UAH_AMOUNT,
+    countCanonicalDuplicateCandidates,
     expectIbanBridgeBalances,
+    fetchBridgeCanonicalId,
     seedBridgeAddressedDuplicateBeforeCanonical,
     seedIbanBridgeCanonicalDuplicateFixture,
     seedIbanBridgeTargetIncome
@@ -31,17 +32,6 @@ import { expectSecondConsolidationRunStable, runConsolidation } from '../harness
 import { rebuildStoredBalances, testDb, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
 
 const DUPLICATED_LEG_COUNT = 2;
-
-const fetchBridgeCanonicalId = () =>
-    Effect.gen(function* () {
-        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
-    });
-
-const countCanonicalDuplicateCandidates = Effect.fnUntraced(function* () {
-    const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
-
-    return (yield* ibanBridgeTransferRepository.findCanonicalDuplicateCandidates(null)).length;
-});
 
 const seedBridgeAddressedDuplicateAfterCanonical = Effect.fnUntraced(function* () {
     const fixture = yield* seedIbanBridgeCanonicalDuplicateFixture();
@@ -156,6 +146,24 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-duplicate guards', it => {
                 .update(TransactionEntityTable)
                 .set({ externalId: identity === 'missing' ? null : 'another-bank-record' })
                 .where(eq(TransactionEntityTable.id, sourceExpense.id));
+
+            expect(yield* countCanonicalDuplicateCandidates()).toBe(0);
+        })
+    );
+
+    it.effect('skips repeated records whose absorbed original entry amount differs', () =>
+        Effect.gen(function* () {
+            const { canonicalId, originalSourceExpense } = yield* seedBridgeAddressedDuplicateAfterCanonical();
+
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ amount: 1 })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, canonicalId),
+                        eq(TransactionEntryEntityTable.originalTransactionId, originalSourceExpense.id)
+                    )
+                );
 
             expect(yield* countCanonicalDuplicateCandidates()).toBe(0);
         })

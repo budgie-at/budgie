@@ -1,5 +1,13 @@
-import { SyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    SyncModeEnum,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import {
     IBAN_BRIDGE_EUR_AMOUNT,
@@ -7,7 +15,10 @@ import {
     IBAN_BRIDGE_SOURCE_IBAN,
     IBAN_BRIDGE_TARGET_IBAN,
     IBAN_BRIDGE_UAH_AMOUNT,
-    IBAN_BRIDGE_UAH_TO_EUR_RATE
+    IBAN_BRIDGE_UAH_TO_EUR_RATE,
+    parentConsolidationSource,
+    seedIbanBridgeCanonicalTransfer,
+    seedIbanBridgeTopology
 } from './iban-bridge-topology';
 import { testDb, testSeedService } from './test-context';
 
@@ -25,19 +36,52 @@ export const stampIbanBridgeTransactions = Effect.fnUntraced(function* (transact
     );
 });
 
-export const seedIbanBridgeBalanceAdjustment = Effect.fnUntraced(function* (accountId: number, createdAt: number) {
-    const [adjustment] = yield* testDb.$client.unsafe<{ readonly id: number }>(
-        `INSERT INTO transactions (type, title, external_id, external_source, operated_at, exchange_rate, from_account_id, to_account_id, comment, updated_by, created_at, updated_at) VALUES (?, ?, NULL, NULL, ?, ?, NULL, ?, ?, NULL, ?, ?) RETURNING id`,
-        [TransactionTypeEnum.ADJUSTMENT, 'Balance calibration', createdAt - 60, 1, accountId, '', createdAt, createdAt]
-    );
+const linkIbanBridgeCalibrationSync = Effect.fnUntraced(function* (accountId: number, createdAt: number, adjustmentId: number) {
     const sync = yield* testSeedService.sync({
         accountId,
         forwardSyncFromAt: new Date((createdAt - 30) * 1000),
         mode: SyncModeEnum.FORWARD
     });
 
-    yield* testDb.$client.unsafe('UPDATE bank_syncs SET balance_adjustment_transaction_id = ? WHERE id = ?', [adjustment.id, sync.id]);
+    yield* testDb.$client.unsafe('UPDATE bank_syncs SET balance_adjustment_transaction_id = ? WHERE id = ?', [adjustmentId, sync.id]);
 });
+
+export const seedIbanBridgeBalanceAdjustment = Effect.fnUntraced(function* (accountId: number, createdAt: number) {
+    const [adjustment] = yield* testDb.$client.unsafe<{ readonly id: number }>(
+        `INSERT INTO transactions (type, title, external_id, external_source, operated_at, exchange_rate, from_account_id, to_account_id, comment, updated_by, created_at, updated_at) VALUES (?, ?, NULL, NULL, ?, ?, NULL, ?, ?, NULL, ?, ?) RETURNING id`,
+        [TransactionTypeEnum.ADJUSTMENT, 'Balance calibration', createdAt - 60, 1, accountId, '', createdAt, createdAt]
+    );
+
+    yield* linkIbanBridgeCalibrationSync(accountId, createdAt, adjustment.id);
+});
+
+export const seedIbanBridgeCompensatingAdjustment = Effect.fnUntraced(function* (accountId: number, delta: number, createdAt: number) {
+    const isIncome = isPositiveNumber(delta);
+    const [adjustment] = yield* testDb
+        .insert(TransactionEntityTable)
+        .values({
+            type: TransactionTypeEnum.ADJUSTMENT,
+            title: 'Balance calibration',
+            operatedAt: new Date((createdAt - 60) * 1000),
+            exchangeRate: 1,
+            fromAccountId: isIncome ? null : accountId,
+            toAccountId: isIncome ? accountId : null
+        })
+        .returning({ id: TransactionEntityTable.id });
+
+    yield* testDb.insert(TransactionEntryEntityTable).values({
+        accountId,
+        transactionId: adjustment.id,
+        amount: Math.abs(delta),
+        type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
+        exchangeRate: 1
+    });
+    yield* stampIbanBridgeTransactions([adjustment.id], createdAt);
+    yield* linkIbanBridgeCalibrationSync(accountId, createdAt, adjustment.id);
+});
+
+export const touchIbanBridgeAdjustments = (updatedAt: number) =>
+    testDb.$client.unsafe('UPDATE transactions SET updated_at = ? WHERE type = ?', [updatedAt, TransactionTypeEnum.ADJUSTMENT]);
 
 export const seedIbanBridgePrefixArrival = Effect.fnUntraced(function* ({
     bridgeIban,
@@ -123,4 +167,32 @@ export const seedIbanBridgeSupersessionCompleteRoute = Effect.fnUntraced(functio
     });
 
     return { completeExpense, completeIncome, existingTransfer };
+});
+
+export const seedManualSupersessionCandidate = Effect.fnUntraced(function* () {
+    const topology = yield* seedIbanBridgeTopology();
+    const supersededCanonical = yield* seedIbanBridgeCanonicalTransfer(
+        topology.sourceAccount.id,
+        topology.bridgeAccount.id,
+        topology.bridgeAccount.iban
+    );
+    const canonical = yield* seedIbanBridgeCanonicalTransfer(
+        topology.sourceAccount.id,
+        topology.targetAccount.id,
+        topology.bridgeAccount.iban
+    );
+    const bridgeIncome = yield* testSeedService.bankPairIncome(
+        { externalId: 'calibrated-bridge-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+        {
+            accountId: topology.bridgeAccount.id,
+            amount: IBAN_BRIDGE_UAH_AMOUNT,
+            exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
+            mccCategoryId: topology.transferMccId,
+            toIban: IBAN_BRIDGE_SOURCE_IBAN
+        }
+    );
+
+    yield* parentConsolidationSource(bridgeIncome.id, canonical.id);
+
+    return { ...topology, bridgeIncome, canonical, supersededCanonical };
 });

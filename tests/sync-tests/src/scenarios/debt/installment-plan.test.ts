@@ -146,6 +146,34 @@ describe('installment plan', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect.each([
+        { title: 'attaches an early payoff before the final scheduled installment', payoffAt: new Date(2026, 2, 15, 12), isAttached: true },
+        {
+            title: 'attaches an early payoff within tolerance after the final scheduled installment',
+            payoffAt: new Date(2026, 2, 31, 12),
+            isAttached: true
+        },
+        {
+            title: 'does not attach an early payoff after the final scheduled installment window',
+            payoffAt: new Date(2026, 3, 1, 12),
+            isAttached: false
+        }
+    ])('$title', ({ payoffAt, isAttached }) =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-early-window');
+            const first = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 0, 28, 10));
+            const payoff = yield* seedPart(card.id, 'Дострокове погашення Tech Shop', 200, payoffAt);
+            const { accountId } = yield* convertAndSyncPayoffPlan(first.id);
+            const installmentPlanService = yield* InstallmentPlanService;
+
+            yield* installmentPlanService.attachDueParts();
+            yield* installmentPlanService.attachDueParts();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual(isAttached ? [first.id, payoff.id] : [first.id]);
+            expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(isAttached ? 0 : toMicroUnits(200));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('closes a plan when the early payoff is one cent above the remaining amount', () =>
         Effect.gen(function* () {
             const { card, first, second } = yield* seedMonthlyPayoffParts('UA-early-rounding', 'Device Store');

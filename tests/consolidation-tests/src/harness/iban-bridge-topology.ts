@@ -1,9 +1,10 @@
+import { IbanBridgeTransferRepository } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
-import { fetchLedgerBalances, fetchLedgerEntry } from './consolidation-revert-audit';
+import { fetchLedgerBalances, fetchLedgerEntry, fetchSingleCanonicalId } from './consolidation-revert-audit';
 import { runConsolidation } from './run-consolidation';
 import { testDb, testQueryService, testSeedService } from './test-context';
 
@@ -158,3 +159,14 @@ export const expectBridgeLedgerAmounts = (canonicalId: number, sourceAccountId: 
         expect((yield* fetchLedgerEntry(canonicalId, sourceAccountId)).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
         expect((yield* fetchLedgerEntry(canonicalId, targetAccountId)).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
     });
+
+export const fetchBridgeCanonicalId = () =>
+    Effect.gen(function* () {
+        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
+    });
+
+export const countCanonicalDuplicateCandidates = Effect.fnUntraced(function* () {
+    const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
+
+    return (yield* ibanBridgeTransferRepository.findCanonicalDuplicateCandidates(null)).length;
+});

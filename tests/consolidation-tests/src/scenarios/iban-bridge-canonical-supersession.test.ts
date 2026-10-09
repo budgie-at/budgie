@@ -8,24 +8,14 @@ import { isDefined } from '@rnw-community/shared';
 import {
     expectConsolidationParent,
     expectSourcesRestored,
-    fetchLedgerBalances,
     fetchLedgerEntry,
     fetchOwnLedgerEntries
 } from '../harness/consolidation-revert-audit';
-import {
-    seedIbanBridgeBalanceAdjustment,
-    seedIbanBridgePrefixArrival,
-    seedIbanBridgeSupersessionCompleteRoute,
-    stampIbanBridgeTransactions
-} from '../harness/iban-bridge-supersession-fixture';
+import { seedIbanBridgePrefixArrival, seedIbanBridgeSupersessionCompleteRoute } from '../harness/iban-bridge-supersession-fixture';
 import {
     IBAN_BRIDGE_EUR_AMOUNT,
     IBAN_BRIDGE_OPERATED_AT,
-    IBAN_BRIDGE_SOURCE_IBAN,
     IBAN_BRIDGE_UAH_AMOUNT,
-    IBAN_BRIDGE_UAH_TO_EUR_RATE,
-    parentConsolidationSource,
-    seedIbanBridgeCanonicalTransfer,
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
@@ -36,37 +26,6 @@ const COMPETING_TECHNICAL_BRIDGE_IBAN = 'UA-SUPERSESSION-COMPETING-UAH';
 const DISTINCT_SOURCE_AMOUNT_OFFSET = 10_000_000;
 const DISTINCT_SOURCE_AMOUNT = IBAN_BRIDGE_EUR_AMOUNT + DISTINCT_SOURCE_AMOUNT_OFFSET;
 const COMPETING_PREFIX_OFFSET_MS = 30_000;
-const HISTORICAL_CREATED_AT = Math.floor(new Date('2026-05-20T18:39:00Z').getTime() / 1000);
-const CALIBRATION_CREATED_AT = HISTORICAL_CREATED_AT + 300;
-const POST_CALIBRATION_CREATED_AT = CALIBRATION_CREATED_AT + 300;
-
-const seedManualSupersessionCandidate = Effect.fnUntraced(function* () {
-    const topology = yield* seedIbanBridgeTopology();
-    const supersededCanonical = yield* seedIbanBridgeCanonicalTransfer(
-        topology.sourceAccount.id,
-        topology.bridgeAccount.id,
-        topology.bridgeAccount.iban
-    );
-    const canonical = yield* seedIbanBridgeCanonicalTransfer(
-        topology.sourceAccount.id,
-        topology.targetAccount.id,
-        topology.bridgeAccount.iban
-    );
-    const bridgeIncome = yield* testSeedService.bankPairIncome(
-        { externalId: 'calibrated-bridge-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-        {
-            accountId: topology.bridgeAccount.id,
-            amount: IBAN_BRIDGE_UAH_AMOUNT,
-            exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
-            mccCategoryId: topology.transferMccId,
-            toIban: IBAN_BRIDGE_SOURCE_IBAN
-        }
-    );
-
-    yield* parentConsolidationSource(bridgeIncome.id, canonical.id);
-
-    return { ...topology, bridgeIncome, canonical, supersededCanonical };
-});
 
 const seedIncrementalBridgeArrival = Effect.fnUntraced(function* ({
     completeSourceAmount = IBAN_BRIDGE_EUR_AMOUNT,
@@ -214,44 +173,6 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-supersession', it => {
 });
 
 layer(TestLayer)('consolidation/iban-bridge-canonical-supersession calibration', it => {
-    it.effect('keeps a calibrated historical prefix canonical active', () =>
-        Effect.gen(function* () {
-            const { bridgeAccount, bridgeIncome, canonical, sourceAccount, supersededCanonical, targetAccount } =
-                yield* seedManualSupersessionCandidate();
-            const accountIds = [sourceAccount.id, bridgeAccount.id, targetAccount.id];
-
-            yield* stampIbanBridgeTransactions([supersededCanonical.id, canonical.id, bridgeIncome.id], HISTORICAL_CREATED_AT);
-            yield* seedIbanBridgeBalanceAdjustment(sourceAccount.id, CALIBRATION_CREATED_AT);
-            yield* seedIbanBridgeBalanceAdjustment(bridgeAccount.id, CALIBRATION_CREATED_AT);
-            yield* seedIbanBridgeBalanceAdjustment(targetAccount.id, CALIBRATION_CREATED_AT);
-
-            const balancesBeforeConsolidation = yield* fetchLedgerBalances(accountIds);
-            const result = yield* runConsolidation();
-
-            expect(result.consolidated).toBe(0);
-            expect((yield* testQueryService.fetchTransactionById(supersededCanonical.id)).consolidationParentTransactionId).toBeNull();
-            expect(yield* fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
-        })
-    );
-
-    it.effect('allows a post-calibration prefix canonical to supersede an older keeper canonical', () =>
-        Effect.gen(function* () {
-            const { bridgeAccount, bridgeIncome, canonical, sourceAccount, supersededCanonical, targetAccount } =
-                yield* seedManualSupersessionCandidate();
-
-            yield* stampIbanBridgeTransactions([canonical.id, bridgeIncome.id], HISTORICAL_CREATED_AT);
-            yield* stampIbanBridgeTransactions([supersededCanonical.id], POST_CALIBRATION_CREATED_AT);
-            yield* seedIbanBridgeBalanceAdjustment(sourceAccount.id, CALIBRATION_CREATED_AT);
-            yield* seedIbanBridgeBalanceAdjustment(bridgeAccount.id, CALIBRATION_CREATED_AT);
-            yield* seedIbanBridgeBalanceAdjustment(targetAccount.id, CALIBRATION_CREATED_AT);
-
-            const result = yield* runConsolidation();
-
-            expect(result.consolidated).toBe(1);
-            yield* expectConsolidationParent(supersededCanonical.id, canonical.id);
-        })
-    );
-
     it.effect('keeps two same-amount source-to-bridge canonicals live instead of cross-matching one of them', () =>
         Effect.gen(function* () {
             const { liveCanonicals, prefixCanonicals } = yield* seedIncrementalBridgeArrival({ withCompetingPrefix: true });

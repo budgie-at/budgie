@@ -4,6 +4,7 @@ import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/ib
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { buildCalibratedTransferExclusionSql } from '../../utils/build-calibrated-transfer-exclusion-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -138,6 +139,8 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     AND source_expense_entry.exchange_rate > 0
                     AND source_expense_entry.amount > 0
                     ${SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
+                    AND ${buildCalibratedTransferExclusionSql('source_expense_tx', 'source_account.id')}
+                    AND ${buildCalibratedTransferExclusionSql('target_income_tx', 'target_account.id')}
                     AND source_expense_entry.to_iban IS NOT NULL
                     AND source_expense_entry.to_iban != ''
                     AND source_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
@@ -168,6 +171,7 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                                     AND original_entry.deleted_at IS NULL
                                     AND original_entry.account_id = candidate_entry.account_id
                                     AND original_entry.type = candidate_entry.type
+                                    AND original_entry.amount = candidate_entry.amount
                                     AND original_tx.external_id IS NOT NULL
                                     AND original_tx.external_id != ''
                             )

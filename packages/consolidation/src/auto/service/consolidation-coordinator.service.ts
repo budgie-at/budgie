@@ -51,7 +51,6 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 yield* ExistingTransferChainReclaimConsolidationFamilyService,
                 ibanBridgeCanonicalDuplicateFamily,
                 yield* IbanBridgeTransferConsolidationFamilyService,
-                ibanBridgeCanonicalDuplicateFamily,
                 yield* IbanBridgeCanonicalSupersessionConsolidationFamilyService,
                 existingTransferIncomeDuplicateFamily,
                 yield* P2pFiatTransferConsolidationFamilyService,

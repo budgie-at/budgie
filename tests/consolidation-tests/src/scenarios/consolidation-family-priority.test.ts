@@ -63,7 +63,6 @@ layer(TestLayer)('consolidation/family-priority', it => {
                 'EXISTING_TRANSFER_CHAIN_RECLAIM',
                 'IBAN_BRIDGE_CANONICAL_DUPLICATE',
                 'IBAN_BRIDGE_TRANSFER',
-                'IBAN_BRIDGE_CANONICAL_DUPLICATE',
                 'IBAN_BRIDGE_CANONICAL_SUPERSESSION',
                 'EXISTING_TRANSFER_INCOME_DUPLICATE',
                 'P2P_FIAT_TRANSFER',

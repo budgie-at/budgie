@@ -149,20 +149,14 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             const latestPart = parts.at(-1);
             const [firstPart] = parts;
 
-            if (
-                !isDefined(schedule) ||
-                !isDefined(schedule.nextDueAt) ||
-                !isPositiveNumber(schedule.remainingAmount) ||
-                !isDefined(latestPart) ||
-                !isDefined(firstPart)
-            ) {
+            if (!isDefined(schedule) || !isPositiveNumber(schedule.remainingAmount) || !isDefined(latestPart) || !isDefined(firstPart)) {
                 return [];
             }
 
             const candidates = yield* installmentPlanRepository.findCandidates(
                 latestPart.accountId,
                 latestPart.operatedAt,
-                endOfDay(addDays(schedule.nextDueAt, dueDateToleranceDays))
+                endOfDay(addDays(getInstallmentDueDate(firstPart.operatedAt, schedule.installmentCount - 1), dueDateToleranceDays))
             );
 
             return candidates.filter(
@@ -175,21 +169,20 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             );
         });
 
-        const attachUniquePart = Effect.fnUntraced(function* (debtAccountId: number, findMatches: typeof findNextPartMatches) {
+        const attachUniquePart = Effect.fnUntraced(function* (
+            debtAccountId: number,
+            activePlanIds: readonly number[],
+            findMatches: typeof findNextPartMatches
+        ) {
             const [match, ...ambiguousMatches] = yield* findMatches(debtAccountId);
 
             if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {
                 return false;
             }
 
-            const plans = yield* accountRepository.findBySearchQuery('', {
-                debtType: AccountDebtTypeEnum.INSTALLMENT,
-                onlyActive: true
-            });
-
-            for (const plan of plans) {
-                if (plan.id !== debtAccountId) {
-                    const candidates = yield* findMatches(plan.id);
+            for (const planId of activePlanIds) {
+                if (planId !== debtAccountId) {
+                    const candidates = yield* findMatches(planId);
 
                     if (candidates.some(candidate => candidate.transactionId === match.transactionId)) {
                         return false;
@@ -202,13 +195,24 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             return true;
         });
 
-        const attachPlanDueParts = Effect.fnUntraced(function* (debtAccountId: number) {
-            yield* attachUniquePart(debtAccountId, findNextPartMatches).pipe(Effect.repeat({ while: isAttached => isAttached }));
+        const findActivePlanIds = Effect.fnUntraced(function* () {
+            const plans = yield* accountRepository.findBySearchQuery('', {
+                debtType: AccountDebtTypeEnum.INSTALLMENT,
+                onlyActive: true
+            });
+
+            return plans.map(plan => plan.id);
+        });
+
+        const attachPlanDueParts = Effect.fnUntraced(function* (debtAccountId: number, activePlanIds: readonly number[]) {
+            yield* attachUniquePart(debtAccountId, activePlanIds, findNextPartMatches).pipe(
+                Effect.repeat({ while: isAttached => isAttached })
+            );
 
             const [, ...ambiguousMonthlyMatches] = yield* findNextPartMatches(debtAccountId);
 
             if (!isNotEmptyArray(ambiguousMonthlyMatches)) {
-                yield* attachUniquePart(debtAccountId, findEarlyPayoffMatches);
+                yield* attachUniquePart(debtAccountId, activePlanIds, findEarlyPayoffMatches);
             }
         });
 
@@ -283,24 +287,24 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                         transactionId => transactionDebtSettlementService.attach({ debtAccountId: account.id, transactionId }),
                         { discard: true }
                     );
-                    yield* attachPlanDueParts(account.id);
+                    yield* attachPlanDueParts(account.id, yield* findActivePlanIds());
 
                     return { accountId: account.id };
                 },
                 effect => Db.transaction(effect)
             ),
-            attachDueParts: Effect.fn('InstallmentPlanService.attachDueParts')(function* () {
-                const plans = yield* accountRepository.findBySearchQuery('', {
-                    debtType: AccountDebtTypeEnum.INSTALLMENT,
-                    onlyActive: true
-                });
+            attachDueParts: Effect.fn('InstallmentPlanService.attachDueParts')(
+                function* () {
+                    const activePlanIds = yield* findActivePlanIds();
 
-                yield* Effect.forEach(
-                    plans,
-                    plan => Db.transaction(Effect.andThen(cancelRefundedPlan(plan.id), attachPlanDueParts(plan.id))),
-                    { discard: true }
-                );
-            })
+                    yield* Effect.forEach(
+                        activePlanIds,
+                        planId => Db.transaction(Effect.andThen(cancelRefundedPlan(planId), attachPlanDueParts(planId, activePlanIds))),
+                        { discard: true }
+                    );
+                },
+                effect => Db.transaction(effect)
+            )
         };
     })
 }) {
