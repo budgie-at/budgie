@@ -2,7 +2,7 @@ import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -74,12 +74,12 @@ export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
                 {isDefined(amountText) ? <Text className="text-primary text-sm font-semibold">{amountText}</Text> : null}
             </View>
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="flex-row items-center gap-x-sm">
+            <View className="flex-row flex-wrap items-center gap-sm">
                 {cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? (
                     <CategorizeInboxCashWithdrawalChips cluster={cluster} />
                 ) : null}
                 <CategorizeInboxSuggestionChips cluster={cluster} />
-            </ScrollView>
+            </View>
 
             {isExpanded ? (
                 <View className="border-t border-secondary-corner gap-y-lg pt-lg">

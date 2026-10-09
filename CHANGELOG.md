@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.99.1](https://github.com/budgie-at/budgie/compare/v6.99.0...v6.99.1) (2026-10-09)
+
+
+### Bug Fixes
+
+* **app:** keep the ATM cash move label visible ([cc122f0](https://github.com/budgie-at/budgie/commit/cc122f09ee4584858f5280520244dabcf84810ed))
+* **app:** offset top toasts by the safe-area inset ([9cc626d](https://github.com/budgie-at/budgie/commit/9cc626dd582c235ee0df0e705e58e7e61e01dce3))
+
+
+
+
+
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
 

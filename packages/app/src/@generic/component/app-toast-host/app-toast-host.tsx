@@ -3,13 +3,12 @@ import Toast from 'react-native-toast-message';
 
 import { APP_TOAST_CONFIG } from '../../constant/app-toast-config.constant';
 
-const APP_TOAST_MIN_TOP_OFFSET = 40;
-const APP_TOAST_TOP_SAFE_AREA_SPACING = 12;
+const TOAST_TOP_GAP = 8;
 
 export const AppToastHost = () => {
-    const { top } = useSafeAreaInsets();
+    const insets = useSafeAreaInsets();
 
-    const topOffset = Math.max(top + APP_TOAST_TOP_SAFE_AREA_SPACING, APP_TOAST_MIN_TOP_OFFSET);
+    const topOffset = insets.top + TOAST_TOP_GAP;
 
     return <Toast config={APP_TOAST_CONFIG} topOffset={topOffset} />;
 };
