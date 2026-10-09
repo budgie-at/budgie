@@ -7,18 +7,17 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaListener, SafeAreaListenerProps, SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
-import Toast from 'react-native-toast-message';
 import { Uniwind } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
 
 import '../global.css';
+import { AppToastHost } from '../@generic/component/app-toast-host/app-toast-host';
 import { DatabaseRestoreScreen } from '../@generic/component/database-restore-screen/database-restore-screen';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ErrorBoundary } from '../@generic/component/error-boundary/error-boundary';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
-import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
 import { CONVERT_TO_INSTALLMENT_MODAL_OPTIONS } from '../@generic/constant/convert-to-installment-modal-options.constant';
@@ -260,7 +259,7 @@ export const RootLayoutContent = () => {
                                                                 </Stack>
                                                             </VoiceInputProvider>
                                                         </ModalProvider>
-                                                        <Toast config={APP_TOAST_CONFIG} />
+                                                        <AppToastHost />
                                                     </AiProvider>
                                                 </CreateActionProvider>
                                             </AuthGuard>

@@ -1,6 +1,5 @@
 appId: ${APP_ID}
 ---
-
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
@@ -232,40 +231,53 @@ appId: ${APP_ID}
       id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.ConvertToTransferButton'
+          id: 'TransactionActionsMenu.StartDepositButton'
 - tapOn:
-      id: 'TransactionActionsMenu.ConvertToTransferButton'
+      id: 'TransactionActionsMenu.StartDepositButton'
 
 - extendedWaitUntil:
       visible:
-          id: 'ConvertToTransfer.Page'
+          id: 'StartDeposit.FundingSummary'
+      timeout: 5000
+- assertVisible:
+      id: 'StartDeposit.MissingCurrencyHint'
 
 - tapOn:
-      id: 'TransferForm.ToAccount'
+      id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
+
 - extendedWaitUntil:
       visible:
-          id: 'AccountPickerBottomSheet.Input'
-- extendedWaitUntil:
-      visible:
-          id: 'AccountPickerBottomSheet.CreateAction'
-- tapOn:
-      id: 'AccountPickerBottomSheet.CreateAction'
-- extendedWaitUntil:
-      notVisible:
-          id: 'AccountPickerBottomSheet.Input'
+          id: 'AccountDetails.Page'
       timeout: 10000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Row.ToAccount'
+      timeout: 5000
+- tapOn:
+      id: 'TransactionInfo.EditButton'
+- extendedWaitUntil:
+      visible: 'Edit Transfer'
+      timeout: 5000
+- assertVisible:
+      id: 'TransferForm.SelectedFromAccount.E2E Expense Target'
 - assertVisible:
       id: 'TransferForm.SelectedToAccount.Deposit'
-
+- runFlow:
+      file: subflows/transactions/edit-comment.flow.yaml
+      env:
+          COMMENT: 'E2E Deposit Converted Transfer'
 - tapOn:
       id: 'TransactionForm.SubmitButton'
-- runFlow: subflows/transactions/confirm-convert-to-transfer.flow.yaml
-
 - extendedWaitUntil:
       visible:
-          id: 'TransactionInfo.Page'
-      timeout: 3000
-
+          id: 'TransactionInfo.Row.ToAccount'
+      timeout: 5000
+- assertVisible: 'E2E Deposit Converted Transfer.*'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:

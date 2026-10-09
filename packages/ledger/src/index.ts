@@ -2,6 +2,7 @@ export { LedgerWorkload } from './@generic/port/ledger-workload.port';
 
 export { DepositNegativeBalanceError } from './account/error/deposit-negative-balance.error';
 export { DebtTransferNotAllowedError } from './transaction/error/debt-transfer-not-allowed.error';
+export { DepositReceivingAmountMismatchError } from './account/error/deposit-receiving-amount-mismatch.error';
 
 export { AccountArchiveService } from './account/service/account-archive.service';
 export { AccountBalanceIncrementalService } from './account/service/account-balance-incremental.service';
@@ -33,3 +34,4 @@ export { getTransactionFeeEntries } from './transaction/util/get-transaction-fee
 
 export type { ImportedBatchPreparationInterface } from './transaction/interface/imported-batch-preparation.interface';
 export type { InstallmentPlanConvertInputInterface } from './installment/interface/installment-plan-convert-input.interface';
+export type { StartDepositInputInterface } from './transaction/interface/start-deposit-input.interface';

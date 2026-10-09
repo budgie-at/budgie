@@ -1,3 +1,4 @@
+import { TransactionEntryKindEnum } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -5,9 +6,11 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
+import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
 
 import type { BuildRefreshedImportedEntriesInputInterface } from '../interface/build-refreshed-imported-entries-input.interface';
 import type {
@@ -40,19 +43,32 @@ export class RefreshedImportedEntriesService extends Context.Service<RefreshedIm
                 existingEntry: TransactionEntryEntityInterface,
                 matchingInput: TransactionEntryCreateInputInterface,
                 transactionId: number
-            ): TransactionEntryCreateEntityInterface => ({
-                transactionId,
-                accountId: existingEntry.accountId,
-                categoryId: existingEntry.categoryId,
-                categorySource: existingEntry.categorySource,
-                mccCategoryId: existingEntry.mccCategoryId,
-                type: existingEntry.type,
-                kind: existingEntry.kind,
-                amount: existingEntry.amount,
-                externalId: matchingInput.externalId ?? existingEntry.externalId,
-                exchangeRate: matchingInput.exchangeRate ?? existingEntry.exchangeRate,
-                toIban: matchingInput.toIban ?? existingEntry.toIban
-            });
+            ): TransactionEntryCreateEntityInterface => {
+                const operationEntry = transactionResolveImportedOperationMetadata(existingEntry, matchingInput);
+                const hasOperationMetadata =
+                    existingEntry.accountId === matchingInput.accountId &&
+                    existingEntry.amount === convertToMicroUnits(matchingInput.amount) &&
+                    existingEntry.type === matchingInput.type &&
+                    existingEntry.kind === (matchingInput.kind ?? TransactionEntryKindEnum.PRIMARY) &&
+                    isDefined(operationEntry.operationInstrumentId) &&
+                    isDefined(operationEntry.operationAmount);
+
+                return {
+                    transactionId,
+                    accountId: existingEntry.accountId,
+                    categoryId: existingEntry.categoryId,
+                    categorySource: existingEntry.categorySource,
+                    mccCategoryId: existingEntry.mccCategoryId,
+                    type: existingEntry.type,
+                    kind: existingEntry.kind,
+                    amount: existingEntry.amount,
+                    externalId: matchingInput.externalId ?? existingEntry.externalId,
+                    exchangeRate: matchingInput.exchangeRate ?? existingEntry.exchangeRate,
+                    toIban: matchingInput.toIban ?? existingEntry.toIban,
+                    operationInstrumentId: hasOperationMetadata ? operationEntry.operationInstrumentId : null,
+                    operationAmount: hasOperationMetadata ? operationEntry.operationAmount : null
+                };
+            };
 
             const findExternalIdMatchIndex = (
                 existingEntry: TransactionEntryEntityInterface,

@@ -1,5 +1,5 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { Redirect, useLocalSearchParams } from 'expo-router';
+import { Redirect, useIsFocused, useLocalSearchParams } from 'expo-router';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -11,16 +11,19 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 import type { ReactNode } from 'react';
 
 interface Props {
+    readonly transactionType?: TransactionTypeEnum;
     readonly children: (transaction: TransactionWithRelationsEntityInterface) => ReactNode;
 }
 
-export const TransactionInfoRoute = ({ children }: Props) => {
+export const TransactionInfoRoute = ({ children, transactionType }: Props) => {
+    const isFocused = useIsFocused();
     const { id } = useLocalSearchParams<IdParamInterface>();
     const parsedTransactionId = Number(id);
     const transactionId = isPositiveNumber(parsedTransactionId) ? parsedTransactionId : null;
     const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
-    const parentTransactionId = isDefined(transaction) ? transaction.consolidationParentTransactionId : null;
-    const { transaction: parentTransaction, isLoading: isParentLoading } = useGetTransactionByIdQuery(parentTransactionId);
+    const { transaction: parentTransaction, isLoading: isParentLoading } = useGetTransactionByIdQuery(
+        isDefined(transaction) ? transaction.consolidationParentTransactionId : null
+    );
 
     if (isLoading) {
         return null;
@@ -34,7 +37,10 @@ export const TransactionInfoRoute = ({ children }: Props) => {
         return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
     }
 
-    if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
+    if (
+        transaction.type === TransactionTypeEnum.ADJUSTMENT ||
+        (isFocused && isDefined(transactionType) && transaction.type !== transactionType)
+    ) {
         return <Redirect href={getTransactionHref(transaction)} />;
     }
 

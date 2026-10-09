@@ -6,6 +6,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SyncWorkload } from '../port/sync-workload.port';
+import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
 
 import { makeSyncService } from './make-sync-service.util';
 import { mapBankTransactionToCreateInput } from './map-bank-transaction-to-create-input.util';
@@ -27,6 +28,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
     const transactionImportService = yield* TransactionImportService;
     const transactionService = yield* TransactionService;
+    const syncOperationMetadataService = yield* SyncOperationMetadataService;
     const syncService = yield* makeSyncService(definition);
     const resolveMccCategoryLookupKey =
         definition.resolveMccCategoryLookupKey ?? ((transaction: SyncTransactionInterface) => transaction.category ?? '');
@@ -107,11 +109,14 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
                 parsedTransactionCount: 0
             } satisfies FileBankSyncAccountImportResultInterface;
         }
-        const transactionInputs = transactions.map(transaction => {
-            const lookup = context.mccCategoryLookupMap.get(resolveMccCategoryLookupKey(transaction)) ?? null;
+        const transactionInputs = yield* syncOperationMetadataService.applyToInputs(
+            transactions.map(transaction => {
+                const lookup = context.mccCategoryLookupMap.get(resolveMccCategoryLookupKey(transaction)) ?? null;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, lookup, definition.provider);
-        });
+                return mapBankTransactionToCreateInput(transaction, account.id, lookup, definition.provider);
+            }),
+            transactions
+        );
         const prepared = transactionImportService.prepareImportedInputs(transactionInputs, context.existingTransactionIdMap);
 
         const { transactions: upsertedTransactions, refilledTransactions } = yield* transactionImportService.bulkUpsertPreparedImported(

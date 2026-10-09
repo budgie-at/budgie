@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
+import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
 
 import { TransactionDepositSafetyService } from './transaction-deposit-safety.service';
 
@@ -173,6 +174,8 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                 const nextAmount = convertToMicroUnits(entry.amount);
                 const nextBaseValuation = yield* resolveValuation(entry, input, context);
                 const nextMccCategoryId = entry.mccCategoryId ?? existingEntry.mccCategoryId;
+                const { operationInstrumentId: nextOperationInstrumentId, operationAmount: nextOperationAmount } =
+                    transactionResolveImportedOperationMetadata(existingEntry, entry);
 
                 if (
                     existingEntry.amount === nextAmount &&
@@ -181,7 +184,9 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                     existingEntry.baseInstrumentId === nextBaseValuation.baseInstrumentId &&
                     existingEntry.baseExchangeRate === nextBaseValuation.baseExchangeRate &&
                     existingEntry.baseAmount === nextBaseValuation.baseAmount &&
-                    existingEntry.toIban === entry.toIban
+                    existingEntry.toIban === entry.toIban &&
+                    existingEntry.operationInstrumentId === nextOperationInstrumentId &&
+                    existingEntry.operationAmount === nextOperationAmount
                 ) {
                     return;
                 }
@@ -194,7 +199,9 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                         exchangeRate: entry.exchangeRate,
                         ...nextBaseValuation,
                         toIban: entry.toIban,
-                        mccCategoryId: nextMccCategoryId
+                        mccCategoryId: nextMccCategoryId,
+                        operationInstrumentId: nextOperationInstrumentId,
+                        operationAmount: nextOperationAmount
                     },
                     context
                 );

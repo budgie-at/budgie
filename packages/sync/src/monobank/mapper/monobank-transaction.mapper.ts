@@ -3,6 +3,9 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
+import { MONOBANK_ZERO_DECIMAL_CURRENCY_CODES } from '../constant/monobank-zero-decimal-currency-codes.constant';
+
+import { monobankCurrencyCodeMapper } from './monobank-currency-code.mapper';
 
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 import type { StatementItem } from '@liaugust/monobank-sdk';
@@ -19,8 +22,11 @@ export const monobankTransactionMapper = (transaction: StatementItem, accountId:
     mcc: transaction.mcc,
     originalMcc: transaction.originalMcc,
     amount: transaction.amount / MONOBANK_BALANCE_DIVISOR,
-    operationAmount: transaction.operationAmount / MONOBANK_BALANCE_DIVISOR,
+    operationAmount: MONOBANK_ZERO_DECIMAL_CURRENCY_CODES.has(monobankCurrencyCodeMapper(transaction.currencyCode))
+        ? transaction.operationAmount
+        : transaction.operationAmount / MONOBANK_BALANCE_DIVISOR,
     currencyCode: transaction.currencyCode,
+    operationCurrencyCode: transaction.currencyCode,
     commissionRate: transaction.commissionRate / MONOBANK_BALANCE_DIVISOR,
     cashbackAmount: transaction.cashbackAmount / MONOBANK_BALANCE_DIVISOR,
     balance: transaction.balance / MONOBANK_BALANCE_DIVISOR,

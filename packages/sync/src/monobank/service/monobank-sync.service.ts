@@ -28,6 +28,7 @@ import { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.enum';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
+import { SyncOperationMetadataService } from '../../core/service/sync-operation-metadata.service';
 import { TransferConsolidationService } from '../../core/service/transfer-consolidation.service';
 import { makePollingSyncService } from '../../core/util/make-polling-sync-service.util';
 import { mapBankTransactionToCreateInput } from '../../core/util/map-bank-transaction-to-create-input.util';
@@ -55,17 +56,23 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const transactionService = yield* TransactionService;
         const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
         const syncWorkload = yield* SyncWorkload;
+        const syncOperationMetadataService = yield* SyncOperationMetadataService;
         const transferConsolidationService = yield* TransferConsolidationService;
         const provider = ExternalSourceEnum.MONOBANK;
         const providerTitle = 'Monobank';
         let mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
-        const mapBankTransaction = (bankTransaction: SyncTransactionInterface, accountId: number) =>
-            mapBankTransactionToCreateInput(
-                bankTransaction,
-                accountId,
-                mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
-                provider
+        const mapBankTransactions = (bankTransactions: SyncTransactionInterface[], accountId: number) =>
+            syncOperationMetadataService.applyToInputs(
+                bankTransactions.map(bankTransaction =>
+                    mapBankTransactionToCreateInput(
+                        bankTransaction,
+                        accountId,
+                        mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
+                        provider
+                    )
+                ),
+                bankTransactions
             );
 
         const getOwnBalance = (bankAccount: SyncAccountInterface): number =>
@@ -140,9 +147,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 return [];
             }
 
-            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(
-                newTransactions.map(bankTransaction => mapBankTransaction(bankTransaction, accountId))
-            );
+            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(yield* mapBankTransactions(newTransactions, accountId));
             const createdTransactions = yield* transactionService.bulkCreate(prepared.transactionInputs);
             const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
             const postCreateTransactionInputs = prepared.postCreateIndexes
@@ -167,9 +172,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
             const createdTransactions = yield* createNewTransactions(newTransactions, accountId);
             if (isNotEmptyArray(existingTransactions)) {
-                yield* transactionService.bulkUpdateImported(
-                    existingTransactions.map(bankTransaction => mapBankTransaction(bankTransaction, accountId))
-                );
+                yield* transactionService.bulkUpdateImported(yield* mapBankTransactions(existingTransactions, accountId));
                 yield* transactionService.updateAllBalances();
             }
 
@@ -278,7 +281,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             SettingsRepository.layer,
             AccountBalanceIncrementalService.layer,
             RuleEngineService.layer,
-            TransferConsolidationService.layer
+            TransferConsolidationService.layer,
+            SyncOperationMetadataService.layer
         ])
     );
 }
