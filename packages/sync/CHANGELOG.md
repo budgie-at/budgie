@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* clear unresolved imported operation metadata ([3ff5d29](https://github.com/budgie-at/budgie/commit/3ff5d29e963a54724ffd6dabb1006ea9ca403c05))
+* **sync:** persist operation metadata only for providers reporting a currency ([e85b7f2](https://github.com/budgie-at/budgie/commit/e85b7f2cf5d8b151a05f421431efec42b2ea0fe8))
+
+
+### Features
+
+* start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+
+
+
+
+
 ## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
 
 **Note:** Version bump only for package @budgie/sync
