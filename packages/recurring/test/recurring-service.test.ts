@@ -1,6 +1,9 @@
+import { readFileSync } from 'node:fs';
+
 import { resetTestDb } from '@budgie-at/test-kit';
 import {
     AccountTypeEnum,
+    TransactionEntityTable,
     CASH_WITHDRAWAL_TRACKED_CATEGORY_ID,
     PRECISION,
     RecurringSeriesKindEnum,
@@ -8,7 +11,10 @@ import {
     RecurringSeriesUserStateEnum
 } from '@budgie/contracts';
 import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
+import { between } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { RecurringAlertEnum, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
@@ -92,6 +98,81 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService', it => {
+    it.effect('keeps an exact confirmed survivor when a dismissed sibling retires', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach(
+                [5, 4, 3, 2],
+                monthsAgo => Effect.andThen(seed('BILLING', monthsAgo, 5, 5), seed('BILLING', monthsAgo, 20, 15)),
+                { discard: true }
+            );
+            const entries = allEntries(
+                yield* Effect.flatMap(RecurringService, service => service.calendar(2026, 4, new Date(2026, 3, 25)))
+            );
+            const dismissed = entries.find(entry => entry.latestAmount === 5 * PRECISION);
+            const confirmed = entries.find(entry => entry.latestAmount === 15 * PRECISION);
+            expect(dismissed).toBeDefined();
+            expect(confirmed).toBeDefined();
+            if (!isDefined(dismissed) || !isDefined(confirmed)) {
+                return;
+            }
+            yield* Effect.flatMap(RecurringService, service =>
+                Effect.andThen(
+                    service.setUserState(dismissed.seriesId, RecurringSeriesUserStateEnum.DISMISSED),
+                    Effect.andThen(
+                        service.setUserState(confirmed.seriesId, RecurringSeriesUserStateEnum.CONFIRMED),
+                        service.rename(confirmed.seriesId, 'Surviving subscription')
+                    )
+                )
+            );
+            yield* Effect.forEach([1, 0], monthsAgo => seed('BILLING', monthsAgo, 20, 15), { discard: true });
+            const after = yield* Effect.flatMap(RecurringService, service => service.calendar(2026, JULY, new Date(2026, JUNE, 25)));
+            expect(allEntries(after)).toHaveLength(1);
+            expect(allEntries(after)[0]).toMatchObject({
+                seriesId: confirmed.seriesId,
+                title: 'Surviving subscription',
+                userState: RecurringSeriesUserStateEnum.CONFIRMED
+            });
+        })
+    );
+
+    it.effect('keeps the real screenshot fixture active at month boundaries', () =>
+        Effect.gen(function* () {
+            yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID });
+            const fixture = yield* Effect.sync(() =>
+                readFileSync('../../tests/app-tests/fixtures/screenshots/scenes/shared/recurring.sql', 'utf8')
+            );
+            for (const date of [
+                '2026-10-31T12:00:00Z',
+                '2026-02-28T12:00:00Z',
+                '2028-02-29T12:00:00Z',
+                '2026-04-30T12:00:00Z',
+                '2026-10-01T12:00:00Z',
+                '2026-10-14T12:00:00Z',
+                '2026-10-15T06:00:00Z',
+                '2026-10-15T13:00:00Z'
+            ]) {
+                yield* Effect.forEach(
+                    fixture
+                        .replaceAll("'now'", "'" + date + "'")
+                        .split(';')
+                        .filter(statement => statement.trim().length > 0),
+                    statement => testDb.$client.unsafe(statement),
+                    { discard: true }
+                );
+                const now = new Date(date);
+                const transactions = yield* testDb
+                    .select({ operatedAt: TransactionEntityTable.operatedAt })
+                    .from(TransactionEntityTable)
+                    .where(between(TransactionEntityTable.id, 2500, 2599));
+                expect(transactions.every(transaction => transaction.operatedAt.getTime() <= now.getTime())).toBe(true);
+                const data = yield* Effect.flatMap(RecurringService, service => service.calendar(now.getFullYear(), now.getMonth(), now));
+                expect(data.committedMonthlyExpense).toBeGreaterThan(0);
+                expect(allEntries(data).length).toBeGreaterThan(0);
+            }
+        })
+    );
+
     it.effect('forecasts an active monthly subscription into the next month', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
@@ -326,7 +407,7 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
-    it.effect('includes cash expenses and excludes inactive accounts from the real charge query', () =>
+    it.effect('excludes cash expenses and inactive accounts from the real charge query', () =>
         Effect.gen(function* () {
             const inactive = yield* seedCharges({ isActive: false });
             const cash = yield* seedCharges({ type: AccountTypeEnum.CASH });
@@ -335,9 +416,9 @@ layer(TestLayer)('recurringService', it => {
             yield* seedMonthly(cash, 'CASH', 20, 50);
             yield* seedMonthly(active, 'ACTIVE', 20, 60);
             const data = yield* calendar(JULY);
-            expect(allEntries(data).map(entry => entry.title)).toEqual(expect.arrayContaining(['ACTIVE', 'CASH']));
-            expect(allEntries(data)).toHaveLength(2);
-            expect(data.committedMonthlyExpense).toBe(110);
+            expect(allEntries(data).map(entry => entry.title)).toEqual(['ACTIVE']);
+            expect(allEntries(data)).toHaveLength(1);
+            expect(data.committedMonthlyExpense).toBe(60);
         })
     );
 

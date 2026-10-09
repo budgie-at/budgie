@@ -271,7 +271,9 @@ export const detectRecurringSeries = (charges: readonly RecurringChargeInterface
     for (const charge of charges) {
         const key = identity(charge);
         if (charge.kind === RecurringSeriesKindEnum.EXPENSE && isNotEmptyString(key)) {
-            groups.set(key, [...(groups.get(key) ?? []), charge]);
+            const group = groups.get(key) ?? [];
+            group.push(charge);
+            groups.set(key, group);
         }
     }
 

@@ -123,3 +123,88 @@ it.effect('keeps dense irregular fixed-price charges and unequal same-day charge
         expect(detectRecurringSeries([5, 36, 64, 95].flatMap(day => [charge(day), charge(day, 'NETFLIX', 12.5)]))).toEqual([]);
     })
 );
+
+it.effect('retains the monthly day31 anchor after February and counts the pending payment', () =>
+    Effect.sync(() => {
+        const data = calendarFromCharges(
+            [
+                [2024, 9, 31],
+                [2024, 10, 30],
+                [2024, 11, 31],
+                [2025, 0, 31],
+                [2025, 1, 28]
+            ].map(([year, month, day]) => ({ ...charge(day), operatedAt: new Date(year, month, day) })),
+            new Date(2025, 2, 29)
+        );
+        expect([...data.forecastedEntriesByDay.keys()]).toEqual([31]);
+        expect(data.forecastedTotalAmount).toBe(12);
+    })
+);
+
+it.effect('preserves a genuine monthly day28 anchor', () =>
+    Effect.sync(() => {
+        const data = calendarFromCharges(
+            [0, 1, 2].map(month => ({ ...charge(28), operatedAt: new Date(2025, month, month === 0 ? 31 : 28) })),
+            new Date(2025, 3, 1)
+        );
+        expect([...data.forecastedEntriesByDay.keys()]).toEqual([28]);
+    })
+);
+
+it.effect('preserves an annual leap-day anchor', () =>
+    Effect.sync(() => {
+        const series = detectRecurringSeries(
+            [2023, 2024, 2025].map(year => ({ ...charge(28), operatedAt: new Date(year, 1, year === 2024 ? 29 : 28) }))
+        );
+        const data = projectRecurringMonth(
+            series.map(item => ({ ...item, seriesId: 1, userState: RecurringSeriesUserStateEnum.CONFIRMED })),
+            2028,
+            1,
+            new Date(2025, 1, 28)
+        );
+        expect([...data.forecastedEntriesByDay.keys()]).toEqual([29]);
+    })
+);
+
+it.effect('projects weekly and biweekly dates across Vienna daylight saving time', () =>
+    Effect.sync(() => {
+        for (const [dates, expected] of [
+            [
+                [
+                    [2025, 8, 21],
+                    [2025, 9, 5],
+                    [2025, 9, 19]
+                ],
+                [2, 16, 30]
+            ],
+            [
+                [
+                    [2025, 9, 5],
+                    [2025, 9, 12],
+                    [2025, 9, 19]
+                ],
+                [2, 9, 16, 23, 30]
+            ]
+        ] as const) {
+            const series = detectRecurringSeries(
+                dates.map(([year, month, day]) => ({ ...charge(day), operatedAt: new Date(year, month, day) }))
+            );
+            const data = projectRecurringMonth(
+                series.map(item => ({ ...item, seriesId: 1, userState: RecurringSeriesUserStateEnum.CONFIRMED })),
+                2025,
+                10,
+                new Date(2025, 9, 19)
+            );
+            expect([...data.forecastedEntriesByDay.keys()]).toEqual(expected);
+        }
+    })
+);
+
+it.effect('detects 50000 same-identity observations within the linear grouping budget', () =>
+    Effect.sync(() => {
+        const charges = Array.from({ length: 50000 }, (_, index) => charge(index + 1));
+        const start = performance.now();
+        expect(detectRecurringSeries(charges)).toEqual([]);
+        expect(performance.now() - start).toBeLessThan(4000);
+    })
+);

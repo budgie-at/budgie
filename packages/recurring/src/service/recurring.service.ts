@@ -130,8 +130,8 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                     (matchingFamilyRows.length === 1 ? matchingFamilyRows[0] : null) ??
                     (familyCount === 1 && familyRows.length === 1 && !claimed.has(familyRows[0].id) ? familyRows[0] : null);
                 const row =
-                    dismissedRow ??
                     exactRow ??
+                    dismissedRow ??
                     familyRow ??
                     legacyRows.find(
                         item =>
