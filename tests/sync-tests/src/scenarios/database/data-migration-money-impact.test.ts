@@ -30,7 +30,8 @@ const dataMigrations = readdirSync(MIGRATIONS_FOLDER, { withFileTypes: true })
 
 describe.runIf(isNotEmptyArray(dataMigrations))('database/data-migration-money-impact', () => {
     it.effect.each(dataMigrations)('%s leaves every ledger balance unchanged after consolidation', unchangedLedgerScenario);
-    it.effect(MONEY_MOVING_DATA_MIGRATION_REASONS[DUPLICATE_TRANSFER_REPAIR_MIGRATION], repairDuplicateTransferScenario);
+    it.effect(MONEY_MOVING_DATA_MIGRATION_REASONS[DUPLICATE_TRANSFER_REPAIR_MIGRATION], () => repairDuplicateTransferScenario());
+    it.effect.each([30, 60])('repairs a %s-second bridge/pair gap before upgrade consolidation', repairDuplicateTransferScenario);
     it.effect('skips ambiguous equal-amount duplicate canonical groups', ambiguousDuplicateTransferScenario);
     it.effect('skips fee-bearing competing duplicate canonical groups', feeBearingCompetingCanonicalScenario);
     it.effect('skips groups with an edited competing canonical', editedCompetingCanonicalScenario);

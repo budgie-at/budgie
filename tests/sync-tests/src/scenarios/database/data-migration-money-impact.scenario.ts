@@ -1,6 +1,13 @@
-import { AccountEntityInterface, PRECISION, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import {
+    AccountBalanceRepository,
+    AccountEntityInterface,
+    PRECISION,
+    TransactionEntityTable,
+    TransactionEntryEntityTable
+} from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { expect } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { applyMigration, seed, seedBankPair, testDb, TestLayer } from '../../harness';
@@ -68,13 +75,39 @@ const applyMigrationAndExpectPreparedDuplicatePair = (input: {
         pairCanonicalId: input.pairCanonicalId
     });
 
-export const repairDuplicateTransferScenario = () =>
+export const repairDuplicateTransferScenario = (timeGapSeconds: number = 0) =>
     Effect.gen(function* () {
         const { sourceAccount, targetAccount, duplicate, hiddenTag } = yield* prepareDuplicateTransferRepairFixture();
 
+        const accountBalanceRepository = yield* AccountBalanceRepository;
+        const transferConsolidationService = yield* TransferConsolidationService;
+
+        yield* testDb
+            .update(TransactionEntityTable)
+            .set({ operatedAt: new Date(DUPLICATE_OPERATED_AT.getTime() + timeGapSeconds * 1000) })
+            .where(
+                inArray(TransactionEntityTable.id, [
+                    duplicate.pair.canonical.id,
+                    duplicate.pair.originals.expense.id,
+                    duplicate.pair.originals.income.id
+                ])
+            );
         yield* applyMigration(DUPLICATE_TRANSFER_REPAIR_MIGRATION);
         yield* applyMigration(DUPLICATE_TRANSFER_REPAIR_MIGRATION);
+        expect(yield* transferConsolidationService.consolidate(null)).toEqual({ found: 0, consolidated: 0 });
+        expect(yield* accountBalanceRepository.getLedgerBalances([sourceAccount.id, targetAccount.id])).toEqual(
+            new Map([
+                [sourceAccount.id, -SOURCE_AMOUNT],
+                [targetAccount.id, TARGET_AMOUNT]
+            ])
+        );
         yield* expectComputedBalances({
+            sourceAccountId: sourceAccount.id,
+            targetAccountId: targetAccount.id,
+            sourceBalance: -SOURCE_AMOUNT,
+            targetBalance: TARGET_AMOUNT
+        });
+        yield* expectStoredBalances({
             sourceAccountId: sourceAccount.id,
             targetAccountId: targetAccount.id,
             sourceBalance: -SOURCE_AMOUNT,

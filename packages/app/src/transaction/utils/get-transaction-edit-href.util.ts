@@ -9,7 +9,7 @@ import {
 } from '@budgie/contracts';
 import { type Href } from 'expo-router';
 
-export const getTransactionEditHref = (transaction: TransactionWithRelationsEntityInterface): Href => {
+export const getTransactionEditHref = (transaction: TransactionWithRelationsEntityInterface): Href | null => {
     const params = { id: String(transaction.id) };
 
     if (isTransferTransaction(transaction) || transaction.type === TransactionTypeEnum.DEBT) {
@@ -28,5 +28,5 @@ export const getTransactionEditHref = (transaction: TransactionWithRelationsEnti
         return { pathname: '/transactions/[id]/expense/edit', params };
     }
 
-    return '/';
+    return null;
 };

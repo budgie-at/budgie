@@ -249,7 +249,7 @@ INNER JOIN duplicate_transfer_candidate_transfers pair ON pair.source_account_id
     AND pair.source_amount = signature.source_amount
     AND pair.target_amount = signature.target_amount
     AND pair.consolidation_type = 'TRANSFER_PAIR'
-    AND ABS(pair.operated_at - bridge.operated_at) <= 5
+    AND ABS(pair.operated_at - bridge.operated_at) <= 60
     AND EXISTS (
         SELECT 1
         FROM transaction_entries pair_source_original_entry
