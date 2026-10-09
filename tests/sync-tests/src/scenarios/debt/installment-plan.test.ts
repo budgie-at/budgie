@@ -125,6 +125,86 @@ describe('installment plan', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('attaches an early payoff after the latest monthly installment', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-early-payoff');
+            const first = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 1, 28, 23, 9));
+            const second = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 2, 28, 9, 13));
+            const payoff = yield* seedPart(card.id, 'Дострокове погашення Tech Shop', 100, new Date(2026, 2, 30, 17, 54));
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, payoff.id]);
+            expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('closes a plan when the early payoff is one cent above the remaining amount', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-early-rounding');
+            const first = yield* seedPart(card.id, 'Платіж Device Store', 100, new Date(2026, 1, 28, 23, 9));
+            const second = yield* seedPart(card.id, 'Платіж Device Store', 100, new Date(2026, 2, 28, 9, 13));
+            const payoff = yield* seedPart(card.id, 'Дострокове погашення Device Store', 100.01, new Date(2026, 2, 30, 17, 54));
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            yield* runPostSync();
+
+            const progress = yield* fetchDebtProgress(accountId);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, payoff.id]);
+            expect(progress.outstandingAmount).toBe(0);
+            expect(progress.overpaidAmount).toBe(toMicroUnits(0.01));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not attach an unrelated early payoff with the same remaining amount', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-early-unrelated');
+            const first = yield* seedPart(card.id, 'Платіж Camera Store', 100, new Date(2026, 1, 28, 23, 9));
+            const second = yield* seedPart(card.id, 'Платіж Camera Store', 100, new Date(2026, 2, 28, 9, 13));
+            yield* seedPart(card.id, 'Дострокове погашення Other Store', 100, new Date(2026, 2, 30, 17, 54));
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+            expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(toMicroUnits(100));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not attach an ambiguous early payoff', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-early-ambiguous');
+            const first = yield* seedPart(card.id, 'Платіж Phone Store', 100, new Date(2026, 1, 28, 23, 9));
+            const second = yield* seedPart(card.id, 'Платіж Phone Store', 100, new Date(2026, 2, 28, 9, 13));
+            yield* seedPart(card.id, 'Дострокове погашення Phone Store', 100, new Date(2026, 2, 30, 17, 54));
+            yield* seedPart(card.id, 'Дострокове погашення Phone Store', 100, new Date(2026, 2, 30, 17, 55));
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id]);
+            expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(toMicroUnits(100));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not attach an early payoff when the monthly part is ambiguous', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-monthly-ambiguous-payoff');
+            const first = yield* seedPart(card.id, 'Платіж Audio Store', 100, new Date(2026, 1, 28, 23, 9));
+            yield* seedPart(card.id, 'Щомісячний платіж Audio Store', 100, new Date(2026, 2, 28, 9, 13));
+            yield* seedPart(card.id, 'Щомісячний платіж Audio Store', 100, new Date(2026, 2, 28, 9, 14));
+            yield* seedPart(card.id, 'Дострокове погашення Audio Store', 200, new Date(2026, 2, 30, 17, 54));
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+            expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(toMicroUnits(200));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('cancels the COMFY plan when its first part is refunded', () =>
         Effect.gen(function* () {
             const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-comfy');

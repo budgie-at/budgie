@@ -68,6 +68,7 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                             transactionId: TransactionEntityTable.id,
                             operatedAt: TransactionEntityTable.operatedAt,
                             title: TransactionEntityTable.title,
+                            externalSource: TransactionEntityTable.externalSource,
                             amount: TransactionEntryEntityTable.amount
                         })
                         .from(TransactionEntityTable)
