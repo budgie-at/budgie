@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resetTestDb } from '@budgie-at/test-kit';
 import {
     AccountTypeEnum,
+    LanguageEnum,
     TransactionEntityTable,
     CASH_WITHDRAWAL_TRACKED_CATEGORY_ID,
     PRECISION,
@@ -407,18 +408,45 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
-    it.effect('excludes cash expenses and inactive accounts from the real charge query', () =>
+    it.effect('includes monthly cash-account payments and excludes inactive accounts', () =>
         Effect.gen(function* () {
             const inactive = yield* seedCharges({ isActive: false });
             const cash = yield* seedCharges({ type: AccountTypeEnum.CASH });
             const active = yield* seedCharges();
             yield* seedMonthly(inactive, 'INACTIVE', 20, 40);
-            yield* seedMonthly(cash, 'CASH', 20, 50);
+            yield* seedMonthly(cash, 'CASH MONTHLY PAYMENT', 20, 50);
             yield* seedMonthly(active, 'ACTIVE', 20, 60);
             const data = yield* calendar(JULY);
-            expect(allEntries(data).map(entry => entry.title)).toEqual(['ACTIVE']);
-            expect(allEntries(data)).toHaveLength(1);
-            expect(data.committedMonthlyExpense).toBe(60);
+            expect(
+                allEntries(data)
+                    .map(entry => entry.title)
+                    .sort()
+            ).toEqual(['ACTIVE', 'CASH MONTHLY PAYMENT']);
+            expect(forecastedAmounts(data, 20)).toEqual([50 * PRECISION, 60 * PRECISION]);
+            expect(data.committedMonthlyExpense).toBe(110);
+        })
+    );
+
+    it.effect('rejects irregular cash-account shopping through the generic recurring rule', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges({ type: AccountTypeEnum.CASH });
+            yield* Effect.forEach(
+                [
+                    [4, 2],
+                    [4, 7],
+                    [3, 28],
+                    [2, 1]
+                ],
+                ([monthsAgo, day]) => seed('CASH SHOPPING', monthsAgo, day, 23.4),
+                { discard: true }
+            );
+            const charges = yield* Effect.flatMap(RecurringRepository, repository =>
+                repository.findCharges(DEFAULT_INSTRUMENT_ID, LanguageEnum.EN, new Date(2025, 0, 1))
+            );
+            expect(charges).toHaveLength(4);
+            const months = yield* Effect.forEach([2, 3, 4, JUNE, JULY], calendar);
+            expect(months.flatMap(allEntries)).toEqual([]);
+            expect(months.map(data => data.committedMonthlyExpense)).toEqual([0, 0, 0, 0, 0]);
         })
     );
 
