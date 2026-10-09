@@ -5,6 +5,7 @@ import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
@@ -16,7 +17,6 @@ export const DAY_MS = 86_400_000;
 export const DAYS_PER_MONTH = 30.44;
 const RECENT_INTERVAL_COUNT = 4;
 const RECENT_AMOUNT_COUNT = 3;
-const AMOUNT_RATIO = 1.1;
 const PRICE_CHANGE_RATIO = 0.05;
 const ACTIVE_PERIOD_RATIO = 1.5;
 const CADENCES: readonly RecurringCadenceInterface[] = [
@@ -83,12 +83,13 @@ const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeries
 };
 
 const isStableAmount = (events: readonly RecurringSeriesEventInterface[]): boolean =>
-    Math.max(...events.map(event => event.nativeAmount)) <= Math.min(...events.map(event => event.nativeAmount)) * AMOUNT_RATIO;
+    Math.max(...events.map(event => event.nativeAmount)) <= Math.min(...events.map(event => event.nativeAmount)) * RECURRING_AMOUNT_RATIO;
 
 const isAlignedCadence = (
     events: readonly RecurringSeriesEventInterface[],
     cadence: RecurringCadenceInterface,
-    variable: boolean
+    variable: boolean,
+    observationCount: number
 ): boolean => {
     const gapKinds = events.slice(1).map((event, index) => {
         const previous = new Date(events[index].timestamp);
@@ -108,7 +109,7 @@ const isAlignedCadence = (
         gapKinds.includes(2) ||
         missedCycles.length > 1 ||
         (variable && isNotEmptyArray(missedCycles)) ||
-        (gapKinds.length - missedCycles.length) / gapKinds.length < 0.75
+        (gapKinds.length - missedCycles.length) / (observationCount - 1) < 0.75
     ) {
         return false;
     }
@@ -137,6 +138,22 @@ const isAlignedCadence = (
     );
 };
 
+const billingEvents = (
+    events: readonly RecurringSeriesEventInterface[],
+    cadence: RecurringCadenceInterface
+): RecurringSeriesEventInterface[] =>
+    events.reduce<RecurringSeriesEventInterface[]>((cycles, event) => {
+        const previous = cycles[cycles.length - 1];
+        if (
+            !isDefined(previous) ||
+            differenceInCalendarDays(new Date(event.timestamp), new Date(previous.timestamp)) > Math.floor(cadence.periodDays / 10)
+        ) {
+            cycles.push(event);
+        }
+
+        return cycles;
+    }, []);
+
 const findCadence = (events: readonly RecurringSeriesEventInterface[], variable: boolean): RecurringCadenceInterface | undefined =>
     CADENCES.find(cadence => {
         const recent = events.slice(variable ? -4 : -RECENT_INTERVAL_COUNT - 1);
@@ -146,26 +163,29 @@ const findCadence = (events: readonly RecurringSeriesEventInterface[], variable:
                 differenceInCalendarDays(new Date(event.timestamp), new Date(recent[index - 1].timestamp)) >
                     cadence.periodDays * 2 + cadence.toleranceDays
         );
-        const current = recent.slice(Math.max(0, restartIndex));
+        const observations = recent.slice(Math.max(0, restartIndex));
+        const current = variable ? observations : billingEvents(observations, cadence);
         const minimumEvents = variable ? 4 : 3;
 
         return (
-            current.length >= (cadence.periodMonths === 12 && !variable ? 2 : minimumEvents) && isAlignedCadence(current, cadence, variable)
+            current.length >= (cadence.periodMonths === 12 && !variable ? 2 : minimumEvents) &&
+            isAlignedCadence(current, cadence, variable, observations.length)
         );
     });
 
 const buildSeries = (charges: readonly RecurringChargeInterface[], variable = false): RecurringSeriesInterface | null => {
-    const events = toEvents(charges);
-    const cadence = findCadence(events, variable);
-    const recent = events.slice(-RECENT_AMOUNT_COUNT);
+    const observations = toEvents(charges);
     if (
-        !isDefined(cadence) ||
-        (!variable && !isStableAmount(recent)) ||
-        new Set(events.slice(-RECENT_INTERVAL_COUNT - 1).map(event => event.timestamp)).size !==
-            events.slice(-RECENT_INTERVAL_COUNT - 1).length
+        new Set(observations.slice(-RECENT_INTERVAL_COUNT - 1).map(event => event.timestamp)).size !==
+        observations.slice(-RECENT_INTERVAL_COUNT - 1).length
     ) {
         return null;
     }
+    const cadence = findCadence(observations, variable);
+    if (!isDefined(cadence)) {
+        return null;
+    }
+    const events = variable ? observations : billingEvents(observations, cadence);
     const latest = charges.reduce((current, charge) => (charge.operatedAt.getTime() > current.operatedAt.getTime() ? charge : current));
     const priceChangeIndex = variable
         ? -1
@@ -176,8 +196,11 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
                   isStableAmount(events.slice(index)) &&
                   isStableAmount(events.slice(Math.max(0, index - RECENT_AMOUNT_COUNT), index))
           );
+    const latestEvent = events[events.length - 1];
     const nativeAmount = Math.round(
-        median((priceChangeIndex > 0 ? events.slice(priceChangeIndex) : recent).map(event => event.nativeAmount))
+        median(
+            (priceChangeIndex > 0 ? events.slice(priceChangeIndex) : events.slice(-RECENT_AMOUNT_COUNT)).map(event => event.nativeAmount)
+        )
     );
 
     return {
@@ -193,19 +216,18 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
         accountId: latest.accountId,
         periodMonths: cadence.periodMonths,
         periodDays: cadence.periodDays,
-        anchorTimestamp: events[events.length - 1].timestamp,
-        predictedAmount: Math.round((nativeAmount * latest.defaultAmount) / latest.nativeAmount),
+        anchorTimestamp: latestEvent.timestamp,
+        predictedAmount: Math.round((nativeAmount * latestEvent.amount) / latestEvent.nativeAmount),
         priceChangedAt: priceChangeIndex > 0 ? events[priceChangeIndex].timestamp : null,
         events
     };
 };
 
 const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
-    const sorted = [...charges].sort((first, second) => first.nativeAmount - second.nativeAmount);
     const clusters: RecurringChargeInterface[][] = [];
-    for (const charge of sorted) {
+    for (const charge of [...charges].sort((first, second) => first.nativeAmount - second.nativeAmount)) {
         const cluster = clusters[clusters.length - 1];
-        if (isDefined(cluster) && charge.nativeAmount <= cluster[0].nativeAmount * AMOUNT_RATIO) {
+        if (isDefined(cluster) && charge.nativeAmount <= cluster[0].nativeAmount * RECURRING_AMOUNT_RATIO) {
             cluster.push(charge);
         } else {
             clusters.push([charge]);
@@ -238,12 +260,10 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
 
             return isDefined(previous) ? { ...series, priceChangedAt: series.events[0].timestamp } : series;
         });
-    if (isNotEmptyArray(currentFixed)) {
-        return currentFixed;
-    }
-    const variable = buildSeries(charges, true);
 
-    return isDefined(variable) && !isStableAmount(toEvents(charges)) ? [variable] : [];
+    return isNotEmptyArray(currentFixed) || isStableAmount(toEvents(charges))
+        ? currentFixed
+        : [buildSeries(charges, true)].filter(isDefined);
 };
 
 export const detectRecurringSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {

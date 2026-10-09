@@ -55,7 +55,6 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                             nativeAmount: TransactionEntryEntityTable.amount,
                             instrumentId: AccountEntityTable.instrumentId,
                             counterpartyIban: TransactionEntryEntityTable.toIban,
-                            mccCategoryId: TransactionEntryEntityTable.mccCategoryId,
                             accountId: AccountEntityTable.id,
                             categoryId: TransactionEntryEntityTable.categoryId,
                             categoryTitle: sql<

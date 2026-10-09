@@ -5,7 +5,6 @@ export interface RecurringChargeInterface {
     readonly nativeAmount: number;
     readonly instrumentId: number;
     readonly counterpartyIban: string | null;
-    readonly mccCategoryId: number | null;
     readonly transactionId: number;
     readonly operatedAt: Date;
     readonly title: string;

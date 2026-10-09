@@ -386,6 +386,40 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
+    it.effect('keeps a dismissed lower-price stream dismissed beside another price band', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedConcurrentSubscriptions('APPLE');
+            const [entry] = allEntries(yield* calendar(JULY)).filter(item => item.dayOfMonth === 5);
+            yield* Effect.flatMap(RecurringService, service =>
+                service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.DISMISSED)
+            );
+            yield* seed('APPLE', 0, 5, 4.9);
+            expect(allEntries(yield* calendar(JULY)).map(item => item.dayOfMonth)).toEqual([20]);
+        })
+    );
+
+    it.effect('keeps confirmation and rename when a sibling price-band minimum decreases', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedConcurrentSubscriptions('APPLE');
+            const [entry] = allEntries(yield* calendar(JULY)).filter(item => item.dayOfMonth === 20);
+            yield* Effect.flatMap(RecurringService, service =>
+                Effect.andThen(
+                    service.rename(entry.seriesId, 'Cloud storage'),
+                    service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.CONFIRMED)
+                )
+            );
+            yield* seed('APPLE', 0, 5, 4.9);
+            yield* seed('APPLE', 0, 20, 14.9);
+            const entries = allEntries(yield* calendar(JULY));
+            expect(entries).toHaveLength(2);
+            expect(entries.find(item => item.dayOfMonth === 20)).toMatchObject({
+                seriesId: entry.seriesId,
+                title: 'Cloud storage',
+                userState: RecurringSeriesUserStateEnum.CONFIRMED
+            });
+        })
+    );
+
     it.effect('reuses the spending predicate to exclude cash-tracked entries', () =>
         Effect.gen(function* () {
             const { id: accountId } = yield* testSeedService.account();

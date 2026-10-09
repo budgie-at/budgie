@@ -11,7 +11,6 @@ const charge = (day: number, amount: number, title = 'APPLE', accountId = 1): Re
     nativeAmount: amount * PRECISION,
     instrumentId: 1,
     counterpartyIban: null,
-    mccCategoryId: null,
     transactionId: day * 100 + amount,
     operatedAt: new Date(2026, 0, day, 12),
     title,
@@ -169,8 +168,7 @@ it.effect('uses the same IBAN despite changing categories', () =>
         const charges = [5, 36, 64, 95].map((day, index) => ({
             ...charge(day, 25, 'UTILITY'),
             counterpartyIban: 'AT12 3456 7890',
-            categoryId: index % 2 === 0 ? 12 : 13,
-            mccCategoryId: index % 2 === 0 ? 15 : null
+            categoryId: index % 2 === 0 ? 12 : 13
         }));
         expect(detectRecurringSeries(charges)).toHaveLength(1);
     })

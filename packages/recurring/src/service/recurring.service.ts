@@ -3,8 +3,9 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { RecurringRepository } from '../repository/recurring.repository';
 import { projectRecurringMonth } from '../series/recurring-projection';
 import { detectRecurringSeries, isSeriesActive } from '../series/recurring-series';
@@ -73,6 +74,19 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 : segments.slice(0, 3).join('|');
         };
 
+        const matchesFixedPrice = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean => {
+            const currentPrice = Number(series.merchantKey.split('|').at(-1));
+            const storedPrice = Number(row.merchantKey.split('|').at(-1));
+
+            return (
+                series.merchantKey.split('|').length === 4 &&
+                row.merchantKey.split('|').length === 4 &&
+                isPositiveNumber(currentPrice) &&
+                isPositiveNumber(storedPrice) &&
+                Math.max(currentPrice, storedPrice) <= Math.min(currentPrice, storedPrice) * RECURRING_AMOUNT_RATIO
+            );
+        };
+
         const track = Effect.fn('RecurringService.track')(function* (detected: readonly RecurringSeriesInterface[], now: Date) {
             const rows = yield* recurringRepository.findSeries();
             const claimed = new Set<number>();
@@ -102,7 +116,19 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                             item.merchantKey === canonicalFamily(series.merchantKey) ||
                             familyCount === 1)
                 );
-                const familyRow = familyCount === 1 && familyRows.length === 1 && !claimed.has(familyRows[0].id) ? familyRows[0] : null;
+                const matchingFamilyRows = familyRows.filter(
+                    item =>
+                        !claimed.has(item.id) &&
+                        matchesFixedPrice(series, item) &&
+                        detected.filter(
+                            candidate =>
+                                canonicalFamily(candidate.merchantKey) === canonicalFamily(item.merchantKey) &&
+                                matchesFixedPrice(candidate, item)
+                        ).length === 1
+                );
+                const familyRow =
+                    (matchingFamilyRows.length === 1 ? matchingFamilyRows[0] : null) ??
+                    (familyCount === 1 && familyRows.length === 1 && !claimed.has(familyRows[0].id) ? familyRows[0] : null);
                 const row =
                     dismissedRow ??
                     exactRow ??

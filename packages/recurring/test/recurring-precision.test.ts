@@ -17,7 +17,6 @@ const charge = (day: number, title = 'NETFLIX', nativeAmount = 12, kind = Recurr
     nativeAmount: nativeAmount * PRECISION,
     instrumentId: 1,
     counterpartyIban: null,
-    mccCategoryId: null,
     kind,
     accountId: 1,
     categoryId: null,
@@ -96,5 +95,31 @@ it.effect('drops stale streams from future forecasts and monthly commitment', ()
         );
         expect(data.forecastedEntriesByDay.size).toBe(0);
         expect(data.committedMonthlyExpense).toBe(0);
+    })
+);
+
+it.effect('counts a nearby fixed-price charge once at the earliest billing date', () =>
+    Effect.sync(() => {
+        const charges = [...[5, 36, 64, 95].map(day => charge(day)), { ...charge(96), defaultAmount: 20 * PRECISION }];
+        const [series] = detectRecurringSeries(charges);
+        expect(series?.events.map(event => event.transactionId)).toEqual([5, 36, 64, 95]);
+        expect(series?.anchorTimestamp).toBe(new Date(2026, 3, 5).getTime());
+        const actual = calendarFromCharges(charges, new Date(2026, 3, 10));
+        expect([...actual.entriesByDay.values()].flat()).toHaveLength(1);
+        expect(actual.entriesByDay.get(5)?.[0].latestAmount).toBe(12 * PRECISION);
+        expect(actual.totalAmount).toBe(12);
+        const forecast = calendarFromCharges(charges, new Date(2026, 4, 5));
+        expect([...forecast.forecastedEntriesByDay.values()].flat()).toHaveLength(1);
+        expect(forecast.forecastedTotalAmount).toBe(12);
+        expect(forecast.committedMonthlyExpense).toBe(12);
+    })
+);
+
+it.effect('keeps dense irregular fixed-price charges and unequal same-day charges rejected', () =>
+    Effect.sync(() => {
+        expect(detectRecurringSeries([5, 6, 8, 12, 15, 16, 18, 23, 27, 28, 30, 35, 36, 39, 44].map(day => charge(day)))).toEqual([]);
+        expect(detectRecurringSeries([5, 35, 36, 37, 63, 96].map(day => charge(day)))).toEqual([]);
+        expect(detectRecurringSeries([5, 8, 39, 100, 131].map(day => charge(day)))).toEqual([]);
+        expect(detectRecurringSeries([5, 36, 64, 95].flatMap(day => [charge(day), charge(day, 'NETFLIX', 12.5)]))).toEqual([]);
     })
 );
