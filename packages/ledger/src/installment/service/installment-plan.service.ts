@@ -44,35 +44,23 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const dueDateToleranceDays = 3;
         const amountTolerance = 10_000;
         const normalizeTitle = (title: string) => title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
-        const matchesReferenceTitle = (title: string, referenceTitle: string) => normalizeTitle(title) === normalizeTitle(referenceTitle);
         const monobankLegacyPaymentPrefix = 'Платіж ';
         const monobankMonthlyPartPrefix = 'Щомісячний платіж ';
-        const monobankEarlyPayoffPrefixes = ['Дострокове погашення '];
-        const stripKnownPrefix = (title: string, prefixes: readonly string[]) => {
-            const matchingPrefix = prefixes.find(prefix => title.startsWith(prefix));
+        const monobankEarlyPayoffPrefix = 'Дострокове погашення ';
+        const getMonobankPaymentMerchant = (title: string) => {
+            const matchingPrefix = [monobankLegacyPaymentPrefix, monobankMonthlyPartPrefix].find(prefix => title.startsWith(prefix));
 
             return normalizeTitle(isDefined(matchingPrefix) ? title.slice(matchingPrefix.length) : title);
         };
-        const getMonobankPaymentMerchant = (title: string) =>
-            stripKnownPrefix(title, [monobankLegacyPaymentPrefix, monobankMonthlyPartPrefix]);
-        const getMonobankEarlyPayoffMerchant = (title: string) => stripKnownPrefix(title, monobankEarlyPayoffPrefixes);
-        const matchesMonobankPartTitle = (title: string, referenceTitle: string) =>
-            title.startsWith(monobankMonthlyPartPrefix) ||
-            (title.startsWith(monobankLegacyPaymentPrefix) &&
-                getMonobankPaymentMerchant(title) === getMonobankPaymentMerchant(referenceTitle));
         const matchesMonobankEarlyPayoffTitle = (title: string, referenceTitle: string) =>
-            monobankEarlyPayoffPrefixes.some(prefix => title.startsWith(prefix)) &&
-            getMonobankEarlyPayoffMerchant(title) === getMonobankPaymentMerchant(referenceTitle);
-        const partTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean> = new Map([
-            [ExternalSourceEnum.MONOBANK, matchesMonobankPartTitle]
-        ]);
-        const matchesPartTitle = (
-            titleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean>,
-            externalSource: ExternalSourceEnum | null,
-            title: string,
-            referenceTitle: string
-        ): boolean =>
-            ((isDefined(externalSource) ? titleMatchers.get(externalSource) : null) ?? matchesReferenceTitle)(title, referenceTitle);
+            title.startsWith(monobankEarlyPayoffPrefix) &&
+            normalizeTitle(title.slice(monobankEarlyPayoffPrefix.length)) === getMonobankPaymentMerchant(referenceTitle);
+        const matchesPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
+            externalSource === ExternalSourceEnum.MONOBANK
+                ? title.startsWith(monobankMonthlyPartPrefix) ||
+                  (title.startsWith(monobankLegacyPaymentPrefix) &&
+                      getMonobankPaymentMerchant(title) === getMonobankPaymentMerchant(referenceTitle))
+                : normalizeTitle(title) === normalizeTitle(referenceTitle);
 
         const findDueCandidates = (accountId: number, dueAt: Date) =>
             installmentPlanRepository.findCandidates(
@@ -96,7 +84,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 candidate =>
                     candidate.externalSource === firstPart.externalSource &&
                     (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
-                    matchesPartTitle(partTitleMatchers, firstPart.externalSource, candidate.title, firstPart.title)
+                    matchesPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
             );
         });
 
@@ -140,7 +128,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 candidate =>
                     candidate.externalSource === transaction.externalSource &&
                     Math.abs(candidate.amount - primaryEntry.amount) <= amountTolerance &&
-                    matchesPartTitle(partTitleMatchers, transaction.externalSource, candidate.title, transaction.title)
+                    matchesPartTitle(transaction.externalSource, candidate.title, transaction.title)
             );
 
             return isDefined(match) && !isNotEmptyArray(ambiguousMatches) ? match : null;
@@ -208,11 +196,8 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             return true;
         });
 
-        const attachMonthlyParts = (debtAccountId: number) =>
-            attachNextPart(debtAccountId).pipe(Effect.repeat({ while: isAttached => isAttached }));
-
         const attachPlanDueParts = Effect.fnUntraced(function* (debtAccountId: number) {
-            yield* attachMonthlyParts(debtAccountId);
+            yield* attachNextPart(debtAccountId).pipe(Effect.repeat({ while: isAttached => isAttached }));
 
             const [, ...ambiguousMonthlyMatches] = yield* findNextPartMatches(debtAccountId);
 
