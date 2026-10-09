@@ -74,7 +74,7 @@ export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
                 {isDefined(amountText) ? <Text className="text-primary text-sm font-semibold">{amountText}</Text> : null}
             </View>
 
-            <View className="flex-row items-center gap-x-sm">
+            <View className="flex-row flex-wrap items-center gap-sm">
                 {cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? (
                     <CategorizeInboxCashWithdrawalChips cluster={cluster} />
                 ) : null}
