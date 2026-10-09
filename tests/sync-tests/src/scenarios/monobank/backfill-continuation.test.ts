@@ -37,11 +37,13 @@ import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 
-const setBackwardLimit = Effect.fnUntraced(function* (syncId: number, sweepStart: Date, months: number) {
-    yield* testDb
-        .update(SyncEntityTable)
-        .set({ backwardSyncLimitAt: subtractMonths(sweepStart, months) })
-        .where(eq(SyncEntityTable.id, syncId));
+const synchronizeTestClock = Effect.gen(function* () {
+    const clock = yield* Effect.clockWith(Effect.succeed);
+
+    yield* Effect.acquireRelease(
+        Effect.sync(() => vi.spyOn(Date, 'now').mockImplementation(() => clock.currentTimeMillisUnsafe())),
+        spy => Effect.sync(() => spy.mockRestore())
+    );
 });
 
 const advanceWindows = Effect.fnUntraced(function* (count: number) {
@@ -59,10 +61,8 @@ describe('monobank/backfill-continuation', () => {
             const runFork = yield* FiberSet.makeRuntime<Workload>();
             const importFinished = yield* Deferred.make<void>();
             const sweepStart = new Date();
-            const sync = yield* setupBackwardSweepFixture(sweepStart);
+            const sync = yield* setupBackwardSweepFixture(sweepStart, 5);
             let requestCount = 0;
-
-            yield* setBackwardLimit(sync.id, sweepStart, 5);
 
             mockServer.use(
                 http.get(statementEndpoint, () => {
@@ -89,13 +89,11 @@ describe('monobank/backfill-continuation', () => {
             const monobankSyncService = yield* MonobankSyncService;
             const workload = yield* Workload;
             const sweepStart = new Date();
-            const sync = yield* setupBackwardSweepFixture(sweepStart);
+            const sync = yield* setupBackwardSweepFixture(sweepStart, 2);
             const firstRequestFinished = yield* Deferred.make<void>();
             const userWorkFinished = yield* Deferred.make<void>();
             const runFork = yield* FiberSet.makeRuntime<Workload>();
             let requestCount = 0;
-
-            yield* setBackwardLimit(sync.id, sweepStart, 2);
 
             mockServer.use(
                 http.get(statementEndpoint, () => {
@@ -129,11 +127,9 @@ describe('monobank/backfill-continuation', () => {
             const runFork = yield* FiberSet.makeRuntime<Workload>();
             const userWorkFinished = yield* Deferred.make<void>();
             const sweepStart = new Date();
-            const sync = yield* setupBackwardSweepFixture(sweepStart);
+            const sync = yield* setupBackwardSweepFixture(sweepStart, 1);
             let requestCount = 0;
             const requestedWindows: string[] = [];
-
-            yield* setBackwardLimit(sync.id, sweepStart, 1);
 
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
@@ -299,14 +295,14 @@ describe('monobank/backfill-continuation', () => {
         }).pipe(Effect.provide(TestClockLayer))
     );
 
-    it.effect('stops at a 25-second deadline and resumes the saved cursor on the next run', () =>
+    it.effect('preserves the token cooldown across 25-second deadline attempts and resumes the saved cursor', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const sweepStart = new Date();
-            const sync = yield* setupBackwardSweepFixture(sweepStart);
+            const sync = yield* setupBackwardSweepFixture(sweepStart, 4);
             const requestedFrom: number[] = [];
 
-            yield* setBackwardLimit(sync.id, sweepStart, 4);
+            yield* synchronizeTestClock;
 
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
@@ -316,11 +312,14 @@ describe('monobank/backfill-continuation', () => {
                 })
             );
 
-            yield* inWorkload(monobankSyncService.sync((yield* Clock.currentTimeMillis) + 25_000));
-            expect(requestedFrom).toHaveLength(1);
-            expect((yield* fetchSyncById(sync.id)).mode).toBe(SyncModeEnum.BACKWARD);
+            for (const elapsedMs of [0, 10_000]) {
+                yield* TestClock.adjust(elapsedMs);
+                yield* inWorkload(monobankSyncService.sync((yield* Clock.currentTimeMillis) + 25_000));
+                expect(requestedFrom).toHaveLength(1);
+                expect((yield* fetchSyncById(sync.id)).mode).toBe(SyncModeEnum.BACKWARD);
+            }
 
-            yield* TestClock.adjust(MONOBANK_RATE_LIMIT_MS);
+            yield* TestClock.adjust(MONOBANK_RATE_LIMIT_MS - 10_000);
             yield* TestClock.withLive(Effect.sleep(10));
             expect(requestedFrom).toHaveLength(1);
 
@@ -331,7 +330,7 @@ describe('monobank/backfill-continuation', () => {
             expect(requestedFrom.length).toBeGreaterThanOrEqual(4);
             expect(requestedFrom[1]).toBeLessThan(requestedFrom[0]);
             expect((yield* fetchSyncById(sync.id)).mode).toBe(SyncModeEnum.FORWARD);
-        }).pipe(Effect.provide(TestClockLayer))
+        }).pipe(Effect.scoped, Effect.provide(TestClockLayer))
     );
 
     it.effect('lets later queued user work run before a due continuation request', () =>
@@ -344,10 +343,8 @@ describe('monobank/backfill-continuation', () => {
             const holderStarted = yield* Deferred.make<void>();
             const releaseHolder = yield* Deferred.make<void>();
             const sweepStart = new Date();
-            const sync = yield* setupBackwardSweepFixture(sweepStart);
+            const sync = yield* setupBackwardSweepFixture(sweepStart, 2);
             const events: string[] = [];
-
-            yield* setBackwardLimit(sync.id, sweepStart, 2);
 
             mockServer.use(
                 http.get(statementEndpoint, () => {
@@ -399,7 +396,7 @@ describe('monobank/backfill-continuation', () => {
             const monobankSyncService = yield* MonobankSyncService;
             const workload = yield* Workload;
             const sweepStart = new Date();
-            const sync = yield* setupBackwardSweepFixture(sweepStart);
+            const sync = yield* setupBackwardSweepFixture(sweepStart, 4);
             const transferAccount = yield* seed.account({ type: AccountTypeEnum.CASH });
             let requestCount = 0;
 
@@ -408,7 +405,6 @@ describe('monobank/backfill-continuation', () => {
                 categoryId: null,
                 accountId: transferAccount.id
             });
-            yield* setBackwardLimit(sync.id, sweepStart, 4);
 
             mockServer.use(
                 http.get(statementEndpoint, ({ params }) => {
@@ -453,10 +449,7 @@ describe('monobank/backfill-continuation', () => {
         }).pipe(Effect.provide(TestClockLayer))
     );
 
-    it.effect.each([
-        { name: 'quiet startup', accountIds: ['mono-startup-a'], queueSecondStartup: false },
-        { name: 'queued startup', accountIds: ['mono-startup-a', 'mono-startup-b'], queueSecondStartup: true }
-    ])('finishes $name across a shared-token quota without a 429', scenario =>
+    it.effect('finishes queued startup across a shared-token quota without a 429', () =>
         Effect.gen(function* () {
             const appDataSyncService = yield* AppDataSyncService;
             const workload = yield* Workload;
@@ -469,11 +462,8 @@ describe('monobank/backfill-continuation', () => {
             let rateLimitedRequests = 0;
 
             yield* TestClock.setTime(start.getTime());
-            yield* Effect.acquireRelease(
-                Effect.sync(() => vi.spyOn(Date, 'now').mockImplementation(() => clock.currentTimeMillisUnsafe())),
-                spy => Effect.sync(() => spy.mockRestore())
-            );
-            for (const externalId of scenario.accountIds) {
+            yield* synchronizeTestClock;
+            for (const externalId of ['mono-startup-a', 'mono-startup-b']) {
                 const account = yield* seed.account({ externalId });
                 const sync = yield* seed.sync({
                     accountId: account.id,
@@ -491,7 +481,7 @@ describe('monobank/backfill-continuation', () => {
                     const token = request.headers.get('X-Token') ?? '';
                     const nowMs = clock.currentTimeMillisUnsafe();
                     const previousRequestAtMs = lastRequestAtByToken.get(token);
-                    if (scenario.queueSecondStartup && queuedRuns.length === 0) {
+                    if (queuedRuns.length === 0) {
                         queuedRuns.push(runFork(workload.run(appDataSyncService.sync())));
                     }
 

@@ -73,7 +73,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         const token = yield* resolveSyncToken(pendingSync);
         const nextRequestAtMs = yield* rateGate.waitForRequest(token, runDeadlineAtMs);
         if (isDefined(nextRequestAtMs)) {
-            if (!Number.isFinite(runDeadlineAtMs) && nextRequestAtMs < runDeadlineAtMs) {
+            if (!Number.isFinite(runDeadlineAtMs)) {
                 nextContinuationAtMs = nextRequestAtMs;
             }
 
@@ -85,7 +85,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         }
 
         const result = yield* Effect.ensuring(
-            definition.executeSyncBatch(pendingSync),
+            definition.executeSyncBatch(pendingSync, token),
             rateGate.recordCompletion(token, definition.rateLimitMs)
         );
         yield* applyProgressUpdate(pendingSync, result);

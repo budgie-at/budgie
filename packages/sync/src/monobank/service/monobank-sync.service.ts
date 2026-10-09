@@ -209,7 +209,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             shouldRequestSyncWhenEnabled: true,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
-            executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
+            executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
                     const now = new Date();
@@ -217,11 +217,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     return { transactions: [], nextTo: now, nextFrom: now, completed: true };
                 }
 
-                const result = yield* fetchTransactionBatch(
-                    sync,
-                    account.externalId,
-                    yield* syncIntegrationTokenService.resolveAccountToken(provider, sync.accountId)
-                );
+                const result = yield* fetchTransactionBatch(sync, account.externalId, token);
                 yield* Effect.yieldNow;
                 const changedTransactions = yield* processFetchedTransactions(result.transactions, account.id);
                 yield* reconcileChangedTransactions(changedTransactions);

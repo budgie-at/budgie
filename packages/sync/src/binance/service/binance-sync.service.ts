@@ -350,14 +350,13 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const pollingSyncService = yield* makePollingSyncService({
             ...BINANCE_ACCOUNT_DEFINITION,
             rateLimitMs: BINANCE_RATE_LIMIT_MS,
-            executeSyncBatch: Effect.fn('BinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
+            executeSyncBatch: Effect.fn('BinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 const externalAccountId = account?.externalId ?? null;
                 if (!isNotEmptyString(externalAccountId)) {
                     return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
                 }
 
-                const token = yield* syncIntegrationTokenService.resolveAccountToken(provider, sync.accountId);
                 const changedCount = yield* Effect.ensuring(
                     runSyncPhases(sync, externalAccountId, token),
                     Effect.orDie(Effect.suspend(() => binanceTradeCursorService.persistRunSideEffects(sync, runSignedClient)))
