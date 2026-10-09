@@ -14,7 +14,6 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
@@ -40,6 +39,7 @@ import { SettingsCard } from '../../../settings/components/settings-card/setting
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
 import { TruncateData } from '../../../settings/components/truncate-data/truncate-data';
+import { useScrollToAnchor } from '../../../settings/hook/use-scroll-to-anchor.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
