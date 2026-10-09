@@ -1,18 +1,23 @@
-import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction } from '@budgie/contracts';
+import { UserIconNameEnum, isExpenseTransaction } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 
-import { emptyFn } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionListConvertToTransferBase } from '../../hook/use-transaction-list-convert-to-transfer-base.hook';
-import { buildConvertToTransferParams } from '../../utils/build-convert-to-transfer-params.util';
+import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 export const TransactionListStartDepositMenuItem = () => {
     const { t } = useLingui();
-    const { transaction, closeMenu, openConvertToTransfer, isConsolidated, categoryEntries } = useTransactionListConvertToTransferBase();
+    const { transaction, closeMenu } = useTransactionListContextMenu();
 
-    const isVisible = !isConsolidated && isExpenseTransaction(transaction) && categoryEntries.length === 1;
+    const isVisible =
+        !isDefined(transaction.consolidationType) &&
+        !isDefined(transaction.consolidationParentTransactionId) &&
+        isExpenseTransaction(transaction) &&
+        getTransactionCategoryEntries(transaction.entries).length === 1;
 
     if (!isVisible) {
         return null;
@@ -20,13 +25,7 @@ export const TransactionListStartDepositMenuItem = () => {
 
     const handleStartDeposit = () => {
         closeMenu(() => {
-            const [sourceEntry] = categoryEntries;
-
-            openConvertToTransfer({
-                ...buildConvertToTransferParams(transaction.id, TransactionTypeEnum.EXPENSE, sourceEntry),
-                skipPostConvertNavigation: true,
-                startDeposit: true
-            }).catch(emptyFn);
+            router.push({ pathname: '/transactions/[id]/start-deposit', params: { id: String(transaction.id) } });
         });
     };
 

@@ -24,6 +24,8 @@ export const transactionMapEntryInputToCreateEntity = (
     quotedInstrumentId: entry.quotedInstrumentId ?? null,
     quotedAmount: entry.quotedAmount ?? null,
     quotedUnitPrice: entry.quotedUnitPrice ?? null,
+    operationInstrumentId: entry.operationInstrumentId ?? null,
+    operationAmount: entry.operationAmount ?? null,
     toIban: entry.toIban ?? null,
     originalTransactionId: null
 });

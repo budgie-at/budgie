@@ -33,7 +33,9 @@ export const stripLocalId = (entry: EntryWithLocalIdInterface): TransactionEntry
     mccCategoryId: entry.mccCategoryId,
     externalId: entry.externalId,
     exchangeRate: entry.exchangeRate,
-    toIban: entry.toIban
+    toIban: entry.toIban,
+    operationInstrumentId: entry.operationInstrumentId,
+    operationAmount: entry.operationAmount
 });
 
 export const entryKeyExtractor = (item: EntryWithLocalIdInterface): string => item.localId;

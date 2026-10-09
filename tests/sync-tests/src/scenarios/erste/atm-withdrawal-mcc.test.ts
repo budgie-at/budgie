@@ -99,4 +99,21 @@ describe('erste/atm-withdrawal-mcc', () => {
             yield* expectAtmCashWithdrawalConsolidation(atmEntry.accountId, cashAccount.id, atmEntry.transactionId);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('keeps null operation metadata because Erste statements do not report an operation currency', () =>
+        Effect.gen(function* () {
+            const ersteSyncService = yield* ErsteSyncService;
+
+            yield* ersteSyncService.executeImportForSelectedAccounts('erste-statement.pdf', [erste.account.iban]);
+
+            const transactions = yield* testDb
+                .select()
+                .from(TransactionEntityTable)
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE));
+            const entries = (yield* Effect.forEach(transactions, transaction => fetchExpenseEntries(transaction.id))).flat();
+
+            expect(entries).toHaveLength(5);
+            expect(entries.map(entry => [entry.operationInstrumentId, entry.operationAmount])).toEqual(entries.map(() => [null, null]));
+        }).pipe(Effect.provide(TestLayer))
+    );
 });
