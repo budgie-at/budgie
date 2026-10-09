@@ -223,6 +223,9 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
     };
 };
 
+export const isSeriesActive = (series: RecurringSeriesInterface, now: Date): boolean =>
+    differenceInCalendarDays(now, new Date(series.anchorTimestamp)) <= series.periodDays * ACTIVE_PERIOD_RATIO;
+
 const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
     const clusters: RecurringChargeInterface[][] = [];
     for (const charge of [...charges].sort((first, second) => first.nativeAmount - second.nativeAmount)) {
@@ -242,11 +245,7 @@ const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): Rec
         .filter(isDefined);
     const latestTimestamp = Math.max(...charges.map(charge => charge.operatedAt.getTime()));
     const currentFixed = fixed
-        .filter(
-            series =>
-                differenceInCalendarDays(new Date(latestTimestamp), new Date(series.anchorTimestamp)) <=
-                series.periodDays * ACTIVE_PERIOD_RATIO
-        )
+        .filter(series => isSeriesActive(series, new Date(latestTimestamp)))
         .map(series => {
             const previous = fixed.find(
                 candidate =>
@@ -295,6 +294,3 @@ export const detectRecurringSeries = (charges: readonly RecurringChargeInterface
         );
     });
 };
-
-export const isSeriesActive = (series: RecurringSeriesInterface, now: Date): boolean =>
-    differenceInCalendarDays(now, new Date(series.anchorTimestamp)) <= series.periodDays * ACTIVE_PERIOD_RATIO;

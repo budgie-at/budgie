@@ -15,8 +15,6 @@ import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
 import { between } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { RecurringAlertEnum, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
@@ -51,6 +49,8 @@ const seedMonthly = (seed: Effect.Success<ReturnType<typeof seedCharges>>, title
 
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
 
+const calendarAsOf = (month: number, now: Date) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, now));
+
 const allEntries = (data: RecurringCalendarDataInterface) =>
     [...data.entriesByDay.values(), ...data.forecastedEntriesByDay.values()].flat();
 
@@ -78,6 +78,27 @@ const seedConcurrentSubscriptions = Effect.fnUntraced(function* (title: string) 
     return seed;
 });
 
+const seedConfirmedBesideRetiredDismissed = Effect.gen(function* () {
+    const seed = yield* seedCharges();
+    yield* Effect.forEach([5, 4, 3, 2], monthsAgo => Effect.andThen(seed('BILLING', monthsAgo, 5, 5), seed('BILLING', monthsAgo, 20, 15)), {
+        discard: true
+    });
+    const entries = allEntries(yield* calendarAsOf(4, new Date(2026, 3, 25)));
+    const [dismissed] = entries.filter(entry => entry.latestAmount === 5 * PRECISION);
+    const [confirmed] = entries.filter(entry => entry.latestAmount === 15 * PRECISION);
+    yield* Effect.flatMap(RecurringService, service =>
+        Effect.andThen(
+            service.setUserState(dismissed.seriesId, RecurringSeriesUserStateEnum.DISMISSED),
+            Effect.andThen(
+                service.setUserState(confirmed.seriesId, RecurringSeriesUserStateEnum.CONFIRMED),
+                service.rename(confirmed.seriesId, 'Main plan')
+            )
+        )
+    );
+
+    return { seed, confirmed };
+});
+
 const seedTransitSubscription = Effect.fnUntraced(function* () {
     const seed = yield* seedCharges();
     yield* seedMonthly(seed, 'TRANSIT', 20, 83.4);
@@ -99,41 +120,45 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService', it => {
-    it.effect('keeps an exact confirmed survivor when a dismissed sibling retires', () =>
+    for (const [scenario, amount] of [
+        ['at the same price', 15],
+        ['when the price drops', 14.9]
+    ] as const) {
+        it.effect(`keeps a confirmed survivor when a dismissed sibling retires ${scenario}`, () =>
+            Effect.gen(function* () {
+                const { seed, confirmed } = yield* seedConfirmedBesideRetiredDismissed;
+                yield* Effect.forEach([1, 0], monthsAgo => seed('BILLING', monthsAgo, 20, amount), { discard: true });
+                const after = yield* calendarAsOf(JULY, new Date(2026, JUNE, 25));
+                expect(allEntries(after)).toHaveLength(1);
+                expect(allEntries(after)[0]).toMatchObject({
+                    seriesId: confirmed.seriesId,
+                    title: 'Main plan',
+                    userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                    latestAmount: amount * PRECISION
+                });
+            })
+        );
+    }
+
+    it.effect('keeps a survivor visible when a dismissed sibling retires and the price rises', () =>
+        Effect.gen(function* () {
+            const { seed } = yield* seedConfirmedBesideRetiredDismissed;
+            yield* Effect.forEach([-1, -2, -3], monthsAgo => seed('BILLING', monthsAgo, 20, 17), { discard: true });
+            const after = yield* calendarAsOf(9, new Date(2026, 8, 25));
+            expect(allEntries(after).map(entry => entry.latestAmount)).toEqual([17 * PRECISION]);
+        })
+    );
+
+    it.effect('keeps a dismissed single stream dismissed when its price band changes', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
-            yield* Effect.forEach(
-                [5, 4, 3, 2],
-                monthsAgo => Effect.andThen(seed('BILLING', monthsAgo, 5, 5), seed('BILLING', monthsAgo, 20, 15)),
-                { discard: true }
-            );
-            const entries = allEntries(
-                yield* Effect.flatMap(RecurringService, service => service.calendar(2026, 4, new Date(2026, 3, 25)))
-            );
-            const dismissed = entries.find(entry => entry.latestAmount === 5 * PRECISION);
-            const confirmed = entries.find(entry => entry.latestAmount === 15 * PRECISION);
-            expect(dismissed).toBeDefined();
-            expect(confirmed).toBeDefined();
-            if (!isDefined(dismissed) || !isDefined(confirmed)) {
-                return;
-            }
+            yield* Effect.forEach([5, 4, 3, 2], monthsAgo => seed('BILLING', monthsAgo, 20, 15), { discard: true });
+            const [entry] = allEntries(yield* calendarAsOf(4, new Date(2026, 3, 25)));
             yield* Effect.flatMap(RecurringService, service =>
-                Effect.andThen(
-                    service.setUserState(dismissed.seriesId, RecurringSeriesUserStateEnum.DISMISSED),
-                    Effect.andThen(
-                        service.setUserState(confirmed.seriesId, RecurringSeriesUserStateEnum.CONFIRMED),
-                        service.rename(confirmed.seriesId, 'Surviving subscription')
-                    )
-                )
+                service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.DISMISSED)
             );
-            yield* Effect.forEach([1, 0], monthsAgo => seed('BILLING', monthsAgo, 20, 15), { discard: true });
-            const after = yield* Effect.flatMap(RecurringService, service => service.calendar(2026, JULY, new Date(2026, JUNE, 25)));
-            expect(allEntries(after)).toHaveLength(1);
-            expect(allEntries(after)[0]).toMatchObject({
-                seriesId: confirmed.seriesId,
-                title: 'Surviving subscription',
-                userState: RecurringSeriesUserStateEnum.CONFIRMED
-            });
+            yield* Effect.forEach([1, 0], monthsAgo => seed('BILLING', monthsAgo, 20, 17), { discard: true });
+            expect(allEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 25)))).toEqual([]);
         })
     );
 

@@ -114,7 +114,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                         (!item.merchantKey.includes('|') ||
                             item.merchantKey === series.merchantKey ||
                             item.merchantKey === canonicalFamily(series.merchantKey) ||
-                            familyCount === 1)
+                            (familyCount === 1 && familyRows.every(other => other.lastSeenAt <= item.lastSeenAt)))
                 );
                 const matchingFamilyRows = familyRows.filter(
                     item =>
@@ -131,8 +131,8 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                     (familyCount === 1 && familyRows.length === 1 && !claimed.has(familyRows[0].id) ? familyRows[0] : null);
                 const row =
                     exactRow ??
-                    dismissedRow ??
                     familyRow ??
+                    dismissedRow ??
                     legacyRows.find(
                         item =>
                             legacyRows.length === 1 &&
