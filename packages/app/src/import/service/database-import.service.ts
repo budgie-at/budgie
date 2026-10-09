@@ -13,6 +13,7 @@ import { DatabaseLifecycleService } from '../../@generic/drizzle/service/databas
 import { isSupportedMigrationCreatedAt } from '../../@generic/drizzle/utils/is-supported-migration-created-at.util';
 import { openSqliteClient } from '../../@generic/drizzle/utils/open-sqlite-client.util';
 import { readLastMigrationCreatedAt } from '../../@generic/drizzle/utils/read-last-migration-created-at.util';
+import { resolveBackupFile } from '../../@generic/drizzle/utils/resolve-backup-file.util';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
@@ -106,14 +107,15 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             yield* copyDatabaseSidecars(sourceUri, destinationPath);
         });
 
-        const runImport = Effect.fn('DatabaseImportService.runImport')(function* (sourceUri: string, backupPin: string | null) {
+        const runImport = Effect.fn('DatabaseImportService.runImport')(function* (pickedUri: string, backupPin: string | null) {
+            const sourceUri = yield* resolveBackupFile(pickedUri);
             const previousPin = yield* authService.getPin();
 
             yield* authService.persistPin(backupPin);
             yield* replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin).pipe(Effect.orDie)));
             yield* aiEmbeddingStatusService.forgetModel();
             yield* Effect.promise(() => reloadApp());
-        });
+        }, Effect.scoped);
 
         return {
             importFromUri: Effect.fn('DatabaseImportService.importFromUri')(function* (sourceUri: string, backupPin: string | null) {
@@ -124,8 +126,10 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
                 deleteProbeFiles(probePath);
 
-                return yield* Effect.promise(() => new File(sourceUri).copy(new File(probePath))).pipe(
+                return yield* resolveBackupFile(sourceUri).pipe(
+                    Effect.flatMap(backupUri => Effect.promise(() => new File(backupUri).copy(new File(probePath)))),
                     Effect.andThen(readProbeDatabase(backupPin)),
+                    Effect.scoped,
                     Effect.catchTags({ DatabaseOpenError: () => Effect.succeed(false), SqlError: () => Effect.succeed(false) }),
                     Effect.ensuring(
                         Effect.sync(() => {

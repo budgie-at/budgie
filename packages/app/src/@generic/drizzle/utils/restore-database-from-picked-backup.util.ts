@@ -13,6 +13,7 @@ import { isSupportedMigrationCreatedAt } from './is-supported-migration-created-
 import { openSqliteClient } from './open-sqlite-client.util';
 import { readDatabaseKey } from './read-database-key.util';
 import { readLastMigrationCreatedAt } from './read-last-migration-created-at.util';
+import { resolveBackupFile } from './resolve-backup-file.util';
 
 const probeDatabaseName = 'restore-probe.db';
 
@@ -39,7 +40,9 @@ const restoreFromUri = Effect.fn('restoreDatabaseFromPickedBackup.restoreFromUri
         probeFile.delete();
     }
 
-    yield* Effect.promise(() => new File(sourceUri).copy(probeFile));
+    const backupUri = yield* resolveBackupFile(sourceUri);
+
+    yield* Effect.promise(() => new File(backupUri).copy(probeFile));
     yield* verifyProbe().pipe(
         Effect.onError(() =>
             Effect.sync(() => {
@@ -55,12 +58,12 @@ const restoreFromUri = Effect.fn('restoreDatabaseFromPickedBackup.restoreFromUri
     });
     yield* moveIfExists(probeDatabaseName, DB_NAME);
     yield* Effect.promise(() => reloadApp());
-});
+}, Effect.scoped);
 
 export const restoreDatabaseFromPickedBackup = Effect.fn('restoreDatabaseFromPickedBackup')(function* () {
     const result = yield* Effect.promise(() =>
         DocumentPicker.getDocumentAsync({
-            type: ['application/x-sqlite3', 'application/octet-stream', '*/*'],
+            type: ['application/x-sqlite3', 'application/zip', 'application/octet-stream', '*/*'],
             copyToCacheDirectory: true
         })
     );
