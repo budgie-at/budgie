@@ -15,6 +15,8 @@ import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
 import { between } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { RecurringAlertEnum, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
@@ -97,6 +99,21 @@ const seedTrackedStreams = Effect.fnUntraced(function* (streams: readonly (reado
     });
 
     return { seed, ids: new Map(ids) };
+});
+
+const chargeAndRead = Effect.fnUntraced(function* (
+    seed: Effect.Success<ReturnType<typeof seedCharges>>,
+    months: readonly number[],
+    survivors: readonly (readonly [number, number])[]
+) {
+    yield* Effect.forEach(
+        months,
+        monthsAgo => Effect.forEach(survivors, ([day, amount]) => seed('BILLING', monthsAgo, day, amount), { discard: true }),
+        { discard: true }
+    );
+    const lastMonth = JUNE - months[months.length - 1];
+
+    return allEntries(yield* calendarAsOf(lastMonth + 1, new Date(2026, lastMonth, 25)));
 });
 
 const seedTransitSubscription = Effect.fnUntraced(function* () {
@@ -287,7 +304,7 @@ layer(TestLayer)('recurringService', it => {
                 [20, 6]
             ],
             [-1, -2, -3],
-            [15]
+            [null, 15]
         ],
         ['a single dismissed stream whose price band changes', [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]], [[20, 17]], [1, 0], []],
         [
@@ -307,11 +324,11 @@ layer(TestLayer)('recurringService', it => {
             []
         ],
         [
-            'a single dismissed stream whose billing day moves as its price drifts',
+            'a single dismissed stream that moves its billing day and price band together',
             [[5, 15, RecurringSeriesUserStateEnum.DISMISSED]],
             [[20, 14.9]],
             [1, 0, -1, -2, -3, -4],
-            []
+            [null]
         ],
         [
             'a single dismissed stream resuming after a gap',
@@ -328,19 +345,90 @@ layer(TestLayer)('recurringService', it => {
             []
         ]
     ] as const) {
-        it.effect(`keeps the persisted identity of ${scenario}`, () =>
+        it.effect(`resolves the persisted identity of ${scenario}`, () =>
             Effect.gen(function* () {
                 const { seed, ids } = yield* seedTrackedStreams(streams);
+                const after = yield* chargeAndRead(seed, months, survivors);
+                expect(after.map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual(
+                    visible.map(amount =>
+                        isDefined(amount)
+                            ? [ids.get(amount), `Plan ${amount}`, RecurringSeriesUserStateEnum.CONFIRMED]
+                            : [expect.any(Number), 'BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
+                    )
+                );
+            })
+        );
+    }
+
+    for (const [scenario, savedRows, months, survivor, expected] of [
+        [
+            'a confirmed row last seen across a calendar-month boundary',
+            [
+                [15, new Date(2026, 0, 1), RecurringSeriesUserStateEnum.CONFIRMED],
+                [5, new Date(2026, 0, 9), RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [6, 5, 4],
+            [5, 14.9],
+            ['Plan 15', RecurringSeriesUserStateEnum.CONFIRMED]
+        ],
+        [
+            'nothing from equally near rows',
+            [
+                [10, new Date(2026, 2, 5), RecurringSeriesUserStateEnum.DISMISSED],
+                [20, new Date(2026, 2, 5), RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [2, 1, 0],
+            [5, 15],
+            ['BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
+        ],
+        [
+            'nothing from equally near rows saved in reverse order',
+            [
+                [20, new Date(2026, 2, 5), RecurringSeriesUserStateEnum.CONFIRMED],
+                [10, new Date(2026, 2, 5), RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [2, 1, 0],
+            [5, 15],
+            ['BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
+        ],
+        [
+            'nothing from confirmed rows off the billing cycle',
+            [
+                [5, new Date(2026, 0, 5), RecurringSeriesUserStateEnum.CONFIRMED],
+                [15, new Date(2026, 0, 10), RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [2, 1, 0],
+            [20, 40],
+            ['BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
+        ],
+        [
+            'nothing from a dismissed row off the billing cycle',
+            [
+                [5, new Date(2026, 0, 5), RecurringSeriesUserStateEnum.CONFIRMED],
+                [15, new Date(2026, 0, 10), RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [2, 1, 0],
+            [20, 40],
+            ['BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
+        ]
+    ] as const) {
+        it.effect(`inherits ${scenario}`, () =>
+            Effect.gen(function* () {
+                const seed = yield* seedCharges();
                 yield* Effect.forEach(
-                    months,
-                    monthsAgo => Effect.forEach(survivors, ([day, amount]) => seed('BILLING', monthsAgo, day, amount), { discard: true }),
+                    savedRows,
+                    ([amount, lastSeenAt, userState]) =>
+                        seedSavedSeries({
+                            merchantKey: `EXPENSE|1|BILLING|${amount * PRECISION}`,
+                            title: `Plan ${amount}`,
+                            amount: amount * PRECISION,
+                            userState,
+                            lastSeenAt
+                        }),
                     { discard: true }
                 );
-                const lastMonth = JUNE - months[months.length - 1];
-                const after = allEntries(yield* calendarAsOf(lastMonth + 1, new Date(2026, lastMonth, 25)));
-                expect(after.map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual(
-                    visible.map(amount => [ids.get(amount), `Plan ${amount}`, RecurringSeriesUserStateEnum.CONFIRMED])
-                );
+                const after = yield* chargeAndRead(seed, months, [survivor]);
+                expect(after.map(entry => [entry.title, entry.userState])).toEqual([expected]);
             })
         );
     }

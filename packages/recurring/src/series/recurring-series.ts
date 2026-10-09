@@ -85,6 +85,22 @@ const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeries
 const isStableAmount = (events: readonly RecurringSeriesEventInterface[]): boolean =>
     Math.max(...events.map(event => event.nativeAmount)) <= Math.min(...events.map(event => event.nativeAmount)) * RECURRING_AMOUNT_RATIO;
 
+export const nearestCycle = (anchor: Date, date: Date, cadence: RecurringCadenceInterface) => {
+    const estimatedCycle = isDefined(cadence.periodMonths)
+        ? Math.round((monthIndex(anchor.getTime()) - monthIndex(date.getTime())) / cadence.periodMonths)
+        : Math.round(differenceInCalendarDays(anchor, date) / cadence.periodDays);
+
+    return (isDefined(cadence.periodMonths) ? [estimatedCycle - 1, estimatedCycle, estimatedCycle + 1] : [estimatedCycle])
+        .map(cycle => {
+            const expected = isDefined(cadence.periodMonths)
+                ? addMonths(anchor, -cycle * cadence.periodMonths)
+                : addDays(anchor, -cycle * cadence.periodDays);
+
+            return { cycle, deviation: Math.abs(differenceInCalendarDays(date, expected)) };
+        })
+        .reduce((closest, candidate) => (candidate.deviation < closest.deviation ? candidate : closest));
+};
+
 const isAlignedCadence = (
     events: readonly RecurringSeriesEventInterface[],
     cadence: RecurringCadenceInterface,
@@ -115,22 +131,7 @@ const isAlignedCadence = (
     }
     const anchor = new Date(events[events.length - 1].timestamp);
 
-    const alignedCycles = events.map(event => {
-        const date = new Date(event.timestamp);
-        const estimatedCycle = isDefined(cadence.periodMonths)
-            ? Math.round((monthIndex(anchor.getTime()) - monthIndex(event.timestamp)) / cadence.periodMonths)
-            : Math.round(differenceInCalendarDays(anchor, date) / cadence.periodDays);
-
-        return (isDefined(cadence.periodMonths) ? [estimatedCycle - 1, estimatedCycle, estimatedCycle + 1] : [estimatedCycle])
-            .map(cycle => {
-                const expected = isDefined(cadence.periodMonths)
-                    ? addMonths(anchor, -cycle * cadence.periodMonths)
-                    : addDays(anchor, -cycle * cadence.periodDays);
-
-                return { cycle, deviation: Math.abs(differenceInCalendarDays(date, expected)) };
-            })
-            .reduce((closest, candidate) => (candidate.deviation < closest.deviation ? candidate : closest));
-    });
+    const alignedCycles = events.map(event => nearestCycle(anchor, new Date(event.timestamp), cadence));
 
     return (
         alignedCycles.every(candidate => candidate.deviation <= cadence.toleranceDays) &&

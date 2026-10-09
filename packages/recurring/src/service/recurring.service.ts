@@ -1,5 +1,4 @@
 import { Db, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum, SettingsRepository } from '@budgie/contracts';
-import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -8,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { RecurringRepository } from '../repository/recurring.repository';
 import { projectRecurringMonth } from '../series/recurring-projection';
-import { detectRecurringSeries, isSeriesActive } from '../series/recurring-series';
+import { detectRecurringSeries, isSeriesActive, nearestCycle } from '../series/recurring-series';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
@@ -74,11 +73,8 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 : segments.slice(0, 3).join('|');
         };
 
-        const isOnCycle = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean => {
-            const offset = Math.abs(differenceInCalendarDays(new Date(series.anchorTimestamp), row.lastSeenAt)) % series.periodDays;
-
-            return Math.min(offset, series.periodDays - offset) <= series.toleranceDays;
-        };
+        const amountGap = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): number =>
+            Math.abs(row.amount - series.predictedAmount);
 
         const track = Effect.fn('RecurringService.track')(function* (detected: readonly RecurringSeriesInterface[], now: Date) {
             const rows = yield* recurringRepository.findSeries();
@@ -90,22 +86,19 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             return yield* Effect.forEach(detected, (series, index) => {
                 const facts = toFacts(series, now);
                 const legacyRows = rows.filter(item => matchesLegacyIdentity(series, item));
+                const [best, runnerUp] = rows
+                    .filter(
+                        item =>
+                            !claimed.has(item.id) &&
+                            item.kind === series.kind &&
+                            item.periodDays === facts.periodDays &&
+                            canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey) &&
+                            nearestCycle(new Date(series.anchorTimestamp), item.lastSeenAt, series).deviation <= series.toleranceDays
+                    )
+                    .sort((first, second) => amountGap(series, first) - amountGap(series, second));
                 const row =
                     exactRows[index] ??
-                    rows
-                        .filter(
-                            item =>
-                                !claimed.has(item.id) &&
-                                item.kind === series.kind &&
-                                item.periodDays === facts.periodDays &&
-                                canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey)
-                        )
-                        .sort(
-                            (first, second) =>
-                                Number(isOnCycle(series, second)) - Number(isOnCycle(series, first)) ||
-                                Math.abs(first.amount - series.predictedAmount) - Math.abs(second.amount - series.predictedAmount)
-                        )
-                        .at(0) ??
+                    (isDefined(runnerUp) && amountGap(series, runnerUp) === amountGap(series, best) ? null : best) ??
                     legacyRows.find(item => item.userState === RecurringSeriesUserStateEnum.DISMISSED) ??
                     legacyRows.find(
                         item =>
