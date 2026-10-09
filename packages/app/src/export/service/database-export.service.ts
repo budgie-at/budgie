@@ -24,7 +24,7 @@ export class DatabaseExportService extends Context.Service<DatabaseExportService
                         const databaseCopy = new File(Paths.cache, archive.name.replace(/\.zip$/u, ''));
 
                         yield* Effect.promise(() => new File(DATABASE_DIRECTORY, DB_NAME).copy(databaseCopy)).pipe(
-                            Effect.andThen(Effect.promise(() => zip(toNativePath(databaseCopy.uri), toNativePath(archive.uri)))),
+                            Effect.andThen(Effect.promise(() => zip([toNativePath(databaseCopy.uri)], toNativePath(archive.uri)))),
                             Effect.ensuring(
                                 Effect.sync(() => {
                                     if (databaseCopy.exists) {

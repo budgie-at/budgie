@@ -113,13 +113,17 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
             yield* authService.persistPin(backupPin);
             yield* replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin).pipe(Effect.orDie)));
-            yield* aiEmbeddingStatusService.forgetModel();
-            yield* Effect.promise(() => reloadApp());
         }, Effect.scoped);
 
         return {
             importFromUri: Effect.fn('DatabaseImportService.importFromUri')(function* (sourceUri: string, backupPin: string | null) {
-                yield* databaseLifecycleService.run(DatabaseLifecycleOperationEnum.IMPORT, runImport(sourceUri, backupPin));
+                yield* databaseLifecycleService.run(
+                    DatabaseLifecycleOperationEnum.IMPORT,
+                    runImport(sourceUri, backupPin).pipe(
+                        Effect.andThen(aiEmbeddingStatusService.forgetModel()),
+                        Effect.andThen(Effect.promise(() => reloadApp()))
+                    )
+                );
             }),
             canOpenBackup: Effect.fn('DatabaseImportService.canOpenBackup')(function* (sourceUri: string, backupPin: string | null) {
                 const probePath = new File(DATABASE_DIRECTORY, probeDatabaseName).uri;

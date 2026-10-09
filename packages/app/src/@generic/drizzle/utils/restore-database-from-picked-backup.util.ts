@@ -33,7 +33,7 @@ const verifyProbe = Effect.fn('restoreDatabaseFromPickedBackup.verifyProbe')(fun
     }
 }, Effect.scoped);
 
-const restoreFromUri = Effect.fn('restoreDatabaseFromPickedBackup.restoreFromUri')(function* (sourceUri: string) {
+const replaceDatabaseFromUri = Effect.fn('restoreDatabaseFromPickedBackup.replaceDatabaseFromUri')(function* (sourceUri: string) {
     const probeFile = new File(DATABASE_DIRECTORY, probeDatabaseName);
 
     if (probeFile.exists) {
@@ -57,7 +57,6 @@ const restoreFromUri = Effect.fn('restoreDatabaseFromPickedBackup.restoreFromUri
         discard: true
     });
     yield* moveIfExists(probeDatabaseName, DB_NAME);
-    yield* Effect.promise(() => reloadApp());
 }, Effect.scoped);
 
 export const restoreDatabaseFromPickedBackup = Effect.fn('restoreDatabaseFromPickedBackup')(function* () {
@@ -73,5 +72,6 @@ export const restoreDatabaseFromPickedBackup = Effect.fn('restoreDatabaseFromPic
         return;
     }
 
-    yield* restoreFromUri(uri);
+    yield* replaceDatabaseFromUri(uri);
+    yield* Effect.promise(() => reloadApp());
 });

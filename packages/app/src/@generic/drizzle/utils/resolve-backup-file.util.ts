@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 import { Directory, File, FileMode, Paths } from 'expo-file-system';
-import { unzip } from 'react-native-zip-archive';
+import { listContents, unzip } from 'react-native-zip-archive';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -44,15 +44,16 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
             })
     );
 
-    yield* Effect.promise(() => unzip(toNativePath(sourceUri), toNativePath(extractDirectory.uri)));
+    const entries = yield* Effect.promise(() => listContents(toNativePath(sourceUri)));
+    const databaseEntry = entries.find(
+        entry => !entry.isDirectory && entry.path.endsWith(DATABASE_EXTENSION) && !entry.path.split('/').includes('..')
+    );
 
-    const databaseFile = extractDirectory
-        .list()
-        .find((entry): entry is File => entry instanceof File && entry.name.endsWith(DATABASE_EXTENSION));
-
-    if (!isDefined(databaseFile)) {
+    if (!isDefined(databaseEntry) || databaseEntry.size > Paths.availableDiskSpace) {
         return yield* new UnsupportedBackupError();
     }
 
-    return databaseFile.uri;
+    yield* Effect.promise(() => unzip(toNativePath(sourceUri), toNativePath(extractDirectory.uri), [databaseEntry.path]));
+
+    return new File(extractDirectory, ...databaseEntry.path.split('/')).uri;
 });
