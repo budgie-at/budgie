@@ -2,7 +2,7 @@ import * as Effect from 'effect/Effect';
 import { Directory, File, FileMode, Paths } from 'expo-file-system';
 import { listContents, unzip } from 'react-native-zip-archive';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { toNativePath } from '../../utils/to-native-path.util';
 import { UnsupportedBackupError } from '../error/unsupported-backup.error';
@@ -45,11 +45,18 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
     );
 
     const entries = yield* Effect.promise(() => listContents(toNativePath(sourceUri)));
-    const databaseEntry = entries.find(
-        entry => !entry.isDirectory && entry.path.endsWith(DATABASE_EXTENSION) && !entry.path.split('/').includes('..')
-    );
+    const databaseEntry = entries.find(entry => {
+        const segments = entry.path.split('/');
 
-    if (!isDefined(databaseEntry) || databaseEntry.size > Paths.availableDiskSpace) {
+        return (
+            !entry.isDirectory &&
+            entry.path.endsWith(DATABASE_EXTENSION) &&
+            !segments.some(segment => segment === '..' || segment === '__MACOSX' || segment.startsWith('._'))
+        );
+    });
+    const { availableDiskSpace } = Paths;
+
+    if (!isDefined(databaseEntry) || (isPositiveNumber(availableDiskSpace) && databaseEntry.size > availableDiskSpace)) {
         return yield* new UnsupportedBackupError();
     }
 
