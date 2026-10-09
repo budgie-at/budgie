@@ -1,7 +1,8 @@
 import type { RecurringAlertEnum } from '../enum/recurring-alert.enum';
-import type { RecurringSeriesUserStateEnum, UserIconType } from '@budgie/contracts';
+import type { RecurringSeriesKindEnum, RecurringSeriesUserStateEnum, UserIconType } from '@budgie/contracts';
 
 export interface RecurringCalendarEntryInterface {
+    readonly kind: RecurringSeriesKindEnum;
     readonly key: string;
     readonly seriesId: number;
     readonly userState: RecurringSeriesUserStateEnum;

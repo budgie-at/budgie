@@ -1,5 +1,8 @@
 import {
     buildCategoryTranslationJoinCondition,
+    buildSpendingEntryCondition,
+    AccountTypeEnum,
+    RecurringSeriesKindEnum,
     AccountEntityTable,
     BaseTransactionFilterRepository,
     CategoryEntityTable,
@@ -40,7 +43,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                          ORDER BY ${ExchangeRateEntityTable.createdAt} DESC LIMIT 1),
                         1.0
                     )`;
-                    const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * (CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN -1.0 ELSE 1.0 END) * ${rateToDefault}`;
+                    const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * ${rateToDefault}`;
 
                     return db
                         .select({
@@ -49,6 +52,11 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                             title: TransactionEntityTable.title,
                             comment: TransactionEntityTable.comment,
                             defaultAmount,
+                            kind: sql<RecurringSeriesKindEnum>`CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN ${RecurringSeriesKindEnum.INCOME} ELSE ${RecurringSeriesKindEnum.EXPENSE} END`,
+                            nativeAmount: TransactionEntryEntityTable.amount,
+                            instrumentId: AccountEntityTable.instrumentId,
+                            counterpartyIban: TransactionEntryEntityTable.toIban,
+                            mccCategoryId: TransactionEntryEntityTable.mccCategoryId,
                             accountId: AccountEntityTable.id,
                             categoryId: TransactionEntryEntityTable.categoryId,
                             categoryTitle: sql<
@@ -76,6 +84,9 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                                 filters.buildVisibleTransactionCondition(),
                                 filters.buildCategorizableEntryCondition(),
                                 filters.buildNonDebtAccountCondition(),
+                                buildSpendingEntryCondition(),
+                                eq(AccountEntityTable.isActive, true),
+                                ne(AccountEntityTable.type, AccountTypeEnum.CASH),
                                 gt(TransactionEntryEntityTable.amount, 0),
                                 gte(TransactionEntityTable.operatedAt, since),
                                 or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))

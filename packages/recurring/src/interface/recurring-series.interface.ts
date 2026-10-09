@@ -1,7 +1,10 @@
 import type { RecurringSeriesEventInterface } from './recurring-series-event.interface';
-import type { UserIconType } from '@budgie/contracts';
+import type { RecurringSeriesKindEnum, UserIconType } from '@budgie/contracts';
 
 export interface RecurringSeriesInterface {
+    readonly kind: RecurringSeriesKindEnum;
+    readonly instrumentId: number;
+    readonly nativeAmount: number;
     readonly merchantKey: string;
     readonly labels: readonly string[];
     readonly title: string;

@@ -2009,6 +2009,10 @@ msgstr "Курс обміну: {rateLabel}. Натисніть, щоб реда�
 msgid "Excluded from file imports"
 msgstr "Виключено з імпортів файлів"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Expected"
+msgstr "Очікується"
+
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Expected maturity date"
 msgstr "Очікувана дата погашення"
@@ -2035,6 +2039,10 @@ msgstr "Витрата"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Expenses"
 msgstr "Витрати"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Expenses {formattedDayExpense}"
+msgstr "Витрати {formattedDayExpense}"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export all transactions to a CSV file"
@@ -2373,6 +2381,10 @@ msgstr "включно з комісією {formattedFeeAmount}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Дохід"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Income {formattedDayIncome}"
+msgstr "Дохід {formattedDayIncome}"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Income and expenses"

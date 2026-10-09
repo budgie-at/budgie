@@ -2009,6 +2009,10 @@ msgstr "Tipo de cambio: {rateLabel}. Toca para editar el monto a recibir"
 msgid "Excluded from file imports"
 msgstr "Excluida de las importaciones de archivos"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
+msgid "Expected"
+msgstr "Previsto"
+
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Expected maturity date"
 msgstr "Fecha de vencimiento prevista"
@@ -2035,6 +2039,10 @@ msgstr "Gasto"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Expenses"
 msgstr "Gastos"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Expenses {formattedDayExpense}"
+msgstr "Gastos {formattedDayExpense}"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export all transactions to a CSV file"
@@ -2373,6 +2381,10 @@ msgstr "incluye comisión {formattedFeeAmount}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Ingreso"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
+msgid "Income {formattedDayIncome}"
+msgstr "Ingresos {formattedDayIncome}"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Income and expenses"

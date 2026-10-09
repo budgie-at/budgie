@@ -1,3 +1,5 @@
+import { RecurringSeriesKindEnum } from '@budgie/contracts';
+import { sumRecurringEntriesByKind } from '@budgie/recurring';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -69,8 +71,14 @@ export const RecurringCalendarContent = () => {
 
     const hasEntries = isDefined(data) && (data.entriesByDay.size > 0 || data.forecastedEntriesByDay.size > 0);
 
-    const selectedDayTotal = hasSelectedEntries ? selectedEntries.reduce((sum, entry) => sum + entry.latestAmount, 0) : 0;
-    const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
+    const formattedDayExpense = formatDigits(
+        convertFromMicroUnits(sumRecurringEntriesByKind(selectedEntries, RecurringSeriesKindEnum.EXPENSE)),
+        defaultInstrument.symbol
+    );
+    const formattedDayIncome = formatDigits(
+        convertFromMicroUnits(sumRecurringEntriesByKind(selectedEntries, RecurringSeriesKindEnum.INCOME)),
+        defaultInstrument.symbol
+    );
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
     const committedExpense = formatDigits(data?.committedMonthlyExpense ?? 0, defaultInstrument.symbol);
@@ -116,7 +124,12 @@ export const RecurringCalendarContent = () => {
                         <Text className="text-xs uppercase text-secondary-foreground" {...testIDProps(selectedDayHeaderTestID)}>
                             <Trans>Day {selectedDay}</Trans>
                         </Text>
-                        <ProtectedText className="text-xs text-secondary-foreground">{formattedDayTotal}</ProtectedText>
+                        <View className="items-end gap-y-xs">
+                            <ProtectedText className="text-xs text-secondary-foreground">
+                                {t`Expenses ${formattedDayExpense}`}
+                            </ProtectedText>
+                            <ProtectedText className="text-xs text-positive-foreground">{t`Income ${formattedDayIncome}`}</ProtectedText>
+                        </View>
                     </View>
 
                     <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>

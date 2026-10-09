@@ -1,21 +1,30 @@
 import { resetTestDb } from '@budgie-at/test-kit';
-import { PRECISION, RecurringSeriesUserStateEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    CASH_WITHDRAWAL_TRACKED_CATEGORY_ID,
+    PRECISION,
+    RecurringSeriesKindEnum,
+    RecurringSeriesStatusEnum,
+    RecurringSeriesUserStateEnum
+} from '@budgie/contracts';
 import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { RecurringAlertEnum, RecurringService } from '../src/index';
+import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import { TestLayer, testDb, testDbHandle, testSeedService } from './test-context';
 
 import type { RecurringCalendarDataInterface } from '../src/index';
+import type { AccountCreateEntityInterface, RecurringSeriesCreateEntityInterface } from '@budgie/contracts';
 
 const NOW = new Date(2026, 5, 15, 12);
 const JUNE = 5;
 const JULY = 6;
 const DEFAULT_INSTRUMENT_ID = 1;
 
-const seedCharges = Effect.fnUntraced(function* () {
-    const { id: accountId } = yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID });
+const seedCharges = Effect.fnUntraced(function* (accountInput: Partial<AccountCreateEntityInterface> = {}) {
+    const { id: accountId } = yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID, ...accountInput });
     let sequence = 0;
 
     return Effect.fnUntraced(function* (title: string, monthsAgo: number, day: number, amount: number, isIncome = false) {
@@ -40,6 +49,43 @@ const allEntries = (data: RecurringCalendarDataInterface) =>
 
 const forecastedAmounts = (data: RecurringCalendarDataInterface, day: number) =>
     (data.forecastedEntriesByDay.get(day) ?? []).map(entry => entry.latestAmount).sort((first, second) => first - second);
+
+const seedSavedSeries = (
+    input: Pick<RecurringSeriesCreateEntityInterface, 'merchantKey' | 'title' | 'amount' | 'userState' | 'lastSeenAt'>
+) =>
+    Effect.flatMap(RecurringRepository, repository =>
+        repository.createSeries({
+            ...input,
+            categoryId: null,
+            kind: RecurringSeriesKindEnum.EXPENSE,
+            periodDays: 30,
+            status: RecurringSeriesStatusEnum.ACTIVE
+        })
+    );
+
+const seedConcurrentSubscriptions = Effect.fnUntraced(function* (title: string) {
+    const seed = yield* seedCharges();
+    yield* seedMonthly(seed, title, 5, 5);
+    yield* seedMonthly(seed, title, 20, 15);
+
+    return seed;
+});
+
+const seedTransitSubscription = Effect.fnUntraced(function* () {
+    const seed = yield* seedCharges();
+    yield* seedMonthly(seed, 'TRANSIT', 20, 83.4);
+    const [entry] = allEntries(yield* calendar(JULY));
+
+    return { seed, entry };
+});
+
+const seedTransitTickets = (seed: Effect.Success<ReturnType<typeof seedCharges>>) =>
+    Effect.forEach([3, 12, 28], day => seed('TRANSIT', 1, day, 2.4), { discard: true });
+
+const expectSuggestedEntries = (entries: ReturnType<typeof allEntries>) => {
+    expect(entries).toHaveLength(2);
+    expect(entries.every(entry => entry.userState === RecurringSeriesUserStateEnum.SUGGESTED)).toBe(true);
+};
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
@@ -84,13 +130,13 @@ layer(TestLayer)('recurringService', it => {
 
             const data = yield* calendar(JULY);
 
-            expect(forecastedAmounts(data, 1)).toEqual([-3000 * PRECISION]);
+            expect(forecastedAmounts(data, 1)).toEqual([3000 * PRECISION]);
             expect(forecastedAmounts(data, 20)).toEqual([10 * PRECISION]);
             expect(data.forecastedTotalAmount).toBeCloseTo(10);
         })
     );
 
-    it.effect('merges renamed merchant variants into one series', () =>
+    it.effect('does not merge unrelated descriptive variants through fuzzy matching', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* seed('AREALIS WIEN MDID:123456', 4, 20, 50);
@@ -100,11 +146,11 @@ layer(TestLayer)('recurringService', it => {
 
             const data = yield* calendar(JUNE);
 
-            expect(forecastedAmounts(data, 20)).toEqual([50 * PRECISION]);
+            expect(forecastedAmounts(data, 20)).toEqual([]);
         })
     );
 
-    it.effect('detects two subscriptions at one merchant with different prices', () =>
+    it.effect('aggregates fixed same-day recurring charges at one merchant', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* Effect.forEach(
@@ -115,11 +161,11 @@ layer(TestLayer)('recurringService', it => {
 
             const data = yield* calendar(JULY);
 
-            expect(forecastedAmounts(data, 10)).toEqual([4.99 * PRECISION, 12.99 * PRECISION]);
+            expect(forecastedAmounts(data, 10)).toEqual([17.98 * PRECISION]);
         })
     );
 
-    it.effect('keeps a merchant renamed from a short brand label in one series', () =>
+    it.effect('keeps different merchant descriptions distinct without fuzzy identity', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* Effect.forEach([6, 5, 4], monthsAgo => seed('A1', monthsAgo, 20, 25), { discard: true });
@@ -127,30 +173,8 @@ layer(TestLayer)('recurringService', it => {
 
             const months = yield* Effect.forEach([0, 1, 2, 3, 4, JUNE, JULY], calendar);
 
-            expect(new Set(months.flatMap(allEntries).map(entry => entry.seriesId)).size).toBe(1);
+            expect(new Set(months.flatMap(allEntries).map(entry => entry.seriesId)).size).toBe(2);
             expect(forecastedAmounts(months[months.length - 1], 20)).toEqual([25 * PRECISION]);
-        })
-    );
-
-    it.effect('detects four subscriptions at one merchant within one amount band', () =>
-        Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach(
-                [
-                    [3, 8.49],
-                    [10, 8.99],
-                    [18, 9.49],
-                    [26, 9.99]
-                ],
-                ([day, amount]) => seedMonthly(seed, 'Apple', day, amount),
-                { discard: true }
-            );
-
-            const data = yield* calendar(JULY);
-
-            expect([3, 10, 18, 26].flatMap(day => forecastedAmounts(data, day))).toEqual(
-                [8.49, 8.99, 9.49, 9.99].map(amount => amount * PRECISION)
-            );
         })
     );
 
@@ -197,7 +221,7 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
-    it.effect('keeps a variable bi-monthly utility as one series', () =>
+    it.effect('rejects variable utility bills outside supported stable cadences', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* Effect.forEach(
@@ -215,7 +239,7 @@ layer(TestLayer)('recurringService', it => {
             const july = yield* calendar(JULY);
 
             expect(june.forecastedEntriesByDay.size).toBe(0);
-            expect(forecastedAmounts(july, 20)).toEqual([110 * PRECISION]);
+            expect(forecastedAmounts(july, 20)).toEqual([]);
         })
     );
 
@@ -267,7 +291,7 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
-    it.effect('flags a price step above five percent and forecasts the new price', () =>
+    it.effect('rejects an unproven large price change', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* Effect.forEach([6, 5, 4, 3, 2], monthsAgo => seed('WIENER LINIEN', monthsAgo, 20, 33), { discard: true });
@@ -275,9 +299,7 @@ layer(TestLayer)('recurringService', it => {
 
             const data = yield* calendar(JULY);
 
-            expect(data.forecastedEntriesByDay.get(20)?.map(entry => [entry.latestAmount, entry.alert])).toEqual([
-                [41.7 * PRECISION, RecurringAlertEnum.PRICE_CHANGE]
-            ]);
+            expect(data.forecastedEntriesByDay.size).toBe(0);
         })
     );
 
@@ -292,6 +314,188 @@ layer(TestLayer)('recurringService', it => {
             expect(data.forecastedEntriesByDay.get(5)?.map(entry => [entry.latestAmount, entry.alert])).toEqual([
                 [41.7 * PRECISION, RecurringAlertEnum.PRICE_CHANGE]
             ]);
+        })
+    );
+
+    it.effect('excludes inactive and cash accounts from the real charge query', () =>
+        Effect.gen(function* () {
+            const inactive = yield* seedCharges({ isActive: false });
+            const cash = yield* seedCharges({ type: AccountTypeEnum.CASH });
+            const active = yield* seedCharges();
+            yield* seedMonthly(inactive, 'INACTIVE', 20, 40);
+            yield* seedMonthly(cash, 'CASH', 20, 50);
+            yield* seedMonthly(active, 'ACTIVE', 20, 60);
+            const data = yield* calendar(JULY);
+            expect(allEntries(data).map(entry => entry.title)).toEqual(['ACTIVE']);
+            expect(data.committedMonthlyExpense).toBe(60);
+        })
+    );
+
+    it.effect('preserves a dismissed legacy identity after qualified detection', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            yield* seedSavedSeries({
+                merchantKey: 'NETFLIX',
+                title: 'NETFLIX',
+                amount: 12 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.DISMISSED,
+                lastSeenAt: new Date(2026, 4, 20)
+            });
+            expect(allEntries(yield* calendar(JULY))).toEqual([]);
+            expect(allEntries(yield* calendar(JULY))).toEqual([]);
+        })
+    );
+
+    it.effect('does not inherit a confirmed legacy state into ambiguous amount streams', () =>
+        Effect.gen(function* () {
+            yield* seedConcurrentSubscriptions('APPLE');
+            yield* seedSavedSeries({
+                merchantKey: 'APPLE',
+                title: 'Apple confirmed',
+                amount: 5 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                lastSeenAt: new Date(2026, 4, 5)
+            });
+            const entries = allEntries(yield* calendar(JULY));
+            expectSuggestedEntries(entries);
+        })
+    );
+
+    it.effect('preserves a legacy dismissal across ambiguous split streams', () =>
+        Effect.gen(function* () {
+            yield* seedConcurrentSubscriptions('APPLE');
+            yield* seedSavedSeries({
+                merchantKey: 'APPLE',
+                title: 'Apple dismissed',
+                amount: 5 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.DISMISSED,
+                lastSeenAt: new Date(2026, 4, 5)
+            });
+            expect(allEntries(yield* calendar(JULY))).toEqual([]);
+        })
+    );
+
+    it.effect('reuses the spending predicate to exclude cash-tracked entries', () =>
+        Effect.gen(function* () {
+            const { id: accountId } = yield* testSeedService.account();
+            yield* Effect.forEach(
+                [3, 2, 1],
+                monthsAgo =>
+                    testSeedService.manualExpense({
+                        accountId,
+                        amount: 50 * PRECISION,
+                        operatedAt: new Date(2026, JUNE - monthsAgo, 20),
+                        title: 'CASH TRACKED',
+                        categoryId: CASH_WITHDRAWAL_TRACKED_CATEGORY_ID
+                    }),
+                { discard: true }
+            );
+            expect(allEntries(yield* calendar(JULY))).toEqual([]);
+        })
+    );
+
+    it.effect('preserves confirmation and rename when incidental tickets introduce a split', () =>
+        Effect.gen(function* () {
+            const { seed, entry } = yield* seedTransitSubscription();
+            yield* Effect.flatMap(RecurringService, service =>
+                Effect.andThen(
+                    service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.CONFIRMED),
+                    service.rename(entry.seriesId, 'Transit subscription')
+                )
+            );
+            yield* seedTransitTickets(seed);
+            const entries = allEntries(yield* calendar(JULY));
+            expect(entries).toHaveLength(1);
+            expect(entries[0]).toMatchObject({
+                seriesId: entry.seriesId,
+                title: 'Transit subscription',
+                userState: RecurringSeriesUserStateEnum.CONFIRMED
+            });
+        })
+    );
+
+    it.effect('preserves a whole-stream dismissal when incidental tickets introduce a split', () =>
+        Effect.gen(function* () {
+            const { seed, entry } = yield* seedTransitSubscription();
+            yield* Effect.flatMap(RecurringService, service =>
+                service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.DISMISSED)
+            );
+            yield* seedTransitTickets(seed);
+            expect(allEntries(yield* calendar(JULY))).toEqual([]);
+        })
+    );
+
+    it.effect('preserves split-stream dismissal when recent subscriptions make the whole history qualify', () =>
+        Effect.gen(function* () {
+            const { seed } = yield* seedTransitSubscription();
+            yield* seedTransitTickets(seed);
+            const [entry] = allEntries(yield* calendar(JULY));
+            yield* Effect.flatMap(RecurringService, service =>
+                service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.DISMISSED)
+            );
+            yield* seedSavedSeries({
+                merchantKey: 'EXPENSE|1||TRANSIT',
+                title: 'Transit base',
+                amount: 83.4 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.SUGGESTED,
+                lastSeenAt: new Date(2026, 4, 20)
+            });
+            yield* Effect.forEach([0, -1, -2, -3], monthsAgo => seed('TRANSIT', monthsAgo, 20, 83.4), { discard: true });
+            const data = yield* Effect.flatMap(RecurringService, service => service.calendar(2026, 10, new Date(2026, 9, 25)));
+            expect(allEntries(data)).toEqual([]);
+            expect(data.committedMonthlyExpense).toBe(0);
+        })
+    );
+
+    it.effect('stable amount-cluster identities preserve user states across a small price change', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedConcurrentSubscriptions('SUBSCRIPTIONS');
+            const entries = allEntries(yield* calendar(JULY));
+            yield* Effect.flatMap(RecurringService, service =>
+                Effect.andThen(
+                    service.setUserState(entries[0].seriesId, RecurringSeriesUserStateEnum.DISMISSED),
+                    service.setUserState(entries[1].seriesId, RecurringSeriesUserStateEnum.CONFIRMED)
+                )
+            );
+            yield* seed('SUBSCRIPTIONS', 0, 5, 5);
+            yield* seed('SUBSCRIPTIONS', 0, 20, 16);
+            const after = yield* Effect.flatMap(RecurringService, service => service.calendar(2026, JULY, new Date(2026, JUNE, 25)));
+            expect(allEntries(after).map(entry => [entry.seriesId, entry.userState])).toEqual([
+                [entries[1].seriesId, RecurringSeriesUserStateEnum.CONFIRMED]
+            ]);
+        })
+    );
+
+    it.effect('does not transfer canonical confirmation when one merchant splits into two qualified streams', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'BILLING', 5, 5);
+            const [entry] = allEntries(yield* calendar(JULY));
+            yield* Effect.flatMap(RecurringService, service =>
+                service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.CONFIRMED)
+            );
+            yield* seedMonthly(seed, 'BILLING', 20, 15);
+            const entries = allEntries(yield* calendar(JULY));
+            expectSuggestedEntries(entries);
+        })
+    );
+
+    it.effect('does not inherit a currency-less legacy confirmation into two native-currency streams', () =>
+        Effect.gen(function* () {
+            const firstCurrency = yield* seedCharges();
+            const secondCurrency = yield* seedCharges({ instrumentId: 2 });
+            yield* seedMonthly(firstCurrency, 'NETFLIX', 20, 12);
+            yield* seedMonthly(secondCurrency, 'NETFLIX', 20, 12);
+            yield* seedSavedSeries({
+                merchantKey: 'NETFLIX',
+                title: 'NETFLIX',
+                amount: 12 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                lastSeenAt: new Date(2026, 4, 20)
+            });
+            const entries = allEntries(yield* calendar(JULY));
+            expectSuggestedEntries(entries);
         })
     );
 
