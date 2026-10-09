@@ -52,7 +52,11 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
             return normalizeTitle(isDefined(matchingPrefix) ? title.slice(matchingPrefix.length) : title);
         };
-        const matchesPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
+        const matchesNextPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
+            externalSource === ExternalSourceEnum.MONOBANK
+                ? title.startsWith(monobankMonthlyPartPrefix)
+                : normalizeTitle(title) === normalizeTitle(referenceTitle);
+        const matchesEarlierPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
             externalSource === ExternalSourceEnum.MONOBANK
                 ? title.startsWith(monobankMonthlyPartPrefix) ||
                   (title.startsWith(monobankLegacyPaymentPrefix) &&
@@ -81,7 +85,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 candidate =>
                     candidate.externalSource === firstPart.externalSource &&
                     (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
-                    matchesPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
+                    matchesNextPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
             );
         });
 
@@ -113,7 +117,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 candidate =>
                     candidate.externalSource === transaction.externalSource &&
                     Math.abs(candidate.amount - primaryEntry.amount) <= amountTolerance &&
-                    matchesPartTitle(transaction.externalSource, candidate.title, transaction.title)
+                    matchesEarlierPartTitle(transaction.externalSource, candidate.title, transaction.title)
             );
 
             return isDefined(match) && !isNotEmptyArray(ambiguousMatches) ? match : null;
@@ -205,15 +209,21 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         });
 
         const attachPlanDueParts = Effect.fnUntraced(function* (debtAccountId: number, activePlanIds: readonly number[]) {
-            yield* attachUniquePart(debtAccountId, activePlanIds, findNextPartMatches).pipe(
-                Effect.repeat({ while: isAttached => isAttached })
-            );
+            const attachNextPartOrPayoff = Effect.fnUntraced(function* () {
+                const [, ...ambiguousMonthlyMatches] = yield* findNextPartMatches(debtAccountId);
 
-            const [, ...ambiguousMonthlyMatches] = yield* findNextPartMatches(debtAccountId);
+                if (isNotEmptyArray(ambiguousMonthlyMatches)) {
+                    return false;
+                }
 
-            if (!isNotEmptyArray(ambiguousMonthlyMatches)) {
-                yield* attachUniquePart(debtAccountId, activePlanIds, findEarlyPayoffMatches);
-            }
+                if (yield* attachUniquePart(debtAccountId, activePlanIds, findEarlyPayoffMatches)) {
+                    return false;
+                }
+
+                return yield* attachUniquePart(debtAccountId, activePlanIds, findNextPartMatches);
+            });
+
+            yield* attachNextPartOrPayoff().pipe(Effect.repeat({ while: isAttached => isAttached }));
         });
 
         const cancelRefundedPlan = Effect.fnUntraced(function* (debtAccountId: number) {

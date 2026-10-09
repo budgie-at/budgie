@@ -10,7 +10,7 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, InstallmentPlanService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, InstallmentPlanService, TransactionDebtSettlementService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, inArray } from 'drizzle-orm';
@@ -25,10 +25,18 @@ const toMicroUnits = (amount: number): number => Math.round(amount * PRECISION);
 const seedPart = (accountId: number, title: string, amount: number, operatedAt: Date) =>
     seed.manualExpense({ accountId, title, amount: toMicroUnits(amount), operatedAt, externalSource: ExternalSourceEnum.MONOBANK });
 
+const seedPlanWithPayoff = Effect.fnUntraced(function* (iban: string, payoffAmount: number, payoffAt: Date) {
+    const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, iban);
+    const first = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 0, 28, 10));
+    const payoff = yield* seedPart(card.id, 'Дострокове погашення Tech Shop', payoffAmount, payoffAt);
+
+    return { card, first, payoff };
+});
+
 const seedMonthlyPayoffParts = Effect.fnUntraced(function* (iban: string, merchant: string) {
     const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, iban);
     const first = yield* seedPart(card.id, `Платіж ${merchant}`, 100, new Date(2026, 1, 28, 23, 9));
-    const second = yield* seedPart(card.id, `Платіж ${merchant}`, 100, new Date(2026, 2, 28, 9, 13));
+    const second = yield* seedPart(card.id, `Щомісячний платіж ${merchant}`, 100, new Date(2026, 2, 28, 9, 13));
 
     return { card, first, second };
 });
@@ -143,6 +151,64 @@ describe('installment plan', () => {
 
             expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, second.id, payoff.id]);
             expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { iban: 'UA-payoff-before-monthly', payoffAt: new Date(2026, 1, 15, 12) },
+        { iban: 'UA-payoff-after-monthly', payoffAt: new Date(2026, 2, 15, 12) }
+    ])('prioritizes a full payoff over a marked monthly part when $iban', ({ iban, payoffAt }) =>
+        Effect.gen(function* () {
+            const { card, first, payoff } = yield* seedPlanWithPayoff(iban, 200, payoffAt);
+            yield* seedPart(card.id, 'Щомісячний платіж Tech Shop', 100, new Date(2026, 1, 28, 10));
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id]);
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, payoff.id]);
+            expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('ignores a partial early payoff', () =>
+        Effect.gen(function* () {
+            const { card, first } = yield* seedPlanWithPayoff('UA-partial-payoff', 100, new Date(2026, 1, 15, 12));
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id]);
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(toMicroUnits(200));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { iban: 'UA-purchase-after-payoff', purchaseAmount: 100, payoffAt: new Date(2026, 1, 15, 12) },
+        { iban: 'UA-purchase-before-payoff', purchaseAmount: 200, payoffAt: new Date(2026, 2, 15, 12) }
+    ])('keeps a same-merchant purchase independent when $iban is converted', ({ iban, purchaseAmount, payoffAt }) =>
+        Effect.gen(function* () {
+            const { card, first, payoff } = yield* seedPlanWithPayoff(iban, 200, payoffAt);
+            const purchase = yield* seedPart(card.id, 'Платіж Tech Shop', purchaseAmount, new Date(2026, 1, 28, 10));
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id]);
+            const firstPlan = yield* convert(first.id, 3, 300);
+            const installmentPlanService = yield* InstallmentPlanService;
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+
+            yield* installmentPlanService.attachDueParts();
+            yield* runPostSync();
+            yield* transactionDebtSettlementService.resyncInTransaction(first.id);
+            yield* transactionDebtSettlementService.resyncInTransaction(payoff.id);
+            yield* transactionDebtSettlementService.resyncInTransaction(purchase.id);
+            yield* installmentPlanService.attachDueParts();
+
+            expect(yield* fetchAttachedTransactionIds(firstPlan.accountId)).toEqual([first.id, payoff.id]);
+            expect((yield* fetchDebtProgress(firstPlan.accountId)).outstandingAmount).toBe(0);
+
+            const purchasePlan = yield* convert(purchase.id, 2, purchaseAmount * 2);
+
+            yield* runPostSync();
+            yield* installmentPlanService.attachDueParts();
+
+            expect(yield* fetchAttachedTransactionIds(firstPlan.accountId)).toEqual([first.id, payoff.id]);
+            expect(yield* fetchAttachedTransactionIds(purchasePlan.accountId)).toEqual([purchase.id]);
+            expect((yield* fetchDebtProgress(purchasePlan.accountId)).outstandingAmount).toBe(toMicroUnits(purchaseAmount));
         }).pipe(Effect.provide(TestLayer))
     );
 
