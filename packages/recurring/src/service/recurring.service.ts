@@ -1,11 +1,11 @@
 import { Db, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum, SettingsRepository } from '@budgie/contracts';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { RecurringRepository } from '../repository/recurring.repository';
 import { projectRecurringMonth } from '../series/recurring-projection';
 import { detectRecurringSeries, isSeriesActive } from '../series/recurring-series';
@@ -74,65 +74,39 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 : segments.slice(0, 3).join('|');
         };
 
-        const matchesFixedPrice = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean => {
-            const currentPrice = Number(series.merchantKey.split('|').at(-1));
-            const storedPrice = Number(row.merchantKey.split('|').at(-1));
+        const isOnCycle = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean => {
+            const offset = Math.abs(differenceInCalendarDays(new Date(series.anchorTimestamp), row.lastSeenAt)) % series.periodDays;
 
-            return (
-                series.merchantKey.split('|').length === 4 &&
-                row.merchantKey.split('|').length === 4 &&
-                isPositiveNumber(currentPrice) &&
-                isPositiveNumber(storedPrice) &&
-                Math.max(currentPrice, storedPrice) <= Math.min(currentPrice, storedPrice) * RECURRING_AMOUNT_RATIO
-            );
+            return Math.min(offset, series.periodDays - offset) <= series.toleranceDays;
         };
 
         const track = Effect.fn('RecurringService.track')(function* (detected: readonly RecurringSeriesInterface[], now: Date) {
             const rows = yield* recurringRepository.findSeries();
-            const claimed = new Set<number>();
+            const exactRows = detected.map(series =>
+                rows.find(item => item.kind === series.kind && item.merchantKey === series.merchantKey)
+            );
+            const claimed = new Set(exactRows.filter(isDefined).map(item => item.id));
 
-            return yield* Effect.forEach(detected, series => {
+            return yield* Effect.forEach(detected, (series, index) => {
                 const facts = toFacts(series, now);
-                const exactRow = rows.find(
-                    item => !claimed.has(item.id) && item.kind === facts.kind && item.merchantKey === series.merchantKey
-                );
                 const legacyRows = rows.filter(item => matchesLegacyIdentity(series, item));
-                const familyRows = rows.filter(
-                    item =>
-                        item.kind === series.kind &&
-                        item.periodDays === facts.periodDays &&
-                        item.merchantKey.includes('|') &&
-                        canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey)
-                );
-                const familyCount = detected.filter(
-                    candidate =>
-                        candidate.kind === series.kind && canonicalFamily(candidate.merchantKey) === canonicalFamily(series.merchantKey)
-                ).length;
-                const dismissedRow = [...legacyRows, ...familyRows].find(
-                    item =>
-                        item.userState === RecurringSeriesUserStateEnum.DISMISSED &&
-                        (!item.merchantKey.includes('|') ||
-                            item.merchantKey === series.merchantKey ||
-                            item.merchantKey === canonicalFamily(series.merchantKey) ||
-                            (familyCount === 1 && familyRows.every(other => other.lastSeenAt <= item.lastSeenAt)))
-                );
-                const matchingFamilyRows = familyRows.filter(
-                    item =>
-                        !claimed.has(item.id) &&
-                        matchesFixedPrice(series, item) &&
-                        detected.filter(
-                            candidate =>
-                                canonicalFamily(candidate.merchantKey) === canonicalFamily(item.merchantKey) &&
-                                matchesFixedPrice(candidate, item)
-                        ).length === 1
-                );
-                const familyRow =
-                    (matchingFamilyRows.length === 1 ? matchingFamilyRows[0] : null) ??
-                    (familyCount === 1 && familyRows.length === 1 && !claimed.has(familyRows[0].id) ? familyRows[0] : null);
                 const row =
-                    exactRow ??
-                    familyRow ??
-                    dismissedRow ??
+                    exactRows[index] ??
+                    rows
+                        .filter(
+                            item =>
+                                !claimed.has(item.id) &&
+                                item.kind === series.kind &&
+                                item.periodDays === facts.periodDays &&
+                                canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey)
+                        )
+                        .sort(
+                            (first, second) =>
+                                Number(isOnCycle(series, second)) - Number(isOnCycle(series, first)) ||
+                                Math.abs(first.amount - series.predictedAmount) - Math.abs(second.amount - series.predictedAmount)
+                        )
+                        .at(0) ??
+                    legacyRows.find(item => item.userState === RecurringSeriesUserStateEnum.DISMISSED) ??
                     legacyRows.find(
                         item =>
                             legacyRows.length === 1 &&

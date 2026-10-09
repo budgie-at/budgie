@@ -78,25 +78,25 @@ const seedConcurrentSubscriptions = Effect.fnUntraced(function* (title: string) 
     return seed;
 });
 
-const seedConfirmedBesideRetiredDismissed = Effect.gen(function* () {
+const seedTrackedStreams = Effect.fnUntraced(function* (streams: readonly (readonly [number, number, RecurringSeriesUserStateEnum])[]) {
     const seed = yield* seedCharges();
-    yield* Effect.forEach([5, 4, 3, 2], monthsAgo => Effect.andThen(seed('BILLING', monthsAgo, 5, 5), seed('BILLING', monthsAgo, 20, 15)), {
-        discard: true
-    });
-    const entries = allEntries(yield* calendarAsOf(4, new Date(2026, 3, 25)));
-    const [dismissed] = entries.filter(entry => entry.latestAmount === 5 * PRECISION);
-    const [confirmed] = entries.filter(entry => entry.latestAmount === 15 * PRECISION);
-    yield* Effect.flatMap(RecurringService, service =>
-        Effect.andThen(
-            service.setUserState(dismissed.seriesId, RecurringSeriesUserStateEnum.DISMISSED),
-            Effect.andThen(
-                service.setUserState(confirmed.seriesId, RecurringSeriesUserStateEnum.CONFIRMED),
-                service.rename(confirmed.seriesId, 'Main plan')
-            )
-        )
+    yield* Effect.forEach(
+        [5, 4, 3, 2],
+        monthsAgo => Effect.forEach(streams, ([day, amount]) => seed('BILLING', monthsAgo, day, amount), { discard: true }),
+        { discard: true }
     );
+    const entries = allEntries(yield* calendarAsOf(4, new Date(2026, 3, 25)));
+    const service = yield* RecurringService;
+    const ids = yield* Effect.forEach(streams, ([, amount, userState]) => {
+        const [entry] = entries.filter(item => item.latestAmount === amount * PRECISION);
 
-    return { seed, confirmed };
+        return Effect.as(
+            Effect.andThen(service.setUserState(entry.seriesId, userState), service.rename(entry.seriesId, `Plan ${amount}`)),
+            [amount, entry.seriesId] as const
+        );
+    });
+
+    return { seed, ids: new Map(ids) };
 });
 
 const seedTransitSubscription = Effect.fnUntraced(function* () {
@@ -120,47 +120,230 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService', it => {
-    for (const [scenario, amount] of [
-        ['at the same price', 15],
-        ['when the price drops', 14.9]
+    for (const [scenario, streams, survivors, months, visible] of [
+        [
+            'a confirmed survivor at the same price after a dismissed sibling retires',
+            [
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[20, 15]],
+            [1, 0],
+            [15]
+        ],
+        [
+            'a confirmed survivor whose price drops after a dismissed sibling retires',
+            [
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[20, 14.9]],
+            [1, 0],
+            [15]
+        ],
+        [
+            'a confirmed survivor whose price drops later after a dismissed sibling retires',
+            [
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[20, 14.9]],
+            [-1, -2, -3],
+            [15]
+        ],
+        [
+            'a confirmed survivor whose price rises after a dismissed sibling retires',
+            [
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[20, 17]],
+            [-1, -2, -3],
+            [15]
+        ],
+        [
+            'a dismissed survivor whose price rises after a confirmed sibling retires',
+            [
+                [5, 15, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 5, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[5, 17]],
+            [-1, -2, -3],
+            []
+        ],
+        [
+            'a dismissed survivor whose price falls after a confirmed sibling retires',
+            [
+                [5, 15, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 5, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[5, 12]],
+            [-1, -2, -3],
+            []
+        ],
+        [
+            'a dismissed survivor whose price rises without a billing gap',
+            [
+                [5, 15, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 5, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[5, 17]],
+            [1, 0, -1],
+            []
+        ],
+        [
+            'a dismissed survivor after two confirmed siblings retire',
+            [
+                [5, 15, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 5, RecurringSeriesUserStateEnum.CONFIRMED],
+                [10, 30, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[5, 17]],
+            [-1, -2, -3],
+            []
+        ],
+        [
+            'a dismissed survivor sharing its billing day with a retired confirmed sibling',
+            [
+                [20, 15, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 5, RecurringSeriesUserStateEnum.CONFIRMED]
+            ],
+            [[20, 17]],
+            [-1, -2, -3],
+            []
+        ],
+        [
+            'a confirmed survivor sharing its billing day with a retired dismissed sibling',
+            [
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED],
+                [20, 5, RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [[20, 17]],
+            [-1, -2, -3],
+            [15]
+        ],
+        [
+            'a confirmed survivor after two dismissed siblings retire',
+            [
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED],
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED],
+                [10, 30, RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [[20, 17]],
+            [-1, -2, -3],
+            [15]
+        ],
+        [
+            'a confirmed survivor nearer in price to a retired dismissed sibling',
+            [
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED],
+                [5, 20, RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [[20, 18]],
+            [-1, -2, -3],
+            [15]
+        ],
+        [
+            'a dismissed survivor whose price rises after a dismissed sibling retires',
+            [
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 15, RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [[20, 17]],
+            [-1, -2, -3],
+            []
+        ],
+        [
+            'a dismissed survivor whose price falls after a dismissed sibling retires',
+            [
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED],
+                [20, 15, RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [[20, 12]],
+            [-1, -2, -3],
+            []
+        ],
+        [
+            'concurrent streams that both change price',
+            [
+                [5, 5, RecurringSeriesUserStateEnum.CONFIRMED],
+                [20, 15, RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [
+                [5, 6],
+                [20, 17]
+            ],
+            [-1, -2, -3],
+            [5]
+        ],
+        [
+            'a confirmed stream beside a dismissed sibling that moves to its billing day',
+            [
+                [20, 15, RecurringSeriesUserStateEnum.CONFIRMED],
+                [5, 5, RecurringSeriesUserStateEnum.DISMISSED]
+            ],
+            [
+                [20, 15],
+                [20, 6]
+            ],
+            [-1, -2, -3],
+            [15]
+        ],
+        ['a single dismissed stream whose price band changes', [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]], [[20, 17]], [1, 0], []],
+        [
+            'a single dismissed stream whose price drifts',
+            [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]],
+            [[20, 14.9]],
+            [-1, -2, -3],
+            []
+        ],
+        ['a single dismissed stream whose price rises', [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]], [[20, 17]], [-1, -2, -3], []],
+        ['a single dismissed stream whose price falls', [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]], [[20, 12]], [-1, -2, -3], []],
+        [
+            'a single dismissed stream whose billing day shifts',
+            [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]],
+            [[22, 15]],
+            [-1, -2, -3],
+            []
+        ],
+        [
+            'a single dismissed stream whose billing day moves as its price drifts',
+            [[5, 15, RecurringSeriesUserStateEnum.DISMISSED]],
+            [[20, 14.9]],
+            [1, 0, -1, -2, -3, -4],
+            []
+        ],
+        [
+            'a single dismissed stream resuming after a gap',
+            [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]],
+            [[20, 15]],
+            [-2, -3, -4],
+            []
+        ],
+        [
+            'a single dismissed stream resuming after a gap at a new price',
+            [[20, 15, RecurringSeriesUserStateEnum.DISMISSED]],
+            [[20, 17]],
+            [-2, -3, -4],
+            []
+        ]
     ] as const) {
-        it.effect(`keeps a confirmed survivor when a dismissed sibling retires ${scenario}`, () =>
+        it.effect(`keeps the persisted identity of ${scenario}`, () =>
             Effect.gen(function* () {
-                const { seed, confirmed } = yield* seedConfirmedBesideRetiredDismissed;
-                yield* Effect.forEach([1, 0], monthsAgo => seed('BILLING', monthsAgo, 20, amount), { discard: true });
-                const after = yield* calendarAsOf(JULY, new Date(2026, JUNE, 25));
-                expect(allEntries(after)).toHaveLength(1);
-                expect(allEntries(after)[0]).toMatchObject({
-                    seriesId: confirmed.seriesId,
-                    title: 'Main plan',
-                    userState: RecurringSeriesUserStateEnum.CONFIRMED,
-                    latestAmount: amount * PRECISION
-                });
+                const { seed, ids } = yield* seedTrackedStreams(streams);
+                yield* Effect.forEach(
+                    months,
+                    monthsAgo => Effect.forEach(survivors, ([day, amount]) => seed('BILLING', monthsAgo, day, amount), { discard: true }),
+                    { discard: true }
+                );
+                const lastMonth = JUNE - months[months.length - 1];
+                const after = allEntries(yield* calendarAsOf(lastMonth + 1, new Date(2026, lastMonth, 25)));
+                expect(after.map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual(
+                    visible.map(amount => [ids.get(amount), `Plan ${amount}`, RecurringSeriesUserStateEnum.CONFIRMED])
+                );
             })
         );
     }
-
-    it.effect('keeps a survivor visible when a dismissed sibling retires and the price rises', () =>
-        Effect.gen(function* () {
-            const { seed } = yield* seedConfirmedBesideRetiredDismissed;
-            yield* Effect.forEach([-1, -2, -3], monthsAgo => seed('BILLING', monthsAgo, 20, 17), { discard: true });
-            const after = yield* calendarAsOf(9, new Date(2026, 8, 25));
-            expect(allEntries(after).map(entry => entry.latestAmount)).toEqual([17 * PRECISION]);
-        })
-    );
-
-    it.effect('keeps a dismissed single stream dismissed when its price band changes', () =>
-        Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach([5, 4, 3, 2], monthsAgo => seed('BILLING', monthsAgo, 20, 15), { discard: true });
-            const [entry] = allEntries(yield* calendarAsOf(4, new Date(2026, 3, 25)));
-            yield* Effect.flatMap(RecurringService, service =>
-                service.setUserState(entry.seriesId, RecurringSeriesUserStateEnum.DISMISSED)
-            );
-            yield* Effect.forEach([1, 0], monthsAgo => seed('BILLING', monthsAgo, 20, 17), { discard: true });
-            expect(allEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 25)))).toEqual([]);
-        })
-    );
 
     it.effect('keeps the real screenshot fixture active at month boundaries', () =>
         Effect.gen(function* () {
