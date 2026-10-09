@@ -65,7 +65,13 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             series.kind === row.kind &&
             (series.labels.includes(row.merchantKey) || series.labels.includes(normalizeRecurringDescription(row.merchantKey)));
 
-        const canonicalFamily = (key: string): string => key.split('|').slice(0, 4).join('|');
+        const canonicalFamily = (key: string): string => {
+            const segments = key.split('|');
+
+            return /^\d*$/u.test(segments[2] ?? '') && segments.length >= 4
+                ? [segments[0], segments[1], segments[3]].join('|')
+                : segments.slice(0, 3).join('|');
+        };
 
         const track = Effect.fn('RecurringService.track')(function* (detected: readonly RecurringSeriesInterface[], now: Date) {
             const rows = yield* recurringRepository.findSeries();
@@ -80,6 +86,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 const familyRows = rows.filter(
                     item =>
                         item.kind === series.kind &&
+                        item.periodDays === facts.periodDays &&
                         item.merchantKey.includes('|') &&
                         canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey)
                 );

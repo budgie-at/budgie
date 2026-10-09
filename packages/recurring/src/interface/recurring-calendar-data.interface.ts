@@ -6,5 +6,4 @@ export interface RecurringCalendarDataInterface {
     readonly totalAmount: number;
     readonly forecastedTotalAmount: number;
     readonly committedMonthlyExpense: number;
-    readonly committedMonthlyIncome: number;
 }

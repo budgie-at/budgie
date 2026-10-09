@@ -1,7 +1,6 @@
 import {
     buildCategoryTranslationJoinCondition,
     buildSpendingEntryCondition,
-    AccountTypeEnum,
     RecurringSeriesKindEnum,
     AccountEntityTable,
     BaseTransactionFilterRepository,
@@ -52,7 +51,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                             title: TransactionEntityTable.title,
                             comment: TransactionEntityTable.comment,
                             defaultAmount,
-                            kind: sql<RecurringSeriesKindEnum>`CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN ${RecurringSeriesKindEnum.INCOME} ELSE ${RecurringSeriesKindEnum.EXPENSE} END`,
+                            kind: sql<RecurringSeriesKindEnum>`${RecurringSeriesKindEnum.EXPENSE}`,
                             nativeAmount: TransactionEntryEntityTable.amount,
                             instrumentId: AccountEntityTable.instrumentId,
                             counterpartyIban: TransactionEntryEntityTable.toIban,
@@ -71,22 +70,13 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                         .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                         .where(
                             and(
-                                or(
-                                    and(
-                                        eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-                                        eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
-                                    ),
-                                    and(
-                                        eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
-                                        eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT)
-                                    )
-                                ),
+                                eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
                                 filters.buildVisibleTransactionCondition(),
                                 filters.buildCategorizableEntryCondition(),
                                 filters.buildNonDebtAccountCondition(),
                                 buildSpendingEntryCondition(),
                                 eq(AccountEntityTable.isActive, true),
-                                ne(AccountEntityTable.type, AccountTypeEnum.CASH),
                                 gt(TransactionEntryEntityTable.amount, 0),
                                 gte(TransactionEntityTable.operatedAt, since),
                                 or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))

@@ -1,4 +1,4 @@
-import { RecurringSeriesKindEnum, RecurringSeriesUserStateEnum, UserIconNameEnum } from '@budgie/contracts';
+import { RecurringSeriesUserStateEnum, UserIconNameEnum } from '@budgie/contracts';
 import { RecurringAlertEnum, RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -40,24 +40,21 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     const formatDigits = useFormatDigits(decimalPlaces);
     const [isRenaming, setIsRenaming] = useState(false);
 
-    const isIncome = entry.kind === RecurringSeriesKindEnum.INCOME;
     const formattedAmount = formatDigits(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
     const alertLabels = {
-        [RecurringAlertEnum.OVERDUE]: isIncome ? t`Expected` : t`Overdue`,
+        [RecurringAlertEnum.OVERDUE]: t`Overdue`,
         [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
     };
-    const alertDetail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
-    const detail = isIncome && entry.isForecast ? t`Expected` : alertDetail;
+    const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
     const description = t`${formattedAmount} · ${detail}`;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
-    const iconVariant = isIncome ? 'positive' : 'destructive';
     const animationDelay = Math.min(index, MAX_STAGGER_INDEX) * ANIMATION_STAGGER;
     let handlePress = onPress;
 
     if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
         handlePress = () => {
             router.push({
-                pathname: isIncome ? '/transactions/[id]/income' : '/transactions/[id]/expense',
+                pathname: '/transactions/[id]/expense',
                 params: { id: String(entry.latestTransactionId) }
             });
         };
@@ -102,7 +99,7 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
                 <DeletableRow id={entry.seriesId} onDelete={handleDismiss} confirmation={dismissConfirmation}>
                     <SimpleHorizontalCell
                         testID={RecurringCalendarSelector.Row(entry.title)}
-                        left={<CircleIcon icon={icon} variant={iconVariant} />}
+                        left={<CircleIcon icon={icon} variant="destructive" />}
                         title={entry.title}
                         description={description}
                         onLongPress={handleLongPress}
