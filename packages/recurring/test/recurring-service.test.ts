@@ -806,6 +806,95 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
+    for (const userState of [RecurringSeriesUserStateEnum.CONFIRMED, RecurringSeriesUserStateEnum.DISMISSED]) {
+        for (const [scenario, chargeDays, lastSeenDay, expectedDays] of [
+            ['monthly-to-weekly', [7, 14, 21, 28], 5, [5, 12, 19, 26]],
+            ['off-cycle monthly', [20], 5, [20]],
+            ['on-cycle monthly', [5], 5, userState === RecurringSeriesUserStateEnum.DISMISSED ? [] : [5]]
+        ] as const) {
+            it.effect(`requires cadence and cycle evidence for a ${userState} legacy ${scenario} row`, () =>
+                Effect.gen(function* () {
+                    const seed = yield* seedCharges();
+                    yield* Effect.forEach(
+                        chargeDays,
+                        day =>
+                            chargeDays.length === 1
+                                ? Effect.andThen(seedMonthly(seed, 'BILLING', day, 40), seed('BILLING', 0, day, 40))
+                                : seed('BILLING', 0, day, 40),
+                        { discard: true }
+                    );
+                    const saved = yield* seedSavedSeries({
+                        merchantKey: 'BILLING',
+                        title: 'Custom legacy bill',
+                        amount: 40 * PRECISION,
+                        userState,
+                        lastSeenAt: new Date(2026, 2, lastSeenDay, 12)
+                    });
+                    const entries = allEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12)));
+                    expect(entries.map(entry => entry.dayOfMonth)).toEqual(expectedDays);
+                    expect(entries.map(entry => [entry.seriesId === saved.id, entry.title, entry.userState])).toEqual(
+                        expectedDays.map(() =>
+                            scenario === 'on-cycle monthly'
+                                ? [true, 'Custom legacy bill', userState]
+                                : [false, 'BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
+                        )
+                    );
+                    const repository = yield* RecurringRepository;
+                    const rows = yield* repository.findSeries();
+                    expect(rows.find(row => row.id === saved.id)).toMatchObject({ periodDays: 30, title: 'Custom legacy bill', userState });
+                })
+            );
+        }
+    }
+
+    for (const states of [
+        [RecurringSeriesUserStateEnum.CONFIRMED, RecurringSeriesUserStateEnum.DISMISSED],
+        [RecurringSeriesUserStateEnum.DISMISSED, RecurringSeriesUserStateEnum.CONFIRMED]
+    ] as const) {
+        it.effect(`rejects equally eligible legacy rows inserted ${states.join(' then ')}`, () =>
+            Effect.gen(function* () {
+                const seed = yield* seedCharges();
+                yield* seedMonthly(seed, 'BILLING', 5, 40);
+                yield* Effect.forEach(states, userState =>
+                    seedSavedSeries({
+                        merchantKey: 'BILLING',
+                        title: `Legacy ${userState}`,
+                        amount: 40 * PRECISION,
+                        userState,
+                        lastSeenAt: new Date(2026, 4, 5, 12)
+                    })
+                );
+                const entries = allEntries(yield* calendar(JULY));
+                expect(entries.map(entry => [entry.title, entry.userState])).toEqual([['BILLING', RecurringSeriesUserStateEnum.SUGGESTED]]);
+            })
+        );
+    }
+
+    it.effect('adopts only the uniquely cycle-supported legacy row beside an off-cycle sibling', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'BILLING', 5, 40);
+            yield* seedSavedSeries({
+                merchantKey: 'BILLING',
+                title: 'Other bill',
+                amount: 40 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.DISMISSED,
+                lastSeenAt: new Date(2026, 4, 20, 12)
+            });
+            const saved = yield* seedSavedSeries({
+                merchantKey: 'BILLING',
+                title: 'Confirmed bill',
+                amount: 40 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                lastSeenAt: new Date(2026, 4, 5, 12)
+            });
+            const entries = allEntries(yield* calendar(JULY));
+            expect(entries.map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual([
+                [saved.id, 'Confirmed bill', RecurringSeriesUserStateEnum.CONFIRMED]
+            ]);
+        })
+    );
+
     it.effect('preserves a dismissed legacy identity after qualified detection', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
@@ -822,34 +911,23 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
-    it.effect('does not inherit a confirmed legacy state into ambiguous amount streams', () =>
-        Effect.gen(function* () {
-            yield* seedConcurrentSubscriptions('APPLE');
-            yield* seedSavedSeries({
-                merchantKey: 'APPLE',
-                title: 'Apple confirmed',
-                amount: 5 * PRECISION,
-                userState: RecurringSeriesUserStateEnum.CONFIRMED,
-                lastSeenAt: new Date(2026, 4, 5)
-            });
-            const entries = allEntries(yield* calendar(JULY));
-            expectSuggestedEntries(entries);
-        })
-    );
-
-    it.effect('preserves a legacy dismissal across ambiguous split streams', () =>
-        Effect.gen(function* () {
-            yield* seedConcurrentSubscriptions('APPLE');
-            yield* seedSavedSeries({
-                merchantKey: 'APPLE',
-                title: 'Apple dismissed',
-                amount: 5 * PRECISION,
-                userState: RecurringSeriesUserStateEnum.DISMISSED,
-                lastSeenAt: new Date(2026, 4, 5)
-            });
-            expect(allEntries(yield* calendar(JULY))).toEqual([]);
-        })
-    );
+    for (const userState of [RecurringSeriesUserStateEnum.CONFIRMED, RecurringSeriesUserStateEnum.DISMISSED]) {
+        it.effect(`does not reuse a ${userState} legacy row across ambiguous on-cycle streams`, () =>
+            Effect.gen(function* () {
+                const seed = yield* seedCharges();
+                yield* seedMonthly(seed, 'APPLE', 5, 5);
+                yield* seedMonthly(seed, 'APPLE', 5, 15);
+                yield* seedSavedSeries({
+                    merchantKey: 'APPLE',
+                    title: `Apple ${userState}`,
+                    amount: 5 * PRECISION,
+                    userState,
+                    lastSeenAt: new Date(2026, 4, 5)
+                });
+                expectSuggestedEntries(allEntries(yield* calendar(JULY)));
+            })
+        );
+    }
 
     it.effect('keeps a dismissed lower-price stream dismissed beside another price band', () =>
         Effect.gen(function* () {

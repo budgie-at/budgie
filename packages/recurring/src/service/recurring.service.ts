@@ -60,6 +60,11 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 : recurringRepository.updateSeries(row.id, facts);
         };
 
+        const matchesCycle = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean =>
+            row.kind === series.kind &&
+            row.periodDays === Math.round(series.periodDays) &&
+            nearestCycle(new Date(series.anchorTimestamp), row.lastSeenAt, series).deviation <= series.toleranceDays;
+
         const matchesLegacyIdentity = (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean =>
             !row.merchantKey.includes('|') &&
             series.kind === row.kind &&
@@ -90,26 +95,25 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
             return yield* Effect.forEach(detected, (series, index) => {
                 const facts = toFacts(series, now);
-                const legacyRows = rows.filter(item => matchesLegacyIdentity(series, item));
+                const legacyRows = rows.filter(
+                    item => !claimed.has(item.id) && matchesLegacyIdentity(series, item) && matchesCycle(series, item)
+                );
                 const [best, runnerUp] = rows
                     .filter(
                         item =>
                             !claimed.has(item.id) &&
-                            item.kind === series.kind &&
-                            item.periodDays === facts.periodDays &&
-                            canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey) &&
-                            nearestCycle(new Date(series.anchorTimestamp), item.lastSeenAt, series).deviation <= series.toleranceDays
+                            matchesCycle(series, item) &&
+                            canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey)
                     )
                     .sort((first, second) => amountGap(series, first) - amountGap(series, second));
                 const row =
                     exactRows[index] ??
                     (isDefined(runnerUp) && amountGap(series, runnerUp) === amountGap(series, best) ? null : best) ??
-                    legacyRows.find(item => item.userState === RecurringSeriesUserStateEnum.DISMISSED) ??
                     legacyRows.find(
                         item =>
                             legacyRows.length === 1 &&
-                            !claimed.has(item.id) &&
-                            detected.filter(candidate => matchesLegacyIdentity(candidate, item)).length === 1
+                            detected.filter(candidate => matchesLegacyIdentity(candidate, item) && matchesCycle(candidate, item)).length ===
+                                1
                     ) ??
                     null;
                 if (isDefined(row)) {
