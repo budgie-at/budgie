@@ -10,7 +10,7 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { InstallmentPlanService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, InstallmentPlanService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, inArray } from 'drizzle-orm';
@@ -199,6 +199,51 @@ describe('installment plan', () => {
             expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
             expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(toMicroUnits(200));
         }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each(
+        [
+            { title: 'early payoff', candidateTitle: 'Дострокове погашення Tech Shop', amount: 200, operatedAt: new Date(2026, 2, 15, 12) },
+            { title: 'monthly part', candidateTitle: 'Щомісячний платіж Tech Shop', amount: 100, operatedAt: new Date(2026, 2, 28, 12) }
+        ].flatMap(candidate => [
+            { ...candidate, duringConversion: false },
+            { ...candidate, duringConversion: true }
+        ])
+    )(
+        'leaves $title unlinked across two eligible plans (duringConversion=$duringConversion)',
+        ({ candidateTitle, amount, operatedAt, duringConversion }) =>
+            Effect.gen(function* () {
+                const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-cross-plan');
+                const first = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 1, 28, 10));
+                const firstPlan = yield* convert(first.id, 3, 300);
+                const second = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 1, 28, 11));
+                const seedCandidate = seedPart(card.id, candidateTitle, amount, operatedAt);
+
+                if (duringConversion) {
+                    yield* seedCandidate;
+                }
+
+                const secondPlan = yield* convert(second.id, 3, 300);
+
+                if (!duringConversion) {
+                    yield* seedCandidate;
+                }
+
+                expect(yield* fetchAttachedTransactionIds(firstPlan.accountId)).toEqual([first.id]);
+                expect(yield* fetchAttachedTransactionIds(secondPlan.accountId)).toEqual([second.id]);
+                const installmentPlanService = yield* InstallmentPlanService;
+                const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([card.id]);
+                yield* runPostSync();
+                yield* installmentPlanService.attachDueParts();
+                yield* installmentPlanService.attachDueParts();
+
+                expect(yield* fetchAttachedTransactionIds(firstPlan.accountId)).toEqual([first.id]);
+                expect(yield* fetchAttachedTransactionIds(secondPlan.accountId)).toEqual([second.id]);
+                expect((yield* fetchDebtProgress(firstPlan.accountId)).outstandingAmount).toBe(toMicroUnits(200));
+                expect((yield* fetchDebtProgress(secondPlan.accountId)).outstandingAmount).toBe(toMicroUnits(200));
+            }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('cancels the COMFY plan when its first part is refunded', () =>

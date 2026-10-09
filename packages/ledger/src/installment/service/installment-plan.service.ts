@@ -103,18 +103,6 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             return { transaction, primaryEntry };
         });
 
-        const attachNextPart = Effect.fnUntraced(function* (debtAccountId: number) {
-            const [match, ...ambiguousMatches] = yield* findNextPartMatches(debtAccountId);
-
-            if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {
-                return false;
-            }
-
-            yield* transactionDebtSettlementService.attach({ debtAccountId, transactionId: match.transactionId });
-
-            return true;
-        });
-
         const findEarlierPart = Effect.fnUntraced(function* (
             transaction: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
@@ -155,7 +143,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             return earlierParts;
         });
 
-        const attachEarlyPayoff = Effect.fnUntraced(function* (debtAccountId: number) {
+        const findEarlyPayoffMatches = Effect.fnUntraced(function* (debtAccountId: number) {
             const schedule = yield* installmentPlanRepository.getSchedule(debtAccountId);
             const parts = yield* installmentPlanRepository.findParts(debtAccountId);
             const latestPart = parts.at(-1);
@@ -168,7 +156,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 !isDefined(latestPart) ||
                 !isDefined(firstPart)
             ) {
-                return false;
+                return [];
             }
 
             const candidates = yield* installmentPlanRepository.findCandidates(
@@ -176,7 +164,8 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 latestPart.operatedAt,
                 endOfDay(addDays(schedule.nextDueAt, dueDateToleranceDays))
             );
-            const [match, ...ambiguousMatches] = candidates.filter(
+
+            return candidates.filter(
                 candidate =>
                     candidate.externalSource === ExternalSourceEnum.MONOBANK &&
                     firstPart.externalSource === ExternalSourceEnum.MONOBANK &&
@@ -184,9 +173,28 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                     candidate.title.startsWith(monobankEarlyPayoffPrefix) &&
                     normalizeTitle(candidate.title.slice(monobankEarlyPayoffPrefix.length)) === getMonobankPaymentMerchant(firstPart.title)
             );
+        });
+
+        const attachUniquePart = Effect.fnUntraced(function* (debtAccountId: number, findMatches: typeof findNextPartMatches) {
+            const [match, ...ambiguousMatches] = yield* findMatches(debtAccountId);
 
             if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {
                 return false;
+            }
+
+            const plans = yield* accountRepository.findBySearchQuery('', {
+                debtType: AccountDebtTypeEnum.INSTALLMENT,
+                onlyActive: true
+            });
+
+            for (const plan of plans) {
+                if (plan.id !== debtAccountId) {
+                    const candidates = yield* findMatches(plan.id);
+
+                    if (candidates.some(candidate => candidate.transactionId === match.transactionId)) {
+                        return false;
+                    }
+                }
             }
 
             yield* transactionDebtSettlementService.attach({ debtAccountId, transactionId: match.transactionId });
@@ -195,12 +203,12 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         });
 
         const attachPlanDueParts = Effect.fnUntraced(function* (debtAccountId: number) {
-            yield* attachNextPart(debtAccountId).pipe(Effect.repeat({ while: isAttached => isAttached }));
+            yield* attachUniquePart(debtAccountId, findNextPartMatches).pipe(Effect.repeat({ while: isAttached => isAttached }));
 
             const [, ...ambiguousMonthlyMatches] = yield* findNextPartMatches(debtAccountId);
 
             if (!isNotEmptyArray(ambiguousMonthlyMatches)) {
-                yield* attachEarlyPayoff(debtAccountId);
+                yield* attachUniquePart(debtAccountId, findEarlyPayoffMatches);
             }
         });
 
