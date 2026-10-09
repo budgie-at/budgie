@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import { resetTestDb } from '@budgie-at/test-kit';
 import {
     AccountTypeEnum,
+    AccountEntityTable,
+    Db,
     LanguageEnum,
     TransactionEntityTable,
     CASH_WITHDRAWAL_TRACKED_CATEGORY_ID,
@@ -12,7 +14,7 @@ import {
     RecurringSeriesUserStateEnum
 } from '@budgie/contracts';
 import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
-import { between } from 'drizzle-orm';
+import { between, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -999,6 +1001,132 @@ layer(TestLayer)('recurringService', it => {
             ]);
         })
     );
+
+    for (const userState of [RecurringSeriesUserStateEnum.CONFIRMED, RecurringSeriesUserStateEnum.DISMISSED]) {
+        for (const continuous of [false, true]) {
+            it.effect(`retains proven historical ${userState} after evidence expires with continuous refresh ${continuous}`, () =>
+                Effect.gen(function* () {
+                    const seed = yield* seedCharges();
+                    yield* Effect.forEach([5, 4, 3, 2, 1, 0], monthsAgo => seed('BILLING', monthsAgo, 5, 40));
+                    const saved = yield* seedSavedSeries({
+                        merchantKey: 'BILLING',
+                        title: 'Durable custom title',
+                        amount: 40 * PRECISION,
+                        periodDays: 31,
+                        userState,
+                        lastSeenAt: new Date(2026, JUNE, 5, 12)
+                    });
+                    const service = yield* RecurringService;
+                    expect(allEntries(yield* service.calendar(2026, JULY, new Date(2026, JUNE, 29, 12)))).toHaveLength(
+                        userState === RecurringSeriesUserStateEnum.DISMISSED ? 0 : 1
+                    );
+                    for (let monthsAfter = 1; monthsAfter <= 30; monthsAfter += 1) {
+                        yield* seed('BILLING', -monthsAfter, 5, 40);
+                        if (continuous) {
+                            const next = new Date(2026, JUNE + monthsAfter + 1, 1);
+                            const entries = allEntries(
+                                yield* service.calendar(next.getFullYear(), next.getMonth(), new Date(2026, JUNE + monthsAfter, 29, 12))
+                            );
+                            expect(entries).toHaveLength(userState === RecurringSeriesUserStateEnum.DISMISSED ? 0 : 1);
+                            expect(entries.every(entry => entry.seriesId === saved.id && entry.title === saved.title)).toBe(true);
+                        }
+                    }
+                    const entries = allEntries(yield* service.calendar(2029, 0, new Date(2028, 11, 29, 12)));
+                    const repository = yield* RecurringRepository;
+                    const rows = yield* repository.findSeries();
+                    expect(rows).toHaveLength(1);
+                    expect(rows[0]).toMatchObject({ id: saved.id, title: saved.title, userState, periodDays: 30 });
+                    expect(rows[0].merchantKey).toBe('EXPENSE|1|BILLING|40000000');
+                    expect(entries).toHaveLength(userState === RecurringSeriesUserStateEnum.DISMISSED ? 0 : 1);
+                    expect(
+                        entries.every(entry => entry.seriesId === saved.id && entry.title === saved.title && entry.userState === userState)
+                    ).toBe(true);
+                })
+            );
+        }
+        for (const previousAmount of [10, 15]) {
+            for (const reversed of [false, true]) {
+                it.effect(`requires global qualified ownership for saved ${previousAmount} ${userState} reversed ${reversed}`, () =>
+                    Effect.gen(function* () {
+                        const original = yield* seedCharges();
+                        yield* Effect.forEach([5, 4, 3], monthsAgo => original('BILLING', monthsAgo, 5, previousAmount));
+                        const service = yield* RecurringService;
+                        const [saved] = allEntries(yield* calendarAsOf(3, new Date(2026, 2, 29, 12)));
+                        yield* service.setUserState(saved.seriesId, userState);
+                        yield* service.rename(saved.seriesId, 'Qualified custom title');
+                        yield* Db.query(database =>
+                            database.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, saved.accountId))
+                        );
+                        const replacement = yield* seedCharges();
+                        const nearerAmount = previousAmount === 10 ? 15 : 14;
+                        yield* Effect.forEach(reversed ? [nearerAmount, 5] : [5, nearerAmount], amount =>
+                            Effect.forEach([2, 1, 0], monthsAgo => replacement('BILLING', monthsAgo, 5, amount))
+                        );
+                        const entries = allEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29, 12)));
+                        if (previousAmount === 10) {
+                            expectSuggestedEntries(entries);
+                            expect(entries.every(entry => entry.seriesId !== saved.seriesId)).toBe(true);
+                        } else {
+                            expect(entries.find(entry => entry.latestAmount === 5 * PRECISION)).toMatchObject({
+                                userState: RecurringSeriesUserStateEnum.SUGGESTED
+                            });
+                            const repository = yield* RecurringRepository;
+                            const rows = yield* repository.findSeries();
+                            expect(rows.find(row => row.id === saved.seriesId)).toMatchObject({
+                                amount: nearerAmount * PRECISION,
+                                title: 'Qualified custom title',
+                                userState
+                            });
+                            expect(entries).toHaveLength(userState === RecurringSeriesUserStateEnum.DISMISSED ? 1 : 2);
+                            if (userState === RecurringSeriesUserStateEnum.CONFIRMED) {
+                                expect(entries.find(entry => entry.seriesId === saved.seriesId)).toMatchObject({
+                                    latestAmount: nearerAmount * PRECISION,
+                                    title: 'Qualified custom title',
+                                    userState
+                                });
+                            }
+                        }
+                    })
+                );
+            }
+        }
+    }
+
+    for (const reversed of [false, true]) {
+        for (const [scenario, savedAmounts, detectedAmounts, preserved] of [
+            ['mutual nearest pairs', [6, 20], [5, 15], [true, true]],
+            ['globally tied predecessor', [10, 30], [5, 15], [false, false]],
+            ['exact reservation before fallback', [10, 15], [5, 15], [true, true]]
+        ] as const) {
+            it.effect(`resolves multiple qualified ${scenario} with row and input order reversed ${reversed}`, () =>
+                Effect.gen(function* () {
+                    const seed = yield* seedCharges();
+                    yield* Effect.forEach(reversed ? [...detectedAmounts].reverse() : detectedAmounts, amount =>
+                        seedMonthly(seed, 'BILLING', 5, amount)
+                    );
+                    const saved = yield* Effect.forEach(reversed ? [...savedAmounts].reverse() : savedAmounts, amount =>
+                        seedSavedSeries({
+                            merchantKey: `EXPENSE|1|BILLING|${amount * PRECISION}`,
+                            title: `Saved ${amount}`,
+                            amount: amount * PRECISION,
+                            userState: RecurringSeriesUserStateEnum.CONFIRMED,
+                            lastSeenAt: new Date(2026, 4, amount === 15 && scenario === 'exact reservation before fallback' ? 20 : 5)
+                        })
+                    );
+                    const entries = allEntries(yield* calendar(JULY));
+                    expect(entries).toHaveLength(2);
+                    for (const [index, amount] of detectedAmounts.entries()) {
+                        const predecessor = saved.find(row => row.amount === savedAmounts[index] * PRECISION);
+                        const entry = entries.find(item => item.latestAmount === amount * PRECISION);
+                        expect(entry?.seriesId === predecessor?.id).toBe(preserved[index]);
+                        expect(entry?.userState).toBe(
+                            preserved[index] ? RecurringSeriesUserStateEnum.CONFIRMED : RecurringSeriesUserStateEnum.SUGGESTED
+                        );
+                    }
+                })
+            );
+        }
+    }
 
     it.effect('preserves a dismissed legacy identity after qualified detection', () =>
         Effect.gen(function* () {

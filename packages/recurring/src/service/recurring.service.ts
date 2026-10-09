@@ -1,5 +1,6 @@
 import { Db, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum, SettingsRepository } from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { startOfDay } from 'date-fns/startOfDay';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -57,9 +58,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 return recurringRepository.createSeries(input);
             }
 
-            return row.userState === RecurringSeriesUserStateEnum.DISMISSED || isUnchanged(row, facts)
-                ? Effect.succeed(row)
-                : recurringRepository.updateSeries(row.id, facts);
+            return isUnchanged(row, facts) ? Effect.succeed(row) : recurringRepository.updateSeries(row.id, facts);
         };
 
         const isQualifiedIdentity = (key: string): boolean => {
@@ -68,29 +67,40 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             return segments.length >= 4 && (/^\d+$/u.test(segments[2]) || /^\d+$/u.test(segments[3]));
         };
 
+        const indexHistoricalCharges = (charges: readonly RecurringChargeInterface[]) => {
+            const history = new Map<string, (readonly [number, number])[]>();
+            for (const charge of charges) {
+                const indexedCharge = [charge.transactionId, startOfDay(charge.operatedAt).getTime()] as const;
+                for (const label of new Set([
+                    legacyLabel(charge),
+                    normalizeRecurringDescription(isNotEmptyString(charge.title) ? charge.title : charge.comment)
+                ])) {
+                    const key = `${charge.kind}|${label}`;
+                    const matching = history.get(key) ?? [];
+                    matching.push(indexedCharge);
+                    history.set(key, matching);
+                }
+            }
+
+            return history;
+        };
+
         const matchesHistoricalCadence = (
             series: RecurringSeriesInterface,
             row: RecurringSeriesEntityInterface,
-            charges: readonly RecurringChargeInterface[]
+            charges: readonly (readonly [number, number])[]
         ): boolean => {
             if (!isDefined(series.periodMonths) || isQualifiedIdentity(row.merchantKey)) {
                 return false;
             }
             const events = series.events.filter(event => differenceInCalendarDays(new Date(event.timestamp), row.lastSeenAt) <= 0);
-            const history = charges.filter(
-                charge =>
-                    charge.kind === row.kind &&
-                    differenceInCalendarDays(charge.operatedAt, row.lastSeenAt) <= 0 &&
-                    (series.labels.includes(legacyLabel(charge)) ||
-                        series.labels.includes(
-                            normalizeRecurringDescription(isNotEmptyString(charge.title) ? charge.title : charge.comment)
-                        ))
-            );
+            const savedDay = startOfDay(row.lastSeenAt).getTime();
+            const history = charges.filter(([, day]) => day <= savedDay);
             const eventIds = new Set(events.map(event => event.transactionId));
             if (
                 events.length < (series.periodMonths === 12 ? 2 : 3) ||
                 history.length !== events.length ||
-                !history.every(charge => eventIds.has(charge.transactionId)) ||
+                !history.every(([transactionId]) => eventIds.has(transactionId)) ||
                 differenceInCalendarDays(new Date(events[events.length - 1].timestamp), row.lastSeenAt) !== 0
             ) {
                 return false;
@@ -111,14 +121,40 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             );
         };
 
-        const matchesCycle = (
-            series: RecurringSeriesInterface,
-            row: RecurringSeriesEntityInterface,
-            charges: readonly RecurringChargeInterface[]
-        ): boolean =>
-            row.kind === series.kind &&
-            (row.periodDays === Math.round(series.periodDays) || matchesHistoricalCadence(series, row, charges)) &&
-            nearestCycle(new Date(series.anchorTimestamp), row.lastSeenAt, series).deviation <= series.toleranceDays;
+        const createCycleMatcher = (charges: readonly RecurringChargeInterface[]) => {
+            let historicalIndex: ReturnType<typeof indexHistoricalCharges> | undefined;
+            const matchingHistory = new Map<RecurringSeriesInterface, (readonly [number, number])[]>();
+            const cycleMatches = new Map<RecurringSeriesInterface, Map<number, boolean>>();
+            const getHistory = (series: RecurringSeriesInterface) => {
+                let history = matchingHistory.get(series);
+                if (!isDefined(history)) {
+                    historicalIndex ??= indexHistoricalCharges(charges);
+                    history = [...new Set(series.labels.flatMap(label => historicalIndex?.get(`${series.kind}|${label}`) ?? []))];
+                    matchingHistory.set(series, history);
+                }
+
+                return history;
+            };
+
+            return (series: RecurringSeriesInterface, row: RecurringSeriesEntityInterface): boolean => {
+                const matches = cycleMatches.get(series) ?? new Map<number, boolean>();
+                const cached = matches.get(row.id);
+                if (isDefined(cached)) {
+                    return cached;
+                }
+                const result =
+                    row.kind === series.kind &&
+                    (row.periodDays === Math.round(series.periodDays) ||
+                        (!isQualifiedIdentity(row.merchantKey) &&
+                            isDefined(series.periodMonths) &&
+                            matchesHistoricalCadence(series, row, getHistory(series)))) &&
+                    nearestCycle(new Date(series.anchorTimestamp), row.lastSeenAt, series).deviation <= series.toleranceDays;
+                matches.set(row.id, result);
+                cycleMatches.set(series, matches);
+
+                return result;
+            };
+        };
 
         const canonicalFamily = (key: string): string => {
             const segments = key.split('|');
@@ -154,28 +190,53 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 )
             );
             const claimed = new Set(exactRows.filter(isDefined).map(item => item.id));
+            const matchesCycle = createCycleMatcher(charges);
+
+            const qualifiedCandidates = detected.map((series, index) =>
+                isDefined(exactRows[index])
+                    ? []
+                    : rows
+                          .filter(
+                              item =>
+                                  !claimed.has(item.id) &&
+                                  isQualifiedIdentity(item.merchantKey) &&
+                                  canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey) &&
+                                  matchesCycle(series, item)
+                          )
+                          .sort((first, second) => amountGap(series, first) - amountGap(series, second))
+            );
+            const qualifiedRows = qualifiedCandidates.map(([best, runnerUp], index) => {
+                if (
+                    !isDefined(best) ||
+                    (isDefined(runnerUp) && amountGap(detected[index], runnerUp) === amountGap(detected[index], best)) ||
+                    qualifiedCandidates.some(
+                        (candidates, candidateIndex) =>
+                            candidateIndex !== index &&
+                            candidates.includes(best) &&
+                            amountGap(detected[candidateIndex], best) <= amountGap(detected[index], best)
+                    )
+                ) {
+                    return null;
+                }
+
+                return best;
+            });
+            for (const row of qualifiedRows.filter(isDefined)) {
+                claimed.add(row.id);
+            }
 
             return yield* Effect.forEach(detected, (series, index) => {
                 const facts = toFacts(series, now);
-                const unbandedRows = rows.filter(
-                    item => !claimed.has(item.id) && matchesUnbandedIdentity(series, item) && matchesCycle(series, item, charges)
-                );
-                const [best, runnerUp] = rows
-                    .filter(
-                        item =>
-                            !claimed.has(item.id) &&
-                            isQualifiedIdentity(item.merchantKey) &&
-                            matchesCycle(series, item, charges) &&
-                            canonicalFamily(item.merchantKey) === canonicalFamily(series.merchantKey)
-                    )
-                    .sort((first, second) => amountGap(series, first) - amountGap(series, second));
+                const qualifiedRow = exactRows[index] ?? qualifiedRows[index];
+                const unbandedRows = isDefined(qualifiedRow)
+                    ? []
+                    : rows.filter(item => !claimed.has(item.id) && matchesUnbandedIdentity(series, item) && matchesCycle(series, item));
                 const row =
-                    exactRows[index] ??
-                    (isDefined(runnerUp) && amountGap(series, runnerUp) === amountGap(series, best) ? null : best) ??
+                    qualifiedRow ??
                     unbandedRows.find(
                         item =>
                             unbandedRows.length === 1 &&
-                            detected.filter(candidate => matchesUnbandedIdentity(candidate, item) && matchesCycle(candidate, item, charges))
+                            detected.filter(candidate => matchesUnbandedIdentity(candidate, item) && matchesCycle(candidate, item))
                                 .length === 1
                     ) ??
                     null;
