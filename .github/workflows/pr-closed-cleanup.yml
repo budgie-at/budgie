@@ -18,7 +18,7 @@ jobs:
         name: Delete OTA preview releases for the closed PR
         needs: cleanup
         if: always()
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         permissions:
             contents: write
             actions: read

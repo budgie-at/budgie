@@ -14,7 +14,7 @@ permissions:
 jobs:
   assert-ai:
     name: Assert AI is enabled
-    runs-on: [self-hosted, trf-linux-amd64-2x4]
+    runs-on: [self-hosted, linux-portable-2x4]
     timeout-minutes: 10
     permissions:
       contents: read
