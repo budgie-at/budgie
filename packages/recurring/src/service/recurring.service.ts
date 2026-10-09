@@ -79,7 +79,12 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         const track = Effect.fn('RecurringService.track')(function* (detected: readonly RecurringSeriesInterface[], now: Date) {
             const rows = yield* recurringRepository.findSeries();
             const exactRows = detected.map(series =>
-                rows.find(item => item.kind === series.kind && item.merchantKey === series.merchantKey)
+                rows.find(
+                    item =>
+                        item.kind === series.kind &&
+                        item.merchantKey === series.merchantKey &&
+                        item.periodDays === Math.round(series.periodDays)
+                )
             );
             const claimed = new Set(exactRows.filter(isDefined).map(item => item.id));
 

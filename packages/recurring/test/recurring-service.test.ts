@@ -433,6 +433,66 @@ layer(TestLayer)('recurringService', it => {
         );
     }
 
+    for (const [scenario, userState, charges, expected] of [
+        [
+            'a weekly stream does not inherit a dismissed monthly row with its key',
+            RecurringSeriesUserStateEnum.DISMISSED,
+            [
+                [0, 7],
+                [0, 14],
+                [0, 21],
+                [0, 28]
+            ],
+            ['false|BILLING|SUGGESTED']
+        ],
+        [
+            'a weekly stream does not inherit a confirmed monthly row with its key',
+            RecurringSeriesUserStateEnum.CONFIRMED,
+            [
+                [0, 7],
+                [0, 14],
+                [0, 21],
+                [0, 28]
+            ],
+            ['false|BILLING|SUGGESTED']
+        ],
+        [
+            'a monthly stream keeps its dismissal across a same-price billing-day move',
+            RecurringSeriesUserStateEnum.DISMISSED,
+            [
+                [2, 20],
+                [1, 20],
+                [0, 20]
+            ],
+            []
+        ],
+        [
+            'a monthly stream keeps its confirmation across a same-price billing-day move',
+            RecurringSeriesUserStateEnum.CONFIRMED,
+            [
+                [2, 20],
+                [1, 20],
+                [0, 20]
+            ],
+            ['true|Old bill|CONFIRMED']
+        ]
+    ] as const) {
+        it.effect(scenario, () =>
+            Effect.gen(function* () {
+                const seed = yield* seedCharges();
+                yield* Effect.forEach([14, 13, 12], monthsAgo => seed('BILLING', monthsAgo, 5, 40), { discard: true });
+                const service = yield* RecurringService;
+                const [entry] = allEntries(yield* service.calendar(2025, JULY, new Date(2025, JUNE, 25)));
+                yield* Effect.andThen(service.setUserState(entry.seriesId, userState), service.rename(entry.seriesId, 'Old bill'));
+                yield* Effect.forEach(charges, ([monthsAgo, day]) => seed('BILLING', monthsAgo, day, 40), { discard: true });
+                const after = allEntries(yield* calendarAsOf(JULY, new Date(2026, JUNE, 29)));
+                expect([...new Set(after.map(item => [item.seriesId === entry.seriesId, item.title, item.userState].join('|')))]).toEqual(
+                    expected
+                );
+            })
+        );
+    }
+
     it.effect('keeps the real screenshot fixture active at month boundaries', () =>
         Effect.gen(function* () {
             yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID });
