@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
+import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 import { TransferTransactionActionsMenu } from '../transfer-transaction-actions-menu/transfer-transaction-actions-menu';
@@ -17,7 +18,6 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
     const [openConsolidationSource] = useConsolidationSourceModal();
     const isConsolidated = isDefined(transaction.consolidationType);
     const transactionId = transaction.id;
-    const editHref = { pathname: '/transactions/[id]/transfer/edit' as const, params: { id: String(transactionId) } };
     const handleOpenFee = () => void router.push(getTransactionFeeEditHref(TransactionTypeEnum.TRANSFER, transactionId));
     const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
     const handleConsolidationPress = () => {
@@ -26,5 +26,12 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
     const consolidationProps = isConsolidated ? { onOpenConsolidationSources: handleConsolidationPress } : {};
     const actionsMenu = <TransferTransactionActionsMenu transaction={transaction} onDelete={handleDelete} onFeePress={handleOpenFee} />;
 
-    return <TransactionInfoPage transaction={transaction} editHref={editHref} actionsMenu={actionsMenu} {...consolidationProps} />;
+    return (
+        <TransactionInfoPage
+            transaction={transaction}
+            editHref={getTransactionEditHref(transaction)}
+            actionsMenu={actionsMenu}
+            {...consolidationProps}
+        />
+    );
 };

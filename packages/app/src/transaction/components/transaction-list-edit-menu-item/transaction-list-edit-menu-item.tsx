@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
-import { getTransactionHref } from '../../utils/get-transaction-href.util';
+import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 export const TransactionListEditMenuItem = () => {
@@ -13,7 +13,7 @@ export const TransactionListEditMenuItem = () => {
     const { transaction, closeMenu } = useTransactionListContextMenu();
 
     const handlePress = () => {
-        closeMenu(() => void router.push(getTransactionHref(transaction)));
+        closeMenu(() => void router.push(getTransactionEditHref(transaction)));
     };
 
     return (
