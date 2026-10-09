@@ -53,7 +53,7 @@ const counterpartyKey = (charge: RecurringChargeInterface): string =>
 const identity = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
 
-const legacyLabel = (charge: RecurringChargeInterface): string =>
+export const legacyLabel = (charge: RecurringChargeInterface): string =>
     description(charge)
         .replace(/(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu, '')
         .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
