@@ -1,9 +1,6 @@
 import { PRECISION } from '@budgie/contracts';
 
 export const DUPLICATE_TRANSFER_REPAIR_MIGRATION = '20261009005433_duplicate_transfer_repair';
-export const MONEY_MOVING_DATA_MIGRATION_REASONS = {
-    [DUPLICATE_TRANSFER_REPAIR_MIGRATION]: 'repairs a duplicate bridge and transfer-pair canonical once while preserving raw originals'
-} as const;
 export const OPERATED_AT = new Date('2025-06-01T12:00:00.000Z');
 export const DUPLICATE_OPERATED_AT = new Date('2026-10-06T12:00:00.000Z');
 export const DUPLICATE_CREATED_AT = 1_791_496_204;

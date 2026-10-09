@@ -5,7 +5,6 @@ import { describe, it } from '@effect/vitest';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { DUPLICATE_TRANSFER_REPAIR_MIGRATION, MONEY_MOVING_DATA_MIGRATION_REASONS } from './data-migration-money-impact.constant';
 import {
     ambiguousDuplicateTransferScenario,
     editedCompetingCanonicalScenario,
@@ -14,7 +13,7 @@ import {
     feeBearingCompetingCanonicalScenario,
     malformedBridgeTopologyScenario,
     preCalibrationDuplicateScenario,
-    repairDuplicateTransferScenario,
+    unprovenDuplicateTransferScenario,
     staleBalanceSnapshotScenario
 } from './data-migration-money-impact.scenario';
 import { unchangedLedgerScenario } from './unchanged-ledger.scenario';
@@ -30,8 +29,8 @@ const dataMigrations = readdirSync(MIGRATIONS_FOLDER, { withFileTypes: true })
 
 describe.runIf(isNotEmptyArray(dataMigrations))('database/data-migration-money-impact', () => {
     it.effect.each(dataMigrations)('%s leaves every ledger balance unchanged after consolidation', unchangedLedgerScenario);
-    it.effect(MONEY_MOVING_DATA_MIGRATION_REASONS[DUPLICATE_TRANSFER_REPAIR_MIGRATION], () => repairDuplicateTransferScenario());
-    it.effect.each([30, 60])('repairs a %s-second bridge/pair gap before upgrade consolidation', repairDuplicateTransferScenario);
+    it.effect('preserves unproven bridge and transfer-pair canonical originals and tags', () => unprovenDuplicateTransferScenario());
+    it.effect.each([30, 60])('preserves unproven duplicate canonicals at a %s-second bridge/pair gap', unprovenDuplicateTransferScenario);
     it.effect('skips ambiguous equal-amount duplicate canonical groups', ambiguousDuplicateTransferScenario);
     it.effect('skips fee-bearing competing duplicate canonical groups', feeBearingCompetingCanonicalScenario);
     it.effect('skips groups with an edited competing canonical', editedCompetingCanonicalScenario);

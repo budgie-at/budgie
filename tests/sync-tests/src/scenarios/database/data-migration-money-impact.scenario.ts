@@ -75,7 +75,7 @@ const applyMigrationAndExpectPreparedDuplicatePair = (input: {
         pairCanonicalId: input.pairCanonicalId
     });
 
-export const repairDuplicateTransferScenario = (timeGapSeconds: number = 0) =>
+export const unprovenDuplicateTransferScenario = (timeGapSeconds: number = 0) =>
     Effect.gen(function* () {
         const { sourceAccount, targetAccount, duplicate, hiddenTag } = yield* prepareDuplicateTransferRepairFixture();
 
@@ -97,29 +97,30 @@ export const repairDuplicateTransferScenario = (timeGapSeconds: number = 0) =>
         expect(yield* transferConsolidationService.consolidate(null)).toEqual({ found: 0, consolidated: 0 });
         expect(yield* accountBalanceRepository.getLedgerBalances([sourceAccount.id, targetAccount.id])).toEqual(
             new Map([
-                [sourceAccount.id, -SOURCE_AMOUNT],
-                [targetAccount.id, TARGET_AMOUNT]
+                [sourceAccount.id, -2 * SOURCE_AMOUNT],
+                [targetAccount.id, 2 * TARGET_AMOUNT]
             ])
         );
         yield* expectComputedBalances({
             sourceAccountId: sourceAccount.id,
             targetAccountId: targetAccount.id,
-            sourceBalance: -SOURCE_AMOUNT,
-            targetBalance: TARGET_AMOUNT
+            sourceBalance: -2 * SOURCE_AMOUNT,
+            targetBalance: 2 * TARGET_AMOUNT
         });
         yield* expectStoredBalances({
             sourceAccountId: sourceAccount.id,
             targetAccountId: targetAccount.id,
-            sourceBalance: -SOURCE_AMOUNT,
-            targetBalance: TARGET_AMOUNT
+            sourceBalance: -2 * SOURCE_AMOUNT,
+            targetBalance: 2 * TARGET_AMOUNT
         });
         yield* expectVisibleCanonicalTransfers({
             transactionIds: [duplicate.bridge.canonical.id, duplicate.pair.canonical.id],
-            expectedCount: 1
+            expectedCount: 2
         });
-        expect(yield* fetchMovedEntryCount(duplicate.bridge.canonical.id)).toBe(4);
-        expect(yield* fetchMovedEntryCount(duplicate.pair.canonical.id)).toBe(0);
-        expect(yield* fetchTransactionTagCount(duplicate.bridge.canonical.id, hiddenTag.id)).toBe(1);
+        expect(yield* fetchMovedEntryCount(duplicate.bridge.canonical.id)).toBe(2);
+        expect(yield* fetchMovedEntryCount(duplicate.pair.canonical.id)).toBe(2);
+        expect(yield* fetchTransactionTagCount(duplicate.bridge.canonical.id, hiddenTag.id)).toBe(0);
+        expect(yield* fetchTransactionTagCount(duplicate.pair.canonical.id, hiddenTag.id)).toBe(1);
     }).pipe(Effect.provide(TestLayer));
 
 export const ambiguousDuplicateTransferScenario = () =>

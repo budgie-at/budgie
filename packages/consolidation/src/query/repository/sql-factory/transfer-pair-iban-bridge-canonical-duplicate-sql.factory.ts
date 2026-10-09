@@ -1,4 +1,4 @@
-import { CategorySourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
@@ -148,6 +148,30 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     )
                     AND (source_expense_mcc.mcc_group_id IS NULL OR source_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
                     AND (target_income_mcc.mcc_group_id IS NULL OR target_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM transaction_entries candidate_entry
+                        INNER JOIN transactions candidate_tx ON candidate_tx.id = candidate_entry.transaction_id
+                        WHERE candidate_entry.id IN (source_expense_entry.id, target_income_entry.id)
+                            AND NOT EXISTS (
+                                SELECT 1
+                                FROM transaction_entries original_entry
+                                INNER JOIN transactions original_tx ON original_tx.id = original_entry.original_transaction_id
+                                    AND original_tx.deleted_at IS NULL
+                                    AND original_tx.updated_by IS NULL
+                                    AND original_tx.consolidation_parent_transaction_id = canonical_tx.id
+                                    AND original_tx.type = candidate_tx.type
+                                    AND original_tx.external_source = candidate_tx.external_source
+                                    AND original_tx.external_source = '${ExternalSourceEnum.MONOBANK}'
+                                    AND original_tx.external_id = candidate_tx.external_id
+                                WHERE original_entry.transaction_id = canonical_tx.id
+                                    AND original_entry.deleted_at IS NULL
+                                    AND original_entry.account_id = candidate_entry.account_id
+                                    AND original_entry.type = candidate_entry.type
+                                    AND original_tx.external_id IS NOT NULL
+                                    AND original_tx.external_id != ''
+                            )
+                    )
                     AND EXISTS (
                         SELECT 1
                         FROM transaction_entries canonical_source_entry

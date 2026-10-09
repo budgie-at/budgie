@@ -250,6 +250,31 @@ INNER JOIN duplicate_transfer_candidate_transfers pair ON pair.source_account_id
     AND pair.target_amount = signature.target_amount
     AND pair.consolidation_type = 'TRANSFER_PAIR'
     AND ABS(pair.operated_at - bridge.operated_at) <= 60
+    AND NOT EXISTS (
+        SELECT 1
+        FROM transaction_entries pair_original_entry
+        INNER JOIN transactions pair_original_tx ON pair_original_tx.id = pair_original_entry.original_transaction_id
+        WHERE pair_original_entry.transaction_id = pair.id
+            AND pair_original_entry.deleted_at IS NULL
+            AND pair_original_entry.original_transaction_id IS NOT NULL
+            AND NOT EXISTS (
+                SELECT 1
+                FROM transaction_entries bridge_original_entry
+                INNER JOIN transactions bridge_original_tx ON bridge_original_tx.id = bridge_original_entry.original_transaction_id
+                    AND bridge_original_tx.deleted_at IS NULL
+                    AND bridge_original_tx.consolidation_parent_transaction_id = bridge.id
+                    AND bridge_original_tx.type = pair_original_tx.type
+                    AND bridge_original_tx.external_source = pair_original_tx.external_source
+                    AND bridge_original_tx.external_source = 'MONOBANK'
+                    AND bridge_original_tx.external_id = pair_original_tx.external_id
+                WHERE bridge_original_entry.transaction_id = bridge.id
+                    AND bridge_original_entry.deleted_at IS NULL
+                    AND bridge_original_entry.account_id = pair_original_entry.account_id
+                    AND bridge_original_entry.type = pair_original_entry.type
+                    AND bridge_original_tx.external_id IS NOT NULL
+                    AND bridge_original_tx.external_id != ''
+            )
+    )
     AND EXISTS (
         SELECT 1
         FROM transaction_entries pair_source_original_entry
