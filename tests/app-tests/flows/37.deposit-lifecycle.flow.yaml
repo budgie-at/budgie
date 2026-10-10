@@ -25,8 +25,11 @@ appId: ${APP_ID}
 - tapOn:
       id: 'AccountForm.NameInput'
 - inputText: 'E2E Deposit Account'
-- tapOn:
-      text: 'Deposit Account'
+- swipe:
+      from:
+          id: 'AccountForm.ScrollView'
+      direction: DOWN
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:
@@ -37,8 +40,11 @@ appId: ${APP_ID}
       id: 'AccountForm.InterestRateInput'
 - eraseText: 100
 - inputText: '12'
-- tapOn:
-      text: 'Deposit Account'
+- swipe:
+      from:
+          id: 'AccountForm.ScrollView'
+      direction: DOWN
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:
@@ -326,8 +332,11 @@ appId: ${APP_ID}
       id: 'AccountForm.InterestRateInput'
 - eraseText: 100
 - inputText: '5'
-- tapOn:
-      text: 'Account Settings'
+- swipe:
+      from:
+          id: 'AccountForm.ScrollView'
+      direction: DOWN
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:
