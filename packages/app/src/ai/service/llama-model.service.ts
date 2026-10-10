@@ -1,6 +1,5 @@
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
-import * as Exit from 'effect/Exit';
 import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined } from '@rnw-community/shared';
@@ -58,8 +57,8 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
         if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
             return;
         }
-        const exit = yield* Effect.exit(this.releaseContext());
-        patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.SUSPENDED, ...(Exit.isSuccess(exit) && { downloadProgress: 0 }) });
+        yield* this.releaseContext();
+        patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.SUSPENDED, downloadProgress: 0 });
     });
 
     context: LlamaContext | null = null;
@@ -76,10 +75,16 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
 
     private releaseContext(): Effect.Effect<void, NativeCallError> {
         const { context } = this;
-        this.context = null;
 
         return isDefined(context)
-            ? Effect.tryPromise({ try: () => context.release(), catch: cause => new NativeCallError({ cause }) })
+            ? Effect.tryPromise({ try: () => context.release(), catch: cause => new NativeCallError({ cause }) }).pipe(
+                  Effect.andThen(
+                      Effect.sync(() => {
+                          this.context = null;
+                      })
+                  ),
+                  Effect.uninterruptible
+              )
             : Effect.void;
     }
 }
