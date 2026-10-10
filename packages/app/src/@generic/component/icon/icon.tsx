@@ -1,12 +1,12 @@
 import { isEmojiIcon, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import ChartNoAxesColumn from 'lucide-react-native/icons/chart-no-axes-column';
-import CircleQuestionMark from 'lucide-react-native/icons/circle-question-mark';
-import House from 'lucide-react-native/icons/house';
-import Receipt from 'lucide-react-native/icons/receipt';
-import Settings from 'lucide-react-native/icons/settings';
 import { useEffect, useState } from 'react';
 import { Text } from 'react-native';
+import ChartBar from 'reicon-react-native/icons/ChartBar';
+import HelpCircle from 'reicon-react-native/icons/HelpCircle';
+import Home from 'reicon-react-native/icons/Home';
+import Receipt from 'reicon-react-native/icons/Receipt';
+import Settings from 'reicon-react-native/icons/Settings';
 import { withUniwind } from 'uniwind';
 
 import { emptyFn, isDefined, isNumber } from '@rnw-community/shared';
@@ -14,28 +14,28 @@ import { emptyFn, isDefined, isNumber } from '@rnw-community/shared';
 import { ICON_IMPORTS } from '../../constant/icons.constant';
 
 import type { AsyncResolvedIconInterface } from '../../interface/async-resolved-icon.interface';
-import type { StyledLucideIconType } from '../../type/styled-lucide-icon.type';
-import type { LucideIcon, LucideProps } from 'lucide-react-native';
+import type { StyledReiconType } from '../../type/styled-reicon.type';
+import type { IconComponent, IconProps } from 'reicon-react-native';
 import type { ApplyUniwind } from 'uniwind';
 
-interface IconProps extends ApplyUniwind<LucideProps> {
+interface Props extends ApplyUniwind<IconProps> {
     readonly icon: UserIconType;
 }
 
-const createStyledIcon = (baseIcon: LucideIcon): StyledLucideIconType => withUniwind(baseIcon);
+const createStyledIcon = (baseIcon: IconComponent): StyledReiconType => withUniwind(baseIcon);
 
-const STYLED_FALLBACK_ICON = createStyledIcon(CircleQuestionMark);
+const STYLED_FALLBACK_ICON = createStyledIcon(HelpCircle);
 
-const STYLED_ICON_CACHE = new Map<UserIconNameEnum, StyledLucideIconType>();
+const STYLED_ICON_CACHE = new Map<UserIconNameEnum, StyledReiconType>();
 
-const STYLED_ICON_PROMISES = new Map<UserIconNameEnum, Promise<StyledLucideIconType>>();
+const STYLED_ICON_PROMISES = new Map<UserIconNameEnum, Promise<StyledReiconType>>();
 
-STYLED_ICON_CACHE.set(UserIconNameEnum.Home, createStyledIcon(House));
+STYLED_ICON_CACHE.set(UserIconNameEnum.Home, createStyledIcon(Home));
 STYLED_ICON_CACHE.set(UserIconNameEnum.Receipt, createStyledIcon(Receipt));
-STYLED_ICON_CACHE.set(UserIconNameEnum.ChartNoAxesColumn, createStyledIcon(ChartNoAxesColumn));
+STYLED_ICON_CACHE.set(UserIconNameEnum.ChartNoAxesColumn, createStyledIcon(ChartBar));
 STYLED_ICON_CACHE.set(UserIconNameEnum.Settings, createStyledIcon(Settings));
 
-const loadStyledIcon = (icon: UserIconNameEnum): Promise<StyledLucideIconType> => {
+const loadStyledIcon = (icon: UserIconNameEnum): Promise<StyledReiconType> => {
     const pendingIcon = STYLED_ICON_PROMISES.get(icon);
     if (isDefined(pendingIcon)) {
         return pendingIcon;
@@ -58,7 +58,7 @@ const loadStyledIcon = (icon: UserIconNameEnum): Promise<StyledLucideIconType> =
     return loadedIcon;
 };
 
-export const Icon = ({ icon, ...rest }: IconProps) => {
+export const Icon = ({ icon, ...rest }: Props) => {
     const [asyncResolvedIcon, setAsyncResolvedIcon] = useState<AsyncResolvedIconInterface | undefined>();
 
     useEffect(() => {
@@ -93,7 +93,7 @@ export const Icon = ({ icon, ...rest }: IconProps) => {
     }
 
     const cachedIcon = STYLED_ICON_CACHE.get(icon);
-    const asyncIcon = asyncResolvedIcon?.icon === icon ? asyncResolvedIcon.styledIcon : STYLED_FALLBACK_ICON;
+    const asyncIcon = isDefined(asyncResolvedIcon) && asyncResolvedIcon.icon === icon ? asyncResolvedIcon.styledIcon : STYLED_FALLBACK_ICON;
     const IconToRender = cachedIcon ?? asyncIcon;
 
     // oxlint-disable-next-line react/static-components

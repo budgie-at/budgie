@@ -1,4 +1,4 @@
-import { CheckCheck } from 'lucide-react';
+import { CheckRead as CheckCheck } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 

@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { ChevronRight } from 'reicon-react';
 
 import { Button } from '../../../ui/button';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';

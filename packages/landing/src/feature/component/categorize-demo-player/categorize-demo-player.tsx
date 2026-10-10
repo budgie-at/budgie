@@ -1,8 +1,8 @@
 'use client';
 
 /* oxlint-disable lingui/no-unlocalized-strings */
-import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { RotateLeft as RotateCcw } from 'reicon-react';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 

@@ -1,8 +1,8 @@
 'use client';
 
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Check, Languages } from 'lucide-react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
+import { Check, Language as Languages } from 'reicon-react';
 
 import { SUPPORTED_LOCALES as locales } from '../../../i18n/supported-locales.constant.mjs';
 import { Button } from '../../../ui/button';

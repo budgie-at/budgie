@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 

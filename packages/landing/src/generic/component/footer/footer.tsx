@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-max-depth */
 
 import { Trans } from '@lingui/react/macro';
-import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
+import { BranchUp as GitBranch } from 'reicon-react';
 
 import { getCurrentYear } from '../../util/get-current-year.util';
 import { Logo } from '../logo/logo';

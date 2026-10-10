@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { IconWeightEnum } from '../../../@generic/enum/icon-weight.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 import { TagVariantType } from '../../type/tag-variant.type';
 
@@ -25,8 +26,6 @@ const TAG_CARD_HEIGHT = 56;
 const PRIMARY_SCALE = 1.04;
 const NORMAL_SCALE = 1;
 const SCALE_SPRING = { damping: 14, stiffness: 220 };
-const PRIMARY_STAR_FILL = 'currentColor';
-const TRANSPARENT_FILL = 'transparent';
 
 const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justify-center gap-x-md', {
     variants: {
@@ -106,7 +105,7 @@ export const TagsSelectorCard = ({
     const numberOfLines = variant === 'static' ? 2 : 1;
     const longPressHandler = isDefined(onPrimarySelect) ? handlePrimarySelect : void 0;
     const showStarBadge = variant === 'static' && isSelected;
-    const starFill = isPrimary ? PRIMARY_STAR_FILL : TRANSPARENT_FILL;
+    const starWeight = isPrimary ? IconWeightEnum.FILLED : IconWeightEnum.OUTLINE;
 
     const scaleStyle = useAnimatedStyle(() => ({
         transform: [{ scale: withSpring(isPrimary ? PRIMARY_SCALE : NORMAL_SCALE, SCALE_SPRING) }]
@@ -132,7 +131,7 @@ export const TagsSelectorCard = ({
 
                 {showStarBadge ? (
                     <View className="absolute top-1.5 right-1.5">
-                        <Icon icon={UserIconNameEnum.Star} size={STAR_SIZE} fill={starFill} className={starVariants({ isPrimary })} />
+                        <Icon icon={UserIconNameEnum.Star} size={STAR_SIZE} weight={starWeight} className={starVariants({ isPrimary })} />
                     </View>
                 ) : null}
 

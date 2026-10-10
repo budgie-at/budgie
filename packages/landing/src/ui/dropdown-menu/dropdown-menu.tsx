@@ -3,11 +3,13 @@
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { cn } from 'cn';
-import { Check, ChevronRight, Circle } from 'lucide-react';
 import * as React from 'react';
 import { forwardRef } from 'react';
+import { Check, ChevronRight, RecordCircle as Circle } from 'reicon-react';
 
 import type { ComponentPropsWithoutRef, ElementRef, HTMLAttributes } from 'react';
+
+const FILLED_ICON_WEIGHT = 'Filled';
 
 export const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -125,7 +127,7 @@ export const DropdownMenuRadioItem = forwardRef<
     >
         <span className="absolute left-2 flex size-3.5 items-center justify-center">
             <DropdownMenuPrimitive.ItemIndicator>
-                <Circle className="size-2 fill-current" />
+                <Circle className="size-2" weight={FILLED_ICON_WEIGHT} />
             </DropdownMenuPrimitive.ItemIndicator>
         </span>
         {children}
