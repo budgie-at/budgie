@@ -90,6 +90,7 @@ import { DebtAccountService } from '../../account/service/debt-account.service';
 import { AiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
+import { AiModelStorageService } from '../../ai/service/ai-model-storage.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AiTranslationStatusService } from '../../ai/service/ai-translation-status.service';
 import { ChatService } from '../../ai/service/chat.service';
@@ -191,6 +192,7 @@ export const appServicesLayer = Layer.mergeAll(
     TranslationDrainerService.layer,
     EmbeddingDrainerService.layer,
     AiCoordinatorService.layer,
+    AiModelStorageService.layer,
     AiStorageReplacementService.layer,
     AiEmbeddingStatusService.layer,
     AiTranslationStatusService.layer,

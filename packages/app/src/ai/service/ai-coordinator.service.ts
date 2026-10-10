@@ -5,6 +5,7 @@ import * as FiberHandle from 'effect/FiberHandle';
 import * as FiberSet from 'effect/FiberSet';
 import * as Layer from 'effect/Layer';
 import * as Scope from 'effect/Scope';
+import * as Semaphore from 'effect/Semaphore';
 import * as Stream from 'effect/Stream';
 import * as SubscriptionRef from 'effect/SubscriptionRef';
 import { AppState } from 'react-native';
@@ -24,6 +25,7 @@ import { AiEmbeddingStatusService } from './ai-embedding-status.service';
 import { AiModelResidencyService } from './ai-model-residency.service';
 import { ChatService } from './chat.service';
 import { EmbeddingDrainerService } from './embedding-drainer.service';
+import { LocalEmbeddingService } from './embedding.service';
 import { TranslationDrainerService } from './translation-drainer.service';
 
 import type { Db } from '@budgie/contracts';
@@ -34,6 +36,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const workload = yield* Workload;
         const aiModelResidencyService = yield* AiModelResidencyService;
         const chatService = yield* ChatService;
+        const localEmbeddingService = yield* LocalEmbeddingService;
         const embeddingDrainerService = yield* EmbeddingDrainerService;
         const aiEmbeddingStatusService = yield* AiEmbeddingStatusService;
         const translationDrainerService = yield* TranslationDrainerService;
@@ -41,6 +44,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const embeddingProgressStore = yield* EmbeddingProgressStore;
         const settleGraceMs = 5_000;
         const drainers = [translationDrainerService, ...embeddingDrainerService.drainers];
+        const stopLock = yield* Semaphore.make(1);
         let activeScope: Scope.Closeable | null = null;
 
         const isActive = (): boolean => isDefined(activeScope) && !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended;
@@ -58,18 +62,38 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             yield* embeddingProgressStore.refresh();
         });
 
-        const stopSubsystems = Effect.fn('AiCoordinatorService.stopSubsystems')(function* () {
-            yield* Effect.forEach(drainers, drainer => drainer.stop(), { discard: true });
-            yield* chatService.interrupt.pipe(
-                Effect.andThen(Effect.forEach(drainers, drainer => drainer.whenIdle(), { concurrency: 'unbounded', discard: true })),
-                Effect.timeout(settleGraceMs),
-                Effect.ignore
-            );
-            if (isActive()) {
-                return;
-            }
-            yield* aiModelResidencyService.suspend();
-        });
+        const stopSubsystems = Effect.fn('AiCoordinatorService.stopSubsystems')(() =>
+            stopLock.withPermit(
+                Effect.gen(function* () {
+                    yield* Effect.forEach(drainers, drainer => drainer.stop(), { discard: true });
+                    yield* chatService.interrupt.pipe(
+                        Effect.andThen(
+                            Effect.forEach(drainers, drainer => drainer.whenIdle(), { concurrency: 'unbounded', discard: true })
+                        ),
+                        Effect.timeout(settleGraceMs),
+                        Effect.ignore
+                    );
+                    if (isActive()) {
+                        return;
+                    }
+                    yield* aiModelResidencyService.suspend();
+                })
+            )
+        );
+
+        const stopSubsystemsStrict = Effect.fn('AiCoordinatorService.stopSubsystemsStrict')(() =>
+            stopLock.withPermit(
+                Effect.gen(function* () {
+                    yield* Effect.forEach(drainers, drainer => drainer.stop(), { discard: true });
+                    yield* chatService.interrupt;
+                    yield* Effect.forEach(drainers, drainer => drainer.whenIdle(), { concurrency: 'unbounded', discard: true }).pipe(
+                        Effect.timeout(settleGraceMs)
+                    );
+                    yield* localEmbeddingService.whenIdle.pipe(Effect.timeout(settleGraceMs));
+                    yield* aiModelResidencyService.suspend();
+                })
+            )
+        );
 
         const releaseAfterDelay = Effect.fn('AiCoordinatorService.releaseAfterDelay')(function* () {
             yield* Effect.sleep(BACKGROUND_RELEASE_DELAY_MS);
@@ -136,12 +160,22 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             }),
             stop: Effect.fn('AiCoordinatorService.stop')(function* () {
                 const scope = activeScope;
+                patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
                 if (!isDefined(scope)) {
                     return;
                 }
                 activeScope = null;
                 yield* Scope.close(scope, Exit.void);
                 yield* Effect.forkDetach(stopSubsystems());
+            }),
+            stopAndWait: Effect.fn('AiCoordinatorService.stopAndWait')(function* () {
+                const scope = activeScope;
+                patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
+                if (isDefined(scope)) {
+                    activeScope = null;
+                    yield* Scope.close(scope, Exit.void);
+                }
+                yield* stopSubsystemsStrict();
             })
         };
     })
@@ -151,6 +185,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             Workload.layer,
             AiModelResidencyService.layer,
             ChatService.layer,
+            LocalEmbeddingService.layer,
             EmbeddingDrainerService.layer,
             AiEmbeddingStatusService.layer,
             TranslationDrainerService.layer,

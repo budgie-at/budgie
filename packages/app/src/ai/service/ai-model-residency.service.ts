@@ -6,16 +6,17 @@ import * as Semaphore from 'effect/Semaphore';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
-import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { MODEL_IDLE_RELEASE_DELAY_MS } from '../util/ai-constants.util';
+import { isAiRuntimeActive } from '../utils/is-ai-runtime-active.util';
 
 import { ChatService } from './chat.service';
 import { LocalEmbeddingService } from './embedding.service';
 import { SttService } from './stt.service';
 
+import type { NativeCallError } from '../../@generic/error/native-call.error';
 import type * as Fiber from 'effect/Fiber';
 
 export class AiModelResidencyService extends Context.Service<AiModelResidencyService>()('@budgie/app/AiModelResidencyService', {
@@ -30,9 +31,9 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             [AiSubsystemNameEnum.STT]: sttService
         };
         const leases = new Map<AiSubsystemNameEnum, number>();
-        const idleTimers = new Map<AiSubsystemNameEnum, Fiber.Fiber<void>>();
+        const idleTimers = new Map<AiSubsystemNameEnum, Fiber.Fiber<void, NativeCallError>>();
         const lock = yield* Semaphore.make(1);
-        let isSuspended = false;
+        let isSuspended = true;
 
         const getLeaseCount = (subsystem: AiSubsystemNameEnum): number => leases.get(subsystem) ?? 0;
 
@@ -45,7 +46,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
         };
 
         const loadWhileLeased = Effect.fn('AiModelResidencyService.loadWhileLeased')(function* (subsystem: AiSubsystemNameEnum) {
-            if (!isAiEnabled() || isSuspended || !isPositiveNumber(getLeaseCount(subsystem))) {
+            if (!isAiRuntimeActive() || isSuspended || !isPositiveNumber(getLeaseCount(subsystem))) {
                 return;
             }
             if (getStatus(subsystem) !== AiSubsystemStatusEnum.ERROR) {
@@ -63,10 +64,10 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             acquire: Effect.fn('AiModelResidencyService.acquire')(function* (subsystem: AiSubsystemNameEnum) {
                 clearIdleTimer(subsystem);
                 leases.set(subsystem, getLeaseCount(subsystem) + 1);
-                if (!isAiEnabled() || isSuspended || getStatus(subsystem) === AiSubsystemStatusEnum.ERROR) {
+                if (!isAiRuntimeActive() || isSuspended || getStatus(subsystem) === AiSubsystemStatusEnum.ERROR) {
                     return false;
                 }
-                yield* lock.withPermit(loadWhileLeased(subsystem));
+                yield* lock.withPermit(Effect.uninterruptible(loadWhileLeased(subsystem)));
 
                 return getStatus(subsystem) === AiSubsystemStatusEnum.READY;
             }),
@@ -105,9 +106,13 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             resume: Effect.fn('AiModelResidencyService.resume')(function* () {
                 isSuspended = false;
                 yield* Effect.forkIn(
-                    Effect.forEach(Object.values(AiSubsystemNameEnum), subsystem => lock.withPermit(loadWhileLeased(subsystem)), {
-                        discard: true
-                    }),
+                    Effect.forEach(
+                        Object.values(AiSubsystemNameEnum),
+                        subsystem => lock.withPermit(Effect.uninterruptible(loadWhileLeased(subsystem))),
+                        {
+                            discard: true
+                        }
+                    ),
                     layerScope
                 );
             })

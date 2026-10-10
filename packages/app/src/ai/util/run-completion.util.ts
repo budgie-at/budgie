@@ -13,7 +13,7 @@ export const runCompletion = Effect.fn('runCompletion')(function* (
     userMessage: string,
     options?: GenerateOptionsInterface
 ) {
-    const result = yield* Effect.tryPromise({
+    const completion = yield* Effect.try({
         try: () =>
             context.completion({
                 messages: [
@@ -32,11 +32,24 @@ export const runCompletion = Effect.fn('runCompletion')(function* (
                 ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
             }),
         catch: cause => new AiInvokeError({ cause })
+    });
+    const result = yield* Effect.tryPromise({
+        try: () => completion,
+        catch: cause => new AiInvokeError({ cause })
     }).pipe(
         Effect.onInterrupt(() =>
             Effect.sync(() => {
                 void context.stopCompletion();
-            })
+            }).pipe(
+                Effect.andThen(
+                    Effect.ignore(
+                        Effect.tryPromise({
+                            try: () => completion,
+                            catch: cause => new AiInvokeError({ cause })
+                        })
+                    )
+                )
+            )
         )
     );
 

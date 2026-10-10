@@ -1,7 +1,6 @@
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
-import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import * as Semaphore from 'effect/Semaphore';
 
@@ -16,6 +15,7 @@ import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
+import { isAiRuntimeActive } from '../utils/is-ai-runtime-active.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
 import { WhisperModelService } from './whisper-model.service';
@@ -57,7 +57,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                         beamSize: STT_BEAM_SIZE
                     }).promise,
                 catch: cause => new NativeCallError({ cause })
-            });
+            }).pipe(Effect.uninterruptible);
 
             return result.result.trim();
         });
@@ -68,27 +68,27 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
             streamLanguage = language;
         };
 
-        const stopStream = Effect.fn('SttService.stopStream')(
-            function* (commitFinalText: boolean) {
-                const stream = audioStream;
-                if (!isDefined(stream)) {
-                    return commitFinalText ? appAtomRegistry.get(sttSnapshotAtom).committedTranscription : '';
-                }
-                const finalText = commitFinalText ? yield* transcribe(stream) : '';
-                patchAtom(sttSnapshotAtom, { committedTranscription: finalText, nonCommittedTranscription: '' });
+        const stopCurrentStream = Effect.fnUntraced(function* (commitFinalText: boolean) {
+            const stream = audioStream;
+            if (!isDefined(stream)) {
+                return commitFinalText ? appAtomRegistry.get(sttSnapshotAtom).committedTranscription : '';
+            }
+            const finalText = commitFinalText ? yield* transcribe(stream) : '';
+            patchAtom(sttSnapshotAtom, { committedTranscription: finalText, nonCommittedTranscription: '' });
 
-                return finalText;
-            },
-            effect =>
-                streamLock.withPermit(
-                    Effect.ensuring(
-                        effect,
-                        Effect.sync(() => {
-                            audioStream = null;
-                            streamLanguage = null;
-                        })
-                    )
+            return finalText;
+        });
+
+        const stopStream = Effect.fn('SttService.stopStream')((commitFinalText: boolean) =>
+            streamLock.withPermit(
+                Effect.ensuring(
+                    stopCurrentStream(commitFinalText),
+                    Effect.sync(() => {
+                        audioStream = null;
+                        streamLanguage = null;
+                    })
                 )
+            )
         );
 
         return {
@@ -125,31 +125,30 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                 if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
                     return;
                 }
-                yield* Effect.ignore(stopStream(false));
-                context = null;
-                const whisperModule = whisper;
-                const exit = yield* Effect.exit(
-                    isDefined(whisperModule)
-                        ? Effect.tryPromise({
-                              try: () => whisperModule.releaseAllWhisper(),
-                              catch: cause => new NativeCallError({ cause })
-                          })
-                        : Effect.void
-                );
-                patchAtom(
-                    sttSnapshotAtom,
-                    Exit.isSuccess(exit)
-                        ? {
-                              status: AiSubsystemStatusEnum.SUSPENDED,
-                              downloadProgress: 0,
-                              committedTranscription: '',
-                              nonCommittedTranscription: ''
-                          }
-                        : { status: AiSubsystemStatusEnum.SUSPENDED }
+                yield* streamLock.withPermit(
+                    Effect.gen(function* () {
+                        yield* Effect.ignore(stopCurrentStream(false));
+                        audioStream = null;
+                        streamLanguage = null;
+                        const whisperModule = whisper;
+                        yield* isDefined(whisperModule)
+                            ? Effect.tryPromise({
+                                  try: () => whisperModule.releaseAllWhisper(),
+                                  catch: cause => new NativeCallError({ cause })
+                              }).pipe(Effect.uninterruptible)
+                            : Effect.void;
+                        context = null;
+                        patchAtom(sttSnapshotAtom, {
+                            status: AiSubsystemStatusEnum.SUSPENDED,
+                            downloadProgress: 0,
+                            committedTranscription: '',
+                            nonCommittedTranscription: ''
+                        });
+                    })
                 );
             }),
             streamStart: Effect.fn('SttService.streamStart')(function* (language: string | null) {
-                if (!isReady() || !isDefined(context)) {
+                if (!isAiRuntimeActive() || !isReady() || !isDefined(context)) {
                     return yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });
                 }
                 if (isDefined(audioStream)) {

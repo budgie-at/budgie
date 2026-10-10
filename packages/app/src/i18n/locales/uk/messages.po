@@ -260,6 +260,10 @@ msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "{totalSize} stored on this device"
+msgstr "{totalSize} збережено на цьому пристрої"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
@@ -511,9 +515,25 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
+#: src/ai/error/ai-model-storage-busy.error.ts
+msgid "AI is downloading or opening this model. Try again when it finishes."
+msgstr "ШІ завантажує або відкриває цю модель. Спробуйте ще раз, коли він завершить."
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "AI model removed"
+msgstr "Модель ШІ видалено"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "AI models removed"
+msgstr "Моделі ШІ видалено"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "ШІ вимкнено"
+
+#: src/ai/error/ai-model-storage-enabled.error.ts
+msgid "AI was turned on again before cleanup finished. Turn AI off and try removing the model again."
+msgstr "ШІ знову ввімкнули до завершення очищення. Вимкніть ШІ та спробуйте видалити модель ще раз."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "AI-Generated Metadata"
@@ -843,9 +863,17 @@ msgstr "Budgie об'єднає надійні збіги переказів і �
 msgid "Budgie will notify you when it finishes"
 msgstr "Budgie повідомить, коли імпорт завершиться"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Budgie will remove obsolete downloaded AI model files from this device."
+msgstr "Budgie видалить із цього пристрою застарілі файли завантажених моделей ШІ."
+
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Budgie will turn AI off and remove downloaded AI models from this device. Turning AI on again will download them again."
+msgstr "Budgie вимкне ШІ та видалить завантажені моделі ШІ з цього пристрою. Коли ви знову ввімкнете ШІ, вони завантажаться повторно."
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
@@ -865,6 +893,7 @@ msgstr "Може тривати годинами"
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -983,6 +1012,10 @@ msgstr "Перевірка"
 msgid "Checking Account"
 msgstr "Поточний рахунок"
 
+#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
+msgid "Checking storage..."
+msgstr "Перевірка сховища..."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
@@ -990,6 +1023,10 @@ msgstr "Оберіть «Excel» як формат експорту — файл
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Cleanup available"
+msgstr "Доступне очищення"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1328,6 +1365,14 @@ msgstr "Не вдалося перепризначити тег"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Could not remove AI model"
+msgstr "Не вдалося видалити модель ШІ"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Could not remove AI models"
+msgstr "Не вдалося видалити моделі ШІ"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1736,6 +1781,14 @@ msgstr "Готово ({count})"
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Downloaded"
+msgstr "Завантажено"
+
+#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
+msgid "Downloaded AI models"
+msgstr "Завантажені моделі ШІ"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
@@ -1836,6 +1889,10 @@ msgstr "Змінює назву плану"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Edits the total of the plan"
 msgstr "Змінює загальну суму плану"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "EmbeddingGemma 300M Q8_0"
+msgstr "EmbeddingGemma 300M Q8_0"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
@@ -2119,6 +2176,10 @@ msgstr "Фільтрувати категорії"
 msgid "Filter tags"
 msgstr "Фільтрувати теги"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Finishing download"
+msgstr "Завершення завантаження"
+
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "First expense added"
 msgstr "Першу витрату додано"
@@ -2260,6 +2321,10 @@ msgstr "Імпортер значків не знайдено: {icon}"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "If this model is currently used by AI, Budgie will turn AI off. Turning AI on again will download the model again."
+msgstr "Якщо ШІ зараз використовує цю модель, Budgie вимкне ШІ. Коли ви знову ввімкнете ШІ, модель завантажиться повторно."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import"
@@ -2504,6 +2569,18 @@ msgstr "лишилось"
 msgid "Left"
 msgstr "Залишилось"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Legacy Nomic embedding file"
+msgstr "Застарілий файл embedding Nomic"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Legacy Qwen chat file"
+msgstr "Застарілий файл чату Qwen"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Legacy Whisper file"
+msgstr "Застарілий файл Whisper"
+
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
@@ -2544,6 +2621,18 @@ msgstr "Завантаження..."
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Loading…"
 msgstr "Завантаження…"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Local chat model"
+msgstr "Локальна модель чату"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Local embedding model"
+msgstr "Локальна embedding-модель"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Local speech-to-text model"
+msgstr "Локальна модель розпізнавання мовлення"
 
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
@@ -2866,6 +2955,10 @@ msgstr "Немає власних категорій"
 msgid "No debt yet"
 msgstr "Боргу немає"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "No downloaded AI models found on this device"
+msgstr "На цьому пристрої не знайдено завантажених моделей ШІ"
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
 msgstr "У цьому файлі не знайдено активованих рахунків"
@@ -2889,6 +2982,10 @@ msgstr "Немає елементів для збереження"
 #: src/app/language-selector.tsx
 msgid "No languages found"
 msgstr "Мов не знайдено"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "No longer used by this version"
+msgstr "Більше не використовується цією версією"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -3196,6 +3293,10 @@ msgstr "Сплачено {paidAmount} · {paidCount} з {installmentCount}"
 msgid "Paid off"
 msgstr "Сплачено"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Partial Whisper download"
+msgstr "Часткове завантаження Whisper"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
 msgstr "Вставте токен у поле нижче"
@@ -3353,6 +3454,10 @@ msgstr "Push-сповіщення вимкнено"
 msgid "Quick rule"
 msgstr "Швидке правило"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Qwen3 1.7B Q4_K_M"
+msgstr "Qwen3 1.7B Q4_K_M"
+
 #: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Range across better and worse months"
 msgstr "Діапазон кращих і гірших місяців"
@@ -3463,13 +3568,28 @@ msgid "Remaining"
 msgstr "Залишок"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove"
 msgstr "Видалити"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-remove-all-button/ai-model-storage-remove-all-button.tsx
+msgid "Remove All"
+msgstr "Видалити все"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Remove all downloaded AI models?"
+msgstr "Видалити всі завантажені моделі ШІ?"
+
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove category limit?"
 msgstr "Видалити ліміт категорії?"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Remove downloaded model?"
+msgstr "Видалити завантажену модель?"
 
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate imported bank transactions"
@@ -4641,6 +4761,10 @@ msgstr "Коли настає термін погашення депозиту?"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Whisper large-v3 turbo Q8_0"
+msgstr "Whisper large-v3 turbo Q8_0"
 
 #: src/ai/service/whisper-model.service.ts
 msgid "Whisper model download failed"
