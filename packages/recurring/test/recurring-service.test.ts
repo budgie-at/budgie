@@ -553,7 +553,7 @@ layer(TestLayer)('recurringService', it => {
         Effect.gen(function* () {
             yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID });
             const fixture = yield* Effect.sync(() =>
-                readFileSync('../../tests/app-tests/fixtures/screenshots/scenes/shared/recurring.sql', 'utf8')
+                readFileSync(new URL('../../../tests/app-tests/fixtures/screenshots/scenes/shared/recurring.sql', import.meta.url), 'utf8')
             );
             for (const date of [
                 '2026-10-31T12:00:00Z',
