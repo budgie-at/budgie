@@ -1,0 +1,9 @@
+export enum AiModelStorageIdEnum {
+    CHAT = 'CHAT',
+    EMBEDDING = 'EMBEDDING',
+    STT = 'STT',
+    LEGACY_EMBEDDING = 'LEGACY_EMBEDDING',
+    LEGACY_CHAT = 'LEGACY_CHAT',
+    LEGACY_STT = 'LEGACY_STT',
+    PARTIAL_STT = 'PARTIAL_STT'
+}
