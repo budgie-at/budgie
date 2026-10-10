@@ -13,7 +13,7 @@ on: pull_request
 jobs:
     detect-mobile-impact:
         name: Detect mobile impact
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 15
         permissions:
             contents: read
@@ -140,7 +140,7 @@ jobs:
 
     e2e-script-tests:
         name: E2E script self-tests
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -173,7 +173,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -232,7 +232,7 @@ jobs:
                 APP_VARIANT=production
             package-manager: pnpm
             install-command: pnpm install --frozen-lockfile
-            runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            runner-labels: '["self-hosted","linux-portable-4x8"]'
             node-version: 22.22.1
 
     ios-maestro:
@@ -293,7 +293,7 @@ jobs:
     store-screenshots-gallery:
         name: Store screenshots gallery
         if: github.event.pull_request.head.repo.full_name == github.repository
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 10
         permissions:
             pull-requests: write
