@@ -2,7 +2,7 @@ import { PRECISION, RecurringSeriesKindEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { detectRecurringSeries, isSeriesActive } from '../src/series/recurring-series';
+import { detectRecurringSeries, isSeriesActive, legacyLabel } from '../src/series/recurring-series';
 
 import type { RecurringChargeInterface } from '../src/interface/recurring-charge.interface';
 
@@ -21,6 +21,30 @@ const charge = (day: number, amount: number, title = 'APPLE', accountId = 1): Re
     categoryTitle: null,
     categoryIcon: null
 });
+
+it.effect('keeps distinguishing merchant tokens in display titles without changing recurring identity', () =>
+    Effect.sync(() => {
+        const gym = [5, 36, 64, 95].map(day => charge(day, 20, 'E2E Recurring Gym'));
+        const music = [5, 36, 64, 95].map(day => charge(day, 15, 'E2E Recurring Music'));
+        const series = detectRecurringSeries([...gym, ...music]);
+
+        expect(series.map(item => item.title).sort()).toEqual(['E2E Recurring Gym', 'E2E Recurring Music']);
+        expect(new Set(series.map(item => item.merchantKey)).size).toBe(2);
+        expect(series.find(item => item.title === 'E2E Recurring Gym')?.merchantKey).toBe(detectRecurringSeries(gym)[0]?.merchantKey);
+        expect(legacyLabel(gym[0])).toBe('E2E RECURRING GYM');
+    })
+);
+
+it.effect('keeps alphanumeric merchant names while removing legal forms and reference tails from display titles', () =>
+    Effect.sync(() => {
+        const charges = [5, 36, 64, 95].map(day => charge(day, 20, 'Shop24 Cloud GmbH MREF 123456'));
+        const [series] = detectRecurringSeries(charges);
+
+        expect(series.title).toBe('Shop24 Cloud');
+        expect(series.merchantKey).toBe('EXPENSE|1|SHOP CLOUD GMBH|20000000');
+        expect(legacyLabel(charges[0])).toBe('SHOP24 CLOUD');
+    })
+);
 
 it.effect('finds five independent monthly prices at one merchant', () =>
     Effect.sync(() => {

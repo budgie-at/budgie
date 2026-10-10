@@ -53,14 +53,14 @@ const counterpartyKey = (charge: RecurringChargeInterface): string =>
 const identity = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
 
-export const legacyLabel = (charge: RecurringChargeInterface): string =>
+const cleanTokens = (charge: RecurringChargeInterface): string[] =>
     description(charge)
         .replace(/(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu, '')
         .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
         .split(/[^\p{L}\p{N}]+/u)
-        .filter(token => isNotEmptyString(token) && !/^\d+$|\d{3,}/u.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()))
-        .join(' ')
-        .toUpperCase();
+        .filter(token => isNotEmptyString(token) && !/^\d+$|\d{3,}/u.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
+
+export const legacyLabel = (charge: RecurringChargeInterface): string => cleanTokens(charge).join(' ').toUpperCase();
 
 const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeriesEventInterface[] => {
     const events: RecurringSeriesEventInterface[] = [];
@@ -210,7 +210,7 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
         nativeAmount,
         merchantKey: identity(latest),
         labels: [...new Set([identity(latest), normalizeRecurringDescription(description(latest)), ...charges.map(legacyLabel)])],
-        title: normalizeRecurringDescription(description(latest)).split(' ').slice(0, 3).join(' '),
+        title: cleanTokens(latest).slice(0, 3).join(' '),
         categoryId: latest.categoryId,
         categoryTitle: latest.categoryTitle,
         categoryIcon: latest.categoryIcon,

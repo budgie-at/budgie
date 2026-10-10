@@ -140,6 +140,24 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService', it => {
+    it.effect('retains a renamed alphanumeric merchant series after a new observation', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'E2E Recurring Gym', 5, 20);
+            const [initial] = allEntries(yield* calendar(JULY));
+            const service = yield* RecurringService;
+            yield* service.rename(initial.seriesId, 'Gym membership');
+            yield* service.setUserState(initial.seriesId, RecurringSeriesUserStateEnum.CONFIRMED);
+            yield* seed('E2E Recurring Gym', 0, 5, 20);
+            const [updated] = allEntries(yield* calendar(JULY));
+
+            expect(updated).toMatchObject({
+                seriesId: initial.seriesId,
+                title: 'Gym membership',
+                userState: RecurringSeriesUserStateEnum.CONFIRMED
+            });
+        })
+    );
     for (const [scenario, streams, survivors, months, visible] of [
         [
             'a confirmed survivor at the same price after a dismissed sibling retires',
