@@ -140,6 +140,41 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService', it => {
+    for (const title of ['Office365', 'GmbH']) {
+        it.effect(`stores and projects a visible title for ${title}`, () =>
+            Effect.gen(function* () {
+                const seed = yield* seedCharges();
+                yield* seedMonthly(seed, title, 5, 20);
+                const [entry] = allEntries(yield* calendar(JULY));
+                const repository = yield* RecurringRepository;
+                const [saved] = yield* repository.findSeries();
+
+                expect(saved.title).toBe(title);
+                expect(entry.title).toBe(title);
+                expect(entry.seriesId).toBe(saved.id);
+            })
+        );
+    }
+    it.effect('retains a dismissed Office365 subscription with its saved title after another observation', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'Office365', 5, 20);
+            const [initial] = allEntries(yield* calendar(JULY));
+            const service = yield* RecurringService;
+            yield* service.rename(initial.seriesId, 'Work tools');
+            yield* service.setUserState(initial.seriesId, RecurringSeriesUserStateEnum.DISMISSED);
+            yield* seed('Office365', 0, 5, 20);
+            yield* calendar(JULY);
+            const repository = yield* RecurringRepository;
+            const [saved] = yield* repository.findSeries();
+
+            expect(saved).toMatchObject({
+                id: initial.seriesId,
+                title: 'Work tools',
+                userState: RecurringSeriesUserStateEnum.DISMISSED
+            });
+        })
+    );
     it.effect('retains a renamed alphanumeric merchant series after a new observation', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();

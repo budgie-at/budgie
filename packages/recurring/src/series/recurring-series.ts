@@ -203,6 +203,7 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
             (priceChangeIndex > 0 ? events.slice(priceChangeIndex) : events.slice(-RECENT_AMOUNT_COUNT)).map(event => event.nativeAmount)
         )
     );
+    const displayTitle = cleanTokens(latest).slice(0, 3).join(' ');
 
     return {
         kind: latest.kind,
@@ -210,7 +211,7 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
         nativeAmount,
         merchantKey: identity(latest),
         labels: [...new Set([identity(latest), normalizeRecurringDescription(description(latest)), ...charges.map(legacyLabel)])],
-        title: cleanTokens(latest).slice(0, 3).join(' '),
+        title: isNotEmptyString(displayTitle) ? displayTitle : description(latest).trim().split(/\s+/u).slice(0, 3).join(' '),
         categoryId: latest.categoryId,
         categoryTitle: latest.categoryTitle,
         categoryIcon: latest.categoryIcon,
