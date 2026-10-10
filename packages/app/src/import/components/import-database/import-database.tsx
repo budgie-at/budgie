@@ -25,7 +25,7 @@ export const ImportDatabase = () => {
         setIsLoading(true);
         try {
             const result = await DocumentPicker.getDocumentAsync({
-                type: ['application/x-sqlite3', 'application/octet-stream', '*/*'],
+                type: ['application/x-sqlite3', 'application/zip', 'application/octet-stream', '*/*'],
                 copyToCacheDirectory: true
             });
             const { uri } = result.assets?.at(0) ?? {};
