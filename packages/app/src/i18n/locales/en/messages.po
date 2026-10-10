@@ -261,6 +261,10 @@ msgstr "{splitEntryCount, plural, one {# item} other {# items}}"
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "{totalSize} stored on this device"
+msgstr "{totalSize} stored on this device"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
@@ -512,9 +516,25 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
+#: src/ai/error/ai-model-storage-busy.error.ts
+msgid "AI is downloading or opening this model. Try again when it finishes."
+msgstr "AI is downloading or opening this model. Try again when it finishes."
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "AI model removed"
+msgstr "AI model removed"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "AI models removed"
+msgstr "AI models removed"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "AI off"
+
+#: src/ai/error/ai-model-storage-enabled.error.ts
+msgid "AI was turned on again before cleanup finished. Turn AI off and try removing the model again."
+msgstr "AI was turned on again before cleanup finished. Turn AI off and try removing the model again."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "AI-Generated Metadata"
@@ -844,9 +864,17 @@ msgstr "Budgie will merge high-confidence transfer and refund matches. Ambiguous
 msgid "Budgie will notify you when it finishes"
 msgstr "Budgie will notify you when it finishes"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Budgie will remove obsolete downloaded AI model files from this device."
+msgstr "Budgie will remove obsolete downloaded AI model files from this device."
+
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Budgie will turn AI off and remove downloaded AI models from this device. Turning AI on again will download them again."
+msgstr "Budgie will turn AI off and remove downloaded AI models from this device. Turning AI on again will download them again."
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
@@ -866,6 +894,7 @@ msgstr "Can take hours"
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -984,6 +1013,10 @@ msgstr "Checking"
 msgid "Checking Account"
 msgstr "Checking Account"
 
+#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
+msgid "Checking storage..."
+msgstr "Checking storage..."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
@@ -991,6 +1024,10 @@ msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imp
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Cleanup available"
+msgstr "Cleanup available"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1329,6 +1366,14 @@ msgstr "Could not reassign tag"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Could not recalculate balances"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Could not remove AI model"
+msgstr "Could not remove AI model"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Could not remove AI models"
+msgstr "Could not remove AI models"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1737,6 +1782,14 @@ msgstr "Done ({count})"
 msgid "Download your statement as PDF"
 msgstr "Download your statement as PDF"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Downloaded"
+msgstr "Downloaded"
+
+#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
+msgid "Downloaded AI models"
+msgstr "Downloaded AI models"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
 msgstr "Downloading AI models…"
@@ -1837,6 +1890,10 @@ msgstr "Edits the name of the plan"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Edits the total of the plan"
 msgstr "Edits the total of the plan"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "EmbeddingGemma 300M Q8_0"
+msgstr "EmbeddingGemma 300M Q8_0"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
@@ -2120,6 +2177,10 @@ msgstr "Filter categories"
 msgid "Filter tags"
 msgstr "Filter tags"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Finishing download"
+msgstr "Finishing download"
+
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "First expense added"
 msgstr "First expense added"
@@ -2261,6 +2322,10 @@ msgstr "Icon importer not found: {icon}"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "If this model is currently used by AI, Budgie will turn AI off. Turning AI on again will download the model again."
+msgstr "If this model is currently used by AI, Budgie will turn AI off. Turning AI on again will download the model again."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import"
@@ -2505,6 +2570,18 @@ msgstr "left"
 msgid "Left"
 msgstr "Left"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Legacy Nomic embedding file"
+msgstr "Legacy Nomic embedding file"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Legacy Qwen chat file"
+msgstr "Legacy Qwen chat file"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Legacy Whisper file"
+msgstr "Legacy Whisper file"
+
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
@@ -2545,6 +2622,18 @@ msgstr "Loading..."
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Loading…"
 msgstr "Loading…"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Local chat model"
+msgstr "Local chat model"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Local embedding model"
+msgstr "Local embedding model"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Local speech-to-text model"
+msgstr "Local speech-to-text model"
 
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
@@ -2867,6 +2956,10 @@ msgstr "No Custom Categories"
 msgid "No debt yet"
 msgstr "No debt yet"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "No downloaded AI models found on this device"
+msgstr "No downloaded AI models found on this device"
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
 msgstr "No enabled accounts were found in this file"
@@ -2890,6 +2983,10 @@ msgstr "No items to save"
 #: src/app/language-selector.tsx
 msgid "No languages found"
 msgstr "No languages found"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "No longer used by this version"
+msgstr "No longer used by this version"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -3197,6 +3294,10 @@ msgstr "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgid "Paid off"
 msgstr "Paid off"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Partial Whisper download"
+msgstr "Partial Whisper download"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
 msgstr "Paste the token into the field below"
@@ -3354,6 +3455,10 @@ msgstr "Push notifications are disabled"
 msgid "Quick rule"
 msgstr "Quick rule"
 
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Qwen3 1.7B Q4_K_M"
+msgstr "Qwen3 1.7B Q4_K_M"
+
 #: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Range across better and worse months"
 msgstr "Range across better and worse months"
@@ -3464,13 +3569,28 @@ msgid "Remaining"
 msgstr "Remaining"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove"
 msgstr "Remove"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-remove-all-button/ai-model-storage-remove-all-button.tsx
+msgid "Remove All"
+msgstr "Remove All"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Remove all downloaded AI models?"
+msgstr "Remove all downloaded AI models?"
+
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove category limit?"
 msgstr "Remove category limit?"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Remove downloaded model?"
+msgstr "Remove downloaded model?"
 
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate imported bank transactions"
@@ -4642,6 +4762,10 @@ msgstr "When does the deposit mature?"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
 msgstr "When should it be returned?"
+
+#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
+msgid "Whisper large-v3 turbo Q8_0"
+msgstr "Whisper large-v3 turbo Q8_0"
 
 #: src/ai/service/whisper-model.service.ts
 msgid "Whisper model download failed"
