@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.100.0](https://github.com/budgie-at/budgie/compare/v6.99.2...v6.100.0) (2026-10-10)
+
+
+### Bug Fixes
+
+* **app:** reject zip backups with ambiguous database entries ([bed3026](https://github.com/budgie-at/budgie/commit/bed3026f45516cae6fbf7a27c7e4551d46039a28))
+* **app:** skip macOS metadata entries and unknown free space in zip import ([d2b0993](https://github.com/budgie-at/budgie/commit/d2b0993583b9a3b9df7fa0d6bc15d120e0e2cbbe))
+* **app:** zip single file and extract only the backup database ([e243bb8](https://github.com/budgie-at/budgie/commit/e243bb8b801faaafc4d8387e102fadcd211614bb))
+
+
+### Features
+
+* **app:** export and import database backups as zip ([8746f87](https://github.com/budgie-at/budgie/commit/8746f87c5e738fa2f8d2ee3fd982f97c5cad60f8))
+
+
+
+
+
 ## [6.99.2](https://github.com/budgie-at/budgie/compare/v6.99.1...v6.99.2) (2026-10-10)
 
 
