@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.99.2](https://github.com/budgie-at/budgie/compare/v6.99.1...v6.99.2) (2026-10-10)
+
+
+### Bug Fixes
+
+* **sync:** resume yielded Monobank backfill until history completes ([5689e1e](https://github.com/budgie-at/budgie/commit/5689e1e97977e59268b20166b16807f10f73ae5a))
+* **sync:** stop unsafe backfill continuations ([09837f3](https://github.com/budgie-at/budgie/commit/09837f363deab6b90bfdf961a5f154c17e013072))
+
+
+
+
+
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
 
