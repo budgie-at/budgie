@@ -46,11 +46,14 @@ it.effect('keeps alphanumeric merchant names while removing legal forms and refe
     })
 );
 
-it.effect('keeps reference marker substrings in merchant display titles while preserving legacy labels', () =>
+it.effect('keeps marker substrings and letter-adjacent digits in display titles, strips reference numbers, preserves legacy labels', () =>
     Effect.sync(() => {
         for (const [description, title, label] of [
             ['GUIDE MICHELIN', 'GUIDE MICHELIN', 'G'],
-            ['Liquid Web', 'Liquid Web', 'LIQ']
+            ['Liquid Web', 'Liquid Web', 'LIQ'],
+            ['Microsoft Office365 Family', 'Microsoft Office365 Family', 'MICROSOFT FAMILY'],
+            ['Netflix 4821937 Premium', 'Netflix Premium', 'NETFLIX PREMIUM'],
+            ['Acme AB123456 Plan', 'Acme Plan', 'ACME PLAN']
         ]) {
             const charges = [5, 36, 64, 95].map(day => charge(day, 20, description));
             const [series] = detectRecurringSeries(charges);

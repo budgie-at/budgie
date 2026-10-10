@@ -53,16 +53,18 @@ const counterpartyKey = (charge: RecurringChargeInterface): string =>
 const identity = (charge: RecurringChargeInterface): string =>
     isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
 
-const cleanTokens = (charge: RecurringChargeInterface, referenceTail: RegExp): string[] =>
+const cleanTokens = (charge: RecurringChargeInterface, referenceTail: RegExp, numericToken: RegExp): string[] =>
     description(charge)
         .replace(referenceTail, '')
         .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
         .split(/[^\p{L}\p{N}]+/u)
-        .filter(token => isNotEmptyString(token) && !/^\d+$|\d{3,}/u.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
+        .filter(token => isNotEmptyString(token) && !numericToken.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
+
 export const legacyLabel = (charge: RecurringChargeInterface): string =>
-    cleanTokens(charge, /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu)
+    cleanTokens(charge, /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu, /^\d+$|\d{3,}/u)
         .join(' ')
         .toUpperCase();
+
 const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeriesEventInterface[] => {
     const events: RecurringSeriesEventInterface[] = [];
     const seen = new Set<string>();
@@ -204,9 +206,7 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
             (priceChangeIndex > 0 ? events.slice(priceChangeIndex) : events.slice(-RECENT_AMOUNT_COUNT)).map(event => event.nativeAmount)
         )
     );
-    const displayTitle = cleanTokens(latest, /\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/iu)
-        .slice(0, 3)
-        .join(' ');
+    const displayTokens = cleanTokens(latest, /\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/iu, /^\d+$|\d{6,}/u).slice(0, 3);
 
     return {
         kind: latest.kind,
@@ -214,7 +214,7 @@ const buildSeries = (charges: readonly RecurringChargeInterface[], variable = fa
         nativeAmount,
         merchantKey: identity(latest),
         labels: [...new Set([identity(latest), normalizeRecurringDescription(description(latest)), ...charges.map(legacyLabel)])],
-        title: isNotEmptyString(displayTitle) ? displayTitle : description(latest).trim().split(/\s+/u).slice(0, 3).join(' '),
+        title: isNotEmptyArray(displayTokens) ? displayTokens.join(' ') : description(latest).trim().split(/\s+/u).slice(0, 3).join(' '),
         categoryId: latest.categoryId,
         categoryTitle: latest.categoryTitle,
         categoryIcon: latest.categoryIcon,
