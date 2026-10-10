@@ -56,7 +56,14 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
     });
     const { availableDiskSpace } = Paths;
 
-    if (!isDefined(databaseEntry) || (isPositiveNumber(availableDiskSpace) && databaseEntry.size > availableDiskSpace)) {
+    if (!isDefined(databaseEntry)) {
+        return yield* new UnsupportedBackupError();
+    }
+
+    const hasAmbiguousEntries =
+        entries.filter(entry => entry.path === databaseEntry.path || entry.path.startsWith(`${databaseEntry.path}/`)).length > 1;
+
+    if (hasAmbiguousEntries || (isPositiveNumber(availableDiskSpace) && databaseEntry.size > availableDiskSpace)) {
         return yield* new UnsupportedBackupError();
     }
 
