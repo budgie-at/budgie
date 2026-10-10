@@ -173,7 +173,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
-        runs-on: [self-hosted, linux-portable-2x4]
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 10
         permissions:
             contents: read
