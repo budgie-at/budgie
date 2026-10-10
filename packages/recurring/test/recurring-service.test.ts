@@ -140,7 +140,7 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 afterAll(() => testDbHandle.dispose());
 
 layer(TestLayer)('recurringService', it => {
-    for (const title of ['Office365', 'GmbH']) {
+    for (const title of ['Office365', 'GmbH', 'GUIDE MICHELIN', 'Liquid Web']) {
         it.effect(`stores and projects a visible title for ${title}`, () =>
             Effect.gen(function* () {
                 const seed = yield* seedCharges();

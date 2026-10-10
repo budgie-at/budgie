@@ -46,6 +46,34 @@ it.effect('keeps alphanumeric merchant names while removing legal forms and refe
     })
 );
 
+it.effect('keeps reference marker substrings in merchant display titles while preserving legacy labels', () =>
+    Effect.sync(() => {
+        for (const [description, title, label] of [
+            ['GUIDE MICHELIN', 'GUIDE MICHELIN', 'G'],
+            ['Liquid Web', 'Liquid Web', 'LIQ']
+        ]) {
+            const charges = [5, 36, 64, 95].map(day => charge(day, 20, description));
+            const [series] = detectRecurringSeries(charges);
+
+            expect(series.title).toBe(title);
+            expect(legacyLabel(charges[0])).toBe(label);
+        }
+    })
+);
+
+it.effect('removes standalone reference tails from merchant display titles', () =>
+    Effect.sync(() => {
+        for (const [description, title] of [
+            ['GUIDE MICHELIN UID 123456', 'GUIDE MICHELIN'],
+            ['Liquid Web MREF 123456', 'Liquid Web']
+        ]) {
+            const charges = [5, 36, 64, 95].map(day => charge(day, 20, description));
+
+            expect(detectRecurringSeries(charges)[0].title).toBe(title);
+        }
+    })
+);
+
 it.effect('finds five independent monthly prices at one merchant', () =>
     Effect.sync(() => {
         const charges = [3, 8, 13, 18, 23].flatMap(amount => [5, 36, 64, 95].map(day => charge(day, amount)));
