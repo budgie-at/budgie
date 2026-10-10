@@ -48,8 +48,14 @@ layer(TestLayer)('consolidation/family-priority', it => {
             yield* transferConsolidationService.consolidate(null);
 
             const queriedFamilyKeys = Object.entries(familyQueries)
-                .toSorted(([, left], [, right]) => left.mock.invocationCallOrder[0] - right.mock.invocationCallOrder[0])
-                .map(([familyKey]) => familyKey);
+                .flatMap(([familyKey, spy]) =>
+                    spy.mock.invocationCallOrder.map(invocationCallOrder => ({
+                        familyKey,
+                        invocationCallOrder
+                    }))
+                )
+                .toSorted((left, right) => left.invocationCallOrder - right.invocationCallOrder)
+                .map(({ familyKey }) => familyKey);
 
             expect(queriedFamilyKeys).toEqual([
                 'IBAN_BRIDGE_CHAIN_TRANSFER',

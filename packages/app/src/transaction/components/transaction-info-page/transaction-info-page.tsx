@@ -33,7 +33,7 @@ const safeEdges: Edge[] = ['bottom', 'top'];
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly editHref: Href;
+    readonly editHref: Href | null;
     readonly actionsMenu: ReactNode;
     readonly onOpenRefundSources?: () => void;
     readonly onOpenConsolidationSources?: () => void;
@@ -97,12 +97,15 @@ export const TransactionInfoPage = (props: Props) => {
     const matchingRuleIds = useTransactionInfoMatchingRules(transaction);
 
     const handleEditPress = () => {
-        router.push(editHref);
+        if (isDefined(editHref)) {
+            router.push(editHref);
+        }
     };
     const handleGoBack = () => {
         router.back();
     };
 
+    const isEditDisabled = !isDefined(editHref);
     const rowVisibility = getRowVisibility(transaction, onOpenRefundSources, onOpenConsolidationSources);
 
     return (
@@ -116,6 +119,7 @@ export const TransactionInfoPage = (props: Props) => {
                         leftIcon={UserIconNameEnum.Pencil}
                         content={t`Edit transaction`}
                         onPress={handleEditPress}
+                        disabled={isEditDisabled}
                         testID={TransactionInfoPageSelector.EditButton}
                     />
                 </View>

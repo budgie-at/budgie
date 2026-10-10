@@ -167,14 +167,6 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionInfo.Page'
-      timeout: 15000
-
-- tapOn:
-      id: 'PageHeader.BackButton'
-
-- extendedWaitUntil:
-      visible:
           id: 'AccountDetails.EditButton'
       timeout: 10000
 

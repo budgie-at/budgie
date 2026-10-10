@@ -1,8 +1,11 @@
+import { IbanBridgeTransferRepository } from '@budgie/consolidation';
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
-import { fetchLedgerEntry } from './consolidation-revert-audit';
+import { fetchLedgerBalances, fetchLedgerEntry, fetchSingleCanonicalId } from './consolidation-revert-audit';
+import { runConsolidation } from './run-consolidation';
 import { testDb, testQueryService, testSeedService } from './test-context';
 
 export const IBAN_BRIDGE_SOURCE_IBAN = 'UA-RECLAIM-SOURCE-EUR';
@@ -28,64 +31,70 @@ export const seedIbanBridgeTopology = () =>
     });
 
 export const seedIbanBridgeIncomeLeg = (bridgeAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairIncome(
-            { externalId: 'reclaim-bridge-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: bridgeAccountId,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                exchangeRate: IBAN_BRIDGE_EUR_TO_UAH_RATE,
-                mccCategoryId: transferMccId,
-                toIban: IBAN_BRIDGE_SOURCE_IBAN
-            }
-        );
-    });
-
-const seedIbanBridgeExpenseLeg = (bridgeAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairExpense(
-            { externalId: 'reclaim-bridge-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: bridgeAccountId,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                mccCategoryId: transferMccId,
-                toIban: IBAN_BRIDGE_TARGET_IBAN
-            }
-        );
-    });
+    testSeedService.bankPairIncome(
+        { externalId: 'reclaim-bridge-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+        {
+            accountId: bridgeAccountId,
+            amount: IBAN_BRIDGE_UAH_AMOUNT,
+            exchangeRate: IBAN_BRIDGE_EUR_TO_UAH_RATE,
+            mccCategoryId: transferMccId,
+            toIban: IBAN_BRIDGE_SOURCE_IBAN
+        }
+    );
 
 export const seedIbanBridgeLegs = (bridgeAccountId: number, transferMccId: number) =>
     Effect.gen(function* () {
         return {
             bridgeIncome: yield* seedIbanBridgeIncomeLeg(bridgeAccountId, transferMccId),
-            bridgeExpense: yield* seedIbanBridgeExpenseLeg(bridgeAccountId, transferMccId)
+            bridgeExpense: yield* testSeedService.bankPairExpense(
+                { externalId: 'reclaim-bridge-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+                {
+                    accountId: bridgeAccountId,
+                    amount: IBAN_BRIDGE_UAH_AMOUNT,
+                    mccCategoryId: transferMccId,
+                    toIban: IBAN_BRIDGE_TARGET_IBAN
+                }
+            )
         };
     });
 
-export const seedIbanBridgeSourceExpense = (sourceAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairExpense(
-            { externalId: 'reclaim-source-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: sourceAccountId,
-                amount: IBAN_BRIDGE_EUR_AMOUNT,
-                exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
-                mccCategoryId: transferMccId,
-                toIban: IBAN_BRIDGE_TARGET_IBAN
-            }
-        );
-    });
+export const seedIbanBridgeSourceExpense = (
+    sourceAccountId: number,
+    transferMccId: number,
+    toIban: string | null = IBAN_BRIDGE_TARGET_IBAN
+) =>
+    testSeedService.bankPairExpense(
+        { externalId: 'reclaim-source-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+        {
+            accountId: sourceAccountId,
+            amount: IBAN_BRIDGE_EUR_AMOUNT,
+            exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
+            mccCategoryId: transferMccId,
+            toIban
+        }
+    );
 
 export const seedIbanBridgeTargetIncome = (targetAccountId: number, transferMccId: number) =>
-    Effect.gen(function* () {
-        return yield* testSeedService.bankPairIncome(
-            { externalId: 'reclaim-target-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-            {
-                accountId: targetAccountId,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                mccCategoryId: transferMccId
-            }
-        );
+    testSeedService.bankPairIncome(
+        { externalId: 'reclaim-target-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
+        {
+            accountId: targetAccountId,
+            amount: IBAN_BRIDGE_UAH_AMOUNT,
+            mccCategoryId: transferMccId
+        }
+    );
+
+export const seedIbanBridgeCanonicalTransfer = (sourceAccountId: number, targetAccountId: number, toIban: string | null) =>
+    testSeedService.directTransfer({
+        consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
+        exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
+        operatedAt: IBAN_BRIDGE_OPERATED_AT,
+        sourceAccountId,
+        sourceAmount: IBAN_BRIDGE_EUR_AMOUNT,
+        sourceEntryExchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
+        targetAccountId,
+        targetAmount: IBAN_BRIDGE_UAH_AMOUNT,
+        toIban
     });
 
 export const parentConsolidationSource = (sourceTransactionId: number, canonicalTransactionId: number) =>
@@ -98,8 +107,66 @@ export const parentConsolidationSource = (sourceTransactionId: number, canonical
         );
     });
 
+export const seedBridgeAddressedDuplicateBeforeCanonical = Effect.fnUntraced(function* () {
+    const topology = yield* seedIbanBridgeTopology();
+    const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
+
+    return {
+        ...topology,
+        ...legs,
+        sourceExpense: yield* seedIbanBridgeSourceExpense(topology.sourceAccount.id, topology.transferMccId, topology.bridgeAccount.iban),
+        targetIncome: yield* seedIbanBridgeTargetIncome(topology.targetAccount.id, topology.transferMccId)
+    };
+});
+
+export const expectIbanBridgeBalances = Effect.fnUntraced(function* (
+    accountIds: [number, number, number],
+    sourceAmount: number,
+    targetAmount: number
+) {
+    expect(yield* fetchLedgerBalances(accountIds)).toEqual([
+        [accountIds[0], sourceAmount],
+        [accountIds[1], 0],
+        [accountIds[2], targetAmount]
+    ]);
+});
+
+export const seedIbanBridgeCanonicalDuplicateFixture = Effect.fnUntraced(function* () {
+    const topology = yield* seedIbanBridgeTopology();
+    const legs = yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
+
+    yield* runConsolidation();
+
+    const canonicalId = (yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER))[0].id;
+    const originalSourceExpense = yield* seedIbanBridgeSourceExpense(topology.sourceAccount.id, topology.transferMccId);
+    const originalTargetIncome = yield* seedIbanBridgeTargetIncome(topology.targetAccount.id, topology.transferMccId);
+
+    yield* parentConsolidationSource(originalSourceExpense.id, canonicalId);
+    yield* parentConsolidationSource(originalTargetIncome.id, canonicalId);
+
+    return {
+        ...topology,
+        ...legs,
+        originalSourceExpense,
+        originalTargetIncome,
+        sourceExpense: yield* seedIbanBridgeSourceExpense(topology.sourceAccount.id, topology.transferMccId),
+        targetIncome: yield* seedIbanBridgeTargetIncome(topology.targetAccount.id, topology.transferMccId)
+    };
+});
+
 export const expectBridgeLedgerAmounts = (canonicalId: number, sourceAccountId: number, targetAccountId: number) =>
     Effect.gen(function* () {
         expect((yield* fetchLedgerEntry(canonicalId, sourceAccountId)).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
         expect((yield* fetchLedgerEntry(canonicalId, targetAccountId)).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
     });
+
+export const fetchBridgeCanonicalId = () =>
+    Effect.gen(function* () {
+        return yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
+    });
+
+export const countCanonicalDuplicateCandidates = Effect.fnUntraced(function* () {
+    const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
+
+    return (yield* ibanBridgeTransferRepository.findCanonicalDuplicateCandidates(null)).length;
+});

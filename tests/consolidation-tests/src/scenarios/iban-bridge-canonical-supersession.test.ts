@@ -11,55 +11,21 @@ import {
     fetchLedgerEntry,
     fetchOwnLedgerEntries
 } from '../harness/consolidation-revert-audit';
+import { seedIbanBridgePrefixArrival, seedIbanBridgeSupersessionCompleteRoute } from '../harness/iban-bridge-supersession-fixture';
 import {
     IBAN_BRIDGE_EUR_AMOUNT,
     IBAN_BRIDGE_OPERATED_AT,
-    IBAN_BRIDGE_SOURCE_IBAN,
-    IBAN_BRIDGE_TARGET_IBAN,
     IBAN_BRIDGE_UAH_AMOUNT,
-    IBAN_BRIDGE_UAH_TO_EUR_RATE,
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
 
-import type { AccountEntityInterface } from '@budgie/contracts';
-
 const TECHNICAL_BRIDGE_IBAN = 'UA-SUPERSESSION-TECHNICAL-UAH';
 const COMPETING_TECHNICAL_BRIDGE_IBAN = 'UA-SUPERSESSION-COMPETING-UAH';
-const DISTINCT_SOURCE_AMOUNT = IBAN_BRIDGE_EUR_AMOUNT + 10_000_000;
+const DISTINCT_SOURCE_AMOUNT_OFFSET = 10_000_000;
+const DISTINCT_SOURCE_AMOUNT = IBAN_BRIDGE_EUR_AMOUNT + DISTINCT_SOURCE_AMOUNT_OFFSET;
 const COMPETING_PREFIX_OFFSET_MS = 30_000;
-
-const seedPrefixArrival = (
-    technicalBridgeAccount: AccountEntityInterface,
-    bridgeIban: string | null,
-    transferMccId: number,
-    externalIdPrefix: string,
-    operatedAt: Date
-) =>
-    Effect.gen(function* () {
-        const prefixIncome = yield* testSeedService.bankPairIncome(
-            { externalId: `${externalIdPrefix}-income`, operatedAt },
-            {
-                accountId: technicalBridgeAccount.id,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                exchangeRate: IBAN_BRIDGE_UAH_AMOUNT / IBAN_BRIDGE_EUR_AMOUNT,
-                mccCategoryId: transferMccId,
-                toIban: IBAN_BRIDGE_SOURCE_IBAN
-            }
-        );
-        const prefixExpense = yield* testSeedService.bankPairExpense(
-            { externalId: `${externalIdPrefix}-expense`, operatedAt },
-            {
-                accountId: technicalBridgeAccount.id,
-                amount: IBAN_BRIDGE_UAH_AMOUNT,
-                mccCategoryId: transferMccId,
-                toIban: bridgeIban
-            }
-        );
-
-        return [prefixIncome.id, prefixExpense.id];
-    });
 
 const seedIncrementalBridgeArrival = Effect.fnUntraced(function* ({
     completeSourceAmount = IBAN_BRIDGE_EUR_AMOUNT,
@@ -73,57 +39,38 @@ const seedIncrementalBridgeArrival = Effect.fnUntraced(function* ({
     const topology = yield* seedIbanBridgeTopology();
     const technicalBridgeAccount = yield* testSeedService.bankSyncAccount('Supersession Technical UAH', null, TECHNICAL_BRIDGE_IBAN);
 
-    const prefixSourceTransactionIds = yield* seedPrefixArrival(
-        technicalBridgeAccount,
-        topology.bridgeAccount.iban,
-        topology.transferMccId,
-        'supersession-prefix',
-        IBAN_BRIDGE_OPERATED_AT
-    );
+    const prefixSourceTransactionIds = yield* seedIbanBridgePrefixArrival({
+        bridgeIban: topology.bridgeAccount.iban,
+        externalIdPrefix: 'supersession-prefix',
+        operatedAt: IBAN_BRIDGE_OPERATED_AT,
+        technicalBridgeAccountId: technicalBridgeAccount.id,
+        transferMccId: topology.transferMccId
+    });
 
     if (withCompetingPrefix) {
-        yield* seedPrefixArrival(
-            yield* testSeedService.bankSyncAccount('Supersession Competing UAH', null, COMPETING_TECHNICAL_BRIDGE_IBAN),
-            topology.bridgeAccount.iban,
-            topology.transferMccId,
-            'supersession-competing-prefix',
-            new Date(IBAN_BRIDGE_OPERATED_AT.getTime() + COMPETING_PREFIX_OFFSET_MS)
-        );
+        yield* seedIbanBridgePrefixArrival({
+            bridgeIban: topology.bridgeAccount.iban,
+            externalIdPrefix: 'supersession-competing-prefix',
+            operatedAt: new Date(IBAN_BRIDGE_OPERATED_AT.getTime() + COMPETING_PREFIX_OFFSET_MS),
+            technicalBridgeAccountId: (yield* testSeedService.bankSyncAccount(
+                'Supersession Competing UAH',
+                null,
+                COMPETING_TECHNICAL_BRIDGE_IBAN
+            )).id,
+            transferMccId: topology.transferMccId
+        });
     }
 
     yield* runConsolidation();
     const prefixCanonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
     const [prefixCanonical] = prefixCanonicals;
-    const completeExpense = yield* testSeedService.bankPairExpense(
-        { externalId: 'supersession-complete-expense', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-        {
-            accountId: topology.sourceAccount.id,
-            amount: completeSourceAmount,
-            exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
-            mccCategoryId: topology.transferMccId,
-            toIban: topology.bridgeAccount.iban
-        }
-    );
-    const completeIncome = yield* testSeedService.bankPairIncome(
-        { externalId: 'supersession-complete-income', operatedAt: IBAN_BRIDGE_OPERATED_AT },
-        {
-            accountId: topology.bridgeAccount.id,
-            amount: IBAN_BRIDGE_UAH_AMOUNT,
-            exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
-            mccCategoryId: topology.transferMccId,
-            toIban: IBAN_BRIDGE_SOURCE_IBAN
-        }
-    );
-    const existingTransfer = yield* testSeedService.directTransfer({
+    const { completeExpense, completeIncome, existingTransfer } = yield* seedIbanBridgeSupersessionCompleteRoute({
+        bridgeAccountId: topology.bridgeAccount.id,
+        bridgeIban: topology.bridgeAccount.iban,
+        completeSourceAmount,
+        sourceAccountId: topology.sourceAccount.id,
         targetAccountId: topology.targetAccount.id,
-        sourceAccountId: topology.bridgeAccount.id,
-        operatedAt: IBAN_BRIDGE_OPERATED_AT,
-        targetAmount: IBAN_BRIDGE_UAH_AMOUNT,
-        sourceAmount: IBAN_BRIDGE_UAH_AMOUNT,
-        toIban: IBAN_BRIDGE_TARGET_IBAN,
-        consolidationType: null,
-        sourceEntryExchangeRate: 1,
-        exchangeRate: 1
+        transferMccId: topology.transferMccId
     });
     const result = yield* runConsolidation(
         scopeArrivalToSyncedTransactions
@@ -152,6 +99,29 @@ const seedIncrementalBridgeArrival = Effect.fnUntraced(function* ({
     };
 });
 
+const expectCompleteSupersession = Effect.fnUntraced(function* ({
+    bridgeAccountId,
+    canonicalId,
+    completeIncomeId,
+    prefixCanonicalId,
+    sourceAccountId,
+    targetAccountId
+}: {
+    readonly bridgeAccountId: number;
+    readonly canonicalId: number;
+    readonly completeIncomeId: number;
+    readonly prefixCanonicalId: number;
+    readonly sourceAccountId: number;
+    readonly targetAccountId: number;
+}) {
+    expect((yield* testQueryService.fetchTransactionById(completeIncomeId)).consolidationParentTransactionId).toBe(canonicalId);
+    yield* expectConsolidationParent(prefixCanonicalId, canonicalId);
+    expect(yield* fetchOwnLedgerEntries(prefixCanonicalId)).toHaveLength(0);
+    expect((yield* fetchLedgerEntry(canonicalId, sourceAccountId)).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
+    expect((yield* fetchLedgerEntry(canonicalId, targetAccountId)).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
+    expect((yield* fetchOwnLedgerEntries(canonicalId)).some(entry => entry.accountId === bridgeAccountId)).toBe(false);
+});
+
 layer(TestLayer)('consolidation/iban-bridge-canonical-supersession', it => {
     it.effect('supersedes a partial source-to-bridge canonical when the complete route arrives later', () =>
         Effect.gen(function* () {
@@ -162,12 +132,14 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-supersession', it => {
             expect(liveCanonicals).toHaveLength(1);
             expect(canonical.fromAccountId).toBe(sourceAccount.id);
             expect(canonical.toAccountId).toBe(targetAccount.id);
-            expect((yield* testQueryService.fetchTransactionById(completeIncome.id)).consolidationParentTransactionId).toBe(canonical.id);
-            yield* expectConsolidationParent(prefixCanonical.id, canonical.id);
-            expect(yield* fetchOwnLedgerEntries(prefixCanonical.id)).toHaveLength(0);
-            expect((yield* fetchLedgerEntry(canonical.id, sourceAccount.id)).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
-            expect((yield* fetchLedgerEntry(canonical.id, targetAccount.id)).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
-            expect((yield* fetchOwnLedgerEntries(canonical.id)).some(entry => entry.accountId === bridgeAccount.id)).toBe(false);
+            yield* expectCompleteSupersession({
+                bridgeAccountId: bridgeAccount.id,
+                canonicalId: canonical.id,
+                completeIncomeId: completeIncome.id,
+                prefixCanonicalId: prefixCanonical.id,
+                sourceAccountId: sourceAccount.id,
+                targetAccountId: targetAccount.id
+            });
 
             const repeatedResult = yield* runConsolidation();
 
@@ -198,7 +170,9 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-supersession', it => {
             expect((yield* testQueryService.fetchTransactionById(prefixCanonical.id)).consolidationParentTransactionId).toBeNull();
         })
     );
+});
 
+layer(TestLayer)('consolidation/iban-bridge-canonical-supersession calibration', it => {
     it.effect('keeps two same-amount source-to-bridge canonicals live instead of cross-matching one of them', () =>
         Effect.gen(function* () {
             const { liveCanonicals, prefixCanonicals } = yield* seedIncrementalBridgeArrival({ withCompetingPrefix: true });

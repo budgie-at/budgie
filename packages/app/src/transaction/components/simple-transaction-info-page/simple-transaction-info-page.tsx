@@ -6,11 +6,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
+import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
-
-import type { Href } from 'expo-router';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -26,8 +25,6 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
     const transactionId = transaction.id;
     const transactionAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
     const categoryEntryCount = getTransactionCategoryEntries(transaction.entries).length;
-    const pathname = isExpense ? '/transactions/[id]/expense/edit' : '/transactions/[id]/income/edit';
-    const editHref: Href = { pathname, params: { id: String(transactionId) } };
     const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
     const handleOpenFee = () => void router.push(getTransactionFeeEditHref(transactionType, transactionId));
     const { actionsMenuProps } = useSimpleTransactionActionsMenu({
@@ -42,7 +39,7 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
     return (
         <TransactionInfoPage
             transaction={transaction}
-            editHref={editHref}
+            editHref={getTransactionEditHref(transaction)}
             actionsMenu={<UpdateTransactionActionsMenu {...actionsMenuProps} />}
             onOpenRefundSources={onOpenRefundSources}
         />

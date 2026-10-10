@@ -41,6 +41,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const refundPairRepository = yield* RefundPairRepository;
             const transferPairRepository = yield* TransferPairRepository;
             const consolidationMutationService = yield* ConsolidationMutationService;
+            const ibanBridgeCanonicalDuplicateFamily = yield* IbanBridgeCanonicalDuplicateConsolidationFamilyService;
             const existingTransferIncomeDuplicateFamily = yield* ExistingTransferIncomeDuplicateConsolidationFamilyService;
             const bridgeClaimRepairFamily = yield* BridgeClaimRepairConsolidationFamilyService;
             const atmCashWithdrawalFamily = yield* AtmCashWithdrawalConsolidationFamilyService;
@@ -48,7 +49,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 yield* IbanBridgeChainTransferConsolidationFamilyService,
                 yield* ExistingTransferBridgeConsolidationFamilyService,
                 yield* ExistingTransferChainReclaimConsolidationFamilyService,
-                yield* IbanBridgeCanonicalDuplicateConsolidationFamilyService,
+                ibanBridgeCanonicalDuplicateFamily,
                 yield* IbanBridgeTransferConsolidationFamilyService,
                 yield* IbanBridgeCanonicalSupersessionConsolidationFamilyService,
                 existingTransferIncomeDuplicateFamily,
