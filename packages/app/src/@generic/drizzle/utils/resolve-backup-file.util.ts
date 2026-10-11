@@ -5,6 +5,8 @@ import { listContents, unzip } from 'react-native-zip-archive';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { toNativePath } from '../../utils/to-native-path.util';
+import { BackupArchiveMissingDatabaseError } from '../error/backup-archive-missing-database.error';
+import { InsufficientStorageError } from '../error/insufficient-storage.error';
 import { UnsupportedBackupError } from '../error/unsupported-backup.error';
 
 const ZIP_SIGNATURE = [0x50, 0x4b, 0x03, 0x04];
@@ -57,14 +59,18 @@ export const resolveBackupFile = Effect.fn('resolveBackupFile')(function* (sourc
     const { availableDiskSpace } = Paths;
 
     if (!isDefined(databaseEntry)) {
-        return yield* new UnsupportedBackupError();
+        return yield* new BackupArchiveMissingDatabaseError();
     }
 
     const hasAmbiguousEntries =
         entries.filter(entry => entry.path === databaseEntry.path || entry.path.startsWith(`${databaseEntry.path}/`)).length > 1;
 
-    if (hasAmbiguousEntries || (isPositiveNumber(availableDiskSpace) && databaseEntry.size > availableDiskSpace)) {
+    if (hasAmbiguousEntries) {
         return yield* new UnsupportedBackupError();
+    }
+
+    if (isPositiveNumber(availableDiskSpace) && databaseEntry.size > availableDiskSpace) {
+        return yield* new InsufficientStorageError();
     }
 
     yield* Effect.promise(() => unzip(toNativePath(sourceUri), toNativePath(extractDirectory.uri), [databaseEntry.path]));
