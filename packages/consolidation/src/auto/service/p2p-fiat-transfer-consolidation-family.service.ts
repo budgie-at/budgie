@@ -10,7 +10,6 @@ import { ConsolidationRepairExecutorService } from '../../executor/service/conso
 import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 import { TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE } from '../../shared/constant/transfer-pair-p2p-fiat.constant';
-import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 import { P2pFiatDirectionEnum } from '../enum/p2p-fiat-direction.enum';
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
@@ -297,7 +296,6 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
             });
 
             return makeConsolidationFamilyStrategy<P2pFiatTransferCandidateInterface>({
-                key: ConsolidationFamilyKeyEnum.P2P_FIAT_TRANSFER,
                 findCandidates,
                 consolidateCandidate: candidate => consolidationExecutorService.consolidateP2pFiatTransfer(candidate),
                 getSourceTransactionIds: candidate => [...candidate.sourceTransactionIds],

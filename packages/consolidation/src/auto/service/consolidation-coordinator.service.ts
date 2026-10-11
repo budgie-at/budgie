@@ -14,7 +14,6 @@ import { ManualExpenseDuplicateRepository } from '../../query/repository/manual-
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
 import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
-import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
 import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-consolidation-family.service';
@@ -70,7 +69,6 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             ];
 
             const existingTransferIncomeDuplicateFamily = makeConsolidationFamilyStrategy({
-                key: ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_INCOME_DUPLICATE,
                 findCandidates: scope => existingTransferRepository.findIncomeDuplicateCandidates(scope),
                 consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate(candidate),
                 getSourceTransactionIds: candidate => [candidate.existingTransferId, candidate.duplicateTransactionId]
@@ -78,7 +76,6 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 
             const families: ConsolidationFamilyStrategyInterface[] = [
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
                     findCandidates: scope => ibanBridgeTransferRepository.findChainTransferCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationExecutorService.consolidateIbanBridgeChainTransfer(candidate, {
@@ -103,7 +100,6 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getIbanBridgeChainTransferSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_BRIDGE,
                     findCandidates: scope => existingTransferRepository.findBridgeCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationExecutorService.consolidateExistingTransferBridge(candidate, {
@@ -130,21 +126,18 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getExistingTransferBridgeSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_CHAIN_RECLAIM,
                     findCandidates: scope => existingTransferRepository.findChainReclaimCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateExistingTransferChainReclaim(candidate),
                     getSourceTransactionIds: getExistingTransferChainReclaimSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CANONICAL_DUPLICATE,
                     findCandidates: scope => ibanBridgeTransferRepository.findCanonicalDuplicateCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate(candidate),
                     getSourceTransactionIds: candidate => [candidate.expenseTransactionId, candidate.incomeTransactionId]
                 }),
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.IBAN_BRIDGE_TRANSFER,
                     findCandidates: scope => ibanBridgeTransferRepository.findTransferCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationExecutorService.consolidateIbanBridgeTransfer(candidate, {
@@ -167,7 +160,6 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getIbanBridgeTransferSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CANONICAL_SUPERSESSION,
                     findCandidates: scope => ibanBridgeTransferRepository.findCanonicalSupersessionCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession(candidate),
@@ -182,13 +174,11 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 p2pFiatTransferFamily,
                 transferPairFamily,
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.REFUND,
                     findCandidates: scope => refundPairRepository.findCandidates(scope),
                     consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateRefund(candidate),
                     getSourceTransactionIds: candidate => [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds]
                 }),
                 makeConsolidationFamilyStrategy({
-                    key: ConsolidationFamilyKeyEnum.MANUAL_EXPENSE_DUPLICATE,
                     findCandidates: scope => manualExpenseDuplicateRepository.findCandidates(scope),
                     consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateManualExpenseDuplicate(candidate),
                     getSourceTransactionIds: candidate => [candidate.syncedTransactionId, candidate.manualTransactionId]
@@ -196,14 +186,12 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             ];
 
             const bridgeClaimRepairFamily = makeConsolidationFamilyStrategy({
-                key: ConsolidationFamilyKeyEnum.BRIDGE_CLAIM_REPAIR,
                 findCandidates: () => transferPairRepository.findBridgeClaimedRepairCandidates(),
                 consolidateCandidate: candidate => consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate),
                 getSourceTransactionIds: candidate => [candidate.canonicalTransferId, candidate.claimedIncomeTransactionId]
             });
 
             const atmCashWithdrawalFamily = makeConsolidationFamilyStrategy({
-                key: ConsolidationFamilyKeyEnum.ATM_CASH_WITHDRAWAL,
                 findCandidates: scope => atmCashWithdrawalRepository.findCandidates(scope),
                 consolidateCandidate: candidate =>
                     consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, {
@@ -226,15 +214,6 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 getSourceTransactionIds: candidate => [candidate.transactionId]
             });
 
-            const buildExistingTransferDuplicateBlockedSourceTransactionIdSet = (
-                existingTransferBridgeCandidates: readonly ExistingTransferBridgeCandidateInterface[],
-                existingTransferChainReclaimCandidates: readonly ExistingTransferChainReclaimCandidateInterface[]
-            ): Set<number> =>
-                new Set([
-                    ...existingTransferBridgeCandidates.flatMap(getExistingTransferBridgeSourceTransactionIds),
-                    ...existingTransferChainReclaimCandidates.flatMap(getExistingTransferChainReclaimSourceTransactionIds)
-                ]);
-
             const findExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
                 'ConsolidationCoordinatorService.findExistingTransferIncomeDuplicateRepairCandidates'
             )(function* () {
@@ -245,10 +224,10 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 const rawExistingTransferIncomeDuplicateCandidates = yield* existingTransferRepository.findIncomeDuplicateCandidates(null);
                 yield* CONSOLIDATION_YIELD;
 
-                const blockedSourceTransactionIds = buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
-                    existingTransferBridgeCandidates,
-                    existingTransferChainReclaimCandidates
-                );
+                const blockedSourceTransactionIds = new Set([
+                    ...existingTransferBridgeCandidates.flatMap(getExistingTransferBridgeSourceTransactionIds),
+                    ...existingTransferChainReclaimCandidates.flatMap(getExistingTransferChainReclaimSourceTransactionIds)
+                ]);
                 const existingTransferIncomeDuplicateCandidates = rawExistingTransferIncomeDuplicateCandidates.filter(
                     candidate =>
                         !blockedSourceTransactionIds.has(candidate.existingTransferId) &&

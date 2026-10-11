@@ -5,7 +5,6 @@ import * as Layer from 'effect/Layer';
 
 import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
-import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
 import type { ConsolidationPlanInterface } from '../../executor/interface/consolidation-plan.interface';
@@ -65,7 +64,6 @@ export class TransferPairConsolidationFamilyService extends Context.Service<Tran
             });
 
             return makeConsolidationFamilyStrategy({
-                key: ConsolidationFamilyKeyEnum.TRANSFER_PAIR,
                 findCandidates: scope => transferPairRepository.findCandidates(scope),
                 consolidateCandidate: candidate =>
                     consolidationExecutorService.consolidatePair(candidate, buildConsolidationPlan(candidate)),
