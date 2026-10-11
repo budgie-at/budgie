@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+
+### Bug Fixes
+
+* **app:** keep cash action label visible ([453be1a](https://github.com/budgie-at/budgie/commit/453be1a68add80ec93e3386f34d8fbb6312662cf))
+* **app:** offset top toasts below safe area ([dbbfa65](https://github.com/budgie-at/budgie/commit/dbbfa65ac94b6197281a3b799d898ceb63f9b924))
+* **app:** open editors from transaction context menus ([ab1e7f6](https://github.com/budgie-at/budgie/commit/ab1e7f699e729dee1d8646db73e07dc280736229))
+* **app:** repair delayed duplicate transfers and unavailable edits ([422a36b](https://github.com/budgie-at/budgie/commit/422a36b704c1770e9bef5cd00520acffa9c46556))
+* **app:** show transfer rates in details direction ([a0d1a62](https://github.com/budgie-at/budgie/commit/a0d1a62fa70ccea7d9ade29aa4ac559c9982515b))
+* **consolidation:** preserve balances across bridge transfer imports ([6cf72f2](https://github.com/budgie-at/budgie/commit/6cf72f2f9ec516f79b54cdeee2abaed8a030bc98))
+* **consolidation:** require bank record identity before absorbing transfers ([ad0b31e](https://github.com/budgie-at/budgie/commit/ad0b31ef8ce6754b28ff3e6991229aa802c6344d))
+* protect transfer history and match late installment payoffs ([ee9f2f3](https://github.com/budgie-at/budgie/commit/ee9f2f360f160a3ecc9cbe9c1856b4a35c769656))
+
+
+
+
+
 ## [6.100.1](https://github.com/budgie-at/budgie/compare/v6.100.0...v6.100.1) (2026-10-11)
 
 
