@@ -16,7 +16,7 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
-import { AiSettingsSection } from '../../../ai/component/ai-settings-section/ai-settings-section';
+import { AiModelStorageSettingsCard } from '../../../ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -119,7 +119,7 @@ export default function SettingsPage() {
                 <View {...anchorLayout('ai')}>
                     <SettingsGroup title={t`AI`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiSettingsSection />
+                            <AiModelStorageSettingsCard />
                         </Animated.View>
                     </SettingsGroup>
                 </View>

@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled as isAiBuildEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { AiFeatureIdEnum } from '../../enum/ai-feature-id.enum';
-import { useAiModelStorageActions } from '../../hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook';
 import { useAiModelStorage } from '../../hook/use-ai-model-storage.hook';
 import { AiFeatureToggleRow } from '../ai-feature-toggle-row/ai-feature-toggle-row';
 import { AiModelStorageStatus } from '../ai-model-storage-status/ai-model-storage-status';
@@ -19,16 +18,6 @@ import type { AiFeatureContentInterface } from '../../interface/ai-feature-conte
 export const AiModelStorageCard = () => {
     const { t } = useLingui();
     const isAiAvailable = isAiBuildEnabled();
-    const {
-        snapshot,
-        isLoading,
-        updatingFeatureId,
-        isFreeingUnused,
-        errorMessage,
-        setFeatureEnabled,
-        previewDisableFeature,
-        freeUnusedDownloads
-    } = useAiModelStorage();
     const featureContent: Record<AiFeatureIdEnum, AiFeatureContentInterface> = {
         [AiFeatureIdEnum.VOICE_INPUT]: {
             title: t`Add transactions by voice`,
@@ -46,15 +35,16 @@ export const AiModelStorageCard = () => {
             icon: UserIconNameEnum.Languages
         }
     };
-    const isMutating = isFreeingUnused || isDefined(updatingFeatureId);
-    const { handleFeatureChange, handleFreeUnusedDownloads } = useAiModelStorageActions({
-        featureContent,
-        isAiAvailable,
+    const {
+        snapshot,
+        isLoading,
+        updatingFeatureId,
+        isFreeingUnused,
         isMutating,
-        setFeatureEnabled,
-        previewDisableFeature,
-        freeUnusedDownloads
-    });
+        errorMessage,
+        handleFeatureChange,
+        handleFreeUnusedDownloads
+    } = useAiModelStorage(featureContent, isAiAvailable);
     const hasStorageError = isDefined(errorMessage);
 
     return (

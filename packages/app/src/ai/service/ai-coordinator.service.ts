@@ -207,7 +207,6 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         return {
             start: Effect.fn('AiCoordinatorService.start')(() => lifecycleLock.withPermit(startUnlocked())),
             stop: Effect.fn('AiCoordinatorService.stop')(() => lifecycleLock.withPermit(stopUnlocked())),
-            stopAndWait: Effect.fn('AiCoordinatorService.stopAndWait')(() => lifecycleLock.withPermit(stopAndWaitUnlocked())),
             withStoppedRuntime: Effect.fn('AiCoordinatorService.withStoppedRuntime')(function* <A, E, R>(effect: Effect.Effect<A, E, R>) {
                 return yield* lifecycleLock.withPermit(
                     Effect.gen(function* () {

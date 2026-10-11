@@ -11,6 +11,7 @@ import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.const
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { AI_FEATURE_MODEL_STORAGE_IDS } from '../constant/ai-feature-model-storage-ids.constant';
+import { AI_FEATURE_SETTING_KEY } from '../constant/ai-feature-setting-key.constant';
 import { AI_MODEL_STORAGE_FILES } from '../constant/ai-model-storage-files.constant';
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
@@ -20,8 +21,6 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiModelStorageBusyError } from '../error/ai-model-storage-busy.error';
 import { AiModelStorageEntryInterface } from '../interface/ai-model-storage-entry.interface';
 import { AiModelStorageFileInterface } from '../interface/ai-model-storage-file.interface';
-import { getAiFeatureSettingsAfterChange } from '../utils/get-ai-feature-settings-after-change.util';
-import { getEnabledAiFeatures } from '../utils/get-enabled-ai-features.util';
 
 import { AiCoordinatorService } from './ai-coordinator.service';
 
@@ -63,6 +62,15 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
         const sumEntries = (entries: readonly AiModelStorageEntryInterface[]): number =>
             entries.reduce((totalBytes, entry) => totalBytes + entry.bytes, 0);
 
+        const getFeatureSettingsAfterChange = (
+            settings: AiFeatureSettingsInterface,
+            featureId: AiFeatureIdEnum,
+            isEnabled: boolean
+        ): AiFeatureSettingsInterface => ({ ...settings, [AI_FEATURE_SETTING_KEY[featureId]]: isEnabled });
+
+        const getEnabledFeatures = (settings: AiFeatureSettingsInterface): readonly AiFeatureIdEnum[] =>
+            Object.values(AiFeatureIdEnum).filter(featureId => settings[AI_FEATURE_SETTING_KEY[featureId]]);
+
         const readFeatureSettings = Effect.fnUntraced(function* () {
             const settings = yield* settingsRepository.getSettings();
 
@@ -92,20 +100,6 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
                 : null;
         });
 
-        const getNeededStorageIds = (
-            entries: readonly AiModelStorageEntryInterface[],
-            featureSettings: AiFeatureSettingsInterface
-        ): ReadonlySet<AiModelStorageIdEnum> => {
-            const storageIds = new Set(getEnabledAiFeatures(featureSettings).flatMap(featureId => AI_FEATURE_MODEL_STORAGE_IDS[featureId]));
-            const legacySttEntry = entries.find(entry => entry.id === AiModelStorageIdEnum.LEGACY_STT);
-
-            if (featureSettings.isAiVoiceInputEnabled && legacySttEntry?.isCurrent) {
-                storageIds.add(AiModelStorageIdEnum.LEGACY_STT);
-            }
-
-            return storageIds;
-        };
-
         const getFeatureStorageIds = (
             entries: readonly AiModelStorageEntryInterface[],
             featureId: AiFeatureIdEnum
@@ -120,6 +114,12 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
             return storageIds;
         };
 
+        const getNeededStorageIds = (
+            entries: readonly AiModelStorageEntryInterface[],
+            featureSettings: AiFeatureSettingsInterface
+        ): ReadonlySet<AiModelStorageIdEnum> =>
+            new Set(getEnabledFeatures(featureSettings).flatMap(featureId => [...getFeatureStorageIds(entries, featureId)]));
+
         const findUnusedEntries = (
             entries: readonly AiModelStorageEntryInterface[],
             featureSettings: AiFeatureSettingsInterface
@@ -129,43 +129,52 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
             return entries.filter(entry => !entry.isBusy && (!entry.isCurrent || !neededStorageIds.has(entry.id)));
         };
 
-        const list = Effect.fn('AiModelStorageService.list')(function* () {
+        const readInventory = Effect.fnUntraced(function* () {
             const entries = yield* Effect.forEach(AI_MODEL_STORAGE_FILES, readEntry);
-            const existingEntries = entries.filter(isDefined);
             const featureSettings = yield* readFeatureSettings();
-            const unusedEntries = findUnusedEntries(existingEntries, featureSettings);
+
+            return { entries: entries.filter(isDefined), featureSettings };
+        });
+
+        const list = Effect.fn('AiModelStorageService.list')(function* () {
+            const { entries, featureSettings } = yield* readInventory();
+            const enabledFeatures = getEnabledFeatures(featureSettings);
+            const unusedEntries = findUnusedEntries(entries, featureSettings);
 
             return {
                 features: Object.values(AiFeatureIdEnum).map(featureId => ({
                     id: featureId,
-                    isEnabled: getEnabledAiFeatures(featureSettings).includes(featureId),
+                    isEnabled: enabledFeatures.includes(featureId),
                     requiredBytes: sumEntries(
-                        existingEntries.filter(entry => getFeatureStorageIds(existingEntries, featureId).has(entry.id) && entry.isCurrent)
-                    ),
-                    reclaimableBytesAfterDisable: sumEntries(
-                        findUnusedEntries(existingEntries, getAiFeatureSettingsAfterChange(featureSettings, featureId, false))
+                        entries.filter(entry => getFeatureStorageIds(entries, featureId).has(entry.id) && entry.isCurrent)
                     )
                 })),
-                entries: existingEntries,
+                entries,
                 unusedBytes: sumEntries(unusedEntries),
-                totalBytes: sumEntries(existingEntries)
+                totalBytes: sumEntries(entries)
             };
         });
 
         const previewDisableFeature = Effect.fn('AiModelStorageService.previewDisableFeature')(function* (featureId: AiFeatureIdEnum) {
-            const snapshot = yield* list();
-            const featureSettings = yield* readFeatureSettings();
-            const nextFeatureSettings = getAiFeatureSettingsAfterChange(featureSettings, featureId, false);
-            const neededStorageIds = getNeededStorageIds(snapshot.entries, featureSettings);
-            const nextNeededStorageIds = getNeededStorageIds(snapshot.entries, nextFeatureSettings);
+            const { entries, featureSettings } = yield* readInventory();
+            const nextFeatureSettings = getFeatureSettingsAfterChange(featureSettings, featureId, false);
+            const neededStorageIds = getNeededStorageIds(entries, featureSettings);
+            const nextNeededStorageIds = getNeededStorageIds(entries, nextFeatureSettings);
 
             return {
                 featureId,
-                reclaimableBytes: sumEntries(findUnusedEntries(snapshot.entries, nextFeatureSettings)),
-                keepsSharedDownloads: snapshot.entries.some(
+                reclaimableBytes: sumEntries(findUnusedEntries(entries, nextFeatureSettings)),
+                keepsSharedDownloads: entries.some(
                     entry => entry.isCurrent && neededStorageIds.has(entry.id) && nextNeededStorageIds.has(entry.id)
                 )
             };
+        });
+
+        const readUnusedStorageFiles = Effect.fnUntraced(function* () {
+            const { entries, featureSettings } = yield* readInventory();
+            const unusedEntries = findUnusedEntries(entries, featureSettings);
+
+            return AI_MODEL_STORAGE_FILES.filter(storageFile => unusedEntries.some(entry => entry.id === storageFile.id));
         });
 
         const deleteStorageFile = Effect.fnUntraced(function* (storageFile: AiModelStorageFileInterface) {
@@ -181,14 +190,6 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
             });
         });
 
-        const readUnusedStorageFiles = Effect.fnUntraced(function* () {
-            const snapshot = yield* list();
-            const featureSettings = yield* readFeatureSettings();
-            const unusedEntries = findUnusedEntries(snapshot.entries, featureSettings);
-
-            return AI_MODEL_STORAGE_FILES.filter(storageFile => unusedEntries.some(entry => entry.id === storageFile.id));
-        });
-
         const deleteUnusedStorageFiles = Effect.fnUntraced(function* () {
             const storageFiles = yield* readUnusedStorageFiles();
 
@@ -200,7 +201,7 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
 
         const updateFeature = Effect.fnUntraced(function* (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean) {
             const currentFeatureSettings = yield* readFeatureSettings();
-            const nextFeatureSettings = getAiFeatureSettingsAfterChange(currentFeatureSettings, featureId, isEnabled);
+            const nextFeatureSettings = getFeatureSettingsAfterChange(currentFeatureSettings, featureId, isEnabled);
 
             yield* updateSettingsMutation({
                 ...nextFeatureSettings,
@@ -218,13 +219,9 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
                 removeUnusedDownloads: boolean
             ) {
                 yield* storageLock.withPermit(updateFeature(featureId, isEnabled, removeUnusedDownloads));
-
-                return yield* list();
             }),
             freeUnusedDownloads: Effect.fn('AiModelStorageService.freeUnusedDownloads')(function* () {
                 yield* storageLock.withPermit(aiCoordinatorService.withStoppedRuntime(deleteUnusedStorageFiles()));
-
-                return yield* list();
             })
         };
     })
