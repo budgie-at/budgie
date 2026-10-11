@@ -7,6 +7,8 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { BackupArchiveMissingDatabaseError } from '../../../@generic/drizzle/error/backup-archive-missing-database.error';
+import { InsufficientStorageError } from '../../../@generic/drizzle/error/insufficient-storage.error';
 import { UnsupportedBackupError } from '../../../@generic/drizzle/error/unsupported-backup.error';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
@@ -68,11 +70,15 @@ export const ImportDatabase = () => {
                 Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin))
             );
         } catch (error) {
-            const errorMessage =
-                error instanceof UnsupportedBackupError
-                    ? t`This backup was made by an older Budgie version and cannot be imported.`
-                    : getErrorMessage(error);
+            let errorMessage = getErrorMessage(error);
 
+            if (error instanceof UnsupportedBackupError) {
+                errorMessage = t`This backup was made by an older Budgie version and cannot be imported.`;
+            } else if (error instanceof BackupArchiveMissingDatabaseError) {
+                errorMessage = t`This backup archive does not contain a Budgie database.`;
+            } else if (error instanceof InsufficientStorageError) {
+                errorMessage = t`Not enough free storage to extract this backup.`;
+            }
             Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: errorMessage });
         } finally {
             setIsLoading(false);

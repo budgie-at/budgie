@@ -35,6 +35,8 @@ export const DatabaseRestoreScreen = () => {
             restoreDatabaseFromPickedBackup().pipe(
                 Effect.as(null),
                 Effect.catchTags({
+                    BackupArchiveMissingDatabaseError: () => Effect.succeed(t`This backup archive does not contain a Budgie database.`),
+                    InsufficientStorageError: () => Effect.succeed(t`Not enough free storage to extract this backup.`),
                     UnsupportedBackupError: () => Effect.succeed(t`This backup was made by an older Budgie version and cannot be restored.`)
                 }),
                 Effect.catch(() => Effect.succeed(t`This backup could not be opened with your current PIN.`)),

@@ -2980,6 +2980,12 @@ msgstr "не містить"
 msgid "Not Contains"
 msgstr "Не містить"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "Not enough free storage to extract this backup."
+msgstr "Недостатньо вільного місця, щоб розпакувати цю резервну копію."
+
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Not enough history yet"
 msgstr "Ще недостатньо історії"
@@ -4197,6 +4203,12 @@ msgstr "Цей рахунок буде приховано з головного 
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup archive does not contain a Budgie database."
+msgstr "Цей архів резервної копії не містить бази даних Budgie."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "This backup could not be opened with your current PIN."
