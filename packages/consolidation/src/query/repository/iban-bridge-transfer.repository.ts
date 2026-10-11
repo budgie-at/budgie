@@ -20,34 +20,22 @@ export class IbanBridgeTransferRepository extends Context.Service<IbanBridgeTran
     '@budgie/consolidation/IbanBridgeTransferRepository',
     {
         make: Effect.succeed({
-            findTransferCandidates: Effect.fn('IbanBridgeTransferRepository.findTransferCandidates')(function* (
-                scope: ConsolidationScanScopeInterface | null = null
-            ) {
-                const sql = IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL(scope);
-
-                return yield* Db.query(db => db.$client.unsafe<IbanBridgeTransferCandidateInterface>(sql));
-            }),
-            findCanonicalDuplicateCandidates: Effect.fn('IbanBridgeTransferRepository.findCanonicalDuplicateCandidates')(function* (
-                scope: ConsolidationScanScopeInterface | null = null
-            ) {
-                const sql = IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL(scope);
-
-                return yield* Db.query(db => db.$client.unsafe<IbanBridgeCanonicalDuplicateCandidateInterface>(sql));
-            }),
-            findCanonicalSupersessionCandidates: Effect.fn('IbanBridgeTransferRepository.findCanonicalSupersessionCandidates')(function* (
-                scope: ConsolidationScanScopeInterface | null = null
-            ) {
-                const sql = IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_SQL(scope);
-
-                return yield* Db.query(db => db.$client.unsafe<IbanBridgeCanonicalSupersessionCandidateInterface>(sql));
-            }),
-            findChainTransferCandidates: Effect.fn('IbanBridgeTransferRepository.findChainTransferCandidates')(function* (
-                scope: ConsolidationScanScopeInterface | null = null
-            ) {
-                const sql = IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL(scope);
-
-                return yield* Db.query(db => db.$client.unsafe<IbanBridgeChainTransferCandidateInterface>(sql));
-            })
+            findTransferCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db => db.$client.unsafe<IbanBridgeTransferCandidateInterface>(IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL(scope))),
+            findCanonicalDuplicateCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db =>
+                    db.$client.unsafe<IbanBridgeCanonicalDuplicateCandidateInterface>(IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL(scope))
+                ),
+            findCanonicalSupersessionCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db =>
+                    db.$client.unsafe<IbanBridgeCanonicalSupersessionCandidateInterface>(
+                        IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_SQL(scope)
+                    )
+                ),
+            findChainTransferCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db =>
+                    db.$client.unsafe<IbanBridgeChainTransferCandidateInterface>(IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL(scope))
+                )
         })
     }
 ) {
