@@ -1,4 +1,4 @@
-import { CheckRead as CheckCheck } from 'reicon-react';
+import { CheckRead } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 
@@ -17,11 +17,11 @@ export const CategorizeDemoPanel = ({ progress, done, undo, children }: Props) =
         </div>
         <div className="cdemo-slot">
             <span className="cdemo-accept">
-                <CheckCheck size={16} />
+                <CheckRead size={16} />
                 {children}
             </span>
             <span className="cdemo-undo">
-                <CheckCheck size={16} />
+                <CheckRead size={16} />
                 <span className="cdemo-undo-title">{done}</span>
                 <span className="cdemo-undo-action">{undo}</span>
             </span>

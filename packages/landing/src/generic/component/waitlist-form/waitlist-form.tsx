@@ -6,7 +6,7 @@ import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import { useState } from 'react';
-import { ArrowRight, Loader as Loader2, Users } from 'reicon-react';
+import { ArrowRight, Loader, Users } from 'reicon-react';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -141,7 +141,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
 
                 <Button className={buttonVariants({ variant })} disabled={isLoading} size="lg" type="submit">
                     {isLoading ? (
-                        <Loader2 className="size-5 animate-spin" />
+                        <Loader className="size-5 animate-spin" />
                     ) : (
                         <>
                             <Trans>Join Waitlist</Trans>

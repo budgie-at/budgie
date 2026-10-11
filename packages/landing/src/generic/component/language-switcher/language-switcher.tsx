@@ -2,7 +2,7 @@
 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import { Check, Language as Languages } from 'reicon-react';
+import { Check, Language } from 'reicon-react';
 
 import { SUPPORTED_LOCALES as locales } from '../../../i18n/supported-locales.constant.mjs';
 import { Button } from '../../../ui/button';
@@ -42,7 +42,7 @@ export const LanguageSwitcher = () => {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button className="rounded-full" size="icon" variant="ghost">
-                    <Languages className="size-[18px]" />
+                    <Language className="size-[18px]" />
 
                     <span className="sr-only">
                         <Trans>Switch language</Trans>
