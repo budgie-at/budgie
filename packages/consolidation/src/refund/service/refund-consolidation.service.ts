@@ -1,5 +1,6 @@
 import {
     Db,
+    PRECISION,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
@@ -15,6 +16,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
+import { REFUND_ORIGINAL_CURRENCY_RATE_TOLERANCE } from '../../shared/constant/refund-original-currency-rate-tolerance.constant';
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
 import { RefundAlreadyConsolidatedError } from '../error/refund-already-consolidated.error';
 import { RefundExceedsExpenseError } from '../error/refund-exceeds-expense.error';
@@ -54,6 +56,29 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     .filter(entry => isDefined(entry.originalTransactionId) && entry.type === TransactionEntryTypeEnum.DEBIT)
                     .reduce((total, entry) => total + entry.amount, 0);
 
+            const getOriginalMinorAmount = (entry: TransactionEntryEntityInterface): number =>
+                Math.round(entry.amount / entry.exchangeRate / (PRECISION / 100));
+
+            const isSameOriginalCurrency = (
+                refundIncomeEntry: TransactionEntryEntityInterface,
+                expenseEntry: TransactionEntryEntityInterface
+            ): boolean =>
+                (!isDefined(refundIncomeEntry.operationInstrumentId) ||
+                    !isDefined(expenseEntry.operationInstrumentId) ||
+                    refundIncomeEntry.operationInstrumentId === expenseEntry.operationInstrumentId) &&
+                Math.abs(refundIncomeEntry.exchangeRate / expenseEntry.exchangeRate - 1) <= REFUND_ORIGINAL_CURRENCY_RATE_TOLERANCE;
+
+            const isForeignCurrencyFullRefund = (
+                refundIncomeEntry: TransactionEntryEntityInterface,
+                expenseEntry: TransactionEntryEntityInterface,
+                existingRefundAmount: number
+            ): boolean =>
+                existingRefundAmount === 0 &&
+                refundIncomeEntry.exchangeRate !== 1 &&
+                expenseEntry.exchangeRate !== 1 &&
+                isSameOriginalCurrency(refundIncomeEntry, expenseEntry) &&
+                getOriginalMinorAmount(refundIncomeEntry) === getOriginalMinorAmount(expenseEntry);
+
             const validateRefundIncomePair = Effect.fnUntraced(function* (
                 refundIncomeTransaction: TransactionWithEntriesEntityInterface,
                 expenseTransaction: TransactionWithEntriesEntityInterface
@@ -76,7 +101,12 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     return yield* new RefundTransactionNotFoundError();
                 }
 
-                if (refundIncomeEntry.amount + getExistingRefundAmount(expenseTransaction.entries) > expenseEntry.amount) {
+                const existingRefundAmount = getExistingRefundAmount(expenseTransaction.entries);
+
+                if (
+                    refundIncomeEntry.amount + existingRefundAmount > expenseEntry.amount &&
+                    !isForeignCurrencyFullRefund(refundIncomeEntry, expenseEntry, existingRefundAmount)
+                ) {
                     return yield* new RefundExceedsExpenseError();
                 }
 
