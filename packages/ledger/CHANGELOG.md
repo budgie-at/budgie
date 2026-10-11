@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+
+### Bug Fixes
+
+* **ledger:** leave ambiguous monthly installments unlinked ([d7b622a](https://github.com/budgie-at/budgie/commit/d7b622a1c471f046f52596eed0d186d7cecb22b4))
+* **ledger:** link monobank installment payoffs ([3b06cea](https://github.com/budgie-at/budgie/commit/3b06cea9b7cdfed59b0b99de1f13cb6a3dad102a))
+* **ledger:** preserve purchase ownership during installment payoff ([6892ed0](https://github.com/budgie-at/budgie/commit/6892ed0915b2dac1ec2a288c69304a46a36e19a4))
+* **ledger:** reject installment payments matching multiple plans ([9d9330f](https://github.com/budgie-at/budgie/commit/9d9330fae603c5897786ced063d1189c93a92f3d))
+* protect transfer history and match late installment payoffs ([ee9f2f3](https://github.com/budgie-at/budgie/commit/ee9f2f360f160a3ecc9cbe9c1856b4a35c769656))
+
+
+
+
+
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
 

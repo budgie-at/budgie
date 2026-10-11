@@ -18,7 +18,7 @@ import {
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
-import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
+import { addDays, differenceInCalendarMonths, endOfDay, startOfDay, subDays } from 'date-fns';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -44,21 +44,24 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const dueDateToleranceDays = 3;
         const amountTolerance = 10_000;
         const normalizeTitle = (title: string) => title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
-        const matchesReferenceTitle = (title: string, referenceTitle: string) => normalizeTitle(title) === normalizeTitle(referenceTitle);
-        const nextPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean> = new Map([
-            [ExternalSourceEnum.MONOBANK, (title: string) => title.startsWith('Щомісячний платіж ')]
-        ]);
-        const earlierPartTitleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean> = new Map([
-            [ExternalSourceEnum.MONOBANK, (title: string) => title.startsWith('Платіж ') || title.startsWith('Щомісячний платіж ')]
-        ]);
+        const monobankLegacyPaymentPrefix = 'Платіж ';
+        const monobankMonthlyPartPrefix = 'Щомісячний платіж ';
+        const monobankEarlyPayoffPrefix = 'Дострокове погашення ';
+        const getMonobankPaymentMerchant = (title: string) => {
+            const matchingPrefix = [monobankLegacyPaymentPrefix, monobankMonthlyPartPrefix].find(prefix => title.startsWith(prefix));
 
-        const matchesPartTitle = (
-            titleMatchers: ReadonlyMap<ExternalSourceEnum, (title: string, referenceTitle: string) => boolean>,
-            externalSource: ExternalSourceEnum | null,
-            title: string,
-            referenceTitle: string
-        ): boolean =>
-            ((isDefined(externalSource) ? titleMatchers.get(externalSource) : null) ?? matchesReferenceTitle)(title, referenceTitle);
+            return normalizeTitle(isDefined(matchingPrefix) ? title.slice(matchingPrefix.length) : title);
+        };
+        const matchesNextPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
+            externalSource === ExternalSourceEnum.MONOBANK
+                ? title.startsWith(monobankMonthlyPartPrefix)
+                : normalizeTitle(title) === normalizeTitle(referenceTitle);
+        const matchesEarlierPartTitle = (externalSource: ExternalSourceEnum | null, title: string, referenceTitle: string): boolean =>
+            externalSource === ExternalSourceEnum.MONOBANK
+                ? title.startsWith(monobankMonthlyPartPrefix) ||
+                  (title.startsWith(monobankLegacyPaymentPrefix) &&
+                      getMonobankPaymentMerchant(title) === getMonobankPaymentMerchant(referenceTitle))
+                : normalizeTitle(title) === normalizeTitle(referenceTitle);
 
         const findDueCandidates = (accountId: number, dueAt: Date) =>
             installmentPlanRepository.findCandidates(
@@ -66,6 +69,63 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 startOfDay(subDays(dueAt, dueDateToleranceDays)),
                 endOfDay(addDays(dueAt, dueDateToleranceDays))
             );
+
+        const hasUnconvertedMonthlyOwner = Effect.fnUntraced(function* (
+            accountId: number,
+            candidate: Effect.Success<ReturnType<typeof installmentPlanRepository.findCandidates>>[number],
+            planTransactionIds: readonly number[]
+        ) {
+            if (candidate.externalSource !== ExternalSourceEnum.MONOBANK || !candidate.title.startsWith(monobankMonthlyPartPrefix)) {
+                return false;
+            }
+
+            const purchases = yield* installmentPlanRepository.findCandidates(accountId, new Date(0), candidate.operatedAt);
+
+            return purchases.some(purchase => {
+                const monthOffset = differenceInCalendarMonths(candidate.operatedAt, purchase.operatedAt);
+
+                return (
+                    !planTransactionIds.includes(purchase.transactionId) &&
+                    purchase.externalSource === ExternalSourceEnum.MONOBANK &&
+                    purchase.title.startsWith(monobankLegacyPaymentPrefix) &&
+                    Math.abs(purchase.amount - candidate.amount) <= amountTolerance &&
+                    [monthOffset - 1, monthOffset, monthOffset + 1].some(offset => {
+                        const dueAt = getInstallmentDueDate(purchase.operatedAt, offset);
+
+                        return (
+                            isPositiveNumber(offset) &&
+                            candidate.operatedAt >= startOfDay(subDays(dueAt, dueDateToleranceDays)) &&
+                            candidate.operatedAt <= endOfDay(addDays(dueAt, dueDateToleranceDays))
+                        );
+                    })
+                );
+            });
+        });
+
+        const findNextPartMatches = Effect.fnUntraced(function* (debtAccountId: number) {
+            const schedule = yield* installmentPlanRepository.getSchedule(debtAccountId);
+            const [firstPart] = yield* installmentPlanRepository.findParts(debtAccountId);
+
+            if (!isDefined(schedule) || !isDefined(schedule.nextDueAt) || !isDefined(schedule.nextAmount) || !isDefined(firstPart)) {
+                return [];
+            }
+
+            const { nextAmount, remainingAmount } = schedule;
+            const candidates = yield* findDueCandidates(firstPart.accountId, schedule.nextDueAt);
+
+            return yield* Effect.filter(
+                candidates.filter(
+                    candidate =>
+                        candidate.externalSource === firstPart.externalSource &&
+                        (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
+                        matchesNextPartTitle(firstPart.externalSource, candidate.title, firstPart.title)
+                ),
+                candidate =>
+                    hasUnconvertedMonthlyOwner(firstPart.accountId, candidate, [firstPart.transactionId]).pipe(
+                        Effect.map(hasOwner => !hasOwner)
+                    )
+            );
+        });
 
         const getExpensePrimaryEntryOrFail = Effect.fnUntraced(function* (transactionId: number) {
             const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
@@ -85,31 +145,6 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             return { transaction, primaryEntry };
         });
 
-        const attachNextPart = Effect.fnUntraced(function* (debtAccountId: number) {
-            const schedule = yield* installmentPlanRepository.getSchedule(debtAccountId);
-            const [firstPart] = yield* installmentPlanRepository.findParts(debtAccountId);
-
-            if (!isDefined(schedule) || !isDefined(schedule.nextDueAt) || !isDefined(schedule.nextAmount) || !isDefined(firstPart)) {
-                return false;
-            }
-
-            const { nextAmount, remainingAmount } = schedule;
-            const candidates = yield* findDueCandidates(firstPart.accountId, schedule.nextDueAt);
-            const [match, ...ambiguousMatches] = candidates.filter(
-                candidate =>
-                    (Math.abs(candidate.amount - nextAmount) <= amountTolerance || candidate.amount === remainingAmount) &&
-                    matchesPartTitle(nextPartTitleMatchers, firstPart.externalSource, candidate.title, firstPart.title)
-            );
-
-            if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {
-                return false;
-            }
-
-            yield* transactionDebtSettlementService.attach({ debtAccountId, transactionId: match.transactionId });
-
-            return true;
-        });
-
         const findEarlierPart = Effect.fnUntraced(function* (
             transaction: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
@@ -118,19 +153,20 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             const candidates = yield* findDueCandidates(primaryEntry.accountId, dueAt);
             const [match, ...ambiguousMatches] = candidates.filter(
                 candidate =>
+                    candidate.externalSource === transaction.externalSource &&
                     Math.abs(candidate.amount - primaryEntry.amount) <= amountTolerance &&
-                    matchesPartTitle(earlierPartTitleMatchers, transaction.externalSource, candidate.title, transaction.title)
+                    matchesEarlierPartTitle(transaction.externalSource, candidate.title, transaction.title)
             );
 
             return isDefined(match) && !isNotEmptyArray(ambiguousMatches) ? match : null;
         });
 
         const findEarlierParts = Effect.fnUntraced(function* (
-            transaction: Pick<TransactionEntityInterface, 'operatedAt' | 'externalSource' | 'title'>,
+            transaction: Pick<TransactionEntityInterface, 'id' | 'operatedAt' | 'externalSource' | 'title'>,
             primaryEntry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>,
             installmentCount: number
         ) {
-            const earlierParts: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>> = [];
+            const earlierParts: Array<Effect.Success<ReturnType<typeof installmentPlanRepository.findCandidates>>[number]> = [];
 
             while (earlierParts.length < installmentCount - 1) {
                 const earlierPart = yield* findEarlierPart(
@@ -143,14 +179,98 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                     break;
                 }
 
-                earlierParts.unshift({ id: earlierPart.transactionId, operatedAt: earlierPart.operatedAt });
+                earlierParts.unshift(earlierPart);
             }
 
-            return earlierParts;
+            const planTransactionIds = [transaction.id, ...earlierParts.map(part => part.transactionId)];
+
+            for (const earlierPart of earlierParts) {
+                if (yield* hasUnconvertedMonthlyOwner(primaryEntry.accountId, earlierPart, planTransactionIds)) {
+                    return [];
+                }
+            }
+
+            return earlierParts.map(part => ({ id: part.transactionId, operatedAt: part.operatedAt }));
         });
 
-        const attachPlanDueParts = (debtAccountId: number) =>
-            attachNextPart(debtAccountId).pipe(Effect.repeat({ while: isAttached => isAttached }));
+        const findEarlyPayoffMatches = Effect.fnUntraced(function* (debtAccountId: number) {
+            const schedule = yield* installmentPlanRepository.getSchedule(debtAccountId);
+            const parts = yield* installmentPlanRepository.findParts(debtAccountId);
+            const latestPart = parts.at(-1);
+            const [firstPart] = parts;
+
+            if (!isDefined(schedule) || !isPositiveNumber(schedule.remainingAmount) || !isDefined(latestPart) || !isDefined(firstPart)) {
+                return [];
+            }
+
+            const candidates = yield* installmentPlanRepository.findCandidates(
+                latestPart.accountId,
+                latestPart.operatedAt,
+                endOfDay(addDays(getInstallmentDueDate(firstPart.operatedAt, schedule.installmentCount - 1), dueDateToleranceDays))
+            );
+
+            return candidates.filter(
+                candidate =>
+                    candidate.externalSource === ExternalSourceEnum.MONOBANK &&
+                    firstPart.externalSource === ExternalSourceEnum.MONOBANK &&
+                    Math.abs(candidate.amount - schedule.remainingAmount) <= amountTolerance &&
+                    candidate.title.startsWith(monobankEarlyPayoffPrefix) &&
+                    normalizeTitle(candidate.title.slice(monobankEarlyPayoffPrefix.length)) === getMonobankPaymentMerchant(firstPart.title)
+            );
+        });
+
+        const attachUniquePart = Effect.fnUntraced(function* (
+            debtAccountId: number,
+            activePlanIds: readonly number[],
+            findMatches: typeof findNextPartMatches
+        ) {
+            const [match, ...ambiguousMatches] = yield* findMatches(debtAccountId);
+
+            if (!isDefined(match) || isNotEmptyArray(ambiguousMatches)) {
+                return false;
+            }
+
+            for (const planId of activePlanIds) {
+                if (planId !== debtAccountId) {
+                    const candidates = yield* findMatches(planId);
+
+                    if (candidates.some(candidate => candidate.transactionId === match.transactionId)) {
+                        return false;
+                    }
+                }
+            }
+
+            yield* transactionDebtSettlementService.attach({ debtAccountId, transactionId: match.transactionId });
+
+            return true;
+        });
+
+        const findActivePlanIds = Effect.fnUntraced(function* () {
+            const plans = yield* accountRepository.findBySearchQuery('', {
+                debtType: AccountDebtTypeEnum.INSTALLMENT,
+                onlyActive: true
+            });
+
+            return plans.map(plan => plan.id);
+        });
+
+        const attachPlanDueParts = Effect.fnUntraced(function* (debtAccountId: number, activePlanIds: readonly number[]) {
+            const attachNextPartOrPayoff = Effect.fnUntraced(function* () {
+                const [, ...ambiguousMonthlyMatches] = yield* findNextPartMatches(debtAccountId);
+
+                if (isNotEmptyArray(ambiguousMonthlyMatches)) {
+                    return false;
+                }
+
+                if (yield* attachUniquePart(debtAccountId, activePlanIds, findEarlyPayoffMatches)) {
+                    return false;
+                }
+
+                return yield* attachUniquePart(debtAccountId, activePlanIds, findNextPartMatches);
+            });
+
+            yield* attachNextPartOrPayoff().pipe(Effect.repeat({ while: isAttached => isAttached }));
+        });
 
         const cancelRefundedPlan = Effect.fnUntraced(function* (debtAccountId: number) {
             const parts = yield* installmentPlanRepository.findParts(debtAccountId);
@@ -223,24 +343,24 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                         transactionId => transactionDebtSettlementService.attach({ debtAccountId: account.id, transactionId }),
                         { discard: true }
                     );
-                    yield* attachPlanDueParts(account.id);
+                    yield* attachPlanDueParts(account.id, yield* findActivePlanIds());
 
                     return { accountId: account.id };
                 },
                 effect => Db.transaction(effect)
             ),
-            attachDueParts: Effect.fn('InstallmentPlanService.attachDueParts')(function* () {
-                const plans = yield* accountRepository.findBySearchQuery('', {
-                    debtType: AccountDebtTypeEnum.INSTALLMENT,
-                    onlyActive: true
-                });
+            attachDueParts: Effect.fn('InstallmentPlanService.attachDueParts')(
+                function* () {
+                    const activePlanIds = yield* findActivePlanIds();
 
-                yield* Effect.forEach(
-                    plans,
-                    plan => Db.transaction(Effect.andThen(cancelRefundedPlan(plan.id), attachPlanDueParts(plan.id))),
-                    { discard: true }
-                );
-            })
+                    yield* Effect.forEach(
+                        activePlanIds,
+                        planId => Db.transaction(Effect.andThen(cancelRefundedPlan(planId), attachPlanDueParts(planId, activePlanIds))),
+                        { discard: true }
+                    );
+                },
+                effect => Db.transaction(effect)
+            )
         };
     })
 }) {

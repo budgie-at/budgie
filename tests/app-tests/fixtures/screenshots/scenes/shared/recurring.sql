@@ -1,4 +1,4 @@
--- Adds three subscriptions that bill on the 15th of every month for the last eight months.
+-- Adds three active monthly subscriptions.
 
 CREATE TEMP TABLE overlay_locale AS
 SELECT
@@ -20,7 +20,9 @@ INSERT INTO overlay_subscription (slot, category_id, base_amount, title) VALUES
 
 CREATE TEMP TABLE overlay_month (months_ago INTEGER);
 
-INSERT INTO overlay_month (months_ago) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
+INSERT INTO overlay_month (months_ago) VALUES (0), (1), (2), (3), (4), (5), (6), (7);
+
+DELETE FROM overlay_month WHERE months_ago = 0 AND unixepoch('now') < unixepoch(date('now', 'start of month', '+14 days')) + 43200;
 
 INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, from_account_id, to_account_id, exchange_rate, needs_embedding)
 SELECT

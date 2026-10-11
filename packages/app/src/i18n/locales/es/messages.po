@@ -1092,8 +1092,8 @@ msgid "Comment"
 msgstr "Comentario"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Committed {committedExpense} per month · income {committedIncome}"
-msgstr "Comprometido {committedExpense} al mes · ingresos {committedIncome}"
+msgid "Committed {committedExpense} per month"
+msgstr "Comprometido al mes: {committedExpense}"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Condition"
@@ -3037,6 +3037,12 @@ msgstr "no contiene"
 msgid "Not Contains"
 msgstr "No contiene"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "Not enough free storage to extract this backup."
+msgstr "No hay suficiente espacio libre para extraer esta copia de seguridad."
+
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Not enough history yet"
 msgstr "Aún no hay suficiente historial"
@@ -4258,6 +4264,12 @@ msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los 
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup archive does not contain a Budgie database."
+msgstr "Este archivo de copia de seguridad no contiene una base de datos de Budgie."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "This backup could not be opened with your current PIN."

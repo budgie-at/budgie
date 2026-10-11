@@ -1,5 +1,7 @@
 import {
     buildCategoryTranslationJoinCondition,
+    buildSpendingEntryCondition,
+    RecurringSeriesKindEnum,
     AccountEntityTable,
     BaseTransactionFilterRepository,
     CategoryEntityTable,
@@ -24,10 +26,9 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
     make: Effect.sync(() => {
         const filters = new BaseTransactionFilterRepository();
 
-        return {
-            findCharges: (defaultInstrumentId: number | null, language: LanguageEnum, since: Date) =>
-                Db.query(db => {
-                    const rateToDefault = sql<number>`COALESCE(
+        const findCharges = (defaultInstrumentId: number | null, language: LanguageEnum, since: Date, historical: boolean) =>
+            Db.query(db => {
+                const rateToDefault = sql<number>`COALESCE(
                         (SELECT ${ExchangeRateEntityTable.rate} * 1.0 FROM ${ExchangeRateEntityTable}
                          WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId}
                            AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
@@ -40,48 +41,51 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                          ORDER BY ${ExchangeRateEntityTable.createdAt} DESC LIMIT 1),
                         1.0
                     )`;
-                    const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * (CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN -1.0 ELSE 1.0 END) * ${rateToDefault}`;
+                const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * ${rateToDefault}`;
 
-                    return db
-                        .select({
-                            transactionId: TransactionEntityTable.id,
-                            operatedAt: TransactionEntityTable.operatedAt,
-                            title: TransactionEntityTable.title,
-                            comment: TransactionEntityTable.comment,
-                            defaultAmount,
-                            accountId: AccountEntityTable.id,
-                            categoryId: TransactionEntryEntityTable.categoryId,
-                            categoryTitle: sql<
-                                string | null
-                            >`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
-                            categoryIcon: CategoryEntityTable.icon
-                        })
-                        .from(TransactionEntityTable)
-                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                        .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-                        .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
-                        .where(
-                            and(
-                                or(
-                                    and(
-                                        eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-                                        eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
-                                    ),
-                                    and(
-                                        eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
-                                        eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT)
-                                    )
-                                ),
-                                filters.buildVisibleTransactionCondition(),
-                                filters.buildCategorizableEntryCondition(),
-                                filters.buildNonDebtAccountCondition(),
-                                gt(TransactionEntryEntityTable.amount, 0),
-                                gte(TransactionEntityTable.operatedAt, since),
-                                or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))
-                            )
-                        );
-                }),
+                return db
+                    .select({
+                        transactionId: TransactionEntityTable.id,
+                        operatedAt: TransactionEntityTable.operatedAt,
+                        title: TransactionEntityTable.title,
+                        comment: TransactionEntityTable.comment,
+                        defaultAmount,
+                        kind: sql<RecurringSeriesKindEnum>`${RecurringSeriesKindEnum.EXPENSE}`,
+                        nativeAmount: TransactionEntryEntityTable.amount,
+                        instrumentId: AccountEntityTable.instrumentId,
+                        counterpartyIban: TransactionEntryEntityTable.toIban,
+                        accountId: AccountEntityTable.id,
+                        categoryId: TransactionEntryEntityTable.categoryId,
+                        categoryTitle: sql<
+                            string | null
+                        >`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
+                        categoryIcon: CategoryEntityTable.icon
+                    })
+                    .from(TransactionEntityTable)
+                    .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                    .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                    .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+                    .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
+                    .where(
+                        and(
+                            eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
+                            filters.buildVisibleTransactionCondition(),
+                            filters.buildCategorizableEntryCondition(),
+                            filters.buildNonDebtAccountCondition(),
+                            ...(historical ? [] : [buildSpendingEntryCondition(), eq(AccountEntityTable.isActive, true)]),
+                            gt(TransactionEntryEntityTable.amount, 0),
+                            gte(TransactionEntityTable.operatedAt, since),
+                            or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))
+                        )
+                    );
+            });
+
+        return {
+            findCharges: (defaultInstrumentId: number | null, language: LanguageEnum, since: Date) =>
+                findCharges(defaultInstrumentId, language, since, false),
+            findHistoricalCharges: (defaultInstrumentId: number | null, language: LanguageEnum, since: Date) =>
+                findCharges(defaultInstrumentId, language, since, true),
             findSeries: () =>
                 Db.query(db => db.select().from(RecurringSeriesEntityTable).where(isNull(RecurringSeriesEntityTable.deletedAt))),
             createSeries: (input: RecurringSeriesCreateEntityInterface) =>

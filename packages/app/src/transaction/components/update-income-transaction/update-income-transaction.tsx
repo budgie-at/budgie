@@ -1,10 +1,6 @@
-import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
-import { getTransactionCategoryEntries } from '@budgie/ledger';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useWatch } from 'react-hook-form';
 
-import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
-import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { buildIncomeEntry } from '../../utils/build-income-entry.util';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
@@ -15,25 +11,10 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 
 export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const transactionId = transaction.id;
-    const simpleTransaction = useUpdateSimpleTransaction({
+    const { formRef, ...simpleTransaction } = useUpdateSimpleTransaction({
         transaction,
-        transactionId,
-        schema: IncomeTransactionCreateInputSchema
-    });
-    const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
-
-    const toAccountId = useWatch({ control: simpleTransaction.form.control, name: 'toAccountId' });
-    const entries = useWatch({ control: simpleTransaction.form.control, name: 'entries' });
-    const categoryEntries = getTransactionCategoryEntries(entries);
-    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
-    const { actionsMenuProps, debtSettlementAccount } = useSimpleTransactionActionsMenu({
-        transaction,
-        transactionAccountId: toAccountId,
         transactionType: TransactionTypeEnum.INCOME,
-        categoryEntryCount: categoryEntries.length,
-        onDelete: simpleTransaction.handleDelete,
-        onFeePress: handleFeePress
+        openFeeOnMount
     });
 
     return (
@@ -41,7 +22,7 @@ export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateT
             form={simpleTransaction.form}
             title={t`Edit Income`}
             onGoBack={simpleTransaction.handleGoBack}
-            right={<UpdateTransactionActionsMenu {...actionsMenuProps} />}
+            right={<UpdateTransactionActionsMenu {...simpleTransaction.actionsMenuProps} />}
         >
             <SimpleQuickForm
                 ref={formRef}
@@ -49,8 +30,8 @@ export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateT
                 transactionType={TransactionTypeEnum.INCOME}
                 accountFieldName="toAccountId"
                 transactionTitle={transaction.title}
-                mccCategoryId={mccCategoryId}
-                debtSettlementAccount={debtSettlementAccount}
+                mccCategoryId={simpleTransaction.mccCategoryId}
+                debtSettlementAccount={simpleTransaction.debtSettlementAccount}
                 buildEntries={buildIncomeEntry}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
