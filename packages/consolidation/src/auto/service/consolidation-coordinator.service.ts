@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransferPairAutoConfidenceBucketEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -17,7 +17,6 @@ import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.c
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
 import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-consolidation-family.service';
-import { TransferPairConsolidationFamilyService } from './transfer-pair-consolidation-family.service';
 
 import type { FeeEntrySourceInterface } from '../../query/interface/fee-entry-source.interface';
 import type { ConsolidationFamilyStrategyInterface } from '../interface/consolidation-family-strategy.interface';
@@ -27,7 +26,8 @@ import type {
     ExistingTransferBridgeCandidateInterface,
     ExistingTransferChainReclaimCandidateInterface,
     IbanBridgeChainTransferCandidateInterface,
-    IbanBridgeTransferCandidateInterface
+    IbanBridgeTransferCandidateInterface,
+    TransferPairCandidateInterface
 } from '@budgie/contracts';
 
 export class ConsolidationCoordinatorService extends Context.Service<ConsolidationCoordinatorService>()(
@@ -44,7 +44,6 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const consolidationMutationService = yield* ConsolidationMutationService;
             const consolidationRepairExecutorService = yield* ConsolidationRepairExecutorService;
             const p2pFiatTransferFamily = yield* P2pFiatTransferConsolidationFamilyService;
-            const transferPairFamily = yield* TransferPairConsolidationFamilyService;
 
             const getIbanBridgeChainTransferSourceTransactionIds = (candidate: IbanBridgeChainTransferCandidateInterface): number[] => [
                 candidate.sourceExpenseTransactionId,
@@ -67,6 +66,34 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 candidate.expenseTransactionId,
                 candidate.incomeTransactionId
             ];
+
+            const getTransferPairSourceTransactionIds = (candidate: TransferPairCandidateInterface): number[] => [
+                candidate.expenseTransactionId,
+                candidate.incomeTransactionId
+            ];
+
+            const computeTransferPairExchangeRate = (candidate: TransferPairCandidateInterface): number => {
+                if (
+                    candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_SAME_BANK_HINTED_FEE ||
+                    candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_INTERBANK_HINTED_FEE
+                ) {
+                    return 1;
+                }
+
+                if (candidate.expenseEntryAmount === candidate.incomeEntryAmount) {
+                    return 1;
+                }
+
+                return candidate.expenseEntryAmount / candidate.incomeEntryAmount;
+            };
+
+            const getTransferPairConsolidationType = (candidate: TransferPairCandidateInterface): TransactionConsolidationTypeEnum => {
+                if (candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_SAME_BANK_HINTED_FEE) {
+                    return TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER;
+                }
+
+                return TransactionConsolidationTypeEnum.TRANSFER_PAIR;
+            };
 
             const existingTransferIncomeDuplicateFamily = makeConsolidationFamilyStrategy({
                 findCandidates: scope => existingTransferRepository.findIncomeDuplicateCandidates(scope),
@@ -172,7 +199,28 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 }),
                 existingTransferIncomeDuplicateFamily,
                 p2pFiatTransferFamily,
-                transferPairFamily,
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => transferPairRepository.findCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationExecutorService.consolidatePair(candidate, {
+                            sourceTransactionIds: getTransferPairSourceTransactionIds(candidate),
+                            allowedMovedSourceTransactionIds: [],
+                            canonicalInput: {
+                                title: candidate.expenseTransactionTitle ?? candidate.incomeTransactionTitle ?? '',
+                                operatedAt: candidate.operatedAt,
+                                fromAccountId: candidate.expenseEntryAccountId,
+                                toAccountId: candidate.incomeEntryAccountId,
+                                fromAmount: candidate.expenseEntryAmount,
+                                toAmount: candidate.incomeEntryAmount,
+                                exchangeRate: computeTransferPairExchangeRate(candidate),
+                                consolidationType: getTransferPairConsolidationType(candidate),
+                                fromEntryExchangeRate: candidate.expenseEntryExchangeRate,
+                                toEntryExchangeRate: candidate.incomeEntryExchangeRate,
+                                fromEntryToIban: candidate.expenseEntryToIban
+                            }
+                        }),
+                    getSourceTransactionIds: getTransferPairSourceTransactionIds
+                }),
                 makeConsolidationFamilyStrategy({
                     findCandidates: scope => refundPairRepository.findCandidates(scope),
                     consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateRefund(candidate),
@@ -384,8 +432,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             ConsolidationExecutorService.layer,
             ConsolidationMutationService.layer,
             ConsolidationRepairExecutorService.layer,
-            P2pFiatTransferConsolidationFamilyService.layer,
-            TransferPairConsolidationFamilyService.layer
+            P2pFiatTransferConsolidationFamilyService.layer
         ])
     );
 }
