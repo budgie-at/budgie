@@ -7,14 +7,11 @@
     "exports": {
         ".": {
             "types": "./dist/esm/index.d.ts",
-            "import": "./dist/esm/index.js",
-            "react-native": "./dist/esm/index.js",
             "default": "./dist/esm/index.js"
         },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
-    "react-native": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "scripts": {
         "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
