@@ -78,7 +78,6 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
     });
 
     return {
-        key: definition.key,
         preview: Effect.fn('ConsolidationFamilyStrategyService.preview')(function* (context: ConsolidationFamilyRunContextInterface) {
             const candidates = yield* buildRunnableCandidates(context);
 
