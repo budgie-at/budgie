@@ -244,10 +244,6 @@ msgstr "{similarCount, plural, one {# ähnliche Transaktion} other {# ähnliche 
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# übersprungen} other {# übersprungen}}"
 
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "{source} error · {message}"
-msgstr "{source}-Fehler · {message}"
-
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung nutzt stattdessen einen typischen Monat."
@@ -260,7 +256,7 @@ msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# in dieser Sitzung getaggt} other {# in dieser Sitzung getaggt}}"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
 msgid "{totalSize} stored on this device"
 msgstr "{totalSize} auf diesem Gerät gespeichert"
 
@@ -495,6 +491,10 @@ msgstr "Tags hinzufügen"
 msgid "Add tags to these transactions"
 msgstr "Tags zu diesen Transaktionen hinzufügen"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Add transactions by voice"
+msgstr "Transaktionen per Sprache hinzufügen"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Fügen Sie Ihr erstes Konto hinzu, um Ihre Finanzen zu verfolgen"
@@ -515,30 +515,22 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/ai/error/ai-model-storage-busy.error.ts
-msgid "AI is downloading or opening this model. Try again when it finishes."
-msgstr "Die KI lädt dieses Modell herunter oder öffnet es gerade. Versuche es erneut, wenn sie fertig ist."
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "AI feature turned off"
+msgstr "AI-Funktion ausgeschaltet"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "AI model removed"
-msgstr "KI-Modell entfernt"
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "AI feature turned on"
+msgstr "AI-Funktion eingeschaltet"
 
 #: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
 #: src/app/(tabs)/settings/ai-models.tsx
-msgid "AI models"
-msgstr "KI-Modelle"
+msgid "AI features"
+msgstr "AI-Funktionen"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "AI models removed"
-msgstr "KI-Modelle entfernt"
-
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "AI off"
-msgstr "KI aus"
-
-#: src/ai/error/ai-model-storage-enabled.error.ts
-msgid "AI was turned on again before cleanup finished. Turn AI off and try removing the model again."
-msgstr "Die KI wurde wieder eingeschaltet, bevor die Bereinigung fertig war. Schalte die KI aus und versuche erneut, das Modell zu entfernen."
+#: src/ai/error/ai-model-storage-busy.error.ts
+msgid "AI is downloading or opening this model. Try again when it finishes."
+msgstr "Die KI lädt dieses Modell herunter oder öffnet es gerade. Versuche es erneut, wenn sie fertig ist."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "AI-Generated Metadata"
@@ -832,6 +824,10 @@ msgstr "Budgetlimit erreicht"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Budgie can also free {reclaimableSize} by removing downloads this feature no longer needs."
+msgstr "Budgie kann außerdem {reclaimableSize} freigeben, indem Downloads entfernt werden, die diese Funktion nicht mehr benötigt."
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Budgie can categorise transactions, suggest tags and transcribe voice notes — all on this device. Nothing is sent anywhere."
 msgstr "Budgie kann Transaktionen kategorisieren, Tags vorschlagen und Sprachnotizen transkribieren — alles auf diesem Gerät. Nichts wird irgendwohin gesendet."
@@ -868,17 +864,13 @@ msgstr "Budgie führt sichere Überweisungs- und Rückerstattungs-Treffer zusamm
 msgid "Budgie will notify you when it finishes"
 msgstr "Budgie benachrichtigt dich, wenn der Import fertig ist"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Budgie will remove obsolete downloaded AI model files from this device."
-msgstr "Budgie entfernt veraltete heruntergeladene KI-Modelldateien von diesem Gerät."
-
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen bleiben unverändert."
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Budgie will turn AI off and remove downloaded AI models from this device. Turning AI on again will download them again."
-msgstr "Budgie schaltet die KI aus und entfernt heruntergeladene KI-Modelle von diesem Gerät. Wenn du die KI wieder einschaltest, werden sie erneut heruntergeladen."
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended."
+msgstr "Budgie verwendet für diese Funktion AI auf dem Gerät. Downloads können erneut nötig sein, daher wird WLAN empfohlen."
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
@@ -898,9 +890,8 @@ msgstr "Kann Stunden dauern"
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
@@ -954,10 +945,6 @@ msgstr "Kategorien schlüsseln deine Ausgaben automatisch auf. Füge eine Transa
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Categorise imports automatically"
 msgstr "Importe automatisch kategorisieren"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
-msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachnotizen direkt auf diesem Gerät. Lädt einmalig etwa 2,5 GB an Modellen herunter – am besten über WLAN."
 
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
@@ -1017,7 +1004,7 @@ msgstr "Prüfen"
 msgid "Checking Account"
 msgstr "Girokonto"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
 msgid "Checking storage..."
 msgstr "Speicher wird geprüft..."
 
@@ -1029,9 +1016,13 @@ msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien könne
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Cleanup available"
-msgstr "Bereinigung verfügbar"
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+msgid "Choose features and free space from unused downloads"
+msgstr "Funktionen auswählen und Speicherplatz aus ungenutzten Downloads freigeben"
+
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "Choose what you use and clear downloads you no longer need"
+msgstr "Wähle, was du nutzt, und lösche Downloads, die du nicht mehr brauchst"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1323,6 +1314,10 @@ msgstr "Datenbank konnte nicht exportiert werden"
 msgid "Could not fetch accounts"
 msgstr "Konten konnten nicht abgerufen werden"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Could not free up space"
+msgstr "Speicherplatz konnte nicht freigegeben werden"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
@@ -1370,14 +1365,6 @@ msgstr "Tag konnte nicht neu zugewiesen werden"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Salden konnten nicht neu berechnet werden"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Could not remove AI model"
-msgstr "KI-Modell konnte nicht entfernt werden"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Could not remove AI models"
-msgstr "KI-Modelle konnten nicht entfernt werden"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1436,6 +1423,10 @@ msgstr "Transaktion konnte nicht entkonsolidiert werden."
 msgid "Could not undo the move to cash"
 msgstr "Verschieben ins Bargeld konnte nicht rückgängig gemacht werden"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Could not update AI feature"
+msgstr "AI-Funktion konnte nicht aktualisiert werden"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
 msgstr "Kategoriesymbol konnte nicht aktualisiert werden"
@@ -1443,10 +1434,6 @@ msgstr "Kategoriesymbol konnte nicht aktualisiert werden"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Benachrichtigungen konnten nicht aktualisiert werden"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Could not update on-device AI"
-msgstr "On-Device-KI konnte nicht aktualisiert werden"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Could not update recurring payment."
@@ -1786,21 +1773,13 @@ msgstr "Fertig ({count})"
 msgid "Download your statement as PDF"
 msgstr "Kontoauszug als PDF herunterladen"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Downloaded"
-msgstr "Heruntergeladen"
-
-#: src/app/(tabs)/settings/ai-models.tsx
-msgid "Downloaded model files stored on this device"
-msgstr "Heruntergeladene Modelldateien auf diesem Gerät"
-
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "Downloading AI models…"
-msgstr "KI-Modelle werden heruntergeladen…"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Downloads about 2.5 GB of models once"
 msgstr "Lädt einmalig rund 2.5 GB an Modellen herunter"
+
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
+msgid "Downloads on this device: {storageText}"
+msgstr "Downloads auf diesem Gerät: {storageText}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
@@ -1894,10 +1873,6 @@ msgstr "Ändert den Namen des Plans"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Edits the total of the plan"
 msgstr "Ändert den Gesamtbetrag des Plans"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "EmbeddingGemma 300M Q8_0"
-msgstr "EmbeddingGemma 300M Q8_0"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
@@ -2181,10 +2156,6 @@ msgstr "Kategorien filtern"
 msgid "Filter tags"
 msgstr "Tags filtern"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Finishing download"
-msgstr "Download wird abgeschlossen"
-
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "First expense added"
 msgstr "Erste Ausgabe hinzugefügt"
@@ -2200,6 +2171,10 @@ msgstr "Festgeld mit einem Zinssatz"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Ein Problem gefunden oder eine Idee? Öffne die GitHub-Issue-Vorlagen."
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Free up {unusedSize}"
+msgstr "{unusedSize} freigeben"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -2251,6 +2226,10 @@ msgstr "Einzahlungsbetrag"
 msgid "General"
 msgstr "Allgemein"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Generate English names and search keywords automatically."
+msgstr "Englische Namen und Suchbegriffe automatisch generieren."
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Allgemein"
@@ -2270,6 +2249,10 @@ msgstr "API-Schlüssel abrufen"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "API-Token abrufen"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Get category, tag, and note suggestions from your history."
+msgstr "Erhalte Kategorie-, Tag- und Notizvorschläge aus deinem Verlauf."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
@@ -2326,10 +2309,6 @@ msgstr "Icon-Importer nicht gefunden: {icon}"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Falls Privat24 Ihnen die Datei per E-Mail statt zum Download sendet, speichern Sie den Anhang aus Ihrem Postfach"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "If this model is currently used by AI, Budgie will turn AI off. Turning AI on again will download the model again."
-msgstr "Wenn dieses Modell gerade von der KI verwendet wird, schaltet Budgie die KI aus. Wenn du die KI wieder einschaltest, wird das Modell erneut heruntergeladen."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import"
@@ -2553,18 +2532,6 @@ msgstr "Letzte Woche"
 msgid "Last year"
 msgstr "Letztes Jahr"
 
-#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
-msgid "Learning"
-msgstr "Lernen"
-
-#: src/ai/constant/ai-embedding-status-atom.constant.ts
-msgid "Learning transactions"
-msgstr "Transaktionen werden gelernt"
-
-#: src/ai/constant/ai-embedding-status-atom.constant.ts
-msgid "Learning up to date"
-msgstr "Lernen aktuell"
-
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "left"
 msgstr "übrig"
@@ -2573,18 +2540,6 @@ msgstr "übrig"
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Left"
 msgstr "Übrig"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Legacy Nomic embedding file"
-msgstr "Alte Nomic-Embedding-Datei"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Legacy Qwen chat file"
-msgstr "Alte Qwen-Chat-Datei"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Legacy Whisper file"
-msgstr "Alte Whisper-Datei"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
@@ -2626,18 +2581,6 @@ msgstr "Wird geladen..."
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Loading…"
 msgstr "Wird geladen…"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Local chat model"
-msgstr "Lokales Chat-Modell"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Local embedding model"
-msgstr "Lokales Embedding-Modell"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Local speech-to-text model"
-msgstr "Lokales Speech-to-Text-Modell"
 
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
@@ -2911,6 +2854,10 @@ msgstr "Noch keine Konten"
 msgid "No active budget"
 msgstr "Kein aktives Budget"
 
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
+msgid "No AI downloads stored on this device"
+msgstr "Keine AI-Downloads auf diesem Gerät gespeichert"
+
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No Archived Accounts"
 msgstr "Keine archivierten Konten"
@@ -2960,10 +2907,6 @@ msgstr "Keine benutzerdefinierten Kategorien"
 msgid "No debt yet"
 msgstr "Keine Schuld"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "No downloaded AI models found on this device"
-msgstr "Keine heruntergeladenen KI-Modelle auf diesem Gerät gefunden"
-
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
 msgstr "In dieser Datei wurden keine aktivierten Konten gefunden"
@@ -2987,10 +2930,6 @@ msgstr "Keine Einträge zum Speichern"
 #: src/app/language-selector.tsx
 msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "No longer used by this version"
-msgstr "Von dieser Version nicht mehr verwendet"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -3070,6 +3009,10 @@ msgstr "Keine Transaktionen stimmen überein"
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "No unused downloads"
+msgstr "Keine ungenutzten Downloads"
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "None selected"
 msgstr "Nichts ausgewählt"
@@ -3124,14 +3067,14 @@ msgstr "jetzt"
 msgid "of"
 msgstr "von"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "On-device AI"
-msgstr "On-Device-KI"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "On-device AI enabled"
 msgstr "Lokale KI aktiviert"
+
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
+msgid "On-device AI is not available in this build. You can still clear unused downloads."
+msgstr "AI auf dem Gerät ist in diesem Build nicht verfügbar. Du kannst weiterhin ungenutzte Downloads löschen."
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "One-off"
@@ -3298,10 +3241,6 @@ msgstr "Bezahlt {paidAmount} · {paidCount} von {installmentCount}"
 msgid "Paid off"
 msgstr "Abbezahlt"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Partial Whisper download"
-msgstr "Teilweiser Whisper-Download"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
 msgstr "Fügen Sie den Token in das Feld unten ein"
@@ -3459,10 +3398,6 @@ msgstr "Push-Benachrichtigungen sind deaktiviert"
 msgid "Quick rule"
 msgstr "Schnellregel"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Qwen3 1.7B Q4_K_M"
-msgstr "Qwen3 1.7B Q4_K_M"
-
 #: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Range across better and worse months"
 msgstr "Bereich über bessere und schlechtere Monate"
@@ -3506,26 +3441,6 @@ msgstr "Transaktionen neu synchronisieren"
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Ready to accept"
 msgstr "Bereit zum Akzeptieren"
-
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
-msgid "Rebuild"
-msgstr "Neu aufbauen"
-
-#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
-msgid "Rebuild learning"
-msgstr "Lernen neu aufbauen"
-
-#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
-msgid "Rebuild translations"
-msgstr "Übersetzungen neu aufbauen"
-
-#: src/ai/constant/ai-embedding-status-atom.constant.ts
-msgid "Rebuilding learning"
-msgstr "Lernen wird neu aufgebaut"
-
-#: src/ai/constant/ai-translation-status-atom.constant.ts
-msgid "Rebuilding translations"
-msgstr "Übersetzungen werden neu aufgebaut"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Recalculate"
@@ -3573,28 +3488,13 @@ msgid "Remaining"
 msgstr "Verbleibend"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove"
 msgstr "Entfernen"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-#: src/ai/component/ai-model-storage-remove-all-button/ai-model-storage-remove-all-button.tsx
-msgid "Remove All"
-msgstr "Alle entfernen"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Remove all downloaded AI models?"
-msgstr "Alle heruntergeladenen KI-Modelle entfernen?"
-
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove category limit?"
 msgstr "Kategorielimit entfernen?"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Remove downloaded model?"
-msgstr "Heruntergeladenes Modell entfernen?"
 
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate imported bank transactions"
@@ -4009,6 +3909,10 @@ msgstr "Budgie einrichten"
 msgid "Settings"
 msgstr "Einstellungen"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Shared downloads are still needed by other features"
+msgstr "Geteilte Downloads werden weiterhin von anderen Funktionen benötigt"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "$1.234,56 statt $1.235 anzeigen"
@@ -4092,6 +3996,10 @@ msgstr "Quelle"
 msgid "Sources"
 msgstr "Quellen"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Space freed"
+msgstr "Speicherplatz freigegeben"
+
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Spanisch"
@@ -4099,6 +4007,10 @@ msgstr "Spanisch"
 #: src/i18n/constant/locales.constant.ts
 msgid "Spanish (Spain)"
 msgstr "Spanisch (Spanien)"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Speak an expense and Budgie fills in the transaction."
+msgstr "Sprich eine Ausgabe ein und Budgie füllt die Transaktion aus."
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Spending by Category"
@@ -4149,10 +4061,6 @@ msgstr "Budgie jetzt nutzen"
 msgid "Start with a blank canvas"
 msgstr "Mit einem leeren Blatt beginnen"
 
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "Starting up AI…"
-msgstr "KI wird gestartet…"
-
 #: src/account/constant/account-type.constant.ts
 msgid "Stocks"
 msgstr "Aktien"
@@ -4164,6 +4072,10 @@ msgstr "Absenden"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Subscriptions"
 msgstr "Abonnements"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Suggest transaction details"
+msgstr "Transaktionsdetails vorschlagen"
 
 #: src/app/icon-selector.tsx
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
@@ -4352,14 +4264,6 @@ msgstr "Diesen Monat"
 msgid "This Month"
 msgstr "Dieser Monat"
 
-#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
-msgid "This re-indexes every transaction. Continue?"
-msgstr "Dadurch werden alle Transaktionen neu indiziert. Fortfahren?"
-
-#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
-msgid "This re-translates every category and tag. Continue?"
-msgstr "Dadurch werden alle Kategorien und Tags neu übersetzt. Fortfahren?"
-
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Week"
 msgstr "Diese Woche"
@@ -4546,17 +4450,9 @@ msgstr "Vom Konto übertragen"
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
 
-#: src/ai/constant/ai-translation-status-atom.constant.ts
-msgid "Translating categories and tags"
-msgstr "Kategorien und Tags werden übersetzt"
-
-#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
-msgid "Translation"
-msgstr "Übersetzung"
-
-#: src/ai/constant/ai-translation-status-atom.constant.ts
-msgid "Translations ready"
-msgstr "Übersetzungen bereit"
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Translate categories and tags"
+msgstr "Kategorien und Tags übersetzen"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Try a different merchant, amount, or date."
@@ -4591,6 +4487,18 @@ msgstr "Erneut versuchen"
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Erneut versuchen"
+
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Turn off and free {reclaimableSize}"
+msgstr "Ausschalten und {reclaimableSize} freigeben"
+
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Turn off, keep downloads"
+msgstr "Ausschalten, Downloads behalten"
+
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Turn on"
+msgstr "Einschalten"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -4731,10 +4639,6 @@ msgstr "Benutzerdefinierte Kategorien anzeigen und löschen"
 msgid "View and restore archived accounts"
 msgstr "Archivierte Konten anzeigen und wiederherstellen"
 
-#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
-msgid "View downloaded models and remove files you no longer need"
-msgstr "Heruntergeladene Modelle anzeigen und nicht mehr benötigte Dateien entfernen"
-
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
 msgstr "Quelltransaktionen anzeigen"
@@ -4770,10 +4674,6 @@ msgstr "Wann wird die Einlage fällig?"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
 msgstr "Wann soll es zurückgegeben werden?"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Whisper large-v3 turbo Q8_0"
-msgstr "Whisper large-v3 turbo Q8_0"
 
 #: src/ai/service/whisper-model.service.ts
 msgid "Whisper model download failed"

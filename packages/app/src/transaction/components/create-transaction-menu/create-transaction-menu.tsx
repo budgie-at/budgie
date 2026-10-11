@@ -13,7 +13,9 @@ import { useCreateActionContext } from '../../../@generic/context/create-action.
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
+import { AiFeatureIdEnum } from '../../../ai/enum/ai-feature-id.enum';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
+import { useAiFeatureEnabled } from '../../../ai/hook/use-ai-feature-enabled.hook';
 import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
@@ -40,6 +42,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
+    const isVoiceInputEnabled = useAiFeatureEnabled(AiFeatureIdEnum.VOICE_INPUT);
     const isAiAvailable = useAiSystemStatus().state !== AiSystemStateEnum.DISABLED;
 
     const rotation = useSharedValue(0);
@@ -82,7 +85,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
         createAction?.onPress();
     };
 
-    const showAiButton = isAiAvailable && !isDefined(createAction);
+    const showAiButton = isVoiceInputEnabled && isAiAvailable && !isDefined(createAction);
 
     const defaultItems: (CreateActionInterface & { testID?: string })[] = [
         {

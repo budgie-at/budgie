@@ -16,8 +16,8 @@ export default function AiModelsPage() {
 
     return (
         <CollapsibleChromePage
-            title={t`AI models`}
-            subtitle={t`Downloaded model files stored on this device`}
+            title={t`AI features`}
+            subtitle={t`Choose what you use and clear downloads you no longer need`}
             leading={<GoBackButton onPress={handleGoBack} />}
             testID={AiModelsPageSelector.Container}
         >

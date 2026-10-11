@@ -1,3 +1,4 @@
+import { SettingsRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -42,24 +43,48 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const translationDrainerService = yield* TranslationDrainerService;
         const translationProgressStore = yield* TranslationProgressStore;
         const embeddingProgressStore = yield* EmbeddingProgressStore;
+        const settingsRepository = yield* SettingsRepository;
         const settleGraceMs = 5_000;
         const drainers = [translationDrainerService, ...embeddingDrainerService.drainers];
+        const lifecycleLock = yield* Semaphore.make(1);
         const stopLock = yield* Semaphore.make(1);
         let activeScope: Scope.Closeable | null = null;
 
         const isActive = (): boolean => isDefined(activeScope) && !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended;
+
+        const isRuntimeEnabled = Effect.fnUntraced(function* () {
+            const settings = yield* settingsRepository.getSettings();
+
+            return (
+                settings.isAiEnabled &&
+                (settings.isAiVoiceInputEnabled || settings.isAiSuggestionsEnabled || settings.isAiTranslationsEnabled)
+            );
+        });
+
+        const getEnabledDrainers = Effect.fnUntraced(function* () {
+            const settings = yield* settingsRepository.getSettings();
+
+            return [
+                ...(settings.isAiTranslationsEnabled ? [translationDrainerService] : []),
+                ...(settings.isAiSuggestionsEnabled ? embeddingDrainerService.drainers : [])
+            ];
+        });
 
         const startSubsystemsWhenIdle = Effect.fn('AiCoordinatorService.startSubsystemsWhenIdle')(function* () {
             yield* waitForIdle;
             if (!isActive()) {
                 return;
             }
+            const enabledDrainers = yield* getEnabledDrainers();
             yield* aiModelResidencyService.resume();
-            yield* translationDrainerService.start();
-            yield* aiEmbeddingStatusService.migrateModel();
-            yield* embeddingDrainerService.start();
-            yield* translationProgressStore.refresh();
-            yield* embeddingProgressStore.refresh();
+            yield* Effect.forEach(enabledDrainers, drainer => drainer.start(), { discard: true });
+            if (enabledDrainers.includes(translationDrainerService)) {
+                yield* translationProgressStore.refresh();
+            }
+            if (enabledDrainers.some(drainer => embeddingDrainerService.drainers.includes(drainer))) {
+                yield* aiEmbeddingStatusService.migrateModel();
+                yield* embeddingProgressStore.refresh();
+            }
         });
 
         const stopSubsystems = Effect.fn('AiCoordinatorService.stopSubsystems')(() =>
@@ -115,67 +140,85 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
                 return;
             }
             yield* FiberHandle.clear(releaseTimer);
-            yield* Effect.forEach(drainers, drainer => drainer.schedule(), { discard: true });
+            yield* Effect.forEach(yield* getEnabledDrainers(), drainer => drainer.schedule(), { discard: true });
             if (appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended) {
                 patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: false });
                 yield* startSubsystemsWhenIdle();
             }
         });
 
-        return {
-            start: Effect.fn('AiCoordinatorService.start')(function* () {
-                if (isDefined(activeScope) || !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isAvailable) {
-                    return;
-                }
-                const scope = Scope.makeUnsafe();
-                activeScope = scope;
-                const run = yield* Scope.provide(FiberSet.makeRuntime<Db>(), scope);
-                const releaseTimer = yield* Scope.provide(FiberHandle.make(), scope);
-                yield* Scope.provide(
-                    Effect.acquireRelease(
-                        Effect.sync(() =>
-                            AppState.addEventListener('change', state => {
-                                run(handleAppStateChange(state, releaseTimer));
-                            })
-                        ),
-                        subscription =>
-                            Effect.sync(() => {
-                                subscription.remove();
-                            })
+        const startUnlocked = Effect.fn('AiCoordinatorService.startUnlocked')(function* () {
+            if (isDefined(activeScope) || !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isAvailable || !(yield* isRuntimeEnabled())) {
+                return;
+            }
+            const scope = Scope.makeUnsafe();
+            activeScope = scope;
+            const run = yield* Scope.provide(FiberSet.makeRuntime<Db>(), scope);
+            const releaseTimer = yield* Scope.provide(FiberHandle.make(), scope);
+            yield* Scope.provide(
+                Effect.acquireRelease(
+                    Effect.sync(() =>
+                        AppState.addEventListener('change', state => {
+                            run(handleAppStateChange(state, releaseTimer));
+                        })
                     ),
-                    scope
-                );
-                yield* Effect.forkIn(
-                    Stream.runForEach(SubscriptionRef.changes(workload.foregroundCount), count =>
-                        Effect.forEach(drainers, drainer => drainer.setForegroundBusy(count > 0), { discard: true })
-                    ),
-                    scope
-                );
+                    subscription =>
+                        Effect.sync(() => {
+                            subscription.remove();
+                        })
+                ),
+                scope
+            );
+            yield* Effect.forkIn(
+                Stream.runForEach(SubscriptionRef.changes(workload.foregroundCount), count =>
+                    Effect.forEach(drainers, drainer => drainer.setForegroundBusy(count > 0), { discard: true })
+                ),
+                scope
+            );
 
-                const isSuspended = AppState.currentState !== 'active' && AppState.currentState !== 'unknown';
-                patchAtom(aiCoordinatorSnapshotAtom, { isSuspended });
-                if (!isSuspended) {
-                    run(startSubsystemsWhenIdle());
-                }
-            }),
-            stop: Effect.fn('AiCoordinatorService.stop')(function* () {
-                const scope = activeScope;
-                patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
-                if (!isDefined(scope)) {
-                    return;
-                }
+            const isSuspended = AppState.currentState !== 'active' && AppState.currentState !== 'unknown';
+            patchAtom(aiCoordinatorSnapshotAtom, { isSuspended });
+            if (!isSuspended) {
+                run(startSubsystemsWhenIdle());
+            }
+        });
+
+        const stopUnlocked = Effect.fn('AiCoordinatorService.stopUnlocked')(function* () {
+            const scope = activeScope;
+            patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
+            if (!isDefined(scope)) {
+                return;
+            }
+            activeScope = null;
+            yield* Scope.close(scope, Exit.void);
+            yield* Effect.forkDetach(stopSubsystems());
+        });
+
+        const stopAndWaitUnlocked = Effect.fn('AiCoordinatorService.stopAndWaitUnlocked')(function* () {
+            const scope = activeScope;
+            patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
+            if (isDefined(scope)) {
                 activeScope = null;
                 yield* Scope.close(scope, Exit.void);
-                yield* Effect.forkDetach(stopSubsystems());
-            }),
-            stopAndWait: Effect.fn('AiCoordinatorService.stopAndWait')(function* () {
-                const scope = activeScope;
-                patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
-                if (isDefined(scope)) {
-                    activeScope = null;
-                    yield* Scope.close(scope, Exit.void);
-                }
-                yield* stopSubsystemsStrict();
+            }
+            yield* stopSubsystemsStrict();
+        });
+
+        return {
+            start: Effect.fn('AiCoordinatorService.start')(() => lifecycleLock.withPermit(startUnlocked())),
+            stop: Effect.fn('AiCoordinatorService.stop')(() => lifecycleLock.withPermit(stopUnlocked())),
+            stopAndWait: Effect.fn('AiCoordinatorService.stopAndWait')(() => lifecycleLock.withPermit(stopAndWaitUnlocked())),
+            withStoppedRuntime: Effect.fn('AiCoordinatorService.withStoppedRuntime')(function* <A, E, R>(effect: Effect.Effect<A, E, R>) {
+                return yield* lifecycleLock.withPermit(
+                    Effect.gen(function* () {
+                        const shouldRestart = yield* isRuntimeEnabled();
+
+                        return yield* stopAndWaitUnlocked().pipe(
+                            Effect.andThen(effect),
+                            Effect.ensuring((shouldRestart ? startUnlocked() : Effect.void).pipe(Effect.ignore))
+                        );
+                    })
+                );
             })
         };
     })
@@ -190,7 +233,8 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             AiEmbeddingStatusService.layer,
             TranslationDrainerService.layer,
             TranslationProgressStore.layer,
-            EmbeddingProgressStore.layer
+            EmbeddingProgressStore.layer,
+            SettingsRepository.layer
         ])
     );
 }

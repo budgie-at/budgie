@@ -12,9 +12,9 @@ export const AiModelStorageSettingsCard = () => {
     return (
         <SettingsCard
             onPress={handlePress}
-            title={t`AI models`}
-            description={t`View downloaded models and remove files you no longer need`}
-            icon={UserIconNameEnum.HardDrive}
+            title={t`AI features`}
+            description={t`Choose features and free space from unused downloads`}
+            icon={UserIconNameEnum.Brain}
             variant="ghost"
             testID={SettingsPageSelector.AiModelsCard}
         />

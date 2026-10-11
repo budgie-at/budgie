@@ -1,3 +1,4 @@
+import { SettingsRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -24,6 +25,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
         const chatService = yield* ChatService;
         const localEmbeddingService = yield* LocalEmbeddingService;
         const sttService = yield* SttService;
+        const settingsRepository = yield* SettingsRepository;
         const layerScope = yield* Effect.scope;
         const subsystems: Record<AiSubsystemNameEnum, AiSubsystemServiceInterface> = {
             [AiSubsystemNameEnum.CHAT]: chatService.model,
@@ -45,8 +47,31 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             idleTimers.delete(subsystem);
         };
 
+        const isSubsystemEnabled = Effect.fnUntraced(function* (subsystem: AiSubsystemNameEnum) {
+            const settings = yield* settingsRepository.getSettings();
+
+            if (!settings.isAiEnabled) {
+                return false;
+            }
+
+            if (subsystem === AiSubsystemNameEnum.CHAT) {
+                return settings.isAiVoiceInputEnabled || settings.isAiTranslationsEnabled;
+            }
+
+            if (subsystem === AiSubsystemNameEnum.EMBEDDING) {
+                return settings.isAiVoiceInputEnabled || settings.isAiSuggestionsEnabled;
+            }
+
+            return settings.isAiVoiceInputEnabled;
+        });
+
         const loadWhileLeased = Effect.fn('AiModelResidencyService.loadWhileLeased')(function* (subsystem: AiSubsystemNameEnum) {
-            if (!isAiRuntimeActive() || isSuspended || !isPositiveNumber(getLeaseCount(subsystem))) {
+            if (
+                !isAiRuntimeActive() ||
+                isSuspended ||
+                !isPositiveNumber(getLeaseCount(subsystem)) ||
+                !(yield* isSubsystemEnabled(subsystem))
+            ) {
                 return;
             }
             if (getStatus(subsystem) !== AiSubsystemStatusEnum.ERROR) {
@@ -64,7 +89,12 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             acquire: Effect.fn('AiModelResidencyService.acquire')(function* (subsystem: AiSubsystemNameEnum) {
                 clearIdleTimer(subsystem);
                 leases.set(subsystem, getLeaseCount(subsystem) + 1);
-                if (!isAiRuntimeActive() || isSuspended || getStatus(subsystem) === AiSubsystemStatusEnum.ERROR) {
+                if (
+                    !isAiRuntimeActive() ||
+                    isSuspended ||
+                    getStatus(subsystem) === AiSubsystemStatusEnum.ERROR ||
+                    !(yield* isSubsystemEnabled(subsystem))
+                ) {
                     return false;
                 }
                 yield* lock.withPermit(Effect.uninterruptible(loadWhileLeased(subsystem)));
@@ -120,6 +150,6 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
     })
 }) {
     static readonly layer = Layer.effect(AiModelResidencyService, AiModelResidencyService.make).pipe(
-        Layer.provide([ChatService.layer, LocalEmbeddingService.layer, SttService.layer])
+        Layer.provide([ChatService.layer, LocalEmbeddingService.layer, SttService.layer, SettingsRepository.layer])
     );
 }

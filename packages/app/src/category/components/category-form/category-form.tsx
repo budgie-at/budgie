@@ -15,6 +15,8 @@ import { useIconSelectorModal } from '../../../@generic/context/icon-selector-mo
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { AiFeatureIdEnum } from '../../../ai/enum/ai-feature-id.enum';
+import { useAiFeatureEnabled } from '../../../ai/hook/use-ai-feature-enabled.hook';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
@@ -48,7 +50,8 @@ export const CategoryForm = (props: Props) => {
     const [openCategorySelector] = useCategorySelectorModal();
     const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
-    const { isChatReady, modelStatus } = useChatModelStatus();
+    const isTranslationsEnabled = useAiFeatureEnabled(AiFeatureIdEnum.CATEGORY_TAG_TRANSLATIONS);
+    const { isChatReady, modelStatus } = useChatModelStatus(isTranslationsEnabled);
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
@@ -60,7 +63,7 @@ export const CategoryForm = (props: Props) => {
         currentTitle: title,
         regenerate,
         isRegenerating,
-        isModelReady: isChatReady
+        isModelReady: isTranslationsEnabled && isChatReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);

@@ -11,16 +11,20 @@ interface Props {
 
 export const AiProvider = ({ children }: Props) => {
     const isAiEnabled = useSetting('isAiEnabled');
+    const isAiVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
+    const isAiSuggestionsEnabled = useSetting('isAiSuggestionsEnabled');
+    const isAiTranslationsEnabled = useSetting('isAiTranslationsEnabled');
+    const isAnyAiFeatureEnabled = isAiVoiceInputEnabled || isAiSuggestionsEnabled || isAiTranslationsEnabled;
 
     useEffect(() => {
-        if (isAiEnabled) {
+        if (isAiEnabled && isAnyAiFeatureEnabled) {
             appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.start()));
         }
 
         return () => {
             appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.stop()));
         };
-    }, [isAiEnabled]);
+    }, [isAiEnabled, isAnyAiFeatureEnabled]);
 
     return children;
 };

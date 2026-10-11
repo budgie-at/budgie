@@ -245,10 +245,6 @@ msgstr "{similarCount, plural, one {# similar transaction} other {# similar tran
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# skipped} other {# skipped}}"
 
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "{source} error · {message}"
-msgstr "{source} error · {message}"
-
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
@@ -261,7 +257,7 @@ msgstr "{splitEntryCount, plural, one {# item} other {# items}}"
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
 msgid "{totalSize} stored on this device"
 msgstr "{totalSize} stored on this device"
 
@@ -496,6 +492,10 @@ msgstr "Add tags"
 msgid "Add tags to these transactions"
 msgstr "Add tags to these transactions"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Add transactions by voice"
+msgstr "Add transactions by voice"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
@@ -516,30 +516,22 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/ai/error/ai-model-storage-busy.error.ts
-msgid "AI is downloading or opening this model. Try again when it finishes."
-msgstr "AI is downloading or opening this model. Try again when it finishes."
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "AI feature turned off"
+msgstr "AI feature turned off"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "AI model removed"
-msgstr "AI model removed"
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "AI feature turned on"
+msgstr "AI feature turned on"
 
 #: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
 #: src/app/(tabs)/settings/ai-models.tsx
-msgid "AI models"
-msgstr "AI models"
+msgid "AI features"
+msgstr "AI features"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "AI models removed"
-msgstr "AI models removed"
-
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "AI off"
-msgstr "AI off"
-
-#: src/ai/error/ai-model-storage-enabled.error.ts
-msgid "AI was turned on again before cleanup finished. Turn AI off and try removing the model again."
-msgstr "AI was turned on again before cleanup finished. Turn AI off and try removing the model again."
+#: src/ai/error/ai-model-storage-busy.error.ts
+msgid "AI is downloading or opening this model. Try again when it finishes."
+msgstr "AI is downloading or opening this model. Try again when it finishes."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "AI-Generated Metadata"
@@ -833,6 +825,10 @@ msgstr "Budget limit reached"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Budgie can also free {reclaimableSize} by removing downloads this feature no longer needs."
+msgstr "Budgie can also free {reclaimableSize} by removing downloads this feature no longer needs."
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Budgie can categorise transactions, suggest tags and transcribe voice notes — all on this device. Nothing is sent anywhere."
 msgstr "Budgie can categorise transactions, suggest tags and transcribe voice notes — all on this device. Nothing is sent anywhere."
@@ -869,17 +865,13 @@ msgstr "Budgie will merge high-confidence transfer and refund matches. Ambiguous
 msgid "Budgie will notify you when it finishes"
 msgstr "Budgie will notify you when it finishes"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Budgie will remove obsolete downloaded AI model files from this device."
-msgstr "Budgie will remove obsolete downloaded AI model files from this device."
-
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Budgie will turn AI off and remove downloaded AI models from this device. Turning AI on again will download them again."
-msgstr "Budgie will turn AI off and remove downloaded AI models from this device. Turning AI on again will download them again."
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended."
+msgstr "Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended."
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
@@ -899,9 +891,8 @@ msgstr "Can take hours"
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
@@ -955,10 +946,6 @@ msgstr "Categories break your spending down automatically. Add a transaction, or
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Categorise imports automatically"
 msgstr "Categorise imports automatically"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
-msgstr "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
 
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
@@ -1018,7 +1005,7 @@ msgstr "Checking"
 msgid "Checking Account"
 msgstr "Checking Account"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
 msgid "Checking storage..."
 msgstr "Checking storage..."
 
@@ -1030,9 +1017,13 @@ msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imp
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Cleanup available"
-msgstr "Cleanup available"
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+msgid "Choose features and free space from unused downloads"
+msgstr "Choose features and free space from unused downloads"
+
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "Choose what you use and clear downloads you no longer need"
+msgstr "Choose what you use and clear downloads you no longer need"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1324,6 +1315,10 @@ msgstr "Could not export database"
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Could not free up space"
+msgstr "Could not free up space"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
@@ -1371,14 +1366,6 @@ msgstr "Could not reassign tag"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Could not recalculate balances"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Could not remove AI model"
-msgstr "Could not remove AI model"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Could not remove AI models"
-msgstr "Could not remove AI models"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1437,6 +1424,10 @@ msgstr "Could not unconsolidate transaction."
 msgid "Could not undo the move to cash"
 msgstr "Could not undo the move to cash"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Could not update AI feature"
+msgstr "Could not update AI feature"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
 msgstr "Could not update category icon"
@@ -1444,10 +1435,6 @@ msgstr "Could not update category icon"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Could not update notifications"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Could not update on-device AI"
-msgstr "Could not update on-device AI"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Could not update recurring payment."
@@ -1787,21 +1774,13 @@ msgstr "Done ({count})"
 msgid "Download your statement as PDF"
 msgstr "Download your statement as PDF"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Downloaded"
-msgstr "Downloaded"
-
-#: src/app/(tabs)/settings/ai-models.tsx
-msgid "Downloaded model files stored on this device"
-msgstr "Downloaded model files stored on this device"
-
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "Downloading AI models…"
-msgstr "Downloading AI models…"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Downloads about 2.5 GB of models once"
 msgstr "Downloads about 2.5 GB of models once"
+
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
+msgid "Downloads on this device: {storageText}"
+msgstr "Downloads on this device: {storageText}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
@@ -1895,10 +1874,6 @@ msgstr "Edits the name of the plan"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Edits the total of the plan"
 msgstr "Edits the total of the plan"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "EmbeddingGemma 300M Q8_0"
-msgstr "EmbeddingGemma 300M Q8_0"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
@@ -2182,10 +2157,6 @@ msgstr "Filter categories"
 msgid "Filter tags"
 msgstr "Filter tags"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Finishing download"
-msgstr "Finishing download"
-
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "First expense added"
 msgstr "First expense added"
@@ -2201,6 +2172,10 @@ msgstr "Fixed-term savings with an interest rate"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Found an issue or have an idea? Open GitHub issue templates."
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Free up {unusedSize}"
+msgstr "Free up {unusedSize}"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -2252,6 +2227,10 @@ msgstr "Funding amount"
 msgid "General"
 msgstr "General"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Generate English names and search keywords automatically."
+msgstr "Generate English names and search keywords automatically."
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Generic"
@@ -2271,6 +2250,10 @@ msgstr "Get API Key"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "Get API Token"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Get category, tag, and note suggestions from your history."
+msgstr "Get category, tag, and note suggestions from your history."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
@@ -2327,10 +2310,6 @@ msgstr "Icon importer not found: {icon}"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "If this model is currently used by AI, Budgie will turn AI off. Turning AI on again will download the model again."
-msgstr "If this model is currently used by AI, Budgie will turn AI off. Turning AI on again will download the model again."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import"
@@ -2554,18 +2533,6 @@ msgstr "Last Week"
 msgid "Last year"
 msgstr "Last year"
 
-#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
-msgid "Learning"
-msgstr "Learning"
-
-#: src/ai/constant/ai-embedding-status-atom.constant.ts
-msgid "Learning transactions"
-msgstr "Learning transactions"
-
-#: src/ai/constant/ai-embedding-status-atom.constant.ts
-msgid "Learning up to date"
-msgstr "Learning up to date"
-
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "left"
 msgstr "left"
@@ -2574,18 +2541,6 @@ msgstr "left"
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Left"
 msgstr "Left"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Legacy Nomic embedding file"
-msgstr "Legacy Nomic embedding file"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Legacy Qwen chat file"
-msgstr "Legacy Qwen chat file"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Legacy Whisper file"
-msgstr "Legacy Whisper file"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
@@ -2627,18 +2582,6 @@ msgstr "Loading..."
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Loading…"
 msgstr "Loading…"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Local chat model"
-msgstr "Local chat model"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Local embedding model"
-msgstr "Local embedding model"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Local speech-to-text model"
-msgstr "Local speech-to-text model"
 
 #: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
 msgid "Lock it down"
@@ -2912,6 +2855,10 @@ msgstr "No Accounts Yet"
 msgid "No active budget"
 msgstr "No active budget"
 
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
+msgid "No AI downloads stored on this device"
+msgstr "No AI downloads stored on this device"
+
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No Archived Accounts"
 msgstr "No Archived Accounts"
@@ -2961,10 +2908,6 @@ msgstr "No Custom Categories"
 msgid "No debt yet"
 msgstr "No debt yet"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "No downloaded AI models found on this device"
-msgstr "No downloaded AI models found on this device"
-
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
 msgstr "No enabled accounts were found in this file"
@@ -2988,10 +2931,6 @@ msgstr "No items to save"
 #: src/app/language-selector.tsx
 msgid "No languages found"
 msgstr "No languages found"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "No longer used by this version"
-msgstr "No longer used by this version"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -3071,6 +3010,10 @@ msgstr "No transactions matched"
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "No unused downloads"
+msgstr "No unused downloads"
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "None selected"
 msgstr "None selected"
@@ -3125,14 +3068,14 @@ msgstr "now"
 msgid "of"
 msgstr "of"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "On-device AI"
-msgstr "On-device AI"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "On-device AI enabled"
 msgstr "On-device AI enabled"
+
+#: src/ai/component/ai-model-storage-status/ai-model-storage-status.tsx
+msgid "On-device AI is not available in this build. You can still clear unused downloads."
+msgstr "On-device AI is not available in this build. You can still clear unused downloads."
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "One-off"
@@ -3299,10 +3242,6 @@ msgstr "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgid "Paid off"
 msgstr "Paid off"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Partial Whisper download"
-msgstr "Partial Whisper download"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
 msgstr "Paste the token into the field below"
@@ -3460,10 +3399,6 @@ msgstr "Push notifications are disabled"
 msgid "Quick rule"
 msgstr "Quick rule"
 
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Qwen3 1.7B Q4_K_M"
-msgstr "Qwen3 1.7B Q4_K_M"
-
 #: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
 msgid "Range across better and worse months"
 msgstr "Range across better and worse months"
@@ -3507,26 +3442,6 @@ msgstr "Re-sync transactions"
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Ready to accept"
 msgstr "Ready to accept"
-
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
-msgid "Rebuild"
-msgstr "Rebuild"
-
-#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
-msgid "Rebuild learning"
-msgstr "Rebuild learning"
-
-#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
-msgid "Rebuild translations"
-msgstr "Rebuild translations"
-
-#: src/ai/constant/ai-embedding-status-atom.constant.ts
-msgid "Rebuilding learning"
-msgstr "Rebuilding learning"
-
-#: src/ai/constant/ai-translation-status-atom.constant.ts
-msgid "Rebuilding translations"
-msgstr "Rebuilding translations"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Recalculate"
@@ -3574,28 +3489,13 @@ msgid "Remaining"
 msgstr "Remaining"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove"
 msgstr "Remove"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-#: src/ai/component/ai-model-storage-remove-all-button/ai-model-storage-remove-all-button.tsx
-msgid "Remove All"
-msgstr "Remove All"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Remove all downloaded AI models?"
-msgstr "Remove all downloaded AI models?"
-
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove category limit?"
 msgstr "Remove category limit?"
-
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Remove downloaded model?"
-msgstr "Remove downloaded model?"
 
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate imported bank transactions"
@@ -4010,6 +3910,10 @@ msgstr "Set up Budgie"
 msgid "Settings"
 msgstr "Settings"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Shared downloads are still needed by other features"
+msgstr "Shared downloads are still needed by other features"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
@@ -4093,6 +3997,10 @@ msgstr "Source"
 msgid "Sources"
 msgstr "Sources"
 
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Space freed"
+msgstr "Space freed"
+
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Spanish"
@@ -4100,6 +4008,10 @@ msgstr "Spanish"
 #: src/i18n/constant/locales.constant.ts
 msgid "Spanish (Spain)"
 msgstr "Spanish (Spain)"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Speak an expense and Budgie fills in the transaction."
+msgstr "Speak an expense and Budgie fills in the transaction."
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Spending by Category"
@@ -4150,10 +4062,6 @@ msgstr "Start using Budgie"
 msgid "Start with a blank canvas"
 msgstr "Start with a blank canvas"
 
-#: src/ai/constant/ai-umbrella-status-atom.constant.ts
-msgid "Starting up AI…"
-msgstr "Starting up AI…"
-
 #: src/account/constant/account-type.constant.ts
 msgid "Stocks"
 msgstr "Stocks"
@@ -4165,6 +4073,10 @@ msgstr "Submit"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Subscriptions"
 msgstr "Subscriptions"
+
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Suggest transaction details"
+msgstr "Suggest transaction details"
 
 #: src/app/icon-selector.tsx
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
@@ -4353,14 +4265,6 @@ msgstr "This month"
 msgid "This Month"
 msgstr "This Month"
 
-#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
-msgid "This re-indexes every transaction. Continue?"
-msgstr "This re-indexes every transaction. Continue?"
-
-#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
-msgid "This re-translates every category and tag. Continue?"
-msgstr "This re-translates every category and tag. Continue?"
-
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Week"
 msgstr "This Week"
@@ -4547,17 +4451,9 @@ msgstr "Transfer From Account"
 msgid "Transfer To Account"
 msgstr "Transfer To Account"
 
-#: src/ai/constant/ai-translation-status-atom.constant.ts
-msgid "Translating categories and tags"
-msgstr "Translating categories and tags"
-
-#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
-msgid "Translation"
-msgstr "Translation"
-
-#: src/ai/constant/ai-translation-status-atom.constant.ts
-msgid "Translations ready"
-msgstr "Translations ready"
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+msgid "Translate categories and tags"
+msgstr "Translate categories and tags"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Try a different merchant, amount, or date."
@@ -4592,6 +4488,18 @@ msgstr "Try again"
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Try Again"
+
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Turn off and free {reclaimableSize}"
+msgstr "Turn off and free {reclaimableSize}"
+
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Turn off, keep downloads"
+msgstr "Turn off, keep downloads"
+
+#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+msgid "Turn on"
+msgstr "Turn on"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -4732,10 +4640,6 @@ msgstr "View and delete custom categories"
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
-#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
-msgid "View downloaded models and remove files you no longer need"
-msgstr "View downloaded models and remove files you no longer need"
-
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
 msgstr "View source transactions"
@@ -4771,10 +4675,6 @@ msgstr "When does the deposit mature?"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
 msgstr "When should it be returned?"
-
-#: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
-msgid "Whisper large-v3 turbo Q8_0"
-msgstr "Whisper large-v3 turbo Q8_0"
 
 #: src/ai/service/whisper-model.service.ts
 msgid "Whisper model download failed"

@@ -9,8 +9,10 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
+import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 
+import { useAiFeatureEnabled } from './use-ai-feature-enabled.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
@@ -24,6 +26,7 @@ interface UseCategorySuggestionParams {
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
+    const isSuggestionsEnabled = useAiFeatureEnabled(AiFeatureIdEnum.TRANSACTION_SUGGESTIONS);
     const embeddingStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { categories, isLoading: isCategoriesLoading } = useNonSystemCategoriesQuery();
@@ -39,9 +42,18 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     };
 
     const { status, suggestions } = useSuggestionBase({
-        enabled,
+        enabled: enabled && isSuggestionsEnabled,
         readyChecks: [embeddingReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
-        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, embeddingReady, categories.length],
+        requestKeyParts: [
+            transactionTitle,
+            mccCategoryId,
+            comment,
+            aiContext,
+            enabled,
+            isSuggestionsEnabled,
+            embeddingReady,
+            categories.length
+        ],
         fetchSuggestions
     });
 

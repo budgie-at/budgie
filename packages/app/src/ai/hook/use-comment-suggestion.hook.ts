@@ -5,8 +5,10 @@ import * as Effect from 'effect/Effect';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
+import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 
+import { useAiFeatureEnabled } from './use-ai-feature-enabled.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCommentSuggestionParams {
@@ -19,24 +21,25 @@ interface UseCommentSuggestionParams {
 }
 
 export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSuggestionReturnInterface<string> => {
-    const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
+    const { transactionTitle: title, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const embeddingStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
-    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
+    const isCommentSuggestionEnabled = useAiFeatureEnabled(AiFeatureIdEnum.TRANSACTION_SUGGESTIONS);
+    const modelStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
+    const isModelReady = modelStatus === AiSubsystemStatusEnum.READY;
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const fetchSuggestions = () => {
         const mccDescription = mccCategory?.fullDescription ?? null;
 
         return Effect.flatMap(EmbeddingSuggestionService, embeddingSuggestionService =>
-            embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext)
+            embeddingSuggestionService.suggestComments(categoryId, title, mccDescription, comment, aiContext)
         );
     };
 
     const { status, suggestions } = useSuggestionBase({
-        enabled,
-        readyChecks: [embeddingReady, !isMccLoading],
-        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, embeddingReady],
+        enabled: enabled && isCommentSuggestionEnabled,
+        readyChecks: [isModelReady, !isMccLoading],
+        requestKeyParts: [title, categoryId, mccCategoryId, comment, aiContext, enabled, isCommentSuggestionEnabled, isModelReady],
         fetchSuggestions
     });
 

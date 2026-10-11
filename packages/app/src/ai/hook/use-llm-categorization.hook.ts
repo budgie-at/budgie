@@ -10,9 +10,12 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
+import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiModelResidencyService } from '../service/ai-model-residency.service';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
+
+import { useAiFeatureEnabled } from './use-ai-feature-enabled.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -66,11 +69,16 @@ const extractAndMapTransactions = Effect.fn('useLlmCategorization.extractAndMapT
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
     const { categories } = useNonSystemCategoriesQuery();
+    const isVoiceInputEnabled = useAiFeatureEnabled(AiFeatureIdEnum.VOICE_INPUT);
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     const categorize = (text: string): Promise<AITransactionInterface[]> => {
+        if (!isVoiceInputEnabled) {
+            return Promise.resolve([]);
+        }
+
         setStatus('processing');
         setError(null);
         setTransactions([]);
