@@ -17,7 +17,6 @@ import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
 import { AiModelStorageService } from '../service/ai-model-storage.service';
 import { formatModelStorageSize } from '../utils/format-model-storage-size.util';
 
-import type { AiFeatureContentInterface } from '../interface/ai-feature-content.interface';
 import type { AiFeatureStorageInterface } from '../interface/ai-feature-storage.interface';
 import type { AiModelStorageDisablePreviewInterface } from '../interface/ai-model-storage-disable-preview.interface';
 import type { AiModelStorageSnapshotInterface } from '../interface/ai-model-storage-snapshot.interface';
@@ -40,46 +39,22 @@ const showFeatureError = (error: unknown): null => {
     return null;
 };
 
-const showCleanupError = (error: unknown): null => {
-    Toast.show({ type: 'error', text1: t`Could not free up space`, text2: getErrorMessage(error) });
-
-    return null;
-};
-
-const showFeatureOffToast = (keepsSharedDownloads: boolean): void => {
-    Toast.show({
-        type: 'success',
-        text1: t`AI feature turned off`,
-        ...(keepsSharedDownloads && { text2: t`Shared downloads are still needed by other features` })
-    });
-};
-
-const showEnableFeatureAlert = (featureTitle: string, onTurnOn: () => void): void => {
-    Alert.alert(featureTitle, t`Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended.`, [
+const showEnableFeatureAlert = (title: string, onTurnOn: () => void): void => {
+    Alert.alert(title, t`Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended.`, [
         { text: t`Cancel`, style: 'cancel' },
-        {
-            text: t`Turn on`,
-            onPress: onTurnOn
-        }
+        { text: t`Turn on`, onPress: onTurnOn }
     ]);
 };
 
 const showFreeFeatureDownloadsAlert = (
-    featureTitle: string,
+    title: string,
     reclaimableSize: string,
     onFreeDownloads: () => void,
     onKeepDownloads: () => void
 ): void => {
-    Alert.alert(featureTitle, t`Budgie can also free ${reclaimableSize} by removing downloads this feature no longer needs.`, [
-        {
-            text: t`Turn off and free ${reclaimableSize}`,
-            style: 'destructive',
-            onPress: onFreeDownloads
-        },
-        {
-            text: t`Turn off, keep downloads`,
-            onPress: onKeepDownloads
-        },
+    Alert.alert(title, t`Budgie can also free ${reclaimableSize} by removing downloads this feature no longer needs.`, [
+        { text: t`Turn off and free ${reclaimableSize}`, style: 'destructive', onPress: onFreeDownloads },
+        { text: t`Turn off, keep downloads`, onPress: onKeepDownloads },
         { text: t`Cancel`, style: 'cancel' }
     ]);
 };
@@ -91,8 +66,6 @@ const useAiModelStorageSnapshot = () => {
     const chatModelStatus = useAtomValue(chatModelSnapshotAtom, snapshot => snapshot.status);
     const embeddingModelStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const sttStatus = useAtomValue(sttSnapshotAtom, snapshot => snapshot.status);
-    const snapshot = AsyncResult.getOrElse(result, () => EMPTY_AI_MODEL_STORAGE_SNAPSHOT);
-    const errorMessage = AsyncResult.isFailure(result) ? getErrorMessage(Cause.squash(result.cause)) : null;
 
     useEffect(() => {
         if (isFocused) {
@@ -101,152 +74,151 @@ const useAiModelStorageSnapshot = () => {
     }, [chatModelStatus, embeddingModelStatus, isFocused, refresh, sttStatus]);
 
     return {
-        snapshot,
+        snapshot: AsyncResult.getOrElse(result, () => EMPTY_AI_MODEL_STORAGE_SNAPSHOT),
         isLoading: AsyncResult.isInitial(result) || AsyncResult.isWaiting(result),
-        errorMessage,
+        errorMessage: AsyncResult.isFailure(result) ? getErrorMessage(Cause.squash(result.cause)) : null,
         refresh
     };
 };
 
-const setAiFeatureEnabled = (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean) =>
-    appRuntime.runPromise(
-        AiModelStorageService.pipe(
-            Effect.flatMap(aiModelStorageService => aiModelStorageService.setFeatureEnabled(featureId, isEnabled, removeUnusedDownloads)),
-            Effect.tapCause(Effect.logError)
-        )
-    );
-
-const previewDisabledAiFeature = (featureId: AiFeatureIdEnum) =>
-    appRuntime.runPromise(
-        AiModelStorageService.pipe(
-            Effect.flatMap(aiModelStorageService => aiModelStorageService.previewDisableFeature(featureId)),
-            Effect.tapCause(Effect.logError)
-        )
-    );
-
-const freeUnusedAiDownloads = () =>
-    appRuntime.runPromise(
-        AiModelStorageService.pipe(
-            Effect.flatMap(aiModelStorageService => aiModelStorageService.freeUnusedDownloads()),
-            Effect.tapCause(Effect.logError)
-        )
-    );
-
-const useAiModelStorageCommands = (
-    refresh: () => void,
-    featureContent: Record<AiFeatureIdEnum, AiFeatureContentInterface>,
-    isAiAvailable: boolean
-) => {
+const useAiFeatureChanges = (refresh: () => void, isAiAvailable: boolean, isFreeingUnused: boolean) => {
     const [updatingFeatureId, setUpdatingFeatureId] = useState<AiFeatureIdEnum | null>(null);
-    const [isFreeingUnused, setIsFreeingUnused] = useState(false);
     const isMutating = isFreeingUnused || isDefined(updatingFeatureId);
 
-    const setFeatureEnabled = (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean) => {
+    const updateFeature = (
+        featureId: AiFeatureIdEnum,
+        isEnabled: boolean,
+        removeUnusedDownloads: boolean,
+        keepsSharedDownloads = false
+    ): void => {
         setUpdatingFeatureId(featureId);
-
-        return setAiFeatureEnabled(featureId, isEnabled, removeUnusedDownloads).finally(() => {
-            refresh();
-            setUpdatingFeatureId(null);
-        });
-    };
-
-    const updateFeature = (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean): void => {
-        void setFeatureEnabled(featureId, isEnabled, removeUnusedDownloads).then(() => {
-            Toast.show({ type: 'success', text1: isEnabled ? t`AI feature turned on` : t`AI feature turned off` });
-
-            return null;
-        }, showFeatureError);
-    };
-
-    const finishFeatureDisablePreview = (feature: AiFeatureStorageInterface, preview: AiModelStorageDisablePreviewInterface): null => {
-        const reclaimableSize = formatModelStorageSize(preview.reclaimableBytes);
-
-        if (!isPositiveNumber(preview.reclaimableBytes)) {
-            void setFeatureEnabled(feature.id, false, false).then(() => {
-                showFeatureOffToast(preview.keepsSharedDownloads);
+        void appRuntime
+            .runPromise(
+                AiModelStorageService.pipe(
+                    Effect.flatMap(aiModelStorageService =>
+                        aiModelStorageService.setFeatureEnabled(featureId, isEnabled, removeUnusedDownloads)
+                    ),
+                    Effect.tapCause(Effect.logError)
+                )
+            )
+            .finally(() => {
+                refresh();
+                setUpdatingFeatureId(null);
+            })
+            .then(() => {
+                Toast.show({
+                    type: 'success',
+                    text1: isEnabled ? t`AI feature turned on` : t`AI feature turned off`,
+                    ...(!isEnabled && keepsSharedDownloads && { text2: t`Shared downloads are still needed by other features` })
+                });
 
                 return null;
             }, showFeatureError);
-
-            return null;
-        }
-        showFreeFeatureDownloadsAlert(
-            featureContent[feature.id].title,
-            reclaimableSize,
-            () => {
-                updateFeature(feature.id, false, true);
-            },
-            () => {
-                updateFeature(feature.id, false, false);
-            }
-        );
-
-        return null;
     };
 
-    const handleFeatureChange = (feature: AiFeatureStorageInterface): void => {
+    const handleDisablePreview = (
+        feature: AiFeatureStorageInterface,
+        title: string,
+        preview: AiModelStorageDisablePreviewInterface
+    ): void => {
+        setUpdatingFeatureId(null);
+        if (!isPositiveNumber(preview.reclaimableBytes)) {
+            updateFeature(feature.id, false, false, preview.keepsSharedDownloads);
+
+            return;
+        }
+
+        showFreeFeatureDownloadsAlert(
+            title,
+            formatModelStorageSize(preview.reclaimableBytes),
+            () => void updateFeature(feature.id, false, true),
+            () => void updateFeature(feature.id, false, false)
+        );
+    };
+
+    const handleFeatureChange = (feature: AiFeatureStorageInterface, title: string): void => {
         if (isMutating) {
             return;
         }
         if (!feature.isEnabled) {
             if (isAiAvailable) {
-                showEnableFeatureAlert(featureContent[feature.id].title, () => {
+                showEnableFeatureAlert(title, () => {
                     updateFeature(feature.id, true, false);
                 });
             }
 
             return;
         }
+
         setUpdatingFeatureId(feature.id);
-        void previewDisabledAiFeature(feature.id)
-            .finally(() => {
-                setUpdatingFeatureId(null);
-            })
-            .then(preview => finishFeatureDisablePreview(feature, preview), showFeatureError);
+        void appRuntime
+            .runPromise(
+                AiModelStorageService.pipe(
+                    Effect.flatMap(aiModelStorageService => aiModelStorageService.previewDisableFeature(feature.id)),
+                    Effect.tapCause(Effect.logError)
+                )
+            )
+            .then(
+                preview => {
+                    handleDisablePreview(feature, title, preview);
+
+                    return null;
+                },
+                (error: unknown) => {
+                    setUpdatingFeatureId(null);
+
+                    return showFeatureError(error);
+                }
+            );
     };
 
+    return { updatingFeatureId, isMutating, handleFeatureChange };
+};
+
+export const useAiModelStorage = (isAiAvailable: boolean): UseAiModelStorageReturnInterface => {
+    const storage = useAiModelStorageSnapshot();
+    const [isFreeingUnused, setIsFreeingUnused] = useState(false);
+    const featureChanges = useAiFeatureChanges(storage.refresh, isAiAvailable, isFreeingUnused);
+
     const handleFreeUnusedDownloads = (): void => {
-        if (isMutating) {
+        if (featureChanges.isMutating) {
             return;
         }
 
         setIsFreeingUnused(true);
-        void freeUnusedAiDownloads()
+        void appRuntime
+            .runPromise(
+                AiModelStorageService.pipe(
+                    Effect.flatMap(aiModelStorageService => aiModelStorageService.freeUnusedDownloads()),
+                    Effect.tapCause(Effect.logError)
+                )
+            )
             .finally(() => {
-                refresh();
+                storage.refresh();
                 setIsFreeingUnused(false);
             })
-            .then(() => {
-                Toast.show({ type: 'success', text1: t`Space freed` });
+            .then(
+                () => {
+                    Toast.show({ type: 'success', text1: t`Space freed` });
 
-                return null;
-            }, showCleanupError);
+                    return null;
+                },
+                (error: unknown) => {
+                    Toast.show({ type: 'error', text1: t`Could not free up space`, text2: getErrorMessage(error) });
+
+                    return null;
+                }
+            );
     };
-
-    return {
-        updatingFeatureId,
-        isFreeingUnused,
-        isMutating,
-        handleFeatureChange,
-        handleFreeUnusedDownloads
-    };
-};
-
-export const useAiModelStorage = (
-    featureContent: Record<AiFeatureIdEnum, AiFeatureContentInterface>,
-    isAiAvailable: boolean
-): UseAiModelStorageReturnInterface => {
-    const storage = useAiModelStorageSnapshot();
-    const commands = useAiModelStorageCommands(storage.refresh, featureContent, isAiAvailable);
 
     return {
         snapshot: storage.snapshot,
         isLoading: storage.isLoading,
         errorMessage: storage.errorMessage,
-        updatingFeatureId: commands.updatingFeatureId,
-        isFreeingUnused: commands.isFreeingUnused,
-        isMutating: commands.isMutating,
-        handleFeatureChange: commands.handleFeatureChange,
-        handleFreeUnusedDownloads: commands.handleFreeUnusedDownloads
+        updatingFeatureId: featureChanges.updatingFeatureId,
+        isFreeingUnused,
+        isMutating: featureChanges.isMutating,
+        handleFeatureChange: featureChanges.handleFeatureChange,
+        handleFreeUnusedDownloads
     };
 };

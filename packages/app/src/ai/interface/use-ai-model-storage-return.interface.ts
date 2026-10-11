@@ -10,6 +10,6 @@ export interface UseAiModelStorageReturnInterface {
     readonly isFreeingUnused: boolean;
     readonly isMutating: boolean;
     readonly errorMessage: string | null;
-    readonly handleFeatureChange: (feature: AiFeatureStorageInterface) => void;
+    readonly handleFeatureChange: (feature: AiFeatureStorageInterface, title: string) => void;
     readonly handleFreeUnusedDownloads: () => void;
 }

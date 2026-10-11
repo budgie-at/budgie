@@ -495,7 +495,7 @@ msgstr "Añadir etiquetas"
 msgid "Add tags to these transactions"
 msgstr "Añadir etiquetas a estas transacciones"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Add transactions by voice"
 msgstr "Añadir transacciones por voz"
 
@@ -2238,7 +2238,7 @@ msgstr "Importe de financiación"
 msgid "General"
 msgstr "General"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Generate English names and search keywords automatically."
 msgstr "Genera nombres en inglés y palabras clave de búsqueda automáticamente."
 
@@ -2262,7 +2262,7 @@ msgstr "Obtener clave API"
 msgid "Get API Token"
 msgstr "Obtener token API"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Get category, tag, and note suggestions from your history."
 msgstr "Recibe sugerencias de categorías, etiquetas y notas a partir de tu historial."
 
@@ -4026,7 +4026,7 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Speak an expense and Budgie fills in the transaction."
 msgstr "Di un gasto y Budgie completa la transacción."
 
@@ -4091,7 +4091,7 @@ msgstr "Enviar"
 msgid "Subscriptions"
 msgstr "Suscripciones"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Suggest transaction details"
 msgstr "Sugerir detalles de transacciones"
 
@@ -4478,7 +4478,7 @@ msgstr "Transferencia desde cuenta"
 msgid "Transfer To Account"
 msgstr "Transferencia a cuenta"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Translate categories and tags"
 msgstr "Traducir categorías y etiquetas"
 

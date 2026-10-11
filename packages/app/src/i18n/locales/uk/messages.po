@@ -495,7 +495,7 @@ msgstr "Додати теги"
 msgid "Add tags to these transactions"
 msgstr "Додати теги до цих транзакцій"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Add transactions by voice"
 msgstr "Додавати транзакції голосом"
 
@@ -2238,7 +2238,7 @@ msgstr "Сума поповнення"
 msgid "General"
 msgstr "Загальне"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Generate English names and search keywords automatically."
 msgstr "Автоматично створювати англійські назви й ключові слова для пошуку."
 
@@ -2262,7 +2262,7 @@ msgstr "Отримати API-ключ"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Get category, tag, and note suggestions from your history."
 msgstr "Отримуйте пропозиції категорій, тегів і нотаток на основі своєї історії."
 
@@ -4026,7 +4026,7 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Speak an expense and Budgie fills in the transaction."
 msgstr "Скажіть витрату, і Budgie заповнить транзакцію."
 
@@ -4091,7 +4091,7 @@ msgstr "Відправити"
 msgid "Subscriptions"
 msgstr "Підписки"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Suggest transaction details"
 msgstr "Пропонувати деталі транзакцій"
 
@@ -4478,7 +4478,7 @@ msgstr "Переказ з рахунку"
 msgid "Transfer To Account"
 msgstr "Переказ на рахунок"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Translate categories and tags"
 msgstr "Перекладати категорії й теги"
 

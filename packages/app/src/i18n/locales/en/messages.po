@@ -496,7 +496,7 @@ msgstr "Add tags"
 msgid "Add tags to these transactions"
 msgstr "Add tags to these transactions"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Add transactions by voice"
 msgstr "Add transactions by voice"
 
@@ -2239,7 +2239,7 @@ msgstr "Funding amount"
 msgid "General"
 msgstr "General"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Generate English names and search keywords automatically."
 msgstr "Generate English names and search keywords automatically."
 
@@ -2263,7 +2263,7 @@ msgstr "Get API Key"
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Get category, tag, and note suggestions from your history."
 msgstr "Get category, tag, and note suggestions from your history."
 
@@ -4027,7 +4027,7 @@ msgstr "Spanish"
 msgid "Spanish (Spain)"
 msgstr "Spanish (Spain)"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Speak an expense and Budgie fills in the transaction."
 msgstr "Speak an expense and Budgie fills in the transaction."
 
@@ -4092,7 +4092,7 @@ msgstr "Submit"
 msgid "Subscriptions"
 msgstr "Subscriptions"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Suggest transaction details"
 msgstr "Suggest transaction details"
 
@@ -4479,7 +4479,7 @@ msgstr "Transfer From Account"
 msgid "Transfer To Account"
 msgstr "Transfer To Account"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Translate categories and tags"
 msgstr "Translate categories and tags"
 

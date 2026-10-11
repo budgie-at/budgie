@@ -495,7 +495,7 @@ msgstr "Tags hinzufügen"
 msgid "Add tags to these transactions"
 msgstr "Tags zu diesen Transaktionen hinzufügen"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Add transactions by voice"
 msgstr "Transaktionen per Sprache hinzufügen"
 
@@ -2238,7 +2238,7 @@ msgstr "Einzahlungsbetrag"
 msgid "General"
 msgstr "Allgemein"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Generate English names and search keywords automatically."
 msgstr "Englische Namen und Suchbegriffe automatisch generieren."
 
@@ -2262,7 +2262,7 @@ msgstr "API-Schlüssel abrufen"
 msgid "Get API Token"
 msgstr "API-Token abrufen"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Get category, tag, and note suggestions from your history."
 msgstr "Erhalte Kategorie-, Tag- und Notizvorschläge aus deinem Verlauf."
 
@@ -4026,7 +4026,7 @@ msgstr "Spanisch"
 msgid "Spanish (Spain)"
 msgstr "Spanisch (Spanien)"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Speak an expense and Budgie fills in the transaction."
 msgstr "Sprich eine Ausgabe ein und Budgie füllt die Transaktion aus."
 
@@ -4091,7 +4091,7 @@ msgstr "Absenden"
 msgid "Subscriptions"
 msgstr "Abonnements"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Suggest transaction details"
 msgstr "Transaktionsdetails vorschlagen"
 
@@ -4478,7 +4478,7 @@ msgstr "Vom Konto übertragen"
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Translate categories and tags"
 msgstr "Kategorien und Tags übersetzen"
 
