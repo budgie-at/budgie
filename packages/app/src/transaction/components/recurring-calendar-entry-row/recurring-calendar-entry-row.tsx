@@ -40,9 +40,11 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     const formatDigits = useFormatDigits(decimalPlaces);
     const [isRenaming, setIsRenaming] = useState(false);
 
-    const amount = convertFromMicroUnits(entry.latestAmount);
-    const formattedAmount = formatDigits(amount, defaultInstrument.symbol);
-    const alertLabels = { [RecurringAlertEnum.OVERDUE]: t`Overdue`, [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed` };
+    const formattedAmount = formatDigits(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
+    const alertLabels = {
+        [RecurringAlertEnum.OVERDUE]: t`Overdue`,
+        [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
+    };
     const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
     const description = t`${formattedAmount} · ${detail}`;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
@@ -52,7 +54,7 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
         handlePress = () => {
             router.push({
-                pathname: entry.latestAmount < 0 ? '/transactions/[id]/income' : '/transactions/[id]/expense',
+                pathname: '/transactions/[id]/expense',
                 params: { id: String(entry.latestTransactionId) }
             });
         };

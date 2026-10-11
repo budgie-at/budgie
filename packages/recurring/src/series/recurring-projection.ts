@@ -1,5 +1,6 @@
-import { PRECISION } from '@budgie/contracts';
-import { addMonths } from 'date-fns/addMonths';
+import { PRECISION, RecurringSeriesKindEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
+import { addDays } from 'date-fns/addDays';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { getDaysInMonth } from 'date-fns/getDaysInMonth';
 
 import { isDefined } from '@rnw-community/shared';
@@ -17,30 +18,35 @@ const PROJECTION_SUPPRESSION_RATIO = 0.4;
 const PRICE_CHANGE_ALERT_DAYS = 183;
 const OVERDUE_GRACE_DAYS = 2;
 
+const billingDay = (series: RecurringTrackedSeriesInterface): number => {
+    let day = new Date(series.anchorTimestamp).getDate();
+    for (const event of [...series.events].reverse()) {
+        const date = new Date(event.timestamp);
+        day = Math.max(day, date.getDate());
+        if (date.getDate() < getDaysInMonth(date)) {
+            break;
+        }
+    }
+
+    return day;
+};
+
 const expectedDays = (series: RecurringTrackedSeriesInterface, year: number, month: number): number[] => {
     if (isDefined(series.periodMonths)) {
         const monthsFromAnchor = monthIndex(new Date(year, month, 1).getTime()) - monthIndex(series.anchorTimestamp);
 
         return monthsFromAnchor < 0 || monthsFromAnchor % series.periodMonths !== 0
             ? []
-            : [Math.min(new Date(series.anchorTimestamp).getDate(), getDaysInMonth(new Date(year, month, 1)))];
+            : [Math.min(billingDay(series), getDaysInMonth(new Date(year, month, 1)))];
     }
 
-    const stepMs = series.periodDays * DAY_MS;
-    const firstStep = Math.max(Math.ceil((new Date(year, month, 1).getTime() - series.anchorTimestamp) / stepMs), 1);
-    const lastStep = Math.floor((new Date(year, month + 1, 1).getTime() - 1 - series.anchorTimestamp) / stepMs);
+    const anchor = new Date(series.anchorTimestamp);
+    const firstStep = Math.max(Math.ceil(differenceInCalendarDays(new Date(year, month, 1), anchor) / series.periodDays), 1);
+    const lastStep = Math.floor(differenceInCalendarDays(new Date(year, month + 1, 0), anchor) / series.periodDays);
 
     return Array.from({ length: Math.max(lastStep - firstStep + 1, 0) }, (_, index) =>
-        new Date(series.anchorTimestamp + (firstStep + index) * stepMs).getDate()
+        addDays(anchor, (firstStep + index) * series.periodDays).getDate()
     );
-};
-
-const findOverdueTimestamp = (series: RecurringTrackedSeriesInterface, now: Date): number | null => {
-    const expectedTimestamp = isDefined(series.periodMonths)
-        ? addMonths(new Date(series.anchorTimestamp), series.periodMonths).getTime()
-        : series.anchorTimestamp + series.periodDays * DAY_MS;
-
-    return isSeriesActive(series, now) && now.getTime() - expectedTimestamp > OVERDUE_GRACE_DAYS * DAY_MS ? expectedTimestamp : null;
 };
 
 const toEntry = (
@@ -82,27 +88,25 @@ const projectSeries = (
         isDefined(series.priceChangedAt) && now.getTime() - series.priceChangedAt <= PRICE_CHANGE_ALERT_DAYS * DAY_MS
             ? RecurringAlertEnum.PRICE_CHANGE
             : null;
-    const overdueTimestamp = findOverdueTimestamp(series, now);
     const actuals = series.events
         .filter(event => event.timestamp >= monthStart && event.timestamp < monthEnd)
         .map(event =>
             toEntry(series, new Date(event.timestamp).getDate(), event, event.timestamp === series.priceChangedAt ? priceAlert : null)
         );
-    const overdue =
-        isDefined(overdueTimestamp) && overdueTimestamp >= monthStart && overdueTimestamp < monthEnd
-            ? [toEntry(series, new Date(overdueTimestamp).getDate(), null, RecurringAlertEnum.OVERDUE)]
-            : [];
     const forecasts =
         monthsFromNow >= 0 && isSeriesActive(series, now)
             ? expectedDays(series, year, month)
-                  .filter(day => monthsFromNow > 0 || day > now.getDate())
                   .filter(day =>
                       actuals.every(actual => Math.abs(actual.dayOfMonth - day) > series.periodDays * PROJECTION_SUPPRESSION_RATIO)
                   )
-                  .map(day => toEntry(series, day, null, priceAlert))
+                  .map(day => {
+                      const isOverdue = now.getTime() - new Date(year, month, day).getTime() > OVERDUE_GRACE_DAYS * DAY_MS;
+
+                      return toEntry(series, day, null, isOverdue ? RecurringAlertEnum.OVERDUE : priceAlert);
+                  })
             : [];
 
-    return [...actuals, ...overdue, ...forecasts];
+    return [...actuals, ...forecasts];
 };
 
 const groupByDay = (entries: readonly RecurringCalendarEntryInterface[]): Map<number, RecurringCalendarEntryInterface[]> =>
@@ -111,14 +115,10 @@ const groupByDay = (entries: readonly RecurringCalendarEntryInterface[]): Map<nu
         new Map<number, RecurringCalendarEntryInterface[]>()
     );
 
-const sumExpenses = (entries: readonly RecurringCalendarEntryInterface[]): number =>
-    entries.reduce((total, entry) => total + Math.max(entry.latestAmount, 0), 0) / PRECISION;
-
-const sumCommitted = (series: readonly RecurringTrackedSeriesInterface[], now: Date, sign: number): number =>
+const sumCommitted = (series: readonly RecurringTrackedSeriesInterface[], now: Date): number =>
     series
-        .filter(item => isSeriesActive(item, now) && Math.sign(item.predictedAmount) === sign)
-        .reduce((total, item) => total + Math.abs(item.predictedAmount) / (item.periodMonths ?? item.periodDays / DAYS_PER_MONTH), 0) /
-    PRECISION;
+        .filter(item => isSeriesActive(item, now))
+        .reduce((total, item) => total + item.predictedAmount / (item.periodMonths ?? item.periodDays / DAYS_PER_MONTH), 0) / PRECISION;
 
 export const projectRecurringMonth = (
     series: readonly RecurringTrackedSeriesInterface[],
@@ -126,16 +126,21 @@ export const projectRecurringMonth = (
     month: number,
     now: Date
 ): RecurringCalendarDataInterface => {
-    const entries = series.flatMap(item => projectSeries(item, year, month, now));
+    const eligible = series.filter(
+        item => item.kind === RecurringSeriesKindEnum.EXPENSE && item.userState !== RecurringSeriesUserStateEnum.DISMISSED
+    );
+    const entries = eligible.flatMap(item => projectSeries(item, year, month, now));
     const actuals = entries.filter(entry => !entry.isForecast);
     const forecasts = entries.filter(entry => entry.isForecast);
 
     return {
         entriesByDay: groupByDay(actuals),
         forecastedEntriesByDay: groupByDay(forecasts),
-        totalAmount: sumExpenses(actuals),
-        forecastedTotalAmount: sumExpenses(forecasts),
-        committedMonthlyExpense: sumCommitted(series, now, 1),
-        committedMonthlyIncome: sumCommitted(series, now, -1)
+        totalAmount: actuals.reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
+        forecastedTotalAmount:
+            forecasts
+                .filter(entry => new Date(year, month, entry.dayOfMonth + 1).getTime() > now.getTime())
+                .reduce((total, entry) => total + entry.latestAmount, 0) / PRECISION,
+        committedMonthlyExpense: sumCommitted(eligible, now)
     };
 };

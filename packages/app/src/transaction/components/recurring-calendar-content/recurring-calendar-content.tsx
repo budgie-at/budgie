@@ -69,12 +69,13 @@ export const RecurringCalendarContent = () => {
 
     const hasEntries = isDefined(data) && (data.entriesByDay.size > 0 || data.forecastedEntriesByDay.size > 0);
 
-    const selectedDayTotal = hasSelectedEntries ? selectedEntries.reduce((sum, entry) => sum + entry.latestAmount, 0) : 0;
-    const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
+    const formattedDayExpense = formatDigits(
+        convertFromMicroUnits(selectedEntries.reduce((total, entry) => total + entry.latestAmount, 0)),
+        defaultInstrument.symbol
+    );
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
     const committedExpense = formatDigits(data?.committedMonthlyExpense ?? 0, defaultInstrument.symbol);
-    const committedIncome = formatDigits(data?.committedMonthlyIncome ?? 0, defaultInstrument.symbol);
 
     if (isDefined(data) && !hasEntries) {
         return (
@@ -95,7 +96,7 @@ export const RecurringCalendarContent = () => {
                         <Trans>Monthly Total</Trans>
                     </Text>
                     <ProtectedText className="text-xs text-secondary-foreground">
-                        {t`Committed ${committedExpense} per month · income ${committedIncome}`}
+                        {t`Committed ${committedExpense} per month`}
                     </ProtectedText>
                 </View>
 
@@ -116,7 +117,7 @@ export const RecurringCalendarContent = () => {
                         <Text className="text-xs uppercase text-secondary-foreground" {...testIDProps(selectedDayHeaderTestID)}>
                             <Trans>Day {selectedDay}</Trans>
                         </Text>
-                        <ProtectedText className="text-xs text-secondary-foreground">{formattedDayTotal}</ProtectedText>
+                        <ProtectedText className="text-xs text-secondary-foreground">{formattedDayExpense}</ProtectedText>
                     </View>
 
                     <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>

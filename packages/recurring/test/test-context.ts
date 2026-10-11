@@ -2,6 +2,7 @@ import { buildTestDb, makeTestPlatformLayer, TestSeedService } from '@budgie-at/
 import * as Layer from 'effect/Layer';
 
 import { RecurringService } from '../src/index';
+import { RecurringRepository } from '../src/repository/recurring.repository';
 
 export const testDbHandle = await buildTestDb();
 
@@ -9,4 +10,6 @@ export const testDb = testDbHandle.database;
 
 export const testSeedService = new TestSeedService(testDb);
 
-export const TestLayer = RecurringService.layer.pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
+export const TestLayer = Layer.merge(RecurringService.layer, RecurringRepository.layer).pipe(
+    Layer.provideMerge(makeTestPlatformLayer(testDb))
+);

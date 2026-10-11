@@ -1048,8 +1048,8 @@ msgid "Comment"
 msgstr "Comment"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Committed {committedExpense} per month · income {committedIncome}"
-msgstr "Committed {committedExpense} per month · income {committedIncome}"
+msgid "Committed {committedExpense} per month"
+msgstr "Committed {committedExpense} per month"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Condition"

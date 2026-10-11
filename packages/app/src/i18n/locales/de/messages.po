@@ -1047,8 +1047,8 @@ msgid "Comment"
 msgstr "Kommentar"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Committed {committedExpense} per month · income {committedIncome}"
-msgstr "Fixkosten {committedExpense} pro Monat · Einnahmen {committedIncome}"
+msgid "Committed {committedExpense} per month"
+msgstr "Monatlich gebunden: {committedExpense}"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Condition"
