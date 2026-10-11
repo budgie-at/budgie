@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+
+### Bug Fixes
+
+* **ledger:** link monobank installment payoffs ([3b06cea](https://github.com/budgie-at/budgie/commit/3b06cea9b7cdfed59b0b99de1f13cb6a3dad102a))
+
+
+
+
+
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
 

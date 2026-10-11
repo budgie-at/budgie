@@ -3,6 +3,112 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.100.4](https://github.com/budgie-at/budgie/compare/v6.100.3...v6.100.4) (2026-10-11)
+
+
+### Bug Fixes
+
+* **app:** distinct errors for zip backups without a usable database ([67bc116](https://github.com/budgie-at/budgie/commit/67bc1163de1f36ca4fc61eaebba3a8795bcc4f84))
+
+
+
+
+
+## [6.100.3](https://github.com/budgie-at/budgie/compare/v6.100.2...v6.100.3) (2026-10-11)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+
+### Bug Fixes
+
+* **app:** keep cash action label visible ([453be1a](https://github.com/budgie-at/budgie/commit/453be1a68add80ec93e3386f34d8fbb6312662cf))
+* **app:** offset top toasts below safe area ([dbbfa65](https://github.com/budgie-at/budgie/commit/dbbfa65ac94b6197281a3b799d898ceb63f9b924))
+* **app:** open editors from transaction context menus ([ab1e7f6](https://github.com/budgie-at/budgie/commit/ab1e7f699e729dee1d8646db73e07dc280736229))
+* **app:** repair delayed duplicate transfers and unavailable edits ([422a36b](https://github.com/budgie-at/budgie/commit/422a36b704c1770e9bef5cd00520acffa9c46556))
+* **app:** show transfer rates in details direction ([a0d1a62](https://github.com/budgie-at/budgie/commit/a0d1a62fa70ccea7d9ade29aa4ac559c9982515b))
+* **consolidation:** preserve balances across bridge transfer imports ([6cf72f2](https://github.com/budgie-at/budgie/commit/6cf72f2f9ec516f79b54cdeee2abaed8a030bc98))
+* **consolidation:** require bank record identity before absorbing transfers ([ad0b31e](https://github.com/budgie-at/budgie/commit/ad0b31ef8ce6754b28ff3e6991229aa802c6344d))
+* **ledger:** leave ambiguous monthly installments unlinked ([d7b622a](https://github.com/budgie-at/budgie/commit/d7b622a1c471f046f52596eed0d186d7cecb22b4))
+* **ledger:** link monobank installment payoffs ([3b06cea](https://github.com/budgie-at/budgie/commit/3b06cea9b7cdfed59b0b99de1f13cb6a3dad102a))
+* **ledger:** preserve purchase ownership during installment payoff ([6892ed0](https://github.com/budgie-at/budgie/commit/6892ed0915b2dac1ec2a288c69304a46a36e19a4))
+* **ledger:** reject installment payments matching multiple plans ([9d9330f](https://github.com/budgie-at/budgie/commit/9d9330fae603c5897786ced063d1189c93a92f3d))
+* protect transfer history and match late installment payoffs ([ee9f2f3](https://github.com/budgie-at/budgie/commit/ee9f2f360f160a3ecc9cbe9c1856b4a35c769656))
+
+
+
+
+
+## [6.100.1](https://github.com/budgie-at/budgie/compare/v6.100.0...v6.100.1) (2026-10-11)
+
+
+### Bug Fixes
+
+* **recurring:** collapse nearby billing charges ([9e299bb](https://github.com/budgie-at/budgie/commit/9e299bb2a555dd64cf3f44052bae366fff6b9ad7))
+* **recurring:** detect generic expense streams and ignore income ([f3dd748](https://github.com/budgie-at/budgie/commit/f3dd748f7a6653273cb184de79b25e92bdd38b0f))
+* **recurring:** inherit stream state only on a unique billing-cycle match ([e4ea94d](https://github.com/budgie-at/budgie/commit/e4ea94dd51a6641e9c7b60a715089fad7c7a7fea))
+* **recurring:** keep alphanumeric merchant tokens in titles ([04bb6a4](https://github.com/budgie-at/budgie/commit/04bb6a48db9c1177fe030dc91d0ee30e8bdafd92))
+* **recurring:** keep cash-account recurring expenses ([77fb2ef](https://github.com/budgie-at/budgie/commit/77fb2ef025122cdcccf917235ea792e5308fe8df))
+* **recurring:** keep confirmed streams when a dismissed sibling retires ([1f1af44](https://github.com/budgie-at/budgie/commit/1f1af4474cd80bbe86a86e61ca4c8ae5a2ba1efc))
+* **recurring:** keep detected subscription titles visible ([6e6abdd](https://github.com/budgie-at/budgie/commit/6e6abdd81166fe712ddb81bf42e5f32852cca804))
+* **recurring:** match persisted streams by charge continuity ([87247e3](https://github.com/budgie-at/budgie/commit/87247e3c00fdc11305be511bcf27f12a4ae919cb))
+* **recurring:** preserve durable recurrence ownership ([18905c9](https://github.com/budgie-at/budgie/commit/18905c95ff7cd1a19f961f176b0afaedc9ecdf9c))
+* **recurring:** preserve expense streams and calendar dates ([648d2cd](https://github.com/budgie-at/budgie/commit/648d2cd4807dd9e5b6ea71fe7baf5f4d4f109380))
+* **recurring:** preserve historical cadence with unique ownership ([f025a45](https://github.com/budgie-at/budgie/commit/f025a45972a8704036110dbda0108ee90d333472))
+* **recurring:** preserve merchant names in display titles ([4749419](https://github.com/budgie-at/budgie/commit/4749419ed4a4fdef438cbc4d97da452f84e265d1))
+* **recurring:** preserve merchant tokens in calendar titles ([d79dd0a](https://github.com/budgie-at/budgie/commit/d79dd0ad8341505d7f90c27b658476626d10b7eb))
+* **recurring:** require cycle evidence for legacy adoption ([b68c89a](https://github.com/budgie-at/budgie/commit/b68c89a1d9d0322370df73af052e11d8db2717c4))
+* **recurring:** reserve exact stream rows only for the same cadence ([f2bbd47](https://github.com/budgie-at/budgie/commit/f2bbd47b2c863162f546fd89d6c92c0c421b941d))
+* **recurring:** show only proven recurring streams and keep income typed ([3dd0e00](https://github.com/budgie-at/budgie/commit/3dd0e008b6f21e542a6e590b74efe251efcc3141))
+
+
+
+
+
+# [6.100.0](https://github.com/budgie-at/budgie/compare/v6.99.2...v6.100.0) (2026-10-10)
+
+
+### Bug Fixes
+
+* **app:** reject zip backups with ambiguous database entries ([bed3026](https://github.com/budgie-at/budgie/commit/bed3026f45516cae6fbf7a27c7e4551d46039a28))
+* **app:** skip macOS metadata entries and unknown free space in zip import ([d2b0993](https://github.com/budgie-at/budgie/commit/d2b0993583b9a3b9df7fa0d6bc15d120e0e2cbbe))
+* **app:** zip single file and extract only the backup database ([e243bb8](https://github.com/budgie-at/budgie/commit/e243bb8b801faaafc4d8387e102fadcd211614bb))
+
+
+### Features
+
+* **app:** export and import database backups as zip ([8746f87](https://github.com/budgie-at/budgie/commit/8746f87c5e738fa2f8d2ee3fd982f97c5cad60f8))
+
+
+
+
+
+## [6.99.2](https://github.com/budgie-at/budgie/compare/v6.99.1...v6.99.2) (2026-10-10)
+
+
+### Bug Fixes
+
+* **app:** preserve native module in EAS archive ([188d51e](https://github.com/budgie-at/budgie/commit/188d51ed130c58c17654c68edb429edd99077a2f))
+* **sync:** resume yielded Monobank backfill until history completes ([5689e1e](https://github.com/budgie-at/budgie/commit/5689e1e97977e59268b20166b16807f10f73ae5a))
+* **sync:** stop unsafe backfill continuations ([09837f3](https://github.com/budgie-at/budgie/commit/09837f363deab6b90bfdf961a5f154c17e013072))
+
+
+
+
+
 ## [6.99.1](https://github.com/budgie-at/budgie/compare/v6.99.0...v6.99.1) (2026-10-09)
 
 

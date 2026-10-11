@@ -1,51 +1,34 @@
+import { RecurringSeriesKindEnum } from '@budgie/contracts';
+import { addDays } from 'date-fns/addDays';
+import { addMonths } from 'date-fns/addMonths';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
+import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
+
+import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 
 export const DAY_MS = 86_400_000;
 export const DAYS_PER_MONTH = 30.44;
-const MONTHS_PER_YEAR = 12;
-const MAD_SCALE = 1.4826;
-
-const MIN_EVENTS = 3;
-const MIN_MEDIAN_GAP_DAYS = 12;
-const MAX_EVENTS_PER_MONTH = 2.5;
-const MAX_GAP_SPREAD = 0.8;
-const SAME_EVENT_WINDOW_DAYS = 3;
-const MONTHLY_MAX_GAP_DAYS = 45;
-const MIN_MONTH_PRESENCE = 0.75;
+const RECENT_INTERVAL_COUNT = 4;
 const RECENT_AMOUNT_COUNT = 3;
 const PRICE_CHANGE_RATIO = 0.05;
-const PERIOD_TOLERANCE = 0.2;
-const MONTHLY_DAYS = 30;
-const BIMONTHLY_DAYS = 61;
-const QUARTERLY_DAYS = 91;
-const SEMIANNUAL_DAYS = 182;
-const PERIOD_DAYS_BY_MONTHS: readonly (readonly [number, number])[] = [
-    [1, MONTHLY_DAYS],
-    [2, BIMONTHLY_DAYS],
-    [3, QUARTERLY_DAYS],
-    [6, SEMIANNUAL_DAYS]
-];
-
-const BAND_MAX_RATIO = 1.2;
-const MIN_FUZZY_LENGTH = 5;
-const FUZZY_DICE_THRESHOLD = 0.85;
-const MIN_PREFIX_TOKENS = 2;
-const RENAME_OVERLAP_DAYS = 31;
-const BILLING_DAY_GAP = 3;
-const MAX_MONTH_DAYS = 31;
-const DISPLAY_TOKEN_COUNT = 3;
-const NOISE_TAIL_PATTERN = /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)/iu;
-const LEGAL_FORM_PATTERN = /\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu;
-const IBAN_PATTERN = /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){2,}\b/giu;
-const NUMERIC_TOKEN_PATTERN = /^\d+$|\d{3,}/u;
-const STOP_TOKENS: ReadonlySet<string> = new Set('GMBH AG KG CO INC LTD LLC OG ФОП ТОВ ПП ПАТ АТ ВІД'.split(' '));
-
 const ACTIVE_PERIOD_RATIO = 1.5;
-const ACTIVE_GRACE_DAYS = 5;
+const CADENCES: readonly RecurringCadenceInterface[] = [
+    { periodMonths: null, periodDays: 7, toleranceDays: 1 },
+    { periodMonths: null, periodDays: 14, toleranceDays: 2 },
+    { periodMonths: 1, periodDays: DAYS_PER_MONTH, toleranceDays: 4 },
+    { periodMonths: 2, periodDays: DAYS_PER_MONTH * 2, toleranceDays: 7 },
+    { periodMonths: 3, periodDays: DAYS_PER_MONTH * 3, toleranceDays: 8 },
+    { periodMonths: 6, periodDays: DAYS_PER_MONTH * 6, toleranceDays: 10 },
+    { periodMonths: 12, periodDays: DAYS_PER_MONTH * 12, toleranceDays: 10 }
+];
+const LEGACY_STOP_TOKENS = new Set('GMBH AG KG CO INC LTD LLC OG ФОП ТОВ ПП ПАТ АТ ВІД'.split(' '));
 
 const median = (values: readonly number[]): number => {
     const sorted = [...values].sort((first, second) => first - second);
@@ -57,231 +40,261 @@ const median = (values: readonly number[]): number => {
 export const monthIndex = (timestamp: number): number => {
     const date = new Date(timestamp);
 
-    return date.getFullYear() * MONTHS_PER_YEAR + date.getMonth();
+    return date.getFullYear() * 12 + date.getMonth();
 };
 
-const cleanTokens = (charge: RecurringChargeInterface): string[] => {
-    const raw = isNotEmptyString(charge.title) ? charge.title : charge.comment;
-    const tailIndex = raw.search(NOISE_TAIL_PATTERN);
+const description = (charge: RecurringChargeInterface): string => (isNotEmptyString(charge.title) ? charge.title : charge.comment);
 
-    return (tailIndex > 0 ? raw.slice(0, tailIndex) : raw)
-        .replace(LEGAL_FORM_PATTERN, ' ')
-        .replace(IBAN_PATTERN, ' ')
+const counterpartyKey = (charge: RecurringChargeInterface): string =>
+    isNotEmptyString(charge.counterpartyIban)
+        ? charge.counterpartyIban.replaceAll(/\s/gu, '').toUpperCase()
+        : normalizeRecurringDescription(description(charge));
+
+const identity = (charge: RecurringChargeInterface): string =>
+    isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
+
+const cleanTokens = (charge: RecurringChargeInterface, referenceTail: RegExp, numericToken: RegExp): string[] =>
+    description(charge)
+        .replace(referenceTail, '')
+        .replaceAll(/\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu, ' ')
         .split(/[^\p{L}\p{N}]+/u)
-        .filter(token => isNotEmptyString(token) && !NUMERIC_TOKEN_PATTERN.test(token) && !STOP_TOKENS.has(token.toUpperCase()));
-};
+        .filter(token => isNotEmptyString(token) && !numericToken.test(token) && !LEGACY_STOP_TOKENS.has(token.toUpperCase()));
 
-const chargeLabel = (charge: RecurringChargeInterface): string => cleanTokens(charge).join(' ').toUpperCase();
-
-const bigrams = (label: string): Set<string> => {
-    const compact = label.replaceAll(' ', '');
-
-    return new Set(Array.from({ length: Math.max(compact.length - 1, 0) }, (_, index) => compact.slice(index, index + 2)));
-};
-
-const areSimilarLabels = (first: string, second: string): boolean => {
-    const isPrefix = (prefix: string, label: string): boolean =>
-        prefix.split(' ').length >= MIN_PREFIX_TOKENS && label.startsWith(`${prefix} `);
-    const firstBigrams = bigrams(first);
-    const secondBigrams = bigrams(second);
-    const shared = [...firstBigrams].filter(bigram => secondBigrams.has(bigram)).length;
-    const dice = (2 * shared) / (firstBigrams.size + secondBigrams.size);
-
-    return (
-        first.length >= MIN_FUZZY_LENGTH &&
-        second.length >= MIN_FUZZY_LENGTH &&
-        (dice >= FUZZY_DICE_THRESHOLD || isPrefix(first, second) || isPrefix(second, first))
-    );
-};
-
-const groupSimilarLabels = (charges: readonly RecurringChargeInterface[]): RecurringChargeInterface[][] => {
-    const chargesByLabel = new Map<string, RecurringChargeInterface[]>();
-    for (const charge of charges) {
-        const label = chargeLabel(charge);
-        if (isNotEmptyString(label)) {
-            chargesByLabel.set(label, [...(chargesByLabel.get(label) ?? []), charge]);
-        }
-    }
-
-    const span = (label: string): number[] => {
-        const timestamps = (chargesByLabel.get(label) ?? []).map(charge => charge.operatedAt.getTime());
-
-        return [Math.min(...timestamps), Math.max(...timestamps)];
-    };
-    const isRename = (first: string, second: string): boolean => {
-        if (!first.startsWith(`${second} `) && !second.startsWith(`${first} `)) {
-            return false;
-        }
-
-        const [firstStart, firstEnd] = span(first);
-        const [secondStart, secondEnd] = span(second);
-
-        return firstStart >= secondEnd - RENAME_OVERLAP_DAYS * DAY_MS || secondStart >= firstEnd - RENAME_OVERLAP_DAYS * DAY_MS;
-    };
-
-    let clusters: string[][] = [];
-    for (const label of chargesByLabel.keys()) {
-        const linked = clusters.filter(cluster => cluster.some(member => areSimilarLabels(member, label) || isRename(member, label)));
-        clusters = [...clusters.filter(cluster => !linked.includes(cluster)), [label, ...linked.flat()]];
-    }
-
-    return clusters.map(cluster => cluster.flatMap(label => chargesByLabel.get(label) ?? []));
-};
-
-const splitIntoAmountBands = (charges: readonly RecurringChargeInterface[]): RecurringChargeInterface[][] => {
-    const bands: RecurringChargeInterface[][] = [];
-    for (const charge of [...charges].sort((first, second) => Math.abs(first.defaultAmount) - Math.abs(second.defaultAmount))) {
-        const band = bands[bands.length - 1];
-        if (isDefined(band) && Math.abs(charge.defaultAmount) <= Math.abs(band[0].defaultAmount) * BAND_MAX_RATIO) {
-            band.push(charge);
-        } else {
-            bands.push([charge]);
-        }
-    }
-
-    return bands;
-};
-
-const splitIntoBillingDays = (charges: readonly RecurringChargeInterface[]): RecurringChargeInterface[][] => {
-    const phases: RecurringChargeInterface[][] = [];
-    for (const charge of [...charges].sort((first, second) => first.operatedAt.getDate() - second.operatedAt.getDate())) {
-        const phase = phases[phases.length - 1];
-        if (isDefined(phase) && charge.operatedAt.getDate() - phase[phase.length - 1].operatedAt.getDate() <= BILLING_DAY_GAP) {
-            phase.push(charge);
-        } else {
-            phases.push([charge]);
-        }
-    }
-    const [first, ...rest] = phases;
-    const last = rest.pop();
-
-    return isDefined(last) && first[0].operatedAt.getDate() + MAX_MONTH_DAYS - last[last.length - 1].operatedAt.getDate() <= BILLING_DAY_GAP
-        ? [[...last, ...first], ...rest]
-        : phases;
-};
+export const legacyLabel = (charge: RecurringChargeInterface): string =>
+    cleanTokens(charge, /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO).*$/iu, /^\d+$|\d{3,}/u)
+        .join(' ')
+        .toUpperCase();
 
 const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeriesEventInterface[] => {
     const events: RecurringSeriesEventInterface[] = [];
+    const seen = new Set<string>();
     for (const charge of [...charges].sort((first, second) => first.operatedAt.getTime() - second.operatedAt.getTime())) {
         const timestamp = new Date(charge.operatedAt.getFullYear(), charge.operatedAt.getMonth(), charge.operatedAt.getDate()).getTime();
-        const previous = events[events.length - 1];
-        if (isDefined(previous) && Math.round((timestamp - previous.timestamp) / DAY_MS) <= SAME_EVENT_WINDOW_DAYS) {
-            events[events.length - 1] = {
-                ...previous,
-                amount: previous.amount + charge.defaultAmount,
-                transactionId: Math.max(previous.transactionId, charge.transactionId)
-            };
-        } else {
-            events.push({ timestamp, amount: charge.defaultAmount, transactionId: charge.transactionId });
+        const duplicateKey = `${charge.accountId}|${timestamp}|${charge.nativeAmount}`;
+        if (!seen.has(duplicateKey)) {
+            seen.add(duplicateKey);
+            events.push({
+                timestamp,
+                nativeAmount: charge.nativeAmount,
+                amount: charge.defaultAmount,
+                transactionId: charge.transactionId
+            });
         }
     }
 
     return events;
 };
 
-const measureMedianGap = (events: readonly RecurringSeriesEventInterface[]): number | null => {
-    const gaps = events.slice(1).map((event, index) => Math.round((event.timestamp - events[index].timestamp) / DAY_MS));
-    const medianGap = median(gaps);
-    const gapSpread = (MAD_SCALE * median(gaps.map(gap => Math.abs(gap - medianGap)))) / medianGap;
-    const spanMonths = Math.max((events[events.length - 1].timestamp - events[0].timestamp) / DAY_MS / DAYS_PER_MONTH, 1);
-    const calendarMonths = monthIndex(events[events.length - 1].timestamp) - monthIndex(events[0].timestamp) + 1;
-    const monthPresence = new Set(events.map(event => monthIndex(event.timestamp))).size / calendarMonths;
-    const isRegular =
-        medianGap >= MIN_MEDIAN_GAP_DAYS &&
-        events.length / spanMonths <= MAX_EVENTS_PER_MONTH &&
-        gapSpread <= MAX_GAP_SPREAD &&
-        (medianGap >= MONTHLY_MAX_GAP_DAYS || monthPresence >= MIN_MONTH_PRESENCE);
+const isStableAmount = (events: readonly RecurringSeriesEventInterface[]): boolean =>
+    Math.max(...events.map(event => event.nativeAmount)) <= Math.min(...events.map(event => event.nativeAmount)) * RECURRING_AMOUNT_RATIO;
 
-    return isRegular ? medianGap : null;
+export const nearestCycle = (anchor: Date, date: Date, cadence: RecurringCadenceInterface) => {
+    const estimatedCycle = isDefined(cadence.periodMonths)
+        ? Math.round((monthIndex(anchor.getTime()) - monthIndex(date.getTime())) / cadence.periodMonths)
+        : Math.round(differenceInCalendarDays(anchor, date) / cadence.periodDays);
+
+    return (isDefined(cadence.periodMonths) ? [estimatedCycle - 1, estimatedCycle, estimatedCycle + 1] : [estimatedCycle])
+        .map(cycle => {
+            const expected = isDefined(cadence.periodMonths)
+                ? addMonths(anchor, -cycle * cadence.periodMonths)
+                : addDays(anchor, -cycle * cadence.periodDays);
+
+            return { cycle, deviation: Math.abs(differenceInCalendarDays(date, expected)) };
+        })
+        .reduce((closest, candidate) => (candidate.deviation < closest.deviation ? candidate : closest));
 };
 
-const isStableAmount = (amounts: readonly number[]): boolean =>
-    Math.max(...amounts.map(Math.abs)) <= Math.min(...amounts.map(Math.abs)) * (1 + PRICE_CHANGE_RATIO);
+const isAlignedCadence = (
+    events: readonly RecurringSeriesEventInterface[],
+    cadence: RecurringCadenceInterface,
+    variable: boolean,
+    observationCount: number
+): boolean => {
+    const gapKinds = events.slice(1).map((event, index) => {
+        const previous = new Date(events[index].timestamp);
+        const current = new Date(event.timestamp);
+        const next = isDefined(cadence.periodMonths) ? addMonths(previous, cadence.periodMonths) : addDays(previous, cadence.periodDays);
+        const missed = isDefined(cadence.periodMonths)
+            ? addMonths(previous, cadence.periodMonths * 2)
+            : addDays(previous, cadence.periodDays * 2);
+        if (Math.abs(differenceInCalendarDays(current, next)) <= cadence.toleranceDays) {
+            return 0;
+        }
 
-const findPriceStepIndex = (events: readonly RecurringSeriesEventInterface[]): number | null => {
-    const amounts = events.map(event => event.amount);
-    const index = amounts.findLastIndex(
-        (amount, position) =>
-            position > 0 && Math.abs(amount - amounts[position - 1]) > Math.abs(amounts[position - 1]) * PRICE_CHANGE_RATIO
+        return Math.abs(differenceInCalendarDays(current, missed)) <= cadence.toleranceDays ? 1 : 2;
+    });
+    const missedCycles = gapKinds.filter(kind => kind === 1);
+    if (
+        gapKinds.includes(2) ||
+        missedCycles.length > 1 ||
+        (variable && isNotEmptyArray(missedCycles)) ||
+        (gapKinds.length - missedCycles.length) / (observationCount - 1) < 0.75
+    ) {
+        return false;
+    }
+    const anchor = new Date(events[events.length - 1].timestamp);
+
+    const alignedCycles = events.map(event => nearestCycle(anchor, new Date(event.timestamp), cadence));
+
+    return (
+        alignedCycles.every(candidate => candidate.deviation <= cadence.toleranceDays) &&
+        new Set(alignedCycles.map(candidate => candidate.cycle)).size === events.length
     );
-
-    return index > 0 &&
-        isStableAmount(amounts.slice(index)) &&
-        isStableAmount(amounts.slice(Math.max(index - RECENT_AMOUNT_COUNT, 0), index))
-        ? index
-        : null;
 };
 
-const findMerchantKey = (labels: readonly string[]): string => {
-    const counts = labels.reduce((result, label) => result.set(label, (result.get(label) ?? 0) + 1), new Map<string, number>());
+const billingEvents = (
+    events: readonly RecurringSeriesEventInterface[],
+    cadence: RecurringCadenceInterface
+): RecurringSeriesEventInterface[] =>
+    events.reduce<RecurringSeriesEventInterface[]>((cycles, event) => {
+        const previous = cycles[cycles.length - 1];
+        if (
+            !isDefined(previous) ||
+            differenceInCalendarDays(new Date(event.timestamp), new Date(previous.timestamp)) > Math.floor(cadence.periodDays / 10)
+        ) {
+            cycles.push(event);
+        }
 
-    return [...counts.entries()].reduce((best, entry) => (entry[1] > best[1] ? entry : best))[0];
-};
+        return cycles;
+    }, []);
 
-const buildSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface | null => {
-    const events = toEvents(charges);
-    const medianGap = events.length < MIN_EVENTS ? null : measureMedianGap(events);
-    const period = PERIOD_DAYS_BY_MONTHS.find(([, days]) => isDefined(medianGap) && Math.abs(medianGap - days) <= days * PERIOD_TOLERANCE);
-    if (!isDefined(medianGap) || (!isDefined(period) && medianGap > MONTHLY_MAX_GAP_DAYS)) {
+const findCadence = (events: readonly RecurringSeriesEventInterface[], variable: boolean): RecurringCadenceInterface | undefined =>
+    CADENCES.find(cadence => {
+        const recent = events.slice(variable ? -4 : -RECENT_INTERVAL_COUNT - 1);
+        const restartIndex = recent.findLastIndex(
+            (event, index) =>
+                index > 0 &&
+                differenceInCalendarDays(new Date(event.timestamp), new Date(recent[index - 1].timestamp)) >
+                    cadence.periodDays * 2 + cadence.toleranceDays
+        );
+        const observations = recent.slice(Math.max(0, restartIndex));
+        const current = variable ? observations : billingEvents(observations, cadence);
+        const minimumEvents = variable ? 4 : 3;
+
+        return (
+            current.length >= (cadence.periodMonths === 12 && !variable ? 2 : minimumEvents) &&
+            isAlignedCadence(current, cadence, variable, observations.length)
+        );
+    });
+
+const buildSeries = (charges: readonly RecurringChargeInterface[], variable = false): RecurringSeriesInterface | null => {
+    const observations = toEvents(charges);
+    if (
+        new Set(observations.slice(-RECENT_INTERVAL_COUNT - 1).map(event => event.timestamp)).size !==
+        observations.slice(-RECENT_INTERVAL_COUNT - 1).length
+    ) {
         return null;
     }
-
+    const cadence = findCadence(observations, variable);
+    if (!isDefined(cadence)) {
+        return null;
+    }
+    const events = variable ? observations : billingEvents(observations, cadence);
     const latest = charges.reduce((current, charge) => (charge.operatedAt.getTime() > current.operatedAt.getTime() ? charge : current));
-    const labels = charges.map(chargeLabel);
-    const stepIndex = findPriceStepIndex(events);
-    const recentEvents = events.slice(Math.max(stepIndex ?? 0, events.length - RECENT_AMOUNT_COUNT));
+    const priceChangeIndex = variable
+        ? -1
+        : events.findLastIndex(
+              (event, index) =>
+                  index > 0 &&
+                  Math.abs(event.nativeAmount - events[index - 1].nativeAmount) > events[index - 1].nativeAmount * PRICE_CHANGE_RATIO &&
+                  isStableAmount(events.slice(index)) &&
+                  isStableAmount(events.slice(Math.max(0, index - RECENT_AMOUNT_COUNT), index))
+          );
+    const latestEvent = events[events.length - 1];
+    const nativeAmount = Math.round(
+        median(
+            (priceChangeIndex > 0 ? events.slice(priceChangeIndex) : events.slice(-RECENT_AMOUNT_COUNT)).map(event => event.nativeAmount)
+        )
+    );
+    const displayTokens = cleanTokens(latest, /\b(?:MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)\b.*$/iu, /^\d+$|\d{6,}/u).slice(0, 3);
 
     return {
-        merchantKey: findMerchantKey(labels),
-        labels: [...new Set(labels)],
-        title: cleanTokens(latest).slice(0, DISPLAY_TOKEN_COUNT).join(' '),
+        kind: latest.kind,
+        instrumentId: latest.instrumentId,
+        nativeAmount,
+        merchantKey: identity(latest),
+        labels: [...new Set([identity(latest), normalizeRecurringDescription(description(latest)), ...charges.map(legacyLabel)])],
+        title: isNotEmptyArray(displayTokens) ? displayTokens.join(' ') : description(latest).trim().split(/\s+/u).slice(0, 3).join(' '),
         categoryId: latest.categoryId,
         categoryTitle: latest.categoryTitle,
         categoryIcon: latest.categoryIcon,
         accountId: latest.accountId,
-        periodMonths: period?.[0] ?? null,
-        periodDays: medianGap,
-        anchorTimestamp: events[events.length - 1].timestamp,
-        predictedAmount: Math.round(median(recentEvents.map(event => event.amount))),
-        priceChangedAt: isDefined(stepIndex) ? events[stepIndex].timestamp : null,
+        ...cadence,
+        anchorTimestamp: latestEvent.timestamp,
+        predictedAmount: Math.round((nativeAmount * latestEvent.amount) / latestEvent.nativeAmount),
+        priceChangedAt: priceChangeIndex > 0 ? events[priceChangeIndex].timestamp : null,
         events
     };
 };
 
-const detectMonthlySeries = (groups: readonly RecurringChargeInterface[][]): RecurringSeriesInterface[] =>
-    groups
-        .map(group => buildSeries(group))
-        .filter(isDefined)
-        .filter(series => series.periodMonths === 1);
+export const isSeriesActive = (series: RecurringSeriesInterface, now: Date): boolean =>
+    differenceInCalendarDays(now, new Date(series.anchorTimestamp)) <= series.periodDays * ACTIVE_PERIOD_RATIO;
 
 const detectMerchantSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
-    const whole = buildSeries(charges);
-    const monthlyBands = splitIntoAmountBands(charges).flatMap(band => {
-        const [bandSeries] = detectMonthlySeries([band]);
+    const clusters: RecurringChargeInterface[][] = [];
+    for (const charge of [...charges].sort((first, second) => first.nativeAmount - second.nativeAmount)) {
+        const cluster = clusters[clusters.length - 1];
+        if (isDefined(cluster) && charge.nativeAmount <= cluster[0].nativeAmount * RECURRING_AMOUNT_RATIO) {
+            cluster.push(charge);
+        } else {
+            clusters.push([charge]);
+        }
+    }
+    const fixed = clusters
+        .map(group => {
+            const series = buildSeries(group);
 
-        return isDefined(bandSeries) ? [bandSeries] : detectMonthlySeries(splitIntoBillingDays(band));
-    });
-
-    if (monthlyBands.length > 1 || (!isDefined(whole) && isNotEmptyArray(monthlyBands))) {
-        return monthlyBands.map(series => {
-            const startTimestamp = series.events[0].timestamp;
-            const hasPredecessor = monthlyBands.some(
-                other =>
-                    other.anchorTimestamp < startTimestamp &&
-                    startTimestamp - other.anchorTimestamp <= other.periodDays * ACTIVE_PERIOD_RATIO * DAY_MS
+            return isDefined(series) ? { ...series, merchantKey: `${series.merchantKey}|${group[0].nativeAmount}` } : null;
+        })
+        .filter(isDefined);
+    const latestTimestamp = Math.max(...charges.map(charge => charge.operatedAt.getTime()));
+    const currentFixed = fixed
+        .filter(series => isSeriesActive(series, new Date(latestTimestamp)))
+        .map(series => {
+            const previous = fixed.find(
+                candidate =>
+                    candidate.anchorTimestamp < series.events[0].timestamp &&
+                    candidate.periodMonths === series.periodMonths &&
+                    candidate.periodDays === series.periodDays &&
+                    Math.abs(candidate.nativeAmount - series.nativeAmount) > candidate.nativeAmount * PRICE_CHANGE_RATIO &&
+                    differenceInCalendarDays(new Date(series.events[0].timestamp), new Date(candidate.anchorTimestamp)) <=
+                        series.periodDays * ACTIVE_PERIOD_RATIO
             );
 
-            return hasPredecessor ? { ...series, priceChangedAt: series.priceChangedAt ?? startTimestamp } : series;
+            return isDefined(previous) ? { ...series, priceChangedAt: series.events[0].timestamp } : series;
         });
-    }
 
-    return isDefined(whole) ? [whole] : [];
+    return isNotEmptyArray(currentFixed) || isStableAmount(toEvents(charges))
+        ? currentFixed
+        : [buildSeries(charges, true)].filter(isDefined);
 };
 
-export const detectRecurringSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] =>
-    [charges.filter(charge => charge.defaultAmount >= 0), charges.filter(charge => charge.defaultAmount < 0)].flatMap(sideCharges =>
-        groupSimilarLabels(sideCharges).flatMap(detectMerchantSeries)
-    );
+export const detectRecurringSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
+    const groups = new Map<string, RecurringChargeInterface[]>();
+    for (const charge of charges) {
+        const key = identity(charge);
+        if (charge.kind === RecurringSeriesKindEnum.EXPENSE && isNotEmptyString(key)) {
+            const group = groups.get(key) ?? [];
+            group.push(charge);
+            groups.set(key, group);
+        }
+    }
 
-export const isSeriesActive = (series: RecurringSeriesInterface, now: Date): boolean =>
-    now.getTime() - series.anchorTimestamp <= (series.periodDays * ACTIVE_PERIOD_RATIO + ACTIVE_GRACE_DAYS) * DAY_MS;
+    return [...groups.values()].flatMap(group => {
+        const series = detectMerchantSeries(group);
+
+        return series.filter(
+            candidate =>
+                candidate.periodMonths !== 12 ||
+                candidate.events.length > 2 ||
+                (toEvents(group).length === 2 &&
+                    !charges.some(
+                        charge =>
+                            charge.kind === group[0].kind &&
+                            charge.instrumentId !== group[0].instrumentId &&
+                            counterpartyKey(charge) === counterpartyKey(group[0]) &&
+                            charge.operatedAt.getTime() >= candidate.events[0].timestamp
+                    ))
+        );
+    });
+};

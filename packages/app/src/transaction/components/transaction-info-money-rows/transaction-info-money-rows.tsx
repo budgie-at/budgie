@@ -54,7 +54,11 @@ const getTransferExchangeRateLabel = (
         return null;
     }
 
-    return `1 ${sourceEntry.account.instrument.code} = ${formatRate(transaction.exchangeRate)} ${destinationEntry.account.instrument.code}`;
+    if (!isPositiveNumber(transaction.exchangeRate)) {
+        return null;
+    }
+
+    return `1 ${sourceEntry.account.instrument.code} = ${formatRate(1 / transaction.exchangeRate)} ${destinationEntry.account.instrument.code}`;
 };
 
 export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: Props) => {

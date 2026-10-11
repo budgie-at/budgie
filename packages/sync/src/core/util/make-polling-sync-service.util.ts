@@ -1,16 +1,16 @@
 import { AccountRepository, SyncModeEnum, SyncRepository, SyncStatusEnum } from '@budgie/contracts';
-import { TransactionService } from '@budgie/ledger';
-import { subMonths } from 'date-fns/subMonths';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Semaphore from 'effect/Semaphore';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
-import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
 import { SyncRateLimitedError } from '../error/sync-rate-limited.error';
 import { SyncWorkload } from '../port/sync-workload.port';
+import { PollingSyncRateGate } from '../service/polling-sync-rate-gate.service';
 import { SyncIntegrationTokenService } from '../service/sync-integration-token.service';
 
 import { makeSyncService } from './make-sync-service.util';
@@ -24,18 +24,11 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const syncWorkload = yield* SyncWorkload;
     const syncRepository = yield* SyncRepository;
     const accountRepository = yield* AccountRepository;
-    const transactionService = yield* TransactionService;
     const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
+    const rateGate = yield* Effect.provide(PollingSyncRateGate, Layer.fresh(PollingSyncRateGate.layer));
+    const attemptSemaphore = yield* Semaphore.make(1);
     const forwardSyncStaleThresholdMs = 2 * 60 * 1000;
     const syncErrorThreshold = 3;
-    const backwardSyncLimitMonths: Record<SyncHistoryDepthEnum, number | null> = {
-        [SyncHistoryDepthEnum.MONTH_1]: 1,
-        [SyncHistoryDepthEnum.MONTHS_3]: 3,
-        [SyncHistoryDepthEnum.MONTHS_6]: 6,
-        [SyncHistoryDepthEnum.YEAR_1]: 12,
-        [SyncHistoryDepthEnum.FULL]: null,
-        [SyncHistoryDepthEnum.NEW_ONLY]: 0
-    };
     const processedForwardSyncIds = new Set<number>();
     const applyProgressUpdate =
         definition.applyProgressUpdate ??
@@ -43,8 +36,12 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             Effect.asVoid(syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result))));
     let runDeadlineAtMs = Number.POSITIVE_INFINITY;
     let failedSyncId: number | null = null;
+    let nextContinuationAtMs: number | null = null;
 
-    const shouldStopProcessing = (): boolean => definition.isRunDeferred?.() === true || Date.now() >= runDeadlineAtMs;
+    const shouldStopProcessing = Effect.map(
+        Clock.currentTimeMillis,
+        nowMs => definition.isRunDeferred?.() === true || nowMs >= runDeadlineAtMs
+    );
 
     const sleepWithinDeadline = Effect.flatMap(Clock.currentTimeMillis, nowMs =>
         Effect.sleep(Math.min(definition.rateLimitMs, Math.max(0, runDeadlineAtMs - nowMs)))
@@ -73,33 +70,50 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const processPendingSync = Effect.fnUntraced(function* (pendingSync: SyncEntityInterface) {
         failedSyncId = pendingSync.id;
-        const result = yield* definition.executeSyncBatch(pendingSync);
+        const token = yield* resolveSyncToken(pendingSync);
+        const nextRequestAtMs = yield* rateGate.waitForRequest(token, runDeadlineAtMs);
+        if (isDefined(nextRequestAtMs)) {
+            if (!Number.isFinite(runDeadlineAtMs)) {
+                nextContinuationAtMs = nextRequestAtMs;
+            }
+
+            return false;
+        }
+
+        if (yield* shouldStopProcessing) {
+            return false;
+        }
+
+        const result = yield* Effect.ensuring(
+            definition.executeSyncBatch(pendingSync, token),
+            rateGate.recordCompletion(token, definition.rateLimitMs)
+        );
         yield* applyProgressUpdate(pendingSync, result);
         if (pendingSync.mode === SyncModeEnum.FORWARD && result.completed) {
             processedForwardSyncIds.add(pendingSync.id);
         }
         failedSyncId = null;
+
+        return true;
     });
 
     const shouldYieldAfterBatch = Effect.fnUntraced(function* () {
-        if ((yield* syncWorkload.hasQueuedWork) || (yield* Clock.currentTimeMillis) + definition.rateLimitMs > runDeadlineAtMs) {
-            return true;
+        const shouldYield = yield* rateGate.shouldYieldAfterBatch(runDeadlineAtMs, definition.rateLimitMs);
+        if (shouldYield && !Number.isFinite(runDeadlineAtMs)) {
+            nextContinuationAtMs = yield* rateGate.lastRequestReadyAtMs;
         }
 
-        return yield* Effect.raceFirst(
-            Effect.as(Effect.sleep(definition.rateLimitMs), false),
-            Effect.as(syncWorkload.awaitQueuedUserWork, true)
-        );
+        return shouldYield;
     });
 
     const runSyncPass = Effect.fnUntraced(function* () {
         const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
-        if (!isNotEmptyArray(enabledSyncs) || shouldStopProcessing()) {
+        if (!isNotEmptyArray(enabledSyncs) || (yield* shouldStopProcessing)) {
             return true;
         }
 
         yield* (definition.beforeProcessRun ?? (() => Effect.void))(yield* resolveSyncToken(enabledSyncs[0]));
-        if (shouldStopProcessing()) {
+        if (yield* shouldStopProcessing) {
             return true;
         }
 
@@ -108,9 +122,12 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return true;
         }
 
-        yield* processPendingSync(pendingSync);
+        if (!(yield* processPendingSync(pendingSync))) {
+            return true;
+        }
 
-        const isRunFinished = definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || shouldStopProcessing());
+        const isRunFinished =
+            definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing));
 
         return isRunFinished ? true : null;
     });
@@ -194,17 +211,57 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         return result;
     });
 
-    const sync = Effect.fn('AbstractPollingSyncService.sync')(function* (deadlineAtMs: number = Number.POSITIVE_INFINITY) {
+    const runSyncAttempt = Effect.fnUntraced(function* (deadlineAtMs: number) {
         runDeadlineAtMs = deadlineAtMs;
         failedSyncId = null;
+        nextContinuationAtMs = null;
         processedForwardSyncIds.clear();
 
-        return yield* Effect.ensuring(
+        const result = yield* Effect.ensuring(
             runSyncLoop(),
             Effect.sync(() => {
                 definition.afterSyncRun?.();
             })
         );
+
+        const continuationAtMs = nextContinuationAtMs;
+        if (!isDefined(continuationAtMs)) {
+            return { result, continuationAtMs };
+        }
+
+        const pendingBackwardSyncs = yield* syncRepository.getPendingBackwardSync(definition.provider);
+
+        return { result, continuationAtMs: isNotEmptyArray(pendingBackwardSyncs) || isDefined(failedSyncId) ? continuationAtMs : null };
+    });
+
+    const runContinuation = Effect.fnUntraced(function* (firstContinuationAtMs: number) {
+        let continuationAtMs: number | null = firstContinuationAtMs;
+        while (isDefined(continuationAtMs)) {
+            yield* Effect.sleep(Math.max(0, continuationAtMs - (yield* Clock.currentTimeMillis)));
+            const outcome = yield* syncWorkload.runScheduled(
+                Effect.gen(function* () {
+                    if (yield* syncWorkload.hasQueuedUserWork) {
+                        return { continuationAtMs: yield* Clock.currentTimeMillis };
+                    }
+
+                    return yield* attemptSemaphore.withPermit(runSyncAttempt(Number.POSITIVE_INFINITY));
+                })
+            );
+            ({ continuationAtMs } = outcome);
+        }
+    });
+
+    const sync = Effect.fn('AbstractPollingSyncService.sync')(function* (deadlineAtMs: number = Number.POSITIVE_INFINITY) {
+        const outcome = yield* attemptSemaphore.withPermit(runSyncAttempt(deadlineAtMs));
+        const { continuationAtMs } = outcome;
+        if (isDefined<number>(continuationAtMs)) {
+            yield* syncWorkload.schedule(
+                `sync:${definition.provider}`,
+                runContinuation(continuationAtMs).pipe(Effect.ignoreCause({ log: true }))
+            );
+        }
+
+        return outcome.result;
     });
 
     const requestSync = Effect.fnUntraced(function* () {
@@ -225,41 +282,6 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         updateAccountToken: Effect.fn('AbstractPollingSyncService.updateAccountToken')(function* (accountId: number, token: string) {
             yield* (definition.validateToken ?? (() => Effect.void))(token);
             yield* syncIntegrationTokenService.updateAccountToken(definition.provider, accountId, token);
-        }),
-        createOrUpdateSync: Effect.fnUntraced(function* (
-            accountId: number,
-            token: string,
-            historyDepth: SyncHistoryDepthEnum = SyncHistoryDepthEnum.FULL,
-            setupBalance: number | null = null
-        ) {
-            const { provider } = definition;
-            const now = new Date();
-            const months = backwardSyncLimitMonths[historyDepth];
-            const backwardSyncLimitAt = isDefined(months) ? subMonths(now, months) : null;
-            const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-            yield* accountRepository.updateById(accountId, { integrationId: integration.id });
-
-            const existingSync = yield* syncRepository.getByAccountId(accountId);
-            if (isDefined(existingSync)) {
-                yield* syncRepository.update(existingSync.id, { enabled: true, errorCount: 0, lastError: null, backwardSyncLimitAt });
-
-                return;
-            }
-
-            const earliestTransactionTime = yield* transactionService.getEarliestTransactionTimeByAccountId(accountId);
-            yield* syncRepository.create({
-                accountId,
-                provider,
-                enabled: true,
-                mode: SyncModeEnum.BACKWARD,
-                status: SyncStatusEnum.SYNCING,
-                backwardSyncFromAt: now,
-                backwardSyncedAt: earliestTransactionTime ?? null,
-                backwardSyncLimitAt,
-                forwardSyncFromAt: now,
-                forwardSyncedAt: null,
-                setupBalance
-            });
         })
     };
 });

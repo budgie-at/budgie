@@ -18,6 +18,7 @@ import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error'
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
+import { makePollingSyncAccountSetup } from '../../core/util/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/util/make-polling-sync-service.util';
 import { mapBankTransactionToCreateInput } from '../../core/util/map-bank-transaction-to-create-input.util';
 import { BinanceSignedClient } from '../client/binance-signed.client';
@@ -53,6 +54,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
         const syncWorkload = yield* SyncWorkload;
         const { provider } = BINANCE_ACCOUNT_DEFINITION;
+        const createOrUpdateSync = yield* makePollingSyncAccountSetup(provider);
         const transferChunkSize = 50;
         const sourceInputYieldInterval = 50;
         const forwardOverlapDays = 1;
@@ -348,14 +350,13 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const pollingSyncService = yield* makePollingSyncService({
             ...BINANCE_ACCOUNT_DEFINITION,
             rateLimitMs: BINANCE_RATE_LIMIT_MS,
-            executeSyncBatch: Effect.fn('BinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
+            executeSyncBatch: Effect.fn('BinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 const externalAccountId = account?.externalId ?? null;
                 if (!isNotEmptyString(externalAccountId)) {
                     return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
                 }
 
-                const token = yield* syncIntegrationTokenService.resolveAccountToken(provider, sync.accountId);
                 const changedCount = yield* Effect.ensuring(
                     runSyncPhases(sync, externalAccountId, token),
                     Effect.orDie(Effect.suspend(() => binanceTradeCursorService.persistRunSideEffects(sync, runSignedClient)))
@@ -427,7 +428,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
                 for (const resolvableAccount of resolvableAccounts) {
                     const account = yield* binanceAccountService.setupAccount(resolvableAccount, integration.id);
-                    yield* pollingSyncService.createOrUpdateSync(account.id, token);
+                    yield* createOrUpdateSync(account.id, token);
                 }
 
                 if (isNotEmptyArray(resolvableAccounts)) {

@@ -16,7 +16,10 @@ export const syncWorkloadLayer = Layer.effect(
         return SyncWorkload.of({
             run: workload.run,
             runUser: workload.runUser,
+            runScheduled: workload.runScheduled,
+            schedule: workload.scheduleBackground,
             hasQueuedWork: workload.hasQueuedWork,
+            hasQueuedUserWork: workload.hasQueuedUserWork,
             awaitQueuedUserWork: workload.awaitQueuedUserWork,
             enqueueRuleApplication: ruleApplicationDrainerService.enqueueTransactions,
             enqueueTransferConsolidation: transferConsolidationDrainerService.enqueue

@@ -1,5 +1,6 @@
 import { consolidationScopeService } from '@budgie/consolidation';
 import {
+    AccountBalanceRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntityInterface,
     TransactionEntryEntityTable,
@@ -15,6 +16,7 @@ import { isDefined } from '@rnw-community/shared';
 import {
     expectSingleConsolidation,
     fetchCanonicalsOfType,
+    fetchCachedBalanceAmount,
     fetchTransactionById,
     findMccByCode,
     seed,
@@ -260,7 +262,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('attaches leftover technical source and target rows to an existing bridge canonical transfer', () =>
+    it.effect('keeps source and target rows separate when the existing bridge canonical has no original identity', () =>
         Effect.gen(function* () {
             const operatedAt = new Date(2026, 4, 21, 13, 50, 4);
             const { transferMcc, sourceAccount, targetAccount } = yield* seedBridgeAccounts();
@@ -287,11 +289,42 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
                 transferMcc.id
             );
 
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const canonicalBefore = yield* fetchTransactionById(canonicalTransfer.id);
+            const canonicalEntriesBefore = yield* testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(eq(TransactionEntryEntityTable.transactionId, canonicalTransfer.id));
+            const expectedBalances = new Map([
+                [sourceAccount.id, -2 * EUR_AMOUNT],
+                [targetAccount.id, 2 * UAH_AMOUNT]
+            ]);
+
+            expect(yield* accountBalanceRepository.getLedgerBalances([sourceAccount.id, targetAccount.id])).toEqual(expectedBalances);
             yield* expectSingleConsolidation();
-            yield* expectCanonicalTransfer(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, sourceAccount.id, targetAccount.id);
-            expect((yield* fetchTransactionById(canonicalTransfer.id)).consolidationParentTransactionId).toBeNull();
-            yield* expectSourcesParented(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
-            yield* expectMovedSources(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
+
+            const bridgeCanonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
+            const pairCanonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+
+            expect(bridgeCanonicals).toEqual([canonicalBefore]);
+            expect(pairCanonicals).toHaveLength(1);
+            expect(pairCanonicals[0].id).not.toBe(canonicalTransfer.id);
+            expect(pairCanonicals[0].fromAccountId).toBe(sourceAccount.id);
+            expect(pairCanonicals[0].toAccountId).toBe(targetAccount.id);
+            expect(pairCanonicals[0].consolidationParentTransactionId).toBeNull();
+            expect(pairCanonicals[0].deletedAt).toBeNull();
+            expect(
+                yield* testDb
+                    .select()
+                    .from(TransactionEntryEntityTable)
+                    .where(eq(TransactionEntryEntityTable.transactionId, canonicalTransfer.id))
+            ).toEqual(canonicalEntriesBefore);
+            yield* expectSourcesParented(pairCanonicals[0].id, [sourceExpense.id, targetIncome.id]);
+            yield* expectMovedSources(pairCanonicals[0].id, [sourceExpense.id, targetIncome.id]);
+            yield* expectMovedSources(canonicalTransfer.id, []);
+            expect(yield* accountBalanceRepository.getLedgerBalances([sourceAccount.id, targetAccount.id])).toEqual(expectedBalances);
+            expect(yield* fetchCachedBalanceAmount(sourceAccount.id)).toBe(-2 * EUR_AMOUNT);
+            expect(yield* fetchCachedBalanceAmount(targetAccount.id)).toBe(2 * UAH_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );
 });

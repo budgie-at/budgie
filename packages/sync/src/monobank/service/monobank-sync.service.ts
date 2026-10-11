@@ -30,6 +30,7 @@ import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { SyncOperationMetadataService } from '../../core/service/sync-operation-metadata.service';
 import { TransferConsolidationService } from '../../core/service/transfer-consolidation.service';
+import { makePollingSyncAccountSetup } from '../../core/util/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/util/make-polling-sync-service.util';
 import { mapBankTransactionToCreateInput } from '../../core/util/map-bank-transaction-to-create-input.util';
 import { resolveSyncProgressUpdate } from '../../core/util/resolve-sync-progress-update.util';
@@ -59,6 +60,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const syncOperationMetadataService = yield* SyncOperationMetadataService;
         const transferConsolidationService = yield* TransferConsolidationService;
         const provider = ExternalSourceEnum.MONOBANK;
+        const createOrUpdateSync = yield* makePollingSyncAccountSetup(provider);
         const providerTitle = 'Monobank';
         let mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
@@ -207,7 +209,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             shouldRequestSyncWhenEnabled: true,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
-            executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
+            executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
                     const now = new Date();
@@ -215,11 +217,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     return { transactions: [], nextTo: now, nextFrom: now, completed: true };
                 }
 
-                const result = yield* fetchTransactionBatch(
-                    sync,
-                    account.externalId,
-                    yield* syncIntegrationTokenService.resolveAccountToken(provider, sync.accountId)
-                );
+                const result = yield* fetchTransactionBatch(sync, account.externalId, token);
                 yield* Effect.yieldNow;
                 const changedTransactions = yield* processFetchedTransactions(result.transactions, account.id);
                 yield* reconcileChangedTransactions(changedTransactions);
@@ -254,7 +252,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     const bankAccount = bankAccounts.find(account => account.id === externalId);
                     if (isDefined(bankAccount)) {
                         const account = yield* pollingSyncService.getOrCreateSyncAccount(bankAccount);
-                        yield* pollingSyncService.createOrUpdateSync(account.id, token, historyDepth, getOwnBalance(bankAccount));
+                        yield* createOrUpdateSync(account.id, token, historyDepth, getOwnBalance(bankAccount));
                     }
                 }
 

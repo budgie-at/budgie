@@ -13,6 +13,7 @@ import { isSupportedMigrationCreatedAt } from './is-supported-migration-created-
 import { openSqliteClient } from './open-sqlite-client.util';
 import { readDatabaseKey } from './read-database-key.util';
 import { readLastMigrationCreatedAt } from './read-last-migration-created-at.util';
+import { resolveBackupFile } from './resolve-backup-file.util';
 
 const probeDatabaseName = 'restore-probe.db';
 
@@ -32,14 +33,16 @@ const verifyProbe = Effect.fn('restoreDatabaseFromPickedBackup.verifyProbe')(fun
     }
 }, Effect.scoped);
 
-const restoreFromUri = Effect.fn('restoreDatabaseFromPickedBackup.restoreFromUri')(function* (sourceUri: string) {
+const replaceDatabaseFromUri = Effect.fn('restoreDatabaseFromPickedBackup.replaceDatabaseFromUri')(function* (sourceUri: string) {
     const probeFile = new File(DATABASE_DIRECTORY, probeDatabaseName);
 
     if (probeFile.exists) {
         probeFile.delete();
     }
 
-    yield* Effect.promise(() => new File(sourceUri).copy(probeFile));
+    const backupUri = yield* resolveBackupFile(sourceUri);
+
+    yield* Effect.promise(() => new File(backupUri).copy(probeFile));
     yield* verifyProbe().pipe(
         Effect.onError(() =>
             Effect.sync(() => {
@@ -54,13 +57,12 @@ const restoreFromUri = Effect.fn('restoreDatabaseFromPickedBackup.restoreFromUri
         discard: true
     });
     yield* moveIfExists(probeDatabaseName, DB_NAME);
-    yield* Effect.promise(() => reloadApp());
-});
+}, Effect.scoped);
 
 export const restoreDatabaseFromPickedBackup = Effect.fn('restoreDatabaseFromPickedBackup')(function* () {
     const result = yield* Effect.promise(() =>
         DocumentPicker.getDocumentAsync({
-            type: ['application/x-sqlite3', 'application/octet-stream', '*/*'],
+            type: ['application/x-sqlite3', 'application/zip', 'application/octet-stream', '*/*'],
             copyToCacheDirectory: true
         })
     );
@@ -70,5 +72,6 @@ export const restoreDatabaseFromPickedBackup = Effect.fn('restoreDatabaseFromPic
         return;
     }
 
-    yield* restoreFromUri(uri);
+    yield* replaceDatabaseFromUri(uri);
+    yield* Effect.promise(() => reloadApp());
 });

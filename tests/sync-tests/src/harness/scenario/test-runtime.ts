@@ -16,13 +16,26 @@ import type * as Context from 'effect/Context';
 
 const rateLimitDurationsMs = new Set([MONOBANK_RATE_LIMIT_MS, BINANCE_RATE_LIMIT_MS]);
 
-const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock =>
-    Object.assign(Object.create(clock), {
-        sleep: (duration: Parameters<Clock.Clock['sleep']>[0]) =>
-            sleepMode.isRateLimitInstant && !vi.isFakeTimers() && rateLimitDurationsMs.has(Duration.toMillis(duration))
-                ? Effect.yieldNow
-                : clock.sleep(duration)
+const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
+    let virtualOffsetMs = 0;
+
+    return Object.assign(Object.create(clock), {
+        currentTimeMillis: Effect.sync(() => Date.now() + virtualOffsetMs),
+        currentTimeMillisUnsafe: () => Date.now() + virtualOffsetMs,
+        sleep: (duration: Parameters<Clock.Clock['sleep']>[0]) => {
+            if (sleepMode.isRateLimitInstant && !vi.isFakeTimers() && rateLimitDurationsMs.has(Duration.toMillis(duration))) {
+                return Effect.andThen(
+                    Effect.sync(() => {
+                        virtualOffsetMs += Duration.toMillis(duration);
+                    }),
+                    Effect.yieldNow
+                );
+            }
+
+            return clock.sleep(duration);
+        }
     });
+};
 
 const servicesLayer = appServicesLayer.pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
 
@@ -47,7 +60,12 @@ const bindAppRuntime = Layer.effectDiscard(
 export const TestClockLayer = bindAppRuntime;
 
 export const TestLayer = bindAppRuntime.pipe(
-    Layer.provideMerge(Layer.succeed(Clock.Clock, withInstantRateLimit(Clock.Clock.defaultValue())))
+    Layer.provideMerge(
+        Layer.effect(
+            Clock.Clock,
+            Effect.sync(() => withInstantRateLimit(Clock.Clock.defaultValue()))
+        )
+    )
 );
 
 const requireTestContext = (): Context.Context<Services> => {

@@ -2,7 +2,7 @@
 set -eu
 
 FLOW_DIR="${1:-flows}"
-PROHIBITED_SELECTOR_PATTERN='point:|tapOnPoint|hideKeyboard|tapOn:[[:space:]]*return|pressKey:[[:space:]]*Enter'
+PROHIBITED_SELECTOR_PATTERN='tapOnPoint|hideKeyboard|tapOn:[[:space:]]*return|pressKey:[[:space:]]*Enter'
 COORDINATE_VALUE_PATTERN="[0-9]+%?[[:space:]]*,[[:space:]]*[0-9]+%?"
 COORDINATE_INTERACTION_PATTERN="(tapOn|longPressOn):[[:space:]]*['\"]?${COORDINATE_VALUE_PATTERN}['\"]?"
 COORDINATE_SWIPE_PATTERN="(start|end):[[:space:]]*['\"]?${COORDINATE_VALUE_PATTERN}['\"]?"
@@ -20,7 +20,23 @@ find_selector_matches() {
 }
 
 if find_selector_matches "$PROHIBITED_SELECTOR_PATTERN"; then
-    echo "Maestro flows must not use point taps, tapOnPoint, hideKeyboard, tapOn return, or uppercase pressKey Enter."
+    echo "Maestro flows must not use tapOnPoint, hideKeyboard, tapOn return, or uppercase pressKey Enter."
+    exit 1
+fi
+
+BARE_POINT_TAPS=$(
+    find "$FLOW_DIR" -name '*.yaml' -exec awk '
+        function flush() { if (point_line && (!has_selector || !is_relative)) { printf "%s:%d\n", FILENAME, point_line } point_line = 0; has_selector = 0 }
+        /^[[:space:]]*-[[:space:]]/ { flush() }
+        /^[[:space:]]+(id|text):/ { has_selector = 1 }
+        /^[[:space:]]+point:/ { point_line = FNR; is_relative = $0 ~ /point:[[:space:]]*[^[:alnum:]]?[0-9]+%,[0-9]+%[^[:alnum:]%,]*$/ }
+        END { flush() }
+    ' {} \; || true
+)
+
+if [ -n "$BARE_POINT_TAPS" ]; then
+    printf '%s\n' "$BARE_POINT_TAPS"
+    echo "A point: must be a relative \"x%,y%\" value inside a tapOn that also has an id: or text: selector."
     exit 1
 fi
 

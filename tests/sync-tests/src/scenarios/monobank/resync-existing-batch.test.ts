@@ -49,7 +49,7 @@ const resyncAndMeasure = Effect.fnUntraced(function* (accountId: number, count: 
 });
 
 describe('monobank/resync-existing-batch', () => {
-    it.effect('resyncs a page of existing rows in one page transaction plus one balance transaction without per-row lookups', () =>
+    it.effect('resyncs a page of existing rows in one page, balance and installment scan transaction without per-row lookups', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const { account } = yield* setupMonobankFixture();
@@ -65,8 +65,8 @@ describe('monobank/resync-existing-batch', () => {
 
             expect(small.bulkUpdateCallCount).toBe(1);
             expect(large.bulkUpdateCallCount).toBe(1);
-            expect(small.topLevelTransactionCount).toBe(2);
-            expect(large.topLevelTransactionCount).toBe(2);
+            expect(small.topLevelTransactionCount).toBe(3);
+            expect(large.topLevelTransactionCount).toBe(3);
             expect(large.transactionCount).toBe(small.transactionCount);
             expect(large.statementCount - small.statementCount).toBeLessThanOrEqual(2 * (LARGE_PAGE_SIZE - SMALL_PAGE_SIZE));
             expect(entries).toHaveLength(LARGE_PAGE_SIZE);

@@ -8,7 +8,10 @@ import type * as Schema from 'effect/Schema';
 export interface PollingSyncServiceDefinitionInterface extends Omit<SyncServiceDefinitionInterface, 'afterSyncEnabledChange'> {
     readonly rateLimitMs: number;
     readonly shouldRequestSyncWhenEnabled?: boolean;
-    readonly executeSyncBatch: (sync: SyncEntityInterface) => Effect.Effect<SyncBatchResultInterface, unknown, Db | HttpClient.HttpClient>;
+    readonly executeSyncBatch: (
+        sync: SyncEntityInterface,
+        token: string
+    ) => Effect.Effect<SyncBatchResultInterface, unknown, Db | HttpClient.HttpClient>;
     readonly beforeSyncRun: (deadlineAtMs: number) => Effect.Effect<void, unknown, Db>;
     readonly beforeProcessRun?: (firstSyncToken: string) => Effect.Effect<void, unknown, Db | HttpClient.HttpClient>;
     readonly applyProgressUpdate?: (

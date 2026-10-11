@@ -34,6 +34,8 @@ export default function ImportBackupPinModal() {
             Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(sourceUri, pin)).pipe(
                 Effect.map(canOpenBackup => (canOpenBackup ? null : t`Incorrect PIN`)),
                 Effect.catchTags({
+                    BackupArchiveMissingDatabaseError: () => Effect.succeed(t`This backup archive does not contain a Budgie database.`),
+                    InsufficientStorageError: () => Effect.succeed(t`Not enough free storage to extract this backup.`),
                     UnsupportedBackupError: () => Effect.succeed(t`This backup was made by an older Budgie version and cannot be imported.`)
                 })
             )
