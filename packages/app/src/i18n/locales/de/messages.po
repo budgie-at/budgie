@@ -523,6 +523,11 @@ msgstr "Die KI lädt dieses Modell herunter oder öffnet es gerade. Versuche es 
 msgid "AI model removed"
 msgstr "KI-Modell entfernt"
 
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "AI models"
+msgstr "KI-Modelle"
+
 #: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
 msgid "AI models removed"
 msgstr "KI-Modelle entfernt"
@@ -1788,6 +1793,10 @@ msgstr "Heruntergeladen"
 #: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
 msgid "Downloaded AI models"
 msgstr "Heruntergeladene KI-Modelle"
+
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "Downloaded model files stored on this device"
+msgstr "Heruntergeladene Modelldateien auf diesem Gerät"
 
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
@@ -4725,6 +4734,10 @@ msgstr "Benutzerdefinierte Kategorien anzeigen und löschen"
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and restore archived accounts"
 msgstr "Archivierte Konten anzeigen und wiederherstellen"
+
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+msgid "View downloaded models and remove files you no longer need"
+msgstr "Heruntergeladene Modelle anzeigen und nicht mehr benötigte Dateien entfernen"
 
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"

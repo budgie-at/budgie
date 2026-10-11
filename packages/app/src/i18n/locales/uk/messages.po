@@ -523,6 +523,11 @@ msgstr "ШІ завантажує або відкриває цю модель. �
 msgid "AI model removed"
 msgstr "Модель ШІ видалено"
 
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "AI models"
+msgstr "Моделі ШІ"
+
 #: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
 msgid "AI models removed"
 msgstr "Моделі ШІ видалено"
@@ -1788,6 +1793,10 @@ msgstr "Завантажено"
 #: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
 msgid "Downloaded AI models"
 msgstr "Завантажені моделі ШІ"
+
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "Downloaded model files stored on this device"
+msgstr "Завантажені файли моделей, збережені на цьому пристрої"
 
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
@@ -4725,6 +4734,10 @@ msgstr "Перегляд та видалення власних категорі
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
+
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+msgid "View downloaded models and remove files you no longer need"
+msgstr "Переглядайте завантажені моделі та видаляйте файли, які більше не потрібні"
 
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"

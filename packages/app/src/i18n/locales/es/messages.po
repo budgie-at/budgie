@@ -523,6 +523,11 @@ msgstr "La IA está descargando o abriendo este modelo. Vuelve a intentarlo cuan
 msgid "AI model removed"
 msgstr "Modelo de IA eliminado"
 
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "AI models"
+msgstr "Modelos de IA"
+
 #: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
 msgid "AI models removed"
 msgstr "Modelos de IA eliminados"
@@ -1788,6 +1793,10 @@ msgstr "Descargado"
 #: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
 msgid "Downloaded AI models"
 msgstr "Modelos de IA descargados"
+
+#: src/app/(tabs)/settings/ai-models.tsx
+msgid "Downloaded model files stored on this device"
+msgstr "Archivos de modelos descargados almacenados en este dispositivo"
 
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
@@ -4725,6 +4734,10 @@ msgstr "Ver y eliminar categorías personalizadas"
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
+
+#: src/ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card.tsx
+msgid "View downloaded models and remove files you no longer need"
+msgstr "Consulta los modelos descargados y elimina los archivos que ya no necesitas"
 
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"

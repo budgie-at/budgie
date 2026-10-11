@@ -43,6 +43,7 @@ export const SettingsPageSelector = {
     AiEnabledSwitch: 'SettingsPage.AiEnabledSwitch',
     AiEnabledSwitchStateOn: 'SettingsPage.AiEnabledSwitch.State.On',
     AiEnabledSwitchStateOff: 'SettingsPage.AiEnabledSwitch.State.Off',
+    AiModelsCard: 'SettingsPage.AiModelsCard',
     RunwayPillCard: 'SettingsPage.RunwayPillCard',
     RunwayPillSwitch: 'SettingsPage.RunwayPillSwitch',
     RunwayPillSwitchStateOn: 'SettingsPage.RunwayPillSwitch.State.On',
