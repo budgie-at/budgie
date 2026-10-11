@@ -264,6 +264,10 @@ msgstr "{totalSize} auf diesem Gerät gespeichert"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "{unusedSize} can be removed"
+msgstr "{unusedSize} können entfernt werden"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -844,6 +848,10 @@ msgstr "Budgie konnte deine Daten nicht öffnen"
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie ist auf ein unerwartetes Problem gestoßen. Du kannst die App neu starten oder das Problem melden, damit wir es untersuchen können."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Budgie is checking which AI downloads are no longer needed."
+msgstr "Budgie prüft, welche KI-Downloads nicht mehr benötigt werden."
+
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "Budgie is ready to go. You can revisit any of these steps later from Settings."
 msgstr "Budgie ist startklar. Sie können jeden dieser Schritte später in den Einstellungen erneut aufrufen."
@@ -1008,6 +1016,10 @@ msgstr "Girokonto"
 msgid "Checking storage..."
 msgstr "Speicher wird geprüft..."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Checking unused downloads..."
+msgstr "Ungenutzte Downloads werden geprüft..."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien können nicht importiert werden"
@@ -1021,8 +1033,8 @@ msgid "Choose features and free space from unused downloads"
 msgstr "Funktionen auswählen und Speicherplatz aus ungenutzten Downloads freigeben"
 
 #: src/app/(tabs)/settings/ai-models.tsx
-msgid "Choose what you use and clear downloads you no longer need"
-msgstr "Wähle, was du nutzt, und lösche Downloads, die du nicht mehr brauchst"
+msgid "Choose features and manage downloads"
+msgstr "Funktionen auswählen und Downloads verwalten"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1231,6 +1243,10 @@ msgstr "Transaktionen konnten nicht kategorisiert werden"
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Could not check sync data"
 msgstr "Synchronisationsdaten konnten nicht geprüft werden"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Could not check unused downloads"
+msgstr "Ungenutzte Downloads konnten nicht geprüft werden"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
@@ -2172,10 +2188,6 @@ msgstr "Festgeld mit einem Zinssatz"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Ein Problem gefunden oder eine Idee? Öffne die GitHub-Issue-Vorlagen."
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Free up {unusedSize}"
-msgstr "{unusedSize} freigeben"
-
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Französisch"
@@ -3009,7 +3021,7 @@ msgstr "Keine Transaktionen stimmen überein"
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
 msgid "No unused downloads"
 msgstr "Keine ungenutzten Downloads"
 
@@ -3515,6 +3527,10 @@ msgstr "Aufteilung entfernen"
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split?"
 msgstr "Aufteilung entfernen?"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Remove unused downloads"
+msgstr "Ungenutzte Downloads entfernen"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
@@ -4224,6 +4240,14 @@ msgstr "Die Bank hat die Währung der Einlage nicht übermittelt. Bestätige die
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen mussten aktualisiert werden."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "There are no unused AI downloads to remove."
+msgstr "Es gibt keine ungenutzten KI-Downloads zum Entfernen."
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "These downloads are not needed by your enabled features. Downloads still in use will be kept."
+msgstr "Diese Downloads werden von deinen aktivierten Funktionen nicht benötigt. Downloads, die noch verwendet werden, bleiben erhalten."
+
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Gesamtsummen berücksichtigt. Sie können es jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
@@ -4488,6 +4512,10 @@ msgstr "Erneut versuchen"
 msgid "Try Again"
 msgstr "Erneut versuchen"
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Try again after Budgie finishes checking storage."
+msgstr "Versuche es erneut, nachdem Budgie die Speicherprüfung abgeschlossen hat."
+
 #: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn off and free {reclaimableSize}"
 msgstr "Ausschalten und {reclaimableSize} freigeben"
@@ -4553,6 +4581,10 @@ msgstr "Unrealisierte GuV"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Untagged"
 msgstr "Ohne Tag"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Unused downloads"
+msgstr "Ungenutzte Downloads"
 
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Up to date"

@@ -264,6 +264,10 @@ msgstr "{totalSize} stockés sur cet appareil"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "{unusedSize} can be removed"
+msgstr "{unusedSize} peuvent être supprimés"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -844,6 +848,10 @@ msgstr "Budgie n'a pas pu ouvrir vos données"
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie a rencontré un problème inattendu. Vous pouvez redémarrer l’application ou signaler le problème afin que nous puissions l’examiner."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Budgie is checking which AI downloads are no longer needed."
+msgstr "Budgie vérifie quels téléchargements IA ne sont plus nécessaires."
+
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "Budgie is ready to go. You can revisit any of these steps later from Settings."
 msgstr "Budgie est prêt. Vous pourrez revenir sur chacune de ces étapes plus tard depuis les Paramètres."
@@ -1008,6 +1016,10 @@ msgstr "Compte courant"
 msgid "Checking storage..."
 msgstr "Vérification du stockage..."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Checking unused downloads..."
+msgstr "Vérification des téléchargements inutilisés..."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Choisissez « Excel » comme format d'export — les fichiers PDF et CSV ne peuvent pas être importés"
@@ -1021,8 +1033,8 @@ msgid "Choose features and free space from unused downloads"
 msgstr "Choisir les fonctionnalités et libérer l’espace des téléchargements inutilisés"
 
 #: src/app/(tabs)/settings/ai-models.tsx
-msgid "Choose what you use and clear downloads you no longer need"
-msgstr "Choisissez ce que vous utilisez et supprimez les téléchargements dont vous n’avez plus besoin"
+msgid "Choose features and manage downloads"
+msgstr "Choisir les fonctionnalités et gérer les téléchargements"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1231,6 +1243,10 @@ msgstr "Impossible de catégoriser les transactions"
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Could not check sync data"
 msgstr "Impossible de vérifier les données de synchronisation"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Could not check unused downloads"
+msgstr "Impossible de vérifier les téléchargements inutilisés"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
@@ -2172,10 +2188,6 @@ msgstr "Épargne à terme avec un taux d'intérêt"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Vous avez trouvé un problème ou avez une idée ? Ouvrez les modèles d’issues GitHub."
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Free up {unusedSize}"
-msgstr "Libérer {unusedSize}"
-
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Français"
@@ -3009,7 +3021,7 @@ msgstr "Aucune transaction ne correspond"
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
 msgid "No unused downloads"
 msgstr "Aucun téléchargement inutilisé"
 
@@ -3515,6 +3527,10 @@ msgstr "Supprimer la répartition"
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split?"
 msgstr "Supprimer la répartition ?"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Remove unused downloads"
+msgstr "Supprimer les téléchargements inutilisés"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
@@ -4224,6 +4240,14 @@ msgstr "La banque n’a pas indiqué la devise du dépôt. Confirmez la devise e
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "La règle a été enregistrée, mais aucune transaction existante n'avait besoin d'être mise à jour."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "There are no unused AI downloads to remove."
+msgstr "Aucun téléchargement IA inutilisé à supprimer."
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "These downloads are not needed by your enabled features. Downloads still in use will be kept."
+msgstr "Ces téléchargements ne sont pas nécessaires aux fonctionnalités activées. Les téléchargements encore utilisés seront conservés."
+
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dans les totaux. Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés."
@@ -4488,6 +4512,10 @@ msgstr "Réessayer"
 msgid "Try Again"
 msgstr "Réessayer"
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Try again after Budgie finishes checking storage."
+msgstr "Réessayez une fois que Budgie aura terminé de vérifier le stockage."
+
 #: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn off and free {reclaimableSize}"
 msgstr "Désactiver et libérer {reclaimableSize}"
@@ -4553,6 +4581,10 @@ msgstr "Gain/perte latent"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Untagged"
 msgstr "Sans étiquette"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Unused downloads"
+msgstr "Téléchargements inutilisés"
 
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Up to date"

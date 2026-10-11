@@ -264,6 +264,10 @@ msgstr "{totalSize} almacenados en este dispositivo"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "{unusedSize} can be removed"
+msgstr "Se pueden eliminar {unusedSize}"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -844,6 +848,10 @@ msgstr "Budgie no pudo abrir tus datos"
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie encontró un problema inesperado. Puedes reiniciar la app o informar del problema para que podamos investigarlo."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Budgie is checking which AI downloads are no longer needed."
+msgstr "Budgie está comprobando qué descargas de IA ya no se necesitan."
+
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "Budgie is ready to go. You can revisit any of these steps later from Settings."
 msgstr "Budgie está listo. Puedes volver a cualquiera de estos pasos más tarde desde Configuración."
@@ -1008,6 +1016,10 @@ msgstr "Cuenta corriente"
 msgid "Checking storage..."
 msgstr "Comprobando almacenamiento..."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Checking unused downloads..."
+msgstr "Comprobando descargas sin usar..."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Elige «Excel» como formato de exportación; no se pueden importar archivos PDF ni CSV"
@@ -1021,8 +1033,8 @@ msgid "Choose features and free space from unused downloads"
 msgstr "Elige funciones y libera espacio de descargas sin usar"
 
 #: src/app/(tabs)/settings/ai-models.tsx
-msgid "Choose what you use and clear downloads you no longer need"
-msgstr "Elige lo que usas y elimina las descargas que ya no necesitas"
+msgid "Choose features and manage downloads"
+msgstr "Elige funciones y gestiona descargas"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1231,6 +1243,10 @@ msgstr "No se pudieron categorizar las transacciones"
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Could not check sync data"
 msgstr "No se pudieron verificar los datos de sincronización"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Could not check unused downloads"
+msgstr "No se pudieron comprobar las descargas sin usar"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
@@ -2172,10 +2188,6 @@ msgstr "Ahorros a plazo fijo con una tasa de interés"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "¿Encontraste un problema o tienes una idea? Abre las plantillas de incidencias de GitHub."
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
-msgid "Free up {unusedSize}"
-msgstr "Liberar {unusedSize}"
-
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Francés"
@@ -3009,7 +3021,7 @@ msgstr "Ninguna transacción coincidió"
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
-#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
 msgid "No unused downloads"
 msgstr "No hay descargas sin usar"
 
@@ -3515,6 +3527,10 @@ msgstr "Eliminar división"
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split?"
 msgstr "¿Eliminar división?"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Remove unused downloads"
+msgstr "Eliminar descargas sin usar"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
@@ -4224,6 +4240,14 @@ msgstr "El banco no informó la moneda del depósito. Confirma la moneda y el im
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "La regla se guardó, pero ninguna transacción existente necesitaba actualizarse."
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "There are no unused AI downloads to remove."
+msgstr "No hay descargas de IA sin usar para eliminar."
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "These downloads are not needed by your enabled features. Downloads still in use will be kept."
+msgstr "Tus funciones activadas no necesitan estas descargas. Se conservarán las descargas que sigan en uso."
+
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los totales. Puedes restaurarla en cualquier momento desde Configuración → Cuentas archivadas."
@@ -4488,6 +4512,10 @@ msgstr "Inténtalo de nuevo"
 msgid "Try Again"
 msgstr "Intentar de nuevo"
 
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Try again after Budgie finishes checking storage."
+msgstr "Inténtalo de nuevo cuando Budgie termine de comprobar el almacenamiento."
+
 #: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn off and free {reclaimableSize}"
 msgstr "Desactivar y liberar {reclaimableSize}"
@@ -4553,6 +4581,10 @@ msgstr "PyG no realizada"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Untagged"
 msgstr "Sin etiqueta"
+
+#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
+msgid "Unused downloads"
+msgstr "Descargas sin usar"
 
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Up to date"
