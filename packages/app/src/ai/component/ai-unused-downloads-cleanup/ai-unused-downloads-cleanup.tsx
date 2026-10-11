@@ -24,15 +24,17 @@ export const AiUnusedDownloadsCleanup = ({ unusedBytes, isLoading, isMutating, i
     const title = t`Unused downloads`;
     const loadingDescription = t`Budgie is checking which AI downloads are no longer needed.`;
     const errorDescription = t`Try again after Budgie finishes checking storage.`;
-    const emptyDescription = t`There are no unused AI downloads to remove.`;
     const reclaimableDescription = t`These downloads are not needed by your enabled features. Downloads still in use will be kept.`;
     const content = [
         isLoading ? { storageText: t`Checking unused downloads...`, description: loadingDescription } : null,
         hasError ? { storageText: t`Could not check unused downloads`, description: errorDescription } : null,
         hasUnusedDownloads ? { storageText: t`${unusedSize} can be removed`, description: reclaimableDescription } : null
-    ].find(isDefined) ?? { storageText: t`No unused downloads`, description: emptyDescription };
-    const shouldShowAction = hasUnusedDownloads || isLoading || hasError;
+    ].find(isDefined);
     const isActionDisabled = !hasUnusedDownloads || isLoading || isMutating || hasError;
+
+    if (!isDefined(content)) {
+        return null;
+    }
 
     return (
         <View className="gap-y-lg">
@@ -42,17 +44,15 @@ export const AiUnusedDownloadsCleanup = ({ unusedBytes, isLoading, isMutating, i
                 <Text className="text-secondary-foreground text-xs">{content.description}</Text>
             </View>
 
-            {shouldShowAction ? (
-                <Button
-                    content={t`Remove unused downloads`}
-                    leftIcon={UserIconNameEnum.Trash2}
-                    variant="destructive"
-                    disabled={isActionDisabled}
-                    isLoading={isFreeingUnused}
-                    onPress={onPress}
-                    testID={AiModelStorageCardSelector.FreeUnusedButton}
-                />
-            ) : null}
+            <Button
+                content={t`Remove unused downloads`}
+                leftIcon={UserIconNameEnum.Trash2}
+                variant="destructive"
+                disabled={isActionDisabled}
+                isLoading={isFreeingUnused}
+                onPress={onPress}
+                testID={AiModelStorageCardSelector.FreeUnusedButton}
+            />
         </View>
     );
 };
