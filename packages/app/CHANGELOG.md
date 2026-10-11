@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.100.1](https://github.com/budgie-at/budgie/compare/v6.100.0...v6.100.1) (2026-10-11)
+
+
+### Bug Fixes
+
+* **recurring:** detect generic expense streams and ignore income ([f3dd748](https://github.com/budgie-at/budgie/commit/f3dd748f7a6653273cb184de79b25e92bdd38b0f))
+* **recurring:** show only proven recurring streams and keep income typed ([3dd0e00](https://github.com/budgie-at/budgie/commit/3dd0e008b6f21e542a6e590b74efe251efcc3141))
+
+
+
+
+
 # [6.100.0](https://github.com/budgie-at/budgie/compare/v6.99.2...v6.100.0) (2026-10-10)
 
 

@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.100.1](https://github.com/budgie-at/budgie/compare/v6.100.0...v6.100.1) (2026-10-11)
+
+
+### Bug Fixes
+
+* **recurring:** collapse nearby billing charges ([9e299bb](https://github.com/budgie-at/budgie/commit/9e299bb2a555dd64cf3f44052bae366fff6b9ad7))
+* **recurring:** detect generic expense streams and ignore income ([f3dd748](https://github.com/budgie-at/budgie/commit/f3dd748f7a6653273cb184de79b25e92bdd38b0f))
+* **recurring:** inherit stream state only on a unique billing-cycle match ([e4ea94d](https://github.com/budgie-at/budgie/commit/e4ea94dd51a6641e9c7b60a715089fad7c7a7fea))
+* **recurring:** keep alphanumeric merchant tokens in titles ([04bb6a4](https://github.com/budgie-at/budgie/commit/04bb6a48db9c1177fe030dc91d0ee30e8bdafd92))
+* **recurring:** keep cash-account recurring expenses ([77fb2ef](https://github.com/budgie-at/budgie/commit/77fb2ef025122cdcccf917235ea792e5308fe8df))
+* **recurring:** keep confirmed streams when a dismissed sibling retires ([1f1af44](https://github.com/budgie-at/budgie/commit/1f1af4474cd80bbe86a86e61ca4c8ae5a2ba1efc))
+* **recurring:** keep detected subscription titles visible ([6e6abdd](https://github.com/budgie-at/budgie/commit/6e6abdd81166fe712ddb81bf42e5f32852cca804))
+* **recurring:** match persisted streams by charge continuity ([87247e3](https://github.com/budgie-at/budgie/commit/87247e3c00fdc11305be511bcf27f12a4ae919cb))
+* **recurring:** preserve durable recurrence ownership ([18905c9](https://github.com/budgie-at/budgie/commit/18905c95ff7cd1a19f961f176b0afaedc9ecdf9c))
+* **recurring:** preserve expense streams and calendar dates ([648d2cd](https://github.com/budgie-at/budgie/commit/648d2cd4807dd9e5b6ea71fe7baf5f4d4f109380))
+* **recurring:** preserve historical cadence with unique ownership ([f025a45](https://github.com/budgie-at/budgie/commit/f025a45972a8704036110dbda0108ee90d333472))
+* **recurring:** preserve merchant names in display titles ([4749419](https://github.com/budgie-at/budgie/commit/4749419ed4a4fdef438cbc4d97da452f84e265d1))
+* **recurring:** preserve merchant tokens in calendar titles ([d79dd0a](https://github.com/budgie-at/budgie/commit/d79dd0ad8341505d7f90c27b658476626d10b7eb))
+* **recurring:** require cycle evidence for legacy adoption ([b68c89a](https://github.com/budgie-at/budgie/commit/b68c89a1d9d0322370df73af052e11d8db2717c4))
+* **recurring:** reserve exact stream rows only for the same cadence ([f2bbd47](https://github.com/budgie-at/budgie/commit/f2bbd47b2c863162f546fd89d6c92c0c421b941d))
+* **recurring:** show only proven recurring streams and keep income typed ([3dd0e00](https://github.com/budgie-at/budgie/commit/3dd0e008b6f21e542a6e590b74efe251efcc3141))
+
+
+
+
+
 # [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
 
 **Note:** Version bump only for package @budgie/recurring
