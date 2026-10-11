@@ -1,10 +1,12 @@
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 
-export interface DatePickerModalParams {
+interface DatePickerModalParams {
     readonly initialDate?: Date;
 }
 
-export const [DatePickerModalContext, useDatePickerModal, useDatePickerModalParams] = createModalContext<
-    DatePickerModalParams,
-    Date | null
->(null);
+const [DatePickerModalContext, useDatePickerModal, useDatePickerModalParams] = createModalContext<DatePickerModalParams, Date | null>(null);
+
+export { useDatePickerModal, useDatePickerModalParams };
+
+export const DatePickerModalProvider = createModalProvider(DatePickerModalContext, '/date-picker');

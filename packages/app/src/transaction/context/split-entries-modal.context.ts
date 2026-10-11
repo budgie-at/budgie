@@ -1,9 +1,10 @@
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 
 import type { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 
-export interface SplitEntriesModalParams {
+interface SplitEntriesModalParams {
     readonly entries: TransactionEntryCreateInputInterface[];
     readonly variant: ColorPaletteVariant;
     readonly entryType: TransactionEntryTypeEnum;
@@ -11,9 +12,13 @@ export interface SplitEntriesModalParams {
     readonly totalAmount: number;
 }
 
-export type SplitEntriesModalResult = TransactionEntryCreateInputInterface[] | null;
+type SplitEntriesModalResult = TransactionEntryCreateInputInterface[] | null;
 
-export const [SplitEntriesModalContext, useSplitEntriesModal, useSplitEntriesModalParams] = createModalContext<
+const [SplitEntriesModalContext, useSplitEntriesModal, useSplitEntriesModalParams] = createModalContext<
     SplitEntriesModalParams,
     SplitEntriesModalResult
 >(null);
+
+export { useSplitEntriesModal, useSplitEntriesModalParams };
+
+export const SplitEntriesModalProvider = createModalProvider(SplitEntriesModalContext, '/split-entries');
