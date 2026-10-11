@@ -1,14 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { useAiModelStorage } from '../../hook/use-ai-model-storage.hook';
 import { formatModelStorageSize } from '../../utils/format-model-storage-size.util';
-import { AiModelStorageCardHeader } from '../ai-model-storage-card-header/ai-model-storage-card-header';
 import { AiModelStorageEntryList } from '../ai-model-storage-entry-list/ai-model-storage-entry-list';
 import { AiModelStorageRemoveAllButton } from '../ai-model-storage-remove-all-button/ai-model-storage-remove-all-button';
 
@@ -21,7 +19,8 @@ export const AiModelStorageCard = () => {
     const { snapshot, isLoading, removingId, isRemovingAll, errorMessage, remove, removeAll } = useAiModelStorage();
     const hasDownloads = isPositiveNumber(snapshot.entries.length);
     const totalSize = formatModelStorageSize(snapshot.totalBytes);
-    const description = hasDownloads ? t`${totalSize} stored on this device` : t`No downloaded AI models found on this device`;
+    const statusText = isLoading ? t`Checking storage...` : t`No downloaded AI models found on this device`;
+    const displayStatusText = hasDownloads && !isLoading ? t`${totalSize} stored on this device` : statusText;
     const hasCurrentDownloads = snapshot.entries.some(entry => entry.isCurrent);
     const showRemoveAll = hasDownloads && snapshot.entries.length > 1;
     const removeAllMessage = hasCurrentDownloads
@@ -30,31 +29,15 @@ export const AiModelStorageCard = () => {
 
     const removeModel = (id: AiModelStorageIdEnum): void => {
         void remove(id).then(
-            () => {
-                Toast.show({ type: 'success', text1: t`AI model removed` });
-
-                return null;
-            },
-            (error: unknown) => {
-                Toast.show({ type: 'error', text1: t`Could not remove AI model`, text2: getErrorMessage(error) });
-
-                return null;
-            }
+            () => void Toast.show({ type: 'success', text1: t`AI model removed` }),
+            (error: unknown) => void Toast.show({ type: 'error', text1: t`Could not remove AI model`, text2: getErrorMessage(error) })
         );
     };
 
     const removeAllModels = (): void => {
         void removeAll().then(
-            () => {
-                Toast.show({ type: 'success', text1: t`AI models removed` });
-
-                return null;
-            },
-            (error: unknown) => {
-                Toast.show({ type: 'error', text1: t`Could not remove AI models`, text2: getErrorMessage(error) });
-
-                return null;
-            }
+            () => void Toast.show({ type: 'success', text1: t`AI models removed` }),
+            (error: unknown) => void Toast.show({ type: 'error', text1: t`Could not remove AI models`, text2: getErrorMessage(error) })
         );
     };
 
@@ -89,8 +72,8 @@ export const AiModelStorageCard = () => {
         });
 
     return (
-        <Card className="gap-y-3xl" variant="ghost" testID={AiModelStorageCardSelector.Container}>
-            <AiModelStorageCardHeader isLoading={isLoading} description={description} />
+        <View className="gap-y-3xl" testID={AiModelStorageCardSelector.Container}>
+            <Text className="text-secondary-foreground text-sm">{displayStatusText}</Text>
 
             {isPositiveNumber(errorMessage?.length ?? 0) ? (
                 <Text className="text-destructive-foreground text-sm">{errorMessage}</Text>
@@ -112,6 +95,6 @@ export const AiModelStorageCard = () => {
                     onPress={handleRemoveAll}
                 />
             ) : null}
-        </Card>
+        </View>
     );
 };

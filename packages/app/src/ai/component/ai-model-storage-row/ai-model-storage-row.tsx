@@ -2,8 +2,10 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AiModelStorageActionStatusEnum } from '../../enum/ai-model-storage-action-status.enum';
 import { AiModelStorageIdEnum } from '../../enum/ai-model-storage-id.enum';
@@ -59,15 +61,16 @@ export const AiModelStorageRow = ({ entry, actionStatus, onRemove }: Props) => {
             {isRemoving ? (
                 <ActivityIndicator size="small" />
             ) : (
-                <Button
-                    size="sm"
-                    variant="destructive"
-                    content={t`Remove`}
-                    leftIcon={UserIconNameEnum.Trash2}
+                <HapticPressable
+                    className={cn('p-xl', isRemoveDisabled && 'opacity-50')}
                     disabled={isRemoveDisabled}
                     onPress={handleRemove}
+                    accessibilityLabel={t`Remove`}
+                    accessibilityRole="button"
                     testID={AiModelStorageCardSelector.RemoveButton(entry.id)}
-                />
+                >
+                    <Icon icon={UserIconNameEnum.Trash2} className="text-destructive-foreground" size={18} />
+                </HapticPressable>
             )}
         </View>
     );

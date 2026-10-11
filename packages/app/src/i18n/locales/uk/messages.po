@@ -1017,7 +1017,7 @@ msgstr "Перевірка"
 msgid "Checking Account"
 msgstr "Поточний рахунок"
 
-#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
 msgid "Checking storage..."
 msgstr "Перевірка сховища..."
 
@@ -1789,10 +1789,6 @@ msgstr "Завантажте виписку у форматі PDF"
 #: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
 msgid "Downloaded"
 msgstr "Завантажено"
-
-#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
-msgid "Downloaded AI models"
-msgstr "Завантажені моделі ШІ"
 
 #: src/app/(tabs)/settings/ai-models.tsx
 msgid "Downloaded model files stored on this device"

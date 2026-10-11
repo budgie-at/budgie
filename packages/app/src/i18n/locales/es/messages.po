@@ -1017,7 +1017,7 @@ msgstr "Comprobando"
 msgid "Checking Account"
 msgstr "Cuenta corriente"
 
-#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
+#: src/ai/component/ai-model-storage-card/ai-model-storage-card.tsx
 msgid "Checking storage..."
 msgstr "Comprobando almacenamiento..."
 
@@ -1789,10 +1789,6 @@ msgstr "Descarga tu extracto en PDF"
 #: src/ai/component/ai-model-storage-row/ai-model-storage-row.tsx
 msgid "Downloaded"
 msgstr "Descargado"
-
-#: src/ai/component/ai-model-storage-card-header/ai-model-storage-card-header.tsx
-msgid "Downloaded AI models"
-msgstr "Modelos de IA descargados"
 
 #: src/app/(tabs)/settings/ai-models.tsx
 msgid "Downloaded model files stored on this device"
