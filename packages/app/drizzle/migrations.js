@@ -8,7 +8,6 @@ import m0004 from './20261004121613_transaction_tag_source/migration.sql';
 import m0005 from './20261005210950_account_installment_count/migration.sql';
 import m0006 from './20261007190655_transaction_entry_operation_metadata/migration.sql';
 import m0007 from './20261011120000_ai_feature_settings/migration.sql';
-import m0008 from './20261011120100_ai_feature_settings_backfill/migration.sql';
 
 export default {
     migrations: {
@@ -19,7 +18,6 @@ export default {
         '20261004121613_transaction_tag_source': m0004,
         '20261005210950_account_installment_count': m0005,
         '20261007190655_transaction_entry_operation_metadata': m0006,
-        '20261011120000_ai_feature_settings': m0007,
-        '20261011120100_ai_feature_settings_backfill': m0008
+        '20261011120000_ai_feature_settings': m0007
     }
 };
