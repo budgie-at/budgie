@@ -12,6 +12,7 @@ import { normalizeIconSearchText } from '../src/@generic/utils/normalize-icon-se
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const APP_DIR = resolve(SCRIPT_DIR, '..');
 const REICON_DIR = join(APP_DIR, 'node_modules', 'reicon-react-native');
+const ICON_SPECIFIER_PREFIX = 'reicon-react-native/icons/';
 const ENUM_FILE = resolve(APP_DIR, '..', 'contracts', 'src', '@generic', 'enum', 'user-icon-name.enum.ts');
 const CHUNKS_DIR = join(APP_DIR, 'src', '@generic', 'constant', 'icons');
 const AGGREGATOR_FILE = join(APP_DIR, 'src', '@generic', 'constant', 'icons.constant.ts');
@@ -19,12 +20,12 @@ const SEARCH_INDEX_FILE = join(APP_DIR, 'src', '@generic', 'constant', 'icon-sea
 const REICON_MAPPING_FILE = join(APP_DIR, 'src', '@generic', 'constant', 'user-icon-reicon-names.constant.json');
 const EMOJIBASE_DIR = join(APP_DIR, 'node_modules', 'emojibase-data');
 const KEYWORDS_DIR = join(SCRIPT_DIR, 'icon-keywords');
-const PRESERVED_KEYWORDS_FILE = join(KEYWORDS_DIR, 'preserved-icon-keywords.json');
+const PRESERVED_KEYWORDS_FILE_NAME = 'preserved-icon-keywords.json';
+const PRESERVED_KEYWORDS_FILE = join(KEYWORDS_DIR, PRESERVED_KEYWORDS_FILE_NAME);
 const EXTRA_TAGS_FILE = join(SCRIPT_DIR, 'icon-tags.json');
 const EMOJI_LANGUAGES = ['en', 'uk', 'ru', 'de', 'es', 'fr'];
 const EMOJI_COMPONENT_GROUP = 2;
 const MIN_TRANSLATED_WORD_LENGTH = 3;
-const PRESERVED_KEYWORDS_FILE_NAME = 'preserved-icon-keywords.json';
 const INTERFACE_IMPORT_FROM_CHUNKS = '../../interface/reicon-module.interface';
 const INTERFACE_IMPORT_FROM_AGGREGATOR = '../interface/reicon-module.interface';
 const CHUNK_SIZE = 240;
@@ -35,18 +36,9 @@ interface IconEntryInterface {
     readonly savedName: string;
 }
 
-const ReiconPackageSchema = Schema.Struct({
-    name: Schema.String,
-    exports: Schema.Record(Schema.String, Schema.Unknown)
-});
+const StringRecordSchema = Schema.Record(Schema.String, Schema.String);
 
-const ReiconMappingSchema = Schema.Record(Schema.String, Schema.String);
-
-const IconTagsSchema = Schema.Record(Schema.String, Schema.Array(Schema.String));
-
-const WordTranslationsSchema = Schema.Record(Schema.String, Schema.Array(Schema.String));
-
-const PreservedIconKeywordsSchema = Schema.Record(Schema.String, Schema.String);
+const StringArrayRecordSchema = Schema.Record(Schema.String, Schema.Array(Schema.String));
 
 const EmojibaseDataSchema = Schema.Array(
     Schema.Struct({
@@ -80,18 +72,6 @@ const parseEnumValues = (enumFile: string): string[] => {
     return values;
 };
 
-const resolveIconSpecifierPrefix = (reiconDir: string): string => {
-    const packageJson = Schema.decodeUnknownSync(ReiconPackageSchema)(JSON.parse(readFileSync(join(reiconDir, 'package.json'), 'utf8')));
-    const wildcardKey = Object.keys(packageJson.exports).find(key => key.includes('icons') && key.endsWith('*'));
-
-    if (!isDefined(wildcardKey)) {
-        console.error(`reicon-react-native has no per-icon "./icons/*" export. Found: ${Object.keys(packageJson.exports).join(', ')}`);
-        process.exit(1);
-    }
-
-    return `${packageJson.name}${wildcardKey.slice(1).replace(/\*$/, '')}`;
-};
-
 const buildReiconExportNames = (reiconDir: string): Set<string> => {
     const indexDeclaration = readFileSync(join(reiconDir, 'index.d.ts'), 'utf8');
     const exportRegex = /^export \{ ([A-Za-z0-9]+) \} from '\.\/icons\/[A-Za-z0-9]+\.js';$/gm;
@@ -111,32 +91,24 @@ const buildReiconExportNames = (reiconDir: string): Set<string> => {
     return exportNames;
 };
 
-const readReiconMapping = (mappingFile: string): Record<string, string> => {
-    if (!existsSync(mappingFile)) {
-        console.error(`Missing Reicon mapping file: ${mappingFile}`);
-        process.exit(1);
-    }
-
-    return Schema.decodeUnknownSync(ReiconMappingSchema)(JSON.parse(readFileSync(mappingFile, 'utf8')));
-};
-
 const validateMappingCoverage = (
     enumValues: readonly string[],
-    reiconMapping: Record<string, string>,
+    reiconOverrides: Record<string, string>,
     reiconExportNames: ReadonlySet<string>
 ): void => {
     const enumNames = new Set(enumValues);
-    const mappingNames = Object.keys(reiconMapping);
-    const missingNames = enumValues.filter(value => !isDefined(reiconMapping[value]));
-    const extraNames = mappingNames.filter(value => !enumNames.has(value)).sort();
+    const extraNames = Object.keys(reiconOverrides)
+        .filter(value => !enumNames.has(value))
+        .sort();
     const missingExportNames = [
-        ...new Set(Object.values(reiconMapping).filter(componentName => !reiconExportNames.has(componentName)))
+        ...new Set(
+            enumValues
+                .map(savedName => reiconOverrides[savedName] ?? savedName)
+                .filter(componentName => !reiconExportNames.has(componentName))
+        )
     ].sort();
 
-    if (missingNames.length > 0 || extraNames.length > 0 || missingExportNames.length > 0) {
-        if (missingNames.length > 0) {
-            console.error(`Missing Reicon mappings for ${missingNames.length} saved icon names: ${missingNames.join(', ')}`);
-        }
+    if (extraNames.length > 0 || missingExportNames.length > 0) {
         if (extraNames.length > 0) {
             console.error(`Reicon mapping has ${extraNames.length} names not present in UserIconNameEnum: ${extraNames.join(', ')}`);
         }
@@ -147,12 +119,12 @@ const validateMappingCoverage = (
     }
 };
 
-const collectIconEntries = (enumValues: readonly string[], reiconMapping: Record<string, string>): IconEntryInterface[] =>
+const collectIconEntries = (enumValues: readonly string[], reiconOverrides: Record<string, string>): IconEntryInterface[] =>
     enumValues
-        .map(savedName => ({ savedName, componentName: reiconMapping[savedName] }))
+        .map(savedName => ({ savedName, componentName: reiconOverrides[savedName] ?? savedName }))
         .sort((first, second) => (first.savedName < second.savedName ? -1 : first.savedName > second.savedName ? 1 : 0));
 
-const renderChunk = (chunkIndex: number, chunk: readonly IconEntryInterface[], specifierPrefix: string): string =>
+const renderChunk = (chunkIndex: number, chunk: readonly IconEntryInterface[]): string =>
     [
         HEADER,
         "import { UserIconNameEnum } from '@budgie/contracts';",
@@ -160,12 +132,7 @@ const renderChunk = (chunkIndex: number, chunk: readonly IconEntryInterface[], s
         `import type { ReiconModuleInterface } from '${INTERFACE_IMPORT_FROM_CHUNKS}';`,
         '',
         `export const ICON_IMPORTS_CHUNK_${chunkIndex} = {`,
-        chunk
-            .map(
-                (entry, index) =>
-                    `    ${entry.savedName}: () => import('${specifierPrefix}${entry.componentName}')${index === chunk.length - 1 ? '' : ','}`
-            )
-            .join('\n'),
+        chunk.map(entry => `    ${entry.savedName}: () => import('${ICON_SPECIFIER_PREFIX}${entry.componentName}')`).join(',\n'),
         '} satisfies Partial<Record<UserIconNameEnum, () => Promise<ReiconModuleInterface>>>;',
         ''
     ].join('\n');
@@ -179,17 +146,15 @@ const renderAggregator = (chunkBaseNames: readonly string[]): string =>
         '',
         `import type { ReiconModuleInterface } from '${INTERFACE_IMPORT_FROM_AGGREGATOR}';`,
         '',
-        'export const ICON_IMPORTS: Partial<Record<UserIconNameEnum, () => Promise<ReiconModuleInterface>>> = {',
-        chunkBaseNames
-            .map((_, index) => `    ...ICON_IMPORTS_CHUNK_${index + 1}${index === chunkBaseNames.length - 1 ? '' : ','}`)
-            .join('\n'),
-        '};',
+        'export const ICON_IMPORTS = {',
+        chunkBaseNames.map((_, index) => `    ...ICON_IMPORTS_CHUNK_${index + 1}`).join(',\n'),
+        '} satisfies Record<UserIconNameEnum, () => Promise<ReiconModuleInterface>>;',
         ''
     ].join('\n');
 
 const toKebabName = (pascalName: string): string => pascalName.replaceAll(/(?<=[a-z0-9])(?=[A-Z])/gu, '-').toLowerCase();
 
-const writeChunks = (iconEntries: readonly IconEntryInterface[], specifierPrefix: string): string[] => {
+const writeChunks = (iconEntries: readonly IconEntryInterface[]): string[] => {
     rmSync(CHUNKS_DIR, { force: true, recursive: true });
     mkdirSync(CHUNKS_DIR, { recursive: true });
 
@@ -200,7 +165,7 @@ const writeChunks = (iconEntries: readonly IconEntryInterface[], specifierPrefix
         const chunkBaseName = `icons-${toKebabName(chunk[0].savedName)}.constant`;
         chunkBaseNames.push(chunkBaseName);
 
-        writeFileSync(join(CHUNKS_DIR, `${chunkBaseName}.ts`), renderChunk(chunkIndex, chunk, specifierPrefix));
+        writeFileSync(join(CHUNKS_DIR, `${chunkBaseName}.ts`), renderChunk(chunkIndex, chunk));
     }
 
     return chunkBaseNames;
@@ -221,12 +186,9 @@ const readWordTranslations = (): Record<string, string[]>[] =>
               .map(fileName => {
                   console.log(`Using word translations ${fileName}`);
 
-                  return Schema.decodeUnknownSync(WordTranslationsSchema)(JSON.parse(readFileSync(join(KEYWORDS_DIR, fileName), 'utf8')));
+                  return Schema.decodeUnknownSync(StringArrayRecordSchema)(JSON.parse(readFileSync(join(KEYWORDS_DIR, fileName), 'utf8')));
               })
         : [];
-
-const readPreservedIconKeywords = (): Record<string, string> =>
-    Schema.decodeUnknownSync(PreservedIconKeywordsSchema)(JSON.parse(readFileSync(PRESERVED_KEYWORDS_FILE, 'utf8')));
 
 const splitKeywordSection = (section: string): string[] => section.split('|').filter(isNotEmptyString);
 
@@ -240,8 +202,8 @@ const buildIconKeywords = (savedName: string, existingKeywords: string | undefin
 };
 
 const buildReiconIndex = (iconEntries: readonly IconEntryInterface[]): [string, string][] => {
-    const extraTagsByName = Schema.decodeUnknownSync(IconTagsSchema)(JSON.parse(readFileSync(EXTRA_TAGS_FILE, 'utf8')));
-    const preservedKeywordsByName = readPreservedIconKeywords();
+    const extraTagsByName = Schema.decodeUnknownSync(StringArrayRecordSchema)(JSON.parse(readFileSync(EXTRA_TAGS_FILE, 'utf8')));
+    const preservedKeywordsByName = Schema.decodeUnknownSync(StringRecordSchema)(JSON.parse(readFileSync(PRESERVED_KEYWORDS_FILE, 'utf8')));
 
     return iconEntries.map(entry => [
         entry.savedName,
@@ -287,12 +249,12 @@ const buildEmojiIndex = (): [string, string][] => {
 const main = (): void => {
     const enumValues = parseEnumValues(ENUM_FILE);
     const reiconExportNames = buildReiconExportNames(REICON_DIR);
-    const reiconMapping = readReiconMapping(REICON_MAPPING_FILE);
+    const reiconOverrides = Schema.decodeUnknownSync(StringRecordSchema)(JSON.parse(readFileSync(REICON_MAPPING_FILE, 'utf8')));
 
-    validateMappingCoverage(enumValues, reiconMapping, reiconExportNames);
+    validateMappingCoverage(enumValues, reiconOverrides, reiconExportNames);
 
-    const iconEntries = collectIconEntries(enumValues, reiconMapping);
-    const chunkBaseNames = writeChunks(iconEntries, resolveIconSpecifierPrefix(REICON_DIR));
+    const iconEntries = collectIconEntries(enumValues, reiconOverrides);
+    const chunkBaseNames = writeChunks(iconEntries);
 
     writeFileSync(AGGREGATOR_FILE, renderAggregator(chunkBaseNames));
     const reiconIndex = buildReiconIndex(iconEntries);

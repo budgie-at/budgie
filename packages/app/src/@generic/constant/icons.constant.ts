@@ -12,7 +12,7 @@ import { ICON_IMPORTS_CHUNK_8 } from './icons/icons-thumbs-down.constant';
 
 import type { ReiconModuleInterface } from '../interface/reicon-module.interface';
 
-export const ICON_IMPORTS: Partial<Record<UserIconNameEnum, () => Promise<ReiconModuleInterface>>> = {
+export const ICON_IMPORTS = {
     ...ICON_IMPORTS_CHUNK_1,
     ...ICON_IMPORTS_CHUNK_2,
     ...ICON_IMPORTS_CHUNK_3,
@@ -21,4 +21,4 @@ export const ICON_IMPORTS: Partial<Record<UserIconNameEnum, () => Promise<Reicon
     ...ICON_IMPORTS_CHUNK_6,
     ...ICON_IMPORTS_CHUNK_7,
     ...ICON_IMPORTS_CHUNK_8
-};
+} satisfies Record<UserIconNameEnum, () => Promise<ReiconModuleInterface>>;

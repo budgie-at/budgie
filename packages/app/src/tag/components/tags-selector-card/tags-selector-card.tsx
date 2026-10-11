@@ -7,9 +7,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { IconWeightEnum } from '../../../@generic/enum/icon-weight.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 import { TagVariantType } from '../../type/tag-variant.type';
+
+import type { IconWeight } from 'reicon-react-native';
 
 interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
     readonly onSelect: (id: number) => void;
@@ -26,6 +27,8 @@ const TAG_CARD_HEIGHT = 56;
 const PRIMARY_SCALE = 1.04;
 const NORMAL_SCALE = 1;
 const SCALE_SPRING = { damping: 14, stiffness: 220 };
+const filledStarIconWeight: IconWeight = 'Filled';
+const outlineStarIconWeight: IconWeight = 'Outline';
 
 const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justify-center gap-x-md', {
     variants: {
@@ -105,7 +108,7 @@ export const TagsSelectorCard = ({
     const numberOfLines = variant === 'static' ? 2 : 1;
     const longPressHandler = isDefined(onPrimarySelect) ? handlePrimarySelect : void 0;
     const showStarBadge = variant === 'static' && isSelected;
-    const starWeight = isPrimary ? IconWeightEnum.FILLED : IconWeightEnum.OUTLINE;
+    const starWeight = isPrimary ? filledStarIconWeight : outlineStarIconWeight;
 
     const scaleStyle = useAnimatedStyle(() => ({
         transform: [{ scale: withSpring(isPrimary ? PRIMARY_SCALE : NORMAL_SCALE, SCALE_SPRING) }]
