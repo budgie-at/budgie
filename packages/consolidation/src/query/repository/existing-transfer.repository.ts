@@ -18,27 +18,18 @@ export class ExistingTransferRepository extends Context.Service<ExistingTransfer
     '@budgie/consolidation/ExistingTransferRepository',
     {
         make: Effect.succeed({
-            findBridgeCandidates: Effect.fn('ExistingTransferRepository.findBridgeCandidates')(function* (
-                scope: ConsolidationScanScopeInterface | null = null
-            ) {
-                const sql = EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL(scope);
-
-                return yield* Db.query(db => db.$client.unsafe<ExistingTransferBridgeCandidateInterface>(sql));
-            }),
-            findChainReclaimCandidates: Effect.fn('ExistingTransferRepository.findChainReclaimCandidates')(function* (
-                scope: ConsolidationScanScopeInterface | null = null
-            ) {
-                const sql = EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL(scope);
-
-                return yield* Db.query(db => db.$client.unsafe<ExistingTransferChainReclaimCandidateInterface>(sql));
-            }),
-            findIncomeDuplicateCandidates: Effect.fn('ExistingTransferRepository.findIncomeDuplicateCandidates')(function* (
-                scope: ConsolidationScanScopeInterface | null = null
-            ) {
-                const sql = EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL(scope);
-
-                return yield* Db.query(db => db.$client.unsafe<ExistingTransferIncomeDuplicateCandidateInterface>(sql));
-            })
+            findBridgeCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db => db.$client.unsafe<ExistingTransferBridgeCandidateInterface>(EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL(scope))),
+            findChainReclaimCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db =>
+                    db.$client.unsafe<ExistingTransferChainReclaimCandidateInterface>(EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL(scope))
+                ),
+            findIncomeDuplicateCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db =>
+                    db.$client.unsafe<ExistingTransferIncomeDuplicateCandidateInterface>(
+                        EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL(scope)
+                    )
+                )
         })
     }
 ) {
