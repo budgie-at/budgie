@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: subflows/navigation/navigate-to-settings.flow.yaml
+
+- runFlow:
+      file: subflows/navigation/open-settings-card.flow.yaml
+      env:
+          CARD_ID: 'SettingsPage.AiModelsCard'
+          DESTINATION_ID: 'AiModelsPage.Container'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AiModelStorageCard'
+      timeout: 3000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 3000
