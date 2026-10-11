@@ -519,11 +519,11 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "AI feature turned off"
 msgstr "AI-Funktion ausgeschaltet"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "AI feature turned on"
 msgstr "AI-Funktion eingeschaltet"
 
@@ -828,7 +828,7 @@ msgstr "Budgetlimit erreicht"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Budgie can also free {reclaimableSize} by removing downloads this feature no longer needs."
 msgstr "Budgie kann außerdem {reclaimableSize} freigeben, indem Downloads entfernt werden, die diese Funktion nicht mehr benötigt."
 
@@ -876,7 +876,7 @@ msgstr "Budgie benachrichtigt dich, wenn der Import fertig ist"
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen bleiben unverändert."
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended."
 msgstr "Budgie verwendet für diese Funktion AI auf dem Gerät. Downloads können erneut nötig sein, daher wird WLAN empfohlen."
 
@@ -899,7 +899,7 @@ msgstr "Kann Stunden dauern"
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
@@ -1330,7 +1330,7 @@ msgstr "Datenbank konnte nicht exportiert werden"
 msgid "Could not fetch accounts"
 msgstr "Konten konnten nicht abgerufen werden"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Could not free up space"
 msgstr "Speicherplatz konnte nicht freigegeben werden"
 
@@ -1439,7 +1439,7 @@ msgstr "Transaktion konnte nicht entkonsolidiert werden."
 msgid "Could not undo the move to cash"
 msgstr "Verschieben ins Bargeld konnte nicht rückgängig gemacht werden"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Could not update AI feature"
 msgstr "AI-Funktion konnte nicht aktualisiert werden"
 
@@ -3021,10 +3021,6 @@ msgstr "Keine Transaktionen stimmen überein"
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
-#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
-msgid "No unused downloads"
-msgstr "Keine ungenutzten Downloads"
-
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "None selected"
 msgstr "Nichts ausgewählt"
@@ -3931,7 +3927,7 @@ msgstr "Budgie einrichten"
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Shared downloads are still needed by other features"
 msgstr "Geteilte Downloads werden weiterhin von anderen Funktionen benötigt"
 
@@ -4018,7 +4014,7 @@ msgstr "Quelle"
 msgid "Sources"
 msgstr "Quellen"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Space freed"
 msgstr "Speicherplatz freigegeben"
 
@@ -4245,10 +4241,6 @@ msgstr "Die Bank hat die Währung der Einlage nicht übermittelt. Bestätige die
 #: src/rule/util/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen mussten aktualisiert werden."
-
-#: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
-msgid "There are no unused AI downloads to remove."
-msgstr "Es gibt keine ungenutzten KI-Downloads zum Entfernen."
 
 #: src/ai/component/ai-unused-downloads-cleanup/ai-unused-downloads-cleanup.tsx
 msgid "These downloads are not needed by your enabled features. Downloads still in use will be kept."
@@ -4528,15 +4520,15 @@ msgstr "Erneut versuchen"
 msgid "Try again after Budgie finishes checking storage."
 msgstr "Versuche es erneut, nachdem Budgie die Speicherprüfung abgeschlossen hat."
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Turn off and free {reclaimableSize}"
 msgstr "Ausschalten und {reclaimableSize} freigeben"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Turn off, keep downloads"
 msgstr "Ausschalten, Downloads behalten"
 
-#: src/ai/hook/use-ai-model-storage-actions.hook/use-ai-model-storage-actions.hook.ts
+#: src/ai/hook/use-ai-model-storage.hook.ts
 msgid "Turn on"
 msgstr "Einschalten"
 
