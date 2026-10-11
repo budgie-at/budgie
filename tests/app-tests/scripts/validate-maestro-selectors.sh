@@ -26,17 +26,17 @@ fi
 
 BARE_POINT_TAPS=$(
     find "$FLOW_DIR" -name '*.yaml' -exec awk '
-        function flush() { if (point_line && !has_selector) { printf "%s:%d\n", FILENAME, point_line } point_line = 0; has_selector = 0 }
+        function flush() { if (point_line && (!has_selector || !is_relative)) { printf "%s:%d\n", FILENAME, point_line } point_line = 0; has_selector = 0 }
         /^[[:space:]]*-[[:space:]]/ { flush() }
         /^[[:space:]]+(id|text):/ { has_selector = 1 }
-        /^[[:space:]]+point:/ { point_line = FNR }
+        /^[[:space:]]+point:/ { point_line = FNR; is_relative = $0 ~ /point:[[:space:]]*[^[:alnum:]]?[0-9]+%,[0-9]+%[^[:alnum:]%,]*$/ }
         END { flush() }
     ' {} \; || true
 )
 
 if [ -n "$BARE_POINT_TAPS" ]; then
     printf '%s\n' "$BARE_POINT_TAPS"
-    echo "A point: tap is only allowed together with an id: or text: selector in the same tapOn."
+    echo "A point: must be a relative \"x%,y%\" value inside a tapOn that also has an id: or text: selector."
     exit 1
 fi
 
