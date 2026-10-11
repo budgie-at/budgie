@@ -8,7 +8,8 @@ appId: ${APP_ID}
     timeout: 5000
 - tapOn:
     id: 'NoteInput.Input'
-- eraseText: 50
+    point: '95%,90%'
+- eraseText: 255
 - inputText: ${COMMENT}
 - tapOn:
     id: 'NoteInput.SubmitButton'
