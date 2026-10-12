@@ -10,6 +10,8 @@ import {
     parseCsvHeaders
 } from '@budgie/import-export';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
@@ -32,6 +34,24 @@ import { RuleApplicationDrainerService } from '../../../rule/service/rule-applic
 
 import { ImportScreenSelector } from './import-screen.selector';
 
+const IMPORT_COLUMN_FIELDS = [
+    { name: 'toAccount', label: msg`To Account`, isRequired: true },
+    { name: 'category', label: msg`Category`, isRequired: true },
+    { name: 'operatedAt', label: msg`Date`, isRequired: true },
+    { name: 'toAmount', label: msg`Amount`, isRequired: true },
+    { name: 'toCurrency', label: msg`To Currency`, isRequired: true },
+    { name: 'externalId', label: msg`External ID`, isRequired: false },
+    { name: 'fromAccount', label: msg`From Account`, isRequired: false },
+    { name: 'fromCurrency', label: msg`From Currency`, isRequired: false },
+    { name: 'fromAmount', label: msg`From Amount`, isRequired: false },
+    { name: 'comment', label: msg`Comment`, isRequired: false },
+    { name: 'mcc', label: msg`MCC`, isRequired: false }
+] as const satisfies readonly {
+    readonly name: keyof ImportColumnMapFormValues;
+    readonly label: MessageDescriptor;
+    readonly isRequired: boolean;
+}[];
+
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function ImportScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
@@ -48,9 +68,10 @@ export default function ImportScreen() {
 
     const schemaWithHeaders = ImportColumnMapSchema.check(
         Schema.makeFilter(data =>
-            (['toAccount', 'category', 'operatedAt', 'toAmount', 'toCurrency'] as const)
-                .filter(column => !headersSet.has(data[column]))
-                .map(column => ({ path: [column], issue: t`Select a valid column` }))
+            IMPORT_COLUMN_FIELDS.filter(({ isRequired, name }) => isRequired && !headersSet.has(data[name])).map(({ name }) => ({
+                path: [name],
+                issue: t`Select a valid column`
+            }))
         )
     );
 
@@ -169,76 +190,17 @@ export default function ImportScreen() {
             }
         >
             <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
-            <ImportColumnMapField
-                control={control}
-                name="toAccount"
-                label={t`To Account`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-                isRequired
-            />
-            <ImportColumnMapField
-                control={control}
-                name="category"
-                label={t`Category`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-                isRequired
-            />
-            <ImportColumnMapField
-                control={control}
-                name="operatedAt"
-                label={t`Date`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-                isRequired
-            />
-            <ImportColumnMapField
-                control={control}
-                name="toAmount"
-                label={t`Amount`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-                isRequired
-            />
-            <ImportColumnMapField
-                control={control}
-                name="toCurrency"
-                label={t`To Currency`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-                isRequired
-            />
-            <ImportColumnMapField
-                control={control}
-                name="externalId"
-                label={t`External ID`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-            />
-            <ImportColumnMapField
-                control={control}
-                name="fromAccount"
-                label={t`From Account`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-            />
-            <ImportColumnMapField
-                control={control}
-                name="fromCurrency"
-                label={t`From Currency`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-            />
-            <ImportColumnMapField
-                control={control}
-                name="fromAmount"
-                label={t`From Amount`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-            />
-            <ImportColumnMapField control={control} name="comment" label={t`Comment`} headers={headers} selectedHeaders={selectedHeaders} />
-            <ImportColumnMapField control={control} name="mcc" label={t`MCC`} headers={headers} selectedHeaders={selectedHeaders} />
+            {IMPORT_COLUMN_FIELDS.map(({ name, label, isRequired }) => (
+                <ImportColumnMapField
+                    key={name}
+                    control={control}
+                    name={name}
+                    label={t(label)}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                    isRequired={isRequired}
+                />
+            ))}
         </CollapsibleChromePage>
     );
 }

@@ -11,8 +11,6 @@ import { AccountRowInterface } from '../../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
-import { isAccountItem } from '../../type-guard/is-account-item.type-guard';
-import { isCryptoCurrencyGroup } from '../../type-guard/is-crypto-currency-group.type-guard';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
@@ -54,11 +52,11 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
     }) => <HomeSectionItem item={item} section={section} balanceSummary={balanceSummary} />;
 
     const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface) => {
-        if (isAccountItem(item)) {
+        if ('type' in item) {
             return `debt-${item.id}`;
         }
 
-        return isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id);
+        return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.left.id);
     };
 
     if (!isNotEmptyArray(sections)) {

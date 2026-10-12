@@ -2,12 +2,10 @@ import { AccountTypeEnum } from '@budgie/contracts';
 import { AccountService, TransactionTransferService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useState } from 'react';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -17,62 +15,47 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
     const formatDigits = useDisplayFormatDigits();
-    const [isLoading, setIsLoading] = useState(false);
+    const [run, isLoading] = useEffectAction(t`Could not close deposit`);
 
-    const confirmDepositClose = async (destinationAccountId: number): Promise<boolean> => {
-        const destinationAccount = await appRuntime.runPromise(
-            Effect.flatMap(AccountService, accountService => accountService.findByIdOrFail(destinationAccountId))
+    const closeDeposit = Effect.gen(function* () {
+        const destinationAccountId = yield* Effect.promise(() =>
+            openAccountSelector({ excludeAccountId: accountId, excludeAccountTypes: [AccountTypeEnum.DEBT] })
         );
+
+        if (!isDefined(destinationAccountId)) {
+            return;
+        }
+
+        const accountService = yield* AccountService;
+        const destinationAccount = yield* accountService.findByIdOrFail(destinationAccountId);
         const formattedBalance = formatDigits(balance, instrumentSymbol);
         const destinationAccountTitle = destinationAccount.title;
+        const confirmed = yield* Effect.promise(() =>
+            confirmAlert({
+                title: t`Close Deposit?`,
+                message: t`${formattedBalance} will be transferred to ${destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts.`,
+                confirmText: t`Close Deposit`,
+                cancelText: t`Cancel`,
+                isDestructive: true
+            })
+        );
 
-        return confirmAlert({
-            title: t`Close Deposit?`,
-            message: t`${formattedBalance} will be transferred to ${destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts.`,
-            confirmText: t`Close Deposit`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
-    };
+        if (!confirmed) {
+            return;
+        }
 
-    const handleCloseDeposit = async () => {
+        const transactionTransferService = yield* TransactionTransferService;
+
+        yield* transactionTransferService.closeDepositTo(accountId, destinationAccountId);
+        yield* Effect.sync(() => void dismissAllOrReplace('/'));
+    });
+
+    const handleCloseDeposit = () => {
         if (isLoading) {
             return;
         }
 
-        setIsLoading(true);
-
-        try {
-            const destinationAccountId = await openAccountSelector({
-                excludeAccountId: accountId,
-                excludeAccountTypes: [AccountTypeEnum.DEBT]
-            });
-
-            if (!isDefined(destinationAccountId)) {
-                return;
-            }
-
-            const confirmed = await confirmDepositClose(destinationAccountId);
-
-            if (!confirmed) {
-                return;
-            }
-
-            await appRuntime.runPromise(
-                Effect.flatMap(TransactionTransferService, transactionTransferService =>
-                    transactionTransferService.closeDepositTo(accountId, destinationAccountId)
-                )
-            );
-            dismissAllOrReplace('/');
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not close deposit`,
-                text2: getErrorMessage(error)
-            });
-        } finally {
-            setIsLoading(false);
-        }
+        run(closeDeposit);
     };
 
     return { handleCloseDeposit, isLoading };
