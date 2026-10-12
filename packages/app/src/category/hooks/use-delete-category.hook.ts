@@ -19,8 +19,12 @@ export const useDeleteCategory = () => {
 
         if (!isPositiveNumber(count)) {
             yield* categoryService.deleteById(id).pipe(
-                Effect.tapCause(cause => Effect.logError(cause)),
-                Effect.tapError(() => Effect.sync(() => void showErrorToast(t`Could not delete category`, t`Please try again later`)))
+                Effect.tapCause(cause =>
+                    Effect.andThen(
+                        Effect.logError(cause),
+                        Effect.sync(() => void showErrorToast(t`Could not delete category`, t`Please try again later`))
+                    )
+                )
             );
 
             return;
@@ -38,8 +42,12 @@ export const useDeleteCategory = () => {
 
         if (isDefined(targetCategoryId)) {
             yield* categoryService.mergeInto(id, targetCategoryId).pipe(
-                Effect.tapCause(cause => Effect.logError(cause)),
-                Effect.catch(() => Effect.sync(() => void showErrorToast(t`Could not reassign category`, t`Please try again later`)))
+                Effect.catchCause(cause =>
+                    Effect.andThen(
+                        Effect.logError(cause),
+                        Effect.sync(() => void showErrorToast(t`Could not reassign category`, t`Please try again later`))
+                    )
+                )
             );
         }
     });
