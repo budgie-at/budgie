@@ -1,4 +1,4 @@
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertFromMicroUnits } from '@budgie/contracts';
 
 export const buildBudgetCategoryLimitMetrics = (spent: number, limitAmount: number) => {
     const remainingAmount = limitAmount - spent;

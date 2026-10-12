@@ -1,9 +1,8 @@
+import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 

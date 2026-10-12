@@ -1,8 +1,8 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { RunwaySelector } from '../../runway.selector';
 import { getRunwayAmountVariant } from '../../utils/get-runway-amount-variant.util';
 import { RunwayFlowCell } from '../runway-flow-cell/runway-flow-cell';

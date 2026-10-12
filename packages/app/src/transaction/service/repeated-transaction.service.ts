@@ -1,11 +1,16 @@
-import { LanguageEnum, RepeatedTransactionPatternInterface, TransactionPatternRepository, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    LanguageEnum,
+    RepeatedTransactionPatternInterface,
+    TransactionPatternRepository,
+    TransactionTypeEnum,
+    convertToMicroUnits
+} from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import {
     MINUTES_IN_DAY,
     REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT,

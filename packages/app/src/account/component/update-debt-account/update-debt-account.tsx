@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountEntityInterface } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useMemo } from 'react';
@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { useDebtAccountManualSettledAmountQuery } from '../../query/use-debt-account-manual-settled-amount.query';

@@ -1,3 +1,4 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -8,7 +9,6 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useToday } from '../../../@generic/hook/use-today.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';

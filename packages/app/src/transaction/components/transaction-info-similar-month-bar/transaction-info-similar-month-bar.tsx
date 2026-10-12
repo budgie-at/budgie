@@ -1,9 +1,9 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { format } from 'date-fns/format';
 import { enUS } from 'date-fns/locale/en-US';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { TransactionInfoSimilarBar } from '../transaction-info-similar-bar/transaction-info-similar-bar';
 
 import type { SimilarTransactionMonthRowInterface } from '@budgie/contracts';

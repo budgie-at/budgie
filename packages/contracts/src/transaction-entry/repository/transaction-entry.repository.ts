@@ -6,7 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -21,7 +21,6 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
     '@budgie/contracts/TransactionEntryRepository',
     {
         make: Effect.sync(() => {
-            const filters = new BaseTransactionFilterRepository();
             const deleteLiveEntries = (...conditions: SQL[]) =>
                 Db.query(db =>
                     db
@@ -173,7 +172,10 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                         db
                             .delete(TransactionEntryEntityTable)
                             .where(
-                                and(inArray(TransactionEntryEntityTable.transactionId, transactionIds), filters.buildLedgerEntryCondition())
+                                and(
+                                    inArray(TransactionEntryEntityTable.transactionId, transactionIds),
+                                    transactionFilters.buildLedgerEntryCondition()
+                                )
                             )
                     ),
                 moveBackToOriginalTransactions: (canonicalTransactionId: number) =>

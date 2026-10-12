@@ -1,4 +1,4 @@
-import { TransactionEntryKindEnum } from '@budgie/contracts';
+import { TransactionEntryKindEnum, convertToMicroUnits } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -6,7 +6,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';

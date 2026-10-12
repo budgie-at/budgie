@@ -1,3 +1,4 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { getMonth } from 'date-fns/getMonth';
 import { getYear } from 'date-fns/getYear';
 import { subMonths } from 'date-fns/subMonths';
@@ -28,10 +29,7 @@ const HUNDRED_STEP = 100;
 const THOUSAND_STEP = 1000;
 const SPIKE_MULTIPLIER = 2;
 const GENERIC_ROUNDING_STEP = 100;
-const MICRO_UNIT_PRECISION = THOUSAND_STEP * THOUSAND_STEP;
 const ZERO_DRAFT: BudgetTemplateDraftInterface = { overallLimit: 0, categoryLimits: [] };
-
-const convertFromMicroUnits = (amount: number): number => amount / MICRO_UNIT_PRECISION;
 
 const roundToNiceStep = (value: number): number => {
     const step = value >= THOUSAND_STEP ? THOUSAND_STEP : HUNDRED_STEP;

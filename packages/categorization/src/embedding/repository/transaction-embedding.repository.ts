@@ -1,7 +1,7 @@
 import {
     AccountEntityTable,
     AccountTypeEnum,
-    BaseTransactionFilterRepository,
+    transactionFilters,
     Db,
     MccCategoryEntityTable,
     TransactionEntityTable,
@@ -77,8 +77,6 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                       AND te.category_id IS NOT NULL
                 ))
             `;
-
-            const transactionFilters = new BaseTransactionFilterRepository();
 
             const AWAITING_AUTO_CATEGORY_WHERE = and(
                 eq(TransactionEntityTable.needsEmbedding, true),

@@ -4,7 +4,8 @@ import {
     AccountNotFoundError,
     AccountRepository,
     Db,
-    SettingsRepository
+    SettingsRepository,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -12,7 +13,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 import { TransactionService } from '../../transaction/service/transaction.service';
 

@@ -1,10 +1,9 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';

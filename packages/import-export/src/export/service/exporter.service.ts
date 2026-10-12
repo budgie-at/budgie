@@ -9,9 +9,9 @@ import {
     MccCategoryRepository,
     TransactionRepository,
     TransactionTypeEnum,
-    TransactionWithEntriesEntityInterface
+    TransactionWithEntriesEntityInterface,
+    convertFromMicroUnits
 } from '@budgie/contracts';
-import { convertFromMicroUnits } from '@budgie/ledger';
 import { format } from 'date-fns/format';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';

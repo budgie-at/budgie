@@ -18,7 +18,7 @@ src/
 │   ├── constant/             # PRECISION, base fields
 │   ├── enum/                 # Language, Theme, Currency, UserIconName
 │   ├── interface/            # DateRange, etc.
-│   ├── repository/           # BaseTransactionFilterRepository
+│   ├── repository/           # transactionFilters predicate builders
 │   ├── type/                 # DB, TX types
 │   └── util/                 # Table columns, schema utils, SQL helpers
 ├── [entity]/                 # Entity modules (15 total)
@@ -207,17 +207,15 @@ Db.query(db =>
 
 ### Base Repository
 
-`BaseTransactionFilterRepository` is a plain predicate-builder class. Instantiate it inside `make` and reuse its `build*Condition` methods:
+`transactionFilters` is the exported predicate-builder singleton. Import it and reuse its `build*Condition` methods:
 
 ```typescript
 make: Effect.sync(() => {
-    const filters = new BaseTransactionFilterRepository();
-
     return {
-        getAll: (limit: number, transactionFilters?: TransactionFilterInterface) =>
+        getAll: (limit: number, filter?: TransactionFilterInterface) =>
             Db.query(db =>
                 db.query.TransactionEntityTable.findMany({
-                    where: filters.buildFilterWhere(transactionFilters),
+                    where: transactionFilters.buildFilterWhere(filter),
                     limit,
                     with: { entries: true, transactionTags: true }
                 })

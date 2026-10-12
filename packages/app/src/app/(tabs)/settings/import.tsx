@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, YIELD_TO_UI } from '@budgie/contracts';
 import {
     countCsvRows,
     IMPORT_PRESETS,
@@ -24,7 +24,6 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
-import { YIELD_TO_UI } from '../../../@generic/constant/yield-to-ui.constant';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';

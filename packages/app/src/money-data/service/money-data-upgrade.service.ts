@@ -1,4 +1,4 @@
-import { Db, TransactionEntryRepository } from '@budgie/contracts';
+import { Db, TransactionEntryRepository, YIELD_TO_UI } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
@@ -9,8 +9,6 @@ import * as Layer from 'effect/Layer';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
-
-import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 
 import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
 import type { PendingBaseValuationBucketInterface } from '@budgie/contracts';

@@ -6,7 +6,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -40,8 +40,6 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
     '@budgie/contracts/TransactionPatternRepository',
     {
         make: Effect.sync(() => {
-            const transactionFilters = new BaseTransactionFilterRepository();
-
             const buildTitleScopeCondition = (groupColumn: PatternGroupColumn) =>
                 groupColumn === 'title' ? ne(TransactionEntityTable.title, '') : eq(TransactionEntityTable.title, '');
 

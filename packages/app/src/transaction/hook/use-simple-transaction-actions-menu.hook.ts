@@ -1,10 +1,9 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { useOpenConvertToInstallment } from '../../installment-plan/hook/use-open-convert-to-installment.hook';
 import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';

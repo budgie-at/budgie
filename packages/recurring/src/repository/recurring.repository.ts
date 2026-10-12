@@ -3,7 +3,7 @@ import {
     buildSpendingEntryCondition,
     RecurringSeriesKindEnum,
     AccountEntityTable,
-    BaseTransactionFilterRepository,
+    transactionFilters,
     CategoryEntityTable,
     DefaultCategoryTranslationEntityTable,
     Db,
@@ -24,8 +24,6 @@ import type { RecurringSeriesCreateEntityInterface } from '@budgie/contracts';
 
 export class RecurringRepository extends Context.Service<RecurringRepository>()('@budgie/recurring/RecurringRepository', {
     make: Effect.sync(() => {
-        const filters = new BaseTransactionFilterRepository();
-
         const findCharges = (defaultInstrumentId: number | null, language: LanguageEnum, since: Date, historical: boolean) =>
             Db.query(db => {
                 const rateToDefault = sql<number>`COALESCE(
@@ -70,9 +68,9 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                         and(
                             eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
                             eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
-                            filters.buildVisibleTransactionCondition(),
-                            filters.buildCategorizableEntryCondition(),
-                            filters.buildNonDebtAccountCondition(),
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            transactionFilters.buildCategorizableEntryCondition(),
+                            transactionFilters.buildNonDebtAccountCondition(),
                             ...(historical ? [] : [buildSpendingEntryCondition(), eq(AccountEntityTable.isActive, true)]),
                             gt(TransactionEntryEntityTable.amount, 0),
                             gte(TransactionEntityTable.operatedAt, since),

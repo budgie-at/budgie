@@ -1,4 +1,5 @@
 /* eslint-disable max-lines -- File owns the single BinanceMapper class; package rule mandates one mapper class per provider, splitting would fragment it -- approved by human */
+import { PRECISION, convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { getUnixTime } from 'date-fns/getUnixTime';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -8,7 +9,6 @@ import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { BINANCE_NO_NUMERIC_CODE } from '../constant/binance-no-numeric-code.constant';
-import { BINANCE_MICRO_UNITS_PRECISION } from '../constant/binance-precision.constant';
 import { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { encodeBinanceAccountId } from '../util/binance-account-id.util';
@@ -207,13 +207,13 @@ class BinanceMapper {
         }
 
         const truncatedFraction = parts.fractionalPart.slice(0, MICRO_UNITS_DECIMALS).padEnd(MICRO_UNITS_DECIMALS, '0');
-        const wholeMicroUnits = BigInt(parts.integerPart) * BigInt(BINANCE_MICRO_UNITS_PRECISION);
+        const wholeMicroUnits = BigInt(parts.integerPart) * BigInt(PRECISION);
         const totalMicroUnits = wholeMicroUnits + BigInt(truncatedFraction);
         if (totalMicroUnits > BigInt(Number.MAX_SAFE_INTEGER)) {
             return null;
         }
 
-        return Number(totalMicroUnits) / BINANCE_MICRO_UNITS_PRECISION;
+        return convertFromMicroUnits(Number(totalMicroUnits));
     }
 
     private groupEarnRewardsByDay(rewards: readonly BinanceEarnRewardApiInterface[]): Map<string, BinanceEarnDayBucket> {
@@ -233,7 +233,7 @@ class BinanceMapper {
             return null;
         }
 
-        const amount = bucket.totalMicroUnits / BINANCE_MICRO_UNITS_PRECISION;
+        const amount = convertFromMicroUnits(bucket.totalMicroUnits);
         const externalId = `binance:earn:${asset}:${bucket.dayKey}`;
         const time = Math.floor(bucket.lastRewardTime / MILLISECONDS_PER_SECOND);
 
@@ -250,7 +250,7 @@ class BinanceMapper {
     private parseEarnRewardMicroUnits(value: string): number {
         const amount = this.parseBinanceAmount(value);
 
-        return isDefined(amount) && amount > 0 ? Math.round(amount * BINANCE_MICRO_UNITS_PRECISION) : 0;
+        return isDefined(amount) && amount > 0 ? convertToMicroUnits(amount) : 0;
     }
 
     private buildEarnDayKey(timeMs: number): string {

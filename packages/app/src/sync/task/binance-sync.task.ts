@@ -4,9 +4,9 @@ import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { Workload } from '../../@generic/service/workload.service';
+import { runBackgroundTask } from '../../@generic/utils/run-background-task.util';
 import { BACKGROUND_SYNC_RUN_BUDGET_MS } from '../constant/background-sync-run-budget-ms.constant';
 import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
-import { runBackgroundTask } from '../utils/run-background-task.util';
 
 TaskManager.defineTask(BINANCE_SYNC_TASK, () =>
     runBackgroundTask(

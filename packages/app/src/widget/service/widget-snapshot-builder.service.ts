@@ -8,7 +8,8 @@ import {
     LanguageEnum,
     RUNWAY_WINDOW_MONTHS,
     SettingsRepository,
-    StatisticsRepository
+    StatisticsRepository,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { setupI18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
@@ -22,7 +23,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { i18nLoadLanguageMessages } from '../../i18n/util/i18n.util';

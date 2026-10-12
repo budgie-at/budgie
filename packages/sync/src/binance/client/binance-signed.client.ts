@@ -1,4 +1,5 @@
 /* eslint-disable max-lines -- File owns a single multi-stage Binance signed-client pipeline (balances, crypto + fiat history, HMAC signing, weight throttle) that must stay together */
+import { PRECISION } from '@budgie/contracts';
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
@@ -19,7 +20,6 @@ import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema
 import { BINANCE_DORMANCY_PERIOD_MS } from '../constant/binance-dormancy-period-ms.constant';
 import { BINANCE_FIAT_MAX_PERIOD_MS } from '../constant/binance-fiat-max-period-ms.constant';
 import { BINANCE_MAJOR_QUOTE_ASSETS } from '../constant/binance-major-quote-asset.constant';
-import { BINANCE_MICRO_UNITS_PRECISION as MICRO_UNITS_PRECISION } from '../constant/binance-precision.constant';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
 import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
@@ -809,7 +809,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
             if (isDefined(total) && total > 0) {
-                balanceByAsset.set(balance.asset, total * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : total);
+                balanceByAsset.set(balance.asset, total * PRECISION > Number.MAX_SAFE_INTEGER ? null : total);
             } else if (!isDefined(total)) {
                 balanceByAsset.set(balance.asset, null);
             }
@@ -832,7 +832,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         const nextBalance = (currentBalance ?? 0) + quantity;
-        balanceByAsset.set(asset, nextBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : nextBalance);
+        balanceByAsset.set(asset, nextBalance * PRECISION > Number.MAX_SAFE_INTEGER ? null : nextBalance);
     }
 
     private buildSpotAccounts(balanceByAsset: Map<string, number | null>) {
@@ -860,7 +860,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return null;
         }
 
-        if (!isDefined(totalBalance) || totalBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER) {
+        if (!isDefined(totalBalance) || totalBalance * PRECISION > Number.MAX_SAFE_INTEGER) {
             return binanceMapper.mapUnrepresentableBalanceToAccount(balance.asset, wallet);
         }
 

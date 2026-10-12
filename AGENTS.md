@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, market, ledger, recurring, rules, categorization, import-export, consolidation, and logger packages.
+Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, market, ledger, recurring, rules, categorization, import-export, and consolidation packages.
 
 ## Commands
 
@@ -83,7 +83,6 @@ Use the repo package scopes without the npm namespace prefix:
 - `categorization`
 - `import-export`
 - `consolidation`
-- `logger`
 
 ### Scope Selection Rules
 
@@ -147,8 +146,7 @@ packages/
 ├── consolidation/      # Transaction consolidation
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 16 marketing site
-├── sync/          # Bank integration package
-└── logger/             # Shared logging package
+└── sync/          # Bank integration package
 ```
 
 ## Package-Specific Instructions
@@ -190,7 +188,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by Oxlint `curly: ["error", "all"]` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Domain packages (`recurring`, `categorization`, `import-export`, `rules`, `market`, `ledger`, `budget`, `consolidation`, `sync`, `contracts`, `ai`, `logger`) MAY host colocated `test/` suites using `@effect/vitest` + `tests/test-kit`, excluded from the package build; `app` and `landing` host no Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Cross-package scenario suites, real-backup checks and money-safety invariants live in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`; domain-package suites live in `packages/<name>/test/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Domain packages (`recurring`, `categorization`, `import-export`, `rules`, `market`, `ledger`, `budget`, `consolidation`, `sync`, `contracts`, `ai`) MAY host colocated `test/` suites using `@effect/vitest` + `tests/test-kit`, excluded from the package build; `app` and `landing` host no Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Cross-package scenario suites, real-backup checks and money-safety invariants live in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`; domain-package suites live in `packages/<name>/test/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -362,8 +360,7 @@ if (isDefined(filters.date)) {
 
 ```typescript
 // Good - use utility functions
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
+import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 const displayAmount = convertFromMicroUnits(pattern.averageAmount);
 const microAmount = convertToMicroUnits(userInputAmount);
 
@@ -525,7 +522,7 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 - **Running.** Only edges run effects: the app `ManagedRuntime` (`runtime.runPromise`) in hooks, atoms, background tasks and boot, `Effect.runPromise` in Next.js route edges, `it.effect` in `tests/*`. No `Effect.runPromise`/`runSync` inside services.
 - **Tests.** `tests/*` suites use `@effect/vitest`: every test is `it.effect('...', () => Effect.gen(function* () {...}))` (`it.layer` for shared layers), with `Db` and services provided as layers from `tests/test-kit`. No `async` test bodies, no `runPromise` in tests, no `try`/`catch`; assert failures with `Effect.flip`/`Effect.exit`. Time-dependent tests use `TestClock`.
 - **React.** Service-calling state and live database reads live in `@effect/atom-react` atoms (`databaseQueryAtom` for reads).
-- **Logging.** The `makeLoggerLayer` layer from `@budgie/logger` is the only sink. `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output; Metro dev bundles still log through `__DEV__`. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
+- **Logging.** The `makeLoggerLayer` layer from `@budgie/contracts` is the only sink. `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output; Metro dev bundles still log through `__DEV__`. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
 ## Tech Stack
 
@@ -533,10 +530,9 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **app**       | Expo 58, React 19 + Compiler, Expo Router 58, Drizzle ORM, Uniwind 1.12, Lingui 6.5                                                                      |
 | **ai**        | Pure TypeScript, Effect                                                                                                                                  |
-| **contracts** | Drizzle ORM, Effect                                                                                                                                      |
+| **contracts** | Drizzle ORM, Effect, `makeLoggerLayer`                                                                                                                                    |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                         |
 | **sync**      | @liaugust/monobank-sdk, date-fns, Effect                                                                                                                 |
-| **logger**    | Effect `Logger` layer (`makeLoggerLayer`)                                                                                                                |
 | **Build**     | pnpm 11.24.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.11.5, native TypeScript 7 + TypeScript 6 API, Oxlint 1.86 + local `lint-rules/` JS plugin (no ESLint), `@effect/language-service` 0.87 diagnostics gate |
 
 ## Workflow

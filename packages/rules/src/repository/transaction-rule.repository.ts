@@ -1,5 +1,5 @@
 import {
-    BaseTransactionFilterRepository,
+    transactionFilters,
     CategorySourceEnum,
     Db,
     TransactionEntityTable,
@@ -15,7 +15,6 @@ import type { SQL } from 'drizzle-orm';
 
 export class TransactionRuleRepository extends Context.Service<TransactionRuleRepository>()('@budgie/rules/TransactionRuleRepository', {
     make: Effect.sync(() => {
-        const transactionFilters = new BaseTransactionFilterRepository();
         const buildRuleConditionsWhere = (where: SQL): SQL | undefined =>
             and(
                 transactionFilters.buildVisibleTransactionCondition(),

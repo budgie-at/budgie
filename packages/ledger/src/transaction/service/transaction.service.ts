@@ -12,7 +12,8 @@ import {
     TransactionTypeEnum,
     type TransactionUpdateServiceInputInterface,
     TransactionUpdatedByEnum,
-    type TransactionWithEntriesEntityInterface
+    type TransactionWithEntriesEntityInterface,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
@@ -21,7 +22,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';

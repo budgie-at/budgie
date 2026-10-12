@@ -1,10 +1,15 @@
-import { AccountBalanceRepository, AccountTypeEnum, DebtEventEntityTable, InstrumentEntityTable } from '@budgie/contracts';
+import {
+    AccountBalanceRepository,
+    AccountTypeEnum,
+    DebtEventEntityTable,
+    InstrumentEntityTable,
+    convertFromMicroUnits
+} from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';

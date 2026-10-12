@@ -24,8 +24,9 @@ import { AmountRangeInterface } from '../interface/amount-range.interface';
 import { DateRangeInterface } from '../interface/date-range.interface';
 import { buildTranslatedCategoryRelation } from '../util/build-translated-category-relation.util';
 
-export class BaseTransactionFilterRepository {
+class BaseTransactionFilterRepository {
     private static readonly CATEGORIZABLE_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
+    readonly ledgerEntryFilter = { originalTransactionId: { isNull: true }, deletedAt: { isNull: true } } as const;
 
     private readonly queryBuilder = new QueryBuilder();
 
@@ -49,22 +50,6 @@ export class BaseTransactionFilterRepository {
         return isNotEmptyArray(conditions) ? and(...conditions) : undefined;
     }
 
-    buildCategoryCondition(categoryIds: number[]) {
-        if (isEmptyArray(categoryIds)) {
-            return this.buildUncategorizedCondition();
-        }
-
-        return this.buildSelectedCategoryCondition(categoryIds);
-    }
-
-    buildTagCondition(tagIds: number[]) {
-        if (isEmptyArray(tagIds)) {
-            return this.buildUntaggedCondition();
-        }
-
-        return this.buildSelectedTagCondition(tagIds);
-    }
-
     buildAccountCondition(accountIds: number[] | null): SQL[] {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(
@@ -80,59 +65,14 @@ export class BaseTransactionFilterRepository {
         return [];
     }
 
-    buildDateCondition({ from, to }: DateRangeInterface) {
-        const parts: SQL[] = [];
-
-        if (isDefined(from)) {
-            parts.push(gte(TransactionEntityTable.operatedAt, from));
-        }
-
-        if (isDefined(to)) {
-            parts.push(lte(TransactionEntityTable.operatedAt, to));
-        }
-
-        // eslint-disable-next-line no-undefined
-        return isNotEmptyArray(parts) ? and(...parts) : undefined;
-    }
-
-    buildAmountCondition({ from, to }: AmountRangeInterface) {
-        const amountParts: SQL[] = [
-            ...(isDefined(from) ? [gte(TransactionEntryEntityTable.amount, Math.round(from * PRECISION))] : []),
-            ...(isDefined(to) ? [lte(TransactionEntryEntityTable.amount, Math.round(to * PRECISION))] : [])
-        ];
-
-        if (isEmptyArray(amountParts)) {
-            // eslint-disable-next-line no-undefined
-            return undefined;
-        }
-
-        return inArray(
-            TransactionEntityTable.id,
-            this.queryBuilder
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                .from(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        this.buildPrimaryLedgerEntryCondition(),
-                        inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
-                        ...amountParts
-                    )
-                )
-        );
-    }
-
     buildVisibleTransactionCondition() {
         return and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
-    }
-
-    buildLedgerEntryFilter() {
-        return { originalTransactionId: { isNull: true }, deletedAt: { isNull: true } } as const;
     }
 
     buildFullTransactionRelations(language: LanguageEnum) {
         return {
             [TransactionAssociationEnum.ENTRIES]: {
-                where: this.buildLedgerEntryFilter(),
+                where: this.ledgerEntryFilter,
                 with: {
                     [TransactionEntryAssociationEnum.ACCOUNT]: {
                         with: {
@@ -231,6 +171,63 @@ export class BaseTransactionFilterRepository {
             );
     }
 
+    private buildCategoryCondition(categoryIds: number[]) {
+        if (isEmptyArray(categoryIds)) {
+            return this.buildUncategorizedCondition();
+        }
+
+        return this.buildSelectedCategoryCondition(categoryIds);
+    }
+
+    private buildTagCondition(tagIds: number[]) {
+        if (isEmptyArray(tagIds)) {
+            return this.buildUntaggedCondition();
+        }
+
+        return this.buildSelectedTagCondition(tagIds);
+    }
+
+    private buildDateCondition({ from, to }: DateRangeInterface) {
+        const parts: SQL[] = [];
+
+        if (isDefined(from)) {
+            parts.push(gte(TransactionEntityTable.operatedAt, from));
+        }
+
+        if (isDefined(to)) {
+            parts.push(lte(TransactionEntityTable.operatedAt, to));
+        }
+
+        // eslint-disable-next-line no-undefined
+        return isNotEmptyArray(parts) ? and(...parts) : undefined;
+    }
+
+    private buildAmountCondition({ from, to }: AmountRangeInterface) {
+        const amountParts: SQL[] = [
+            ...(isDefined(from) ? [gte(TransactionEntryEntityTable.amount, Math.round(from * PRECISION))] : []),
+            ...(isDefined(to) ? [lte(TransactionEntryEntityTable.amount, Math.round(to * PRECISION))] : [])
+        ];
+
+        if (isEmptyArray(amountParts)) {
+            // eslint-disable-next-line no-undefined
+            return undefined;
+        }
+
+        return inArray(
+            TransactionEntityTable.id,
+            this.queryBuilder
+                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .from(TransactionEntryEntityTable)
+                .where(
+                    and(
+                        this.buildPrimaryLedgerEntryCondition(),
+                        inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
+                        ...amountParts
+                    )
+                )
+        );
+    }
+
     private buildUncategorizedCondition() {
         return and(
             this.buildCategorizableTypeCondition(null),
@@ -265,3 +262,5 @@ export class BaseTransactionFilterRepository {
         );
     }
 }
+
+export const transactionFilters = new BaseTransactionFilterRepository();

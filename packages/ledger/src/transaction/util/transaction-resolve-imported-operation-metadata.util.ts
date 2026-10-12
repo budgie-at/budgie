@@ -1,8 +1,6 @@
-import { TransactionEntryKindEnum } from '@budgie/contracts';
+import { TransactionEntryKindEnum, convertToMicroUnits } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 
 import type { TransactionEntryCreateInputInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 

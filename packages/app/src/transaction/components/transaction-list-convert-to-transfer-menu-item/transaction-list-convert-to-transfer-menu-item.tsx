@@ -1,11 +1,10 @@
-import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';

@@ -1,4 +1,4 @@
-import { Db, TransactionEntryRepository, TransactionRepository } from '@budgie/contracts';
+import { Db, TransactionEntryRepository, TransactionRepository, convertToMicroUnits } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -6,7 +6,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
 import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
 

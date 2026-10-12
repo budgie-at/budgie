@@ -1,5 +1,5 @@
 import { budgetPeriodService } from '@budgie/budget';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -12,7 +12,6 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useToday } from '../../../@generic/hook/use-today.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';

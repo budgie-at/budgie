@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
@@ -9,7 +9,6 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 import { Button } from '../../../@generic/component/button/button';
 import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';

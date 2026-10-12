@@ -1,5 +1,4 @@
-import { InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
-import { convertToMicroUnits } from '@budgie/ledger';
+import { InstrumentRepository, InstrumentTypeEnum, convertToMicroUnits } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';

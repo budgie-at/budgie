@@ -1,4 +1,11 @@
-import { AccountNotFoundError, AccountRepository, AccountTypeEnum, CurrencyEnum, InstrumentRepository, PRECISION } from '@budgie/contracts';
+import {
+    AccountNotFoundError,
+    AccountRepository,
+    AccountTypeEnum,
+    CurrencyEnum,
+    InstrumentRepository,
+    convertToMicroUnits
+} from '@budgie/contracts';
 import { format } from 'date-fns/format';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Cache from 'effect/Cache';
@@ -216,7 +223,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             }
 
             return yield* valueAccountAmount(
-                { accountId: entry.accountId, amount: Math.round(entry.amount * PRECISION), operatedAt },
+                { accountId: entry.accountId, amount: convertToMicroUnits(entry.amount), operatedAt },
                 context
             );
         });

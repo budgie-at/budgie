@@ -11,9 +11,10 @@ import {
     SyncModeEnum,
     SyncRepository,
     TransactionRepository,
-    UserIconNameEnum
+    UserIconNameEnum,
+    convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, TransactionService, convertToMicroUnits } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
 import { subSeconds } from 'date-fns/subSeconds';
 import * as Context from 'effect/Context';

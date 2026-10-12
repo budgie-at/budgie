@@ -10,7 +10,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTypeEnum,
-    PRECISION
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { SQL, and, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -70,13 +70,13 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
             return {
                 ...transaction,
-                amount: calculateAmountForRuleEvaluation(transaction) / PRECISION,
+                amount: convertFromMicroUnits(calculateAmountForRuleEvaluation(transaction)),
                 tagIds: [],
                 entries: entries.map(entry => ({
                     type: entry.type,
                     categoryId: entry.categoryId,
                     accountId: entry.accountId,
-                    amount: entry.amount / PRECISION,
+                    amount: convertFromMicroUnits(entry.amount),
                     mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
                     mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
                 }))

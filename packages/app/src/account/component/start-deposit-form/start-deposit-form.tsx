@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { TransactionTransferService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
@@ -11,7 +11,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useShowError } from '../../../@generic/hook/use-show-error.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { StartDepositFormSchema } from '../../constant/start-deposit-form-schema.constant';
 import { StartDepositFormBody } from '../start-deposit-form-body/start-deposit-form-body';

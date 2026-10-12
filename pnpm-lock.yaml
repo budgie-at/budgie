@@ -176,9 +176,6 @@ importers:
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../ledger
-      '@budgie/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@budgie/market':
         specifier: workspace:*
         version: link:../market
@@ -718,12 +715,6 @@ importers:
       vitest:
         specifier: ^5.0.2
         version: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
-
-  packages/logger:
-    dependencies:
-      effect:
-        specifier: 4.0.0
-        version: 4.0.0
 
   packages/market:
     dependencies:
