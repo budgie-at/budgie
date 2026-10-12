@@ -156,7 +156,16 @@ jobs:
                   node-version: 22.22.1
 
             - name: Install sqlite3 and ruby
-              run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends sqlite3 ruby
+              timeout-minutes: 3
+              run: |
+                  if command -v sqlite3 && command -v ruby; then exit 0; fi
+                  for attempt in 1 2 3; do
+                    timeout 90 sudo apt-get -o Acquire::Retries=3 update -qq \
+                      && timeout 90 sudo apt-get install -y --no-install-recommends sqlite3 ruby \
+                      && exit 0
+                    sleep 5
+                  done
+                  exit 1
 
             - name: Store metadata budgets
               run: bash .github/scripts/check-store-metadata.sh
@@ -213,7 +222,7 @@ jobs:
             package-manager: pnpm
             install-command: pnpm install --frozen-lockfile
             runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
-            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/market --filter=@budgie/ledger --filter=@budgie/rules --filter=@budgie/recurring --filter=@budgie/categorization --filter=@budgie/import-export
+            build-command: pnpm exec turbo build --filter='@budgie/*'
             release-tag-prefix: ota-pr${{ github.event.pull_request.number }}
             prune-keep: '100'
 
@@ -273,7 +282,7 @@ jobs:
             test-timeout-minutes: 110
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
-            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget --filter=@budgie/market --filter=@budgie/ledger --filter=@budgie/rules --filter=@budgie/recurring --filter=@budgie/categorization --filter=@budgie/import-export
+            build-command: pnpm exec turbo build --filter='@budgie/*'
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
