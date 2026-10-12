@@ -15,19 +15,15 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { resolveDirectOrInverseRate } from '../../@generic/util/resolve-direct-or-inverse-rate.util';
+import { ExchangeRateRepository } from '../../exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 
 import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
-import type {
-    Db,
-    DbError,
-    HistoricalExchangeRateEntityInterface,
-    TransactionCreateInputInterface,
-    TransactionEntryCreateInputInterface
-} from '@budgie/contracts';
+import type { TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 export class EntryBaseValuationService extends Context.Service<EntryBaseValuationService>()('@budgie/market/EntryBaseValuationService', {
     make: Effect.gen(function* () {
@@ -35,6 +31,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const exchangeRatesService = yield* ExchangeRatesService;
+        const exchangeRateRepository = yield* ExchangeRateRepository;
         const rateDateFormat = 'yyyy-MM-dd';
 
         const buildBaseValuation = (baseInstrumentId: number, baseExchangeRate: number, amount: number): EntryBaseValuationInterface => ({
@@ -59,29 +56,6 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             }
 
             return yield* Effect.die(new Error(`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`));
-        });
-
-        const resolveDirectOrInverseRate = Effect.fnUntraced(function* (
-            lookup: (
-                sourceInstrumentId: number,
-                targetInstrumentId: number
-            ) => Effect.Effect<HistoricalExchangeRateEntityInterface | undefined, DbError, Db>,
-            sourceInstrumentId: number,
-            targetInstrumentId: number
-        ) {
-            const direct = yield* lookup(sourceInstrumentId, targetInstrumentId);
-
-            if (isDefined(direct)) {
-                return direct.rate;
-            }
-
-            const inverse = yield* lookup(targetInstrumentId, sourceInstrumentId);
-
-            if (isDefined(inverse)) {
-                return 1 / inverse.rate;
-            }
-
-            return null;
         });
 
         const resolveHistoricalEuroRate = Effect.fnUntraced(function* (instrumentId: number, euroInstrumentId: number, rateDate: string) {
@@ -149,7 +123,11 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                     return bridgeExchangeRate;
                 }
 
-                return yield* exchangeRatesService.findDirectOrInverseConversionRate(sourceInstrumentId, targetInstrumentId);
+                return yield* resolveDirectOrInverseRate(
+                    (sourceId, targetId) => exchangeRateRepository.findByBaseAndQuoteIds(sourceId, targetId),
+                    sourceInstrumentId,
+                    targetInstrumentId
+                );
             }
         );
 
@@ -273,6 +251,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             AccountRepository.layer,
             HistoricalExchangeRateRepository.layer,
             InstrumentRepository.layer,
+            ExchangeRateRepository.layer,
             ExchangeRatesService.layer
         ])
     );
