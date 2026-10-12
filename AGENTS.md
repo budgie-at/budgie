@@ -173,7 +173,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()`
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
 9. **One component per file/folder** - Each top-level component lives in its own file inside its own folder. Lazy wrappers (`const Foo = lazy(() => import('...'))`) count as components — extract them to their own file so the dynamic-import boundary is a real code-split point and the file has exactly one default-shaped export.
-10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Effect Schemas and their `Type` aliases used by forms.
+10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Effect Schemas and their `Type` aliases used by forms. A modal context file may export its Provider, and Expo Router screen options may be inlined in the layout through a shared options factory.
 11. **Use `t` macro for string props** - Use `t\`text\``from`@lingui/react/macro`for string props (like`content={t\`Cancel\`}`), `<Trans>` only for direct JSX text children
 12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
 13. **No complex logic in JSX props** - Extract ternaries/logical operators to variables before JSX
