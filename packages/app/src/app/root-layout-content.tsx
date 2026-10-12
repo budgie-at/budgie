@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 import { I18nProvider as LinguiProvider } from '@lingui/react';
 import * as Effect from 'effect/Effect';
-import { Stack } from 'expo-router';
+import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -18,29 +18,8 @@ import { DevMenuController } from '../@generic/component/dev-menu-controller/dev
 import { ErrorBoundary } from '../@generic/component/error-boundary/error-boundary';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
-import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
-import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
-import { CONVERT_TO_INSTALLMENT_MODAL_OPTIONS } from '../@generic/constant/convert-to-installment-modal-options.constant';
-import { CONVERT_TO_REFUND_MODAL_OPTIONS } from '../@generic/constant/convert-to-refund-modal-options.constant';
-import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATABASE_RESTORE_I18N } from '../@generic/constant/database-restore-i18n.constant';
-import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
-import { AMOUNT_FILTER_SHEET_OPTIONS, COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
-import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
-import { IMPORT_BACKUP_PIN_MODAL_OPTIONS } from '../@generic/constant/import-backup-pin-modal-options.constant';
-import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
-import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
-import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-modal-options.constant';
-import {
-    DATE_FILTER_SHEET_OPTIONS,
-    STACKED_FILTER_MODAL_OPTIONS,
-    UNIFIED_FILTER_SHEET_OPTIONS
-} from '../@generic/constant/searchable-filter-modal-options.constant';
-import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
-import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
-import { TRANSACTION_FEE_MODAL_OPTIONS } from '../@generic/constant/transaction-fee-modal-options.constant';
-import { VOICE_REVIEW_MODAL_OPTIONS } from '../@generic/constant/voice-review-modal-options.constant';
 import { DatabaseMigrationStatusEnum } from '../@generic/drizzle/enum/database-migration-status.enum';
 import { useDatabaseMigration } from '../@generic/drizzle/hook/use-database-migration.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
@@ -50,6 +29,7 @@ import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
+import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
@@ -59,6 +39,29 @@ import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
+
+const DETENT_95 = 0.95;
+const DETENT_46 = 0.46;
+const DETENT_12 = 0.12;
+const DETENT_90 = 0.9;
+const DETENT_70 = 0.7;
+const DETENT_40 = 0.4;
+const DETENT_55 = 0.55;
+const DETENT_85 = 0.85;
+const DETENT_82 = 0.82;
+const DETENT_96 = 0.96;
+
+const MODAL_OPTIONS: NativeStackNavigationOptions = { presentation: 'modal', headerShown: false };
+
+const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
+    presentation: 'pageSheet',
+    headerShown: false,
+    contentStyle: { backgroundColor: 'transparent' }
+};
+
+const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEnabled: false };
+
+const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
 enableScreens();
 enableFreeze();
@@ -154,108 +157,84 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
-                                                                    <Stack.Screen
-                                                                        name="category-selector"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="account-selector"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="currency-selector"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="language-selector"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="resync-window-picker"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="contact-selector"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="language-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="resync-window-picker" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="voice-review"
-                                                                        options={VOICE_REVIEW_MODAL_OPTIONS}
+                                                                        options={formSheetOptions([0.65, DETENT_95], 0)}
+                                                                    />
+                                                                    <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="date-picker"
+                                                                        options={formSheetOptions([DETENT_46])}
                                                                     />
                                                                     <Stack.Screen
-                                                                        name="category-form"
-                                                                        options={CATEGORY_EDIT_MODAL_OPTIONS}
+                                                                        name="note-input"
+                                                                        options={formSheetOptions([DETENT_12])}
                                                                     />
-                                                                    <Stack.Screen name="tag-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="date-picker" options={DATE_PICKER_MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="note-input" options={NOTE_INPUT_MODAL_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="convert-to-transfer"
-                                                                        options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
-                                                                    />
+                                                                    <Stack.Screen name="convert-to-transfer" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="convert-to-installment"
-                                                                        options={CONVERT_TO_INSTALLMENT_MODAL_OPTIONS}
+                                                                        options={formSheetOptions('fitToContents')}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="convert-to-refund"
-                                                                        options={CONVERT_TO_REFUND_MODAL_OPTIONS}
+                                                                        options={formSheetOptions([DETENT_90, 1], 0)}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="icon-selector"
-                                                                        options={ICON_SELECTOR_MODAL_OPTIONS}
+                                                                        options={formSheetOptions([0.6, DETENT_90])}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="split-entries"
-                                                                        options={SPLIT_ENTRIES_MODAL_OPTIONS}
+                                                                        options={formSheetOptions([0.3, DETENT_70])}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-fee"
-                                                                        options={TRANSACTION_FEE_MODAL_OPTIONS}
+                                                                        options={formSheetOptions('fitToContents')}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="consolidation-source"
-                                                                        options={CONSOLIDATION_SOURCE_MODAL_OPTIONS}
+                                                                        options={formSheetOptions('fitToContents')}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="import-column-mapper"
-                                                                        options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                        options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="import-backup-pin"
-                                                                        options={IMPORT_BACKUP_PIN_MODAL_OPTIONS}
-                                                                    />
+                                                                    <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="transaction-type-filter"
-                                                                        options={COMPACT_FILTER_SHEET_OPTIONS}
+                                                                        options={formSheetOptions([DETENT_40])}
                                                                     />
-                                                                    <Stack.Screen name="date-filter" options={DATE_FILTER_SHEET_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="date-filter"
+                                                                        options={formSheetOptions([DETENT_55, DETENT_85])}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="transaction-amount-filter"
-                                                                        options={AMOUNT_FILTER_SHEET_OPTIONS}
+                                                                        options={formSheetOptions([DETENT_82, DETENT_96])}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-category-filter"
-                                                                        options={STACKED_FILTER_MODAL_OPTIONS}
+                                                                        options={STACKED_FILTER_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-account-filter"
-                                                                        options={STACKED_FILTER_MODAL_OPTIONS}
+                                                                        options={STACKED_FILTER_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-tag-filter"
-                                                                        options={STACKED_FILTER_MODAL_OPTIONS}
+                                                                        options={STACKED_FILTER_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="rule-selector"
-                                                                        options={RULE_SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="rule-mcc-selector"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
+                                                                    <Stack.Screen name="rule-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="rule-selector" options={formSheetOptions([0.75])} />
+                                                                    <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
                                                                 </Stack>
                                                             </VoiceInputProvider>
                                                         </ModalProvider>
