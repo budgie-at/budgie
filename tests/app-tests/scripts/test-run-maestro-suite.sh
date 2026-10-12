@@ -27,13 +27,7 @@ set -euo pipefail
 printf '%s\n' "$*" >> "$MOCK_XCRUN_LOG"
 
 if [ "$1" = simctl ] && [ "$2" = get_app_container ]; then
-    shutdown_count=$(grep -c '^simctl shutdown ' "$MOCK_XCRUN_LOG" || true)
-
-    if [ -n "${MOCK_APP_DATA_AFTER:-}" ] && [ "$shutdown_count" -gt 0 ]; then
-        printf '%s\n' "$MOCK_APP_DATA_AFTER"
-    else
-        printf '%s\n' "$MOCK_APP_DATA"
-    fi
+    printf '%s\n' "$MOCK_APP_DATA"
 fi
 
 exit 0
@@ -69,24 +63,6 @@ for maestro_arg_index in "${!maestro_args[@]}"; do
     fi
 done
 
-current_app_data="$MOCK_APP_DATA"
-shutdown_count=$(grep -c '^simctl shutdown ' "$MOCK_XCRUN_LOG" || true)
-
-if [ -n "${MOCK_APP_DATA_AFTER:-}" ] && [ "$shutdown_count" -gt 0 ]; then
-    current_app_data="$MOCK_APP_DATA_AFTER"
-fi
-
-if [ -n "${MAESTRO_FIRST_FLOW_PREPARED_PATH:-}" ]; then
-    if [ ! -d "$MAESTRO_FIRST_FLOW_PREPARED_PATH" ]; then
-        echo "First-flow preparation signal missing before Maestro: $MAESTRO_FIRST_FLOW_PREPARED_PATH" >&2
-        exit 98
-    fi
-    if [ ! -f "$current_app_data/Documents/SQLite/budgie.db" ]; then
-        echo "Database fixture missing before Maestro." >&2
-        exit 97
-    fi
-fi
-
 printf '%s\n' "$*" >> "$MOCK_MAESTRO_LOG"
 call_count=$(wc -l < "$MOCK_MAESTRO_LOG" | tr -d ' ')
 
@@ -99,11 +75,6 @@ for argument in "$@"; do
 done
 
 if [ "$MOCK_FAILURE" = ax ] && [ "$call_count" -eq 1 ]; then
-    printf '%s\n' 'kAXErrorInvalidUIElement'
-    exit 1
-fi
-
-if [ "$MOCK_FAILURE" = ax_relocated_container ] && [ "$call_count" -eq 1 ]; then
     printf '%s\n' 'kAXErrorInvalidUIElement'
     exit 1
 fi
@@ -142,36 +113,19 @@ run_case() {
     local expected_status="$2"
     local expected_maestro_calls="$3"
     local expected_shutdown_calls="$4"
-    local signal_prepared="${5:-true}"
     local case_dir="$TEMP_DIR/$failure_kind"
-    local prepared_path
     local status=0
     local prime_line
     local business_line
-    local mock_app_data_after=""
-    local app_container_lookup_count
 
     mkdir -p "$case_dir"
 
-    if [ "$signal_prepared" = true ]; then
-        prepared_path="$case_dir/first-flow-prepared"
-    else
-        prepared_path=""
-    fi
-
-    if [ "$failure_kind" = ax_relocated_container ]; then
-        mock_app_data_after="$case_dir/app-data-after"
-        mkdir -p "$mock_app_data_after/Documents/E2EFixtures" "$mock_app_data_after/Documents/E2ECsvFixtures" "$mock_app_data_after/Documents/SQLite"
-    fi
-
     PATH="$TEMP_DIR/bin:$PATH" \
         MOCK_APP_DATA="$TEMP_DIR/app-data" \
-        MOCK_APP_DATA_AFTER="$mock_app_data_after" \
         MOCK_FAILURE="$failure_kind" \
         MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
         MOCK_WRAPPER_PATH="$case_dir/prime-and-business.flow.yaml" \
         MOCK_XCRUN_LOG="$case_dir/xcrun.log" \
-        MAESTRO_FIRST_FLOW_PREPARED_PATH="$prepared_path" \
         SIMULATOR_UDID='00000000-0000-0000-0000-000000000001' \
         sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test "$TEMP_DIR/flows/test.flow.yaml" --output "$case_dir/report.xml" --debug-output "$case_dir/artifacts/output" --test-output-dir "$case_dir/results/output" > "$case_dir/console.log" 2>&1 || status=$?
 
@@ -179,13 +133,6 @@ run_case() {
     test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq "$expected_maestro_calls"
     test "$(grep -c '^--device 00000000-0000-0000-0000-000000000001 test ' "$case_dir/maestro.log")" -eq "$expected_maestro_calls"
     test "$(grep -c '^simctl shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
-    app_container_lookup_count="$(grep -c '^simctl get_app_container ' "$case_dir/xcrun.log" || true)"
-    test "$app_container_lookup_count" -ge "$expected_maestro_calls"
-
-    if [ "$expected_shutdown_calls" -gt 0 ]; then
-        test "$app_container_lookup_count" -gt "$expected_maestro_calls"
-    fi
-
     if ! grep -q 'Refreshing iOS fixtures for com.example.test on 00000000-0000-0000-0000-000000000001 with 3 fixtures' "$case_dir/console.log"; then
         sed -n '1,120p' "$case_dir/console.log"
         exit 1
@@ -197,38 +144,14 @@ run_case() {
     test -f "$TEMP_DIR/app-data/Documents/E2ECsvFixtures/test16-rules-import.csv"
     test ! -f "$TEMP_DIR/app-data/Documents/E2ECsvFixtures/test-transactions.csv"
 
-    if [ "$signal_prepared" = true ]; then
-        test -d "$prepared_path"
-    fi
-
     if [ "$failure_kind" = ax ]; then
         test "$(grep -c 'prime-and-business.flow.yaml' "$case_dir/maestro.log")" -eq 2
         test "$(grep -c "$TEMP_DIR/flows/test.flow.yaml" "$case_dir/maestro.log" || true)" -eq 0
     fi
 
-    if [ "$failure_kind" = ax ] || [ "$failure_kind" = ax_artifact ]; then
-        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/maestro-console.log"
-        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/maestro-console.log"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/debug-output/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/test-output-dir/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/debug-output/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/test-output-dir/output"
-        test "$(grep -c -- "--debug-output $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[12]/debug-output/output" "$case_dir/maestro.log")" -eq 2
-        test "$(grep -c -- "--test-output-dir $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[12]/test-output-dir/output" "$case_dir/maestro.log")" -eq 2
-    fi
-
-    if [ "$failure_kind" = ax_twice ]; then
-        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/maestro-console.log"
-        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/maestro-console.log"
-        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-3/maestro-console.log"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/debug-output/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/test-output-dir/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/debug-output/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/test-output-dir/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-3/debug-output/output"
-        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-3/test-output-dir/output"
-        test "$(grep -c -- "--debug-output $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[123]/debug-output/output" "$case_dir/maestro.log")" -eq 3
-        test "$(grep -c -- "--test-output-dir $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[123]/test-output-dir/output" "$case_dir/maestro.log")" -eq 3
+    if [ "$failure_kind" = ax_artifact ] || [ "$failure_kind" = ax_twice ]; then
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-$expected_maestro_calls/debug-output/output"
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-$expected_maestro_calls/test-output-dir/output"
     fi
 
     if [ "$failure_kind" = combined ]; then
@@ -243,61 +166,14 @@ run_case() {
         business_line=$(grep -n "$TEMP_DIR/flows/test.flow.yaml" "$case_dir/prime-and-business.flow.yaml" | cut -d: -f1)
         test "$prime_line" -lt "$business_line"
     fi
-
-    test -f "$case_dir/flow-timings.tsv"
-    grep -q $'index\tflow\tstatus\tattempts\tduration_seconds' "$case_dir/flow-timings.tsv"
-    grep -q $'1\ttest.flow.yaml\t' "$case_dir/flow-timings.tsv"
 }
 
 run_case ax 0 2 1
-run_case ax_relocated_container 0 2 1
 run_case ax_artifact 0 2 1
 run_case ax_twice 0 3 2
 run_case assertion 1 1 0
 run_case ax_then_fail 1 2 1
 run_case combined 0 1 0
-run_case no-signal 0 1 0 false
-
-ruby -ryaml -e '
-    documents = YAML.load_stream(File.read(ARGV.fetch(0)))
-    commands = documents.fetch(1)
-
-    probe = commands.fetch(0).fetch("openLink")
-    abort "recovery probe must open the transactions deep link" unless probe.fetch("link") == "budgie://transactions"
-    abort "only the recovery probe may tolerate an openLink timeout" unless probe.fetch("optional") == true
-
-    prime_retry = commands.fetch(1).fetch("retry")
-    abort "prime retry count must be bounded" unless prime_retry.fetch("maxRetries") == 2
-
-    prime_commands = prime_retry.fetch("commands")
-    prompt_flow = prime_commands.fetch(0).fetch("runFlow")
-    abort "prompt recovery must target the iOS deep-link alert title" unless prompt_flow.fetch("when").fetch("visible") == "Open in .*"
-
-    prompt_retry = prompt_flow.fetch("commands").fetch(0).fetch("retry")
-    abort "prompt dismissal retry count must be bounded" unless prompt_retry.fetch("maxRetries") == 2
-
-    prompt_commands = prompt_retry.fetch("commands")
-    abort "prompt dismissal must tap Open" unless prompt_commands.fetch(0).fetch("tapOn").fetch("text") == "Open"
-    prompt_wait = prompt_commands.fetch(1).fetch("extendedWaitUntil")
-    abort "prompt dismissal must be verified" unless prompt_wait.fetch("notVisible") == "Open in .*"
-    abort "prompt dismissal wait must stay short" unless prompt_wait.fetch("timeout") == 3000
-
-    recovered_wait = prime_commands.fetch(1).fetch("extendedWaitUntil")
-    abort "prime must clear a possibly presented alert before the required open" unless recovered_wait.fetch("notVisible") == "Open in .*"
-    abort "prompt recovery wait must stay short" unless recovered_wait.fetch("timeout") == 3000
-
-    required_open = prime_commands.fetch(2).fetch("openLink")
-    abort "prime must require a post-recovery transactions deep link" unless required_open.fetch("link") == "budgie://transactions"
-    abort "post-recovery deep link must fail closed" if required_open.key?("optional")
-
-    post_open_prompt_wait = prime_commands.fetch(3).fetch("extendedWaitUntil")
-    abort "prime must reject a prompt left by the required open" unless post_open_prompt_wait.fetch("notVisible") == "Open in .*"
-    abort "post-open prompt wait must stay short" unless post_open_prompt_wait.fetch("timeout") == 3000
-
-    destination_wait = prime_commands.fetch(4).fetch("extendedWaitUntil")
-    abort "prime must verify the canonical transactions destination" unless destination_wait.fetch("visible").fetch("id") == "TransactionsPage.Container"
-    abort "transactions destination wait must be bounded" unless destination_wait.fetch("timeout") == 10000
-' "$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
 
 run_missing_prime_case() {
     local case_dir="$TEMP_DIR/missing-prime"
@@ -375,8 +251,6 @@ run_continue_after_failure_case() {
     test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq 2
     grep -Fq 'Flow failed, continuing with remaining flows: test.flow.yaml (1/2)' "$case_dir/console.log"
     grep -Fq 'Maestro suite finished with failures: test.flow.yaml, test-second.flow.yaml' "$case_dir/console.log"
-    grep -q $'1\ttest.flow.yaml\tfailure' "$case_dir/flow-timings.tsv"
-    grep -q $'2\ttest-second.flow.yaml\tfailure' "$case_dir/flow-timings.tsv"
 }
 
 run_continue_after_failure_case

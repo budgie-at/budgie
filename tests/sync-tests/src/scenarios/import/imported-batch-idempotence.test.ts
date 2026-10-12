@@ -3,7 +3,7 @@ import { TransactionImportService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, seed, TestLayer } from '../../harness';
+import { seed, TestLayer, testQueryService } from '../../harness';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
@@ -72,8 +72,8 @@ describe('import/imported-batch-idempotence', () => {
                 ),
                 ({ transactions }) => transactions
             );
-            const firstTransaction = yield* fetchTransactionById(importedTransactions[0].id);
-            const secondTransaction = yield* fetchTransactionById(importedTransactions[1].id);
+            const firstTransaction = yield* testQueryService.findTransactionById(importedTransactions[0].id);
+            const secondTransaction = yield* testQueryService.findTransactionById(importedTransactions[1].id);
             const existingTransactionIdMap = new Map([
                 ['erste-collision-id', firstTransaction.id],
                 ['erste-collision-id:2', secondTransaction.id]
@@ -123,8 +123,8 @@ describe('import/imported-batch-idempotence', () => {
                 ),
                 ({ transactions }) => transactions
             );
-            const firstTransaction = yield* fetchTransactionById(importedTransactions[0].id);
-            const secondTransaction = yield* fetchTransactionById(importedTransactions[1].id);
+            const firstTransaction = yield* testQueryService.findTransactionById(importedTransactions[0].id);
+            const secondTransaction = yield* testQueryService.findTransactionById(importedTransactions[1].id);
 
             expect(importedTransactions.map(transaction => transaction.id)).toEqual([
                 legacyFirstTransaction.id,

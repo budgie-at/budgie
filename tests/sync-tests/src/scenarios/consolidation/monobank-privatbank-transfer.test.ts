@@ -12,16 +12,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import {
-    buildMonobank,
-    fetchCanonicalsOfType,
-    fetchTransactionById,
-    monobankStub,
-    seed,
-    setupMonobankFixture,
-    testDb,
-    TestLayer
-} from '../../harness';
+import { buildMonobank, monobankStub, seed, setupMonobankFixture, testDb, TestLayer, testQueryService } from '../../harness';
 
 const TRANSFER_AMOUNT = 250;
 const MONOBANK_API_AMOUNT = TRANSFER_AMOUNT * 100;
@@ -82,7 +73,7 @@ const importPrivatbankTransfer = Effect.fnUntraced(function* (privatbankAccountI
 
 const expectTransferPairParents = (privatbankTransactionIds: number[]) =>
     Effect.gen(function* () {
-        const canonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        const canonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(canonicals).toHaveLength(1);
         const canonicalIds = canonicals.map(canonical => canonical.id);
         const monobankTransactions = yield* testDb
@@ -90,10 +81,10 @@ const expectTransferPairParents = (privatbankTransactionIds: number[]) =>
             .from(TransactionEntityTable)
             .where(eq(TransactionEntityTable.externalId, 'mono-transfer-out'));
         const monobankParentTransactionIds = (yield* Effect.forEach(monobankTransactions, transaction =>
-            fetchTransactionById(transaction.id)
+            testQueryService.findTransactionById(transaction.id)
         )).map(transaction => transaction.consolidationParentTransactionId);
         const privatbankParentTransactionIds = (yield* Effect.forEach(privatbankTransactionIds, transactionId =>
-            fetchTransactionById(transactionId)
+            testQueryService.findTransactionById(transactionId)
         )).map(transaction => transaction.consolidationParentTransactionId);
 
         expect(monobankParentTransactionIds).toEqual(canonicalIds);

@@ -21,14 +21,14 @@ import * as Exit from 'effect/Exit';
 import {
     buildMonobank,
     fetchExpenseEntries,
-    fetchTransactionById,
     monobankStub,
     MonobankSyncService,
     requireInstrument,
     seed,
     setupMonobankFixture,
     testDb,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 import type { StartDepositInputInterface } from '@budgie/ledger';
@@ -108,7 +108,7 @@ describe('account/start-deposit-from-expense', () => {
                 instrumentId: euro.id,
                 integrationId: sourceAccount.integrationId
             });
-            expect(yield* fetchTransactionById(transaction.id)).toMatchObject({
+            expect(yield* testQueryService.findTransactionById(transaction.id)).toMatchObject({
                 type: TransactionTypeEnum.TRANSFER,
                 fromAccountId: sourceAccount.id,
                 toAccountId: depositAccount.id,
@@ -162,7 +162,7 @@ describe('account/start-deposit-from-expense/same-currency', () => {
             expect(sourceEntry.operationInstrumentId).toBeNull();
             expect(depositAccount.instrumentId).toBe(hryvnia.id);
             expect(depositAccount.integrationId).toBeNull();
-            expect((yield* fetchTransactionById(transaction.id)).exchangeRate).toBe(1);
+            expect((yield* testQueryService.findTransactionById(transaction.id)).exchangeRate).toBe(1);
             expect(ledgerBalances.get(cashAccount.id)).toBe(-CASH_DEPOSIT_AMOUNT * PRECISION);
             expect(ledgerBalances.get(depositAccount.id)).toBe(CASH_DEPOSIT_AMOUNT * PRECISION);
         }).pipe(Effect.provide(TestLayer))
@@ -220,7 +220,7 @@ describe('account/start-deposit-from-expense/invalid-amounts', () => {
                     transactionTransferService.startDepositFromExpense(transaction.id, buildDepositInput(euro.id, receivingAmount))
                 );
 
-                const unchanged = yield* fetchTransactionById(transaction.id);
+                const unchanged = yield* testQueryService.findTransactionById(transaction.id);
 
                 expect(Exit.isFailure(exit)).toBe(true);
                 expect(yield* fetchDepositAccounts()).toEqual([]);
