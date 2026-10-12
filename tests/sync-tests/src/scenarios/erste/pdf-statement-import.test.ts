@@ -5,15 +5,7 @@ import { asc, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import {
-    expectAtmCashWithdrawalConsolidation,
-    fetchExpenseEntries,
-    findMccByCode,
-    requireInstrument,
-    seed,
-    testDb,
-    TestLayer
-} from '../../harness';
+import { expectAtmCashWithdrawalConsolidation, fetchExpenseEntries, requireInstrument, seed, testDb, TestLayer, testQueryService } from '../../harness';
 
 import type { PdfTextItemInterface } from '@budgie/sync';
 
@@ -166,7 +158,7 @@ describe('erste/pdf-statement-import', () => {
             const atmIndex = transactions.findIndex(transaction => transaction.title === ATM_DESCRIPTION);
             const [atmEntry] = entries[atmIndex];
 
-            expect(atmEntry.mccCategoryId).toBe((yield* findMccByCode(String(ATM_MCC))).id);
+            expect(atmEntry.mccCategoryId).toBe((yield* testQueryService.findMccByCode(String(ATM_MCC))).id);
             expect(
                 entries
                     .filter((_, index) => index !== atmIndex)
