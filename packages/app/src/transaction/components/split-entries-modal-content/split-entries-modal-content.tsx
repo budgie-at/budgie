@@ -1,4 +1,5 @@
 import {
+    CategorySourceEnum,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     UserIconNameEnum,
@@ -99,7 +100,9 @@ export const SplitEntriesModalContent = (props: Props) => {
 
         if (isDefined(selectedCategoryId)) {
             setEntries(previous =>
-                previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, categoryId: selectedCategoryId } : entry))
+                previous.map((entry, entryIndex) =>
+                    entryIndex === index ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
+                )
             );
         }
     };

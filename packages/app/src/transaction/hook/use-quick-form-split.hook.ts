@@ -1,6 +1,7 @@
 import {
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -56,6 +57,7 @@ export const useQuickFormSplit = ({
                 categoryId,
                 amount: 0,
                 type: entryType,
+                kind: TransactionEntryKindEnum.PRIMARY,
                 mccCategoryId: null,
                 externalId: null
             }

@@ -1,12 +1,12 @@
 import { TransactionEntryKindEnum } from '@budgie/contracts';
 
-import { generateLocalId } from './generate-local-id.util';
-
 import type { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 
 export interface EntryWithLocalIdInterface extends TransactionEntryCreateInputInterface {
     readonly localId: string;
 }
+
+const generateLocalId = (): string => `entry-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export const addLocalId = (entry: TransactionEntryCreateInputInterface): EntryWithLocalIdInterface => ({
     ...entry,
@@ -24,18 +24,6 @@ export const createEmptyEntry = (entryType: TransactionEntryTypeEnum, accountId:
     localId: generateLocalId()
 });
 
-export const stripLocalId = (entry: EntryWithLocalIdInterface): TransactionEntryCreateInputInterface => ({
-    accountId: entry.accountId,
-    categoryId: entry.categoryId,
-    amount: entry.amount,
-    type: entry.type,
-    kind: entry.kind,
-    mccCategoryId: entry.mccCategoryId,
-    externalId: entry.externalId,
-    exchangeRate: entry.exchangeRate,
-    toIban: entry.toIban,
-    operationInstrumentId: entry.operationInstrumentId,
-    operationAmount: entry.operationAmount
-});
+export const stripLocalId = ({ localId: _localId, ...entry }: EntryWithLocalIdInterface): TransactionEntryCreateInputInterface => entry;
 
 export const entryKeyExtractor = (item: EntryWithLocalIdInterface): string => item.localId;
