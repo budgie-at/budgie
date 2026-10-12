@@ -24,6 +24,20 @@ export const createEmptyEntry = (entryType: TransactionEntryTypeEnum, accountId:
     localId: generateLocalId()
 });
 
+export const withEntryAmount = <TEntry extends TransactionEntryCreateInputInterface>(entry: TEntry, amount: number): TEntry =>
+    entry.amount === amount
+        ? entry
+        : {
+              ...entry,
+              amount,
+              baseInstrumentId: null,
+              baseExchangeRate: null,
+              baseAmount: null,
+              quotedInstrumentId: null,
+              quotedAmount: null,
+              quotedUnitPrice: null
+          };
+
 export const stripLocalId = ({ localId: _localId, ...entry }: EntryWithLocalIdInterface): TransactionEntryCreateInputInterface => entry;
 
 export const entryKeyExtractor = (item: EntryWithLocalIdInterface): string => item.localId;

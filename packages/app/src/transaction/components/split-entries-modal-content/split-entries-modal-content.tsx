@@ -28,7 +28,8 @@ import {
     addLocalId,
     createEmptyEntry,
     entryKeyExtractor,
-    stripLocalId
+    stripLocalId,
+    withEntryAmount
 } from '../../utils/entry-with-local-id.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/split-entries-add-item-footer';
@@ -86,7 +87,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     }, [isFullySplit, hapticNotification]);
 
     const handleAmountChange = (index: number, amount: number) => {
-        setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, amount } : entry)));
+        setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? withEntryAmount(entry, amount) : entry)));
     };
 
     const handleCategoryPress = async (index: number) => {
@@ -141,7 +142,7 @@ export const SplitEntriesModalContent = (props: Props) => {
             return;
         }
 
-        const singleEntry = stripLocalId({ ...firstEntry, amount: totalAmount });
+        const singleEntry = stripLocalId(withEntryAmount(firstEntry, totalAmount));
 
         onConfirm([singleEntry]);
     };
