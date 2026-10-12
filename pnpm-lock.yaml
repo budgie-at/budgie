@@ -792,9 +792,6 @@ importers:
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../ledger
-      '@budgie/market':
-        specifier: workspace:*
-        version: link:../market
       '@rnw-community/shared':
         specifier: ^2.2.0
         version: 2.15.0
