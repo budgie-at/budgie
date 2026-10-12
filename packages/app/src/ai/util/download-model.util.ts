@@ -10,22 +10,22 @@ export const downloadModel = Effect.fn('downloadModel')(function* (
     onProgress: (downloadProgress: number) => void
 ) {
     const destFile = new File(Paths.document, filename);
+    const sizeFile = new File(Paths.document, `${filename}.size`);
 
-    if (destFile.exists) {
+    if (destFile.exists && sizeFile.exists && sizeFile.textSync() === String(destFile.size)) {
         onProgress(1);
 
         return destFile.uri;
     }
 
     const tempFile = new File(Paths.document, `${filename}.download`);
-    const deleteTempFile = Effect.sync(() => {
-        if (tempFile.exists) {
-            tempFile.delete();
-        }
-    });
+    const deleteFiles = (...files: File[]) =>
+        Effect.sync(() => {
+            files.filter(file => file.exists).forEach(file => file.delete());
+        });
     let expectedBytes = 0;
 
-    yield* deleteTempFile;
+    yield* deleteFiles(tempFile, destFile, sizeFile);
 
     yield* Effect.gen(function* () {
         const download = createDownloadResumable(url, tempFile.uri, {}, progress => {
@@ -39,7 +39,8 @@ export const downloadModel = Effect.fn('downloadModel')(function* (
         }
 
         yield* Effect.promise(() => tempFile.move(destFile));
-    }).pipe(Effect.onError(() => deleteTempFile));
+        sizeFile.writeSync(String(expectedBytes));
+    }).pipe(Effect.onError(() => deleteFiles(tempFile)));
 
     return destFile.uri;
 });
