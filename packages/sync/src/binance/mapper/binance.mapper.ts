@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- File owns the single BinanceMapper class; package rule mandates one mapper class per provider, splitting would fragment it -- approved by human */
 import { PRECISION, convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { getUnixTime } from 'date-fns/getUnixTime';
 
@@ -8,309 +7,269 @@ import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balanc
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
-import { BINANCE_NO_NUMERIC_CODE } from '../constant/binance-no-numeric-code.constant';
 import { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { encodeBinanceAccountId } from '../util/binance-account-id.util';
-
-import { BinanceEarnDayBucket } from './binance-earn-day-bucket';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 import type { BinanceC2cOrderApiInterface } from '../interface/binance-c2c-order-api.schema';
 import type { BinanceConvertFlowApiInterface } from '../interface/binance-convert-api.schema';
 import type { BinanceDepositApiInterface } from '../interface/binance-deposit-api.schema';
+import type { BinanceEarnDailyTotalInterface } from '../interface/binance-earn-daily-total.interface';
 import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
 import type { BinanceTradeApiInterface } from '../interface/binance-trade-api.schema';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
 import type { BinanceWithdrawalApiInterface } from '../interface/binance-withdrawal-api.schema';
 
+const NO_NUMERIC_CODE = 0;
 const MICRO_UNITS_DECIMALS = 6;
 const DECIMAL_DIGITS_PATTERN = /^\d+$/u;
 const MILLISECONDS_PER_SECOND = 1000;
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const EARN_DATE_PART_DIGITS = 2;
 
-class BinanceMapper {
-    mapBalanceToAccount(asset: string, wallet: BinanceWalletEnum, balance: number): SyncAccountInterface {
-        return {
-            id: encodeBinanceAccountId({ wallet, asset }),
-            provider: SyncProviderEnum.BINANCE,
-            currencyCode: asset,
-            currencyCodeNumeric: BINANCE_NO_NUMERIC_CODE,
-            balance,
-            balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
-            creditLimit: 0,
-            type: SyncAccountTypeEnum.CRYPTO,
-            title: `Binance ${wallet} · ${asset}`
-        };
+const toUnixSeconds = (timeMs: number): number => Math.floor(timeMs / MILLISECONDS_PER_SECOND);
+
+const encodeSpotAccountId = (asset: string): string => encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset });
+
+const toSyncTransaction = (
+    transaction: Omit<
+        SyncTransactionInterface,
+        'provider' | 'mcc' | 'originalMcc' | 'currencyCode' | 'commissionRate' | 'cashbackAmount' | 'balance' | 'hold' | 'operationAmount'
+    >
+): SyncTransactionInterface => ({
+    provider: SyncProviderEnum.BINANCE,
+    mcc: 0,
+    originalMcc: 0,
+    currencyCode: NO_NUMERIC_CODE,
+    commissionRate: 0,
+    cashbackAmount: 0,
+    balance: 0,
+    hold: false,
+    operationAmount: transaction.amount - transaction.feeAmount,
+    ...transaction
+});
+
+export const parseBinanceAmount = (value: string): number | null => {
+    if (!isNotEmptyString(value)) {
+        return null;
     }
 
-    mapUnrepresentableBalanceToAccount(asset: string, wallet: BinanceWalletEnum): SyncAccountInterface {
-        return {
-            ...this.mapBalanceToAccount(asset, wallet, 0),
-            balanceState: SyncAccountBalanceStateEnum.UNREPRESENTABLE
-        };
+    const [integerPart, fractionalPart = ''] = value.trim().split('.');
+    const isFractionValid = !isNotEmptyString(fractionalPart) || DECIMAL_DIGITS_PATTERN.test(fractionalPart);
+    if (!DECIMAL_DIGITS_PATTERN.test(integerPart) || !isFractionValid) {
+        return null;
     }
 
-    mapDepositToTransaction(deposit: BinanceDepositApiInterface, accountId: string): SyncTransactionInterface | null {
-        const amount = this.parseBinanceAmount(deposit.amount);
-        if (!isDefined(amount)) {
-            return null;
-        }
+    const truncatedFraction = fractionalPart.slice(0, MICRO_UNITS_DECIMALS).padEnd(MICRO_UNITS_DECIMALS, '0');
+    const totalMicroUnits = BigInt(integerPart) * BigInt(PRECISION) + BigInt(truncatedFraction);
 
-        const externalId = this.buildDepositExternalId(deposit);
-        const time = Math.floor(deposit.insertTime / MILLISECONDS_PER_SECOND);
+    return totalMicroUnits > BigInt(Number.MAX_SAFE_INTEGER) ? null : convertFromMicroUnits(Number(totalMicroUnits));
+};
 
-        return {
-            ...this.buildBaseTransaction(externalId, accountId, deposit.coin, time),
-            type: SyncTransactionTypeEnum.INCOME,
-            description: `Binance ${deposit.coin} deposit`,
-            amount,
-            operationAmount: amount,
-            feeAmount: 0
-        };
+const parseAmountAndClampedFee = (amountValue: string, feeValue: string): [number, number] | null => {
+    const amount = parseBinanceAmount(amountValue);
+    const fee = parseBinanceAmount(feeValue);
+
+    return isDefined(amount) && isDefined(fee) ? [amount, fee >= amount ? 0 : fee] : null;
+};
+
+export const mapBinanceBalanceToAccount = (asset: string, wallet: BinanceWalletEnum, balance: number): SyncAccountInterface => ({
+    id: encodeBinanceAccountId({ wallet, asset }),
+    provider: SyncProviderEnum.BINANCE,
+    currencyCode: asset,
+    currencyCodeNumeric: NO_NUMERIC_CODE,
+    balance,
+    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
+    creditLimit: 0,
+    type: SyncAccountTypeEnum.CRYPTO,
+    title: `Binance ${wallet} · ${asset}`
+});
+
+export const mapBinanceUnrepresentableBalanceToAccount = (asset: string, wallet: BinanceWalletEnum): SyncAccountInterface => ({
+    ...mapBinanceBalanceToAccount(asset, wallet, 0),
+    balanceState: SyncAccountBalanceStateEnum.UNREPRESENTABLE
+});
+
+const buildDepositExternalId = (deposit: BinanceDepositApiInterface): string => {
+    if (isNotEmptyString(deposit.id)) {
+        return deposit.id;
     }
 
-    mapWithdrawalToTransaction(withdrawal: BinanceWithdrawalApiInterface, accountId: string): SyncTransactionInterface | null {
-        const amount = this.parseBinanceAmount(withdrawal.amount);
-        const fee = this.parseBinanceAmount(withdrawal.transactionFee);
-        if (!isDefined(amount) || !isDefined(fee)) {
-            return null;
-        }
+    return isNotEmptyString(deposit.txId) ? deposit.txId : `${deposit.coin}-${deposit.insertTime}-${deposit.amount}`;
+};
 
-        const feeAmount = fee >= amount ? 0 : fee;
-        const time = getUnixTime(new Date(withdrawal.applyTime));
+export const mapBinanceDepositToTransaction = (deposit: BinanceDepositApiInterface, accountId: string): SyncTransactionInterface | null => {
+    const amount = parseBinanceAmount(deposit.amount);
 
-        return {
-            ...this.buildBaseTransaction(withdrawal.id, accountId, withdrawal.coin, time),
-            type: SyncTransactionTypeEnum.EXPENSE,
-            description: `Binance ${withdrawal.coin} withdrawal`,
-            amount,
-            operationAmount: amount - feeAmount,
-            feeAmount
-        };
+    return isDefined(amount)
+        ? toSyncTransaction({
+              id: buildDepositExternalId(deposit),
+              accountId,
+              category: deposit.coin,
+              time: toUnixSeconds(deposit.insertTime),
+              type: SyncTransactionTypeEnum.INCOME,
+              description: `Binance ${deposit.coin} deposit`,
+              amount,
+              feeAmount: 0
+          })
+        : null;
+};
+
+export const mapBinanceWithdrawalToTransaction = (
+    withdrawal: BinanceWithdrawalApiInterface,
+    accountId: string
+): SyncTransactionInterface | null => {
+    const parsed = parseAmountAndClampedFee(withdrawal.amount, withdrawal.transactionFee);
+
+    return isDefined(parsed)
+        ? toSyncTransaction({
+              id: withdrawal.id,
+              accountId,
+              category: withdrawal.coin,
+              time: getUnixTime(new Date(withdrawal.applyTime)),
+              type: SyncTransactionTypeEnum.EXPENSE,
+              description: `Binance ${withdrawal.coin} withdrawal`,
+              amount: parsed[0],
+              feeAmount: parsed[1]
+          })
+        : null;
+};
+
+export const mapBinanceFiatOrderToTransaction = (
+    order: BinanceFiatOrderApiInterface,
+    accountId: string,
+    isDeposit: boolean
+): SyncTransactionInterface | null => {
+    const parsed = parseAmountAndClampedFee(order.amount, order.totalFee);
+
+    return isDefined(parsed)
+        ? toSyncTransaction({
+              id: order.orderNo,
+              accountId,
+              category: order.fiatCurrency,
+              time: toUnixSeconds(order.createTime),
+              type: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
+              description: isDeposit ? `Binance ${order.fiatCurrency} deposit` : `Binance ${order.fiatCurrency} withdrawal`,
+              amount: parsed[0],
+              feeAmount: parsed[1]
+          })
+        : null;
+};
+
+export const mapBinanceC2cOrderToTransaction = (order: BinanceC2cOrderApiInterface, accountId: string): SyncTransactionInterface | null => {
+    const amount = parseBinanceAmount(order.amount);
+    const quotedAmount = parseBinanceAmount(order.totalPrice);
+    const quotedUnitPrice = parseBinanceAmount(order.unitPrice);
+    if (!isDefined(amount) || !isDefined(quotedAmount) || !isDefined(quotedUnitPrice)) {
+        return null;
     }
 
-    mapFiatOrderToTransaction(order: BinanceFiatOrderApiInterface, accountId: string, isDeposit: boolean): SyncTransactionInterface | null {
-        const amount = this.parseBinanceAmount(order.amount);
-        const fee = this.parseBinanceAmount(order.totalFee);
-        if (!isDefined(amount) || !isDefined(fee)) {
-            return null;
-        }
+    const isBuy = order.tradeType === C2C_BUY_TRADE_TYPE;
 
-        const feeAmount = fee >= amount ? 0 : fee;
-        const time = Math.floor(order.createTime / MILLISECONDS_PER_SECOND);
-        const description = isDeposit ? `Binance ${order.fiatCurrency} deposit` : `Binance ${order.fiatCurrency} withdrawal`;
+    return toSyncTransaction({
+        id: `binance:c2c:${order.orderNumber}`,
+        accountId,
+        category: order.asset,
+        time: toUnixSeconds(order.createTime),
+        type: isBuy ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
+        description: isBuy ? `Binance P2P buy ${order.asset}` : `Binance P2P sell ${order.asset}`,
+        amount,
+        feeAmount: 0,
+        quotedCurrencyCode: order.fiat,
+        quotedAmount,
+        quotedUnitPrice
+    });
+};
 
-        return {
-            ...this.buildBaseTransaction(order.orderNo, accountId, order.fiatCurrency, time),
-            type: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
-            description,
-            amount,
-            operationAmount: amount - feeAmount,
-            feeAmount
-        };
+export const mapBinanceTradeToTransfer = (
+    trade: BinanceTradeApiInterface,
+    baseAsset: string,
+    quoteAsset: string
+): BinanceTransferInterface | null => {
+    const baseAmount = parseBinanceAmount(trade.qty);
+    const quoteAmount = parseBinanceAmount(trade.quoteQty);
+    const feeAmount = parseBinanceAmount(trade.commission);
+    if (!isDefined(baseAmount) || !isDefined(quoteAmount) || !isDefined(feeAmount)) {
+        return null;
     }
 
-    mapC2cOrderToTransaction(order: BinanceC2cOrderApiInterface, accountId: string): SyncTransactionInterface | null {
-        const amount = this.parseBinanceAmount(order.amount);
-        const quotedAmount = this.parseBinanceAmount(order.totalPrice);
-        const quotedUnitPrice = this.parseBinanceAmount(order.unitPrice);
-        if (!isDefined(amount) || !isDefined(quotedAmount) || !isDefined(quotedUnitPrice)) {
-            return null;
-        }
+    const baseAccountId = encodeSpotAccountId(baseAsset);
+    const quoteAccountId = encodeSpotAccountId(quoteAsset);
 
-        const isBuy = order.tradeType === C2C_BUY_TRADE_TYPE;
-        const externalId = `binance:c2c:${order.orderNumber}`;
-        const time = Math.floor(order.createTime / MILLISECONDS_PER_SECOND);
-        const description = isBuy ? `Binance P2P buy ${order.asset}` : `Binance P2P sell ${order.asset}`;
+    return {
+        externalId: `binance:trade:${trade.symbol}:${trade.id}`,
+        fromAssetAccountId: trade.isBuyer ? quoteAccountId : baseAccountId,
+        toAssetAccountId: trade.isBuyer ? baseAccountId : quoteAccountId,
+        fromAmount: trade.isBuyer ? quoteAmount : baseAmount,
+        toAmount: trade.isBuyer ? baseAmount : quoteAmount,
+        feeAssetAccountId: feeAmount > 0 ? encodeSpotAccountId(trade.commissionAsset) : null,
+        feeAmount,
+        time: toUnixSeconds(trade.time),
+        description: `Binance ${trade.symbol} ${trade.isBuyer ? 'buy' : 'sell'}`,
+        source: BinanceTransferSourceEnum.SPOT_TRADE
+    };
+};
 
-        return {
-            ...this.buildBaseTransaction(externalId, accountId, order.asset, time),
-            type: isBuy ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
-            description,
-            amount,
-            operationAmount: amount,
-            feeAmount: 0,
-            quotedCurrencyCode: order.fiat,
-            quotedAmount,
-            quotedUnitPrice
-        };
+export const mapBinanceConvertToTransfer = (flow: BinanceConvertFlowApiInterface): BinanceTransferInterface | null => {
+    const fromAmount = parseBinanceAmount(flow.fromAmount);
+    const toAmount = parseBinanceAmount(flow.toAmount);
+
+    return isDefined(fromAmount) && isDefined(toAmount)
+        ? {
+              externalId: `binance:convert:${flow.orderId}`,
+              fromAssetAccountId: encodeSpotAccountId(flow.fromAsset),
+              toAssetAccountId: encodeSpotAccountId(flow.toAsset),
+              fromAmount,
+              toAmount,
+              feeAssetAccountId: null,
+              feeAmount: 0,
+              time: toUnixSeconds(flow.createTime),
+              description: `Binance convert ${flow.fromAsset} to ${flow.toAsset}`,
+              source: BinanceTransferSourceEnum.CONVERT
+          }
+        : null;
+};
+
+const buildEarnDayKey = (timeMs: number): string => {
+    const date = new Date(timeMs);
+    const month = `${date.getUTCMonth() + 1}`.padStart(EARN_DATE_PART_DIGITS, '0');
+    const day = `${date.getUTCDate()}`.padStart(EARN_DATE_PART_DIGITS, '0');
+
+    return `${date.getUTCFullYear()}-${month}-${day}`;
+};
+
+export const mapBinanceEarnRewardsToTransactions = (
+    asset: string,
+    accountId: string,
+    rewards: readonly BinanceEarnRewardApiInterface[]
+): SyncTransactionInterface[] => {
+    const dailyTotals = new Map<string, BinanceEarnDailyTotalInterface>();
+    for (const reward of rewards) {
+        const dayKey = buildEarnDayKey(reward.time);
+        const amount = parseBinanceAmount(reward.rewards);
+        const rewardMicroUnits = isDefined(amount) && amount > 0 ? convertToMicroUnits(amount) : 0;
+        const dailyTotal = dailyTotals.get(dayKey) ?? { totalMicroUnits: 0, lastRewardTime: 0 };
+        dailyTotals.set(dayKey, {
+            totalMicroUnits: dailyTotal.totalMicroUnits + rewardMicroUnits,
+            lastRewardTime: Math.max(dailyTotal.lastRewardTime, reward.time)
+        });
     }
 
-    mapTradeToTransfer(trade: BinanceTradeApiInterface, baseAsset: string, quoteAsset: string): BinanceTransferInterface | null {
-        const baseAmount = this.parseBinanceAmount(trade.qty);
-        const quoteAmount = this.parseBinanceAmount(trade.quoteQty);
-        const feeAmount = this.parseBinanceAmount(trade.commission);
-        if (!isDefined(baseAmount) || !isDefined(quoteAmount) || !isDefined(feeAmount)) {
-            return null;
-        }
-
-        const baseAccountId = this.encodeSpotAccountId(baseAsset);
-        const quoteAccountId = this.encodeSpotAccountId(quoteAsset);
-        const fromAssetAccountId = trade.isBuyer ? quoteAccountId : baseAccountId;
-        const toAssetAccountId = trade.isBuyer ? baseAccountId : quoteAccountId;
-        const fromAmount = trade.isBuyer ? quoteAmount : baseAmount;
-        const toAmount = trade.isBuyer ? baseAmount : quoteAmount;
-
-        return {
-            externalId: `binance:trade:${trade.symbol}:${trade.id}`,
-            fromAssetAccountId,
-            toAssetAccountId,
-            fromAmount,
-            toAmount,
-            feeAssetAccountId: feeAmount > 0 ? this.encodeSpotAccountId(trade.commissionAsset) : null,
-            feeAmount,
-            time: Math.floor(trade.time / MILLISECONDS_PER_SECOND),
-            description: `Binance ${trade.symbol} ${trade.isBuyer ? 'buy' : 'sell'}`,
-            source: BinanceTransferSourceEnum.SPOT_TRADE
-        };
-    }
-
-    mapConvertToTransfer(flow: BinanceConvertFlowApiInterface): BinanceTransferInterface | null {
-        const fromAmount = this.parseBinanceAmount(flow.fromAmount);
-        const toAmount = this.parseBinanceAmount(flow.toAmount);
-        if (!isDefined(fromAmount) || !isDefined(toAmount)) {
-            return null;
-        }
-
-        return {
-            externalId: `binance:convert:${flow.orderId}`,
-            fromAssetAccountId: this.encodeSpotAccountId(flow.fromAsset),
-            toAssetAccountId: this.encodeSpotAccountId(flow.toAsset),
-            fromAmount,
-            toAmount,
-            feeAssetAccountId: null,
-            feeAmount: 0,
-            time: Math.floor(flow.createTime / MILLISECONDS_PER_SECOND),
-            description: `Binance convert ${flow.fromAsset} to ${flow.toAsset}`,
-            source: BinanceTransferSourceEnum.CONVERT
-        };
-    }
-
-    mapEarnRewardsToTransactions(
-        asset: string,
-        accountId: string,
-        rewards: readonly BinanceEarnRewardApiInterface[]
-    ): SyncTransactionInterface[] {
-        const dailyBuckets = this.groupEarnRewardsByDay(rewards);
-
-        return [...dailyBuckets.values()].map(bucket => this.mapEarnDayBucket(asset, accountId, bucket)).filter(isDefined);
-    }
-
-    parseBinanceAmount(value: string): number | null {
-        const parts = this.splitDecimalParts(value);
-        if (!isDefined(parts)) {
-            return null;
-        }
-
-        const truncatedFraction = parts.fractionalPart.slice(0, MICRO_UNITS_DECIMALS).padEnd(MICRO_UNITS_DECIMALS, '0');
-        const wholeMicroUnits = BigInt(parts.integerPart) * BigInt(PRECISION);
-        const totalMicroUnits = wholeMicroUnits + BigInt(truncatedFraction);
-        if (totalMicroUnits > BigInt(Number.MAX_SAFE_INTEGER)) {
-            return null;
-        }
-
-        return convertFromMicroUnits(Number(totalMicroUnits));
-    }
-
-    private groupEarnRewardsByDay(rewards: readonly BinanceEarnRewardApiInterface[]): Map<string, BinanceEarnDayBucket> {
-        const buckets = new Map<string, BinanceEarnDayBucket>();
-        for (const reward of rewards) {
-            const dayKey = this.buildEarnDayKey(reward.time);
-            const rewardMicroUnits = this.parseEarnRewardMicroUnits(reward.rewards);
-            const bucket = buckets.get(dayKey) ?? new BinanceEarnDayBucket(dayKey);
-            buckets.set(dayKey, bucket.add(rewardMicroUnits, reward.time));
-        }
-
-        return buckets;
-    }
-
-    private mapEarnDayBucket(asset: string, accountId: string, bucket: BinanceEarnDayBucket): SyncTransactionInterface | null {
-        if (bucket.totalMicroUnits <= 0) {
-            return null;
-        }
-
-        const amount = convertFromMicroUnits(bucket.totalMicroUnits);
-        const externalId = `binance:earn:${asset}:${bucket.dayKey}`;
-        const time = Math.floor(bucket.lastRewardTime / MILLISECONDS_PER_SECOND);
-
-        return {
-            ...this.buildBaseTransaction(externalId, accountId, asset, time),
-            type: SyncTransactionTypeEnum.INCOME,
-            description: `Binance Earn reward ${asset}`,
-            amount,
-            operationAmount: amount,
-            feeAmount: 0
-        };
-    }
-
-    private parseEarnRewardMicroUnits(value: string): number {
-        const amount = this.parseBinanceAmount(value);
-
-        return isDefined(amount) && amount > 0 ? convertToMicroUnits(amount) : 0;
-    }
-
-    private buildEarnDayKey(timeMs: number): string {
-        const date = new Date(timeMs);
-        const year = date.getUTCFullYear();
-        const month = `${date.getUTCMonth() + 1}`.padStart(EARN_DATE_PART_DIGITS, '0');
-        const day = `${date.getUTCDate()}`.padStart(EARN_DATE_PART_DIGITS, '0');
-
-        return `${year}-${month}-${day}`;
-    }
-
-    private encodeSpotAccountId(asset: string): string {
-        return encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset });
-    }
-
-    private buildBaseTransaction(
-        externalId: string,
-        accountId: string,
-        coin: string,
-        time: number
-    ): Omit<SyncTransactionInterface, 'type' | 'description' | 'amount' | 'operationAmount' | 'feeAmount'> {
-        return {
-            id: externalId,
-            provider: SyncProviderEnum.BINANCE,
-            accountId,
-            time,
-            mcc: 0,
-            originalMcc: 0,
-            currencyCode: BINANCE_NO_NUMERIC_CODE,
-            commissionRate: 0,
-            cashbackAmount: 0,
-            balance: 0,
-            hold: false,
-            category: coin
-        };
-    }
-
-    private buildDepositExternalId(deposit: BinanceDepositApiInterface): string {
-        if (isNotEmptyString(deposit.id)) {
-            return deposit.id;
-        }
-
-        if (isNotEmptyString(deposit.txId)) {
-            return deposit.txId;
-        }
-
-        return `${deposit.coin}-${deposit.insertTime}-${deposit.amount}`;
-    }
-
-    private splitDecimalParts(value: string): { integerPart: string; fractionalPart: string } | null {
-        if (!isNotEmptyString(value)) {
-            return null;
-        }
-
-        const [integerPart, fractionalPart = ''] = value.trim().split('.');
-        const isIntegerValid = DECIMAL_DIGITS_PATTERN.test(integerPart);
-        const isFractionValid = !isNotEmptyString(fractionalPart) || DECIMAL_DIGITS_PATTERN.test(fractionalPart);
-
-        return isIntegerValid && isFractionValid ? { integerPart, fractionalPart } : null;
-    }
-}
-
-export const binanceMapper = new BinanceMapper();
+    return [...dailyTotals.entries()]
+        .filter(([, dailyTotal]) => dailyTotal.totalMicroUnits > 0)
+        .map(([dayKey, dailyTotal]) =>
+            toSyncTransaction({
+                id: `binance:earn:${asset}:${dayKey}`,
+                accountId,
+                category: asset,
+                time: toUnixSeconds(dailyTotal.lastRewardTime),
+                type: SyncTransactionTypeEnum.INCOME,
+                description: `Binance Earn reward ${asset}`,
+                amount: convertFromMicroUnits(dailyTotal.totalMicroUnits),
+                feeAmount: 0
+            })
+        );
+};

@@ -2,7 +2,6 @@ import { SyncAccountPreviewInterface } from '@budgie/sync';
 import { useState } from 'react';
 
 import { AccountSelectionInterface } from '../interface/account-selection.interface';
-import { toggleSetItem } from '../util/toggle-set-item.util';
 
 export const useAccountSelection = (): AccountSelectionInterface => {
     const [accountPreviews, setAccountPreviews] = useState<SyncAccountPreviewInterface[]>([]);
@@ -13,17 +12,26 @@ export const useAccountSelection = (): AccountSelectionInterface => {
         setSelectedAccounts(new Set(previews.filter(preview => preview.hasSync).map(preview => preview.externalId)));
     };
 
-    const toggleAccount = (externalId: string) => {
-        setSelectedAccounts(prev => toggleSetItem(prev, externalId));
+    const onToggle = (externalId: string) => {
+        setSelectedAccounts(previous => {
+            const next = new Set(previous);
+            if (next.has(externalId)) {
+                next.delete(externalId);
+            } else {
+                next.add(externalId);
+            }
+
+            return next;
+        });
     };
 
-    const selectAllAccounts = () => {
+    const onSelectAll = () => {
         setSelectedAccounts(new Set(accountPreviews.map(preview => preview.externalId)));
     };
 
-    const deselectAllAccounts = () => {
+    const onDeselectAll = () => {
         setSelectedAccounts(new Set());
     };
 
-    return { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts };
+    return { accountPreviews, selectedAccounts, setPreviews, onToggle, onSelectAll, onDeselectAll };
 };

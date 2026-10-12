@@ -1,7 +1,7 @@
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { TransactionImportService } from '@budgie/ledger';
 import {
-    ersteMapper,
+    mapErsteTransaction,
     mapBankTransactionToCreateInput,
     SyncAccountBalanceStateEnum,
     SyncAccountTypeEnum,
@@ -23,7 +23,7 @@ import type { ErsteRowInterface, FileBasedSyncClientInterface, SyncAccountInterf
 
 const ERSTE_ACCOUNT_ID = 'AT123';
 const ERSTE_EXTERNAL_ID = 'erste-transaction-1';
-const ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID = 'd7bc0c964d4e918ed257dacef404ce32';
+const ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID = '7ba14f0e2729c85a23bdc66e1b0ce31a';
 const ERSTE_STATEMENT_URI = 'erste-statement.pdf';
 
 const buildErsteBankAccount = (): SyncAccountInterface => ({
@@ -63,14 +63,13 @@ const buildErsteRow = (): ErsteRowInterface => ({
     date: new Date('2026-01-13T11:00:00.000Z'),
     reference: 'ERSTE CARD PAYMENT',
     description: 'ERSTE CARD PAYMENT',
-    details: 'Parsed card location',
     amount: -42.5,
     isCredit: false,
     city: 'WIEN',
     countryAlpha2: 'AT'
 });
 
-const buildMappedErsteTransaction = (): SyncTransactionInterface => ersteMapper.mapTransaction(buildErsteRow(), ERSTE_ACCOUNT_ID);
+const buildMappedErsteTransaction = (): SyncTransactionInterface => mapErsteTransaction(buildErsteRow(), ERSTE_ACCOUNT_ID);
 
 const buildLegacyErsteInput = (
     bankTransaction: SyncTransactionInterface,

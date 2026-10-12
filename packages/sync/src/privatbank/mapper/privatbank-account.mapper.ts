@@ -1,7 +1,6 @@
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { PRIVATBANK_FAKE_IBAN_PREFIX } from '../constant/privatbank.constant';
 import { extractCardEnding } from '../util/extract-card-ending.util';
 
 import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper';
@@ -18,7 +17,7 @@ const mapCardToAccount = (card: string, currencyString: string): SyncAccountInte
     balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
     creditLimit: 0,
     type: SyncAccountTypeEnum.CARD,
-    iban: `${PRIVATBANK_FAKE_IBAN_PREFIX}${extractCardEnding(card)}`,
+    iban: `UA00PRIVATBANK${extractCardEnding(card)}`,
     maskedPan: [card]
 });
 

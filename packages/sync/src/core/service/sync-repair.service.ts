@@ -6,25 +6,21 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Semaphore from 'effect/Semaphore';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ERSTE_DUPLICATE_CANDIDATE_SQL } from '../../erste/constant/erste-duplicate-candidate-sql.constant';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../../privatbank/constant/privatbank-duplicate-candidate-sql.constant';
 import { UnpairedOwnCardTransferRepairService } from '../../privatbank/service/unpaired-own-card-transfer-repair.service';
 
-import { SyncDuplicateSoftDeleteService } from './sync-duplicate-soft-delete.service';
-
 import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-duplicate-candidate-row.interface';
 import type { SyncDuplicateRepairPreviewInterface } from '../interface/sync-duplicate-repair-preview.interface';
 import type { SyncDuplicateRepairResultInterface } from '../interface/sync-duplicate-repair-result.interface';
-import type { SyncDuplicateRepairSourcePreviewInterface } from '../interface/sync-duplicate-repair-source-preview.interface';
 
 export class SyncRepairService extends Context.Service<SyncRepairService>()('@budgie/sync/SyncRepairService', {
     make: Effect.gen(function* () {
         const ledgerWorkload = yield* LedgerWorkload;
         const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-        const syncDuplicateSoftDeleteService = yield* SyncDuplicateSoftDeleteService;
         const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
         const exclusive = yield* Semaphore.make(1);
         const sources = [
@@ -32,71 +28,61 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             { externalSource: ExternalSourceEnum.ERSTE, candidateSql: ERSTE_DUPLICATE_CANDIDATE_SQL }
         ] as const;
 
-        const buildSourcePreview = (
-            externalSource: ExternalSourceEnum,
-            candidates: readonly SyncDuplicateCandidateRowInterface[]
-        ): SyncDuplicateRepairSourcePreviewInterface => ({
-            duplicateTransactionCount: candidates.filter(candidate => candidate.externalSource === externalSource).length,
-            externalSource
-        });
+        const sqliteBatchSize = 500;
 
-        const addConsolidationRepairPreview = (
-            sourcePreviews: readonly SyncDuplicateRepairSourcePreviewInterface[],
-            consolidationRepairCount: number
-        ): SyncDuplicateRepairSourcePreviewInterface[] => {
-            if (!isPositiveNumber(consolidationRepairCount)) {
-                return [...sourcePreviews];
-            }
-
-            const privatbankSource = sourcePreviews.find(source => source.externalSource === ExternalSourceEnum.PRIVATBANK);
-
-            if (!isDefined(privatbankSource)) {
-                return [
-                    ...sourcePreviews,
-                    {
-                        duplicateTransactionCount: consolidationRepairCount,
-                        externalSource: ExternalSourceEnum.PRIVATBANK
-                    }
-                ];
-            }
-
-            return sourcePreviews.map(source => {
-                if (source.externalSource !== ExternalSourceEnum.PRIVATBANK) {
-                    return source;
-                }
-
-                return {
-                    ...source,
-                    duplicateTransactionCount: source.duplicateTransactionCount + consolidationRepairCount
-                };
-            });
-        };
+        const buildPlaceholders = (ids: readonly number[]): string => ids.map(() => '?').join(',');
 
         const buildPreviewFromCandidates = (
             candidates: readonly SyncDuplicateCandidateRowInterface[],
-            consolidationRepairCount = 0
-        ): SyncDuplicateRepairPreviewInterface => {
-            const duplicateSources = sources
-                .map(({ externalSource }) => buildSourcePreview(externalSource, candidates))
-                .filter(source => isPositiveNumber(source.duplicateTransactionCount));
-            const sourcePreviews = addConsolidationRepairPreview(duplicateSources, consolidationRepairCount);
-            const duplicateTransactionCount = sourcePreviews.reduce((total, source) => total + source.duplicateTransactionCount, 0);
-
-            return { duplicateTransactionCount, sources: sourcePreviews };
-        };
-
-        const mergeConsolidationRepairResult = (
-            result: SyncDuplicateRepairResultInterface,
             consolidationRepairCount: number
-        ): SyncDuplicateRepairResultInterface => {
-            if (!isPositiveNumber(consolidationRepairCount)) {
-                return result;
-            }
+        ): SyncDuplicateRepairPreviewInterface => {
+            const sourceCounts: ReadonlyArray<readonly [ExternalSourceEnum, number]> = [
+                ...candidates.map(candidate => [candidate.externalSource, 1] as const),
+                [ExternalSourceEnum.PRIVATBANK, consolidationRepairCount]
+            ];
+            const countBySource = sourceCounts.reduce(
+                (counts, [externalSource, count]) =>
+                    isPositiveNumber(count) ? counts.set(externalSource, (counts.get(externalSource) ?? 0) + count) : counts,
+                new Map<ExternalSourceEnum, number>()
+            );
 
             return {
-                repairedTransactionCount: result.repairedTransactionCount + consolidationRepairCount
+                duplicateTransactionCount: candidates.length + consolidationRepairCount,
+                sources: [...countBySource].map(([externalSource, duplicateTransactionCount]) => ({
+                    externalSource,
+                    duplicateTransactionCount
+                }))
             };
         };
+
+        const softDeleteChunk = Effect.fnUntraced(function* (chunk: readonly number[]) {
+            const rows = yield* Db.query(db =>
+                db.$client.unsafe<Pick<SyncDuplicateCandidateRowInterface, 'duplicateTransactionId'>>(
+                    String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IS NULL AND id IN (${buildPlaceholders(chunk)}) RETURNING id AS duplicateTransactionId`,
+                    [...chunk]
+                )
+            );
+            const updatedIds = rows.map(row => row.duplicateTransactionId);
+
+            if (isNotEmptyArray(updatedIds)) {
+                yield* Db.query(
+                    db =>
+                        db.$client.unsafe(
+                            String.raw`UPDATE transaction_entries SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND transaction_id IN (${buildPlaceholders(updatedIds)})`,
+                            updatedIds
+                        ).raw
+                );
+                yield* Db.query(
+                    db =>
+                        db.$client.unsafe(
+                            String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IN (${buildPlaceholders(updatedIds)})`,
+                            updatedIds
+                        ).raw
+                );
+            }
+
+            return updatedIds;
+        });
 
         const findDuplicateCandidates = Effect.fnUntraced(function* () {
             const candidateGroups = yield* Effect.all(
@@ -122,13 +108,17 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         });
 
         const removeDuplicatesInTransaction = Effect.fnUntraced(function* () {
-            const candidates = yield* findDuplicateCandidates();
-            const duplicateTransactionIds = candidates.map(candidate => candidate.duplicateTransactionId);
-            const result = yield* syncDuplicateSoftDeleteService.remove(duplicateTransactionIds);
+            const duplicateTransactionIds = (yield* findDuplicateCandidates()).map(candidate => candidate.duplicateTransactionId);
+            let repairedTransactionCount = 0;
 
-            return {
-                repairedTransactionCount: result.updatedTransactionIds.length
-            } satisfies SyncDuplicateRepairResultInterface;
+            for (let index = 0; index < duplicateTransactionIds.length; index += sqliteBatchSize) {
+                repairedTransactionCount += (yield* Db.mutation(
+                    { type: 'update', tables: ['transactions', 'transaction_entries'] },
+                    softDeleteChunk(duplicateTransactionIds.slice(index, index + sqliteBatchSize))
+                )).length;
+            }
+
+            return { repairedTransactionCount } satisfies SyncDuplicateRepairResultInterface;
         });
 
         const buildPreview = Effect.fnUntraced(function* () {
@@ -147,7 +137,9 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             const consolidationRepairCount = yield* repairConsolidationDuplicates().pipe(
                 Effect.onError(() => Effect.ignoreCause(rebuildBalancesWhenNeeded(duplicateResult)))
             );
-            const result = mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
+            const result = {
+                repairedTransactionCount: duplicateResult.repairedTransactionCount + consolidationRepairCount
+            } satisfies SyncDuplicateRepairResultInterface;
 
             yield* rebuildBalancesWhenNeeded(result);
 
@@ -168,7 +160,6 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         Layer.provide([
             ConsolidationCoordinatorService.layer,
             AccountBalanceIncrementalService.layer,
-            SyncDuplicateSoftDeleteService.layer,
             UnpairedOwnCardTransferRepairService.layer
         ])
     );

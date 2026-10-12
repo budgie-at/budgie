@@ -6,6 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
@@ -16,33 +17,20 @@ import { CreateBinanceAccountSelector } from './create-binance-account.selector'
 
 import type { SyncAccountPreviewInterface } from '@budgie/sync';
 
-type SetupStep = 'credentials' | 'accounts';
-
 export const CreateBinanceAccount = () => {
     const { t } = useLingui();
 
-    const [step, setStep] = useState<SetupStep>('credentials');
+    const [step, setStep] = useState(SetupStepEnum.TOKEN);
     const [apiKey, setApiKey] = useState('');
     const [apiSecret, setApiSecret] = useState('');
     const [parkedPreviews, setParkedPreviews] = useState<SyncAccountPreviewInterface[]>([]);
 
     const buildToken = () => JSON.stringify({ apiKey: apiKey.trim(), apiSecret: apiSecret.trim() });
 
-    const {
-        accountPreviews,
-        selectedAccounts,
-        setPreviews,
-        toggleAccount,
-        selectAllAccounts,
-        deselectAllAccounts,
-        isLoading,
-        fetchAccountPreviews,
-        handleGoBack,
-        handleSetupSync,
-        isStartSyncDisabled
-    } = useSyncAccountSetupFlow(BinanceSyncService, (binanceSyncService, selectedAccountIds) =>
-        binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds)
-    );
+    const { accountSelection, isLoading, fetchAccountPreviews, handleGoBack, handleSetupSync, isStartSyncDisabled } =
+        useSyncAccountSetupFlow(BinanceSyncService, (binanceSyncService, selectedAccountIds) =>
+            binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds)
+        );
 
     const handleFetchAccounts = async () => {
         if (!isNotEmptyString(apiKey.trim()) || !isNotEmptyString(apiSecret.trim())) {
@@ -54,41 +42,34 @@ export const CreateBinanceAccount = () => {
         await fetchAccountPreviews(
             binanceSyncService => binanceSyncService.fetchAccountsPreview(buildToken()),
             previews => {
-                setPreviews(previews.filter(preview => !preview.isParked));
+                accountSelection.setPreviews(previews.filter(preview => !preview.isParked));
                 setParkedPreviews(previews.filter(preview => preview.isParked));
-                setStep('accounts');
+                setStep(SetupStepEnum.ACCOUNTS);
             }
         );
     };
 
-    const isInputStep = step === 'credentials';
-    const inputStepContent = (
-        <KeySecretInputStep apiKey={apiKey} apiSecret={apiSecret} onApiKeyChange={setApiKey} onApiSecretChange={setApiSecret} />
-    );
-    const accountsStepContent = (
+    let pageContent = (
         <>
-            <AccountSelectionStep
-                accountPreviews={accountPreviews}
-                selectedAccounts={selectedAccounts}
-                onToggle={toggleAccount}
-                onSelectAll={selectAllAccounts}
-                onDeselectAll={deselectAllAccounts}
-            />
-
+            <AccountSelectionStep {...accountSelection} />
             <BinanceParkedAssetsNotice parkedPreviews={parkedPreviews} />
         </>
     );
-    const footerProps = isInputStep
-        ? { onPress: handleFetchAccounts, disabled: isLoading, content: t`Fetch Accounts` }
-        : { onPress: handleSetupSync, disabled: isStartSyncDisabled, content: t`Start Sync` };
-    const pageContent = isInputStep ? inputStepContent : accountsStepContent;
+    let footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
+
+    if (step === SetupStepEnum.TOKEN) {
+        pageContent = (
+            <KeySecretInputStep apiKey={apiKey} apiSecret={apiSecret} onApiKeyChange={setApiKey} onApiSecretChange={setApiSecret} />
+        );
+        footer = <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />;
+    }
 
     return (
         <SyncAccountSetupPage
             title={t`Connect Binance`}
             description={t`Sync your Binance balances and transactions`}
             onGoBack={handleGoBack}
-            footer={<Button {...footerProps} />}
+            footer={footer}
             scrollViewTestID={CreateBinanceAccountSelector.ScrollView}
         >
             {pageContent}
