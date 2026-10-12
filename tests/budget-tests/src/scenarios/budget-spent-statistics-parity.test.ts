@@ -1,6 +1,6 @@
 import { BudgetRepository, BudgetSpentService } from '@budgie/budget';
 import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, PRECISION, StatisticsRepository, TransactionEntityTable } from '@budgie/contracts';
-import { layer } from '@effect/vitest';
+import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
