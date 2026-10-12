@@ -220,7 +220,6 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             ),
             getEarliestTransactionTimeByAccountId: (accountId: number) =>
                 transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest'),
-            updateAllBalances: () => accountBalanceIncrementalService.updateAllBalances(true),
             createInternal: Effect.fn('TransactionService.createInternal')(
                 function* (input: TransactionCreateInputInterface) {
                     const [transaction] = yield* bulkCreate([input]);

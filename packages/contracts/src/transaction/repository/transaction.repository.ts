@@ -186,15 +186,6 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 return yield* selectOperatedAtTime(aggregateSql, and(...transactionFilters.buildAccountCondition([accountId])));
             }),
 
-            getEarliestTransactionTimeByExternalSource: Effect.fn('TransactionRepository.getEarliestTransactionTimeByExternalSource')(
-                function* (externalSource: ExternalSourceEnum) {
-                    return yield* selectOperatedAtTime(
-                        sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`,
-                        eq(TransactionEntityTable.externalSource, externalSource)
-                    );
-                }
-            ),
-
             archiveByAccountIds: Effect.fn('TransactionRepository.archiveByAccountIds')(function* (accountIds: number[]) {
                 const ledgerEntryCondition = transactionFilters.buildLedgerEntryCondition();
 

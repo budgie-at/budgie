@@ -1,6 +1,6 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountRepository, SyncModeEnum, TransactionRepository } from '@budgie/contracts';
-import { ImportedTransactionEntryUpdateService, TransactionService, TransferCreationService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, ImportedTransactionEntryUpdateService, TransactionService, TransferCreationService } from '@budgie/ledger';
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { subDays } from 'date-fns/subDays';
 import { subYears } from 'date-fns/subYears';
@@ -44,6 +44,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const accountRepository = yield* AccountRepository;
         const transactionRepository = yield* TransactionRepository;
         const importedTransactionEntryUpdateService = yield* ImportedTransactionEntryUpdateService;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const transactionService = yield* TransactionService;
         const transferCreationService = yield* TransferCreationService;
         const binanceAccountService = yield* BinanceAccountService;
@@ -351,7 +352,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     Effect.orDie(Effect.suspend(() => binanceTradeCursorService.persistRunSideEffects(sync, run.signedClient)))
                 );
                 if (isPositiveNumber(changedCount)) {
-                    yield* transactionService.updateAllBalances();
+                    yield* accountBalanceIncrementalService.updateAllBalances(true);
                     yield* syncWorkload.enqueueTransferConsolidation();
                 }
 
@@ -431,6 +432,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
     static readonly layer = Layer.effect(BinanceSyncService, BinanceSyncService.make).pipe(
         Layer.provide([
             pollingSyncDependenciesLayer,
+            AccountBalanceIncrementalService.layer,
             ImportedTransactionEntryUpdateService.layer,
             TransferCreationService.layer,
             BinanceAccountService.layer,

@@ -183,7 +183,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             const createdTransactions = yield* createNewTransactions(newTransactions, accountId);
             if (isNotEmptyArray(existingTransactions)) {
                 yield* transactionService.bulkUpdateImported(yield* mapBankTransactions(existingTransactions, accountId));
-                yield* transactionService.updateAllBalances();
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
             }
 
             return [...createdTransactions, ...buildExistingTransactionScopeSeeds(existingTransactions, existingTransactionIdMap)];
