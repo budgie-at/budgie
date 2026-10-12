@@ -18,10 +18,12 @@ export const useDeleteCategory = () => {
         const count = yield* categoryService.countTransactionEntries(id);
 
         if (!isPositiveNumber(count)) {
-            return yield* categoryService.deleteById(id).pipe(
+            yield* categoryService.deleteById(id).pipe(
                 Effect.tapCause(cause => Effect.logError(cause)),
                 Effect.tapError(() => Effect.sync(() => void showErrorToast(t`Could not delete category`, t`Please try again later`)))
             );
+
+            return;
         }
 
         const description = t({
