@@ -217,7 +217,6 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 fromCurrency: getValue(columnMap.fromCurrency).toUpperCase().trim(),
                 fromAmount: getValue(columnMap.fromAmount).trim(),
                 toCurrency: getValue(columnMap.toCurrency).toUpperCase().trim(),
-                isPlanned: getValue(columnMap.isPlanned).trim(),
                 mcc: getValue(columnMap.mcc).trim()
             } satisfies NormalizedRowType;
         };
@@ -234,7 +233,6 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
             const fromAccount = lookup.accountsMap[getFromAccountKey(normalizedRow)];
             const fromInstrument = isDefined(fromAccount) ? lookup.instrumentsMap[normalizedRow.fromCurrency] : null;
             const fromAmount = isDefined(fromAccount) ? Number.parseFloat(normalizedRow.fromAmount) : null;
-            const isPlanned = normalizedRow.isPlanned === '1';
 
             if (!isDefined(toAccount)) {
                 return Result.fail(`To Account ${normalizedRow.toAccount} not found`);
@@ -268,8 +266,7 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 toAmount,
                 fromInstrument,
                 toInstrument,
-                fromAmount,
-                isPlanned
+                fromAmount
             });
         };
 
