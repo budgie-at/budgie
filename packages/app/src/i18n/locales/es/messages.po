@@ -631,6 +631,7 @@ msgstr "Aplicar categorías predeterminadas según los códigos de categoría de
 msgid "Apply to existing transactions?"
 msgstr "¿Aplicar a transacciones existentes?"
 
+#: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
@@ -3179,6 +3180,7 @@ msgid "Overdue"
 msgstr "Vencido"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 msgid "Overpaid"
 msgstr "Pagado de más"
 
@@ -3197,10 +3199,6 @@ msgstr "Te debe"
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Pagado {paidAmount} · {paidCount} de {installmentCount}"
-
-#: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
-msgid "Paid off"
-msgstr "Pagado"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
@@ -4343,6 +4341,7 @@ msgstr "Token requerido"
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
+#: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx

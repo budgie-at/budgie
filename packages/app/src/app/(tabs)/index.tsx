@@ -12,14 +12,17 @@ import { HomeSectionKindEnum } from '../../account/enum/home-section-kind.enum';
 import { BankProviderGroupInterface } from '../../account/interface/bank-provider-group.interface';
 import { CryptoCurrencyGroupInterface } from '../../account/interface/crypto-currency-group.interface';
 import { DebtSectionInterface } from '../../account/interface/debt-section.interface';
+import { HomeAccountBalanceSummaryInterface } from '../../account/interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../account/interface/home-section.interface';
 import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
 import { buildIntegrationProviderMap } from '../../account/utils/build-integration-provider-map.util';
+import { getDebtProgressDisplayState } from '../../account/utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../../account/utils/get-debt-section-kind.util';
 import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
+import { useSettingsContext } from '../../settings/context/settings.context';
 
 const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: Value): void => {
     const groupValues = groups.get(key);
@@ -69,6 +72,20 @@ const groupCryptoAccountsByInstrument = (accounts: AccountWithSyncEntityInterfac
     });
 
     return [...groups.values()];
+};
+
+const isSettledDebtAccount = (
+    account: Pick<AccountWithSyncEntityInterface, 'id' | 'type'>,
+    balanceSummary: Pick<HomeAccountBalanceSummaryInterface, 'balancesByAccountId'>,
+    decimalPlaces: number
+): boolean => {
+    const debtProgressSummary = balanceSummary.balancesByAccountId.get(account.id)?.debtProgressSummary;
+
+    return (
+        account.type === AccountTypeEnum.DEBT &&
+        isDefined(debtProgressSummary) &&
+        getDebtProgressDisplayState(debtProgressSummary, decimalPlaces).isSettled
+    );
 };
 
 const buildHomePageSections = (
@@ -138,6 +155,7 @@ export default function HomePage() {
     const { accounts, balanceSummary } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const scrollY = useSharedValue(0);
+    const { decimalPlaces } = useSettingsContext();
     const onboardingHref = useOnboardingRedirect();
 
     if (isDefined(onboardingHref)) {
@@ -146,7 +164,10 @@ export default function HomePage() {
 
     const activeAccounts = accounts.filter(account => account.isActive);
     const integrationProviders = buildIntegrationProviderMap(accounts);
-    const sections = buildHomePageSections(activeAccounts, integrationProviders);
+    const sections = buildHomePageSections(
+        activeAccounts.filter(account => !isSettledDebtAccount(account, balanceSummary, decimalPlaces)),
+        integrationProviders
+    );
     const listHeaderComponent = (
         <View className="mb-3xl gap-y-3xl">
             <BudgetWidget />
