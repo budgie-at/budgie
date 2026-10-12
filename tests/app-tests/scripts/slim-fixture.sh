@@ -4,13 +4,26 @@ set -euo pipefail
 
 MARGIN_DAYS="${SLIM_MARGIN_DAYS:-30}"
 
+if ! [[ "$MARGIN_DAYS" =~ ^[0-9]+$ ]]; then
+    echo "SLIM_MARGIN_DAYS must be a non-negative integer, got '$MARGIN_DAYS'" >&2
+    exit 64
+fi
+
 if [ "$#" -eq 0 ]; then
     echo "Usage: $0 <fixture.db>..." >&2
     exit 64
 fi
 
 for database_path in "$@"; do
-    sqlite3 "$database_path" <<SQL
+    if [ ! -f "$database_path" ]; then
+        echo "Fixture database not found: $database_path" >&2
+        exit 66
+    fi
+    if [ -z "$(sqlite3 -bail "$database_path" 'SELECT MAX(rate_date) FROM historical_exchange_rates')" ]; then
+        echo "No historical_exchange_rates in $database_path" >&2
+        exit 65
+    fi
+    sqlite3 -bail "$database_path" <<SQL
 CREATE TEMP TABLE slim_window AS
 SELECT
     date(
@@ -39,7 +52,7 @@ SELECT id FROM (
     FROM historical_exchange_rates
     WHERE rate_date < (SELECT lower_bound FROM slim_window)
 ) WHERE position = 1;
-DELETE FROM historical_exchange_rates WHERE id NOT IN (SELECT id FROM slim_keep);
+DELETE FROM historical_exchange_rates WHERE (SELECT lower_bound FROM slim_window) IS NOT NULL AND id NOT IN (SELECT id FROM slim_keep);
 DROP TABLE slim_keep;
 DROP TABLE slim_window;
 VACUUM;
