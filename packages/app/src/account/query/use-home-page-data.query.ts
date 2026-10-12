@@ -15,6 +15,7 @@ import { useSettingsContext } from '../../settings/context/settings.context';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
+import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
 import { pairAccountsIntoRows } from '../utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
@@ -148,8 +149,22 @@ const addNetWorthAssetTotals = (
     summary.fiatTotal += convertedBalance;
 };
 
+const isSettledDebtAccount = (
+    account: Pick<AccountWithSyncEntityInterface, 'id' | 'type'>,
+    balanceSummary: Pick<HomeAccountBalanceSummaryInterface, 'balancesByAccountId'>,
+    decimalPlaces: number
+): boolean => {
+    const debtProgressSummary = balanceSummary.balancesByAccountId.get(account.id)?.debtProgressSummary;
+
+    return (
+        account.type === AccountTypeEnum.DEBT &&
+        isDefined(debtProgressSummary) &&
+        getDebtProgressDisplayState(debtProgressSummary, decimalPlaces).isSettled
+    );
+};
+
 export const useHomePageDataQuery = () => {
-    const { defaultInstrument } = useSettingsContext();
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const result = useLiveAtomValue(homeAccountRowsAtom(defaultInstrument.id));
     const data = AsyncResult.getOrElse(result, () => []);
     const accounts = data.map(row => {
@@ -205,8 +220,8 @@ export const useHomePageDataQuery = () => {
         return summary;
     }, createHomeAccountBalanceSummary());
 
-    const activeAccounts = accounts.filter(account => account.isActive);
-    const sections = buildHomePageSections(activeAccounts, integrationProviders);
+    const displayedAccounts = accounts.filter(account => account.isActive && !isSettledDebtAccount(account, balanceSummary, decimalPlaces));
+    const sections = buildHomePageSections(displayedAccounts, integrationProviders);
 
-    return { activeAccountCount: activeAccounts.length, accounts, balanceSummary, sections };
+    return { activeAccountCount: displayedAccounts.length, accounts, balanceSummary, sections };
 };

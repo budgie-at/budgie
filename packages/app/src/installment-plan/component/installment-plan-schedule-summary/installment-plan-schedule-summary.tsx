@@ -18,22 +18,11 @@ interface Props {
 export const InstallmentPlanScheduleSummary = ({ accountId, instrumentSymbol }: Props) => {
     const schedule = useInstallmentPlanScheduleQuery(accountId);
 
-    if (!isDefined(schedule)) {
+    if (!isDefined(schedule) || !isDefined(schedule.nextAmount)) {
         return null;
     }
 
     const { installmentCount, paidCount } = schedule;
-
-    if (!isDefined(schedule.nextAmount)) {
-        return (
-            <View className="flex-row items-center justify-center gap-x-xs pt-lg" testID={InstallmentPlanScheduleSummarySelector.PaidOff}>
-                <Icon icon={UserIconNameEnum.Check} className="text-positive-foreground" size={14} />
-                <Text className="text-sm font-medium text-positive-foreground">
-                    <Trans>Paid off</Trans>
-                </Text>
-            </View>
-        );
-    }
 
     return (
         <View
