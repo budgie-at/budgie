@@ -1,3 +1,4 @@
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,7 +17,7 @@ export default function CurrencyMarketRoute() {
         return <LoadingScreen />;
     }
 
-    if (!isDefined(instrument)) {
+    if (!isDefined(instrument) || instrument.type !== InstrumentTypeEnum.CRYPTO) {
         return <Redirect href="/" />;
     }
 
