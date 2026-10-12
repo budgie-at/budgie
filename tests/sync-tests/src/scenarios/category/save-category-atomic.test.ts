@@ -6,14 +6,14 @@ import * as Effect from 'effect/Effect';
 
 import { TestLayer } from '../../harness';
 
+const createPetsCategory = () =>
+    createCategory({ title: 'Pets', icon: UserIconNameEnum.ShoppingBasket }, { titleEn: 'pets', titleTags: 'animals, pets' });
+
 describe('category/save-category-atomic', () => {
     it.effect('persists the title and translation together on create and update', () =>
         Effect.gen(function* () {
             const categoryRepository = yield* CategoryRepository;
-            const created = yield* createCategory(
-                { title: 'Pets', icon: UserIconNameEnum.ShoppingBasket },
-                { titleEn: 'pets', titleTags: 'animals, pets' }
-            );
+            const created = yield* createPetsCategory();
 
             const updated = yield* updateCategory(
                 created.id,
@@ -31,10 +31,7 @@ describe('category/save-category-atomic', () => {
     it.effect('rolls back the title when the translation write fails during update', () =>
         Effect.gen(function* () {
             const categoryRepository = yield* CategoryRepository;
-            const created = yield* createCategory(
-                { title: 'Pets', icon: UserIconNameEnum.ShoppingBasket },
-                { titleEn: 'pets', titleTags: 'animals, pets' }
-            );
+            const created = yield* createPetsCategory();
             vi.spyOn(categoryRepository, 'updateTranslation').mockReturnValue(Effect.die(new Error('translation write failed')));
 
             yield* Effect.exit(
