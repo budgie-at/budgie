@@ -162,12 +162,9 @@ export default function HomePage() {
         return <Redirect href={onboardingHref} />;
     }
 
-    const activeAccounts = accounts.filter(account => account.isActive);
+    const displayedAccounts = accounts.filter(account => account.isActive && !isSettledDebtAccount(account, balanceSummary, decimalPlaces));
     const integrationProviders = buildIntegrationProviderMap(accounts);
-    const sections = buildHomePageSections(
-        activeAccounts.filter(account => !isSettledDebtAccount(account, balanceSummary, decimalPlaces)),
-        integrationProviders
-    );
+    const sections = buildHomePageSections(displayedAccounts, integrationProviders);
     const listHeaderComponent = (
         <View className="mb-3xl gap-y-3xl">
             <BudgetWidget />
@@ -188,7 +185,7 @@ export default function HomePage() {
             <HomeSectionsList
                 scrollY={scrollY}
                 sections={sections}
-                activeAccountCount={activeAccounts.length}
+                activeAccountCount={displayedAccounts.length}
                 bottomInset={bottom}
                 balanceSummary={balanceSummary}
                 listHeaderComponent={listHeaderComponent}
