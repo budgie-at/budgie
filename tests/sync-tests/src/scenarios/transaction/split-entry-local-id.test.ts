@@ -80,10 +80,12 @@ describe('transaction/split-entry-local-id', () => {
                 entries: [buildSplitEntry(account.id, 30), buildSplitEntry(account.id, 70)]
             });
             const stored = yield* transactionRepository.getByIdWithEntries(transaction.id);
-            const [firstEntry, secondEntry] = (stored?.entries ?? []).map(entry => ({ ...entry, amount: convertFromMicroUnits(entry.amount) }));
+            const [firstEntry, secondEntry] = (stored?.entries ?? []).map(entry => ({
+                ...entry,
+                amount: convertFromMicroUnits(entry.amount)
+            }));
 
             yield* transactionService.updateById(transaction.id, {
-                amount: 120,
                 entries: [withEntryAmount(firstEntry, 50), withEntryAmount(secondEntry, 70)],
                 tagIds: []
             });
