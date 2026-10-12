@@ -1,5 +1,3 @@
-import { t } from '@lingui/core/macro';
-
 import { FeaturePageRelated } from '../../../feature/component/feature-page-related/feature-page-related';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { BlogArticleCta } from '../blog-article-cta/blog-article-cta';
@@ -22,10 +20,8 @@ export const BlogArticlePageShell = ({ article, children, lang }: Props) => {
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={article.author}
-                blogLabel={t(i18n)`Blog`}
                 date={article.date}
                 description={i18n._(article.description)}
-                homeLabel={t(i18n)`Home`}
                 image={`/${lang}/blog/${article.slug}/opengraph-image`}
                 keywords={article.seoKeywords.join(', ')}
                 locale={lang}
