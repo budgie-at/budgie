@@ -275,7 +275,7 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 try: () => Papa.parse<Record<string, string>>(csvText, { header: true, skipEmptyLines: true }),
                 catch: error => new ImportRowError({ reason: getErrorMessage(error), rowColumns: '' })
             });
-            const structuralError = errors.find(error => error.type !== 'FieldMismatch');
+            const structuralError = errors.find(error => error.type !== 'FieldMismatch' && error.code !== 'InvalidQuotes');
 
             if (isDefined(structuralError)) {
                 return yield* new ImportRowError({ reason: structuralError.message, rowColumns: (meta.fields ?? []).join(',') });

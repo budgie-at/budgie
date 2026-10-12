@@ -1,5 +1,5 @@
 import { AccountRepository, TransactionRepository } from '@budgie/contracts';
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { IMPORT_PRESETS } from '../src/import/constant/import-presets.constant';
@@ -48,6 +48,44 @@ describe('importer replaceAll', () => {
             [header, 'n-1,Cash,-5,USD,,,,Food,01/15/2026 12:30:00,,', 'n-2,Vault,7,XXX,,,,Food,01/15/2026 12:30:00,,'].join('\n'),
             'Currency XXX not found'
         )
+    );
+
+    it.effect('keeps existing data when a write after the replace fails', () =>
+        Effect.gen(function* () {
+            const importerService = yield* ImporterService;
+            const transactionRepository = yield* TransactionRepository;
+            yield* importerService.replaceAll(IMPORT_PRESETS[ImportPresetEnum.Budgie], existingCsv);
+            const before = yield* snapshotData;
+            const bulkCreateSpy = vi
+                .spyOn(transactionRepository, 'bulkCreate')
+                .mockReturnValue(Effect.die(new Error('transaction write failed')));
+            yield* Effect.addFinalizer(() => Effect.sync(() => bulkCreateSpy.mockRestore()));
+
+            const exit = yield* Effect.exit(
+                importerService.replaceAll(
+                    IMPORT_PRESETS[ImportPresetEnum.Budgie],
+                    [header, 'n-1,Vault,-5,USD,,,,Food,01/15/2026 12:30:00,,'].join('\n')
+                )
+            );
+
+            expect(bulkCreateSpy).toHaveBeenCalled();
+            expect(exit._tag).toBe('Failure');
+            expect(yield* snapshotData).toStrictEqual(before);
+        }).pipe(Effect.scoped, Effect.provide(TestLayer))
+    );
+
+    it.effect('imports a row with a stray quote inside a quoted field', () =>
+        Effect.gen(function* () {
+            const importerService = yield* ImporterService;
+
+            const result = yield* importerService.replaceAll(
+                IMPORT_PRESETS[ImportPresetEnum.Budgie],
+                [header, 'n-1,"Ca"sh",-5,USD,,,,Food,01/15/2026 12:30:00,,'].join('\n')
+            );
+
+            expect(result.transactionIds).toHaveLength(1);
+            expect((yield* snapshotData).accounts.map(([, title]) => title)).toStrictEqual(['ca"sh USD']);
+        }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('rejects a CSV with an unterminated quote before touching existing data', () =>
