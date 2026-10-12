@@ -25,7 +25,7 @@ export default function ContactSelectorModal() {
     const { t } = useLingui();
     const [, resolveContactSelector] = useContactSelectorModal();
     const [search, setSearch] = useState('');
-    const { contacts } = useContacts();
+    const contacts = useContacts();
 
     const selectedContactId = useContactSelectorModalParams()?.selectedContactId;
     const data = filterContacts(contacts, search);

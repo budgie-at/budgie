@@ -13,11 +13,18 @@ import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-but
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
 import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
-import { reorderTagIdsByPrimary } from '../tag/utils/reorder-tag-ids-by-primary.util';
 
 import { TagsSelectorModalSelector } from './tags-selector-modal.selector';
 
 const NUM_COLUMNS = 3;
+
+const reorderTagIdsByPrimary = (tagIds: number[], primaryTagId: number | null): number[] => {
+    if (!isDefined(primaryTagId) || !tagIds.includes(primaryTagId)) {
+        return tagIds;
+    }
+
+    return [primaryTagId, ...tagIds.filter(tagId => tagId !== primaryTagId)];
+};
 
 const prepareTagData = (tags: TagEntityInterface[] | null, excludeTagIds: number[], selectedTagIds: number[]) => {
     const filtered = isNotEmptyArray(tags) ? tags.filter(tag => !excludeTagIds.includes(tag.id)) : [];

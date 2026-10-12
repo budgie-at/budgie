@@ -1,29 +1,18 @@
-import { getLocales } from 'expo-localization';
-
-import { isDefined } from '@rnw-community/shared';
-
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { DEFAULT_LOCALE } from '../constant/default-locale.constant';
-import { LOCALES } from '../constant/locales.constant';
-import { LocaleInfoInterface } from '../interface/locale-info.interface';
 import { languageToLocale } from '../util/language-to-locale.util';
 
+import type { LocaleInfoInterface } from '../interface/locale-info.interface';
+
+const SAMPLE_NUMBER = 10000.1;
+
 export const useLocaleInfo = (): LocaleInfoInterface => {
-    const language = useSetting('language');
-    const [locale] = getLocales();
+    const languageTag = languageToLocale(useSetting('language'));
+    const parts = new Intl.NumberFormat(languageTag).formatToParts(SAMPLE_NUMBER);
 
-    const localeTag = languageToLocale(language);
-    const localeFromSettings = LOCALES.find(({ languageTag }) => languageTag === localeTag);
-
-    if (isDefined(localeFromSettings)) {
-        return localeFromSettings;
-    }
-
-    const localeFromSystem = LOCALES.find(({ languageTag }) => languageTag === locale.languageTag);
-
-    if (isDefined(localeFromSystem)) {
-        return localeFromSystem;
-    }
-
-    return DEFAULT_LOCALE;
+    return {
+        languageTag,
+        languageCode: languageTag.split('-')[0],
+        decimalSeparator: parts.find(({ type }) => type === 'decimal')?.value ?? '.',
+        digitGroupingSeparator: parts.find(({ type }) => type === 'group')?.value ?? ','
+    };
 };

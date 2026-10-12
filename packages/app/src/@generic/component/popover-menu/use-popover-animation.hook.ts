@@ -1,63 +1,52 @@
-import { useEffect, useRef } from 'react';
-import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Easing, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { EmptyFn, isDefined } from '@rnw-community/shared';
-
-import { usePopoverCloseCompleteEffect } from './use-popover-close-complete-effect.hook';
-import { usePopoverCloseTransition } from './use-popover-close-transition.hook';
+import { EmptyFn } from '@rnw-community/shared';
 
 const BACKDROP_OPACITY = 0.3;
 const MENU_SCALE_CLOSED = 0.95;
-const ANIMATION_DURATION = 150;
-const CLOSE_COMPLETION_BUFFER = 50;
 
-const TIMING_CONFIG = { duration: ANIMATION_DURATION, easing: Easing.out(Easing.cubic) };
+const TIMING_CONFIG = { duration: 150, easing: Easing.out(Easing.cubic) };
 
 export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) => {
-    const { isAnimatingOut, setIsAnimatingOut, forceClose: markForceClosed } = usePopoverCloseTransition(isOpen);
-    const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const progress = useSharedValue(isOpen ? 1 : 0);
+    const [isClosing, setIsClosing] = useState(false);
+    const [previousIsOpen, setPreviousIsOpen] = useState(isOpen);
+    const onCloseCompleteRef = useRef(onCloseComplete);
 
-    const backdropOpacity = useSharedValue(isOpen ? BACKDROP_OPACITY : 0);
-    const menuScale = useSharedValue(isOpen ? 1 : MENU_SCALE_CLOSED);
-    const menuOpacity = useSharedValue(isOpen ? 1 : 0);
+    if (isOpen !== previousIsOpen) {
+        setPreviousIsOpen(isOpen);
+        setIsClosing(!isOpen);
+    }
+
+    useEffect(() => {
+        onCloseCompleteRef.current = onCloseComplete;
+    });
+
+    const finishClose = useCallback(() => {
+        setIsClosing(false);
+        onCloseCompleteRef.current?.();
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
-            backdropOpacity.set(withTiming(BACKDROP_OPACITY, TIMING_CONFIG));
-            menuScale.set(withTiming(1, TIMING_CONFIG));
-            menuOpacity.set(withTiming(1, TIMING_CONFIG));
-        } else if (isAnimatingOut) {
-            backdropOpacity.set(withTiming(0, TIMING_CONFIG));
-            menuScale.set(withTiming(MENU_SCALE_CLOSED, TIMING_CONFIG));
-            menuOpacity.set(withTiming(0, TIMING_CONFIG));
-
-            closeTimerRef.current = setTimeout(() => {
-                closeTimerRef.current = null;
-                setIsAnimatingOut(false);
-            }, ANIMATION_DURATION + CLOSE_COMPLETION_BUFFER);
+            progress.set(withTiming(1, TIMING_CONFIG));
+        } else if (isClosing) {
+            progress.set(
+                withTiming(0, TIMING_CONFIG, isFinished => {
+                    if (isFinished) {
+                        runOnJS(finishClose)();
+                    }
+                })
+            );
         }
+    }, [isOpen, isClosing, progress, finishClose]);
 
-        return () => {
-            if (isDefined(closeTimerRef.current)) {
-                clearTimeout(closeTimerRef.current);
-                closeTimerRef.current = null;
-            }
-        };
-    }, [isOpen, isAnimatingOut, backdropOpacity, menuScale, menuOpacity, setIsAnimatingOut]);
+    const backdropStyle = useAnimatedStyle(() => ({ opacity: progress.get() * BACKDROP_OPACITY }));
+    const menuStyle = useAnimatedStyle(() => ({
+        opacity: progress.get(),
+        transform: [{ scale: interpolate(progress.get(), [0, 1], [MENU_SCALE_CLOSED, 1]) }]
+    }));
 
-    usePopoverCloseCompleteEffect(isOpen || isAnimatingOut, onCloseComplete);
-
-    const backdropStyle = useAnimatedStyle(() => ({ opacity: backdropOpacity.value }));
-    const menuStyle = useAnimatedStyle(() => ({ opacity: menuOpacity.value, transform: [{ scale: menuScale.value }] }));
-
-    const forceClose = () => {
-        markForceClosed();
-
-        if (isDefined(closeTimerRef.current)) {
-            clearTimeout(closeTimerRef.current);
-            closeTimerRef.current = null;
-        }
-    };
-
-    return { isAnimatingOut, backdropStyle, menuStyle, forceClose };
+    return { isRendered: isOpen || isClosing, backdropStyle, menuStyle };
 };
