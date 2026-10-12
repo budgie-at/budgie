@@ -1,6 +1,5 @@
 import { TestQueryService } from '@budgie-at/test-kit';
 import {
-    AccountBalanceRepository,
     AccountTypeEnum,
     CurrencyEnum,
     DebtEventEntityTable,
@@ -15,7 +14,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { seed, testDb, TestLayer, upsertCurrencyRate } from '../../harness';
+import { fetchAccountBalance, seed, testDb, TestLayer, upsertCurrencyRate } from '../../harness';
 import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 const query = new TestQueryService(testDb);
@@ -41,10 +40,12 @@ const applyConvertRule = Effect.fnUntraced(function* (title: string, targetAccou
     return yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id);
 });
 
-const readBalance = Effect.fnUntraced(function* (accountId: number) {
-    const accountBalanceRepository = yield* AccountBalanceRepository;
+const readEntryLegs = Effect.fnUntraced(function* (transactionId: number) {
+    const entries = yield* query.fetchEntriesByTransactionId(transactionId);
 
-    return (yield* accountBalanceRepository.getByAccountId(accountId)).at(0)?.balance;
+    return [...entries]
+        .sort((left, right) => left.type.localeCompare(right.type))
+        .map(entry => [entry.type, entry.accountId, entry.amount]);
 });
 
 describe('rule/rule-transfer-conversion', () => {
@@ -57,20 +58,15 @@ describe('rule/rule-transfer-conversion', () => {
             yield* applyConvertRule('RULE FEE', target.id);
 
             const transaction = yield* query.fetchTransactionById(expense.id);
-            const entries = yield* query.fetchEntriesByTransactionId(expense.id);
 
             expect(transaction.type).toBe(TransactionTypeEnum.TRANSFER);
-            expect(
-                [...entries]
-                    .sort((left, right) => left.type.localeCompare(right.type))
-                    .map(entry => [entry.type, entry.accountId, entry.amount])
-            ).toStrictEqual([
+            expect(yield* readEntryLegs(expense.id)).toStrictEqual([
                 [TransactionEntryTypeEnum.CREDIT, source.id, expenseAmount],
                 [TransactionEntryTypeEnum.DEBIT, target.id, expenseAmount],
                 [TransactionEntryTypeEnum.FEE, source.id, feeAmount]
             ]);
-            expect(yield* readBalance(source.id)).toBe(-(expenseAmount + feeAmount));
-            expect(yield* readBalance(target.id)).toBe(expenseAmount);
+            expect(yield* fetchAccountBalance(source.id)).toBe(-(expenseAmount + feeAmount));
+            expect(yield* fetchAccountBalance(target.id)).toBe(expenseAmount);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -130,19 +126,13 @@ describe('rule/rule-transfer-conversion', () => {
 
             yield* applyConvertRule(income.title, target.id);
 
-            const entries = yield* query.fetchEntriesByTransactionId(income.id);
-
             expect((yield* query.fetchTransactionById(income.id)).type).toBe(TransactionTypeEnum.TRANSFER);
-            expect(
-                [...entries]
-                    .sort((left, right) => left.type.localeCompare(right.type))
-                    .map(entry => [entry.type, entry.accountId, entry.amount])
-            ).toStrictEqual([
+            expect(yield* readEntryLegs(income.id)).toStrictEqual([
                 [TransactionEntryTypeEnum.CREDIT, target.id, 25 * PRECISION],
                 [TransactionEntryTypeEnum.DEBIT, source.id, 50 * PRECISION]
             ]);
-            expect(yield* readBalance(source.id)).toBe(50 * PRECISION);
-            expect(yield* readBalance(target.id)).toBe(-25 * PRECISION);
+            expect(yield* fetchAccountBalance(source.id)).toBe(50 * PRECISION);
+            expect(yield* fetchAccountBalance(target.id)).toBe(-25 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 });
