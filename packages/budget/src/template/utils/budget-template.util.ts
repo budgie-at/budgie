@@ -2,14 +2,11 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { getMonth } from 'date-fns/getMonth';
 import { getYear } from 'date-fns/getYear';
 import { subMonths } from 'date-fns/subMonths';
-import * as Context from 'effect/Context';
-import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { budgetPeriodService } from '../../period/service/budget-period.service';
-import { BudgetSpentService } from '../../spent/service/budget-spent.service';
+import { computeTrailingMonthsWindow, resolveSuggestedWindowMonths } from '../../period/utils/budget-period.util';
+import { convertEntryAmount } from '../../spent/utils/budget-spent.util';
 import { GENERIC_BUDGET_TEMPLATE_CATEGORIES } from '../constant/generic-budget-template.constant';
 import {
     GENERIC_INITIAL_PRESET_TOTAL_BY_CURRENCY,
@@ -49,7 +46,9 @@ const computeSpikeAdjustedMonthlyAverage = (monthlyAmounts: readonly number[]): 
     return total / monthlyAmounts.length;
 };
 
-const buildSuggestedBudgetTemplate = (spentByCategory: readonly BudgetCategoryMonthlySpentInterface[]): BudgetTemplateDraftInterface => {
+export const buildSuggestedBudgetTemplate = (
+    spentByCategory: readonly BudgetCategoryMonthlySpentInterface[]
+): BudgetTemplateDraftInterface => {
     const averaged = spentByCategory.map(entry => ({
         categoryId: entry.categoryId,
         monthlyAvg: computeSpikeAdjustedMonthlyAverage(entry.monthlyAmounts)
@@ -92,7 +91,7 @@ const resolveGenericCategoryLimits = (
         return [{ categoryId: match.id, limitAmount }];
     });
 
-const resolveGenericBudgetTemplate = (
+export const resolveGenericBudgetTemplate = (
     categories: readonly BudgetGenericCategoryRowInterface[],
     currencyCode: string
 ): BudgetTemplateDraftInterface => {
@@ -123,87 +122,67 @@ const emptySuggestedResolution = (isReady: boolean): BudgetTemplateResolutionInt
     stats: null
 });
 
-export class BudgetTemplateService extends Context.Service<BudgetTemplateService>()('@budgie/budget/BudgetTemplateService', {
-    make: Effect.gen(function* () {
-        const budgetSpentService = yield* BudgetSpentService;
+const resolveEffectiveMonths = (
+    entries: readonly BudgetSuggestedSpentEntryInterface[],
+    now: Date,
+    config: BudgetSuggestedTemplateConfigInterface
+): number =>
+    resolveSuggestedWindowMonths(
+        entries.map(entry => entry.operatedAt),
+        computeTrailingMonthsWindow(now, config.maxWindowMonths).start,
+        config.maxWindowMonths,
+        config.minEntriesPerMonth
+    );
 
-        const resolveEffectiveMonths = (
-            entries: readonly BudgetSuggestedSpentEntryInterface[],
-            now: Date,
-            config: BudgetSuggestedTemplateConfigInterface
-        ): number => {
-            const windowStartMax = budgetPeriodService.computeTrailingMonthsWindow(now, config.maxWindowMonths).start;
+const groupMonthlySpentByCategory = (
+    entries: readonly BudgetSuggestedSpentEntryInterface[],
+    windowStart: Date,
+    months: number,
+    baseInstrumentId: number
+): BudgetCategoryMonthlySpentInterface[] => {
+    const totalsByCategory = new Map<number, number[]>();
 
-            return budgetPeriodService.resolveSuggestedWindowMonths(
-                entries.map(entry => entry.operatedAt),
-                windowStartMax,
-                config.maxWindowMonths,
-                config.minEntriesPerMonth
-            );
-        };
+    for (const entry of entries) {
+        const monthIndex = (getYear(entry.operatedAt) - getYear(windowStart)) * 12 + getMonth(entry.operatedAt) - getMonth(windowStart);
+        const isInsideWindow = monthIndex >= 0 && monthIndex < months;
 
-        const groupMonthlySpentByCategory = (
-            entries: readonly BudgetSuggestedSpentEntryInterface[],
-            windowStart: Date,
-            months: number,
-            baseInstrumentId: number
-        ): BudgetCategoryMonthlySpentInterface[] => {
-            const totalsByCategory = new Map<number, number[]>();
+        if (isDefined(entry.categoryId) && isInsideWindow) {
+            const monthlyAmounts = totalsByCategory.get(entry.categoryId) ?? Array.from({ length: months }, () => 0);
+            monthlyAmounts[monthIndex] += convertEntryAmount(entry, baseInstrumentId);
+            totalsByCategory.set(entry.categoryId, monthlyAmounts);
+        }
+    }
 
-            for (const entry of entries) {
-                const monthIndex =
-                    (getYear(entry.operatedAt) - getYear(windowStart)) * 12 + getMonth(entry.operatedAt) - getMonth(windowStart);
-                const isInsideWindow = monthIndex >= 0 && monthIndex < months;
+    return [...totalsByCategory.entries()].map(([categoryId, monthlyAmounts]) => ({ categoryId, monthlyAmounts }));
+};
 
-                if (isDefined(entry.categoryId) && isInsideWindow) {
-                    const convertedAmount = budgetSpentService.convertEntryAmount(entry, baseInstrumentId);
-                    const currentMonthlyAmounts = totalsByCategory.get(entry.categoryId);
-                    const monthlyAmounts = isDefined(currentMonthlyAmounts)
-                        ? currentMonthlyAmounts
-                        : Array.from({ length: months }, () => 0);
-                    monthlyAmounts[monthIndex] += convertedAmount;
-                    totalsByCategory.set(entry.categoryId, monthlyAmounts);
-                }
-            }
+export const buildSuggestedBudgetTemplateResolution = (
+    entries: readonly BudgetSuggestedSpentEntryInterface[],
+    now: Date,
+    baseInstrumentId: number,
+    config: BudgetSuggestedTemplateConfigInterface
+): BudgetTemplateResolutionInterface => {
+    const effectiveMonths = resolveEffectiveMonths(entries, now, config);
 
-            return [...totalsByCategory.entries()].map(([categoryId, monthlyAmounts]) => ({ categoryId, monthlyAmounts }));
-        };
+    if (effectiveMonths < config.minWindowMonths) {
+        return emptySuggestedResolution(true);
+    }
 
-        return {
-            buildSuggestedBudgetTemplate,
-            resolveGenericBudgetTemplate,
-            buildSuggestedBudgetTemplateResolution: (
-                entries: readonly BudgetSuggestedSpentEntryInterface[],
-                now: Date,
-                baseInstrumentId: number,
-                config: BudgetSuggestedTemplateConfigInterface
-            ): BudgetTemplateResolutionInterface => {
-                const effectiveMonths = resolveEffectiveMonths(entries, now, config);
+    const windowStart = computeTrailingMonthsWindow(now, effectiveMonths).start;
+    const recentEntries = entries.filter(entry => entry.operatedAt.getTime() >= windowStart.getTime());
+    const monthlySpentByCategory = groupMonthlySpentByCategory(recentEntries, windowStart, effectiveMonths, baseInstrumentId);
+    const draft = buildSuggestedBudgetTemplate(monthlySpentByCategory);
+    const isAvailable = isSuggestedTemplateAvailable(
+        draft,
+        monthlySpentByCategory,
+        config.minDistinctCategories,
+        hasMinimumHistory(entries, now, config.minWindowMonths)
+    );
+    const stats = {
+        months: effectiveMonths,
+        transactionsCount: recentEntries.length,
+        categoriesCount: monthlySpentByCategory.length
+    };
 
-                if (effectiveMonths < config.minWindowMonths) {
-                    return emptySuggestedResolution(true);
-                }
-
-                const windowStart = budgetPeriodService.computeTrailingMonthsWindow(now, effectiveMonths).start;
-                const recentEntries = entries.filter(entry => entry.operatedAt.getTime() >= windowStart.getTime());
-                const monthlySpentByCategory = groupMonthlySpentByCategory(recentEntries, windowStart, effectiveMonths, baseInstrumentId);
-                const draft = buildSuggestedBudgetTemplate(monthlySpentByCategory);
-                const isAvailable = isSuggestedTemplateAvailable(
-                    draft,
-                    monthlySpentByCategory,
-                    config.minDistinctCategories,
-                    hasMinimumHistory(entries, now, config.minWindowMonths)
-                );
-                const stats = {
-                    months: effectiveMonths,
-                    transactionsCount: recentEntries.length,
-                    categoriesCount: monthlySpentByCategory.length
-                };
-
-                return { draft, isReady: true, isAvailable, stats };
-            }
-        };
-    })
-}) {
-    static readonly layer = Layer.effect(BudgetTemplateService, BudgetTemplateService.make).pipe(Layer.provide(BudgetSpentService.layer));
-}
+    return { draft, isReady: true, isAvailable, stats };
+};
