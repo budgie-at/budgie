@@ -6,11 +6,13 @@ type SupportedLocales = (typeof locales)[number];
 
 export const allMessages: Record<SupportedLocales, Messages> = {};
 export const clientMessages: Record<SupportedLocales, Messages> = {};
+const instances: Record<SupportedLocales, I18n> = {};
 for (const locale of locales) {
     // eslint-disable-next-line no-await-in-loop,@typescript-eslint/no-unsafe-member-access
     allMessages[locale] = (await import(`./locales/${locale}/messages`)).messages as Messages;
     // eslint-disable-next-line no-await-in-loop,@typescript-eslint/no-unsafe-member-access
     clientMessages[locale] = (await import(`./locales/${locale}/client-messages`)).messages as Messages;
+    instances[locale] = setupI18n({ locale, messages: { [locale]: allMessages[locale] } });
 }
 
-export const getI18nInstance = (locale: SupportedLocales): I18n => setupI18n({ locale, messages: { [locale]: allMessages[locale] } });
+export const getI18nInstance = (locale: SupportedLocales): I18n => instances[locale];
