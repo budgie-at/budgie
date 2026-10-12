@@ -7,12 +7,8 @@ import { ConsolidationExecutorService } from '../../executor/service/consolidati
 import { ConsolidationMutationService } from '../../executor/service/consolidation-mutation.service';
 import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import { buildIbanBridgeChainCanonicalInput } from '../../executor/utils/build-iban-bridge-chain-canonical-input.util';
-import { AtmCashWithdrawalRepository } from '../../query/repository/atm-cash-withdrawal.repository';
-import { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
-import { IbanBridgeTransferRepository } from '../../query/repository/iban-bridge-transfer.repository';
-import { ManualExpenseDuplicateRepository } from '../../query/repository/manual-expense-duplicate.repository';
+import { ConsolidationCandidateRepository } from '../../query/repository/consolidation-candidate.repository';
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
-import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
@@ -34,12 +30,8 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
     '@budgie/consolidation/ConsolidationCoordinatorService',
     {
         make: Effect.gen(function* () {
-            const atmCashWithdrawalRepository = yield* AtmCashWithdrawalRepository;
-            const existingTransferRepository = yield* ExistingTransferRepository;
-            const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
-            const manualExpenseDuplicateRepository = yield* ManualExpenseDuplicateRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const refundPairRepository = yield* RefundPairRepository;
-            const transferPairRepository = yield* TransferPairRepository;
             const consolidationExecutorService = yield* ConsolidationExecutorService;
             const consolidationMutationService = yield* ConsolidationMutationService;
             const consolidationRepairExecutorService = yield* ConsolidationRepairExecutorService;
@@ -96,16 +88,16 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             };
 
             const existingTransferIncomeDuplicateFamily = makeConsolidationFamilyStrategy({
-                findCandidates: scope => existingTransferRepository.findIncomeDuplicateCandidates(scope),
+                findCandidates: scope => consolidationCandidateRepository.findExistingTransferIncomeDuplicateCandidates(scope),
                 consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate(candidate),
                 getSourceTransactionIds: candidate => [candidate.existingTransferId, candidate.duplicateTransactionId]
             });
 
             const families: ConsolidationFamilyStrategyInterface[] = [
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => ibanBridgeTransferRepository.findChainTransferCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeChainTransferCandidates(scope),
                     consolidateCandidate: candidate =>
-                        consolidationExecutorService.consolidateIbanBridgeChainTransfer(candidate, {
+                        consolidationExecutorService.consolidateTransfer({
                             sourceTransactionIds: getIbanBridgeChainTransferSourceTransactionIds(candidate),
                             allowedMovedSourceTransactionIds: [],
                             canonicalInput: buildIbanBridgeChainCanonicalInput({
@@ -127,9 +119,9 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getIbanBridgeChainTransferSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => existingTransferRepository.findBridgeCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findExistingTransferBridgeCandidates(scope),
                     consolidateCandidate: candidate =>
-                        consolidationExecutorService.consolidateExistingTransferBridge(candidate, {
+                        consolidationExecutorService.consolidateTransfer({
                             sourceTransactionIds: getExistingTransferBridgeSourceTransactionIds(candidate),
                             allowedMovedSourceTransactionIds: [candidate.existingTransferId],
                             canonicalInput: {
@@ -153,21 +145,21 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getExistingTransferBridgeSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => existingTransferRepository.findChainReclaimCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findExistingTransferChainReclaimCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateExistingTransferChainReclaim(candidate),
                     getSourceTransactionIds: getExistingTransferChainReclaimSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => ibanBridgeTransferRepository.findCanonicalDuplicateCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeCanonicalDuplicateCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate(candidate),
                     getSourceTransactionIds: candidate => [candidate.expenseTransactionId, candidate.incomeTransactionId]
                 }),
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => ibanBridgeTransferRepository.findTransferCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeTransferCandidates(scope),
                     consolidateCandidate: candidate =>
-                        consolidationExecutorService.consolidateIbanBridgeTransfer(candidate, {
+                        consolidationExecutorService.consolidateTransfer({
                             sourceTransactionIds: getIbanBridgeTransferSourceTransactionIds(candidate),
                             allowedMovedSourceTransactionIds: [],
                             canonicalInput: {
@@ -187,7 +179,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getIbanBridgeTransferSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => ibanBridgeTransferRepository.findCanonicalSupersessionCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeCanonicalSupersessionCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession(candidate),
                     getSourceTransactionIds: candidate => [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId],
@@ -200,9 +192,9 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 existingTransferIncomeDuplicateFamily,
                 p2pFiatTransferFamily,
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => transferPairRepository.findCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findTransferPairCandidates(scope),
                     consolidateCandidate: candidate =>
-                        consolidationExecutorService.consolidatePair(candidate, {
+                        consolidationExecutorService.consolidateTransfer({
                             sourceTransactionIds: getTransferPairSourceTransactionIds(candidate),
                             allowedMovedSourceTransactionIds: [],
                             canonicalInput: {
@@ -227,20 +219,20 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: candidate => [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds]
                 }),
                 makeConsolidationFamilyStrategy({
-                    findCandidates: scope => manualExpenseDuplicateRepository.findCandidates(scope),
+                    findCandidates: scope => consolidationCandidateRepository.findManualExpenseDuplicateCandidates(scope),
                     consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateManualExpenseDuplicate(candidate),
                     getSourceTransactionIds: candidate => [candidate.syncedTransactionId, candidate.manualTransactionId]
                 })
             ];
 
             const bridgeClaimRepairFamily = makeConsolidationFamilyStrategy({
-                findCandidates: () => transferPairRepository.findBridgeClaimedRepairCandidates(),
+                findCandidates: () => consolidationCandidateRepository.findBridgeClaimedRepairCandidates(),
                 consolidateCandidate: candidate => consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate),
                 getSourceTransactionIds: candidate => [candidate.canonicalTransferId, candidate.claimedIncomeTransactionId]
             });
 
             const atmCashWithdrawalFamily = makeConsolidationFamilyStrategy({
-                findCandidates: scope => atmCashWithdrawalRepository.findCandidates(scope),
+                findCandidates: scope => consolidationCandidateRepository.findAtmCashWithdrawalCandidates(scope),
                 consolidateCandidate: candidate =>
                     consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, {
                         sourceTransactionIds: [candidate.transactionId],
@@ -265,11 +257,13 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const findExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
                 'ConsolidationCoordinatorService.findExistingTransferIncomeDuplicateRepairCandidates'
             )(function* () {
-                const existingTransferBridgeCandidates = yield* existingTransferRepository.findBridgeCandidates(null);
+                const existingTransferBridgeCandidates = yield* consolidationCandidateRepository.findExistingTransferBridgeCandidates(null);
                 yield* CONSOLIDATION_YIELD;
-                const existingTransferChainReclaimCandidates = yield* existingTransferRepository.findChainReclaimCandidates(null);
+                const existingTransferChainReclaimCandidates =
+                    yield* consolidationCandidateRepository.findExistingTransferChainReclaimCandidates(null);
                 yield* CONSOLIDATION_YIELD;
-                const rawExistingTransferIncomeDuplicateCandidates = yield* existingTransferRepository.findIncomeDuplicateCandidates(null);
+                const rawExistingTransferIncomeDuplicateCandidates =
+                    yield* consolidationCandidateRepository.findExistingTransferIncomeDuplicateCandidates(null);
                 yield* CONSOLIDATION_YIELD;
 
                 const blockedSourceTransactionIds = new Set([
@@ -291,7 +285,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 
             const findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
                 function* () {
-                    const candidates = yield* transferPairRepository.findBridgeClaimedRepairCandidates();
+                    const candidates = yield* consolidationCandidateRepository.findBridgeClaimedRepairCandidates();
                     yield* CONSOLIDATION_YIELD;
 
                     return candidates;
@@ -301,7 +295,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const findAtmCashWithdrawalCandidates = Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalCandidates')(function* (
                 transactionIds: readonly number[]
             ) {
-                const candidates = yield* atmCashWithdrawalRepository.findCandidates(null);
+                const candidates = yield* consolidationCandidateRepository.findAtmCashWithdrawalCandidates(null);
 
                 return candidates.filter(candidate => transactionIds.includes(candidate.transactionId));
             });
@@ -354,13 +348,16 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     return found;
                 }),
                 countManualReviewCandidates: Effect.fn('ConsolidationCoordinatorService.countManualReviewCandidates')(function* () {
-                    const [manualReviewCandidates, refundReviewCandidates] = yield* Effect.all(
-                        [transferPairRepository.findManualReviewCandidates(), refundPairRepository.findReviewCandidates()],
+                    const [manualReviewCandidateCount, refundReviewCandidates] = yield* Effect.all(
+                        [
+                            consolidationCandidateRepository.countTransferPairManualReviewCandidates(),
+                            refundPairRepository.findReviewCandidates()
+                        ],
                         { concurrency: 'unbounded' }
                     );
                     yield* CONSOLIDATION_YIELD;
 
-                    return manualReviewCandidates.length + refundReviewCandidates.length;
+                    return manualReviewCandidateCount + refundReviewCandidates.length;
                 }),
                 findAtmCashWithdrawalTransactionIds: Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalTransactionIds')(
                     function* (transactionIds: readonly number[]) {
@@ -396,10 +393,10 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 countMissingTransferFeeRepairCandidates: Effect.fn(
                     'ConsolidationCoordinatorService.countMissingTransferFeeRepairCandidates'
                 )(function* () {
-                    return countCanonicals(yield* transferPairRepository.findMissingTransferFeeEntries());
+                    return countCanonicals(yield* consolidationCandidateRepository.findMissingTransferFeeEntries());
                 }),
                 repairMissingTransferFees: Effect.fn('ConsolidationCoordinatorService.repairMissingTransferFees')(function* () {
-                    const movedFeeEntries = yield* transferPairRepository.findMissingTransferFeeEntries();
+                    const movedFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries();
 
                     yield* consolidationMutationService.restoreMovedFeeEntries(movedFeeEntries);
 
@@ -423,12 +420,8 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 ) {
     static readonly layer = Layer.effect(ConsolidationCoordinatorService, ConsolidationCoordinatorService.make).pipe(
         Layer.provide([
-            AtmCashWithdrawalRepository.layer,
-            ExistingTransferRepository.layer,
-            IbanBridgeTransferRepository.layer,
-            ManualExpenseDuplicateRepository.layer,
+            ConsolidationCandidateRepository.layer,
             RefundPairRepository.layer,
-            TransferPairRepository.layer,
             ConsolidationExecutorService.layer,
             ConsolidationMutationService.layer,
             ConsolidationRepairExecutorService.layer,

@@ -1,17 +1,13 @@
 import { buildTestDb, makeTestPlatformLayer, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 import {
-    AtmCashWithdrawalRepository,
+    ConsolidationCandidateRepository,
     ConsolidationCoordinatorService,
     ConsolidationExecutorService,
     ConsolidationRepairExecutorService,
-    ExistingTransferRepository,
-    IbanBridgeTransferRepository,
-    ManualExpenseDuplicateRepository,
     P2pFiatDirectionEnum,
     P2pTransferTitleResolver,
     RefundConsolidationService,
-    RefundPairRepository,
-    TransferPairRepository
+    RefundPairRepository
 } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
@@ -42,12 +38,8 @@ export const TestLayer = Layer.mergeAll(
     ConsolidationExecutorService.layer,
     ConsolidationRepairExecutorService.layer,
     RefundConsolidationService.layer,
-    AtmCashWithdrawalRepository.layer,
-    ExistingTransferRepository.layer,
-    IbanBridgeTransferRepository.layer,
-    ManualExpenseDuplicateRepository.layer,
+    ConsolidationCandidateRepository.layer,
     RefundPairRepository.layer,
-    TransferPairRepository.layer,
     AccountRepository.layer,
     AccountBalanceRepository.layer,
     AccountBalanceIncrementalService.layer,
