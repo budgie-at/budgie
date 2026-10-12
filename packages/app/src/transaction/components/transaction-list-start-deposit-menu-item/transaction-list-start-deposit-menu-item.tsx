@@ -3,7 +3,7 @@ import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
@@ -33,8 +33,7 @@ export const TransactionListStartDepositMenuItem = () => {
         <PopoverMenuItem
             icon={UserIconNameEnum.Landmark}
             label={t`Start Deposit`}
-            onPress={emptyFn}
-            onPressIn={handleStartDeposit}
+            onPress={handleStartDeposit}
             testID={TransactionListContextMenuSelector.StartDepositButton}
         />
     );

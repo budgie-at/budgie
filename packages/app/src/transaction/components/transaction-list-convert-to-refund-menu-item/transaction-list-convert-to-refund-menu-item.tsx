@@ -1,7 +1,7 @@
 import { UserIconNameEnum, isIncomeTransaction } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useConvertToRefundModal } from '../../context/convert-to-refund-modal.context';
@@ -31,8 +31,7 @@ export const TransactionListConvertToRefundMenuItem = () => {
         <PopoverMenuItem
             icon={UserIconNameEnum.ReceiptText}
             label={t`Convert to Refund`}
-            onPress={emptyFn}
-            onPressIn={handleConvert}
+            onPress={handleConvert}
             testID={TransactionListContextMenuSelector.ConvertToRefundButton}
         />
     );

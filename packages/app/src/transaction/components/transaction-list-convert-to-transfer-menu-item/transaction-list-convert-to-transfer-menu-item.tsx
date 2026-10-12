@@ -2,7 +2,7 @@ import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTr
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
@@ -46,8 +46,7 @@ export const TransactionListConvertToTransferMenuItem = () => {
         <PopoverMenuItem
             icon={UserIconNameEnum.ArrowRightLeft}
             label={t`Convert to Transfer`}
-            onPress={emptyFn}
-            onPressIn={handleConvert}
+            onPress={handleConvert}
             testID={TransactionListContextMenuSelector.ConvertToTransferButton}
         />
     );
