@@ -1,7 +1,6 @@
 import { AccountDebtTypeEnum, AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -26,44 +25,25 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     const { t } = useLingui();
     const targetBalance = convertFromMicroUnits(account.targetBalance);
     const currentBalance = useDebtAccountManualSettledAmountQuery(account.id);
-    const initialValues = useMemo(
-        () => ({
-            iban: account.iban,
-            type: account.type,
-            icon: account.icon,
-            title: account.title,
-            currentBalance,
-            debtType: account.debtType,
-            deadline: account.deadline,
-            contactId: account.contactId,
-            instrumentId: account.instrumentId,
-            targetBalance,
-            includeInNetWorth: account.includeInNetWorth,
-            isActive: account.isActive
-        }),
-        [
-            account.contactId,
-            account.deadline,
-            account.debtType,
-            account.iban,
-            account.icon,
-            account.includeInNetWorth,
-            account.instrumentId,
-            account.isActive,
-            account.title,
-            account.type,
-            currentBalance,
-            targetBalance
-        ]
-    );
+    const initialValues = {
+        iban: account.iban,
+        type: account.type,
+        icon: account.icon,
+        title: account.title,
+        currentBalance,
+        debtType: account.debtType,
+        deadline: account.deadline,
+        contactId: account.contactId,
+        instrumentId: account.instrumentId,
+        targetBalance,
+        includeInNetWorth: account.includeInNetWorth,
+        isActive: account.isActive
+    };
 
-    const { control, handleSubmit, instrument, isSubmitting } = useDebtAccountForm(
-        initialValues,
-        values =>
-            appRuntime.runPromise(
-                Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.updateDebtById(account.id, values))
-            ),
-        true
+    const { control, handleSubmit, instrument, isSubmitting } = useDebtAccountForm(initialValues, values =>
+        appRuntime.runPromise(
+            Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.updateDebtById(account.id, values))
+        )
     );
 
     const stickyInstrument = useStickyDefinedValue(instrument);

@@ -1,8 +1,11 @@
 import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
@@ -15,7 +18,7 @@ import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-
 import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-import { useAccountForm } from '../../hooks/use-account-form.hook';
+import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
@@ -23,69 +26,66 @@ import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH | AccountTypeEnum.CRYPTO;
-    readonly title: string;
-    readonly allowNegative?: boolean;
-    readonly defaultIcon?: UserIconNameEnum;
-    readonly instrumentType?: InstrumentTypeEnum;
 }
 
-const DEFAULT_ICON = UserIconNameEnum.Home;
+const TITLE: Record<Props['type'], MessageDescriptor> = {
+    [AccountTypeEnum.BANK]: msg`Checking Account`,
+    [AccountTypeEnum.CASH]: msg`Savings Account`,
+    [AccountTypeEnum.CRYPTO]: msg`Crypto Account`
+};
 
-export const CreateLiabilityAccount = ({
-    type,
-    title,
-    allowNegative = true,
-    defaultIcon = DEFAULT_ICON,
-    instrumentType = InstrumentTypeEnum.FIAT
-}: Props) => {
+export const CreateSimpleAccount = ({ type }: Props) => {
+    const { t } = useLingui();
+    const isCrypto = type === AccountTypeEnum.CRYPTO;
+    const instrumentType = isCrypto ? InstrumentTypeEnum.CRYPTO : InstrumentTypeEnum.FIAT;
     const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
     const cryptoInstrumentId = instruments.at(0)?.id;
-    const isMissingCryptoInstrument = instrumentType === InstrumentTypeEnum.CRYPTO && !isDefined(cryptoInstrumentId);
     const instrumentId = isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrument.id;
 
     const formValues = {
         type,
         title: '',
         currentBalance: 0,
-        icon: defaultIcon,
+        icon: isCrypto ? UserIconNameEnum.Coins : UserIconNameEnum.Home,
         includeInNetWorth: true,
         instrumentId
     };
 
-    const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(formValues, async values => {
-        const account = await appRuntime.runPromise(Effect.flatMap(AccountService, accountService => accountService.create(values)));
+    const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
+        appRuntime.runPromise(
+            Effect.gen(function* () {
+                const accountService = yield* AccountService;
+                const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+                const account = yield* accountService.create(values);
 
-        void appRuntime
-            .runPromise(
-                Effect.flatMap(HistoricalMarketDataDrainerService, historicalMarketDataDrainerService =>
-                    historicalMarketDataDrainerService.enqueueAccounts([account])
-                )
-            )
-            .catch(emptyFn);
+                yield* Effect.forkDetach(
+                    historicalMarketDataDrainerService.enqueueAccounts([account]).pipe(Effect.tapCause(Effect.logError))
+                );
 
-        return account;
-    });
+                return account;
+            })
+        )
+    );
 
     const stickyInstrument = useStickyDefinedValue(instrument);
 
-    if (isMissingCryptoInstrument || !isDefined(stickyInstrument)) {
+    if ((isCrypto && !isDefined(cryptoInstrumentId)) || !isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     const variant = ACCOUNT_COLOR[type];
-    const showInstrumentAfterAmount = type === AccountTypeEnum.CRYPTO;
-    const minimumDecimalPlaces = type === AccountTypeEnum.CRYPTO ? MICRO_UNIT_DECIMAL_PLACES : 0;
+    const minimumDecimalPlaces = isCrypto ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
-        <CreateAccountScreen title={title} variant={variant} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+        <CreateAccountScreen title={t(TITLE[type])} variant={variant} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
             <AccountBalanceField
                 variant={variant}
                 instrumentSymbol={stickyInstrument.symbol}
                 control={control}
-                allowNegative={allowNegative}
+                allowNegative={!isCrypto}
                 minimumDecimalPlaces={minimumDecimalPlaces}
-                showInstrumentAfterAmount={showInstrumentAfterAmount}
+                showInstrumentAfterAmount={isCrypto}
             />
 
             <FormLayoutGroup>
