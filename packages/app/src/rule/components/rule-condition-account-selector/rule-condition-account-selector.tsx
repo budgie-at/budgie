@@ -1,14 +1,13 @@
 import { RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
-import { Text } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { RuleSelectorButton } from '../rule-selector-button/rule-selector-button';
 
 interface Props {
     readonly index: number;
@@ -37,15 +36,7 @@ export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
             }
         };
 
-        return (
-            <HapticPressable
-                testID={testID}
-                onPress={handleOpen}
-                className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
-            >
-                <Text className="text-primary text-sm">{displayLabel}</Text>
-            </HapticPressable>
-        );
+        return <RuleSelectorButton testID={testID} value={displayLabel} onPress={handleOpen} />;
     };
 
     return (

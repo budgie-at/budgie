@@ -1,4 +1,4 @@
-import { isDefined, isNumber } from '@rnw-community/shared';
+import { isNumber } from '@rnw-community/shared';
 
 import { BILLION, HUNDRED_THOUSAND, MILLION, THOUSAND } from '../constant/compact-thresholds.constant';
 import { useI18nContext } from '../context/i18n.context';
@@ -10,41 +10,8 @@ const COMPACT_SUFFIX_BY_DIVISOR = new Map<number, string>([
     [BILLION, 'B']
 ]);
 
-export const useFormatCompactDigits = (minimumCompactThreshold?: number) => {
+export const useFormatCompactDigits = (minimumCompactThreshold = HUNDRED_THOUSAND) => {
     const { intl } = useI18nContext();
-
-    if (!isDefined(minimumCompactThreshold)) {
-        return (value: number, symbol = '') => {
-            if (!isNumber(value)) {
-                return '';
-            }
-
-            const abs = Math.abs(value);
-            const sign = value < 0 ? '-' : '';
-
-            if (abs >= BILLION) {
-                const formatted = intl.formatNumber(abs / BILLION, { maximumFractionDigits: 1 });
-
-                return `${sign}${symbol}${formatted}B`;
-            }
-
-            if (abs >= MILLION) {
-                const formatted = intl.formatNumber(abs / MILLION, { maximumFractionDigits: 1 });
-
-                return `${sign}${symbol}${formatted}M`;
-            }
-
-            if (abs >= HUNDRED_THOUSAND) {
-                const formatted = intl.formatNumber(abs / THOUSAND, { maximumFractionDigits: 0 });
-
-                return `${sign}${symbol}${formatted}K`;
-            }
-
-            const formatted = intl.formatNumber(value, { maximumFractionDigits: 0 });
-
-            return `${symbol}${formatted}`;
-        };
-    }
 
     return (value: number, symbol = '') => {
         if (!isNumber(value)) {
@@ -54,9 +21,7 @@ export const useFormatCompactDigits = (minimumCompactThreshold?: number) => {
         const absoluteValue = Math.abs(value);
 
         if (!Number.isFinite(value) || absoluteValue < minimumCompactThreshold) {
-            const formatted = intl.formatNumber(value, { maximumFractionDigits: 0 });
-
-            return `${symbol}${formatted}`;
+            return `${symbol}${intl.formatNumber(value, { maximumFractionDigits: 0 })}`;
         }
 
         const sign = value < 0 ? '-' : '';
@@ -65,8 +30,8 @@ export const useFormatCompactDigits = (minimumCompactThreshold?: number) => {
         const compactDivisor =
             roundedCompactValue >= THOUSAND && initialCompactDivisor < BILLION ? initialCompactDivisor * THOUSAND : initialCompactDivisor;
         const compactSuffix = COMPACT_SUFFIX_BY_DIVISOR.get(compactDivisor) ?? 'K';
-        const compactValue = Math.round((absoluteValue / compactDivisor) * 10) / 10;
-        const formatted = intl.formatNumber(compactValue, { maximumFractionDigits: 1 });
+        const maximumFractionDigits = compactSuffix === 'K' && minimumCompactThreshold >= HUNDRED_THOUSAND ? 0 : 1;
+        const formatted = intl.formatNumber(absoluteValue / compactDivisor, { maximumFractionDigits });
 
         return `${sign}${symbol}${formatted}${compactSuffix}`;
     };

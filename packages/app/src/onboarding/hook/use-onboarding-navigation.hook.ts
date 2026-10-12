@@ -17,7 +17,7 @@ export const useOnboardingNavigation = () => {
 
         appRuntime.runFork(logAndContinue(updateSettingsMutation({ onboardingStep: nextIndex })));
 
-        router.push(nextIndex === 0 ? '/onboarding' : `/onboarding/${nextStep.toLowerCase()}`);
+        router.push(`/onboarding/${nextStep.toLowerCase()}`);
     };
 
     const goToPreviousStep = (step: OnboardingStepEnum): void => {

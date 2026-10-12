@@ -1,4 +1,4 @@
-import { budgetPeriodService, BudgetRepository, BudgetSpentService } from '@budgie/budget';
+import { BudgetRepository, computePeriodWindow, computeSpent } from '@budgie/budget';
 import { AccountEntityTable, ExchangeRateEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -26,15 +26,14 @@ const budgetSpentAtom = Atom.family(
             [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable, ExchangeRateEntityTable],
             Effect.gen(function* () {
                 const budgetRepository = yield* BudgetRepository;
-                const budgetSpentService = yield* BudgetSpentService;
-                const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
+                const { periodStart, nextPeriodStart } = computePeriodWindow(
                     key.periodStartDay,
                     key.useLastDayOfMonth,
                     new Date(key.dayStart)
                 );
                 const entries = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, key.instrumentId);
 
-                return budgetSpentService.computeSpent(entries, key.instrumentId);
+                return computeSpent(entries, key.instrumentId);
             })
         )
 );

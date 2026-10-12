@@ -4,7 +4,6 @@ import { View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { RunwaySelector } from '../../runway.selector';
-import { getRunwayAmountVariant } from '../../utils/get-runway-amount-variant.util';
 import { RunwayFlowCell } from '../runway-flow-cell/runway-flow-cell';
 
 import type { RunwayComputationInterface } from '../../interface/runway-computation.interface';
@@ -16,6 +15,8 @@ interface Props {
 export const RunwayFlowRow = ({ computation }: Props) => {
     const { t } = useLingui();
     const net = convertFromMicroUnits(computation.net);
+    const negativeOrNeutralVariant = Math.abs(net) <= 1 ? 'warning' : 'destructive';
+    const netVariant = net > 1 ? 'positive' : negativeOrNeutralVariant;
 
     return (
         <Card testID={RunwaySelector.FlowRow} size="md" className="flex-row items-center">
@@ -23,7 +24,7 @@ export const RunwayFlowRow = ({ computation }: Props) => {
             <View className="h-8 w-px bg-secondary-corner" />
             <RunwayFlowCell label={t`Income`} amount={convertFromMicroUnits(computation.income)} variant="primary" />
             <View className="h-8 w-px bg-secondary-corner" />
-            <RunwayFlowCell label={t`Net`} amount={net} variant={getRunwayAmountVariant(net)} />
+            <RunwayFlowCell label={t`Net`} amount={net} variant={netVariant} />
         </Card>
     );
 };

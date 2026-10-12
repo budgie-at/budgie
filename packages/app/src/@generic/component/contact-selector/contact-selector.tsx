@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDescription, selectedDescription }: Props) => {
-    const { contacts } = useContacts();
+    const contacts = useContacts();
     const [openContactSelector] = useContactSelectorModal();
     const { t } = useLingui();
 

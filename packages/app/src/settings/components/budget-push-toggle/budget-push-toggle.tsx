@@ -1,30 +1,18 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
+import { useSettingToggle } from '../../hook/use-setting-toggle.hook';
 import { useSetting } from '../../hook/use-setting.hook';
-import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { BudgetSettingCard } from '../budget-setting-card/budget-setting-card';
 
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
     const isBudgetPushEnabled = useSetting('isBudgetPushEnabled');
 
-    const persist = (next: boolean): Promise<void> =>
-        appRuntime.runPromise(
-            updateSettingsMutation({ isBudgetPushEnabled: next }).pipe(
-                Effect.asVoid,
-                Effect.tapCause(Effect.logError),
-                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not update notifications`, getErrorMessage(error))))
-            )
-        );
+    const persist = useSettingToggle('isBudgetPushEnabled', t`Could not update notifications`);
 
     const handleChange = async (next: boolean) => {
         if (!next) {

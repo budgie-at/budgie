@@ -1,4 +1,4 @@
-import { budgetPeriodService } from '@budgie/budget';
+import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
 import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -35,8 +35,8 @@ export const BudgetDetails = ({ budget }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const periodWindow = budgetPeriodService.computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
-    const periodEnd = budgetPeriodService.getInclusiveEnd(periodWindow.nextPeriodStart);
+    const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
+    const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
     const displaySpent = convertFromMicroUnits(spent.spentOverall);

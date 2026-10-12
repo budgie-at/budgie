@@ -36,24 +36,31 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const language = useSetting('language');
     const { defaultInstrument } = useSettingsContext();
     const seriesResult = useLiveAtomValue(runwaySeriesAtom(defaultInstrument.id));
-    const categoryDriverResult = useLiveAtomValue(
-        runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.CATEGORY, language])
-    );
-    const tagDriverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.TAG, language]));
+    const driverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, dimension, language]));
+    const irregularDimension = isAllIn ? RunwayDriverDimensionEnum.CATEGORY : dimension;
+    const irregularDriverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, irregularDimension, language]));
     const today = useToday();
     const seriesRows = AsyncResult.getOrElse(seriesResult, () => []);
-    const categoryDriverRows = AsyncResult.getOrElse(categoryDriverResult, () => []);
-    const tagDriverRows = AsyncResult.getOrElse(tagDriverResult, () => []);
     const monthlyBurn = median(seriesRows.map(row => row.expense));
-    const categoryBreakdown = aggregateRunwayDrivers(categoryDriverRows, monthlyBurn, isAllIn);
-    const tagBreakdown = aggregateRunwayDrivers(tagDriverRows, monthlyBurn, isAllIn);
+    const breakdown = aggregateRunwayDrivers(
+        AsyncResult.getOrElse(driverResult, () => []),
+        monthlyBurn,
+        isAllIn
+    );
+    const irregularBreakdown =
+        isAllIn && dimension !== RunwayDriverDimensionEnum.CATEGORY
+            ? aggregateRunwayDrivers(
+                  AsyncResult.getOrElse(irregularDriverResult, () => []),
+                  monthlyBurn,
+                  isAllIn
+              )
+            : breakdown;
     const computation = computeRunway({
         series: seriesRows,
         liquid,
-        irregularMonthlyAmount: isAllIn ? categoryBreakdown.irregularMonthlyAmount : 0,
+        irregularMonthlyAmount: isAllIn ? irregularBreakdown.irregularMonthlyAmount : 0,
         referenceDate: today
     });
-    const drivers = dimension === RunwayDriverDimensionEnum.CATEGORY ? categoryBreakdown.drivers : tagBreakdown.drivers;
 
-    return { computation, drivers, series: seriesRows };
+    return { computation, drivers: breakdown.drivers, series: seriesRows };
 };

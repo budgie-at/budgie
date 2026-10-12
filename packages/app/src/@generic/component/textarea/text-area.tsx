@@ -3,9 +3,6 @@ import { TextInput } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
 
-import { TEXT_AREA_BASE_HEIGHTS } from './constant/text-area-base-heights.constant';
-import { TEXT_AREA_LINE_DELTAS } from './constant/text-area-line-deltas.constant';
-
 import type { FormFieldStatus } from '../../type/form-field-status.type';
 import type { ComponentProps, RefObject } from 'react';
 
@@ -19,6 +16,12 @@ interface Props extends BaseTextInputProps {
     readonly maxLines?: 2 | 3 | 4 | 5;
     readonly ref?: RefObject<TextInput | null>;
 }
+
+const TEXT_AREA_DIMENSIONS = {
+    sm: { baseHeight: 36, lineDelta: 20 },
+    md: { baseHeight: 44, lineDelta: 22 },
+    lg: { baseHeight: 62, lineDelta: 28 }
+} as const;
 
 const textAreaVariant = cva('text-primary rounded-2xl', {
     variants: {
@@ -41,8 +44,7 @@ const textAreaVariant = cva('text-primary rounded-2xl', {
 export const TextArea = (props: Props) => {
     const { size = 'sm', status = 'default', borderless = false, minLines = 1, maxLines = 2, className, ref, ...rest } = props;
 
-    const baseHeight = TEXT_AREA_BASE_HEIGHTS[size];
-    const lineDelta = TEXT_AREA_LINE_DELTAS[size];
+    const { baseHeight, lineDelta } = TEXT_AREA_DIMENSIONS[size];
     const minHeight = baseHeight + (minLines - 1) * lineDelta;
     const maxHeight = baseHeight + (maxLines - 1) * lineDelta;
     const containerStyle = { minHeight, maxHeight };

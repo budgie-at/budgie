@@ -13,8 +13,9 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxCashWithdrawalChips } from '../categorize-inbox-cash-withdrawal-chips/categorize-inbox-cash-withdrawal-chips';
+import { CategorizeInboxAlreadyTrackedChip } from '../categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip';
 import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
+import { CategorizeInboxMoveToCashChip } from '../categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip';
 import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
 
 import { CategorizeInboxClusterCardSelector } from './categorize-inbox-cluster-card.selector';
@@ -75,7 +76,10 @@ export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
 
             <View className="flex-row flex-wrap items-center gap-sm">
                 {cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? (
-                    <CategorizeInboxCashWithdrawalChips cluster={cluster} />
+                    <>
+                        <CategorizeInboxMoveToCashChip cluster={cluster} />
+                        <CategorizeInboxAlreadyTrackedChip cluster={cluster} />
+                    </>
                 ) : null}
                 <CategorizeInboxSuggestionChips cluster={cluster} />
             </View>
