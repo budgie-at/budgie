@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.102.0](https://github.com/budgie-at/budgie/compare/v6.101.1...v6.102.0) (2026-10-12)
+
+
+### Bug Fixes
+
+* **app:** size home scroll spacer by displayed accounts ([ae1ab3b](https://github.com/budgie-at/budgie/commit/ae1ab3b3001b3f8247e5ddbc95da5bfca87f9634))
+
+
+### Features
+
+* **app:** redesign paid-off debts and hide them from home ([42ba446](https://github.com/budgie-at/budgie/commit/42ba446fa340728677ec21c02ac76bfac2893186))
+
+
+
+
+
 ## [6.101.1](https://github.com/budgie-at/budgie/compare/v6.101.0...v6.101.1) (2026-10-12)
 
 **Note:** Version bump only for package @budgie-at/root
