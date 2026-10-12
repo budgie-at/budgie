@@ -22,10 +22,7 @@ export default function ImportColumnMapperModal() {
     useModalDismiss(dismissImportColumnMapper);
     const currentParams = useImportColumnMapperModalParams();
 
-    const headers = currentParams?.headers ?? [];
-    const selectedHeaders = currentParams?.selectedHeaders ?? [];
-    const currentValue = currentParams?.currentValue;
-    const fieldLabel = currentParams?.fieldLabel ?? '';
+    const { headers = [], selectedHeaders = [], currentValue, fieldLabel = '' } = currentParams ?? {};
 
     const availableHeaders = headers.filter(header => header === currentValue || !selectedHeaders.includes(header)).sort(sortHeaders);
     const availableCount = availableHeaders.length;
