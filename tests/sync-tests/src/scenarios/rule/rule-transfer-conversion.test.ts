@@ -2,6 +2,7 @@ import { TestQueryService } from '@budgie-at/test-kit';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
+    CurrencyEnum,
     DebtEventEntityTable,
     PRECISION,
     RuleActionTypeEnum,
@@ -14,7 +15,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { seed, testDb, TestLayer } from '../../harness';
+import { seed, testDb, TestLayer, upsertCurrencyRate } from '../../harness';
 import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 const query = new TestQueryService(testDb);
@@ -111,6 +112,37 @@ describe('rule/rule-transfer-conversion', () => {
 
             expect((yield* query.fetchTransactionById(expense.id)).type).toBe(TransactionTypeEnum.EXPENSE);
             expect(entries.map(entry => entry.amount).sort((left, right) => left - right)).toStrictEqual([20 * PRECISION, 30 * PRECISION]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+    it.effect('converts a cross-currency income into a transfer valued at the market rate', () =>
+        Effect.gen(function* () {
+            const { baseInstrument: eurInstrument, quoteInstrument: usdInstrument } = yield* upsertCurrencyRate(
+                CurrencyEnum.EUR,
+                CurrencyEnum.USD,
+                2
+            );
+            const source = yield* seed.account({ title: 'Dollar income', type: AccountTypeEnum.BANK, instrumentId: usdInstrument.id });
+            const target = yield* seed.account({ title: 'Euro savings', type: AccountTypeEnum.BANK, instrumentId: eurInstrument.id });
+            const income = yield* seed.bankPairIncome(
+                { externalId: 'rule-cross-currency-income', operatedAt },
+                { accountId: source.id, amount: 50 * PRECISION }
+            );
+
+            yield* applyConvertRule(income.title, target.id);
+
+            const entries = yield* query.fetchEntriesByTransactionId(income.id);
+
+            expect((yield* query.fetchTransactionById(income.id)).type).toBe(TransactionTypeEnum.TRANSFER);
+            expect(
+                [...entries]
+                    .sort((left, right) => left.type.localeCompare(right.type))
+                    .map(entry => [entry.type, entry.accountId, entry.amount])
+            ).toStrictEqual([
+                [TransactionEntryTypeEnum.CREDIT, target.id, 25 * PRECISION],
+                [TransactionEntryTypeEnum.DEBIT, source.id, 50 * PRECISION]
+            ]);
+            expect(yield* readBalance(source.id)).toBe(50 * PRECISION);
+            expect(yield* readBalance(target.id)).toBe(-25 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 });
