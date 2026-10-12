@@ -11,5 +11,4 @@ export interface ImporterRowInterface {
     categorySource: CategorySourceEnum;
     mccCategoryId: number | null;
     operatedAt: Date;
-    isPlanned: boolean;
 }

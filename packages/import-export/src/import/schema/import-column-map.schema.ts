@@ -15,7 +15,6 @@ export const ImportColumnMapSchema = Schema.Struct({
     fromCurrency: Schema.String,
     fromAmount: Schema.String,
     comment: Schema.String,
-    isPlanned: Schema.String,
     mcc: Schema.String
 });
 

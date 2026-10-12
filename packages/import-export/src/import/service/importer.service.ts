@@ -6,6 +6,7 @@ import {
     CategoryRepository,
     CategorySourceEnum,
     DEFAULT_CATEGORY_ICON,
+    Db,
     ExternalSourceEnum,
     InstrumentEntityInterface,
     InstrumentRepository,
@@ -28,9 +29,9 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Result from 'effect/Result';
-import Papa, { ParseStepResult } from 'papaparse';
+import Papa from 'papaparse';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ImportRowError } from '../error/import-row.error';
 
@@ -73,18 +74,14 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
             return parse(dateString, 'yyyy-MM-dd', new Date());
         };
 
-        const createAccountInput = (
-            title: string,
-            currency: string,
-            instrumentsMap: Record<string, InstrumentEntityInterface>
-        ): LiabilityAccountCreateInputInterface => ({
+        const createAccountInput = (title: string, instrumentId: number): LiabilityAccountCreateInputInterface => ({
             title,
             parentId: null,
             currentBalance: 0,
             includeInNetWorth: true,
             type: AccountTypeEnum.BANK,
             icon: UserIconNameEnum.Home,
-            instrumentId: instrumentsMap[currency].id
+            instrumentId
         });
 
         const determineTransactionType = (amount: number, fromInstrument: InstrumentEntityInterface | null): TransactionTypeEnum => {
@@ -217,7 +214,6 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 fromCurrency: getValue(columnMap.fromCurrency).toUpperCase().trim(),
                 fromAmount: getValue(columnMap.fromAmount).trim(),
                 toCurrency: getValue(columnMap.toCurrency).toUpperCase().trim(),
-                isPlanned: getValue(columnMap.isPlanned).trim(),
                 mcc: getValue(columnMap.mcc).trim()
             } satisfies NormalizedRowType;
         };
@@ -234,7 +230,6 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
             const fromAccount = lookup.accountsMap[getFromAccountKey(normalizedRow)];
             const fromInstrument = isDefined(fromAccount) ? lookup.instrumentsMap[normalizedRow.fromCurrency] : null;
             const fromAmount = isDefined(fromAccount) ? Number.parseFloat(normalizedRow.fromAmount) : null;
-            const isPlanned = normalizedRow.isPlanned === '1';
 
             if (!isDefined(toAccount)) {
                 return Result.fail(`To Account ${normalizedRow.toAccount} not found`);
@@ -268,31 +263,25 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 toAmount,
                 fromInstrument,
                 toInstrument,
-                fromAmount,
-                isPlanned
+                fromAmount
             });
         };
 
-        const processRows = Effect.fn('ImporterService.processRows')(function* (
-            csvText: string,
-            columnMap: ImporterColumnMapInterface,
-            onRow: (normalizeRow: NormalizedRowType, originalRow: Record<string, string>) => void
-        ) {
-            yield* Effect.callback<unknown, Error>(resume => {
-                Papa.parse<Record<string, string>>(csvText, {
-                    header: true,
-                    skipEmptyLines: true,
-                    step: (row: ParseStepResult<Record<string, string>>) => {
-                        onRow(normalizeRow(row.data, columnMap), row.data);
-                    },
-                    complete: () => {
-                        resume(Effect.void);
-                    },
-                    error: (error: Error) => {
-                        resume(Effect.fail(error));
-                    }
-                });
+        const toRowError = (reason: string, row: Record<string, string>): ImportRowError =>
+            new ImportRowError({ reason, rowColumns: Object.keys(row).join(',') });
+
+        const parseCsv = Effect.fnUntraced(function* (csvText: string) {
+            const { data, errors, meta } = yield* Effect.try({
+                try: () => Papa.parse<Record<string, string>>(csvText, { header: true, skipEmptyLines: true }),
+                catch: error => new ImportRowError({ reason: getErrorMessage(error), rowColumns: '' })
             });
+            const structuralError = errors.find(error => error.type !== 'FieldMismatch');
+
+            if (isDefined(structuralError)) {
+                return yield* new ImportRowError({ reason: structuralError.message, rowColumns: (meta.fields ?? []).join(',') });
+            }
+
+            return data;
         });
 
         const initializeInstruments = Effect.fn('ImporterService.initializeInstruments')(function* () {
@@ -305,60 +294,49 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
             }, {});
         });
 
-        const collectEntities = Effect.fn('ImporterService.collectEntities')(function* (
-            csvText: string,
+        const collectEntities = Effect.fnUntraced(function* (
+            rows: Record<string, string>[],
             columnMap: ImporterColumnMapInterface,
             instrumentsMap: Record<string, InstrumentEntityInterface>
         ) {
             const accountInputs = new Map<string, LiabilityAccountCreateInputInterface>();
             const categoryInputs = new Map<string, CategoryCreateEntityInterface>();
 
-            yield* processRows(csvText, columnMap, normalizedRow => {
-                const toAccountKey = getToAccountKey(normalizedRow);
-                if (!accountInputs.has(toAccountKey) && isNotEmptyString(normalizedRow.toCurrency)) {
-                    accountInputs.set(toAccountKey, createAccountInput(toAccountKey, normalizedRow.toCurrency, instrumentsMap));
-                }
+            for (const row of rows) {
+                const normalizedRow = normalizeRow(row, columnMap);
+                const accounts = [
+                    [getToAccountKey(normalizedRow), normalizedRow.toCurrency],
+                    [getFromAccountKey(normalizedRow), normalizedRow.fromCurrency]
+                ] as const;
 
-                const fromAccountKey = getFromAccountKey(normalizedRow);
-                if (!accountInputs.has(fromAccountKey) && isNotEmptyString(normalizedRow.fromCurrency)) {
-                    accountInputs.set(fromAccountKey, createAccountInput(fromAccountKey, normalizedRow.fromCurrency, instrumentsMap));
+                for (const [accountKey, currency] of accounts) {
+                    if (!accountInputs.has(accountKey) && isNotEmptyString(currency)) {
+                        const instrument = instrumentsMap[currency];
+
+                        if (!isDefined(instrument)) {
+                            return yield* toRowError(`Currency ${currency} not found`, row);
+                        }
+
+                        accountInputs.set(accountKey, createAccountInput(accountKey, instrument.id));
+                    }
                 }
 
                 if (isNotEmptyString(normalizedRow.category)) {
                     categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: DEFAULT_CATEGORY_ICON });
                 }
-            });
+            }
 
             return { accountInputs, categoryInputs };
         });
 
-        const processTransactions = Effect.fn('ImporterService.processTransactions')(function* (
-            csvText: string,
-            lookup: ImporterLookupInterface
-        ) {
-            const transactions: TransactionCreateInputInterface[] = [];
-            const rowErrors: ImportRowError[] = [];
+        const importRows = Effect.fn('ImporterService.importRows')(
+            function* (
+                rows: Record<string, string>[],
+                columnMap: ImporterColumnMapInterface,
+                instrumentsMap: Record<string, InstrumentEntityInterface>
+            ) {
+                const { accountInputs, categoryInputs } = yield* collectEntities(rows, columnMap, instrumentsMap);
 
-            yield* processRows(csvText, lookup.columnMap, (normalizedRow, row) => {
-                const transaction = Result.map(parseRow(normalizedRow, lookup), parsedRow => buildTransaction(normalizedRow, parsedRow));
-
-                if (Result.isSuccess(transaction)) {
-                    transactions.push(transaction.success);
-                } else {
-                    rowErrors.push(new ImportRowError({ reason: transaction.failure, rowColumns: Object.keys(row).join(',') }));
-                }
-            });
-            yield* Effect.forEach(
-                rowErrors,
-                rowError => Effect.logError('row:process-error', { errorMessage: rowError.message, rowColumns: rowError.rowColumns }),
-                { discard: true }
-            );
-
-            return { transactions, rowErrors };
-        });
-
-        return {
-            replaceAll: Effect.fn('ImporterService.replaceAll')(function* (columnMap: ImporterColumnMapInterface, csvText: string) {
                 yield* Effect.all(
                     [
                         accountRepository.truncate(),
@@ -371,18 +349,21 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                     { discard: true }
                 );
 
-                const instrumentsMap = yield* initializeInstruments();
-                const mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
-                const { accountInputs, categoryInputs } = yield* collectEntities(csvText, columnMap, instrumentsMap);
-                const accountsMap = yield* accountService.bulkCreate([...accountInputs.values()]);
-                const categoriesMap = yield* categoryService.bulkCreate([...categoryInputs.values()]);
-                const { transactions, rowErrors } = yield* processTransactions(csvText, {
-                    columnMap,
+                const lookup: ImporterLookupInterface = {
                     instrumentsMap,
-                    accountsMap,
-                    categoriesMap,
-                    mccCategoryLookupMap
+                    mccCategoryLookupMap: yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository),
+                    accountsMap: yield* accountService.bulkCreate([...accountInputs.values()]),
+                    categoriesMap: yield* categoryService.bulkCreate([...categoryInputs.values()])
+                };
+                const results = rows.map(row => {
+                    const normalizedRow = normalizeRow(row, columnMap);
+
+                    return Result.mapError(
+                        Result.map(parseRow(normalizedRow, lookup), parsedRow => buildTransaction(normalizedRow, parsedRow)),
+                        reason => toRowError(reason, row)
+                    );
                 });
+                const transactions = results.filter(Result.isSuccess).map(result => result.success);
                 const createdTransactions = yield* transactionService.bulkCreate(transactions);
 
                 yield* accountBalanceIncrementalService.updateAllBalances(true);
@@ -390,8 +371,25 @@ export class ImporterService extends Context.Service<ImporterService>()('@budgie
                 return {
                     transactionIds: createdTransactions.map(transaction => transaction.id),
                     transactions,
-                    rowErrors
+                    rowErrors: results.filter(Result.isFailure).map(result => result.failure)
                 } satisfies CsvImportResultInterface;
+            },
+            effect => Db.transaction(effect)
+        );
+
+        return {
+            replaceAll: Effect.fn('ImporterService.replaceAll')(function* (columnMap: ImporterColumnMapInterface, csvText: string) {
+                const rows = yield* parseCsv(csvText);
+                const instrumentsMap = yield* initializeInstruments();
+                const result = yield* importRows(rows, columnMap, instrumentsMap);
+
+                yield* Effect.forEach(
+                    result.rowErrors,
+                    rowError => Effect.logError('row:process-error', { errorMessage: rowError.message, rowColumns: rowError.rowColumns }),
+                    { discard: true }
+                );
+
+                return result;
             })
         };
     })

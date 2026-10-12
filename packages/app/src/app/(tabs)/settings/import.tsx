@@ -72,7 +72,6 @@ export default function ImportScreen() {
             fromCurrency: '',
             fromAmount: '',
             comment: '',
-            isPlanned: '',
             mcc: ''
         },
         mode: 'onSubmit'
@@ -240,13 +239,6 @@ export default function ImportScreen() {
             />
             <ImportColumnMapField control={control} name="comment" label={t`Comment`} headers={headers} selectedHeaders={selectedHeaders} />
             <ImportColumnMapField control={control} name="mcc" label={t`MCC`} headers={headers} selectedHeaders={selectedHeaders} />
-            <ImportColumnMapField
-                control={control}
-                name="isPlanned"
-                label={t`Is Planned`}
-                headers={headers}
-                selectedHeaders={selectedHeaders}
-            />
         </CollapsibleChromePage>
     );
 }
