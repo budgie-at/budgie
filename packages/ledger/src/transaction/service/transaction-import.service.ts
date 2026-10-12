@@ -6,6 +6,7 @@ import {
     TransactionEntryRepository,
     TransactionRepository
 } from '@budgie/contracts';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -196,19 +197,16 @@ export class TransactionImportService extends Context.Service<TransactionImportS
         });
 
         const detachRefilledSources = Effect.fnUntraced(function* (refilledTransactions: readonly TransactionEntityInterface[]) {
-            const sourceIdsByParentId = new Map<number, number[]>();
+            const sourcesByParentId = Arr.groupBy(
+                refilledTransactions.filter(transaction => isDefined(transaction.consolidationParentTransactionId)),
+                transaction => String(transaction.consolidationParentTransactionId)
+            );
 
-            for (const { id, consolidationParentTransactionId } of refilledTransactions) {
-                if (isDefined(consolidationParentTransactionId)) {
-                    sourceIdsByParentId.set(consolidationParentTransactionId, [
-                        ...(sourceIdsByParentId.get(consolidationParentTransactionId) ?? []),
-                        id
-                    ]);
-                }
-            }
-
-            yield* Effect.forEach(sourceIdsByParentId, ([consolidationParentId, sourceTransactionIds]) =>
-                detachFromStaleRefund(consolidationParentId, sourceTransactionIds)
+            yield* Effect.forEach(Object.entries(sourcesByParentId), ([consolidationParentId, sources]) =>
+                detachFromStaleRefund(
+                    Number(consolidationParentId),
+                    sources.map(source => source.id)
+                )
             );
         });
 
@@ -292,7 +290,7 @@ export class TransactionImportService extends Context.Service<TransactionImportS
             const existingTransactionsMap = yield* getTransactionsMap(updateParams.map(({ transactionId }) => transactionId));
             const existingTransactions = [...existingTransactionsMap.values()];
 
-            yield* transactionDepositSafetyService.assertNoDepositExpenseTransactions(existingTransactions);
+            yield* transactionDepositSafetyService.assertNoDepositExpenseInputs(existingTransactions);
 
             const liveEntryTransactionIds = yield* transactionEntryRepository.findTransactionIdsWithLiveEntries([
                 ...existingTransactionsMap.keys()
@@ -383,26 +381,7 @@ export class TransactionImportService extends Context.Service<TransactionImportS
 
         return {
             prepareImportedInputs,
-            bulkUpsertPreparedImported,
-            bulkUpsertImported: Effect.fn('TransactionImportService.bulkUpsertImported')(
-                function* (
-                    inputs: TransactionCreateInputInterface[],
-                    existingTransactionIdMap: Map<string, number>,
-                    options: TransactionImportOptionsInterface = {}
-                ) {
-                    if (!isNotEmptyArray(inputs)) {
-                        return [];
-                    }
-
-                    const { transactions } = yield* bulkUpsertPreparedImported(
-                        prepareImportedInputs(inputs, existingTransactionIdMap),
-                        options
-                    );
-
-                    return transactions;
-                },
-                effect => Db.transaction(effect)
-            )
+            bulkUpsertPreparedImported
         };
     })
 }) {

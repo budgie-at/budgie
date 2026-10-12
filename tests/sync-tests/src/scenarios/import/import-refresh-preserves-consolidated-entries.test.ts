@@ -59,9 +59,14 @@ const fetchLedgerBalances = (accountIds: readonly number[]) =>
 
 const refreshImportedTransaction = (transaction: TransactionEntityInterface, accountId: number) =>
     Effect.flatMap(TransactionImportService, transactionImportService =>
-        transactionImportService.bulkUpsertImported(
-            [buildRefreshInput(transaction, accountId)],
-            new Map([[transaction.externalId ?? '', transaction.id]])
+        Effect.map(
+            transactionImportService.bulkUpsertPreparedImported(
+                transactionImportService.prepareImportedInputs(
+                    [buildRefreshInput(transaction, accountId)],
+                    new Map([[transaction.externalId ?? '', transaction.id]])
+                )
+            ),
+            ({ transactions }) => transactions
         )
     );
 

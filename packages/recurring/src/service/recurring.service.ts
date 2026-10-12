@@ -4,6 +4,8 @@ import { startOfDay } from 'date-fns/startOfDay';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Ref from 'effect/Ref';
+import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -177,6 +179,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         const track = Effect.fn('RecurringService.track')(function* (
             detected: readonly RecurringSeriesInterface[],
             charges: readonly RecurringChargeInterface[],
+            isLegacyAdoption: boolean,
             now: Date
         ) {
             const rows = yield* recurringRepository.findSeries();
@@ -228,9 +231,10 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             return yield* Effect.forEach(detected, (series, index) => {
                 const facts = toFacts(series, now);
                 const qualifiedRow = exactRows[index] ?? qualifiedRows[index];
-                const unbandedRows = isDefined(qualifiedRow)
-                    ? []
-                    : rows.filter(item => !claimed.has(item.id) && matchesUnbandedIdentity(series, item) && matchesCycle(series, item));
+                const unbandedRows =
+                    isDefined(qualifiedRow) || !isLegacyAdoption
+                        ? []
+                        : rows.filter(item => !claimed.has(item.id) && matchesUnbandedIdentity(series, item) && matchesCycle(series, item));
                 const row =
                     qualifiedRow ??
                     unbandedRows.find(
@@ -253,15 +257,34 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             });
         });
 
+        const syncSeries = Effect.fnUntraced(function* (now: Date, isLegacyAdoption: boolean) {
+            const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
+            const since = new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
+            const charges = yield* recurringRepository.findCharges(defaultInstrumentId, language, since);
+            const historicalCharges = isLegacyAdoption
+                ? yield* recurringRepository.findHistoricalCharges(defaultInstrumentId, language, since)
+                : [];
+
+            return yield* Db.transaction(track(detectRecurringSeries(charges), historicalCharges, isLegacyAdoption, now));
+        });
+
+        const legacyAdoptionLock = yield* Semaphore.make(1);
+        const isLegacyAdoptionPending = yield* Ref.make(true);
+
+        const syncSeriesAdoptingLegacyOnce = (now: Date) =>
+            Effect.flatMap(Ref.get(isLegacyAdoptionPending), isPending =>
+                isPending
+                    ? legacyAdoptionLock.withPermits(1)(
+                          Effect.flatMap(Ref.get(isLegacyAdoptionPending), isStillPending =>
+                              Effect.tap(syncSeries(now, isStillPending), () => Ref.set(isLegacyAdoptionPending, false))
+                          )
+                      )
+                    : syncSeries(now, false)
+            );
+
         return {
             calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
-                const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
-                const since = new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
-                const charges = yield* recurringRepository.findCharges(defaultInstrumentId, language, since);
-                const historicalCharges = yield* recurringRepository.findHistoricalCharges(defaultInstrumentId, language, since);
-                const tracked = yield* Db.transaction(track(detectRecurringSeries(charges), historicalCharges, now));
-
-                return projectRecurringMonth(tracked, year, month, now);
+                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now);
             }),
             setUserState: (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
                 recurringRepository.updateSeries(seriesId, { userState }),
