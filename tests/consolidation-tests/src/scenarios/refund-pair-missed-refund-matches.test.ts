@@ -6,6 +6,7 @@ import * as Effect from 'effect/Effect';
 import { expectRefundOutcome } from '../harness/expect-refund-outcome';
 import { runConsolidation } from '../harness/run-consolidation';
 import { seedExpenseWithoutRefund } from '../harness/seed-expense-without-refund';
+import { seedPrivatbankTransaction } from '../harness/seed-privatbank-transaction';
 import { testSeedService, TestLayer } from '../harness/test-context';
 
 import type { RefundAutoConfidenceBucket, RefundCandidateBaseInterface, RefundCandidateInterface } from '@budgie/contracts';
@@ -90,27 +91,6 @@ const expectSoleAutoRefund = Effect.fnUntraced(function* (
     expectCandidateGroups(autoCandidates, [{ confidenceBucket, expenseTransactionId: expenseId, refundIncomeTransactionIds: [refundId] }]);
     expect((yield* runConsolidation()).consolidated).toBe(1);
     yield* expectRefundOutcome(expenseId, [refundId], [expenseId]);
-});
-
-const seedPrivatbankTransaction = Effect.fnUntraced(function* (input: {
-    readonly accountId: number;
-    readonly exchangeRate: number;
-    readonly externalId: string;
-    readonly isRefund: boolean;
-    readonly operatedAt: Date;
-    readonly originalAmount: number;
-    readonly title: string;
-}) {
-    const entry = {
-        accountId: input.accountId,
-        amount: convertToMicroUnits(input.originalAmount * input.exchangeRate),
-        exchangeRate: input.exchangeRate
-    };
-    const transaction = input.isRefund
-        ? yield* testSeedService.bankPairIncome({ externalId: input.externalId, operatedAt: input.operatedAt }, entry)
-        : yield* testSeedService.bankPairExpense({ externalId: input.externalId, operatedAt: input.operatedAt }, entry);
-
-    return yield* testSeedService.updateTransaction(transaction.id, { title: input.title, externalSource: ExternalSourceEnum.PRIVATBANK });
 });
 
 layer(TestLayer)('consolidation/refund-pair-missed-refund-matches', it => {

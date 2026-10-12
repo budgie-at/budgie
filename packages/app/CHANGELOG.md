@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.100.9](https://github.com/budgie-at/budgie/compare/v6.100.8...v6.100.9) (2026-10-12)
+
+
+### Bug Fixes
+
+* **app:** theme the native background behind screen transitions ([f2861d6](https://github.com/budgie-at/budgie/commit/f2861d66fc754957a78b60cd63f3ea84212aeca2))
+
+
+
+
+
 ## [6.100.8](https://github.com/budgie-at/budgie/compare/v6.100.7...v6.100.8) (2026-10-12)
 
 **Note:** Version bump only for package @budgie-at/app
