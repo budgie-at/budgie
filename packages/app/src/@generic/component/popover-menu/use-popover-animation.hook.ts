@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Easing, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { EmptyFn } from '@rnw-community/shared';
@@ -13,6 +13,8 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
     const [isClosing, setIsClosing] = useState(false);
     const [previousIsOpen, setPreviousIsOpen] = useState(isOpen);
     const onCloseCompleteRef = useRef(onCloseComplete);
+    const isRendered = isOpen || isClosing;
+    const wasRenderedRef = useRef(isRendered);
 
     if (isOpen !== previousIsOpen) {
         setPreviousIsOpen(isOpen);
@@ -23,10 +25,13 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
         onCloseCompleteRef.current = onCloseComplete;
     });
 
-    const finishClose = useCallback(() => {
-        setIsClosing(false);
-        onCloseCompleteRef.current?.();
-    }, []);
+    useEffect(() => {
+        if (wasRenderedRef.current && !isRendered) {
+            onCloseCompleteRef.current?.();
+        }
+
+        wasRenderedRef.current = isRendered;
+    }, [isRendered]);
 
     useEffect(() => {
         if (isOpen) {
@@ -35,12 +40,12 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
             progress.set(
                 withTiming(0, TIMING_CONFIG, isFinished => {
                     if (isFinished) {
-                        runOnJS(finishClose)();
+                        runOnJS(setIsClosing)(false);
                     }
                 })
             );
         }
-    }, [isOpen, isClosing, progress, finishClose]);
+    }, [isOpen, isClosing, progress]);
 
     const backdropStyle = useAnimatedStyle(() => ({ opacity: progress.get() * BACKDROP_OPACITY }));
     const menuStyle = useAnimatedStyle(() => ({
@@ -48,5 +53,5 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
         transform: [{ scale: interpolate(progress.get(), [0, 1], [MENU_SCALE_CLOSED, 1]) }]
     }));
 
-    return { isRendered: isOpen || isClosing, backdropStyle, menuStyle };
+    return { isRendered, backdropStyle, menuStyle };
 };
