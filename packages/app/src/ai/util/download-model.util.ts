@@ -21,7 +21,11 @@ export const downloadModel = Effect.fn('downloadModel')(function* (
     const tempFile = new File(Paths.document, `${filename}.download`);
     const deleteFiles = (...files: File[]) =>
         Effect.sync(() => {
-            files.filter(file => file.exists).forEach(file => file.delete());
+            for (const file of files) {
+                if (file.exists) {
+                    file.delete();
+                }
+            }
         });
     let expectedBytes = 0;
 
