@@ -1,7 +1,8 @@
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import { File, Paths } from 'expo-file-system';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { downloadVerifiedFile } from '../utils/download-verified-file.util';
 
@@ -29,20 +30,30 @@ export const downloadModel = Effect.fn('downloadModel')(function* (
             }
         });
 
-    yield* deleteFiles(tempFile, destFile, sizeFile);
+    yield* deleteFiles(tempFile, sizeFile);
 
-    yield* Effect.gen(function* () {
-        const downloadedBytes = yield* downloadVerifiedFile(url, tempFile, (bytesWritten, expectedBytes) => {
+    const downloadExit = yield* Effect.exit(
+        downloadVerifiedFile(url, tempFile, (bytesWritten, expectedBytes) => {
             onProgress(bytesWritten / expectedBytes);
-        });
+        })
+    );
+    const downloadedBytes = Exit.isSuccess(downloadExit) ? downloadExit.value : null;
 
-        if (!isDefined(downloadedBytes)) {
-            return yield* Effect.die(new Error('Model download failed'));
+    if (!isDefined(downloadedBytes)) {
+        yield* deleteFiles(tempFile);
+
+        if (destFile.exists && isPositiveNumber(destFile.size)) {
+            onProgress(1);
+
+            return destFile.uri;
         }
 
-        yield* Effect.promise(() => tempFile.move(destFile));
-        sizeFile.writeSync(String(downloadedBytes));
-    }).pipe(Effect.onError(() => deleteFiles(tempFile)));
+        return yield* Effect.die(new Error('Model download failed'));
+    }
+
+    yield* deleteFiles(destFile);
+    yield* Effect.promise(() => tempFile.move(destFile)).pipe(Effect.onError(() => deleteFiles(tempFile)));
+    sizeFile.writeSync(String(downloadedBytes));
 
     return destFile.uri;
 });
