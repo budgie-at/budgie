@@ -34,7 +34,7 @@ const ANALYTICS_ACCOUNT_FILTER_TYPES = [
     AccountTypeEnum.SAVINGS
 ] satisfies Exclude<AccountTypeEnum, AccountTypeEnum.DEBT>[];
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks, handlers, and per-account-type group blocks
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -80,59 +80,15 @@ export default function TransactionAccountFilterModal() {
 
                 {isNotEmptyArray(accountGroups) && !isLoading ? (
                     <View className="gap-y-lg">
-                        {isNotEmptyArray(accountsGrouped.BANK) ? (
+                        {accountGroups.map(group => (
                             <AccountsGroup
+                                key={group.type}
                                 onSelect={handleSelect}
-                                type={AccountTypeEnum.BANK}
-                                accounts={accountsGrouped.BANK}
+                                type={group.type}
+                                accounts={group.accounts}
                                 selectedAccountIds={selectedIds}
                             />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.BANK_SYNC) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.BANK_SYNC}
-                                accounts={accountsGrouped.BANK_SYNC}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.CASH) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.CASH}
-                                accounts={accountsGrouped.CASH}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.CRYPTO) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.CRYPTO}
-                                accounts={accountsGrouped.CRYPTO}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.STOCKS) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.STOCKS}
-                                accounts={accountsGrouped.STOCKS}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.SAVINGS) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.SAVINGS}
-                                accounts={accountsGrouped.SAVINGS}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
+                        ))}
                     </View>
                 ) : null}
 

@@ -1,18 +1,18 @@
-import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { doesRuleMatchTransaction } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
+import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
-import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
-import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
+import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
+import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
@@ -24,6 +24,7 @@ import { TransactionInfoTagsSection } from '../transaction-info-tags-section/tra
 import { TransactionInfoPageSelector } from './transaction-info-page.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { SuggestRuleDataInterface } from '@budgie/rules';
 import type { Href } from 'expo-router';
 import type { ReactNode } from 'react';
 import type { Edge } from 'react-native-safe-area-context';
@@ -38,62 +39,25 @@ interface Props {
     readonly onOpenConsolidationSources?: () => void;
 }
 
-const getCategoryLabel = (transaction: TransactionWithRelationsEntityInterface): string | null => {
-    const categoryTitle = getTransactionCategoryEntries(transaction.entries).at(0)?.category?.title;
-
-    return isDefined(categoryTitle) ? categoryTitle : null;
-};
-
-const hasTransferConversionRow = (transaction: TransactionWithRelationsEntityInterface): boolean => {
-    const sourceEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);
-    const destinationEntry = transaction.entries.find(entry => entry.accountId === transaction.toAccountId);
-
-    return (
-        transaction.type === TransactionTypeEnum.TRANSFER &&
-        isDefined(sourceEntry) &&
-        isDefined(destinationEntry) &&
-        sourceEntry.account.instrument.id !== destinationEntry.account.instrument.id
-    );
-};
-
-const hasFeeRow = (transaction: TransactionWithRelationsEntityInterface): boolean => {
-    const feeEntries = getTransactionFeeEntries(transaction.entries);
-    const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));
-
-    return isPositiveNumber(feeAmount);
-};
-
-const getRowVisibility = (
-    transaction: TransactionWithRelationsEntityInterface,
-    onOpenRefundSources: Props['onOpenRefundSources'],
-    onOpenConsolidationSources: Props['onOpenConsolidationSources']
-) => {
-    const categoryLabel = getCategoryLabel(transaction);
-    const showCategoryRow = isNotEmptyString(categoryLabel) && transaction.type !== TransactionTypeEnum.TRANSFER;
-    const showMccRow = isDefined(getTransactionCategoryEntries(transaction.entries).at(0)?.mccCategory);
-    const showNoteRow = isNotEmptyString(transaction.comment) && !isTransactionNoteDuplicated(transaction);
-    const isConsolidated = isDefined(transaction.consolidationType);
-    const hasCategoryRows = showCategoryRow || showMccRow || showNoteRow;
-    const hasMoneyRows = hasTransferConversionRow(transaction) || hasFeeRow(transaction);
-    const hasSourceRows = isConsolidated && (isDefined(onOpenConsolidationSources) || isDefined(onOpenRefundSources));
-    const hasRowsAfterAccount = hasCategoryRows || hasMoneyRows || hasSourceRows;
-    const hasRowsAfterCategory = hasMoneyRows || hasSourceRows;
-
-    return {
-        categoryLabel,
-        isConsolidated,
-        hasRowsAfterAccount,
-        hasRowsAfterCategory,
-        hasSourceRows
-    };
-};
-
 export const TransactionInfoPage = (props: Props) => {
     const { transaction, editHref, actionsMenu, onOpenRefundSources, onOpenConsolidationSources } = props;
     const router = useRouter();
     const { t } = useLingui();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
-    const matchingRuleIds = useTransactionInfoMatchingRules(transaction);
+    const { enabledRules } = useGetEnabledRulesQuery();
+    const firstEntry = transaction.entries.at(0);
+    const suggestRuleData: SuggestRuleDataInterface = {
+        title: getTransactionDisplayTitle(transaction),
+        comment: transaction.comment,
+        mccCode: firstEntry?.mccCategory?.mcc ?? null,
+        categoryId: firstEntry?.categoryId ?? null,
+        tagIds: transaction.transactionTags.map(({ tagId }) => tagId)
+    };
+    const transactionInput = convertTransactionToInput(transaction);
+    const matchingRuleIds =
+        transaction.type === TransactionTypeEnum.ADJUSTMENT
+            ? []
+            : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData)).map(rule => rule.id);
 
     const handleEditPress = () => {
         if (isDefined(editHref)) {
@@ -105,7 +69,6 @@ export const TransactionInfoPage = (props: Props) => {
     };
 
     const isEditDisabled = !isDefined(editHref);
-    const rowVisibility = getRowVisibility(transaction, onOpenRefundSources, onOpenConsolidationSources);
 
     return (
         <ChromePage
@@ -137,19 +100,17 @@ export const TransactionInfoPage = (props: Props) => {
                 />
 
                 <View className="gap-y-2xl">
-                    <View>
-                        <TransactionInfoAccountRows transaction={transaction} hasFollowingRows={rowVisibility.hasRowsAfterAccount} />
-                        <TransactionInfoCategoryRows
-                            transaction={transaction}
-                            categoryLabel={rowVisibility.categoryLabel}
-                            hasFollowingRows={rowVisibility.hasRowsAfterCategory}
-                        />
-                        <TransactionInfoMoneyRows transaction={transaction} hasFollowingRows={rowVisibility.hasSourceRows} />
-                        <TransactionInfoSourceRows
-                            transaction={transaction}
-                            onOpenRefundSources={onOpenRefundSources}
-                            onOpenConsolidationSources={onOpenConsolidationSources}
-                        />
+                    <View className="overflow-hidden">
+                        <View className="-mt-px">
+                            <TransactionInfoAccountRows transaction={transaction} />
+                            <TransactionInfoCategoryRows transaction={transaction} />
+                            <TransactionInfoMoneyRows transaction={transaction} />
+                            <TransactionInfoSourceRows
+                                transaction={transaction}
+                                onOpenRefundSources={onOpenRefundSources}
+                                onOpenConsolidationSources={onOpenConsolidationSources}
+                            />
+                        </View>
                     </View>
 
                     <TransactionInfoTagsSection transaction={transaction} />

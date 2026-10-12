@@ -22,7 +22,7 @@ interface UseQuickFormFeeConfig {
     readonly entries: readonly TransactionEntryCreateInputInterface[];
     readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
-    readonly setFromNumeric: (value: number) => void;
+    readonly setFromNumeric?: (value: number) => void;
 }
 
 interface UseQuickFormFeeResult {
@@ -64,7 +64,7 @@ export const useQuickFormFee = ({
             const nextAmount = Math.max(getValues('amount') - previousFeeAmount + nextFeeAmount, 0);
 
             setValue('amount', nextAmount, { shouldDirty: true });
-            setFromNumeric(nextAmount);
+            setFromNumeric?.(nextAmount);
         }
     };
 

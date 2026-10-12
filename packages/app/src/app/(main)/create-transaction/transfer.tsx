@@ -6,13 +6,11 @@ import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
-import { isPositiveNumber } from '@rnw-community/shared';
-
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
+import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { TransferQuickForm } from '../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
@@ -28,9 +26,6 @@ export default function CreateTransferTransactionPage() {
     const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId, toAccountId } = useLocalSearchParams<{ accountId?: string | string[]; toAccountId?: string | string[] }>();
 
-    const parsedAccountId = isPositiveNumber(Number(normalizeRouteParam(accountId))) ? Number(normalizeRouteParam(accountId)) : null;
-    const parsedToAccountId = isPositiveNumber(Number(normalizeRouteParam(toAccountId))) ? Number(normalizeRouteParam(toAccountId)) : null;
-
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await appRuntime.runPromise(
@@ -42,8 +37,8 @@ export default function CreateTransferTransactionPage() {
         },
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
-        fromAccountId: parsedAccountId ?? 0,
-        toAccountId: parsedToAccountId ?? 0
+        fromAccountId: parsePositiveRouteParam(accountId) ?? 0,
+        toAccountId: parsePositiveRouteParam(toAccountId) ?? 0
     });
 
     const handleGoBack = () => void goBackOrReplace('/');

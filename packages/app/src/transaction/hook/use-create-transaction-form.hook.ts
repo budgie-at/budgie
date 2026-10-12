@@ -2,6 +2,7 @@ import {
     TransactionCreateInputInterface,
     TransactionCreateInputSchema,
     TransactionEntityInterface,
+    TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { createTransactionInput } from '@budgie/ledger';
@@ -12,7 +13,7 @@ import { router } from 'expo-router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { buildExpenseEntry } from '../utils/build-expense-entry.util';
+import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 
 interface UseTransactionFormConfig {
     readonly onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;
@@ -47,7 +48,7 @@ export const useCreateTransactionForm = ({
             comment,
             amount,
             type,
-            entries: buildExpenseEntry({ accountId: 0, categoryId, amount: 0, mccCategoryId: null })
+            entries: buildPrimaryEntry(TransactionEntryTypeEnum.CREDIT, { accountId: 0, categoryId, amount: 0, mccCategoryId: null })
         })
     });
 

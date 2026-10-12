@@ -7,6 +7,6 @@ export interface SimpleTransactionActionsMenuParamsInterface {
     readonly transactionAccountId?: number | null;
     readonly transactionType: ConvertToTransferModalParams['transactionType'];
     readonly categoryEntryCount: number;
-    readonly onDelete: () => Promise<void> | void;
+    readonly onDelete: () => unknown;
     readonly onFeePress: EmptyFn;
 }

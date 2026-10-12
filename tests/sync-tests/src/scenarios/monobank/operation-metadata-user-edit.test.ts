@@ -1,4 +1,4 @@
-import { buildExpenseEntry } from '@app/transaction/utils/build-expense-entry.util';
+import { buildPrimaryEntry } from '@app/transaction/utils/build-primary-entry.util';
 import { CurrencyEnum, PRECISION, TransactionEntityTable, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
@@ -100,7 +100,7 @@ describe('monobank/operation-metadata-user-edit', () => {
             yield* transactionService.updateById(transaction.id, {
                 comment: 'Edited note',
                 tagIds: [],
-                entries: buildExpenseEntry({
+                entries: buildPrimaryEntry(TransactionEntryTypeEnum.CREDIT, {
                     accountId: primaryEntry.accountId,
                     categoryId: category.id,
                     mccCategoryId: primaryEntry.mccCategoryId,
@@ -126,7 +126,7 @@ describe('monobank/operation-metadata-user-edit', () => {
             yield* transactionService.updateById(transaction.id, {
                 fromAccountId: otherAccount.id,
                 tagIds: [],
-                entries: buildExpenseEntry({
+                entries: buildPrimaryEntry(TransactionEntryTypeEnum.CREDIT, {
                     accountId: otherAccount.id,
                     categoryId: category.id,
                     mccCategoryId: primaryEntry.mccCategoryId,

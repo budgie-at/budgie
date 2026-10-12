@@ -9,25 +9,9 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 import type { TransactionInfoRowPropsInterface } from '../../interface/transaction-info-row-props.interface';
 
-const rowVariants = cva('flex-row items-center gap-x-xl py-xl', {
-    variants: {
-        withBottomBorder: {
-            false: '',
-            true: 'border-b border-secondary-corner'
-        }
-    }
-});
+const rowVariants = cva('flex-row items-center gap-x-xl border-t border-secondary-corner py-xl');
 
-export const TransactionInfoRow = ({
-    icon,
-    label,
-    value,
-    description,
-    children,
-    testID,
-    onPress,
-    withBottomBorder = true
-}: TransactionInfoRowPropsInterface) => {
+export const TransactionInfoRow = ({ icon, label, value, description, children, testID, onPress }: TransactionInfoRowPropsInterface) => {
     const hasValue = isNotEmptyString(value);
     const hasChildren = isDefined(children);
     const rightSlot = isDefined(onPress) ? (
@@ -61,7 +45,7 @@ export const TransactionInfoRow = ({
     if (isDefined(onPress)) {
         return (
             <HapticPressable onPress={onPress}>
-                <View className={rowVariants({ withBottomBorder })} collapsable={false} nativeID={testID} testID={testID}>
+                <View className={rowVariants()} collapsable={false} nativeID={testID} testID={testID}>
                     {rowContent}
                 </View>
             </HapticPressable>
@@ -69,7 +53,7 @@ export const TransactionInfoRow = ({
     }
 
     return (
-        <View className={rowVariants({ withBottomBorder })} collapsable={false} nativeID={testID} testID={testID}>
+        <View className={rowVariants()} collapsable={false} nativeID={testID} testID={testID}>
             {rowContent}
         </View>
     );

@@ -1,4 +1,5 @@
 import { StatisticsRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
@@ -9,28 +10,20 @@ import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 
 import type { LanguageEnum, TransactionFilterInterface } from '@budgie/contracts';
 
-const incomeByCategoryAtom = databaseQueryFamily(
+const statisticsByCategoryAtom = databaseQueryFamily(
     STATISTICS_TABLES,
     StatisticsRepository,
     (statisticsRepository, [filters, defaultInstrumentId, language]: readonly [TransactionFilterInterface, number, LanguageEnum]) =>
-        statisticsRepository.getIncomeByCategoryQuery(filters, defaultInstrumentId, language)
-);
-
-const expenseByCategoryAtom = databaseQueryFamily(
-    STATISTICS_TABLES,
-    StatisticsRepository,
-    (statisticsRepository, [filters, defaultInstrumentId, language]: readonly [TransactionFilterInterface, number, LanguageEnum]) =>
-        statisticsRepository.getExpenseByCategoryQuery(filters, defaultInstrumentId, language)
+        Effect.all({
+            incomeByCategory: statisticsRepository.getIncomeByCategoryQuery(filters, defaultInstrumentId, language),
+            expenseByCategory: statisticsRepository.getExpenseByCategoryQuery(filters, defaultInstrumentId, language)
+        })
 );
 
 export const useGetStatisticsByCategoryQuery = (filters: TransactionFilterInterface) => {
     const language = useSetting('language');
     const { defaultInstrument } = useSettingsContext();
-    const incomeResult = useLiveAtomValue(incomeByCategoryAtom([filters, defaultInstrument.id, language]));
-    const expenseResult = useLiveAtomValue(expenseByCategoryAtom([filters, defaultInstrument.id, language]));
+    const result = useLiveAtomValue(statisticsByCategoryAtom([filters, defaultInstrument.id, language]));
 
-    return {
-        incomeByCategory: AsyncResult.getOrElse(incomeResult, () => []),
-        expenseByCategory: AsyncResult.getOrElse(expenseResult, () => [])
-    };
+    return AsyncResult.getOrElse(result, () => ({ incomeByCategory: [], expenseByCategory: [] }));
 };

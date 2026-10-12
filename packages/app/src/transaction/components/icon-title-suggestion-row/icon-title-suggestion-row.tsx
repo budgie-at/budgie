@@ -1,40 +1,46 @@
 import { SuggestionStatus } from '@budgie/ai';
-import { UserIconType } from '@budgie/contracts';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { useSuggestionLoadingState } from '../../hook/use-suggestion-loading-state.hook';
 import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
 import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
-import { SuggestionRow } from '../suggestion-row/suggestion-row';
+import { SuggestionRowLayout } from '../suggestion-row-layout/suggestion-row-layout';
 
-interface Props<T> {
-    readonly suggestions: T[];
+import type { IconTitleSuggestionItemInterface } from '../../interface/icon-title-suggestion-item.interface';
+
+interface Props {
+    readonly items: readonly IconTitleSuggestionItemInterface[];
     readonly status: SuggestionStatus;
     readonly enabled: boolean;
-    readonly onSelect: (item: T) => void;
-    readonly getKey: (item: T) => string | number;
-    readonly getIcon: (item: T) => UserIconType;
-    readonly getTitle: (item: T) => string;
     readonly testIDPrefix: string;
 }
 
 const ANIMATION_DURATION = 200;
 const STAGGER_DELAY = 60;
 
-export const IconTitleSuggestionRow = <T,>(props: Props<T>) => {
-    const { suggestions, status, enabled, onSelect, getKey, getIcon, getTitle, testIDPrefix } = props;
+export const IconTitleSuggestionRow = ({ items, status, enabled, testIDPrefix }: Props) => {
+    const { showLoading, showContent, isProcessing } = useSuggestionLoadingState({
+        status,
+        hasResults: isNotEmptyArray(items),
+        enabled
+    });
 
-    const renderPill = (item: T, index: number, onPillSelect: () => void) => (
-        <SuggestionPill
-            key={getKey(item)}
-            index={index}
-            animationDuration={ANIMATION_DURATION}
-            staggerDelay={STAGGER_DELAY}
-            onPress={onPillSelect}
-            {...testIDProps(testIDPrefix, index)}
-        >
-            <SuggestionPillContent icon={getIcon(item)} title={getTitle(item)} />
-        </SuggestionPill>
+    return (
+        <SuggestionRowLayout showContent={showContent} showLoading={showLoading} isProcessing={isProcessing}>
+            {[...items].reverse().map((item, index) => (
+                <SuggestionPill
+                    key={item.key}
+                    index={index}
+                    animationDuration={ANIMATION_DURATION}
+                    staggerDelay={STAGGER_DELAY}
+                    onPress={item.onSelect}
+                    {...testIDProps(testIDPrefix, index)}
+                >
+                    <SuggestionPillContent icon={item.icon} title={item.title} />
+                </SuggestionPill>
+            ))}
+        </SuggestionRowLayout>
     );
-
-    return <SuggestionRow suggestions={suggestions} status={status} enabled={enabled} renderPill={renderPill} onSelect={onSelect} />;
 };
