@@ -153,10 +153,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
             <TransactionKeypad
                 variant={variant}
-                onDigit={handlers.onDigit}
-                onDecimal={handlers.onDecimal}
-                onBackspace={handlers.onBackspace}
-                onLongBackspace={handlers.onLongBackspace}
+                keypad={handlers}
                 onConfirm={handleConfirm}
                 onCancel={handleGoBack}
                 isConfirmDisabled={confirmDisabled}

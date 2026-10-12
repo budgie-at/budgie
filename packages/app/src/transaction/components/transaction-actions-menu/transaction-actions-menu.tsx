@@ -26,17 +26,11 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
     const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;
     const actionTestID = isConsolidated ? TransactionActionsMenuSelector.RevertButton : TransactionActionsMenuSelector.DeleteButton;
 
-    const openMenu = () => {
-        setIsMenuOpen(true);
+    const handleClose = () => {
+        setIsMenuOpen(false);
     };
 
-    const { closeMenu, handleCloseComplete } = useTransactionListContextMenuClose({
-        isOpen: isMenuOpen,
-        onClose: () => {
-            setIsMenuOpen(false);
-        },
-        onCloseComplete: emptyFn
-    });
+    const { closeMenu, handleCloseComplete } = useTransactionListContextMenuClose({ isOpen: isMenuOpen, onClose: handleClose });
 
     const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {
@@ -57,20 +51,16 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
             setAnchor(void 0);
         }
 
-        openMenu();
+        setIsMenuOpen(true);
     };
 
     const handleActionPress = () => {
-        if (isConsolidated) {
-            closeMenu(() => {
-                onRevert?.();
-            });
-
-            return;
-        }
-
         closeMenu(() => {
-            void onDelete();
+            if (isConsolidated) {
+                onRevert?.();
+            } else {
+                void onDelete();
+            }
         });
     };
 

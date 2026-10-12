@@ -26,7 +26,7 @@ export const useTransactionListContextMenuClose = ({
             pendingActionRef.current = null;
         }
 
-        onCloseComplete();
+        onCloseComplete?.();
     };
 
     return { closeMenu, handleCloseComplete };
