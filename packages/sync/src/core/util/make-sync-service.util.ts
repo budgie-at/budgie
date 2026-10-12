@@ -9,6 +9,7 @@ import { mapSyncAccountToCreateInput } from './map-sync-account-to-create-input.
 import type { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import type { SyncAccountInterface } from '../interface/sync-account.interface';
 import type { SyncServiceDefinitionInterface } from '../interface/sync-service-definition.interface';
+import type * as HttpClient from 'effect/http/HttpClient';
 
 const IBAN_CHECK_DIGITS_START = 2;
 const IBAN_CHECK_DIGITS_END = 4;
@@ -25,12 +26,14 @@ const resolveMatchableIban = (account: SyncAccountInterface): string | null => {
     return checkDigits >= IBAN_MIN_VALID_CHECK_DIGITS && checkDigits <= IBAN_MAX_VALID_CHECK_DIGITS ? account.iban : null;
 };
 
-export const makeSyncService = Effect.fnUntraced(function* (definition: SyncServiceDefinitionInterface) {
+export const makeSyncService = Effect.fnUntraced(function* (
+    definition: SyncServiceDefinitionInterface,
+    afterSyncEnabledChange: (enabled: boolean) => Effect.Effect<void, never, Db | HttpClient.HttpClient> = () => Effect.void
+) {
     const accountRepository = yield* AccountRepository;
     const instrumentRepository = yield* InstrumentRepository;
     const syncRepository = yield* SyncRepository;
     const accountService = yield* AccountService;
-    const afterSyncEnabledChange = definition.afterSyncEnabledChange ?? (() => Effect.void);
 
     const findExistingSyncAccount = Effect.fnUntraced(function* (account: SyncAccountInterface) {
         const existingByExternalId = yield* accountRepository.findByExternalIds([account.id]);

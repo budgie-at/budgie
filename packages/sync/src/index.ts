@@ -11,7 +11,6 @@ export type { SyncAccountInterface } from './core/interface/sync-account.interfa
 export type { SyncTransactionInterface } from './core/interface/sync-transaction.interface';
 
 export { MonobankClient } from './monobank/client/monobank.client';
-export { MonobankTransactionSyncService } from './monobank/service/monobank-transaction-sync.service';
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
@@ -24,7 +23,7 @@ export { parsePrivatbankXlsx } from './privatbank/util/parse-privatbank-xlsx.uti
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { BinanceSignedClient } from './binance/client/binance-signed.client';
-export { binanceMapper } from './binance/mapper/binance.mapper';
+export { mapBinanceDepositToTransaction, mapBinanceWithdrawalToTransaction, parseBinanceAmount } from './binance/mapper/binance.mapper';
 export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/util/binance-account-id.util';
 export { BinanceWalletEnum } from './binance/enum/binance-wallet.enum';
 export { BINANCE_RATE_LIMIT_MS } from './binance/constant/binance-rate-limit-ms.constant';
@@ -42,8 +41,7 @@ export type { BinanceEarnPositionApiInterface } from './binance/interface/binanc
 export type { BinanceLockedEarnPositionApiInterface } from './binance/interface/binance-locked-earn-position-api.schema';
 export type { BinanceEarnRewardApiInterface } from './binance/interface/binance-earn-reward-api.schema';
 
-export { ErsteFileClient } from './erste/client/erste-file.client';
-export { ersteMapper } from './erste/mapper/erste.mapper';
+export { mapErsteTransaction } from './erste/mapper/erste.mapper';
 
 export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
 export type { PdfTextItemInterface } from './erste/interface/pdf-text-item.interface';

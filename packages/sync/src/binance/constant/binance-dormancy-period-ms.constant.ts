@@ -1,1 +1,0 @@
-export const BINANCE_DORMANCY_PERIOD_MS = 7_776_000_000;

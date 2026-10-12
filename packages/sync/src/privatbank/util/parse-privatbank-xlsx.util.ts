@@ -7,21 +7,10 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
-import {
-    PRIVATBANK_BALANCE_CURRENCY_COLUMN_INDEX,
-    PRIVATBANK_CARD_AMOUNT_COLUMN_INDEX,
-    PRIVATBANK_CARD_COLUMN_INDEX,
-    PRIVATBANK_CARD_CURRENCY_COLUMN_INDEX,
-    PRIVATBANK_CATEGORY_COLUMN_INDEX,
-    PRIVATBANK_DATA_START_ROW_INDEX,
-    PRIVATBANK_DATE_COLUMN_INDEX,
-    PRIVATBANK_DESCRIPTION_COLUMN_INDEX,
-    PRIVATBANK_END_BALANCE_COLUMN_INDEX,
-    PRIVATBANK_OPERATION_AMOUNT_COLUMN_INDEX,
-    PRIVATBANK_OPERATION_CURRENCY_COLUMN_INDEX
-} from '../constant/privatbank.constant';
 
 import type { PrivatbankRowInterface } from '../interface/privatbank-row.interface';
+
+const DATA_START_ROW_INDEX = 2;
 
 const createParseError = (message: string): SyncInvalidResponseError =>
     new SyncInvalidResponseError({ provider: SyncProviderEnum.PRIVATBANK, message });
@@ -54,19 +43,30 @@ const parsePrivatbankDates = (
     );
 };
 
-const mapRawRowToPrivatbankRow = (row: unknown[]): Effect.Effect<PrivatbankRowInterface, SyncInvalidResponseError> =>
-    Effect.map(parsePrivatbankDates(String(row[PRIVATBANK_DATE_COLUMN_INDEX])), dates => ({
-        rawDate: String(row[PRIVATBANK_DATE_COLUMN_INDEX]),
+const mapRawRowToPrivatbankRow = ([
+    rawDate,
+    category,
+    card,
+    description,
+    cardAmount,
+    cardCurrency,
+    operationAmount,
+    operationCurrency,
+    endBalance,
+    balanceCurrency
+]: unknown[]): Effect.Effect<PrivatbankRowInterface, SyncInvalidResponseError> =>
+    Effect.map(parsePrivatbankDates(String(rawDate)), dates => ({
+        rawDate: String(rawDate),
         ...dates,
-        category: String(row[PRIVATBANK_CATEGORY_COLUMN_INDEX]),
-        card: String(row[PRIVATBANK_CARD_COLUMN_INDEX]),
-        description: String(row[PRIVATBANK_DESCRIPTION_COLUMN_INDEX]),
-        cardAmount: Number(row[PRIVATBANK_CARD_AMOUNT_COLUMN_INDEX]),
-        cardCurrency: String(row[PRIVATBANK_CARD_CURRENCY_COLUMN_INDEX]),
-        operationAmount: Number(row[PRIVATBANK_OPERATION_AMOUNT_COLUMN_INDEX]),
-        operationCurrency: String(row[PRIVATBANK_OPERATION_CURRENCY_COLUMN_INDEX]),
-        endBalance: Number(row[PRIVATBANK_END_BALANCE_COLUMN_INDEX]),
-        balanceCurrency: String(row[PRIVATBANK_BALANCE_CURRENCY_COLUMN_INDEX])
+        category: String(category),
+        card: String(card),
+        description: String(description),
+        cardAmount: Number(cardAmount),
+        cardCurrency: String(cardCurrency),
+        operationAmount: Number(operationAmount),
+        operationCurrency: String(operationCurrency),
+        endBalance: Number(endBalance),
+        balanceCurrency: String(balanceCurrency)
     }));
 
 export const parsePrivatbankXlsx = Effect.fn('parsePrivatbankXlsx')(function* (buffer: Uint8Array) {
@@ -81,7 +81,7 @@ export const parsePrivatbankXlsx = Effect.fn('parsePrivatbankXlsx')(function* (b
     }
 
     const rawRows: unknown[][] = utils.sheet_to_json(workbook.Sheets[firstSheetName], { header: 1 });
-    const dataRows = rawRows.slice(PRIVATBANK_DATA_START_ROW_INDEX);
+    const dataRows = rawRows.slice(DATA_START_ROW_INDEX);
 
     if (!isNotEmptyArray(dataRows)) {
         return yield* createParseError('Privatbank XLSX file contains no data rows');
