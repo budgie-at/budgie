@@ -11,7 +11,6 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly hasFollowingRows: boolean;
 }
 
 const getPrimaryAccount = (transaction: TransactionWithRelationsEntityInterface) => {
@@ -30,7 +29,7 @@ const getAccountDescription = (account: ReturnType<typeof getPrimaryAccount>): s
     return `... ${account.iban.slice(-4)}`;
 };
 
-export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Props) => {
+export const TransactionInfoAccountRows = ({ transaction }: Props) => {
     const { t } = useLingui();
     const { formatDayAndFullMonthAndYear, formatWeekdayWithTime } = useFormatDate();
     const account = getPrimaryAccount(transaction);
@@ -38,8 +37,6 @@ export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Pr
     const showFromAccount = isTransfer && isDefined(transaction.fromAccount);
     const showToAccount = isTransfer && isDefined(transaction.toAccount);
     const showAccount = !isTransfer && isDefined(account);
-    const dateWithBottomBorder = showFromAccount || showToAccount || showAccount || hasFollowingRows;
-    const fromAccountWithBottomBorder = showToAccount || hasFollowingRows;
 
     return (
         <>
@@ -49,7 +46,6 @@ export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Pr
                 value={formatDayAndFullMonthAndYear(transaction.operatedAt)}
                 description={formatWeekdayWithTime(transaction.operatedAt)}
                 testID={TransactionInfoPageSelector.Row.Date}
-                withBottomBorder={dateWithBottomBorder}
             />
 
             {showFromAccount ? (
@@ -59,7 +55,6 @@ export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Pr
                     value={transaction.fromAccount.title}
                     description={getAccountDescription(transaction.fromAccount)}
                     testID={TransactionInfoPageSelector.Row.FromAccount}
-                    withBottomBorder={fromAccountWithBottomBorder}
                 />
             ) : null}
 
@@ -70,7 +65,6 @@ export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Pr
                     value={transaction.toAccount.title}
                     description={getAccountDescription(transaction.toAccount)}
                     testID={TransactionInfoPageSelector.Row.ToAccount}
-                    withBottomBorder={hasFollowingRows}
                 />
             ) : null}
 
@@ -81,7 +75,6 @@ export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Pr
                     value={account.title}
                     description={getAccountDescription(account)}
                     testID={TransactionInfoPageSelector.Row.Account}
-                    withBottomBorder={hasFollowingRows}
                 />
             ) : null}
         </>

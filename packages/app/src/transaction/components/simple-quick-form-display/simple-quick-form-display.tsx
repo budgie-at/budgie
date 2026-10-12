@@ -8,9 +8,10 @@ import { SimpleQuickFormAmountHeader } from '../simple-quick-form-amount-header/
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
-import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
+import type { RuleDetectionType } from '../../interface/rule-detection.type';
 
-interface Props extends RulePillSlotPropsInterface {
+interface Props {
+    readonly ruleDetection?: RuleDetectionType;
     readonly accountId: number;
     readonly aiContext?: string;
     readonly amount: number;
@@ -54,18 +55,11 @@ export const SimpleQuickFormDisplay = ({
     transactionTitle,
     transactionType,
     variant,
-    ruleDetectionMode,
-    suggestRuleData,
-    updateRuleData,
-    matchingRulesCount,
-    matchingRuleIds,
+    ruleDetection,
     onSelectCategory,
     onSelectTag,
     onSelectComment,
-    onFillPatternAmount,
-    onRuleCreated,
-    onDismiss,
-    onCreatingChange
+    onFillPatternAmount
 }: Props) => (
     <View className="flex-1">
         <View className="flex-1">
@@ -75,19 +69,7 @@ export const SimpleQuickFormDisplay = ({
                 currencySymbol={currencySymbol}
                 variant={variant}
                 bottomContent={amountBottomContent}
-                topContent={
-                    <SimpleQuickFormAmountHeader
-                        amountTopContent={amountTopContent}
-                        ruleDetectionMode={ruleDetectionMode}
-                        suggestRuleData={suggestRuleData}
-                        updateRuleData={updateRuleData}
-                        matchingRulesCount={matchingRulesCount}
-                        matchingRuleIds={matchingRuleIds}
-                        onRuleCreated={onRuleCreated}
-                        onDismiss={onDismiss}
-                        onCreatingChange={onCreatingChange}
-                    />
-                }
+                topContent={<SimpleQuickFormAmountHeader amountTopContent={amountTopContent} ruleDetection={ruleDetection} />}
                 testID={SimpleQuickFormSelector.AmountInput}
             />
         </View>

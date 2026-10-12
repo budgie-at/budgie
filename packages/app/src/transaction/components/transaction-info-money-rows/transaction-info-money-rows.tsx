@@ -14,7 +14,6 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly hasFollowingRows: boolean;
 }
 
 const getFeeDisplay = (transaction: TransactionWithRelationsEntityInterface, formatDigits: (value: number, symbol?: string) => string) => {
@@ -60,7 +59,7 @@ const getTransferExchangeRateLabel = (
     return `1 ${sourceEntry.account.instrument.code} = ${formatRate(1 / transaction.exchangeRate)} ${destinationEntry.account.instrument.code}`;
 };
 
-export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: Props) => {
+export const TransactionInfoMoneyRows = ({ transaction }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -69,7 +68,6 @@ export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: Prop
     const transferDestinationAmount = getTransferDestinationAmount(transaction, formatDigits);
     const transferExchangeRateLabel = getTransferExchangeRateLabel(transaction, formatRate);
     const showTransferConversion = transaction.type === TransactionTypeEnum.TRANSFER && isNotEmptyString(transferExchangeRateLabel);
-    const transferConversionWithBottomBorder = isNotEmptyString(feeDisplay) || hasFollowingRows;
 
     return (
         <>
@@ -80,7 +78,6 @@ export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: Prop
                     value={transferExchangeRateLabel}
                     description={transferDestinationAmount}
                     testID={TransactionInfoPageSelector.Row.ExchangeRate}
-                    withBottomBorder={transferConversionWithBottomBorder}
                 />
             ) : null}
 
@@ -90,7 +87,6 @@ export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: Prop
                     label={t`Fee`}
                     value={feeDisplay}
                     testID={TransactionInfoPageSelector.Row.Fee}
-                    withBottomBorder={hasFollowingRows}
                 />
             ) : null}
         </>
