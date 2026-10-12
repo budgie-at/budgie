@@ -1,6 +1,6 @@
 {
     "name": "@budgie/import-export",
-    "version": "6.100.7",
+    "version": "6.101.0",
     "private": true,
     "description": "CSV import and export of transactions",
     "sideEffects": false,
