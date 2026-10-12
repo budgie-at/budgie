@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.100.9",
+    "version": "6.101.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -19,6 +19,7 @@
         "prebuild": "expo prebuild --clean",
         "prebuild:dev": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo prebuild --clean",
         "start": "expo start --dev-client -c",
+        "test": "vitest run",
         "store:notes": "node --experimental-strip-types scripts/generate-store-release-notes.ts",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
@@ -112,6 +113,7 @@
         "@anthropic-ai/sdk": "^0.129.0",
         "@babel/core": "7.29.7",
         "@babel/plugin-transform-class-static-block": "7.29.7",
+        "@effect/vitest": "4.0.0",
         "@lingui/babel-plugin-lingui-macro": "6.8.0",
         "@lingui/cli": "6.8.0",
         "@lingui/format-po": "6.8.0",
@@ -127,7 +129,8 @@
         "eas-build-cache-provider": "^19.0.0",
         "emojibase-data": "~17.0.0",
         "lucide-static": "1.49.0",
-        "tailwindcss": "^4.3.3"
+        "tailwindcss": "^4.3.3",
+        "vitest": "^5.0.2"
     },
     "expo": {
         "autolinking": {

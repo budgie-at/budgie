@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
+
+
+### Bug Fixes
+
+* **consolidation:** limit FX over-refund exception to PrivatBank ([afd0ca5](https://github.com/budgie-at/budgie/commit/afd0ca5ce2bebe8bfdd703c9649bfbc3731f7c39))
+
+
+### Features
+
+* **consolidation:** consolidate FX refunds that exceed the expense ([00a47c6](https://github.com/budgie-at/budgie/commit/00a47c635c6494c9d6c5d37b9a236c01d822e168))
+
+
+
+
+
 ## [6.100.9](https://github.com/budgie-at/budgie/compare/v6.100.8...v6.100.9) (2026-10-12)
 
 
