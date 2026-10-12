@@ -1,13 +1,10 @@
 import { MessageDescriptor } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
+import { RuleSelectorButton } from '../rule-selector-button/rule-selector-button';
 
 interface Option<T extends string> {
     readonly value: T;
@@ -23,7 +20,7 @@ interface Props<T extends string> {
     readonly testID?: string;
 }
 
-export const RuleConditionBottomSheetSelector = <T extends string>(props: Props<T>) => {
+export const RuleOptionPicker = <T extends string>(props: Props<T>) => {
     const { value, onChange, options, sheetTitle, defaultLabel, testID } = props;
     const { t } = useLingui();
     const [openRuleSelector] = useRuleSelectorModal();
@@ -44,15 +41,5 @@ export const RuleConditionBottomSheetSelector = <T extends string>(props: Props<
         }
     };
 
-    return (
-        <HapticPressable
-            testID={testID}
-            onPress={handleOpen}
-            className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
-        >
-            <Text className="text-primary text-sm" {...testIDProps(testID, TestIDPartEnum.VALUE)}>
-                {displayLabel}
-            </Text>
-        </HapticPressable>
-    );
+    return <RuleSelectorButton testID={testID} value={displayLabel} onPress={handleOpen} />;
 };

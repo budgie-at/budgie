@@ -38,8 +38,7 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
         }))
     };
 
-    const { form, handleSubmit, handleDelete } = useRuleForm({ ruleId: rule.id, defaultValues, onSuccess });
-    const { isSubmitting } = form.formState;
+    const { form, handleSubmit, handleDelete, isSubmitting } = useRuleForm({ ruleId: rule.id, defaultValues, onSuccess });
 
     const handleDeleteConfirm = async () => {
         const confirmed = await confirmAlert({
@@ -51,7 +50,7 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
         });
 
         if (confirmed) {
-            await handleDelete();
+            handleDelete();
         }
     };
 

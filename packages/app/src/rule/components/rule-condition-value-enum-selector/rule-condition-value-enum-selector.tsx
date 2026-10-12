@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
-import { RuleConditionBottomSheetSelector } from '../rule-condition-bottom-sheet-selector/rule-condition-bottom-sheet-selector';
+import { RuleOptionPicker } from '../rule-option-picker/rule-option-picker';
 
 interface EnumOption {
     readonly value: string;
@@ -24,7 +24,7 @@ export const RuleConditionValueEnumSelector = ({ index, options, sheetTitle, def
 
     return (
         <FormItem label={t`Value`}>
-            <RuleConditionBottomSheetSelector
+            <RuleOptionPicker
                 value={value}
                 onChange={onChange}
                 options={options}

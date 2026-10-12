@@ -14,13 +14,6 @@ import { CategorizeInboxUndoLayout } from '../categorize-inbox-undo-layout/categ
 import { CategorizeInboxUndoBarSelector } from './categorize-inbox-undo-bar.selector';
 
 import type { CategorizeInboxLabelInterface } from '../../interface/categorize-inbox-label.interface';
-import type { CategorizeInboxLastWriteInterface } from '../../interface/categorize-inbox-last-write.interface';
-
-interface Props {
-    readonly lastWrite: CategorizeInboxLastWriteInterface;
-    readonly onUndo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
-    readonly onFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
-}
 
 const resolveUndoBarTitle = (
     labels: CategorizeInboxLabelInterface[],
@@ -38,10 +31,14 @@ const resolveUndoBarTitle = (
     return assignedCount(rowCount);
 };
 
-export const CategorizeInboxUndoBar = ({ lastWrite, onUndo, onFollowUp }: Props) => {
+export const CategorizeInboxUndoBar = () => {
     const { t } = useLingui();
-    const { strategy } = useCategorizeInboxContext();
+    const { strategy, lastWrite, undo } = useCategorizeInboxContext();
     const [openRuleForm] = useRuleFormModal();
+
+    if (!isDefined(lastWrite)) {
+        return null;
+    }
 
     const { assignments } = lastWrite;
     const [{ ruleConditionValue }] = assignments;
@@ -49,16 +46,14 @@ export const CategorizeInboxUndoBar = ({ lastWrite, onUndo, onFollowUp }: Props)
     const rowCount = new Set(assignments.flatMap(assignment => assignment.rows.map(row => row.transactionId))).size;
     const labels = groupCount === 1 ? assignments.map(assignment => strategy.labelsById.get(assignment.labelId)).filter(isDefined) : [];
     const firstLabel = labels.at(0);
-    const icon = firstLabel?.icon ?? UserIconNameEnum.CheckCheck;
     const title = resolveUndoBarTitle(
         labels,
         rowCount,
         strategy.assignedCount,
         t({ message: plural(labels.length, { one: '# tag', other: '# tags' }) })
     );
-    const description = t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) });
 
-    const handleUndoPress = (): void => void onUndo(lastWrite);
+    const handleUndoPress = (): void => void undo(lastWrite);
     const handleRulePress = (): void => {
         const ruleActions = strategy.buildRuleActions(labels.map(label => label.id));
         const [firstRow, ...otherRows] = assignments[0].rows;
@@ -78,8 +73,13 @@ export const CategorizeInboxUndoBar = ({ lastWrite, onUndo, onFollowUp }: Props)
     };
 
     return (
-        <CategorizeInboxUndoLayout icon={icon} title={title} description={description} onUndo={handleUndoPress}>
-            {groupCount === 1 ? <CategorizeInboxFollowUpButton lastWrite={lastWrite} onFollowUp={onFollowUp} /> : null}
+        <CategorizeInboxUndoLayout
+            icon={firstLabel?.icon ?? UserIconNameEnum.CheckCheck}
+            title={title}
+            description={t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) })}
+            onUndo={handleUndoPress}
+        >
+            {groupCount === 1 ? <CategorizeInboxFollowUpButton lastWrite={lastWrite} /> : null}
 
             {isDefined(firstLabel) && isNotEmptyString(ruleConditionValue) ? (
                 <HapticPressable

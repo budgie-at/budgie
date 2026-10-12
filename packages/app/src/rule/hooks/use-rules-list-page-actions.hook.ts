@@ -2,54 +2,38 @@ import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budg
 import { RuleService } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useState } from 'react';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { useCreateAction } from '../../@generic/hook/use-create-action.hook';
+import { useEffectAction } from '../../@generic/hook/use-effect-action.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { useRuleFormModal } from '../context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';
 
-import { useFocusKey } from './use-focus-key.hook';
-
 export const useRulesListPageActions = () => {
     const { t } = useLingui();
-    const [rulesRefreshKey, setRulesRefreshKey] = useState(0);
-    const focusKey = useFocusKey();
-    const { rules } = useGetAllRulesQuery(rulesRefreshKey + focusKey);
+    const { rules } = useGetAllRulesQuery();
     const [openRuleForm] = useRuleFormModal();
+    const [runToggle] = useEffectAction(t`Could not update rule`);
 
-    const refreshRules = () => {
-        setRulesRefreshKey(value => value + 1);
+    const handleDeleteRule = (id: number): Promise<void> =>
+        appRuntime.runPromise(
+            Effect.flatMap(RuleService, ruleService => ruleService.archiveById(id)).pipe(
+                Effect.tapCause(cause => Effect.logError(cause)),
+                Effect.tapError(error => Effect.sync(() => void showErrorToast(t`Could not delete rule`, getErrorMessage(error))))
+            )
+        );
+
+    const handleToggleRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>, enabled: boolean) => {
+        runToggle(Effect.flatMap(RuleService, ruleService => ruleService.toggleEnabled(rule.id, enabled)));
     };
 
-    const handleRuleFormResult = (result: Awaited<ReturnType<typeof openRuleForm>>) => {
-        if (isDefined(result)) {
-            refreshRules();
-        }
-    };
+    const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) => void openRuleForm({ ruleId: rule.id });
 
-    const handleDeleteRule = async (id: number) => {
-        await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.archiveById(id)));
-        refreshRules();
-    };
-
-    const handleToggleRule = async (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>, enabled: boolean) => {
-        try {
-            await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.toggleEnabled(rule.id, enabled)));
-            refreshRules();
-        } catch (error: unknown) {
-            Toast.show({ type: 'error', text1: t`Could not update rule`, text2: getErrorMessage(error) });
-        }
-    };
-
-    const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) =>
-        void openRuleForm({ ruleId: rule.id }).then(handleRuleFormResult);
-
-    const handleCreateRule = () => void openRuleForm().then(handleRuleFormResult);
+    const handleCreateRule = () => void openRuleForm();
 
     useCreateAction({
         icon: UserIconNameEnum.Zap,

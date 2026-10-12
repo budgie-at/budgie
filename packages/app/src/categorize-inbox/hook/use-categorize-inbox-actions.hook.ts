@@ -12,10 +12,10 @@ import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
 import { useCategorizeInboxWriteQueue } from './use-categorize-inbox-write-queue.hook';
 
-import type { CategorizeInboxActionsInterface } from '../interface/categorize-inbox-actions.interface';
+import type { CategorizeInboxContextValueInterface } from '../interface/categorize-inbox-context-value.interface';
+import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
 import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-inbox-last-write.interface';
 import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
-import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
 import type { CategorizeInboxAssignmentInterface } from '@budgie/categorization';
 
 const toTransactionIds = (assignments: CategorizeInboxAssignmentInterface[]): number[] =>
@@ -23,13 +23,13 @@ const toTransactionIds = (assignments: CategorizeInboxAssignmentInterface[]): nu
 
 export const useCategorizeInboxActions = (
     strategy: CategorizeInboxStrategyInterface,
-    visibility: CategorizeInboxVisibilityInterface
-): CategorizeInboxActionsInterface => {
+    inbox: CategorizeInboxDataInterface
+): CategorizeInboxContextValueInterface => {
+    const { visibility, items, isLoading, ...inboxSummary } = inbox;
     const { t } = useLingui();
     const [hapticNotification] = useVibration();
     const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
     const enqueueWrite = useCategorizeInboxWriteQueue();
-
     const moveToCashActions = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
 
     const assign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
@@ -78,7 +78,6 @@ export const useCategorizeInboxActions = (
 
     const applyFollowUp = async (write: CategorizeInboxLastWriteInterface): Promise<void> => {
         const tagIds = await strategy.pickFollowUpTagIds?.(write.assignments[0]);
-
         if (isNotEmptyArray(tagIds)) {
             enqueueWrite(
                 Effect.gen(function* () {
@@ -99,20 +98,19 @@ export const useCategorizeInboxActions = (
     };
 
     return {
+        strategy,
+        ...visibility,
+        ...inboxSummary,
         lastWrite,
+        movedToCashTransactionIds: moveToCashActions.movedToCashTransactionIds,
+        assign,
+        assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
+        pickClusterLabels: cluster => pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
+        pickRowLabels: row =>
+            pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, []),
+        moveToCash: moveToCashActions.moveToCash,
         undo,
         applyFollowUp,
-        movedToCashTransactionIds: moveToCashActions.movedToCashTransactionIds,
-        undoMoveToCash: moveToCashActions.undoMoveToCash,
-        contextValue: {
-            strategy,
-            ...visibility,
-            assign,
-            assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
-            pickClusterLabels: cluster => pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
-            pickRowLabels: row =>
-                pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, []),
-            moveToCash: moveToCashActions.moveToCash
-        }
+        undoMoveToCash: moveToCashActions.undoMoveToCash
     };
 };

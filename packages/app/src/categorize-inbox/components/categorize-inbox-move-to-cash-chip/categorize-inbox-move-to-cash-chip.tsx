@@ -10,7 +10,6 @@ import { SuggestionPillContent } from '../../../transaction/components/suggestio
 import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';
 import { CATEGORIZE_INBOX_RAIL_HIT_SLOP } from '../../constant/categorize-inbox-rail-hit-slop.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { useMoveToCashTransactionIdsQuery } from '../../query/use-move-to-cash-transaction-ids.query';
 
 import { CategorizeInboxMoveToCashChipSelector } from './categorize-inbox-move-to-cash-chip.selector';
 
@@ -22,12 +21,11 @@ interface Props {
 
 export const CategorizeInboxMoveToCashChip = ({ cluster }: Props) => {
     const { t } = useLingui();
-    const { includedRows, moveToCash } = useCategorizeInboxContext();
-    const eligibleTransactionIds = useMoveToCashTransactionIdsQuery(cluster.rows);
+    const { includedRows, moveToCash, cashWithdrawalTransactionIds } = useCategorizeInboxContext();
 
     const transactionIds = includedRows(cluster)
         .map(row => row.transactionId)
-        .filter(transactionId => eligibleTransactionIds.includes(transactionId));
+        .filter(transactionId => cashWithdrawalTransactionIds.has(transactionId));
     const accessibilityLabel = t({
         message: plural(transactionIds.length, { one: 'Move # withdrawal to cash', other: 'Move # withdrawals to cash' })
     });

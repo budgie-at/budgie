@@ -14,35 +14,13 @@ import { CategorizeInboxUndoLayout } from '../categorize-inbox-undo-layout/categ
 
 import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
 
-import type { CategorizeInboxLastWriteInterface } from '../../interface/categorize-inbox-last-write.interface';
-import type { CategorizeInboxAssignmentInterface } from '@budgie/categorization';
-
-interface Props {
-    readonly remainingCount: number;
-    readonly categorizedCount: number;
-    readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];
-    readonly lastWrite: CategorizeInboxLastWriteInterface | null;
-    readonly onUndo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
-    readonly onFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
-    readonly movedToCashTransactionIds: number[];
-    readonly onUndoMoveToCash: (transactionIds: number[]) => void;
-}
-
-export const CategorizeInboxPanel = ({
-    remainingCount,
-    categorizedCount,
-    acceptableAssignments,
-    lastWrite,
-    onUndo,
-    onFollowUp,
-    movedToCashTransactionIds,
-    onUndoMoveToCash
-}: Props) => {
+export const CategorizeInboxPanel = () => {
     const { t } = useLingui();
-    const { assign } = useCategorizeInboxContext();
+    const { assign, remainingCount, categorizedCount, acceptableAssignments, lastWrite, movedToCashTransactionIds, undoMoveToCash } =
+        useCategorizeInboxContext();
 
     const handleAcceptAllPress = (): void => void assign(acceptableAssignments);
-    const handleUndoMoveToCashPress = (): void => void onUndoMoveToCash(movedToCashTransactionIds);
+    const handleUndoMoveToCashPress = (): void => void undoMoveToCash(movedToCashTransactionIds);
 
     const totalCount = remainingCount + categorizedCount;
     const progress = isPositiveNumber(totalCount) ? (categorizedCount / totalCount) * 100 : 0;
@@ -67,9 +45,7 @@ export const CategorizeInboxPanel = ({
             onUndo={handleUndoMoveToCashPress}
         />
     ) : null;
-    const labelUndo = isDefined(lastWrite) ? (
-        <CategorizeInboxUndoBar lastWrite={lastWrite} onUndo={onUndo} onFollowUp={onFollowUp} />
-    ) : null;
+    const labelUndo = isDefined(lastWrite) ? <CategorizeInboxUndoBar /> : null;
     const acceptAll = isNotEmptyArray(acceptableAssignments) ? (
         <Button
             variant="cta"

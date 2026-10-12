@@ -1,22 +1,15 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { CategoryService } from '@budgie/ledger';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import * as Effect from 'effect/Effect';
 import { useState } from 'react';
-import Toast from 'react-native-toast-message';
-
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
 import { CategoryDefaultIconButton } from '../../../category/components/category-default-icon-button/category-default-icon-button';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
 import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
-import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
+import { useDeleteCategory } from '../../../category/hooks/use-delete-category.hook';
 import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
 
 import { CategoryPageSelector } from './category-page.selector';
@@ -25,10 +18,10 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Categories() {
     const { t } = useLingui();
-    const [openCategorySelector] = useCategorySelectorModal();
     const [openCategoryForm] = useCategoryFormModal();
 
     const [search, setSearch] = useState('');
+    const handleDeleteCategory = useDeleteCategory();
     const { categories } = useSearchCategoriesQuery(search, false);
 
     useCreateAction({
@@ -37,53 +30,6 @@ export default function Categories() {
         variant: 'primary',
         onPress: () => void openCategoryForm()
     });
-
-    const handleDeleteCategory = async (id: number) => {
-        const count = await appRuntime.runPromise(
-            Effect.flatMap(CategoryService, categoryService => categoryService.countTransactionEntries(id))
-        );
-        if (isPositiveNumber(count)) {
-            const description = t({
-                message: plural(count, {
-                    one: 'This category has # transaction. Select another category to reassign it to.',
-                    other: 'This category has # transactions. Select another category to reassign them to.'
-                })
-            });
-            const targetCategoryId = await openCategorySelector({
-                excludeCategoryIds: [id],
-                description,
-                variant: 'primary'
-            });
-
-            if (isDefined(targetCategoryId)) {
-                try {
-                    await appRuntime.runPromise(
-                        Effect.flatMap(CategoryService, categoryService => categoryService.mergeInto(id, targetCategoryId))
-                    );
-                } catch {
-                    Toast.show({
-                        type: 'error',
-                        text1: t`Could not reassign category`,
-                        text2: t`Please try again later`
-                    });
-                }
-            }
-
-            return;
-        }
-
-        try {
-            await appRuntime.runPromise(Effect.flatMap(CategoryService, categoryService => categoryService.deleteById(id)));
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not delete category`,
-                text2: t`Please try again later`
-            });
-
-            throw error;
-        }
-    };
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
         void openCategoryForm({ category });
