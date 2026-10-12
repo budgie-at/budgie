@@ -208,36 +208,30 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 });
             });
 
-            const attachInTransaction = Effect.fn('TransactionDebtSettlementService.attachInTransaction')(function* (
-                params: AttachDebtSettlementParamsInterface
-            ) {
-                const transaction = yield* getTransactionOrFail(params.transactionId);
-                const debtAccount = yield* getDebtAccountOrFail(params.debtAccountId);
-
-                yield* assertTransactionSupportsDebtSettlement(transaction);
-                yield* assertNoSettlement(transaction);
-                const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
-                yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
-
-                const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
-
-                yield* debtEventRepository.create({
-                    debtAccountId: debtAccount.id,
-                    transactionId: transaction.id,
-                    source: DebtEventSourceEnum.INCOME_ATTACHMENT,
-                    ...fields
-                });
-                yield* transactionRepository.touchUpdatedAt(transaction.id);
-                yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
-                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
-
-                return debtAccount;
-            });
-
             return {
                 attach: Effect.fn('TransactionDebtSettlementService.attach')(
                     function* (params: AttachDebtSettlementParamsInterface) {
-                        return yield* attachInTransaction(params);
+                        const transaction = yield* getTransactionOrFail(params.transactionId);
+                        const debtAccount = yield* getDebtAccountOrFail(params.debtAccountId);
+
+                        yield* assertTransactionSupportsDebtSettlement(transaction);
+                        yield* assertNoSettlement(transaction);
+                        const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
+                        yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
+
+                        const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
+
+                        yield* debtEventRepository.create({
+                            debtAccountId: debtAccount.id,
+                            transactionId: transaction.id,
+                            source: DebtEventSourceEnum.INCOME_ATTACHMENT,
+                            ...fields
+                        });
+                        yield* transactionRepository.touchUpdatedAt(transaction.id);
+                        yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
+                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
+
+                        return debtAccount;
                     },
                     effect => Db.transaction(effect)
                 ),

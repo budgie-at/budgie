@@ -1,4 +1,3 @@
-import { TransactionEntryKindEnum, convertToMicroUnits } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -8,6 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
+import { isSameLedgerEntry } from '../util/is-same-ledger-entry.util';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
 import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
 
@@ -45,10 +45,7 @@ export class RefreshedImportedEntriesService extends Context.Service<RefreshedIm
             ): TransactionEntryCreateEntityInterface => {
                 const operationEntry = transactionResolveImportedOperationMetadata(existingEntry, matchingInput);
                 const hasOperationMetadata =
-                    existingEntry.accountId === matchingInput.accountId &&
-                    existingEntry.amount === convertToMicroUnits(matchingInput.amount) &&
-                    existingEntry.type === matchingInput.type &&
-                    existingEntry.kind === (matchingInput.kind ?? TransactionEntryKindEnum.PRIMARY) &&
+                    isSameLedgerEntry(existingEntry, matchingInput) &&
                     isDefined(operationEntry.operationInstrumentId) &&
                     isDefined(operationEntry.operationAmount);
 

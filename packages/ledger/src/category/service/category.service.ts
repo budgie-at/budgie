@@ -10,9 +10,7 @@ export class CategoryService extends Context.Service<CategoryService>()('@budgie
         const categoryRepository = yield* CategoryRepository;
 
         return {
-            updateIcon: Effect.fn('CategoryService.updateIcon')(function* (categoryId: number, icon: UserIconType) {
-                yield* categoryRepository.updateById(categoryId, { icon });
-            }),
+            updateIcon: (categoryId: number, icon: UserIconType) => categoryRepository.updateById(categoryId, { icon }),
             bulkCreate: Effect.fn('CategoryService.bulkCreate')(function* (
                 inputs: CategoryCreateEntityInterface[],
                 batchSize: number = 100
@@ -30,16 +28,15 @@ export class CategoryService extends Context.Service<CategoryService>()('@budgie
                     return acc;
                 }, {});
             }),
-            countTransactionEntries: Effect.fn('CategoryService.countTransactionEntries')(function* (categoryId: number) {
-                return yield* categoryRepository.countTransactionEntries(categoryId);
-            }),
-            mergeInto: Effect.fn('CategoryService.mergeInto')(function* (fromCategoryId: number, toCategoryId: number) {
-                yield* categoryRepository.reassignTransactionEntries(fromCategoryId, toCategoryId);
-                yield* categoryRepository.deleteById(fromCategoryId);
-            }),
-            deleteById: Effect.fn('CategoryService.deleteById')(function* (categoryId: number) {
-                yield* categoryRepository.deleteById(categoryId);
-            })
+            countTransactionEntries: (categoryId: number) => categoryRepository.countTransactionEntries(categoryId),
+            mergeInto: Effect.fn('CategoryService.mergeInto')(
+                function* (fromCategoryId: number, toCategoryId: number) {
+                    yield* categoryRepository.reassignTransactionEntries(fromCategoryId, toCategoryId);
+                    yield* categoryRepository.deleteById(fromCategoryId);
+                },
+                effect => Db.transaction(effect)
+            ),
+            deleteById: (categoryId: number) => categoryRepository.deleteById(categoryId)
         };
     })
 }) {

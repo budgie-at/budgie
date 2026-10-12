@@ -74,7 +74,10 @@ const importPrivatbankTransfer = Effect.fnUntraced(function* (privatbankAccountI
         ExternalSourceEnum.PRIVATBANK
     );
 
-    return yield* transactionImportService.bulkUpsertImported([privatbankInput], new Map());
+    return yield* Effect.map(
+        transactionImportService.bulkUpsertPreparedImported(transactionImportService.prepareImportedInputs([privatbankInput], new Map())),
+        ({ transactions }) => transactions
+    );
 });
 
 const expectTransferPairParents = (privatbankTransactionIds: number[]) =>

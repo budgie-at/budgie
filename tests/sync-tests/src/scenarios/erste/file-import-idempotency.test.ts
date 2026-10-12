@@ -211,9 +211,14 @@ describe('erste/file-import-idempotency', () => {
             const transactionImportService = yield* TransactionImportService;
             const account = yield* seed.account({ externalId: ERSTE_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
             const bankTransaction = buildMappedErsteTransaction();
-            const [legacyTransaction] = yield* transactionImportService.bulkUpsertImported(
-                [buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
-                new Map()
+            const [legacyTransaction] = yield* Effect.map(
+                transactionImportService.bulkUpsertPreparedImported(
+                    transactionImportService.prepareImportedInputs(
+                        [buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
+                        new Map()
+                    )
+                ),
+                ({ transactions }) => transactions
             );
             if (!isDefined(legacyTransaction)) {
                 return yield* Effect.die(new Error('Expected legacy Erste transaction to be inserted'));

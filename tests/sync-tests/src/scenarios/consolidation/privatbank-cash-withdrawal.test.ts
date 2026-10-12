@@ -31,7 +31,10 @@ const importPrivatbankCashWithdrawal = Effect.fnUntraced(function* (privatbankAc
     });
     const mccCategoryLookup = categoryMap.get(PRIVATBANK_CASH_WITHDRAWAL_CATEGORY) ?? null;
     const input = mapBankTransactionToCreateInput(transaction, privatbankAccountId, mccCategoryLookup, ExternalSourceEnum.PRIVATBANK);
-    const [imported] = yield* transactionImportService.bulkUpsertImported([input], new Map());
+    const [imported] = yield* Effect.map(
+        transactionImportService.bulkUpsertPreparedImported(transactionImportService.prepareImportedInputs([input], new Map())),
+        ({ transactions }) => transactions
+    );
 
     return imported.id;
 });
