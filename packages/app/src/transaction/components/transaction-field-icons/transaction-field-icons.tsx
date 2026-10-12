@@ -79,26 +79,26 @@ export const TransactionFieldIcons = (props: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
     const { tags } = useGetTagByIdsQuery(tagIds);
 
-    const handleCategoryPress = async () => {
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: categoryId, variant });
+    const handleCategoryPress = () => {
+        openCategorySelector({ initialCategoryId: categoryId, variant }, selectedCategoryId => {
+            if (!isDefined(selectedCategoryId)) {
+                return;
+            }
 
-        if (!isDefined(selectedCategoryId)) {
-            return;
-        }
+            const updatedEntries = setPrimaryCategory(entries, selectedCategoryId);
 
-        const updatedEntries = setPrimaryCategory(entries, selectedCategoryId);
-
-        if (isDefined(updatedEntries)) {
-            setValue('entries', updatedEntries, { shouldValidate: false });
-        }
+            if (isDefined(updatedEntries)) {
+                setValue('entries', updatedEntries, { shouldValidate: false });
+            }
+        });
     };
 
-    const handleTagsPress = async () => {
-        const selectedTagIds = await openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true });
-
-        if (isDefined(selectedTagIds)) {
-            setValue('tagIds', selectedTagIds);
-        }
+    const handleTagsPress = () => {
+        openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true }, selectedTagIds => {
+            if (isDefined(selectedTagIds)) {
+                setValue('tagIds', selectedTagIds);
+            }
+        });
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;

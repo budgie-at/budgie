@@ -43,15 +43,13 @@ export const OnboardingTrack = () => {
         setManualToggles(currentToggles => ({ ...currentToggles, [type]: !isTypeSelected(type) }));
     };
 
-    const handleChangeCurrency = async () => {
-        const result = await openCurrencySelector({ selectedInstrumentId: defaultInstrument.id });
-
-        if (isDefined(result)) {
-            await appRuntime.runPromise(updateSettingsMutation({ defaultInstrumentId: result }));
-        }
+    const handleChangeCurrencyPress = () => {
+        openCurrencySelector({ selectedInstrumentId: defaultInstrument.id }, result => {
+            if (isDefined(result)) {
+                appRuntime.runFork(logAndContinue(updateSettingsMutation({ defaultInstrumentId: result })));
+            }
+        });
     };
-
-    const handleChangeCurrencyPress = () => void handleChangeCurrency();
     const defaultInstrumentCode = defaultInstrument.code;
     const isPrimaryDisabled = trackOptions.every(option => !isTypeSelected(option.type)) && isEmptyArray(accounts);
 

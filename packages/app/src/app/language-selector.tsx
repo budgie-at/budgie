@@ -7,6 +7,7 @@ import { CountryFlag } from '../@generic/component/country-flag/country-flag';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal, useLanguageSelectorModalParams } from '../i18n/context/language-selector-modal.context';
 import { LanguageInterface } from '../i18n/interface/language.interface';
@@ -27,7 +28,8 @@ const filterLanguages = (
 
 export default function LanguageSelectorModal() {
     const { t } = useLingui();
-    const [, resolveLanguageSelector] = useLanguageSelectorModal();
+    const [, resolveLanguageSelector, dismissLanguageSelector] = useLanguageSelectorModal();
+    useModalDismiss(dismissLanguageSelector);
     const currentParams = useLanguageSelectorModalParams();
     const [search, setSearch] = useState('');
 

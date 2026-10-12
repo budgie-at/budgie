@@ -6,9 +6,9 @@ import { TransactionFeeModalContent } from '../transaction/components/transactio
 import { useTransactionFeeModal, useTransactionFeeModalParams } from '../transaction/context/transaction-fee-modal.context';
 
 export default function TransactionFeeModal() {
-    const [, resolveTransactionFee] = useTransactionFeeModal();
+    const [, resolveTransactionFee, dismissTransactionFee] = useTransactionFeeModal();
     const currentParams = useTransactionFeeModalParams();
-    const screenOptions = useModalRouteState(currentParams, resolveTransactionFee, null);
+    const screenOptions = useModalRouteState(currentParams, dismissTransactionFee);
 
     if (!currentParams) {
         return null;

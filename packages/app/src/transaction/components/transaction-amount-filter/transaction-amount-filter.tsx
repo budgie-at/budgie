@@ -20,12 +20,12 @@ export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const formatDigits = useFormatDigits(decimalPlaces);
     const [openTransactionAmountFilter] = useTransactionAmountFilterModal();
 
-    const handleOpen = async () => {
-        const result = await openTransactionAmountFilter({ value });
-
-        if (isDefined(result)) {
-            onChange(result.value);
-        }
+    const handleOpen = () => {
+        openTransactionAmountFilter({ value }, result => {
+            if (isDefined(result)) {
+                onChange(result.value);
+            }
+        });
     };
 
     const fromAmount = value?.from ?? null;

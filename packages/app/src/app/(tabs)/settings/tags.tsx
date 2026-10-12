@@ -31,7 +31,7 @@ export default function Tags() {
     });
 
     const handleOpenTag = (tag: TagEntityInterface) => {
-        void openTagForm({ tag });
+        openTagForm({ tag });
     };
 
     const renderCard = (tag: TagEntityInterface) => <TagCard onOpen={handleOpenTag} tag={tag} />;

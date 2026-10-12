@@ -6,7 +6,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
-import { useTagsSelectorModal } from '../context/tags-selector-modal.context';
+import { type TagsSelectorResult, useTagsSelectorModal } from '../context/tags-selector-modal.context';
 import { TagService } from '../service/tag.service';
 
 export const useDeleteTag = () => {
@@ -30,7 +30,11 @@ export const useDeleteTag = () => {
                 other: 'This tag has # transactions. Select another tag to reassign them to.'
             })
         });
-        const targetTagIds = yield* Effect.promise(() => openTagsSelector({ excludeTagIds: [id], description, singleSelect: true }));
+        const targetTagIds = yield* Effect.callback<TagsSelectorResult>(resume => {
+            openTagsSelector({ excludeTagIds: [id], description, singleSelect: true }, selectedTagIds => {
+                resume(Effect.succeed(selectedTagIds));
+            });
+        });
         const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
 
         if (isDefined(targetTagId)) {

@@ -32,7 +32,7 @@ export default function Categories() {
     });
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
-        void openCategoryForm({ category });
+        openCategoryForm({ category });
     };
 
     const renderCard = (category: CategoryEntityInterface) => <CategoryCard onOpen={handleOpenCategory} category={category} />;

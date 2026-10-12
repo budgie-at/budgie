@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
@@ -22,7 +23,8 @@ const TRANSACTION_TYPE_ROWS = [
 
 export default function TransactionTypeFilterModal() {
     const { t } = useLingui();
-    const [, resolveTransactionTypeFilter] = useTransactionTypeFilterModal();
+    const [, resolveTransactionTypeFilter, dismissTransactionTypeFilter] = useTransactionTypeFilterModal();
+    useModalDismiss(dismissTransactionTypeFilter);
     const currentParams = useTransactionTypeFilterModalParams();
 
     const [localValue, setLocalValue, localValueRef] = useStateRef<TransactionTypeEnum[] | null>(() => currentParams?.value ?? null);

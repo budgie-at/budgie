@@ -68,26 +68,28 @@ export const useQuickFormFee = ({
         }
     };
 
-    const openFeeModal = async () => {
+    const handleFeePress = () => {
         const currentEntries = getValues('entries');
         const currentFeeEntries = getTransactionFeeEntries(currentEntries);
         const selectedAccountId = getValues(accountFieldName);
         const accountId = isDefined(selectedAccountId) ? selectedAccountId : 0;
         const currentFeeEntry = currentFeeEntries.at(0);
         const entry = isDefined(currentFeeEntry) ? currentFeeEntry : null;
-        const result = await openTransactionFee({
-            accountId,
-            currencySymbol,
-            entry,
-            variant
-        });
 
-        if (isDefined(result)) {
-            applyFeeResult(result, currentEntries, currentFeeEntries, accountId);
-        }
+        openTransactionFee(
+            {
+                accountId,
+                currencySymbol,
+                entry,
+                variant
+            },
+            result => {
+                if (isDefined(result)) {
+                    applyFeeResult(result, currentEntries, currentFeeEntries, accountId);
+                }
+            }
+        );
     };
-
-    const handleFeePress = () => void openFeeModal();
 
     return { feeAmount, handleFeePress };
 };

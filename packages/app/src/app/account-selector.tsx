@@ -16,9 +16,9 @@ import { AccountSelectorModalSelector } from './account-selector-modal.selector'
 
 export default function AccountSelectorModal() {
     const { t } = useLingui();
-    const [, resolveAccountSelector] = useAccountSelectorModal();
+    const [, resolveAccountSelector, dismissAccountSelector] = useAccountSelectorModal();
     const currentParams = useAccountSelectorModalParams();
-    const screenOptions = useModalRouteState(currentParams, resolveAccountSelector, null);
+    const screenOptions = useModalRouteState(currentParams, dismissAccountSelector);
 
     const [search, setSearch] = useState('');
 

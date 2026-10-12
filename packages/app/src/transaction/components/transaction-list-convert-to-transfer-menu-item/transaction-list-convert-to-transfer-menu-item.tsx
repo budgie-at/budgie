@@ -38,7 +38,7 @@ export const TransactionListConvertToTransferMenuItem = () => {
                 sourceInstrumentId: sourceEntry.account.instrumentId,
                 sourceCode: sourceEntry.account.instrument.code,
                 skipPostConvertNavigation: true
-            }).catch(emptyFn);
+            });
         });
     };
 

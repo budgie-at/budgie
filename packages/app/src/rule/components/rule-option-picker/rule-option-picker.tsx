@@ -28,17 +28,20 @@ export const RuleOptionPicker = <T extends string>(props: Props<T>) => {
     const translatedOptions = options.map(option => ({ value: option.value, label: t(option.label) }));
     const displayLabel = translatedOptions.find(option => option.value === value)?.label ?? defaultLabel;
 
-    const handleOpen = async () => {
-        const result = await openRuleSelector({
-            title: sheetTitle,
-            options: translatedOptions,
-            selectedValue: value
-        });
-
-        const matchedOption = translatedOptions.find(option => option.value === result);
-        if (isDefined(matchedOption)) {
-            onChange(matchedOption.value);
-        }
+    const handleOpen = () => {
+        openRuleSelector(
+            {
+                title: sheetTitle,
+                options: translatedOptions,
+                selectedValue: value
+            },
+            result => {
+                const matchedOption = translatedOptions.find(option => option.value === result);
+                if (isDefined(matchedOption)) {
+                    onChange(matchedOption.value);
+                }
+            }
+        );
     };
 
     return <RuleSelectorButton testID={testID} value={displayLabel} onPress={handleOpen} />;

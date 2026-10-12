@@ -77,30 +77,33 @@ export const TransactionListAttachDebtMenuItem = () => {
           }
         : null;
 
-    const attachDebtToTransaction = async () => {
-        try {
-            const debtAccountId = await openAccountSelector({
+    const attachDebtToTransaction = () => {
+        openAccountSelector(
+            {
                 includeAccountTypes: [AccountTypeEnum.DEBT],
                 excludeAccountId: categoryEntry.accountId,
                 emptyStateDescription: t`Create a debt account first.`,
                 showDebtTotal: true,
                 ...(isDefined(borrowedDebtCreateAction) && { createAction: borrowedDebtCreateAction })
-            });
-
-            if (isDefined(debtAccountId)) {
-                await appRuntime.runPromise(
-                    Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
-                        transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId })
-                    )
-                );
+            },
+            debtAccountId => {
+                if (isDefined(debtAccountId)) {
+                    appRuntime
+                        .runPromise(
+                            Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
+                                transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId })
+                            )
+                        )
+                        .catch(() => {
+                            Toast.show({ type: 'error', text1: debtAttachmentErrorMessage });
+                        });
+                }
             }
-        } catch {
-            Toast.show({ type: 'error', text1: debtAttachmentErrorMessage });
-        }
+        );
     };
 
     const handleAttach = () => {
-        closeMenu(() => void attachDebtToTransaction());
+        closeMenu(attachDebtToTransaction);
     };
 
     return (

@@ -12,6 +12,7 @@ import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { HorizontalCell } from '../@generic/component/horizontal-cell/horizontal-cell';
 import { useEffectAction } from '../@generic/hook/use-effect-action.hook';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
 import { useResyncWindowPickerModal, useResyncWindowPickerModalParams } from '../sync/context/resync-window-picker-modal.context';
@@ -29,7 +30,8 @@ const WINDOW_TEXT: Record<string, { readonly label: MessageDescriptor; readonly 
 
 export default function ResyncWindowPickerModal() {
     const { t } = useLingui();
-    const [, resolveResyncWindowPicker] = useResyncWindowPickerModal();
+    const [, resolveResyncWindowPicker, dismissResyncWindowPicker] = useResyncWindowPickerModal();
+    useModalDismiss(dismissResyncWindowPicker);
     const [run] = useEffectAction(t`Could not reset bank sync`);
 
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;

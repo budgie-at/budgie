@@ -90,22 +90,22 @@ export const SplitEntriesModalContent = (props: Props) => {
         setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? withEntryAmount(entry, amount) : entry)));
     };
 
-    const handleCategoryPress = async (index: number) => {
+    const handleCategoryPress = (index: number) => {
         const currentCategoryId = entries[index]?.categoryId ?? null;
         const excludeCategoryIds = entries
             .filter((_, entryIndex) => entryIndex !== index)
             .map(entry => entry.categoryId)
             .filter(isPositiveNumber);
 
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant });
-
-        if (isDefined(selectedCategoryId)) {
-            setEntries(previous =>
-                previous.map((entry, entryIndex) =>
-                    entryIndex === index ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
-                )
-            );
-        }
+        openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant }, selectedCategoryId => {
+            if (isDefined(selectedCategoryId)) {
+                setEntries(previous =>
+                    previous.map((entry, entryIndex) =>
+                        entryIndex === index ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
+                    )
+                );
+            }
+        });
     };
 
     const handleAddEntry = () => {
@@ -148,7 +148,9 @@ export const SplitEntriesModalContent = (props: Props) => {
     };
 
     const renderItem = ({ item, index }: { item: EntryWithLocalIdInterface; index: number }) => {
-        const handleCategory = () => void handleCategoryPress(index);
+        const handleCategory = () => {
+            handleCategoryPress(index);
+        };
         const handleDelete = () => void handleRemoveEntry(index);
         const handleAmount = (amount: number) => void handleAmountChange(index, amount);
 

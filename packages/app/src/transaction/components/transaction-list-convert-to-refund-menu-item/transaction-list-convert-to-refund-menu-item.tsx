@@ -23,7 +23,7 @@ export const TransactionListConvertToRefundMenuItem = () => {
 
     const handleConvert = () => {
         closeMenu(() => {
-            openConvertToRefund({ refundIncomeTransactionId: transaction.id }).catch(emptyFn);
+            openConvertToRefund({ refundIncomeTransactionId: transaction.id });
         });
     };
 

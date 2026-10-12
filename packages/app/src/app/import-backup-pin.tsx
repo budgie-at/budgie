@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { GoBackButton } from '../@generic/component/go-back-button/go-back-button';
 import { LoadingOverlay } from '../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../@generic/component/page/full-page';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { PinForm } from '../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../auth/constant/pin-length.constant';
@@ -16,7 +17,8 @@ import { DatabaseImportService } from '../import/service/database-import.service
 
 export default function ImportBackupPinModal() {
     const { t } = useLingui();
-    const [, resolveImportBackupPin] = useImportBackupPinModal();
+    const [, resolveImportBackupPin, dismissImportBackupPin] = useImportBackupPinModal();
+    useModalDismiss(dismissImportBackupPin);
     const sourceUri = useImportBackupPinModalParams();
 
     const [input, setInput] = useState('');

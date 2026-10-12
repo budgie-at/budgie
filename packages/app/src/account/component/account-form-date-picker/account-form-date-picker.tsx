@@ -21,11 +21,12 @@ export const AccountFormDatePicker = ({ date, onChange, testID, variant }: Props
     const [openDatePicker] = useDatePickerModal();
     const { t } = useLingui();
 
-    const handleOpen = async () => {
-        const result = await openDatePicker({ initialDate: date ?? new Date() });
-        if (isDefined(result)) {
-            onChange(result);
-        }
+    const handleOpen = () => {
+        openDatePicker({ initialDate: date ?? new Date() }, selectedDate => {
+            if (isDefined(selectedDate)) {
+                onChange(selectedDate);
+            }
+        });
     };
 
     const description = isDefined(date) ? t`Expected return date` : t`When should it be returned?`;
