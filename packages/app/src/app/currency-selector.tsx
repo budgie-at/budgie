@@ -12,16 +12,12 @@ export default function CurrencySelectorModal() {
     const selectedInstrumentId = currentParams?.selectedInstrumentId;
     const contentKey = `${instrumentType}:${selectedInstrumentId ?? 0}`;
 
-    const handleSelect = (instrumentId: number) => {
-        resolveCurrencySelector(instrumentId);
-    };
-
     return (
         <CurrencySelectorModalContent
             key={contentKey}
             instrumentType={instrumentType}
             selectedInstrumentId={selectedInstrumentId}
-            onSelect={handleSelect}
+            onSelect={resolveCurrencySelector}
         />
     );
 }

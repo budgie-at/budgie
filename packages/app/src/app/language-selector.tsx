@@ -34,15 +34,11 @@ export default function LanguageSelectorModal() {
     const selectedLanguage = currentParams?.selectedLanguage;
     const data = filterLanguages(LANGUAGES, search, t);
 
-    const handleSelect = (language: LanguageEnum) => {
-        resolveLanguageSelector(language);
-    };
-
     const renderItem = ({ item }: { item: LanguageInterface }) => (
         <SelectorCard<LanguageEnum>
             identifier={item.code}
             isSelected={item.code === selectedLanguage}
-            onSelect={handleSelect}
+            onSelect={resolveLanguageSelector}
             testID={LanguageSelectorModalSelector.Option(item.code)}
             iconSlot={
                 <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
