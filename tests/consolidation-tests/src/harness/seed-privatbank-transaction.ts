@@ -1,5 +1,4 @@
-import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { convertToMicroUnits, ExternalSourceEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { testSeedService } from './test-context';
