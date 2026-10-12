@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import { differenceInCalendarDays } from 'date-fns';
 import { Text, View } from 'react-native';
 
-import { useToday } from '../../../@generic/hook/use-today.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { useDebtDeadlineDate } from '../../hook/use-debt-deadline-date.hook';
 
 interface Props {
     readonly deadline: Date;
@@ -14,8 +14,8 @@ interface Props {
 export const DebtAccountCardDeadline = ({ deadline }: Props) => {
     const { t } = useLingui();
     const { formatDayAndMonthAndYear } = useFormatDate();
-    const today = useToday();
-    const days = differenceInCalendarDays(deadline, today);
+    const now = useDebtDeadlineDate();
+    const days = differenceInCalendarDays(deadline, now);
     const overdueDays = Math.abs(days);
     const isOverdue = days < 0;
     const isSoon = !isOverdue && days <= 30;
