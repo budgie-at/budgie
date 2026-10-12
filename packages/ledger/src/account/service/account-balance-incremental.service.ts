@@ -7,7 +7,7 @@ import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared
 
 import { DepositNegativeBalanceError } from '../error/deposit-negative-balance.error';
 
-import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, AccountEntityInterface } from '@budgie/contracts';
+import type { AccountBalanceCreateEntityInterface, AccountEntityInterface } from '@budgie/contracts';
 
 export class AccountBalanceIncrementalService extends Context.Service<AccountBalanceIncrementalService>()(
     '@budgie/ledger/AccountBalanceIncrementalService',
@@ -15,13 +15,6 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const accountBalanceRepository = yield* AccountBalanceRepository;
-
-            const buildBalancesMap = (balances: AccountBalanceEntityInterface[]) =>
-                balances.reduce((map, { accountId, amount }) => {
-                    map.set(accountId, amount);
-
-                    return map;
-                }, new Map<number, number>());
 
             const buildBalanceInput = (
                 account: AccountEntityInterface,
@@ -71,13 +64,9 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                 }
 
                 const balances = yield* accountBalanceRepository.getByAccountIds(depositAccountIds);
-                const balancesMap = buildBalancesMap(balances);
+                const balancesMap = new Map(balances.map(({ accountId, amount }) => [accountId, amount]));
 
-                return depositAccountIds.reduce((map, accountId) => {
-                    map.set(accountId, balancesMap.get(accountId) ?? 0);
-
-                    return map;
-                }, new Map<number, number>());
+                return new Map(depositAccountIds.map(accountId => [accountId, balancesMap.get(accountId) ?? 0]));
             });
 
             const assertDepositBalancesNotWorsened = Effect.fn('AccountBalanceIncrementalService.assertDepositBalancesNotWorsened')(
@@ -112,7 +101,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
 
                 const balancesToInsert = accounts.map(account => buildBalanceInput(account, ledgerBalances, debtLedgerBalances));
 
-                yield* Effect.forEach(balancesToInsert, balance => accountBalanceRepository.upsert(balance), { discard: true });
+                yield* accountBalanceRepository.bulkUpsert(balancesToInsert);
                 yield* assertDepositBalancesNotWorsened(balancesToInsert, previousDepositBalances);
             });
 
@@ -139,10 +128,8 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                             return;
                         }
 
-                        const activeAccountIds = accounts.map(({ id }) => id);
                         const previousDepositBalances = yield* getPreviousDepositBalances(accounts);
 
-                        yield* accountBalanceRepository.deleteByAccountIds(activeAccountIds);
                         yield* upsertLatestBalances(accounts, false, previousDepositBalances);
                     },
                     effect => Db.transaction(effect)

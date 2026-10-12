@@ -47,8 +47,7 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                             .where(
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
-                                    isNull(TransactionEntityTable.deletedAt),
-                                    isNull(TransactionEntityTable.consolidationParentTransactionId),
+                                    transactionFilters.buildVisibleTransactionCondition(),
                                     or(
                                         inArray(TransactionEntityTable.fromAccountId, accountIds),
                                         inArray(TransactionEntityTable.toAccountId, accountIds),
@@ -79,8 +78,7 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                             .where(
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
-                                    isNull(TransactionEntityTable.deletedAt),
-                                    isNull(TransactionEntityTable.consolidationParentTransactionId),
+                                    transactionFilters.buildVisibleTransactionCondition(),
                                     inArray(TransactionEntryEntityTable.accountId, accountIds),
                                     isNotNull(TransactionEntryEntityTable.originalTransactionId),
                                     isNull(TransactionEntryEntityTable.deletedAt),

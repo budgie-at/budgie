@@ -4,13 +4,15 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../../account/constant/bank-authoritative-account-types.constant';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
-import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
@@ -19,13 +21,10 @@ import { SyncModeEnum } from '../../sync/enum/sync-mode.enum';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
-
-import { accountBalanceDebtProgressSqlInputBuilder } from './account-balance-debt-progress-sql-input.builder';
-import { accountBalanceDebtProgressSqlBuilder } from './account-balance-debt-progress-sql.builder';
-import { accountBalanceLedgerSqlBuilder } from './account-balance-ledger-sql.builder';
 
 import type { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
 
@@ -51,17 +50,41 @@ const getActiveAccountWhereSql = (...conditions: SQL[]) =>
 const getConvertedDebtTargetBalanceSql = (defaultInstrumentId: number, exchangeRateSql: SQL) =>
     sql<number>`CASE WHEN ${AccountEntityTable.targetBaseInstrumentId} = ${defaultInstrumentId} AND ${AccountEntityTable.targetBaseAmount} IS NOT NULL THEN ${AccountEntityTable.targetBaseAmount} ELSE COALESCE(${AccountEntityTable.targetBalance} * ${exchangeRateSql}, 0) END`;
 
-const getDebtProgressSqlInput = (
+const getBalanceLedgerEntryConditionSql = () =>
+    sql`(${TransactionEntryEntityTable.originalTransactionId} IS NULL OR ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND})`;
+
+const getDebtProgressSql = (
     baseInstrumentId: number | null,
     exchangeRateSql: SQL | null,
     targetAmountSql: SQL | SQLWrapper,
     accountIdReference = sql.raw('accounts.id')
-) => accountBalanceDebtProgressSqlInputBuilder.build({ accountIdReference, baseInstrumentId, exchangeRateSql, targetAmountSql });
+) => {
+    const debtEventAmountSql =
+        isDefined(exchangeRateSql) && isDefined(baseInstrumentId)
+            ? sql<number>`CASE WHEN ${DebtEventEntityTable.baseInstrumentId} = ${baseInstrumentId} AND ${DebtEventEntityTable.baseAmount} IS NOT NULL THEN ${DebtEventEntityTable.baseAmount} ELSE COALESCE(${DebtEventEntityTable.amount} * ${exchangeRateSql}, 0) END`
+            : sql<number>`${DebtEventEntityTable.amount}`;
+    const getDebtEventAmountSumSql = (direction: DebtEventDirectionEnum) =>
+        sql<number>`SELECT COALESCE(SUM(${debtEventAmountSql}), 0) FROM ${DebtEventEntityTable} WHERE ${DebtEventEntityTable.debtAccountId} = ${accountIdReference} AND ${DebtEventEntityTable.deletedAt} IS NULL AND ${DebtEventEntityTable.direction} = ${direction}`;
+    const eventOpenedAmountSql = getDebtEventAmountSumSql(DebtEventDirectionEnum.OPEN);
+    const openedAmountSql = sql<number>`MAX((CASE WHEN (${eventOpenedAmountSql}) > 0 THEN (${eventOpenedAmountSql}) ELSE (${targetAmountSql}) END), 0)`;
+    const closedAmountSql = sql<number>`MAX((${getDebtEventAmountSumSql(DebtEventDirectionEnum.CLOSE)}), 0)`;
+
+    return {
+        outstandingAmount: sql<number>`MAX(${openedAmountSql} - ${closedAmountSql}, 0)`.mapWith(Number),
+        overpaidAmount: sql<number>`MAX(${closedAmountSql} - ${openedAmountSql}, 0)`.mapWith(Number),
+        paidAmount: closedAmountSql.mapWith(Number),
+        percentage:
+            sql<number>`CASE WHEN ${openedAmountSql} > 0 THEN MIN(ROUND((${closedAmountSql} * 100.0) / ${openedAmountSql}, 2), 100) ELSE 0 END`.mapWith(
+                Number
+            ),
+        totalAmount: openedAmountSql.mapWith(Number)
+    };
+};
 
 const getAccountBalanceWithTransactionsSql = (accountIdReference = sql.raw('accounts.id')) => {
     const latestAccountBalanceSql = sql<number>`SELECT ${AccountBalanceEntityTable.amount} FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference} LIMIT 1`;
     const lastBalanceUpdatedAtSql = sql`SELECT MAX(${AccountBalanceEntityTable.updatedAt}) FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}`;
-    const transactionsSumSinceLastBalanceSql = sql<number>`SELECT ${getTransactionsSumSql()} FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql()} AND ${accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()} AND ${TransactionEntryEntityTable.createdAt} > COALESCE((${lastBalanceUpdatedAtSql}), -1)`;
+    const transactionsSumSinceLastBalanceSql = sql<number>`SELECT ${getTransactionsSumSql()} FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${transactionFilters.buildVisibleTransactionCondition()} AND ${getBalanceLedgerEntryConditionSql()} AND ${TransactionEntryEntityTable.createdAt} > COALESCE((${lastBalanceUpdatedAtSql}), -1)`;
 
     const ledgerSumSql = sql<number>`CASE WHEN ${inArray(sql.raw('accounts.type'), BANK_AUTHORITATIVE_ACCOUNT_TYPES)} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
 
@@ -69,6 +92,17 @@ const getAccountBalanceWithTransactionsSql = (accountIdReference = sql.raw('acco
 
     return sql<number>`COALESCE((${setupBalanceSql}), COALESCE((${latestAccountBalanceSql}), 0) + ${ledgerSumSql})`;
 };
+
+const bulkUpsert = (balances: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>[]) =>
+    Db.query(db =>
+        db
+            .insert(AccountBalanceEntityTable)
+            .values(balances.map(({ accountId, amount }) => ({ accountId, amount })))
+            .onConflictDoUpdate({
+                target: AccountBalanceEntityTable.accountId,
+                set: { amount: sql`excluded.${sql.identifier(AccountBalanceEntityTable.amount.name)}`, updatedAt: CURRENT_TIMESTAMP }
+            })
+    );
 
 export class AccountBalanceRepository extends Context.Service<AccountBalanceRepository>()('@budgie/contracts/AccountBalanceRepository', {
     make: Effect.succeed({
@@ -81,8 +115,8 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     .where(
                         and(
                             isNull(TransactionEntryEntityTable.deletedAt),
-                            accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
-                            accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql(),
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            getBalanceLedgerEntryConditionSql(),
                             inArray(TransactionEntryEntityTable.accountId, accountIds)
                         )
                     )
@@ -120,26 +154,15 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                             eq(TransactionEntryEntityTable.accountId, accountId),
                             isNull(TransactionEntryEntityTable.deletedAt),
                             lte(TransactionEntityTable.operatedAt, operatedUntil),
-                            accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
-                            accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            getBalanceLedgerEntryConditionSql()
                         )
                     )
             ).pipe(Effect.map(([row]) => row.balance)),
-        upsert: (input: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>) =>
-            Db.query(db =>
-                db
-                    .insert(AccountBalanceEntityTable)
-                    .values([{ accountId: input.accountId, amount: input.amount }])
-                    .onConflictDoUpdate({
-                        target: AccountBalanceEntityTable.accountId,
-                        set: { amount: input.amount, updatedAt: CURRENT_TIMESTAMP }
-                    })
-                    .returning()
-            ).pipe(Effect.map(([accountBalance]) => accountBalance)),
+        bulkUpsert,
+        upsert: (balance: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>) => bulkUpsert([balance]),
         getByAccountIds: (accountIds: number[]) =>
             Db.query(db => db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds))),
-        deleteByAccountIds: (accountIds: number[]) =>
-            Db.query(db => db.delete(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds))),
         truncate: () => Db.query(db => db.delete(AccountBalanceEntityTable)),
         truncateExceptBankAuthoritative: () =>
             Db.query(db =>
@@ -189,12 +212,8 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
             const exchangeRateSql = buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
             const convertedBalanceSql = sql<number>`COALESCE((${balanceSql}) * ${exchangeRateSql}, 0)`;
             const convertedTargetBalanceSql = getConvertedDebtTargetBalanceSql(defaultInstrumentId, exchangeRateSql);
-            const debtProgressSql = accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
-                getDebtProgressSqlInput(null, null, AccountEntityTable.targetBalance)
-            );
-            const convertedDebtProgressSql = accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
-                getDebtProgressSqlInput(defaultInstrumentId, exchangeRateSql, convertedTargetBalanceSql)
-            );
+            const debtProgressSql = getDebtProgressSql(null, null, AccountEntityTable.targetBalance);
+            const convertedDebtProgressSql = getDebtProgressSql(defaultInstrumentId, exchangeRateSql, convertedTargetBalanceSql);
 
             return Db.query(db =>
                 db
@@ -239,11 +258,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
         getDebtAccountProgressByAccountId: (accountId: number) =>
             Db.query(db =>
                 db
-                    .select(
-                        accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
-                            getDebtProgressSqlInput(null, null, AccountEntityTable.targetBalance, sql`${accountId}`)
-                        )
-                    )
+                    .select(getDebtProgressSql(null, null, AccountEntityTable.targetBalance, sql`${accountId}`))
                     .from(AccountEntityTable)
                     .where(eq(AccountEntityTable.id, accountId))
                     .limit(1)
@@ -256,8 +271,8 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     WHERE ${sql`${TransactionEntryEntityTable.accountId} = ${accountId}`}
                       AND ${sql`${TransactionEntryEntityTable.deletedAt} IS NULL`}
                       AND ${sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}`}
-                      AND ${accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql()}
-                      AND ${accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()}
+                      AND ${transactionFilters.buildVisibleTransactionCondition()}
+                      AND ${getBalanceLedgerEntryConditionSql()}
                 ), 0)`;
 
             return Db.query(db =>
@@ -303,9 +318,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
         getTotalRemainingDebtByType: (defaultInstrumentId: number, debtType: AccountDebtTypeEnum) => {
             const exchangeRateSql = buildFiatExchangeRateConversionSql(defaultInstrumentId);
             const convertedTargetBalanceSql = getConvertedDebtTargetBalanceSql(defaultInstrumentId, exchangeRateSql);
-            const debtProgressSql = accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
-                getDebtProgressSqlInput(defaultInstrumentId, exchangeRateSql, convertedTargetBalanceSql)
-            );
+            const debtProgressSql = getDebtProgressSql(defaultInstrumentId, exchangeRateSql, convertedTargetBalanceSql);
 
             return Db.query(db =>
                 db
@@ -317,17 +330,6 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                             eq(AccountEntityTable.debtType, debtType)
                         )
                     )
-            );
-        },
-        getTotalByBankProvider: (defaultInstrumentId: number, provider: ExternalSourceEnum) => {
-            const exchangeRateSql = buildFiatExchangeRateConversionSql(defaultInstrumentId);
-
-            return Db.query(db =>
-                db
-                    .select({ total: sql<number>`COALESCE(SUM((${getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
-                    .from(AccountEntityTable)
-                    .innerJoin(SyncEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
-                    .where(getActiveAccountWhereSql(eq(SyncEntityTable.provider, provider), isNull(SyncEntityTable.deletedAt)))
             );
         }
     })

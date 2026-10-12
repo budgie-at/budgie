@@ -56,8 +56,7 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                             .where(
                                 and(
                                     inArray(TransactionEntryEntityTable.transactionId, sourceTransactionIds),
-                                    isNull(TransactionEntryEntityTable.originalTransactionId),
-                                    isNull(TransactionEntryEntityTable.deletedAt)
+                                    transactionFilters.buildLedgerEntryCondition()
                                 )
                             )
                     );
