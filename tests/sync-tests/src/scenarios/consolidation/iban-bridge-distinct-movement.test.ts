@@ -1,4 +1,4 @@
-import { IbanBridgeTransferRepository } from '@budgie/consolidation';
+import { ConsolidationCandidateRepository } from '@budgie/consolidation';
 import { AccountBalanceRepository, ExternalSourceEnum, PRECISION, TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/sync';
 import { expect, it } from '@effect/vitest';
@@ -19,7 +19,7 @@ it.effect.each(
             const bridge = yield* seedBankSyncAccount('Synthetic bridge', ExternalSourceEnum.MONOBANK, 'UA-BRIDGE');
             const target = yield* seedBankSyncAccount('Synthetic target', ExternalSourceEnum.MONOBANK, 'UA-TARGET');
             const service = yield* TransferConsolidationService;
-            const bridgeTransferRepository = yield* IbanBridgeTransferRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const balances = yield* AccountBalanceRepository;
             const firstTime = new Date(2026, 9, 6, 12);
             const secondTime = new Date(firstTime.getTime() + gapMilliseconds);
@@ -61,7 +61,7 @@ it.effect.each(
                     [target.id, 1000 * PRECISION]
                 ])
             );
-            const candidates = yield* bridgeTransferRepository.findCanonicalDuplicateCandidates(null);
+            const candidates = yield* consolidationCandidateRepository.findIbanBridgeCanonicalDuplicateCandidates(null);
             const result = yield* service.consolidate(null);
             const after = yield* balances.getLedgerBalances([source.id, target.id]);
             expect(candidates).toEqual([]);
@@ -107,5 +107,5 @@ it.effect.each(
             ]);
             expect(yield* service.consolidate(null)).toEqual({ found: 0, consolidated: 0 });
             expect(yield* balances.getLedgerBalances([source.id, target.id])).toEqual(before);
-        }).pipe(Effect.provide([IbanBridgeTransferRepository.layer, TestLayer]))
+        }).pipe(Effect.provide([ConsolidationCandidateRepository.layer, TestLayer]))
 );

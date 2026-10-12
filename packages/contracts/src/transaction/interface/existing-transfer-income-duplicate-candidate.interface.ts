@@ -11,14 +11,9 @@ export interface ExistingTransferIncomeDuplicateCandidateInterface {
     readonly duplicateTransactionId: number;
     readonly duplicateTransactionTitle: string | null;
     readonly sourceAccountId: number;
-    readonly sourceAccountTitle: string;
     readonly targetAccountId: number;
-    readonly targetAccountTitle: string;
-    readonly existingTransferTargetEntryId: number;
     readonly sourceAmount: number;
-    readonly existingTransferTargetAmount: number;
     readonly amount: number;
     readonly exchangeRate: number;
-    readonly amountDelta: number;
     readonly timeDiff: number;
 }

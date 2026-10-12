@@ -30,14 +30,6 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             }
         } as const;
 
-        const buildSingleAccountCondition = (accountId: number) =>
-            or(
-                eq(TransactionEntityTable.fromAccountId, accountId),
-                eq(TransactionEntityTable.toAccountId, accountId),
-                inArray(TransactionEntityTable.id, transactionFilters.buildTransactionIdsByEntryAccountIdsQuery([accountId])),
-                inArray(TransactionEntityTable.id, transactionFilters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
-            );
-
         const selectOperatedAtTime = Effect.fnUntraced(function* (aggregateSql: SQL<number | null>, condition: SQL | undefined) {
             const result = yield* Db.query(db =>
                 db
@@ -151,15 +143,9 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     })
                 ),
 
-            findByIds: Effect.fn('TransactionRepository.findByIds')(function* (ids: number[]) {
-                return yield* findByIdsWithEntriesWhere(ids, transactionFilters.ledgerEntryFilter);
-            }),
+            findByIds: (ids: number[]) => findByIdsWithEntriesWhere(ids, transactionFilters.ledgerEntryFilter),
 
-            findByIdsWithRefundConsolidationHistory: Effect.fn('TransactionRepository.findByIdsWithRefundConsolidationHistory')(function* (
-                ids: number[]
-            ) {
-                return yield* findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE);
-            }),
+            findByIdsWithRefundConsolidationHistory: (ids: number[]) => findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE),
 
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
                 externalSource: ExternalSourceEnum
@@ -197,7 +183,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
                         : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
 
-                return yield* selectOperatedAtTime(aggregateSql, buildSingleAccountCondition(accountId));
+                return yield* selectOperatedAtTime(aggregateSql, and(...transactionFilters.buildAccountCondition([accountId])));
             }),
 
             getEarliestTransactionTimeByExternalSource: Effect.fn('TransactionRepository.getEarliestTransactionTimeByExternalSource')(
@@ -325,27 +311,6 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 ),
 
             truncate: () => Db.query(db => db.delete(TransactionEntityTable)),
-
-            findByAccountId: (accountId: number) =>
-                Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: {
-                            OR: [
-                                { fromAccountId: accountId },
-                                { toAccountId: accountId },
-                                {
-                                    RAW: (table, { inArray: inIds }) =>
-                                        inIds(table.id, transactionFilters.buildTransactionIdsByEntryAccountIdsQuery([accountId]))
-                                },
-                                {
-                                    RAW: (table, { inArray: inIds }) =>
-                                        inIds(table.id, transactionFilters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
-                                }
-                            ]
-                        },
-                        orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
-                    })
-                ),
 
             restoreByAccountIds: (accountIds: number[]) =>
                 Db.query(db =>

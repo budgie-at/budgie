@@ -151,26 +151,6 @@ class BaseTransactionFilterRepository {
         );
     }
 
-    buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
-        return this.queryBuilder
-            .select({ transactionId: TransactionEntryEntityTable.transactionId })
-            .from(TransactionEntryEntityTable)
-            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
-    }
-
-    buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
-        return this.queryBuilder
-            .select({ transactionId: DebtEventEntityTable.transactionId })
-            .from(DebtEventEntityTable)
-            .where(
-                and(
-                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
-                    isNotNull(DebtEventEntityTable.transactionId),
-                    isNull(DebtEventEntityTable.deletedAt)
-                )
-            );
-    }
-
     private buildCategoryCondition(categoryIds: number[]) {
         if (isEmptyArray(categoryIds)) {
             return this.buildUncategorizedCondition();
@@ -260,6 +240,26 @@ class BaseTransactionFilterRepository {
                 .from(TransactionTagsEntityTable)
                 .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
         );
+    }
+
+    private buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
+        return this.queryBuilder
+            .select({ transactionId: TransactionEntryEntityTable.transactionId })
+            .from(TransactionEntryEntityTable)
+            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
+    }
+
+    private buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
+        return this.queryBuilder
+            .select({ transactionId: DebtEventEntityTable.transactionId })
+            .from(DebtEventEntityTable)
+            .where(
+                and(
+                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
+                    isNotNull(DebtEventEntityTable.transactionId),
+                    isNull(DebtEventEntityTable.deletedAt)
+                )
+            );
     }
 }
 

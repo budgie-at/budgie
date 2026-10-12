@@ -32,13 +32,10 @@ export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScop
                 'AUTO_ATM_CASH_WITHDRAWAL' as confidenceBucket,
                 expense_tx.id as transactionId,
                 expense_tx.title as transactionTitle,
-                expense_tx.comment as transactionComment,
                 expense_tx.operated_at as operatedAt,
                 expense_entry.id as entryId,
                 source_account.id as sourceAccountId,
-                source_account.title as sourceAccountTitle,
                 target_cash_account.id as targetCashAccountId,
-                target_cash_account.title as targetCashAccountTitle,
                 source_instrument.code as currency,
                 expense_entry.amount as amount
             FROM transaction_entries expense_entry

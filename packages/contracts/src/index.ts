@@ -233,7 +233,6 @@ export { TransactionPatternRepository } from './transaction/repository/transacti
 
 export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfer-pair-auto-confidence-bucket.enum';
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
-export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
 export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
