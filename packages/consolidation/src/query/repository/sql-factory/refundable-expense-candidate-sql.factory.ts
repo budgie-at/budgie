@@ -1,6 +1,6 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { buildSameForeignOriginalAmountSql } from '../../../shared/util/build-same-foreign-original-amount-sql.util';
+import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/util/build-privatbank-same-original-amount-sql.util';
 
 import type { LanguageEnum } from '@budgie/contracts';
 
@@ -36,7 +36,7 @@ const buildManualSearchSql = (): string => `
 
 const buildManualCurrentTransactionSql = (): string => `
     current_tx AS (
-        SELECT id, type, title, operated_at
+        SELECT id, type, title, operated_at, external_source
         FROM transactions
         WHERE id = ?
           AND deleted_at IS NULL
@@ -118,15 +118,17 @@ const buildManualCandidateWhereSql = (): string => `
           candidate_entry.amount >= current_entry.amount + COALESCE(refund_totals.refunds_total, 0)
           OR (
               refund_totals.refunds_total IS NULL
-              AND ${buildSameForeignOriginalAmountSql(
+              AND ${buildPrivatbankSameOriginalAmountSql(
                   {
                       amount: 'current_entry.amount',
                       exchangeRate: 'current_entry.exchange_rate',
+                      externalSource: 'current_tx.external_source',
                       operationInstrumentId: 'current_entry.operation_instrument_id'
                   },
                   {
                       amount: 'candidate_entry.amount',
                       exchangeRate: 'candidate_entry.exchange_rate',
+                      externalSource: 'candidate.external_source',
                       operationInstrumentId: 'candidate_entry.operation_instrument_id'
                   }
               )}

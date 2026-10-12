@@ -43,6 +43,22 @@ const seedPair = Effect.fnUntraced(function* (refundRate: number, refundOriginal
     return { expense, refund };
 });
 
+const expectRefundRejected = Effect.fnUntraced(function* (expenseId: number, refundId: number) {
+    const refundConsolidationService = yield* RefundConsolidationService;
+    const refundPairRepository = yield* RefundPairRepository;
+
+    expect(yield* refundPairRepository.findCandidates()).toEqual([]);
+    expect(yield* refundPairRepository.findReviewCandidates()).toEqual([]);
+    expect(yield* refundConsolidationService.findRefundableExpenses(refundId, '', LanguageEnum.EN)).toEqual([]);
+    expect(
+        yield* Effect.flip(
+            refundConsolidationService.convertToRefund({ refundIncomeTransactionId: refundId, expenseTransactionId: expenseId })
+        )
+    ).toMatchObject({ _tag: 'RefundExceedsExpenseError' });
+    expect((yield* runConsolidation()).consolidated).toBe(0);
+    expect((yield* testQueryService.fetchTransactionById(refundId)).consolidationParentTransactionId).toBeNull();
+});
+
 layer(TestLayer)('consolidation/refund-pair-privatbank-rising-rate', it => {
     it.effect('auto-consolidates a full original-amount refund booked at a higher rate and leaves a negative remainder', () =>
         Effect.gen(function* () {
@@ -83,21 +99,18 @@ layer(TestLayer)('consolidation/refund-pair-privatbank-rising-rate', it => {
     );
 
     it.effect('rejects a refund whose original-currency amount exceeds the expense', () =>
-        Effect.gen(function* () {
-            const refundConsolidationService = yield* RefundConsolidationService;
-            const refundPairRepository = yield* RefundPairRepository;
-            const { expense, refund } = yield* seedPair(EXPENSE_RATE, OVER_REFUND_ORIGINAL_AMOUNT);
+        Effect.flatMap(seedPair(EXPENSE_RATE, OVER_REFUND_ORIGINAL_AMOUNT), ({ expense, refund }) =>
+            expectRefundRejected(expense.id, refund.id)
+        )
+    );
 
-            expect(yield* refundPairRepository.findCandidates()).toEqual([]);
-            expect(yield* refundPairRepository.findReviewCandidates()).toEqual([]);
-            expect(yield* refundConsolidationService.findRefundableExpenses(refund.id, '', LanguageEnum.EN)).toEqual([]);
-            expect(
-                yield* Effect.flip(
-                    refundConsolidationService.convertToRefund({ refundIncomeTransactionId: refund.id, expenseTransactionId: expense.id })
-                )
-            ).toMatchObject({ _tag: 'RefundExceedsExpenseError' });
-            expect((yield* runConsolidation()).consolidated).toBe(0);
-            expect((yield* testQueryService.fetchTransactionById(refund.id)).consolidationParentTransactionId).toBeNull();
+    it.effect('rejects a non-Privatbank full original-amount refund booked at a higher rate', () =>
+        Effect.gen(function* () {
+            const { expense, refund } = yield* seedPair(RISING_REFUND_RATE, ORIGINAL_AMOUNT);
+
+            yield* testSeedService.updateTransaction(expense.id, { externalSource: ExternalSourceEnum.MONOBANK });
+            yield* testSeedService.updateTransaction(refund.id, { externalSource: ExternalSourceEnum.MONOBANK });
+            yield* expectRefundRejected(expense.id, refund.id);
         })
     );
 });

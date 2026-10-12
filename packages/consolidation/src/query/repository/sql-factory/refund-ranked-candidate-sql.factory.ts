@@ -1,16 +1,11 @@
-import {
-    ExternalSourceEnum,
-    REFUND_TIME_WINDOW_SECONDS,
-    REFUND_TITLE_PREFIXES,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { REFUND_TIME_WINDOW_SECONDS, REFUND_TITLE_PREFIXES, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { buildOriginalMinorAmountSql } from '../../../shared/util/build-original-minor-amount-sql.util';
 import { buildPrefixLikeSql } from '../../../shared/util/build-prefix-like-sql.util';
-import { buildSameForeignOriginalAmountSql } from '../../../shared/util/build-same-foreign-original-amount-sql.util';
+import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/util/build-privatbank-same-original-amount-sql.util';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
+import type { PrivatbankRefundEntrySqlColumnsInterface } from '../../../shared/interface/privatbank-refund-entry-sql-columns.interface';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
@@ -33,14 +28,17 @@ const buildStripPrefixesSql = (seedExpression: string, prefixes: readonly string
 const buildStripCommaSuffixSql = (seedExpression: string): string =>
     `TRIM(CASE WHEN INSTR(${seedExpression}, ',') > 0 THEN SUBSTR(${seedExpression}, 1, INSTR(${seedExpression}, ',') - 1) ELSE ${seedExpression} END)`;
 
-const buildPrivatbankOriginalAmountRefundSql = (): string => `inc.externalSource = '${ExternalSourceEnum.PRIVATBANK}'
-    AND exp.externalSource = '${ExternalSourceEnum.PRIVATBANK}'
-    AND ${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.privatbankCategoryRefund)}
+const buildPrivatbankRefundEntryColumns = (alias: string): PrivatbankRefundEntrySqlColumnsInterface => ({
+    amount: `${alias}.amount`,
+    exchangeRate: `${alias}.exchangeRate`,
+    externalSource: `${alias}.externalSource`,
+    operationInstrumentId: `${alias}.operationInstrumentId`
+});
+
+const buildPrivatbankOriginalAmountRefundSql =
+    (): string => `${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.privatbankCategoryRefund)}
     AND inc.accountId = exp.accountId
-    AND ${buildSameForeignOriginalAmountSql(
-        { amount: 'inc.amount', exchangeRate: 'inc.exchangeRate', operationInstrumentId: 'inc.operationInstrumentId' },
-        { amount: 'exp.amount', exchangeRate: 'exp.exchangeRate', operationInstrumentId: 'exp.operationInstrumentId' }
-    )}
+    AND ${buildPrivatbankSameOriginalAmountSql(buildPrivatbankRefundEntryColumns('inc'), buildPrivatbankRefundEntryColumns('exp'))}
     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}`;
 
 const buildExpenseEntriesSql = (

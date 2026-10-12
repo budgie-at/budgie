@@ -1,5 +1,6 @@
 import {
     Db,
+    ExternalSourceEnum,
     PRECISION,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
@@ -68,12 +69,15 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     refundIncomeEntry.operationInstrumentId === expenseEntry.operationInstrumentId) &&
                 Math.abs(refundIncomeEntry.exchangeRate / expenseEntry.exchangeRate - 1) <= REFUND_ORIGINAL_CURRENCY_RATE_TOLERANCE;
 
-            const isForeignCurrencyFullRefund = (
+            const isPrivatbankForeignCurrencyFullRefund = (
+                refundIncomeTransaction: TransactionWithEntriesEntityInterface,
+                expenseTransaction: TransactionWithEntriesEntityInterface,
                 refundIncomeEntry: TransactionEntryEntityInterface,
-                expenseEntry: TransactionEntryEntityInterface,
-                existingRefundAmount: number
+                expenseEntry: TransactionEntryEntityInterface
             ): boolean =>
-                existingRefundAmount === 0 &&
+                refundIncomeTransaction.externalSource === ExternalSourceEnum.PRIVATBANK &&
+                expenseTransaction.externalSource === ExternalSourceEnum.PRIVATBANK &&
+                getExistingRefundAmount(expenseTransaction.entries) === 0 &&
                 refundIncomeEntry.exchangeRate !== 1 &&
                 expenseEntry.exchangeRate !== 1 &&
                 isSameOriginalCurrency(refundIncomeEntry, expenseEntry) &&
@@ -105,7 +109,7 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
 
                 if (
                     refundIncomeEntry.amount + existingRefundAmount > expenseEntry.amount &&
-                    !isForeignCurrencyFullRefund(refundIncomeEntry, expenseEntry, existingRefundAmount)
+                    !isPrivatbankForeignCurrencyFullRefund(refundIncomeTransaction, expenseTransaction, refundIncomeEntry, expenseEntry)
                 ) {
                     return yield* new RefundExceedsExpenseError();
                 }
