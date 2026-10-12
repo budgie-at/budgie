@@ -3,13 +3,13 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { buildMonobank, findMccByCode, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer, testQueryService } from '../../harness';
 
 describe('monobank/mcc-mapping', () => {
     it.effect('resolves the MCC code to the matching mcc_categories row id on insert', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const groceryRow = yield* findMccByCode('5411');
+            const groceryRow = yield* testQueryService.findMccByCode('5411');
 
             yield* setupMonobankFixture();
             monobankStub.statement([

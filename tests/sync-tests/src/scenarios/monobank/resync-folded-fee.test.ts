@@ -13,13 +13,13 @@ import * as Effect from 'effect/Effect';
 
 import {
     buildMonobank,
-    findMccByCode,
     monobankStub,
     MonobankSyncService,
     seed,
     setupMonobankFixture,
     testDb,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 const atmWithdrawal = buildMonobank.transaction({
@@ -60,7 +60,7 @@ describe('monobank/resync-folded-fee', () => {
             expect(balanceBefore).toBe(-408 * PRECISION);
             expect(entries).toHaveLength(2);
             expect(mainEntry?.amount).toBe(400 * PRECISION);
-            expect(mainEntry?.mccCategoryId).toBe((yield* findMccByCode('6011')).id);
+            expect(mainEntry?.mccCategoryId).toBe((yield* testQueryService.findMccByCode('6011')).id);
             expect(feeEntry?.amount).toBe(8 * PRECISION);
             expect(feeEntry?.type).toBe(TransactionEntryTypeEnum.FEE);
             expect(feeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);

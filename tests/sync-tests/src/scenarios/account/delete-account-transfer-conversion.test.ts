@@ -19,7 +19,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, seed, testDb, TestLayer } from '../../harness';
+import { seed, testDb, TestLayer, testQueryService } from '../../harness';
 
 const OPERATED_AT = new Date(2025, 5, 1, 12, 0, 0);
 
@@ -118,19 +118,19 @@ describe('account/delete-account-transfer-conversion', () => {
 
             const ledgerBefore = yield* accountBalanceRepository.getLedgerBalances(liveAccountIds);
             const statisticsBefore = yield* fetchStatistics();
-            const archivedTransferBefore = yield* fetchTransactionById(archivedTransfer.id);
-            const childBefore = yield* fetchTransactionById(child.id);
+            const archivedTransferBefore = yield* testQueryService.findTransactionById(archivedTransfer.id);
+            const childBefore = yield* testQueryService.findTransactionById(child.id);
             const canonicalEntriesBefore = yield* fetchEntries(canonical.id);
             const childEntriesBefore = yield* fetchEntries(child.id);
-            const grandchildBefore = yield* fetchTransactionById(grandchild.id);
+            const grandchildBefore = yield* testQueryService.findTransactionById(grandchild.id);
 
             expect(archivedTransferBefore.deletedAt).not.toBeNull();
             expect(childBefore.deletedAt).toBeNull();
 
             yield* accountArchiveService.deleteById(deletedAccount.id);
 
-            const incoming = yield* fetchTransactionById(incomingTransfer.id);
-            const outgoing = yield* fetchTransactionById(outgoingTransfer.id);
+            const incoming = yield* testQueryService.findTransactionById(incomingTransfer.id);
+            const outgoing = yield* testQueryService.findTransactionById(outgoingTransfer.id);
             const [incomingEntry] = yield* fetchEntries(incomingTransfer.id);
             const [outgoingEntry] = yield* fetchEntries(outgoingTransfer.id);
             const statisticsAfter = yield* fetchStatistics();
@@ -158,12 +158,15 @@ describe('account/delete-account-transfer-conversion', () => {
                 categoryId: ACCOUNT_DELETED_TRANSFER_CATEGORY_ID
             });
 
-            expect(yield* fetchTransactionById(archivedTransfer.id)).toEqual({ ...archivedTransferBefore, fromAccountId: null });
+            expect(yield* testQueryService.findTransactionById(archivedTransfer.id)).toEqual({
+                ...archivedTransferBefore,
+                fromAccountId: null
+            });
             expect(yield* fetchEntries(archivedTransfer.id)).toHaveLength(1);
-            expect(yield* fetchTransactionById(child.id)).toEqual({ ...childBefore, fromAccountId: null });
+            expect(yield* testQueryService.findTransactionById(child.id)).toEqual({ ...childBefore, fromAccountId: null });
             expect(yield* fetchEntries(canonical.id)).toEqual(canonicalEntriesBefore);
             expect(yield* fetchEntries(child.id)).toEqual(childEntriesBefore.filter(entry => entry.accountId !== deletedAccount.id));
-            expect(yield* fetchTransactionById(grandchild.id)).toEqual(grandchildBefore);
+            expect(yield* testQueryService.findTransactionById(grandchild.id)).toEqual(grandchildBefore);
 
             expect(yield* accountBalanceRepository.getLedgerBalances(liveAccountIds)).toEqual(ledgerBefore);
             expect(statisticsAfter).toEqual(statisticsBefore);
@@ -180,7 +183,7 @@ describe('account/delete-account-transfer-conversion', () => {
 
             yield* accountArchiveService.deleteById(deletedAccount.id);
 
-            expect((yield* fetchTransactionById(transfer.id)).type).toBe(TransactionTypeEnum.EXPENSE);
+            expect((yield* testQueryService.findTransactionById(transfer.id)).type).toBe(TransactionTypeEnum.EXPENSE);
             expect(yield* fetchStatistics()).toEqual(statisticsBefore);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -205,7 +208,7 @@ describe('account/delete-account-transfer-conversion', () => {
 
             yield* accountArchiveService.deleteById(deletedAccount.id);
 
-            const transferAfter = yield* fetchTransactionById(transfer.id);
+            const transferAfter = yield* testQueryService.findTransactionById(transfer.id);
 
             expect(transferAfter.deletedAt).not.toBeNull();
             expect(transferAfter.fromAccountId).toBeNull();
@@ -225,8 +228,11 @@ describe('account/delete-account-transfer-conversion', () => {
             const cashAccount = yield* seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
             const { canonical, child, grandchild } = yield* seedHiddenTransferChild(account.id, bankAccount.id, cashAccount.id);
             const snapshot = Effect.all({
-                childParentId: Effect.map(fetchTransactionById(child.id), transaction => transaction.consolidationParentTransactionId),
-                grandchild: fetchTransactionById(grandchild.id),
+                childParentId: Effect.map(
+                    testQueryService.findTransactionById(child.id),
+                    transaction => transaction.consolidationParentTransactionId
+                ),
+                grandchild: testQueryService.findTransactionById(grandchild.id),
                 canonicalEntries: fetchEntries(canonical.id),
                 ledger: accountBalanceRepository.getLedgerBalances([bankAccount.id, cashAccount.id]),
                 statistics: fetchStatistics()

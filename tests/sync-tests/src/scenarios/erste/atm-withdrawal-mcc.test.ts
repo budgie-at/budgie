@@ -8,11 +8,11 @@ import { vi } from 'vitest';
 import {
     expectAtmCashWithdrawalConsolidation,
     fetchExpenseEntries,
-    findMccByCode,
     requireInstrument,
     seed,
     testDb,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 import type { ErsteRowInterface } from '@budgie/sync';
@@ -93,7 +93,7 @@ describe('erste/atm-withdrawal-mcc', () => {
             const [atmEntry] = yield* fetchExpenseEntries(atmTransaction?.id ?? 0);
             const nonAtmEntries = yield* Effect.forEach(nonAtmTransactions, transaction => fetchExpenseEntries(transaction.id));
 
-            expect(atmEntry.mccCategoryId).toBe((yield* findMccByCode(String(ATM_MCC))).id);
+            expect(atmEntry.mccCategoryId).toBe((yield* testQueryService.findMccByCode(String(ATM_MCC))).id);
             expect(nonAtmEntries.flat().map(entry => entry.mccCategoryId)).toEqual([null, null, null, null]);
 
             yield* expectAtmCashWithdrawalConsolidation(atmEntry.accountId, cashAccount.id, atmEntry.transactionId);
