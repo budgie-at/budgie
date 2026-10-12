@@ -9,14 +9,15 @@ const resyncAccountOf = Effect.fnUntraced(function* (provider: ExternalSourceEnu
     const resyncService = yield* ResyncService;
     const monobankSyncService = yield* MonobankSyncService;
     const binanceSyncService = yield* BinanceSyncService;
-    const monobankSync = vi.spyOn(monobankSyncService, 'sync').mockReturnValue(Effect.succeed(true));
+    const monobankRequestSync = vi.spyOn(monobankSyncService, 'requestSync').mockReturnValue(Effect.void);
+    vi.spyOn(monobankSyncService, 'fetchSetupBalance').mockReturnValue(Effect.succeed(0));
     const binanceRequestSync = vi.spyOn(binanceSyncService, 'requestSync').mockReturnValue(Effect.void);
     const account = yield* seed.account({ type: AccountTypeEnum.BANK_SYNC, externalSource: provider });
     yield* seed.sync({ accountId: account.id, provider });
 
     yield* resyncService.resync({ accountId: account.id, sinceDays: null });
 
-    return { monobankSync, binanceRequestSync };
+    return { monobankRequestSync, binanceRequestSync };
 });
 
 describe('sync/resync-provider', () => {
@@ -26,18 +27,27 @@ describe('sync/resync-provider', () => {
 
     it.effect('restarts only the Binance sync when a Binance account is resynced', () =>
         Effect.gen(function* () {
-            const { monobankSync, binanceRequestSync } = yield* resyncAccountOf(ExternalSourceEnum.BINANCE);
+            const { monobankRequestSync, binanceRequestSync } = yield* resyncAccountOf(ExternalSourceEnum.BINANCE);
 
-            expect(monobankSync).not.toHaveBeenCalled();
+            expect(monobankRequestSync).not.toHaveBeenCalled();
             expect(binanceRequestSync).toHaveBeenCalledOnce();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('restarts only the Monobank sync when a Monobank account is resynced', () =>
+        Effect.gen(function* () {
+            const { monobankRequestSync, binanceRequestSync } = yield* resyncAccountOf(ExternalSourceEnum.MONOBANK);
+
+            expect(monobankRequestSync).toHaveBeenCalledOnce();
+            expect(binanceRequestSync).not.toHaveBeenCalled();
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('starts no polling sync when a file-import account is resynced', () =>
         Effect.gen(function* () {
-            const { monobankSync, binanceRequestSync } = yield* resyncAccountOf(ExternalSourceEnum.PRIVATBANK);
+            const { monobankRequestSync, binanceRequestSync } = yield* resyncAccountOf(ExternalSourceEnum.PRIVATBANK);
 
-            expect(monobankSync).not.toHaveBeenCalled();
+            expect(monobankRequestSync).not.toHaveBeenCalled();
             expect(binanceRequestSync).not.toHaveBeenCalled();
         }).pipe(Effect.provide(TestLayer))
     );
