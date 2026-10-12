@@ -9,6 +9,8 @@ const SEEDED_TABLES = [
     'categories',
     'settings',
     'default_category_translations',
+    'historical_exchange_rates',
+    'instrument_daily_market_prices',
     '__drizzle_migrations'
 ] as const;
 
