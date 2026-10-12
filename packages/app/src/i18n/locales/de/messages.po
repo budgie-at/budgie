@@ -118,11 +118,11 @@ msgstr "{count, plural, one {# Zahlung} other {# Zahlungen}}"
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# Synchronisations-Reparatur} other {# Synchronisations-Reparaturen}}"
 
-#: src/app/(tabs)/settings/categories.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen wird.} other {Diese Kategorie hat # Transaktionen. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen werden.}}"
 
-#: src/app/(tabs)/settings/tags.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
 
@@ -393,11 +393,11 @@ msgstr "Account-Synchronisierung"
 msgid "Account Type"
 msgstr "Kontotyp"
 
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Konten ({selectedAccountsCount})"
 
@@ -656,12 +656,11 @@ msgstr "Möchten Sie diese Regel wirklich löschen?"
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
 msgstr "Schuld verknüpfen"
 
@@ -698,8 +697,7 @@ msgid "Balance"
 msgstr "Saldo"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
@@ -884,10 +882,9 @@ msgstr "Kann Stunden dauern"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -903,13 +900,12 @@ msgstr "Bargeldabhebungen"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
+#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Categories"
 msgstr "Kategorien"
 
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Kategorien ({selectedCategoriesCount})"
 
@@ -978,7 +974,7 @@ msgstr "PIN ändern"
 msgid "Checking"
 msgstr "Prüfen"
 
-#: src/account/component/create-bank-account/create-bank-account.tsx
+#: src/account/component/create-simple-account/create-simple-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Checking Account"
 msgstr "Girokonto"
@@ -1137,23 +1133,23 @@ msgstr "Konvertierung fehlgeschlagen"
 
 #: src/app/convert-to-transfer.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Umwandeln"
 
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
 msgstr "In Rückerstattung umwandeln"
 
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert to Refund?"
 msgstr "In Rückerstattung umwandeln?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
 
@@ -1211,7 +1207,7 @@ msgstr "Einlage konnte nicht geschlossen werden"
 msgid "Could not consolidate matches"
 msgstr "Treffer konnten nicht konsolidiert werden"
 
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Could not convert to refund"
 msgstr "Konnte nicht in Rückerstattung umwandeln"
 
@@ -1244,7 +1240,7 @@ msgstr "Transaktion konnte nicht erstellt werden"
 msgid "Could not create transaction. Please try again later."
 msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später erneut."
 
-#: src/app/(tabs)/settings/archived.tsx
+#: src/account/hooks/use-delete-account.hook.ts
 msgid "Could not delete account."
 msgstr "Konto konnte nicht gelöscht werden."
 
@@ -1252,20 +1248,23 @@ msgstr "Konto konnte nicht gelöscht werden."
 msgid "Could not delete budget"
 msgstr "Budget konnte nicht gelöscht werden"
 
-#: src/app/(tabs)/settings/categories.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 msgid "Could not delete category"
 msgstr "Kategorie konnte nicht gelöscht werden"
+
+#: src/rule/hooks/use-rules-list-page-actions.hook.ts
+msgid "Could not delete rule"
+msgstr "Regel konnte nicht gelöscht werden"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Could not delete rule."
 msgstr "Regel konnte nicht gelöscht werden."
 
-#: src/app/(tabs)/settings/tags.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Could not delete tag"
 msgstr "Tag konnte nicht gelöscht werden"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not delete transaction."
 msgstr "Transaktion konnte nicht gelöscht werden."
 
@@ -1317,11 +1316,11 @@ msgstr "GitHub konnte nicht geöffnet werden"
 msgid "Could not read CSV file"
 msgstr "CSV-Datei konnte nicht gelesen werden"
 
-#: src/app/(tabs)/settings/categories.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 msgid "Could not reassign category"
 msgstr "Kategorie konnte nicht neu zugewiesen werden"
 
-#: src/app/(tabs)/settings/tags.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Could not reassign tag"
 msgstr "Tag konnte nicht neu zugewiesen werden"
 
@@ -1409,6 +1408,8 @@ msgid "Could not update rule"
 msgstr "Regel konnte nicht aktualisiert werden"
 
 #: src/settings/hook/use-setting-toggle.hook.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/bank-integration-account-row/bank-integration-account-row.tsx
 msgid "Could not update setting"
 msgstr "Einstellung konnte nicht aktualisiert werden"
 
@@ -1416,7 +1417,8 @@ msgstr "Einstellung konnte nicht aktualisiert werden"
 msgid "Could not update settings"
 msgstr "Einstellungen konnten nicht aktualisiert werden"
 
-#: src/sync/hook/use-sync-token-update.hook.ts
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Could not update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
@@ -1540,7 +1542,7 @@ msgstr "Zugangsdaten erforderlich"
 msgid "Crypto"
 msgstr "Krypto"
 
-#: src/account/component/create-crypto-account/create-crypto-account.tsx
+#: src/account/component/create-simple-account/create-simple-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Crypto Account"
 msgstr "Kryptokonto"
@@ -1632,7 +1634,6 @@ msgstr "Standardkonto"
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
 msgstr "Löschen"
 
@@ -1689,7 +1690,7 @@ msgstr "Der Festgeldsaldo darf nicht negativ werden"
 msgid "Deselect all"
 msgstr "Alle abwählen"
 
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Detach debt"
 msgstr "Schuld trennen"
 
@@ -1751,10 +1752,6 @@ msgstr "Fällig am {date}"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
 msgstr "Regel duplizieren"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Dutch (Netherlands)"
-msgstr "Niederländisch (Niederlande)"
 
 #: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
 msgid "e.g. 1000"
@@ -1873,14 +1870,6 @@ msgstr "Touch ID-Entsperrung aktivieren?"
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
 msgstr "Englisch"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "English (United Kingdom)"
-msgstr "Englisch (Vereinigtes Königreich)"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "English (United States)"
-msgstr "Englisch (Vereinigte Staaten)"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "English Translation"
@@ -2095,7 +2084,7 @@ msgstr "Gebühr in Prozent"
 msgid "Fetch Accounts"
 msgstr "Konten abrufen"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Fetching new..."
 msgstr "Neue abrufen..."
 
@@ -2138,10 +2127,6 @@ msgstr "Ein Problem gefunden oder eine Idee? Öffne die GitHub-Issue-Vorlagen."
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Französisch"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "French (France)"
-msgstr "Französisch (Frankreich)"
 
 #: src/transaction/components/transaction-account-line/transaction-account-line.tsx
 msgid "from"
@@ -2192,10 +2177,6 @@ msgstr "Allgemein"
 #: src/i18n/constant/languages.constant.ts
 msgid "German"
 msgstr "Deutsch"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "German (Germany)"
-msgstr "Deutsch (Deutschland)"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Key"
@@ -2411,17 +2392,9 @@ msgstr "Zinssatz % (Optional)"
 msgid "Invalid file"
 msgstr "Ungültige Datei"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Is Planned"
-msgstr "Ist geplant"
-
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "It will no longer appear in the calendar."
 msgstr "Sie wird nicht mehr im Kalender angezeigt."
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Italian (Italy)"
-msgstr "Italienisch (Italien)"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
@@ -2520,10 +2493,6 @@ msgstr "Limit"
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
 msgstr "Zuhören..."
-
-#: src/@generic/hook/use-regenerate-translation.hook.ts
-msgid "LLM not ready"
-msgstr "KI-Modell nicht bereit"
 
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
@@ -3222,7 +3191,7 @@ msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Pay in parts"
 msgstr "In Raten zahlen"
 
@@ -3284,7 +3253,6 @@ msgstr "Name des Plans"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/hooks/use-account-entity-form.hook.ts
-#: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
 msgstr "Bitte überprüfen Sie die Kontodetails"
 
@@ -3302,21 +3270,13 @@ msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 msgid "Please try again"
 msgstr "Bitte versuchen Sie es erneut"
 
-#: src/app/(tabs)/settings/categories.tsx
-#: src/app/(tabs)/settings/tags.tsx
 #: src/category/components/category-form/category-form.tsx
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 #: src/tag/components/tag-form/tag-form.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Please try again later"
 msgstr "Bitte versuchen Sie es später erneut"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Polish (Poland)"
-msgstr "Polnisch (Polen)"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Portuguese (Portugal)"
-msgstr "Portugiesisch (Portugal)"
 
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Preparing valuation"
@@ -3439,7 +3399,7 @@ msgstr "Salden werden neu berechnet"
 msgid "Receiving {toCode}"
 msgstr "Empfang {toCode}"
 
-#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "Receiving amount"
 msgstr "Empfangsbetrag"
 
@@ -3630,7 +3590,7 @@ msgstr "Gebühr speichern"
 msgid "Savings"
 msgstr "Ersparnisse"
 
-#: src/account/component/create-cash-account/create-cash-account.tsx
+#: src/account/component/create-simple-account/create-simple-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Savings Account"
 msgstr "Sparkonto"
@@ -3777,7 +3737,7 @@ msgstr "Kategorie auswählen"
 msgid "Select column..."
 msgstr "Spalte auswählen..."
 
-#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select External Source"
 msgstr "Externe Quelle auswählen"
 
@@ -3801,7 +3761,7 @@ msgstr "MCC-Code auswählen"
 msgid "Select Operator"
 msgstr "Operator auswählen"
 
-#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select source"
 msgstr "Quelle auswählen"
 
@@ -3821,11 +3781,11 @@ msgstr "Heruntergeladene PDF-Datei auswählen"
 msgid "Select the exported XLSX file"
 msgstr "Exportierte XLSX-Datei auswählen"
 
-#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select Transaction Type"
 msgstr "Transaktionstyp auswählen"
 
-#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select type"
 msgstr "Typ auswählen"
 
@@ -3870,7 +3830,8 @@ msgid "Set Category"
 msgstr "Kategorie festlegen"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/components/transfer-transaction-actions-menu/transfer-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Set fee"
 msgstr "Gebühr festlegen"
 
@@ -3960,7 +3921,7 @@ msgstr "Etwas ist schief gelaufen"
 
 #: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/app/(tabs)/settings/archived.tsx
+#: src/account/hooks/use-delete-account.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut."
 
@@ -3976,10 +3937,6 @@ msgstr "Quellen"
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Spanisch"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Spanish (Spain)"
-msgstr "Spanisch (Spanien)"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Spending by Category"
@@ -3998,9 +3955,9 @@ msgstr "Ausgegeben"
 msgid "Split"
 msgstr "Aufteilen"
 
-#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Start Deposit"
 msgstr "Einzahlung starten"
 
@@ -4089,7 +4046,7 @@ msgstr "Synchronisierungsdaten repariert"
 msgid "Sync data repairs"
 msgstr "Synchronisationsdaten-Reparaturen"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync Failed"
 msgstr "Synchronisation fehlgeschlagen"
 
@@ -4113,7 +4070,7 @@ msgstr "Synchronisieren Sie Ihre Monobank-Konten und Transaktionen"
 msgid "Syncing bank history"
 msgstr "Bankverlauf wird synchronisiert"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Syncing history..."
 msgstr "Verlauf wird synchronisiert..."
 
@@ -4142,12 +4099,12 @@ msgstr "Tag-Name"
 #: src/app/(tabs)/settings/tags.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Tags"
 
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
 
@@ -4185,7 +4142,7 @@ msgstr "Zum Auswählen tippen"
 msgid "Target balance"
 msgstr "Zielsaldo"
 
-#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Die Bank hat die Währung der Einlage nicht übermittelt. Bestätige die Währung und den Empfangsbetrag."
 
@@ -4200,7 +4157,6 @@ msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Ge
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
@@ -4267,7 +4223,7 @@ msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewand
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Dadurch bleibt ein Eintrag mit dem vollständigen Transaktionsbetrag erhalten."
 
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Dadurch wird die ausgewählte Ausgabe mit dieser Rückerstattungseinnahme verknüpft. Du kannst dies im Rückerstattungsquellen-Dialog rückgängig machen."
 
@@ -4494,7 +4450,6 @@ msgid "typical month {amount}"
 msgstr "typischer Monat {amount}"
 
 #: src/i18n/constant/languages.constant.ts
-#: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Ukrainisch"
 
@@ -4533,7 +4488,7 @@ msgstr "Unrealisierte GuV"
 msgid "Untagged"
 msgstr "Ohne Tag"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Up to date"
 msgstr "Auf dem neuesten Stand"
 
@@ -4626,7 +4581,7 @@ msgstr "Quelltransaktionen anzeigen"
 msgid "Volume"
 msgstr "Volumen"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Warten"
 

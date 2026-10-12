@@ -4003,7 +4003,7 @@ msgstr "Block, the parent company of Cash App, disclosed that a former employee 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-#: src/blog/component/blog-article-page-shell/blog-article-page-shell.tsx
+#: src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
 #: src/generic/component/mobile-menu/mobile-menu.tsx
@@ -5435,7 +5435,7 @@ msgstr "Can I self-host Budgie?"
 msgid "Can I spend from a deposit account?"
 msgstr "Can I spend from a deposit account?"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "Can I sync my bank without giving Budgie my bank login?"
 msgstr "Can I sync my bank without giving Budgie my bank login?"
 
@@ -7198,7 +7198,7 @@ msgid "Does Budgie use Plaid for bank sync?"
 msgstr "Does Budgie use Plaid for bank sync?"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "Does Budgie work without an internet connection?"
 msgstr "Does Budgie work without an internet connection?"
 
@@ -8732,8 +8732,6 @@ msgstr "Hold any transaction card"
 msgid "Holdings roll up into net worth alongside fiat accounts"
 msgstr "Holdings roll up into net worth alongside fiat accounts"
 
-#: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
@@ -8749,14 +8747,11 @@ msgstr "Holdings roll up into net worth alongside fiat accounts"
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/features/page.tsx
-#: src/app/[lang]/offline-first/page.tsx
-#: src/app/[lang]/open-source/page.tsx
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-#: src/blog/component/blog-article-page-shell/blog-article-page-shell.tsx
+#: src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx
 #: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
 #: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx
+#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx
 msgid "Home"
 msgstr "Home"
 
@@ -9530,7 +9525,7 @@ msgstr "Is anything in Budgie paid?"
 msgid "Is biometric the same as PIN security?"
 msgstr "Is biometric the same as PIN security?"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "Is Budgie open source?"
 msgstr "Is Budgie open source?"
 
@@ -9627,7 +9622,7 @@ msgstr "Is there a full changelog with every release?"
 msgid "Is there a limit on the number of accounts?"
 msgstr "Is there a limit on the number of accounts?"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "Is there a subscription?"
 msgstr "Is there a subscription?"
 
@@ -10020,10 +10015,6 @@ msgstr "Local-first software is an approach where your data primarily lives on y
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Local-first software is private by construction. If data does not leave the device, it cannot be leaked from a server. There is no server to breach, no database to hack, no employee access to abuse."
 msgstr "Local-first software is private by construction. If data does not leave the device, it cannot be leaked from a server. There is no server to breach, no database to hack, no employee access to abuse."
-
-#: src/app/[lang]/blog/local-first-movement-developers/page.tsx
-msgid "local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance"
-msgstr "local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Local-first systems choose availability. You can always work, even offline. The system uses CRDTs or similar techniques to ensure that when partitions heal, all changes can be merged without conflicts. The trade-off is eventual consistency: different devices might temporarily see different states, converging over time."
@@ -10433,10 +10424,6 @@ msgid "Mint Alternatives"
 msgstr "Mint Alternatives"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Mint alternatives, Mint shutdown, budget app for developers, privacy finance app, offline budget app"
-msgstr "Mint alternatives, Mint shutdown, budget app for developers, privacy finance app, offline budget app"
-
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
 msgstr "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
 
@@ -10455,10 +10442,6 @@ msgstr "Mint shut down in 2024 and most replacements are still cloud-based. Here
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/metadata.ts
 msgid "Mint shut down in 2024. This guide covers why offline-first, on-device expense trackers are the only durable answer to vendor risk and financial-data privacy."
 msgstr "Mint shut down in 2024. This guide covers why offline-first, on-device expense trackers are the only durable answer to vendor risk and financial-data privacy."
-
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Mint shutdown alternative, private Mint replacement, offline budget app after Mint, no cloud Mint alternative"
-msgstr "Mint shutdown alternative, private Mint replacement, offline budget app after Mint, no cloud Mint alternative"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/metadata.ts
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx
@@ -11311,7 +11294,7 @@ msgstr "No. Because Budgie stores all data locally and has no backend that recei
 msgid "No. Budgie bank sync connects directly from your device to supported bank APIs without routing through a financial aggregator. For banks not yet supported by direct sync, CSV and PDF import provides full compatibility without any third-party credential handling."
 msgstr "No. Budgie bank sync connects directly from your device to supported bank APIs without routing through a financial aggregator. For banks not yet supported by direct sync, CSV and PDF import provides full compatibility without any third-party credential handling."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
 msgstr "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
 
@@ -11733,17 +11716,9 @@ msgstr "Offline-first expense tracker"
 msgid "Offline-first expense tracking"
 msgstr "Offline-first expense tracking"
 
-#: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "offline-first finance, bank data safety, Plaid alternative, no bank login budget app"
-msgstr "offline-first finance, bank data safety, Plaid alternative, no bank login budget app"
-
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Offline-first means independence:"
 msgstr "Offline-first means independence:"
-
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "offline-first privacy, financial app security, private budget app"
-msgstr "offline-first privacy, financial app security, private budget app"
 
 #: src/app/[lang]/features/opengraph-image.tsx
 msgid "Offline-first. Private. AI-powered."
@@ -11822,7 +11797,7 @@ msgstr "On your phone"
 msgid "On your phone — no category or tag name ever leaves it"
 msgstr "On your phone — no category or tag name ever leaves it"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "On your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing to upload and nothing for us to read. Set a PIN and the data is encrypted on the device with that PIN."
 msgstr "On your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing to upload and nothing for us to read. Set a PIN and the data is encrypted on the device with that PIN."
 
@@ -11869,10 +11844,6 @@ msgstr "On-Device AI Auto-Categorization — Budgie"
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "on-device AI budget app"
 msgstr "on-device AI budget app"
-
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "on-device AI budget app, private AI finance, offline AI finance app, offline AI expense tracker"
-msgstr "on-device AI budget app, private AI finance, offline AI finance app, offline AI expense tracker"
 
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
 msgid "On-Device AI Categorization"
@@ -14514,10 +14485,6 @@ msgstr "Source code is publicly available — read every line that touches your 
 msgid "source-available"
 msgstr "source-available"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
-msgid "source-available budgeting, financial transparency, budget app security, public source finance"
-msgstr "source-available budgeting, financial transparency, budget app security, public source finance"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/metadata.ts
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
@@ -16045,7 +16012,7 @@ msgstr "The slow leak in every budget"
 msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
 msgstr "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
 
@@ -18100,7 +18067,7 @@ msgstr "Where does my Monobank token live?"
 msgid "Where does tapping a widget take me?"
 msgstr "Where does tapping a widget take me?"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "Where is my financial data stored?"
 msgstr "Where is my financial data stored?"
 
@@ -18877,7 +18844,7 @@ msgstr "Yes. A rule holds several actions, so the same match can set the categor
 msgid "Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics."
 msgstr "Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "Yes. Adding transactions, budgets, tags, analytics and every screen that reads your history run entirely from the local database, so the app behaves the same in aeroplane mode. Only bank sync and exchange-rate refreshes need a connection, and they catch up when you are back online."
 msgstr "Yes. Adding transactions, budgets, tags, analytics and every screen that reads your history run entirely from the local database, so the app behaves the same in aeroplane mode. Only bank sync and exchange-rate refreshes need a connection, and they catch up when you are back online."
 
@@ -18989,7 +18956,7 @@ msgstr "Yes. Like other accounts, deposits have an “include in net worth” se
 msgid "Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste don't expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
 msgstr "Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste don't expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+#: src/generic/component/faq-section/faq-section.tsx
 msgid "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
 msgstr "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
 
