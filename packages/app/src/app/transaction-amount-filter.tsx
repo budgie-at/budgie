@@ -9,6 +9,7 @@ import { AmountInput } from '../@generic/component/amount-input/amount-input';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FormItem } from '../@generic/component/form-item/form-item';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
@@ -22,7 +23,8 @@ const KEYBOARD_STICKY_OFFSET = { closed: 0, opened: 12 };
 
 export default function TransactionAmountFilterModal() {
     const { t } = useLingui();
-    const [, resolveTransactionAmountFilter] = useTransactionAmountFilterModal();
+    const [, resolveTransactionAmountFilter, dismissTransactionAmountFilter] = useTransactionAmountFilterModal();
+    useModalDismiss(dismissTransactionAmountFilter);
     const currentParams = useTransactionAmountFilterModalParams();
 
     const [fromValue, setFromValue, fromValueRef] = useStateRef<number>(() => currentParams?.value?.from ?? 0);

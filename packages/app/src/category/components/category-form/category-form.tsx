@@ -72,40 +72,26 @@ export const CategoryForm = (props: Props) => {
 
     const handleIconSelect = (selectedIcon: UserIconType) => void setValue('icon', selectedIcon);
 
-    const handleIconPress = async () => {
-        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords: iconTerms });
-
-        if (isDefined(selectedIcon)) {
-            handleIconSelect(selectedIcon);
-        }
+    const handleIconPress = () => {
+        openIconSelector({ selectedIcon: icon, keywords: iconTerms }, selectedIcon => {
+            if (isDefined(selectedIcon)) {
+                handleIconSelect(selectedIcon);
+            }
+        });
     };
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
     };
 
-    const handleMerge = async () => {
-        if (!isDefined(category?.id)) {
-            return;
-        }
-
-        const targetCategoryId = await openCategorySelector({
-            excludeCategoryIds: [category.id],
-            description: t`Select a category to merge into`,
-            variant: 'primary'
-        });
-
-        if (!isDefined(targetCategoryId)) {
-            return;
-        }
-
+    const mergeInto = async (sourceCategoryId: number, targetCategoryId: number) => {
         try {
             const targetCategory = await appRuntime.runPromise(
                 Effect.gen(function* () {
                     const categoryRepository = yield* CategoryRepository;
                     const categoryService = yield* CategoryService;
                     const [foundCategory] = yield* categoryRepository.findById(targetCategoryId, language);
-                    yield* categoryService.mergeInto(category.id, targetCategoryId);
+                    yield* categoryService.mergeInto(sourceCategoryId, targetCategoryId);
 
                     return foundCategory;
                 })
@@ -117,6 +103,27 @@ export const CategoryForm = (props: Props) => {
         } catch {
             showErrorToast(t`Could not merge category`, t`Please try again later`);
         }
+    };
+
+    const handleMerge = () => {
+        const sourceCategoryId = category?.id;
+
+        if (!isDefined(sourceCategoryId)) {
+            return;
+        }
+
+        openCategorySelector(
+            {
+                excludeCategoryIds: [sourceCategoryId],
+                description: t`Select a category to merge into`,
+                variant: 'primary'
+            },
+            targetCategoryId => {
+                if (isDefined(targetCategoryId)) {
+                    void mergeInto(sourceCategoryId, targetCategoryId);
+                }
+            }
+        );
     };
 
     const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {

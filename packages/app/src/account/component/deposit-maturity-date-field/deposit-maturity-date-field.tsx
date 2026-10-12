@@ -28,12 +28,12 @@ export const DepositMaturityDateField = ({ control, variant }: Props) => {
         const description = isDefined(value) ? t`Expected maturity date` : t`When does the deposit mature?`;
         const title = isDefined(value) ? formatDayAndFullMonthAndYear(value) : t`Set Maturity Date`;
 
-        const handleOpen = async () => {
-            const result = await openDatePicker({ initialDate: value ?? new Date() });
-
-            if (isDefined(result)) {
-                onChange(result);
-            }
+        const handleOpen = () => {
+            openDatePicker({ initialDate: value ?? new Date() }, selectedDate => {
+                if (isDefined(selectedDate)) {
+                    onChange(selectedDate);
+                }
+            });
         };
 
         return (

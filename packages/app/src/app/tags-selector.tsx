@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
@@ -52,7 +53,8 @@ const resolvePrimaryTagId = (selectedTagIds: number[], primaryTagId: number | nu
 export default function TagsSelectorModal() {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
-    const [, resolveTagsSelector] = useTagsSelectorModal();
+    const [, resolveTagsSelector, dismissTagsSelector] = useTagsSelectorModal();
+    useModalDismiss(dismissTagsSelector);
     const currentParams = useTagsSelectorModalParams();
 
     const {
@@ -110,18 +112,19 @@ export default function TagsSelectorModal() {
         });
     };
 
-    const handleCreatePress = async () => {
-        const result = await openTagForm({ defaultTitle: search });
-        if (isDefined(result)) {
-            setSelected(previous => {
-                const selectedTagIds = [...previous, result.tag.id];
-                const nextPrimaryTagId = resolvePrimaryTagId(selectedTagIds, primaryTagIdRef.current);
+    const handleCreatePress = () => {
+        openTagForm({ defaultTitle: search }, result => {
+            if (isDefined(result)) {
+                setSelected(previous => {
+                    const selectedTagIds = [...previous, result.tag.id];
+                    const nextPrimaryTagId = resolvePrimaryTagId(selectedTagIds, primaryTagIdRef.current);
 
-                setPrimaryTagId(nextPrimaryTagId);
+                    setPrimaryTagId(nextPrimaryTagId);
 
-                return reorderTagIdsByPrimary(selectedTagIds, nextPrimaryTagId);
-            });
-        }
+                    return reorderTagIdsByPrimary(selectedTagIds, nextPrimaryTagId);
+                });
+            }
+        });
     };
 
     const handleDone = () => {

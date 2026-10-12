@@ -1,11 +1,13 @@
 import { isDefined } from '@rnw-community/shared';
 
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { RuleFormCreate } from '../rule/components/rule-form-create/rule-form-create';
 import { RuleFormEdit } from '../rule/components/rule-form-edit/rule-form-edit';
 import { useRuleFormModal, useRuleFormModalParams } from '../rule/context/rule-form-modal.context';
 
 export default function RuleFormModal() {
-    const [, resolveRuleForm] = useRuleFormModal();
+    const [, resolveRuleForm, dismissRuleForm] = useRuleFormModal();
+    useModalDismiss(dismissRuleForm);
     const currentParams = useRuleFormModalParams();
 
     const handleCancel = () => {

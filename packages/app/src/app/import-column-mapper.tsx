@@ -8,6 +8,7 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../@generic/component/button/button';
 import { Footer } from '../@generic/component/footer/footer';
 import { Icon } from '../@generic/component/icon/icon';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { ImportColumnMapperOption } from '../import/components/import-column-mapper-option/import-column-mapper-option';
 import { useImportColumnMapperModal, useImportColumnMapperModalParams } from '../import/context/import-column-mapper-modal.context';
 
@@ -17,7 +18,8 @@ const sortHeaders = (first: string, second: string): number => first.localeCompa
 
 export default function ImportColumnMapperModal() {
     const { t } = useLingui();
-    const [, resolveImportColumnMapper] = useImportColumnMapperModal();
+    const [, resolveImportColumnMapper, dismissImportColumnMapper] = useImportColumnMapperModal();
+    useModalDismiss(dismissImportColumnMapper);
     const currentParams = useImportColumnMapperModalParams();
 
     const headers = currentParams?.headers ?? [];
@@ -27,9 +29,8 @@ export default function ImportColumnMapperModal() {
 
     const availableHeaders = headers.filter(header => header === currentValue || !selectedHeaders.includes(header)).sort(sortHeaders);
     const hasCurrentValue = isNotEmptyString(currentValue);
-    const availableCount = availableHeaders.length;
     const description = t({
-        message: plural(availableCount, {
+        message: plural(availableHeaders.length, {
             one: '# column available',
             other: '# columns available'
         })

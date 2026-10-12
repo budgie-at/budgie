@@ -29,16 +29,19 @@ export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }:
         excludeAccountTypes: [AccountTypeEnum.DEBT]
     });
 
-    const handlePress = async () => {
-        const selectedAccountId = await openAccountSelector({
-            initialAccountId: accountId,
-            excludeAccountTypes: [AccountTypeEnum.DEBT],
-            onlyActive: false
-        });
-
-        if (isDefined(selectedAccountId)) {
-            onChange(selectedAccountId);
-        }
+    const handlePress = () => {
+        openAccountSelector(
+            {
+                initialAccountId: accountId,
+                excludeAccountTypes: [AccountTypeEnum.DEBT],
+                onlyActive: false
+            },
+            selectedAccountId => {
+                if (isDefined(selectedAccountId)) {
+                    onChange(selectedAccountId);
+                }
+            }
+        );
     };
 
     const handleClearPress = (event: GestureResponderEvent) => {

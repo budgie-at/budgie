@@ -42,12 +42,10 @@ export const useSimpleTransactionActionsMenu = ({
     });
 
     const handleOpenRefundConvert = () => {
-        void openConvertToRefund({ refundIncomeTransactionId: transactionId }).then(canonicalId => {
+        openConvertToRefund({ refundIncomeTransactionId: transactionId }, canonicalId => {
             if (isDefined(canonicalId)) {
                 router.replace({ pathname: '/transactions/[id]/expense', params: { id: String(canonicalId) } });
             }
-
-            return null;
         });
     };
 
@@ -56,7 +54,7 @@ export const useSimpleTransactionActionsMenu = ({
             return;
         }
 
-        void openConvertToTransfer({
+        openConvertToTransfer({
             transactionId,
             transactionType,
             excludeAccountId: (transactionType === TransactionTypeEnum.EXPENSE ? transaction.fromAccountId : transaction.toAccountId) ?? 0,

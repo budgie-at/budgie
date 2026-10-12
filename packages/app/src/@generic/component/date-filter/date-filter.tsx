@@ -20,12 +20,12 @@ export const DateFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
     const [openDateFilter] = useDateFilterModal();
 
-    const handleOpen = async () => {
-        const result = await openDateFilter({ value });
-
-        if (isDefined(result)) {
-            onChange(result.value);
-        }
+    const handleOpen = () => {
+        openDateFilter({ value }, selectedFilter => {
+            if (isDefined(selectedFilter)) {
+                onChange(selectedFilter.value);
+            }
+        });
     };
 
     const getLabel = () => {

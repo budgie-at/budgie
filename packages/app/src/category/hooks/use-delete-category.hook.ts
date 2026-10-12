@@ -36,9 +36,11 @@ export const useDeleteCategory = () => {
                 other: 'This category has # transactions. Select another category to reassign them to.'
             })
         });
-        const targetCategoryId = yield* Effect.promise(() =>
-            openCategorySelector({ excludeCategoryIds: [id], description, variant: 'primary' })
-        );
+        const targetCategoryId = yield* Effect.callback<number | null>(resume => {
+            openCategorySelector({ excludeCategoryIds: [id], description, variant: 'primary' }, selectedCategoryId => {
+                resume(Effect.succeed(selectedCategoryId));
+            });
+        });
 
         if (isDefined(targetCategoryId)) {
             yield* categoryService.mergeInto(id, targetCategoryId).pipe(

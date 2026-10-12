@@ -56,8 +56,8 @@ export const useCategorizeInboxActions = (
         }
     };
 
-    const pickLabels = async (source: Omit<CategorizeInboxAssignmentInterface, 'labelId'>, suggestedLabelIds: number[]): Promise<void> =>
-        void assignLabels(source, await strategy.pickLabels(source.displayTitle, suggestedLabelIds));
+    const pickLabels = (source: Omit<CategorizeInboxAssignmentInterface, 'labelId'>, suggestedLabelIds: number[]): void =>
+        void strategy.pickLabels(source.displayTitle, suggestedLabelIds, labelIds => void assignLabels(source, labelIds));
 
     const undo = (write: CategorizeInboxLastWriteInterface): void => {
         setLastWrite(null);
@@ -76,25 +76,26 @@ export const useCategorizeInboxActions = (
         );
     };
 
-    const applyFollowUp = async (write: CategorizeInboxLastWriteInterface): Promise<void> => {
-        const tagIds = await strategy.pickFollowUpTagIds?.(write.assignments[0]);
-        if (isNotEmptyArray(tagIds)) {
-            enqueueWrite(
-                Effect.gen(function* () {
-                    const categorizeInboxService = yield* CategorizeInboxService;
-                    const followUpAssignments = yield* categorizeInboxService.assign(
-                        CategorizeInboxLabelKindEnum.TAG,
-                        tagIds.map(labelId => ({ ...write.assignments[0], labelId })),
-                        TagSourceEnum.USER
-                    );
+    const applyFollowUp = (write: CategorizeInboxLastWriteInterface): void => {
+        strategy.pickFollowUpTagIds?.(write.assignments[0], tagIds => {
+            if (isNotEmptyArray(tagIds)) {
+                enqueueWrite(
+                    Effect.gen(function* () {
+                        const categorizeInboxService = yield* CategorizeInboxService;
+                        const followUpAssignments = yield* categorizeInboxService.assign(
+                            CategorizeInboxLabelKindEnum.TAG,
+                            tagIds.map(labelId => ({ ...write.assignments[0], labelId })),
+                            TagSourceEnum.USER
+                        );
 
-                    setLastWrite(previous => (previous === write ? { ...write, followUpAssignments } : previous));
-                    hapticNotification(NotificationFeedbackType.Success);
-                }),
-                emptyFn,
-                t`Could not tag transactions`
-            );
-        }
+                        setLastWrite(previous => (previous === write ? { ...write, followUpAssignments } : previous));
+                        hapticNotification(NotificationFeedbackType.Success);
+                    }),
+                    emptyFn,
+                    t`Could not tag transactions`
+                );
+            }
+        });
     };
 
     return {
@@ -105,9 +106,9 @@ export const useCategorizeInboxActions = (
         movedToCashTransactionIds: moveToCashActions.movedToCashTransactionIds,
         assign,
         assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
-        pickClusterLabels: cluster => pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
+        pickClusterLabels: cluster => void pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
         pickRowLabels: row =>
-            pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, []),
+            void pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, []),
         moveToCash: moveToCashActions.moveToCash,
         undo,
         applyFollowUp,

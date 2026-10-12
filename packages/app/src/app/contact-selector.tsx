@@ -9,6 +9,7 @@ import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
 import { useContactSelectorModal, useContactSelectorModalParams } from '../@generic/context/contact-selector-modal.context';
 import { Contact, useContacts } from '../@generic/hook/use-contacts.hook';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 
 const keyExtractor = (item: Contact) => item.id;
 
@@ -23,7 +24,8 @@ const filterContacts = (contacts: Contact[], search: string): Contact[] =>
 
 export default function ContactSelectorModal() {
     const { t } = useLingui();
-    const [, resolveContactSelector] = useContactSelectorModal();
+    const [, resolveContactSelector, dismissContactSelector] = useContactSelectorModal();
+    useModalDismiss(dismissContactSelector);
     const [search, setSearch] = useState('');
     const contacts = useContacts();
 

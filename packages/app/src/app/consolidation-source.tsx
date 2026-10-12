@@ -6,9 +6,9 @@ import { ConsolidationSourceModalContent } from '../transaction/components/conso
 import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
 export default function ConsolidationSourceModal() {
-    const [, resolveConsolidationSource] = useConsolidationSourceModal();
+    const [, resolveConsolidationSource, dismissConsolidationSource] = useConsolidationSourceModal();
     const currentParams = useConsolidationSourceModalParams();
-    const screenOptions = useModalRouteState(currentParams, resolveConsolidationSource, null);
+    const screenOptions = useModalRouteState(currentParams, dismissConsolidationSource);
 
     const handleClose = () => {
         resolveConsolidationSource(null);

@@ -10,6 +10,7 @@ import { FeatureIntro } from '../@generic/component/feature-intro/feature-intro'
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSkeleton } from '../@generic/component/filter-sheet/filter-sheet-skeleton/filter-sheet-skeleton';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { AccountsGroup } from '../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
@@ -38,7 +39,8 @@ const ANALYTICS_ACCOUNT_FILTER_TYPES = [
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
-    const [, resolveTransactionAccountFilter] = useTransactionAccountFilterModal();
+    const [, resolveTransactionAccountFilter, dismissTransactionAccountFilter] = useTransactionAccountFilterModal();
+    useModalDismiss(dismissTransactionAccountFilter);
     const currentParams = useTransactionAccountFilterModalParams();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);

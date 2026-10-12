@@ -14,10 +14,10 @@ export interface CategorizeInboxContextValueInterface extends CategorizeInboxVis
     readonly movedToCashTransactionIds: number[];
     readonly assign: (assignments: CategorizeInboxAssignmentInterface[]) => void;
     readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;
-    readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => Promise<void>;
-    readonly pickRowLabels: (row: CategorizeInboxRowInterface) => Promise<void>;
+    readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => void;
+    readonly pickRowLabels: (row: CategorizeInboxRowInterface) => void;
     readonly moveToCash: (transactionIds: number[]) => void;
     readonly undo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
-    readonly applyFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
+    readonly applyFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => void;
     readonly undoMoveToCash: (transactionIds: number[]) => void;
 }

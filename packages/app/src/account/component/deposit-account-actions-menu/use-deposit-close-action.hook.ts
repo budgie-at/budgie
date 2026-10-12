@@ -18,9 +18,11 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
     const [run, isLoading] = useEffectAction(t`Could not close deposit`);
 
     const closeDeposit = Effect.gen(function* () {
-        const destinationAccountId = yield* Effect.promise(() =>
-            openAccountSelector({ excludeAccountId: accountId, excludeAccountTypes: [AccountTypeEnum.DEBT] })
-        );
+        const destinationAccountId = yield* Effect.callback<number | null>(resume => {
+            openAccountSelector({ excludeAccountId: accountId, excludeAccountTypes: [AccountTypeEnum.DEBT] }, selectedAccountId => {
+                resume(Effect.succeed(selectedAccountId));
+            });
+        });
 
         if (!isDefined(destinationAccountId)) {
             return;

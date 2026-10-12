@@ -61,7 +61,7 @@ export const CategorizeInboxUndoBar = () => {
         const sharedTagIds = firstRow.tagIds.filter(tagId => otherRows.every(row => row.tagIds.includes(tagId)));
         const followUpTagIds = lastWrite.followUpAssignments.map(assignment => assignment.labelId);
 
-        void openRuleForm({
+        openRuleForm({
             prefillData: {
                 conditions: [
                     { field: RuleConditionFieldEnum.TITLE, operator: RuleConditionOperatorEnum.CONTAINS, value: ruleConditionValue }

@@ -13,9 +13,9 @@ import {
 import { ConvertToInstallmentModalSelector } from './convert-to-installment-modal.selector';
 
 export default function ConvertToInstallmentModal() {
-    const [, resolveConvertToInstallment] = useConvertToInstallmentModal();
+    const [, resolveConvertToInstallment, dismissConvertToInstallment] = useConvertToInstallmentModal();
     const currentParams = useConvertToInstallmentModalParams();
-    const screenOptions = useModalRouteState(currentParams, resolveConvertToInstallment, null);
+    const screenOptions = useModalRouteState(currentParams, dismissConvertToInstallment);
 
     if (!isDefined(currentParams)) {
         return null;

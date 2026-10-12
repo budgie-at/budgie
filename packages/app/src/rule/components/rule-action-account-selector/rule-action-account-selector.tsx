@@ -60,16 +60,19 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const { label, hint } = resolveTransferCopy(hasExpenseCondition, hasIncomeCondition);
 
     const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.accountId`>) => {
-        const handleOpen = async () => {
-            const selectedAccountId = await openAccountSelector({
-                initialAccountId: accountId ?? null,
-                excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false
-            });
-
-            if (isDefined(selectedAccountId)) {
-                onChange(selectedAccountId);
-            }
+        const handleOpen = () => {
+            openAccountSelector(
+                {
+                    initialAccountId: accountId ?? null,
+                    excludeAccountTypes: [AccountTypeEnum.DEBT],
+                    onlyActive: false
+                },
+                selectedAccountId => {
+                    if (isDefined(selectedAccountId)) {
+                        onChange(selectedAccountId);
+                    }
+                }
+            );
         };
 
         return (

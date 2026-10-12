@@ -31,9 +31,13 @@ export const useRulesListPageActions = () => {
         runToggle(Effect.flatMap(RuleService, ruleService => ruleService.toggleEnabled(rule.id, enabled)));
     };
 
-    const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) => void openRuleForm({ ruleId: rule.id });
+    const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) => {
+        openRuleForm({ ruleId: rule.id });
+    };
 
-    const handleCreateRule = () => void openRuleForm();
+    const handleCreateRule = () => {
+        openRuleForm();
+    };
 
     useCreateAction({
         icon: UserIconNameEnum.Zap,

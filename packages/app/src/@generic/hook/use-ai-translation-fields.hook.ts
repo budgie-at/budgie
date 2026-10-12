@@ -31,8 +31,8 @@ interface UseAiTranslationFieldsReturn {
         titleTags: string | null;
         disabled: boolean;
         onRegenerate: () => Promise<void>;
-        onTitleEnPress: () => Promise<void>;
-        onTitleTagsPress: () => Promise<void>;
+        onTitleEnPress: () => void;
+        onTitleTagsPress: () => void;
     };
 }
 
@@ -70,11 +70,12 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
         }
     };
 
-    const handleNoteEdit = (current: string | null, setField: (value: string | null) => void) => async (): Promise<void> => {
-        const result = await openNoteInput({ initialValue: current ?? '' });
-        if (isDefined(result)) {
-            setField(result);
-        }
+    const handleNoteEdit = (current: string | null, setField: (value: string | null) => void) => (): void => {
+        openNoteInput({ initialValue: current ?? '' }, result => {
+            if (isDefined(result)) {
+                setField(result);
+            }
+        });
     };
 
     const translationFieldsProps = {

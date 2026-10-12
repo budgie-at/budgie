@@ -18,16 +18,19 @@ export const CategoryFormSelector = ({ categoryId, onChange, excludeCategoryIds,
     const [openCategorySelector] = useCategorySelectorModal();
     const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
 
-    const handleOpen = async () => {
-        const selectedCategoryId = await openCategorySelector({
-            initialCategoryId: categoryId,
-            excludeCategoryIds,
-            variant: 'primary'
-        });
-
-        if (isDefined(selectedCategoryId)) {
-            onChange(selectedCategoryId);
-        }
+    const handleOpen = () => {
+        openCategorySelector(
+            {
+                initialCategoryId: categoryId,
+                excludeCategoryIds,
+                variant: 'primary'
+            },
+            selectedCategoryId => {
+                if (isDefined(selectedCategoryId)) {
+                    onChange(selectedCategoryId);
+                }
+            }
+        );
     };
 
     return (

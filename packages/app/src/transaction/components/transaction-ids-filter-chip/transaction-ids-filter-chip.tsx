@@ -15,19 +15,19 @@ interface Props {
     readonly testID: string;
     readonly activeTestID?: string;
     readonly value: number[] | null;
-    readonly open: (params: IdsFilterValue) => Promise<IdsFilterValue | null | undefined>;
+    readonly open: (params: IdsFilterValue, onResult: (result: IdsFilterValue | null | undefined) => void) => void;
     readonly onChange: (value: number[] | null) => void;
 }
 
 export const TransactionIdsFilterChip = ({ icon, label, activeLabel, testID, activeTestID = testID, value, open, onChange }: Props) => {
     const isActive = isPositiveNumber(value?.length ?? 0);
 
-    const handleOpen = async () => {
-        const result = await open({ value });
-
-        if (isDefined(result)) {
-            onChange(result.value);
-        }
+    const handleOpen = () => {
+        open({ value }, result => {
+            if (isDefined(result)) {
+                onChange(result.value);
+            }
+        });
     };
 
     const chipLabel = isActive ? activeLabel : label;

@@ -14,7 +14,9 @@ export const RulesFeatureIntro = () => {
     const bankIntegrationCount = useGetBankIntegrationCountQuery();
     const [openRuleForm] = useRuleFormModal();
 
-    const handleCreateRule = () => void openRuleForm();
+    const handleCreateRule = () => {
+        openRuleForm();
+    };
     const handleConnectBank = () => void router.push('/create-account');
 
     if (!isPositiveNumber(bankIntegrationCount)) {
