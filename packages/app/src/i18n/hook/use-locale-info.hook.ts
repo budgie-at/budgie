@@ -1,18 +1,25 @@
+import { LanguageEnum } from '@budgie/contracts';
+
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { languageToLocale } from '../util/language-to-locale.util';
 
 import type { LocaleInfoInterface } from '../interface/locale-info.interface';
 
-const SAMPLE_NUMBER = 10000.1;
+const SEPARATORS_BY_LANGUAGE: Record<LanguageEnum, Pick<LocaleInfoInterface, 'decimalSeparator' | 'digitGroupingSeparator'>> = {
+    [LanguageEnum.EN]: { decimalSeparator: '.', digitGroupingSeparator: ',' },
+    [LanguageEnum.FR]: { decimalSeparator: ',', digitGroupingSeparator: ' ' },
+    [LanguageEnum.UK]: { decimalSeparator: ',', digitGroupingSeparator: ' ' },
+    [LanguageEnum.DE]: { decimalSeparator: ',', digitGroupingSeparator: '.' },
+    [LanguageEnum.ES]: { decimalSeparator: ',', digitGroupingSeparator: '.' }
+};
 
 export const useLocaleInfo = (): LocaleInfoInterface => {
-    const languageTag = languageToLocale(useSetting('language'));
-    const parts = new Intl.NumberFormat(languageTag).formatToParts(SAMPLE_NUMBER);
+    const language = useSetting('language');
+    const languageTag = languageToLocale(language);
 
     return {
         languageTag,
         languageCode: languageTag.split('-')[0],
-        decimalSeparator: parts.find(({ type }) => type === 'decimal')?.value ?? '.',
-        digitGroupingSeparator: parts.find(({ type }) => type === 'group')?.value ?? ','
+        ...SEPARATORS_BY_LANGUAGE[language]
     };
 };
