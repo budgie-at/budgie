@@ -704,7 +704,46 @@
                 "react/capitalized-calls": "off",
                 "react/exhaustive-effect-dependencies": "off",
                 "budgie/consistent-this": "error",
-                "budgie/no-undef-init": "error"
+                "budgie/no-undef-init": "error",
+                "budgie/utils-folder": [
+                    "error",
+                    {
+                        "allow": [
+                            "packages/ai/src/@generic/util",
+                            "packages/ai/src/suggestion/util",
+                            "packages/ai/src/voice/util",
+                            "packages/app/src/@generic/util",
+                            "packages/app/src/ai/util",
+                            "packages/app/src/auth/util",
+                            "packages/app/src/i18n/util",
+                            "packages/app/src/rule/util",
+                            "packages/categorization/src/embedding/util",
+                            "packages/consolidation/src/shared/util",
+                            "packages/contracts/src/@generic/util",
+                            "packages/contracts/src/account-balance/util",
+                            "packages/contracts/src/account/util",
+                            "packages/contracts/src/installment-plan/util",
+                            "packages/contracts/src/mcc-category/util",
+                            "packages/contracts/src/transaction-entry/util",
+                            "packages/contracts/src/transaction-tags/util",
+                            "packages/contracts/src/transaction/util",
+                            "packages/import-export/src/import/util",
+                            "packages/landing/src/beta/util",
+                            "packages/landing/src/blog/util",
+                            "packages/landing/src/feature/util",
+                            "packages/landing/src/generic/util",
+                            "packages/landing/src/i18n/util",
+                            "packages/ledger/src/@generic/util",
+                            "packages/ledger/src/transaction/util",
+                            "packages/market/src/@generic/util",
+                            "packages/rules/src/util",
+                            "packages/sync/src/binance/util",
+                            "packages/sync/src/core/util",
+                            "packages/sync/src/erste/util",
+                            "packages/sync/src/privatbank/util"
+                        ]
+                    }
+                ]
             }
         },
         {
