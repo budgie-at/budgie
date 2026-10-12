@@ -6,17 +6,15 @@ import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
-
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
+import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
-import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
@@ -30,27 +28,18 @@ export default function CreateExpenseTransactionPage() {
         comment?: string | string[];
         aiContext?: string | string[];
     }>();
-    const normalizedAccountId = normalizeRouteParam(accountId);
-    const normalizedCategoryId = normalizeRouteParam(categoryId);
-    const normalizedAmount = normalizeRouteParam(amount);
     const normalizedComment = normalizeRouteParam(comment);
     const normalizedAiContext = normalizeRouteParam(aiContext);
-
-    const parsedAccountId =
-        isDefined(normalizedAccountId) && isPositiveNumber(Number(normalizedAccountId)) ? Number(normalizedAccountId) : null;
-    const parsedCategoryId =
-        isDefined(normalizedCategoryId) && isPositiveNumber(Number(normalizedCategoryId)) ? Number(normalizedCategoryId) : void 0;
-    const parsedAmount = isDefined(normalizedAmount) && isPositiveNumber(Number(normalizedAmount)) ? Number(normalizedAmount) : void 0;
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data =>
             appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.createInternal(data))),
         schema: ExpenseTransactionCreateInputSchema,
-        fromAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
+        fromAccountId: parsePositiveRouteParam(accountId) ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
         toAccountId: null,
-        amount: parsedAmount,
-        categoryId: parsedCategoryId,
+        amount: parsePositiveRouteParam(amount) ?? void 0,
+        categoryId: parsePositiveRouteParam(categoryId) ?? void 0,
         comment: normalizedComment
     });
 
@@ -67,7 +56,6 @@ export default function CreateExpenseTransactionPage() {
                     mccCategoryId={null}
                     aiContext={normalizedAiContext}
                     isNewTransaction
-                    buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
                 />

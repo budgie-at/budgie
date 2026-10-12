@@ -6,17 +6,15 @@ import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
-
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
-import { buildIncomeEntry } from '../../../transaction/utils/build-income-entry.util';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
@@ -24,9 +22,7 @@ export default function CreateIncomeTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
     const { markForEmbedding } = useEmbeddingGenerator();
-    const { accountId } = useLocalSearchParams<{ accountId?: string }>();
-
-    const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
+    const { accountId } = useLocalSearchParams<{ accountId?: string | string[] }>();
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
@@ -38,7 +34,7 @@ export default function CreateIncomeTransactionPage() {
             return result;
         },
         schema: IncomeTransactionCreateInputSchema,
-        toAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
+        toAccountId: parsePositiveRouteParam(accountId) ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.INCOME,
         fromAccountId: null
     });
@@ -55,7 +51,6 @@ export default function CreateIncomeTransactionPage() {
                     transactionTitle=""
                     mccCategoryId={null}
                     isNewTransaction
-                    buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
                 />

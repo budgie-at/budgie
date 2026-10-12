@@ -3,8 +3,6 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
-
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
@@ -15,6 +13,7 @@ import {
     useTransactionTypeFilterModal,
     useTransactionTypeFilterModalParams
 } from '../transaction/context/transaction-type-filter-modal.context';
+import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
 const TRANSACTION_TYPE_ROWS = [
     [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME],
@@ -31,19 +30,7 @@ export default function TransactionTypeFilterModal() {
     const localSelectedCount = localValue?.length ?? 0;
 
     const handleSelect = (selected: TransactionTypeEnum) => {
-        setLocalValue(prev => {
-            if (!isDefined(prev)) {
-                return [selected];
-            }
-
-            if (prev.includes(selected)) {
-                const newFilters = prev.filter(type => selected !== type);
-
-                return isNotEmptyArray(newFilters) ? newFilters : null;
-            }
-
-            return [...prev, selected];
-        });
+        setLocalValue(prev => toggleFilterSelection(prev, [selected]));
     };
 
     const handleApply = () => {

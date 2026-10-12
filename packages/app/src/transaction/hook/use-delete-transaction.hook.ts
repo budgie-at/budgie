@@ -16,7 +16,7 @@ export const useDeleteTransaction = () => {
         const confirmText = isConsolidated ? t`Unconsolidate` : t`Delete`;
         const errorText = isConsolidated ? t`Could not unconsolidate transaction.` : t`Could not delete transaction.`;
 
-        await runConfirmedTransactionAction(
+        return runConfirmedTransactionAction(
             { title, message, confirmText, cancelText: t`Cancel`, isDestructive: true },
             errorText,
             transactionService => transactionService.deleteById(transactionId)
