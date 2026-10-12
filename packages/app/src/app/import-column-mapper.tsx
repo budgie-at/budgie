@@ -28,9 +28,10 @@ export default function ImportColumnMapperModal() {
     const fieldLabel = currentParams?.fieldLabel ?? '';
 
     const availableHeaders = headers.filter(header => header === currentValue || !selectedHeaders.includes(header)).sort(sortHeaders);
+    const availableCount = availableHeaders.length;
     const hasCurrentValue = isNotEmptyString(currentValue);
     const description = t({
-        message: plural(availableHeaders.length, {
+        message: plural(availableCount, {
             one: '# column available',
             other: '# columns available'
         })
