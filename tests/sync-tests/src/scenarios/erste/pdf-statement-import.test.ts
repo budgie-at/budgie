@@ -5,7 +5,15 @@ import { asc, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { expectAtmCashWithdrawalConsolidation, fetchExpenseEntries, requireInstrument, seed, testDb, TestLayer, testQueryService } from '../../harness';
+import {
+    expectAtmCashWithdrawalConsolidation,
+    fetchExpenseEntries,
+    requireInstrument,
+    seed,
+    testDb,
+    TestLayer,
+    testQueryService
+} from '../../harness';
 
 import type { PdfTextItemInterface } from '@budgie/sync';
 

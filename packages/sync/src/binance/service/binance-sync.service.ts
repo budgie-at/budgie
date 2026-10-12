@@ -1,6 +1,11 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountRepository, SyncModeEnum, TransactionRepository } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, ImportedTransactionEntryUpdateService, TransactionService, TransferCreationService } from '@budgie/ledger';
+import {
+    AccountBalanceIncrementalService,
+    ImportedTransactionEntryUpdateService,
+    TransactionService,
+    TransferCreationService
+} from '@budgie/ledger';
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { subDays } from 'date-fns/subDays';
 import { subYears } from 'date-fns/subYears';
