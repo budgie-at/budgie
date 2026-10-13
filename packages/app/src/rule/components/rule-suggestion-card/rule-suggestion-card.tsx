@@ -1,75 +1,14 @@
-import {
-    RuleActionTypeEnum,
-    RuleAssociationEnum,
-    RuleConditionMatchTypeEnum,
-    RuleCreateInputInterface,
-    RuleWithRelationsEntityInterface
-} from '@budgie/contracts';
-import { RuleConditionInputInterface, RuleRepository, RuleService, SuggestRuleDataInterface, selectSuggestConditions } from '@budgie/rules';
+import { RuleService, SuggestRuleDataInterface } from '@budgie/rules';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Alert } from 'react-native';
-
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
-
-const serializeCondition = (condition: RuleConditionInputInterface): string =>
-    `${condition.field}|${condition.operator}|${condition.value.toLowerCase()}|${condition.secondaryValue?.toLowerCase() ?? ''}`;
-
-const areConditionsEqual = (inputConditions: RuleConditionInputInterface[], existingConditions: RuleConditionInputInterface[]): boolean => {
-    if (inputConditions.length !== existingConditions.length) {
-        return false;
-    }
-
-    const inputKeys = inputConditions.map(serializeCondition).sort();
-    const existingKeys = existingConditions.map(serializeCondition).sort();
-
-    return inputKeys.every((key, index) => key === existingKeys[index]);
-};
-
-const findDuplicateRule = (
-    conditions: RuleConditionInputInterface[],
-    conditionMatchType: RuleConditionMatchTypeEnum,
-    existingRules: Pick<RuleWithRelationsEntityInterface, 'id' | 'conditionMatchType' | RuleAssociationEnum.CONDITIONS>[]
-): Pick<RuleWithRelationsEntityInterface, 'id' | 'conditionMatchType' | RuleAssociationEnum.CONDITIONS> | undefined =>
-    existingRules.find(
-        rule =>
-            rule.conditionMatchType === conditionMatchType &&
-            isNotEmptyArray(rule.conditions) &&
-            areConditionsEqual(conditions, rule.conditions)
-    );
-
-const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCreateInputInterface | null => {
-    const conditions = selectSuggestConditions(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
-
-    if (!isDefined(conditions)) {
-        return null;
-    }
-
-    const categoryAction = isPositiveNumber(suggestRuleData.categoryId)
-        ? [{ type: RuleActionTypeEnum.SET_CATEGORY as const, categoryId: suggestRuleData.categoryId, tagId: null, accountId: null }]
-        : [];
-
-    const tagActions = suggestRuleData.tagIds.filter(isPositiveNumber).map(tagId => ({
-        type: RuleActionTypeEnum.ADD_TAG as const,
-        categoryId: null,
-        tagId,
-        accountId: null
-    }));
-
-    return {
-        enabled: true,
-        conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-        conditions,
-        actions: [...categoryAction, ...tagActions]
-    };
-};
 
 import { RuleSuggestionCardSelector } from './rule-suggestion-card.selector';
 
@@ -80,72 +19,54 @@ interface Props {
     readonly onCreatingChange?: (next: boolean) => void;
 }
 
-const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> => {
-    const rule = await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.create(ruleInput)));
-    appRuntime.runFork(
-        Effect.flatMap(RuleApplicationDrainerService, ruleApplicationDrainerService =>
-            ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast)
-        )
-    );
-};
-
 export const RuleSuggestionCard = (props: Props) => {
     const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
     const [openRuleForm] = useRuleFormModal();
 
-    const handleDuplicateRule = (
-        duplicateRule: Pick<RuleWithRelationsEntityInterface, 'id'>,
-        ruleInput: RuleCreateInputInterface
-    ): Promise<void> =>
-        new Promise<void>((resolve, reject) => {
-            const handleEditExisting = () => {
-                openRuleForm({ ruleId: duplicateRule.id });
-                // oxlint-disable-next-line lingui/no-unlocalized-strings
-                reject(new Error('Edit'));
-            };
-
-            const handleCancel = () => {
-                // oxlint-disable-next-line lingui/no-unlocalized-strings
-                reject(new Error('Cancelled'));
-            };
-
-            const onCreateAnywaySuccess = (): void => {
-                resolve();
-            };
-
-            const handleCreateAnyway = () => {
-                void createRule(ruleInput).then(onCreateAnywaySuccess, reject);
-            };
-
+    const confirmDuplicate = (ruleId: number) =>
+        Effect.callback<void>(resume => {
             Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
-                { text: t`Cancel`, style: 'cancel', onPress: handleCancel },
-                { text: t`Edit existing`, onPress: handleEditExisting },
-                { text: t`Create anyway`, onPress: handleCreateAnyway }
+                {
+                    text: t`Cancel`,
+                    style: 'cancel',
+                    onPress: () => {
+                        resume(Effect.interrupt);
+                    }
+                },
+                {
+                    text: t`Edit existing`,
+                    onPress: () => {
+                        openRuleForm({ ruleId });
+                        resume(Effect.interrupt);
+                    }
+                },
+                {
+                    text: t`Create anyway`,
+                    onPress: () => {
+                        resume(Effect.void);
+                    }
+                }
             ]);
         });
 
-    const handleYes = async (): Promise<void> => {
+    const createRule = Effect.gen(function* () {
+        const ruleService = yield* RuleService;
+        const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+        const rule = yield* ruleService
+            .createFromSuggestion(suggestRuleData)
+            .pipe(
+                Effect.catchTag('RuleSuggestionDuplicateError', error =>
+                    Effect.andThen(confirmDuplicate(error.ruleId), ruleService.createFromSuggestionAllowingDuplicate(suggestRuleData))
+                )
+            );
+
+        yield* Effect.forkDetach(ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast));
+    });
+
+    const handleYes = (): Promise<void> => {
         onCreatingChange?.(true);
-        const ruleInput = buildRuleCreateInput(suggestRuleData);
 
-        if (!isDefined(ruleInput)) {
-            appRuntime.runFork(Effect.logError('handleYes:throw:invalid-input'));
-            // oxlint-disable-next-line lingui/no-unlocalized-strings
-            throw new Error('Invalid rule input');
-        }
-
-        const existingRules = await appRuntime.runPromise(
-            Effect.flatMap(RuleRepository, ruleRepository => ruleRepository.findAllWithConditions())
-        );
-        const duplicateRule = findDuplicateRule(ruleInput.conditions, ruleInput.conditionMatchType, existingRules);
-
-        if (isDefined(duplicateRule)) {
-            await handleDuplicateRule(duplicateRule, ruleInput);
-
-            return;
-        }
-
-        await createRule(ruleInput);
+        return appRuntime.runPromise(createRule);
     };
 
     return (

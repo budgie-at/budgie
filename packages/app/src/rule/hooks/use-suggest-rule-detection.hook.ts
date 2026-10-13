@@ -3,6 +3,7 @@ import {
     RuleDetectionModeEnum,
     buildDismissKey,
     computeDetectionMode,
+    detectRuleChanges,
     doesRuleMatchTransaction,
     extractRuleActionOutcomes,
     hasConflictWithRuleOutcomes
@@ -54,11 +55,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const originalTagIds = transaction.transactionTags.map(({ tagId }) => tagId);
     const isAdjustment = transaction.type === TransactionTypeEnum.ADJUSTMENT;
 
-    const categoryChanged = isDefined(categoryId) && categoryId !== originalCategoryId;
-    const sortedTagIds = [...tagIds].sort((left, right) => left - right);
-    const sortedOriginalTagIds = [...originalTagIds].sort((left, right) => left - right);
-    const tagsChanged =
-        sortedTagIds.length !== sortedOriginalTagIds.length || sortedTagIds.some((id, index) => id !== sortedOriginalTagIds[index]);
+    const { categoryChanged, tagsChanged } = detectRuleChanges(categoryId, originalCategoryId, tagIds, originalTagIds);
 
     const mccCategory = transaction.entries[0]?.mccCategory ?? null;
     const mccCode = isDefined(mccCategory) ? mccCategory.mcc : null;
