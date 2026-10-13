@@ -732,7 +732,7 @@ msgstr "Bank sync reset"
 msgid "Base currency"
 msgstr "Base currency"
 
-#: src/money-data/service/money-data-upgrade.service.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
 msgstr "Base instrument not found"
 

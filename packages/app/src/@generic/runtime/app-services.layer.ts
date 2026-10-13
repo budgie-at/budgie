@@ -52,7 +52,8 @@ import {
     TransferCreationService,
     LedgerWorkload,
     AccountDebtOpeningService,
-    DebtAccountService
+    DebtAccountService,
+    MoneyDataUpgradeService
 } from '@budgie/ledger';
 import {
     EntryBaseValuationService,
@@ -101,7 +102,6 @@ import { ExchangeRateBackgroundService } from '../../exchange-rate/service/excha
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
-import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';

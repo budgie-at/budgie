@@ -731,7 +731,7 @@ msgstr "Synchronisation bancaire réinitialisée"
 msgid "Base currency"
 msgstr "Devise de base"
 
-#: src/money-data/service/money-data-upgrade.service.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
 msgstr "Devise de base introuvable"
 

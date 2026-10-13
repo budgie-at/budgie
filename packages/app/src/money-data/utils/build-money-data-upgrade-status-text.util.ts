@@ -2,7 +2,7 @@ import { t } from '@lingui/core/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
+import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '@budgie/ledger';
 
 export const buildMoneyDataUpgradeStatusText = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): string => {
     if (isDefined(snapshot.lastError)) {
