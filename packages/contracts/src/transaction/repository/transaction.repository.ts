@@ -88,8 +88,8 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                         .where(
                             and(
-                                filters.buildVisibleTransactionCondition(),
-                                filters.buildLedgerEntryCondition(),
+                                transactionFilters.buildVisibleTransactionCondition(),
+                                transactionFilters.buildLedgerEntryCondition(),
                                 inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.DEBT]),
                                 eq(TransactionEntryEntityTable.accountId, input.accountId),
                                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),

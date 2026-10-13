@@ -1,4 +1,4 @@
-const normalizePart = (value: string | number) => String(value).replace(/[^a-zA-Z0-9]+/gu, '_');
+const normalizePart = (value: string | number) => String(value).replaceAll(/[^a-zA-Z0-9]+/gu, '_');
 
 export const WalletCaptureReviewCardSelector = {
     Card: (captureId: string) => `ApplePayCaptureSettings.ReviewCard.${normalizePart(captureId)}` as const,
