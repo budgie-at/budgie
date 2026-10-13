@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **app:** treat a cancelled duplicate-rule prompt as a normal outcome ([1d2331d](https://github.com/budgie-at/budgie/commit/1d2331d6efd626045f847549250aeedcab0154e4))
+
+
+
+
+
 ## [6.103.2](https://github.com/budgie-at/budgie/compare/v6.103.1...v6.103.2) (2026-10-13)
 
 

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **app:** treat a cancelled duplicate-rule prompt as a normal outcome ([1d2331d](https://github.com/budgie-at/budgie/commit/1d2331d6efd626045f847549250aeedcab0154e4))
+* **ledger:** read historical rate dates as local days ([4f278ea](https://github.com/budgie-at/budgie/commit/4f278ea417861a292f7929272708c661addfbdba))
+* **market:** skip empty lots when consuming crypto lots ([2b7bf5c](https://github.com/budgie-at/budgie/commit/2b7bf5caee989f0bbb347c98920f81a917e45275))
+* **sync:** undo only ATM cash moves ([eb696b3](https://github.com/budgie-at/budgie/commit/eb696b3153713626fb69dc327cd3240babc3cdbb))
+
+
+
+
+
 ## [6.103.2](https://github.com/budgie-at/budgie/compare/v6.103.1...v6.103.2) (2026-10-13)
 
 
