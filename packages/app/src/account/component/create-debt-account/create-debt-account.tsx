@@ -1,4 +1,5 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtOpeningService, DebtAccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -11,8 +12,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
-import { AccountDebtOpeningService } from '../../service/account-debt-opening.service';
-import { DebtAccountService } from '../../service/debt-account.service';
+import { getDebtOpeningMessages } from '../../utils/get-debt-opening-messages.util';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
@@ -45,7 +45,7 @@ export const CreateDebtAccount = () => {
         if (isDefined(openingAccountId)) {
             return appRuntime.runPromise(
                 Effect.flatMap(AccountDebtOpeningService, accountDebtOpeningService =>
-                    accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId)
+                    accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId, getDebtOpeningMessages())
                 )
             );
         }

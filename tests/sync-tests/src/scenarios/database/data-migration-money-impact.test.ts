@@ -1,8 +1,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { AccountBalanceRepository, AccountDebtTypeEnum, AccountTypeEnum, PRECISION, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtOpeningService } from '@budgie/ledger';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
@@ -10,7 +10,7 @@ import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { seed, seedBankPair, testDb, TestLayer } from '../../harness';
+import { seed, seedBankPair, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
 const applyMigration = (migrationName: string) =>
     Effect.forEach(
@@ -69,7 +69,8 @@ const seedLedgerFixture = Effect.fnUntraced(function* () {
             contactId: null,
             deadline: null
         },
-        bankAccount.id
+        bankAccount.id,
+        DEBT_OPENING_MESSAGES
     );
 
     return [bankAccount.id, cashAccount.id, debtAccount.id];

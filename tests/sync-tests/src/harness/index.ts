@@ -82,3 +82,4 @@ export { seedUsdtFundingAccount } from './binance/seed-usdt-funding-account';
 export { expectParentedToCanonical } from './consolidation/expect-parented-to-canonical';
 export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';
+export { DEBT_OPENING_MESSAGES } from './debt/debt-opening-messages';

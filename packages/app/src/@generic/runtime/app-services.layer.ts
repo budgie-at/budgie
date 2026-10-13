@@ -50,7 +50,9 @@ import {
     TransactionService,
     TransactionTransferService,
     TransferCreationService,
-    LedgerWorkload
+    LedgerWorkload,
+    AccountDebtOpeningService,
+    DebtAccountService
 } from '@budgie/ledger';
 import {
     EntryBaseValuationService,
@@ -78,8 +80,6 @@ import {
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { AccountDebtOpeningService } from '../../account/service/account-debt-opening.service';
-import { DebtAccountService } from '../../account/service/debt-account.service';
 import { AiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';

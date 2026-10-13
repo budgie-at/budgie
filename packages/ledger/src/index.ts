@@ -4,10 +4,12 @@ export { DepositNegativeBalanceError } from './account/error/deposit-negative-ba
 export { DebtTransferNotAllowedError } from './transaction/error/debt-transfer-not-allowed.error';
 export { DepositReceivingAmountMismatchError } from './account/error/deposit-receiving-amount-mismatch.error';
 
+export { AccountDebtOpeningService } from './account/service/account-debt-opening.service';
 export { AccountArchiveService } from './account/service/account-archive.service';
 export { AccountBalanceIncrementalService } from './account/service/account-balance-incremental.service';
 export { AccountService } from './account/service/account.service';
 export { AccountTransferConversionService } from './account/service/account-transfer-conversion.service';
+export { DebtAccountService } from './account/service/debt-account.service';
 
 export { CategoryService } from './category/service/category.service';
 
@@ -29,6 +31,8 @@ export { createTransactionInput } from './transaction/utils/create-transaction-i
 export { getTransactionCategoryEntries } from './transaction/utils/get-transaction-category-entries.util';
 export { getTransactionFeeEntries } from './transaction/utils/get-transaction-fee-entries.util';
 
+export type { DebtAccountUpdateInputInterface } from './account/interface/debt-account-update-input.interface';
+export type { DebtOpeningMessagesInterface } from './account/interface/debt-opening-messages.interface';
 export type { ImportedBatchPreparationInterface } from './transaction/interface/imported-batch-preparation.interface';
 export type { InstallmentPlanConvertInputInterface } from './installment/interface/installment-plan-convert-input.interface';
 export type { StartDepositInputInterface } from './transaction/interface/start-deposit-input.interface';
