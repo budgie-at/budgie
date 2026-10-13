@@ -2,6 +2,8 @@ import { msg } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
@@ -9,6 +11,8 @@ import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
 import { BiometricAuthenticationFailedError } from '../error/biometric-authentication-failed.error';
 import { AuthService } from '../service/auth.service';
+import { PinAttemptService } from '../service/pin-attempt.service';
+import { formatPinLockoutTime } from '../util/format-pin-lockout-time.util';
 
 import type { MessageDescriptor } from '@lingui/core';
 
@@ -50,7 +54,12 @@ export const usePinSetup = ({ mode }: Params) => {
         );
 
         if (!isCorrect) {
-            setError(msg`Incorrect PIN`);
+            const remainingMillis = await appRuntime.runPromise(
+                Effect.flatMap(PinAttemptService, pinAttemptService => pinAttemptService.getRemainingLockoutMillis())
+            );
+            const time = formatPinLockoutTime(remainingMillis);
+
+            setError(isPositiveNumber(remainingMillis) ? msg`Too many attempts. Try again in ${time}` : msg`Incorrect PIN`);
             setInput('');
 
             return false;

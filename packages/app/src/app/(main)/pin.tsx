@@ -6,8 +6,19 @@ import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { usePinAuthentication } from '../../auth/hook/use-pin-authentication.hook';
 
 export default function PinScreen() {
-    const { addDigit, canUseBiometric, deleteDigit, description, error, handleBiometricAuth, input, isFaceIdAvailable, isLoading, title } =
-        usePinAuthentication();
+    const {
+        addDigit,
+        canUseBiometric,
+        deleteDigit,
+        description,
+        error,
+        handleBiometricAuth,
+        input,
+        isFaceIdAvailable,
+        isInputDisabled,
+        isLoading,
+        title
+    } = usePinAuthentication();
 
     return (
         <View className="flex-1 bg-primary-reverse">
@@ -17,7 +28,7 @@ export default function PinScreen() {
                     description={description}
                     currentInput={input}
                     error={error}
-                    isLoading={isLoading}
+                    isLoading={isInputDisabled}
                     onDigitPress={addDigit}
                     onDeletePress={deleteDigit}
                     onScanPress={handleBiometricAuth}

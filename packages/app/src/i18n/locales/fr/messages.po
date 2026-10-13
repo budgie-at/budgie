@@ -2369,7 +2369,7 @@ msgid "Income by Tag"
 msgstr "Revenus par étiquette"
 
 #: src/app/import-backup-pin.tsx
-#: src/auth/hook/use-pin-authentication.hook.ts
+#: src/auth/hook/use-pin-error.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
@@ -4293,6 +4293,11 @@ msgstr "Aujourd'hui"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token required"
 msgstr "Jeton requis"
+
+#: src/auth/hook/use-pin-error.hook.ts
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Too many attempts. Try again in {time}"
+msgstr "Trop de tentatives. Réessayez dans {time}"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
