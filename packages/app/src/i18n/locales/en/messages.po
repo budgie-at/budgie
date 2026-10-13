@@ -2371,7 +2371,6 @@ msgstr "Income by Tag"
 
 #: src/app/import-backup-pin.tsx
 #: src/auth/hook/use-pin-error.hook.ts
-#: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
@@ -4296,7 +4295,6 @@ msgid "Token required"
 msgstr "Token required"
 
 #: src/auth/hook/use-pin-error.hook.ts
-#: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Too many attempts. Try again in {time}"
 msgstr "Too many attempts. Try again in {time}"
 

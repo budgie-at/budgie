@@ -3,8 +3,6 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { LoadingOverlay } from '../../../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../../../@generic/component/page/full-page';
@@ -32,8 +30,6 @@ export default function PinSetupScreen() {
 
     const handleGoBack = () => void goBackOrReplace('/settings');
 
-    const error = isDefined(state.error) ? t(state.error) : null;
-
     return (
         <FullPage>
             <GoBackButton onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
@@ -43,11 +39,11 @@ export default function PinSetupScreen() {
                     <BiometricConfiguration onSubmit={saveAndContinue} />
                 ) : (
                     <PinForm
-                        error={error}
+                        error={state.error}
                         title={t(title)}
                         description={t(description)}
                         currentInput={state.input}
-                        isLoading={state.isLoading}
+                        isLoading={state.isInputDisabled}
                         onDigitPress={addDigit}
                         onDeletePress={deleteDigit}
                     />
