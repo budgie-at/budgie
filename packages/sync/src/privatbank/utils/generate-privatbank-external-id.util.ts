@@ -1,4 +1,4 @@
-import { generateStableExternalIdHash } from '../../core/util/generate-stable-external-id-hash.util';
+import { generateStableExternalIdHash } from '../../core/utils/generate-stable-external-id-hash.util';
 
 import type { PrivatbankExternalIdInputInterface } from '../interface/privatbank-external-id-input.interface';
 

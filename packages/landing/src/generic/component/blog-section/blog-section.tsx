@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
-import { resolveArticleShot } from '../../../blog/util/resolve-article-shot.util';
+import { resolveArticleShot } from '../../../blog/utils/resolve-article-shot.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { Button } from '../../../ui/button';
 import { BlogCard } from '../blog-card/blog-card';

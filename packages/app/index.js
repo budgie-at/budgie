@@ -1,4 +1,4 @@
-import './src/@generic/util/intl-polyfill';
+import './src/@generic/utils/intl-polyfill';
 import './src/account/task/account-balance-incremental.task';
 import './src/budget/task/budget-alert-monitor.task';
 import './src/exchange-rate/task/exchange-rate-sync.task';

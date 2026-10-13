@@ -1,8 +1,8 @@
 import { REFUND_TIME_WINDOW_SECONDS, REFUND_TITLE_PREFIXES, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { buildOriginalMinorAmountSql } from '../../../shared/util/build-original-minor-amount-sql.util';
-import { buildPrefixLikeSql } from '../../../shared/util/build-prefix-like-sql.util';
-import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/util/build-privatbank-same-original-amount-sql.util';
+import { buildOriginalMinorAmountSql } from '../../../shared/utils/build-original-minor-amount-sql.util';
+import { buildPrefixLikeSql } from '../../../shared/utils/build-prefix-like-sql.util';
+import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/utils/build-privatbank-same-original-amount-sql.util';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
 import type { PrivatbankRefundEntrySqlColumnsInterface } from '../../../shared/interface/privatbank-refund-entry-sql-columns.interface';

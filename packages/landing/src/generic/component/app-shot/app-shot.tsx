@@ -1,7 +1,7 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { MediaKindEnum } from '../../enum/media-kind.enum';
-import { resolveMediaAsset } from '../../util/resolve-media-asset.util';
+import { resolveMediaAsset } from '../../utils/resolve-media-asset.util';
 
 import { AppShotPicture } from './app-shot-picture';
 

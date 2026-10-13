@@ -1,6 +1,6 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/util/build-privatbank-same-original-amount-sql.util';
+import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/utils/build-privatbank-same-original-amount-sql.util';
 
 import type { LanguageEnum } from '@budgie/contracts';
 

@@ -6,7 +6,7 @@ import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balanc
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
-import { generateStableExternalIdHash } from '../../core/util/generate-stable-external-id-hash.util';
+import { generateStableExternalIdHash } from '../../core/utils/generate-stable-external-id-hash.util';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';

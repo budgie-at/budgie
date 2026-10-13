@@ -14,7 +14,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
-import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
 import { AccountTransferConversionService } from './account-transfer-conversion.service';

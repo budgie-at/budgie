@@ -178,7 +178,7 @@ Don't inline `reduce` or similar patterns when a shared util exists:
 
 ```typescript
 // Good - use shared util
-import { sumAmounts } from '../../@generic/util/sum-amounts.util';
+import { sumAmounts } from '../../@generic/utils/sum-amounts.util';
 const total = sumAmounts(transactions);
 
 // Bad - inline reduce

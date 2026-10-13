@@ -25,7 +25,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { getTransactionCategoryEntries } from '../util/get-transaction-category-entries.util';
+import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
 import type { AccountEntityInterface, TransactionEntryEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';

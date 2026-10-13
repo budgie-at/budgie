@@ -16,7 +16,7 @@ import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.t
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { getInstallmentDueDate } from '../util/get-installment-due-date.util';
+import { getInstallmentDueDate } from '../utils/get-installment-due-date.util';
 
 import type { InstallmentPlanScheduleInterface } from '../interface/installment-plan-schedule.interface';
 

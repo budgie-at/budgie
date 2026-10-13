@@ -10,7 +10,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
-import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
+import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 interface Props {

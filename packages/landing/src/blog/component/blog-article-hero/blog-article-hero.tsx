@@ -1,6 +1,6 @@
 import { BlogCover } from '../../../generic/component/blog-cover/blog-cover';
 import { Motion } from '../../../generic/component/motion/motion';
-import { resolveArticleShot } from '../../util/resolve-article-shot.util';
+import { resolveArticleShot } from '../../utils/resolve-article-shot.util';
 
 import type { ArticleRegistryEntryInterface } from '../../interface/article-registry-entry.interface';
 import type { ReactNode } from 'react';

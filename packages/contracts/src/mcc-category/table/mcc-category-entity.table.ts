@@ -1,6 +1,6 @@
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { MccGroupEntityTable } from '../../mcc-group/table/mcc-group-entity.table';
 

@@ -1,7 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { isDefined } from '@rnw-community/shared';
 
-import { hashText } from '../../util/hash-text.util';
+import { hashText } from '../../utils/hash-text.util';
 import { AppShotPicture } from '../app-shot/app-shot-picture';
 import { BlogCoverMotif } from '../blog-cover-motif/blog-cover-motif';
 

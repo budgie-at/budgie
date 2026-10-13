@@ -170,7 +170,7 @@ i18n authoring contract, callout anchor measurement across locales, and the loca
 
 ### 13. Metadata char budgets
 
-Titles must fit 60 characters including the ` | Budgie` template suffix; descriptions must fit 160 characters. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in `metadata.ts` sidecars may be longer — the builder clamps it. Do not add per-page clamping logic.
+Titles must fit 60 characters including the ` | Budgie` template suffix; descriptions must fit 160 characters. The `fitText` util (`src/generic/utils/fit-text.util.ts`) is applied inside the metadata builders, so page copy in `metadata.ts` sidecars may be longer — the builder clamps it. Do not add per-page clamping logic.
 
 ---
 
@@ -188,7 +188,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { meta } from './metadata';
-import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
+import { buildBlogArticleMetadata } from '../../../../blog/utils/build-blog-article-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -302,9 +302,9 @@ One helper per page family may build the final `Metadata` object. Helpers should
 
 | Helper                     | File                                                   | Accepts                                                    | Notes                                  |
 | -------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- | -------------------------------------- |
-| `buildBlogArticleMetadata` | `src/blog/util/build-blog-article-metadata.util.ts`    | page-owned meta values, resolved title/description, locale | sets article Open Graph and alternates |
-| `buildFeaturePageMetadata` | `src/feature/util/build-feature-page-metadata.util.ts` | page-owned meta values, resolved title/description, locale | sets website Open Graph and alternates |
-| `buildPillarHubMetadata`   | `src/feature/util/build-pillar-hub-metadata.util.ts`   | page-owned meta values, resolved title/description, locale | same metadata shape as feature pages   |
+| `buildBlogArticleMetadata` | `src/blog/utils/build-blog-article-metadata.util.ts`    | page-owned meta values, resolved title/description, locale | sets article Open Graph and alternates |
+| `buildFeaturePageMetadata` | `src/feature/utils/build-feature-page-metadata.util.ts` | page-owned meta values, resolved title/description, locale | sets website Open Graph and alternates |
+| `buildPillarHubMetadata`   | `src/feature/utils/build-pillar-hub-metadata.util.ts`   | page-owned meta values, resolved title/description, locale | same metadata shape as feature pages   |
 
 For layout, home page, blog index, features hub, and legal layout, `generateMetadata` may remain direct when each has a unique shape. Direct metadata still uses `getI18nInstance(lang)` and `i18n._()` / `t(i18n)`.
 

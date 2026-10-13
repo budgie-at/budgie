@@ -1,7 +1,7 @@
 import { int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
-import { uint8BlobColumn } from '../../@generic/util/uint8-blob-column.util';
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { uint8BlobColumn } from '../../@generic/utils/uint8-blob-column.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 
 export const CommentEmbeddingEntityTable = sqliteTable(

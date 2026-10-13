@@ -16,10 +16,10 @@ import {
 import { CommentEmbeddingRepository } from '../repository/comment-embedding.repository';
 import { MerchantEmbeddingRepository } from '../repository/merchant-embedding.repository';
 import { TransactionEmbeddingRepository } from '../repository/transaction-embedding.repository';
-import { buildCommentContext } from '../util/build-comment-context.util';
-import { buildMerchantContext } from '../util/build-merchant-context.util';
-import { buildTransactionContext } from '../util/build-transaction-context.util';
-import { serializeEmbedding } from '../util/serialize-embedding.util';
+import { buildCommentContext } from '../utils/build-comment-context.util';
+import { buildMerchantContext } from '../utils/build-merchant-context.util';
+import { buildTransactionContext } from '../utils/build-transaction-context.util';
+import { serializeEmbedding } from '../utils/serialize-embedding.util';
 
 import { EmbeddingInvoker } from './embedding-invoker.service';
 import { EmbeddingService } from './embedding.service';
