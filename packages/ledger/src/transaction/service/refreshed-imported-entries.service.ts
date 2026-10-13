@@ -7,9 +7,9 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
-import { isSameLedgerEntry } from '../util/is-same-ledger-entry.util';
-import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
-import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
+import { isSameLedgerEntry } from '../utils/is-same-ledger-entry.util';
+import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
+import { transactionResolveImportedOperationMetadata } from '../utils/transaction-resolve-imported-operation-metadata.util';
 
 import type { BuildRefreshedImportedEntriesInputInterface } from '../interface/build-refreshed-imported-entries-input.interface';
 import type {

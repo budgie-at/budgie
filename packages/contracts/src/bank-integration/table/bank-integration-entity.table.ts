@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
-import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 
 export const BankIntegrationEntityTable = sqliteTable(

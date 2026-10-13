@@ -16,9 +16,9 @@ export {
     EMBEDDING_QUERY_PREFIX,
     EMBEDDING_VEC_DISTANCE_THRESHOLD
 } from './embedding/constant/embedding.constant';
-export { buildCommentContext } from './embedding/util/build-comment-context.util';
-export { buildMerchantContext } from './embedding/util/build-merchant-context.util';
-export { buildTransactionContext } from './embedding/util/build-transaction-context.util';
+export { buildCommentContext } from './embedding/utils/build-comment-context.util';
+export { buildMerchantContext } from './embedding/utils/build-merchant-context.util';
+export { buildTransactionContext } from './embedding/utils/build-transaction-context.util';
 
 export { EmbeddingSuggestionService } from './suggestion/service/embedding-suggestion.service';
 

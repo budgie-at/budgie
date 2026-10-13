@@ -8,7 +8,7 @@ import {
     generatePrivatbankExternalId,
     generatePrivatbankLegacyExternalId,
     generatePrivatbankParsedDateLegacyExternalId
-} from '../util/generate-privatbank-external-id.util';
+} from '../utils/generate-privatbank-external-id.util';
 
 import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper';
 

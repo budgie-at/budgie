@@ -1,8 +1,8 @@
 import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 
 export const DefaultCategoryTranslationEntityTable = sqliteTable(

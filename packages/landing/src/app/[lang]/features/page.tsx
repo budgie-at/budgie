@@ -2,10 +2,10 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeaturesHubGrid } from '../../../feature/component/features-hub-grid/features-hub-grid';
-import { buildFeaturesItemListJsonLd } from '../../../feature/util/build-features-item-list-json-ld.util';
+import { buildFeaturesItemListJsonLd } from '../../../feature/utils/build-features-item-list-json-ld.util';
 import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
-import { buildPageMetadata } from '../../../generic/util/build-page-metadata.util';
+import { buildPageMetadata } from '../../../generic/utils/build-page-metadata.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 

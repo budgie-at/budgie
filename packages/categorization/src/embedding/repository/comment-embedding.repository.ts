@@ -4,9 +4,9 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { buildVecNeighboursSql } from '../util/build-vec-neighbours-sql.util';
-import { makeEmbeddingRepository } from '../util/make-embedding-repository.util';
-import { parsePendingContextBaseFields } from '../util/parse-pending-context-base-fields.util';
+import { buildVecNeighboursSql } from '../utils/build-vec-neighbours-sql.util';
+import { makeEmbeddingRepository } from '../utils/make-embedding-repository.util';
+import { parsePendingContextBaseFields } from '../utils/parse-pending-context-base-fields.util';
 
 import type { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
 

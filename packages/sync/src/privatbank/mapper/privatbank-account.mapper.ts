@@ -1,7 +1,7 @@
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { extractCardEnding } from '../util/extract-card-ending.util';
+import { extractCardEnding } from '../utils/extract-card-ending.util';
 
 import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper';
 

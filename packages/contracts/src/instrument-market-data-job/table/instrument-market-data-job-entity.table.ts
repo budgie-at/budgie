@@ -1,9 +1,9 @@
 import { sql } from 'drizzle-orm';
 import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
-import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
-import { instrumentPairTableColumns } from '../../@generic/util/instrument-pair-table-columns.util';
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
+import { instrumentPairTableColumns } from '../../@generic/utils/instrument-pair-table-columns.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { InstrumentMarketDataJobStatusEnum } from '../enum/instrument-market-data-job-status.enum';
 
 export const InstrumentMarketDataJobEntityTable = sqliteTable(

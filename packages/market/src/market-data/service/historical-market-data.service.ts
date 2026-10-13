@@ -12,7 +12,7 @@ import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { fetchJson } from '../../@generic/util/fetch-json.util';
+import { fetchJson } from '../../@generic/utils/fetch-json.util';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';

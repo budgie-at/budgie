@@ -10,8 +10,8 @@ import { isDefined } from '@rnw-community/shared';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
-import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../util/i18n.util';
-import { languageToLocale } from '../util/language-to-locale.util';
+import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../utils/i18n.util';
+import { languageToLocale } from '../utils/language-to-locale.util';
 
 interface Props {
     readonly children: ReactNode;

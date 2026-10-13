@@ -30,12 +30,12 @@ import { AccountService } from '../../account/service/account.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
-import { assertTransferAccountsAreNotDebt } from '../util/assert-transfer-accounts-are-not-debt.util';
-import { buildTransferEntries } from '../util/build-transfer-entries.util';
-import { createTransactionInput } from '../util/create-transaction-input.util';
-import { getTransactionCategoryEntries } from '../util/get-transaction-category-entries.util';
-import { getTransactionFeeEntries } from '../util/get-transaction-fee-entries.util';
-import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
+import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
+import { buildTransferEntries } from '../utils/build-transfer-entries.util';
+import { createTransactionInput } from '../utils/create-transaction-input.util';
+import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
+import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
+import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 
 import { TransferCreationService } from './transfer-creation.service';
 

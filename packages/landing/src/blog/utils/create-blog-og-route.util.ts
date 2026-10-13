@@ -1,4 +1,4 @@
-import { resolveOgPlate } from '../../generic/util/resolve-og-plate.util';
+import { resolveOgPlate } from '../../generic/utils/resolve-og-plate.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { createBlogOgImage } from '../component/blog-og-image/blog-og-image';
 

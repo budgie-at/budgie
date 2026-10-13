@@ -8,7 +8,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
-import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
+import { buildCategoryTranslationJoinCondition } from '../../@generic/utils/build-category-translation-join-condition.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';

@@ -1,7 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { t } from '@lingui/core/macro';
 
-import { createFeatureOgRoute } from '../../../../feature/util/create-feature-og-route.util';
+import { createFeatureOgRoute } from '../../../../feature/utils/create-feature-og-route.util';
 
 export const alt = 'Multi-Currency Accounts — Budgie';
 export const size = { width: 1200, height: 630 };

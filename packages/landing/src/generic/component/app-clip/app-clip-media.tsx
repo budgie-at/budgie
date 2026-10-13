@@ -1,7 +1,7 @@
 import { cn } from 'cn';
 
 import { MEDIA_ASSET_HEIGHT, MEDIA_ASSET_WIDTH } from '../../constant/media-size.constant';
-import { resolveMediaAssetPath } from '../../util/resolve-media-asset-path.util';
+import { resolveMediaAssetPath } from '../../utils/resolve-media-asset-path.util';
 
 import { AppClipVideo } from './app-clip-video';
 

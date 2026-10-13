@@ -4,7 +4,7 @@ import { Children, isValidElement } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
-import { extractTransMessage } from '../../../i18n/util/extract-trans-message.util';
+import { extractTransMessage } from '../../../i18n/utils/extract-trans-message.util';
 import { BASE_URL } from '../../constant/seo.constant';
 import { CapabilityBentoAnchor } from '../capability-bento-anchor/capability-bento-anchor';
 import { CapabilityBentoCell } from '../capability-bento-cell/capability-bento-cell';
