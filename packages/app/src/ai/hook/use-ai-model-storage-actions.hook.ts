@@ -33,10 +33,10 @@ export const useAiModelStorageActions = (isAiAvailable: boolean) => {
             aiModelStorageService.setFeatureEnabled(featureId, isEnabled, removeUnusedDownloads)
         );
 
-    const updateFeature = (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean): void => {
+    const updateFeature = (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnused: boolean, keepsShared: boolean): void => {
         setPendingFeatureId(featureId);
-        runFeatureAction(setFeatureEnabled(featureId, isEnabled, removeUnusedDownloads), () => {
-            showFeatureUpdatedToast(isEnabled, false);
+        runFeatureAction(setFeatureEnabled(featureId, isEnabled, removeUnused), () => {
+            showFeatureUpdatedToast(isEnabled, keepsShared);
         });
     };
 
@@ -51,7 +51,7 @@ export const useAiModelStorageActions = (isAiAvailable: boolean) => {
                     t`Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended.`,
                     [
                         { text: t`Cancel`, style: 'cancel' },
-                        { text: t`Turn on`, onPress: () => void updateFeature(feature.id, true, false) }
+                        { text: t`Turn on`, onPress: () => void updateFeature(feature.id, true, false, false) }
                     ]
                 );
             }
@@ -78,9 +78,12 @@ export const useAiModelStorageActions = (isAiAvailable: boolean) => {
                     {
                         text: t`Turn off and free ${reclaimableSize}`,
                         style: 'destructive',
-                        onPress: () => void updateFeature(feature.id, false, true)
+                        onPress: () => void updateFeature(feature.id, false, true, preview.keepsSharedDownloads)
                     },
-                    { text: t`Turn off, keep downloads`, onPress: () => void updateFeature(feature.id, false, false) },
+                    {
+                        text: t`Turn off, keep downloads`,
+                        onPress: () => void updateFeature(feature.id, false, false, preview.keepsSharedDownloads)
+                    },
                     { text: t`Cancel`, style: 'cancel' }
                 ]);
             }
