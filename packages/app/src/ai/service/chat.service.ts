@@ -10,8 +10,8 @@ import { chatModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { CHAT_CONTEXT_SIZE, CHAT_MODEL_FILENAME, CHAT_MODEL_URL } from '../utils/ai-constants.util';
-import { runCompletion } from '../utils/run-completion.util';
 import { isAiRuntimeActive } from '../utils/is-ai-runtime-active.util';
+import { runCompletion } from '../utils/run-completion.util';
 
 import { LlamaModelService } from './llama-model.service';
 
