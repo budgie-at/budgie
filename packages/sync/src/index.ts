@@ -49,6 +49,7 @@ export type { PdfTextItemInterface } from './erste/interface/pdf-text-item.inter
 export { SyncWorkload } from './core/port/sync-workload.port';
 export { TransferConsolidationWorkload } from './core/port/transfer-consolidation-workload.port';
 export { SyncFileReader } from './core/port/sync-file-reader.port';
+export { SYNC_PROVIDER_CAPABILITIES } from './core/constant/sync-provider-capabilities.constant';
 export { SyncHistoryDepthEnum } from './core/enum/sync-history-depth.enum';
 export { ResyncService } from './core/service/resync.service';
 export { SyncOperationMetadataService } from './core/service/sync-operation-metadata.service';
@@ -62,6 +63,7 @@ export { makeFileSyncService } from './core/utils/make-file-sync-service.util';
 export { mapBankTransactionToCreateInput } from './core/utils/map-bank-transaction-to-create-input.util';
 export { mapSyncAccountToCreateInput } from './core/utils/map-sync-account-to-create-input.util';
 
+export type { SyncProviderCapabilitiesInterface } from './core/interface/sync-provider-capabilities.interface';
 export type { FileBankSyncImportResultInterface } from './core/interface/file-bank-sync-import-result.interface';
 export type { FileBasedSyncClientInterface } from './core/interface/file-based-sync-client.interface';
 export type { FileSyncServiceDefinitionInterface } from './core/interface/file-sync-service-definition.interface';

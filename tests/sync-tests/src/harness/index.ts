@@ -71,6 +71,7 @@ export {
 } from './consolidation/seed-p2p-fiat-transfer-fixture';
 export { TestClockLayer, TestLayer } from './scenario/test-runtime';
 export { MonobankSyncService } from '@budgie/sync';
+export { Workload } from '@app/@generic/service/workload.service';
 export { inWorkload } from './sync-workload/run-in-workload';
 export { pauseUserWork } from './sync-workload/pause-user-work';
 export { advanceScheduledDrain } from './scheduler/advance-scheduled-drain';

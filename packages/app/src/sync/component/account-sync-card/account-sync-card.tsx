@@ -1,5 +1,5 @@
 import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
-import { SyncProviderRegistryService } from '@budgie/sync';
+import { SyncProviderRegistryService, SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
@@ -11,7 +11,6 @@ import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { SYNC_PROVIDER_CAPABILITIES } from '../../constant/sync-provider-capabilities.constant';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
