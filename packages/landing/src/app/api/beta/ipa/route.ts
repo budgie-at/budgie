@@ -5,9 +5,9 @@ import { NextResponse } from 'next/server';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { findIosDevReleaseAssetUrl } from '../../../../beta/util/find-ios-dev-release-asset-url.util';
-import { iosDevBuildMetaFetchApi } from '../../../../beta/util/ios-dev-build-meta-fetch.util';
-import { iosDevReleaseFetchApi } from '../../../../beta/util/ios-dev-release-fetch.util';
+import { findIosDevReleaseAssetUrl } from '../../../../beta/utils/find-ios-dev-release-asset-url.util';
+import { iosDevBuildMetaFetchApi } from '../../../../beta/utils/ios-dev-build-meta-fetch.util';
+import { iosDevReleaseFetchApi } from '../../../../beta/utils/ios-dev-release-fetch.util';
 
 const NO_STORE_CACHE_CONTROL_HEADER = 'no-store';
 const REDIRECT_STATUS = 302;

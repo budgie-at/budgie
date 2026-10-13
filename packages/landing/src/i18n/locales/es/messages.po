@@ -6539,7 +6539,7 @@ msgstr "csv"
 msgid "CSV and PDF files already on your device can be imported offline. Monobank sync requires a brief network call to Monobank's API, but every other import source works locally."
 msgstr "Los archivos CSV y PDF ya en tu dispositivo pueden importarse sin conexión. La sincronización con Monobank requiere una breve llamada de red a la API de Monobank, pero todas las demás fuentes de importación funcionan localmente."
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "CSV and PDF import"
 msgstr "Importación de CSV y PDF"
 
@@ -6768,7 +6768,7 @@ msgstr "Los datos almacenados localmente en su dispositivo seguirán siendo acce
 msgid "Database Backup & Restore"
 msgstr "Copia de seguridad y restauración de base de datos"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Database backup and restore"
 msgstr "Copia de seguridad y restauración de la base de datos"
 
@@ -10599,7 +10599,7 @@ msgstr "Monobank y Binance se conectan con una clave API personal para sincroniz
 msgid "Monobank Auto-Sync — Budgie"
 msgstr "Sincronización automática de Monobank — Budgie"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Monobank bank sync"
 msgstr "Sincronización bancaria con Monobank"
 
@@ -10807,7 +10807,7 @@ msgstr "Gestión del dinero en múltiples cuentas — Budgie"
 msgid "multi-currency"
 msgstr "multidivisa"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Multi-currency"
 msgstr "Multidivisa"
 
@@ -10937,7 +10937,7 @@ msgstr "El patrimonio neto y el presupuesto vienen en un tamaño pequeño solo p
 msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
 msgstr "El patrimonio neto respeta la dirección de la deuda: los pasivos la reducen, las cuentas por cobrar la aumentan. Pero ninguna transacción toca nunca la cuenta de deuda en sí. Prestar dinero registra un gasto; un reembolso registra un ingreso, ambos en la cuenta por la que realmente pasó el dinero, ambos bajo Préstamo o Endeudamiento. La cuenta de deuda solo lleva el marcador: pendiente frente a lo devuelto, hasta que la archives."
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Net worth tracker"
 msgstr "Seguimiento del patrimonio neto"
 
@@ -11713,7 +11713,7 @@ msgstr "Offline-first no significa que no puedas sincronizar con bancos. Signifi
 msgid "Offline-first expense tracker"
 msgstr "Control de gastos sin conexión"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Offline-first expense tracking"
 msgstr "Seguimiento de gastos offline-first"
 
@@ -11829,7 +11829,7 @@ msgstr "IA en el dispositivo"
 msgid "On-device AI"
 msgstr "IA en el dispositivo"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "On-device AI auto-categorization"
 msgstr "Categorización automática con IA en el dispositivo"
 
@@ -11886,7 +11886,7 @@ msgstr "La IA en el dispositivo significa que el trabajo ocurre en el teléfono 
 msgid "On-device AI switch"
 msgstr "Interruptor «IA en el dispositivo»"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "On-device encryption"
 msgstr "Cifrado en el dispositivo"
 
@@ -12762,7 +12762,7 @@ msgstr "Las píldoras aparecen en el formulario vacío"
 msgid "pin"
 msgstr "pin"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "PIN and biometric lock"
 msgstr "Bloqueo con PIN y biometría"
 
@@ -13101,7 +13101,7 @@ msgstr "Calificación de privacidad: Buena (ecosistema Apple)"
 msgid "Privacy-First Expense Tracker"
 msgstr "Rastreador de gastos centrado en la privacidad"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Privacy-first expense tracker that keeps your financial data on your device."
 msgstr "Seguimiento de gastos privado que mantiene tus datos financieros en tu dispositivo."
 
@@ -13917,7 +13917,7 @@ msgstr "El screen scraping significa que un tercero puede hacer todo lo que tu p
 msgid "Screenshot blur on balance fields and app-switcher previews"
 msgstr "Desenfoque de capturas en campos de saldo y vistas previas del selector de apps"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Screenshot protection"
 msgstr "Protección de capturas de pantalla"
 
@@ -17116,7 +17116,7 @@ msgstr "entrada por voz"
 msgid "Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories are pulled out there too."
 msgstr "La voz es el modo de entrada más rápido para un gasto — pero hoy en día toda app de presupuesto por voz transmite los datos del micrófono a un servidor del proveedor. Budgie mantiene el audio por completo en el dispositivo: se convierte en texto ahí, y los importes y categorías también se extraen ahí."
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Voice transaction entry"
 msgstr "Registro de transacciones por voz"
 

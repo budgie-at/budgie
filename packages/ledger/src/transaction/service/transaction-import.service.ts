@@ -13,15 +13,15 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { ImportedTransactionRefreshModeEnum } from '../enum/imported-transaction-refresh-mode.enum';
 import { RefreshedImportedEntriesStatusEnum } from '../enum/refreshed-imported-entries-status.enum';
 import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition.interface';
 import { ImportedUpdateParamInterface } from '../interface/imported-update-param.interface';
-import { getEntryAccountIds } from '../util/get-entry-account-ids.util';
-import { stampForDeferredEmbedding } from '../util/stamp-for-deferred-embedding.util';
+import { getEntryAccountIds } from '../utils/get-entry-account-ids.util';
+import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 
 import { ImportedBatchNormalizerService } from './imported-batch-normalizer.service';
 import { RefreshedImportedEntriesService } from './refreshed-imported-entries.service';

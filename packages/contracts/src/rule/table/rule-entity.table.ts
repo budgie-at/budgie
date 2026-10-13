@@ -1,6 +1,6 @@
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { RuleConditionMatchTypeEnum } from '../enum/rule-condition-match-type.enum';
 
 export const RuleEntityTable = sqliteTable(

@@ -16,7 +16,7 @@ import { BlogBreadcrumbLink } from '../../../../blog/component/blog-breadcrumb-l
 import { BlogBreadcrumbs } from '../../../../blog/component/blog-breadcrumbs/blog-breadcrumbs';
 import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-item';
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
-import { createBlogGenerateMetadata } from '../../../../blog/util/create-blog-generate-metadata.util';
+import { createBlogGenerateMetadata } from '../../../../blog/utils/create-blog-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 

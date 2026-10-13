@@ -2,7 +2,7 @@ import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/c
 
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
-import { buildBridgeClaimTitleConditionSql } from '../../../shared/util/build-bridge-claim-title-condition-sql.util';
+import { buildBridgeClaimTitleConditionSql } from '../../../shared/utils/build-bridge-claim-title-condition-sql.util';
 
 const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
             WITH latest_exchange_rates AS (

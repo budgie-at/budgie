@@ -14,7 +14,7 @@ import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../../../auth/enum/pin-setup-step.enum';
 import { usePinSetup } from '../../../auth/hook/use-pin-setup.hook';
-import { getPinSetupMeta } from '../../../auth/util/get-pin-setup-meta.util';
+import { getPinSetupMeta } from '../../../auth/utils/get-pin-setup-meta.util';
 
 export default function PinSetupScreen() {
     const { mode } = useLocalSearchParams<{ mode: PinSetupModeEnum }>();

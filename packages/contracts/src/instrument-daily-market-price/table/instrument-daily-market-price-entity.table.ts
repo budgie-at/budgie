@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm';
 import { index, real, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
-import { instrumentPairTableColumns } from '../../@generic/util/instrument-pair-table-columns.util';
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { instrumentPairTableColumns } from '../../@generic/utils/instrument-pair-table-columns.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 
 export const InstrumentDailyMarketPriceEntityTable = sqliteTable(
     'instrument_daily_market_prices',

@@ -8,7 +8,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { PinAttemptService } from '../service/pin-attempt.service';
-import { formatPinLockoutTime } from '../util/format-pin-lockout-time.util';
+import { formatPinLockoutTime } from '../utils/format-pin-lockout-time.util';
 
 const readRemainingLockoutMillis = (onRead: (remainingMillis: number) => void) =>
     Effect.flatMap(PinAttemptService, pinAttemptService => pinAttemptService.getRemainingLockoutMillis()).pipe(

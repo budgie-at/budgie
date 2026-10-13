@@ -66,7 +66,7 @@ msgstr "{accountTitle} sera restauré dans votre vue principale et inclus dans l
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} sera restauré dans votre vue principale."
 
-#: src/rule/util/show-rule-application-toast.util.ts
+#: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# transaction correspondante mise à jour} other {# transactions correspondantes mises à jour}}"
 
@@ -1059,7 +1059,7 @@ msgstr "Conditions"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
 
@@ -1174,7 +1174,7 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not add accounts"
 msgstr "Impossible d'ajouter les comptes"
 
-#: src/rule/util/show-rule-application-toast.util.ts
+#: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
 msgstr "Impossible d'appliquer la règle aux transactions existantes"
 
@@ -1462,7 +1462,7 @@ msgstr "Créez d'abord un compte de dette."
 msgid "Create a new System-generated API key"
 msgstr "Créez une nouvelle clé API générée par le système"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
 msgstr "Créer un code PIN"
 
@@ -1848,11 +1848,11 @@ msgid "Enable"
 msgstr "Activer"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable biometric unlock?"
 msgstr "Activer le déverrouillage biométrique ?"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable Face ID unlock?"
 msgstr "Activer le déverrouillage Face ID ?"
 
@@ -1864,7 +1864,7 @@ msgstr "Activer l'IA locale"
 msgid "Enable them in device settings to receive budget alerts."
 msgstr "Activez-les dans les paramètres de l'appareil pour recevoir les alertes budgétaires."
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable Touch ID unlock?"
 msgstr "Activer le déverrouillage Touch ID ?"
 
@@ -1876,7 +1876,7 @@ msgstr "Anglais"
 msgid "English Translation"
 msgstr "Traduction anglaise"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Entrez un code PIN à {PIN_LENGTH} chiffres"
 
@@ -1893,15 +1893,15 @@ msgstr "Saisir le montant..."
 msgid "Enter balances by hand"
 msgstr "Saisir les soldes manuellement"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Entrez le code PIN actuel"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN to disable protection"
 msgstr "Entrez le code PIN actuel pour désactiver la protection"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter new PIN"
 msgstr "Entrez le nouveau code PIN"
 
@@ -1917,7 +1917,7 @@ msgstr "Saisis le code PIN utilisé pour créer cette sauvegarde. Il deviendra l
 msgid "Enter value..."
 msgstr "Saisir la valeur..."
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres"
 
@@ -2929,7 +2929,7 @@ msgstr "Sans titre"
 msgid "No tracking"
 msgstr "Aucun pistage"
 
-#: src/rule/util/show-rule-application-toast.util.ts
+#: src/rule/utils/show-rule-application-toast.util.ts
 msgid "No transactions matched"
 msgstr "Aucune transaction ne correspond"
 
@@ -3320,7 +3320,7 @@ msgstr "Règle rapide"
 msgid "Range across better and worse months"
 msgstr "Plage entre bons et mauvais mois"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
@@ -3528,7 +3528,7 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Règle"
 
-#: src/rule/util/show-rule-application-toast.util.ts
+#: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Rule applied"
 msgstr "Règle appliquée"
 
@@ -3536,7 +3536,7 @@ msgstr "Règle appliquée"
 msgid "Rule created"
 msgstr "Règle créée"
 
-#: src/rule/util/show-rule-application-toast.util.ts
+#: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Rule partially applied"
 msgstr "Règle partiellement appliquée"
 
@@ -4143,7 +4143,7 @@ msgstr "Solde cible"
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "La banque n’a pas indiqué la devise du dépôt. Confirmez la devise et le montant reçu."
 
-#: src/rule/util/show-rule-application-toast.util.ts
+#: src/rule/utils/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "La règle a été enregistrée, mais aucune transaction existante n'avait besoin d'être mise à jour."
 
@@ -4510,7 +4510,7 @@ msgstr "Mettre à jour la règle ?"
 msgid "Update the token from any account already syncing with this integration, then try again."
 msgstr "Mettez à jour le jeton depuis un compte déjà synchronisé avec cette intégration, puis réessayez."
 
-#: src/rule/util/show-rule-application-toast.util.ts
+#: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Updated {applied} of {total} transactions."
 msgstr "{applied} sur {total} transactions mises à jour."
 
@@ -4519,15 +4519,15 @@ msgid "Updated {formattedDate}"
 msgstr "Mis à jour {formattedDate}"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
 msgstr "Utilisez Face ID ou Touch ID pour déverrouiller votre application rapidement et en toute sécurité"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Face ID to unlock your app quickly and securely"
 msgstr "Utilisez Face ID pour déverrouiller votre application rapidement et en toute sécurité"
 
-#: src/auth/util/get-pin-setup-meta.util.ts
+#: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Utilisez Touch ID pour déverrouiller votre application rapidement et en toute sécurité"
 

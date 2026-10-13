@@ -19,12 +19,12 @@ export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-
 export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
 export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';
 export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-transaction.mapper';
-export { parsePrivatbankXlsx } from './privatbank/util/parse-privatbank-xlsx.util';
+export { parsePrivatbankXlsx } from './privatbank/utils/parse-privatbank-xlsx.util';
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { BinanceSignedClient } from './binance/client/binance-signed.client';
 export { mapBinanceDepositToTransaction, mapBinanceWithdrawalToTransaction, parseBinanceAmount } from './binance/mapper/binance.mapper';
-export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/util/binance-account-id.util';
+export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/utils/binance-account-id.util';
 export { BinanceWalletEnum } from './binance/enum/binance-wallet.enum';
 export { BINANCE_RATE_LIMIT_MS } from './binance/constant/binance-rate-limit-ms.constant';
 export { BINANCE_API_MANAGEMENT_URL } from './binance/constant/binance-api-management-url.constant';
@@ -54,10 +54,10 @@ export { SyncOperationMetadataService } from './core/service/sync-operation-meta
 export { SyncProviderRegistryService } from './core/service/sync-provider-registry.service';
 export { SyncRepairService } from './core/service/sync-repair.service';
 export { TransferConsolidationService } from './core/service/transfer-consolidation.service';
-export { generateDefaultSyncAccountTitle } from './core/util/generate-default-sync-account-title.util';
-export { makeFileSyncService } from './core/util/make-file-sync-service.util';
-export { mapBankTransactionToCreateInput } from './core/util/map-bank-transaction-to-create-input.util';
-export { mapSyncAccountToCreateInput } from './core/util/map-sync-account-to-create-input.util';
+export { generateDefaultSyncAccountTitle } from './core/utils/generate-default-sync-account-title.util';
+export { makeFileSyncService } from './core/utils/make-file-sync-service.util';
+export { mapBankTransactionToCreateInput } from './core/utils/map-bank-transaction-to-create-input.util';
+export { mapSyncAccountToCreateInput } from './core/utils/map-sync-account-to-create-input.util';
 
 export type { FileBankSyncImportResultInterface } from './core/interface/file-bank-sync-import-result.interface';
 export type { FileBasedSyncClientInterface } from './core/interface/file-based-sync-client.interface';

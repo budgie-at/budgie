@@ -15,7 +15,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { resolveDirectOrInverseRate } from '../../@generic/util/resolve-direct-or-inverse-rate.util';
+import { resolveDirectOrInverseRate } from '../../@generic/utils/resolve-direct-or-inverse-rate.util';
 import { ExchangeRateRepository } from '../../exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';

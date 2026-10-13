@@ -20,7 +20,7 @@ import { useEffectAction } from '../../@generic/hook/use-effect-action.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { RuleApplicationDrainerService } from '../service/rule-application-drainer.service';
-import { showRuleApplicationToast } from '../util/show-rule-application-toast.util';
+import { showRuleApplicationToast } from '../utils/show-rule-application-toast.util';
 
 import type { RuleFormResultType } from '../context/rule-form-modal.context';
 

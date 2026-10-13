@@ -5,7 +5,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { resolveDirectOrInverseRate } from '../../@generic/util/resolve-direct-or-inverse-rate.util';
+import { resolveDirectOrInverseRate } from '../../@generic/utils/resolve-direct-or-inverse-rate.util';
 import { ExchangeRateRepository } from '../repository/exchange-rate.repository';
 
 export class ExchangeRatesService extends Context.Service<ExchangeRatesService>()('@budgie/market/ExchangeRatesService', {

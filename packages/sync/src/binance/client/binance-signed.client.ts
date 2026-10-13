@@ -41,7 +41,7 @@ import {
     mapBinanceWithdrawalToTransaction,
     parseBinanceAmount
 } from '../mapper/binance.mapper';
-import { decodeBinanceAccountId, encodeBinanceAccountId } from '../util/binance-account-id.util';
+import { decodeBinanceAccountId, encodeBinanceAccountId } from '../utils/binance-account-id.util';
 
 import { BinanceWeightThrottle } from './binance-weight-throttle';
 

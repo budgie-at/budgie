@@ -2,7 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../feature/component/feature-og-image/feature-og-image';
-import { resolveOgPlate } from '../../../generic/util/resolve-og-plate.util';
+import { resolveOgPlate } from '../../../generic/utils/resolve-og-plate.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 export const alt = 'All Budgie Features';
