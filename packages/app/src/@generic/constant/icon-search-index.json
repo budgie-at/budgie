@@ -2,7 +2,7 @@
     "icons": [
         [
             "ALargeSmall",
-            "text|a large small|alarge small|ampersand|ampersands|baseline|captions|captions off|heading|heading 1|heading1|heading 2|heading2|heading 3|heading3|heading 4|heading4|heading 5|heading5|heading 6|heading6|ligature|notepad text|notepad text dashed|space|spell check|spell check 2|spell check2|strikethrough|superscript|text align end|text align justify|text align start|text initial|text quote|text wrap|type|type outline|whole word||letter|font size|text|formatting|and|typography|operator|join|concatenate|code|&|then|&&|format|color|closed captions|subtitles|subhead|transcription|transcribe|dialogue|accessibility|h1|html|markup|markdown|h2|h3|h4|h5|h6|font|alternates|alternatives|notebook|notes|pages|paper|stationery|sketchbook|organizer|organiser|planner|diary|journal|writing|write|written|reading|high school|university|college|academy|student|study|homework|research|lines|opened|draft|template|selection|letters|characters|spelling|error|mistake|oversight|typo|correction|linter|a|cross out|delete|remove|exponent|alignment|right|justified|menu|list|left|drop cap|blockquote|quotation|indent|reply|response|words|break|paragraph|silhouette|profile|contour|stroke|line"
+            "text|a large small|alarge small|ampersand|ampersands|baseline|captions|captions off|heading|heading 1|heading1|heading 2|heading2|heading 3|heading3|heading 4|heading4|heading 5|heading5|heading 6|heading6|ligature|notepad text|notepad text dashed|space|spell check|spell check 2|spell check2|strikethrough|superscript|text align end|text align justify|text align start|text initial|text quote|text wrap|type|type outline|whole word|subscript||letter|font size|text|formatting|and|typography|operator|join|concatenate|code|&|then|&&|format|color|closed captions|subtitles|subhead|transcription|transcribe|dialogue|accessibility|h1|html|markup|markdown|h2|h3|h4|h5|h6|font|alternates|alternatives|notebook|notes|pages|paper|stationery|sketchbook|organizer|organiser|planner|diary|journal|writing|write|written|reading|high school|university|college|academy|student|study|homework|research|lines|opened|draft|template|selection|letters|characters|spelling|error|mistake|oversight|typo|correction|linter|a|cross out|delete|remove|exponent|alignment|right|justified|menu|list|left|drop cap|blockquote|quotation|indent|reply|response|words|break|paragraph|silhouette|profile|contour|stroke|line"
         ],
         [
             "Accessibility",
@@ -82,7 +82,7 @@
         ],
         [
             "Amphora",
-            "cup|amphora|blender|can|can soda|cup soda||pottery|artifact|artefact|vase|ceramics|clay|archaeology|museum|wine|oil|mixer|appliances|food|liquid|juicer|vitamizer|mix|emulsify|smoothie|drink|blade|container|kitchen|milkshake|cocktail|beverage|culinary|shredder|processor|cooking|recipe|chef|restaurant|storage|groceries|tin|metal|recyclable|pantry|grocery|preserved|soda|beer|alcohol|waste|cup|straw|water"
+            "bottle|pill bottle|amphora|blender|can|can soda||medicine|medication|prescription|drug|supplement|vitamin|capsule|jar|container|healthcare|pharmaceutical|tablet|pottery|artifact|artefact|vase|ceramics|clay|archaeology|museum|wine|oil|mixer|appliances|food|liquid|juicer|vitamizer|mix|emulsify|smoothie|drink|blade|kitchen|milkshake|cocktail|beverage|culinary|shredder|processor|cooking|recipe|chef|restaurant|storage|groceries|tin|metal|recyclable|pantry|grocery|preserved|soda|beer|alcohol|waste"
         ],
         [
             "Anchor",
@@ -386,11 +386,11 @@
         ],
         [
             "Beer",
-            "wineglass|beer|bottle wine|martini|wine|wine off||alcohol|bar|beverage|brewery|drink|pub|party|glass|goblet|chalice|vineyard|winery|red|white|rose|dry|sparkling|nightclub|nightlife|sommelier|restaurant|dinner|meal|cocktail|spirit|celebration|mixer|alcohol free|abstinence|abstaining|teetotalism|allergy|intolerance"
+            "wineglass|beer|bottle wine|wine|wine off||alcohol|bar|beverage|brewery|drink|pub|party|glass|goblet|chalice|vineyard|winery|red|white|rose|dry|sparkling|nightclub|nightlife|sommelier|restaurant|dinner|meal|alcohol free|abstinence|abstaining|teetotalism|allergy|intolerance"
         ],
         [
             "BeerOff",
-            "wineglass 2|beer off||alcohol|bar|beverage|brewery|drink"
+            "wineglass 2|beer off|martini||alcohol|bar|beverage|brewery|drink|cocktail|glass|spirit|party|celebration|mixer"
         ],
         [
             "Bell",
@@ -422,7 +422,7 @@
         ],
         [
             "BetweenVerticalEnd",
-            "phone end|between vertical end||insert|add|top|slot|squeeze|space|vertical|grid|table|columns|cells|data|enter|entry|entries|blocks|rectangles|chevron"
+            "phone end|between vertical end|dock||insert|add|top|slot|squeeze|space|vertical|grid|table|columns|cells|data|enter|entry|entries|blocks|rectangles|chevron|desktop|applications|launch|home|menu bar|bottom|line|macos|osx"
         ],
         [
             "Bike",
@@ -431,6 +431,10 @@
         [
             "Biohazard",
             "danger|biohazard|radiation|skull||fallout|waste|biology|chemistry|chemical|element|radioactive|nuclear|atomic|physics|particle|molecule|death|danger|bone"
+        ],
+        [
+            "Bird",
+            "plane|bird|tickets plane||plane|trip|airplane|travel|flight|airport|vacation|peace|freedom|wing|avian|tweet|fly|takeoff|passenger|pass|check-in"
         ],
         [
             "Bitcoin",
@@ -529,10 +533,6 @@
             "boombox|boom box||radio|speakers|audio|music|sound|broadcast|live|frequency"
         ],
         [
-            "Bot",
-            "bottle|bot|pill bottle||robot|ai|chat|assistant|medicine|medication|prescription|drug|supplement|vitamin|capsule|jar|container|healthcare|pharmaceutical|tablet"
-        ],
-        [
             "BowArrow",
             "arrow|bow arrow|git pull request arrow|git pull request create arrow||archer|archery|game|war|weapon|code|version control|open|plus|add|+"
         ],
@@ -554,7 +554,7 @@
         ],
         [
             "Briefcase",
-            "briefcase|briefcase business|briefcase conveyor belt|briefcase plus||work|bag|baggage|folder|job|business|career|office|professional|portfolio|luggage|travel|suitcase|conveyor|carousel|new|add|create|increase|briefcase|employment|plus"
+            "briefcase|briefcase business|briefcase conveyor belt|briefcase plus|toolbox||work|bag|baggage|folder|job|business|career|office|professional|portfolio|luggage|travel|suitcase|conveyor|carousel|new|add|create|increase|briefcase|employment|plus|toolkit|tools|trunk|chest|box|storage|utility|utilities|container|kit|set|repair|fix|service|maintenance|mechanic|workshop|construction|hardware|equipment|gear|handyman|engineering|craft|diy"
         ],
         [
             "BringToFront",
@@ -658,7 +658,7 @@
         ],
         [
             "CaseLower",
-            "earbuds case|case lower|case sensitive|case upper|pc case|tool case|toolbox||text|letters|characters|font|typography|computer|chassis|tools|maintenance|repair|toolkit|trunk|chest|box|storage|utility|utilities|container|kit|set|fix|service|mechanic|workshop|construction|hardware|equipment|gear|handyman|engineering|craft|diy"
+            "earbuds case|case lower|case sensitive|case upper|pc case|tool case||text|letters|characters|font|typography|computer|chassis|tools|maintenance|repair"
         ],
         [
             "CassetteTape",
@@ -671,10 +671,6 @@
         [
             "Cat",
             "cat||animal|pet|kitten|feline"
-        ],
-        [
-            "Cctv",
-            "cc|cctv||camera|surveillance|recording|film|videotape|crime|watching"
         ],
         [
             "ChartArea",
@@ -1046,7 +1042,7 @@
         ],
         [
             "Cpu",
-            "cpu|bot off|brain|brain circuit|gpu|robot arm||processor|cores|technology|computer|chip|circuit|memory|ram|specs|gigahertz|ghz|robot|ai|chat|assistant|medical|mind|mental|intellect|cerebral|consciousness|genius|artificial intelligence|think|thought|insight|intelligent|smart|deep learning|machine learning|computing|graphics processing unit|video card|display adapter|gddr|rendering|digital image processing|crypto mining|mechanical|automation|factory|manufacture|cyborg|industrial|hardware|machinery"
+            "cpu|bot off|brain|brain circuit|gpu|robot arm|bot||processor|cores|technology|computer|chip|circuit|memory|ram|specs|gigahertz|ghz|robot|ai|chat|assistant|medical|mind|mental|intellect|cerebral|consciousness|genius|artificial intelligence|think|thought|insight|intelligent|smart|deep learning|machine learning|computing|graphics processing unit|video card|display adapter|gddr|rendering|digital image processing|crypto mining|mechanical|automation|factory|manufacture|cyborg|industrial|hardware|machinery"
         ],
         [
             "CreativeCommons",
@@ -1093,6 +1089,10 @@
             "three d cube|cuboid||brick|block|box|3d|solid|volume|container|storage|shipping|carton|geometry|rectangular|hexahedron|butter|tofu|soap|cheese|package|parcel|crate"
         ],
         [
+            "CupSoda",
+            "cup|cup soda||drink|beverage|soda|cup|straw|water"
+        ],
+        [
             "Dam",
             "water|dam|faucet|shower head||electricity|energy|water|tap|spigot|drinking|fresh|source|pipes|plumbing|plumber|sink|basin|kitchen|bathroom|washroom|fixture|valve|flow|drinkable|potable|amenities|utilities|hydration|shower|bath|services"
         ],
@@ -1114,7 +1114,7 @@
         ],
         [
             "Disc",
-            "discover|disc||album|music|songs|format|cd|dvd|vinyl|sleeve|cover|platinum|compilation|ep|recording|playback|spin|rotate|rpm|dj"
+            "cd|disc||album|music|songs|format|cd|dvd|vinyl|sleeve|cover|platinum|compilation|ep|recording|playback|spin|rotate|rpm|dj"
         ],
         [
             "Divide",
@@ -1125,12 +1125,8 @@
             "dna|dna off||gene|gmo|helix|heredity|chromosome|nucleic acid|gmo free"
         ],
         [
-            "Dock",
-            "doc|dock||desktop|applications|launch|home|menu bar|bottom|line|macos|osx"
-        ],
-        [
             "Dog",
-            "paw|dog|panda|paw print|rabbit|squirrel||animal|pet|puppy|hound|canine|wildlife|bear|zoo|bamboo|pets|vets|veterinarian|domesticated|cat|dog|veterinary|rodent|pest|bunny|hare|fast|speed|hop|nuts|retrieve|updates|storage|stash"
+            "paw|dog|panda|paw print|rabbit|squirrel|rat||animal|pet|puppy|hound|canine|wildlife|bear|zoo|bamboo|pets|vets|veterinarian|domesticated|cat|dog|veterinary|rodent|pest|bunny|hare|fast|speed|hop|nuts|retrieve|updates|storage|stash|mouse|mice|gerbil|plague|disease"
         ],
         [
             "DollarSign",
@@ -1141,16 +1137,16 @@
             "donut|nut|nut off||doughnut|sprinkles|topping|fast food|junk food|snack|treat|sweet|sugar|dessert|hollow|ring|hazelnut|acorn|food|diet|protein|allergy|intolerance"
         ],
         [
-            "DoorOpen",
-            "bookmark open|door open|mail open||entrance|entry|exit|ingress|egress|gate|gateway|emergency exit|email|message|letter|read"
-        ],
-        [
             "DoorStairwell",
             "arrow door in|door stairwell|log in||staircase|stairway|stairs|steps|ladder|transition|access|structure|spiral|building|vertical|movement|floor|level|entrance|entry|exit|egress|route|indoor|emergency exit|sign in|arrow|enter|auth|sign"
         ],
         [
             "Download",
             "download||import|export|save|get|receive"
+        ],
+        [
+            "Drone",
+            "airplane|drone|helicopter|plane|plane landing|plane takeoff||quadcopter|uav|aerial|flight|flying|technology|airborne|robotics|transport|rotor|aviation|helipad|gear|flyer|helicopter|aircraft|vehicle|plane|trip|airplane|travel|airport|vacation|arrival|landing|departure|takeoff"
         ],
         [
             "Droplet",
@@ -1190,7 +1186,7 @@
         ],
         [
             "EqualApproximatelyNot",
-            "math|equal approximately not|phi||calculate|math|operator|not|approximately|unequal|code|≅|tolerance|threshold|mismatch|comparison|assertion|variance|golden-ratio|symbol|greek|letter|typography|constant|flux|magnetic-flux"
+            "math|equal approximately not|phi|pi||calculate|math|operator|not|approximately|unequal|code|≅|tolerance|threshold|mismatch|comparison|assertion|variance|golden-ratio|symbol|greek|letter|typography|constant|flux|magnetic-flux|coding|programming|trigonometry|geometry|formula"
         ],
         [
             "Eraser",
@@ -1425,6 +1421,10 @@
             "gauge|circle gauge||dashboard|dial|meter|speed|pressure|measure|level|performance"
         ],
         [
+            "Gavel",
+            "scale 2|gavel|scale|zodiac libra||justice|law|court|judgment|legal|hands|penalty|decision|authority|hammer|mallet|balance|license|right|rule|weight|measure|compare|judge|fair|ethics|scales|air|harmony|astrology|star sign|horoscope|constellation|celestial"
+        ],
+        [
             "Gem",
             "gem sparkle|gem||diamond|crystal|ruby|jewellery|price|special|present|gift|ring|wedding|proposal|marriage|rubygems|jewelry|precious|luxury"
         ],
@@ -1442,11 +1442,7 @@
         ],
         [
             "GitBranch",
-            "branch down|git branch|git branch minus|git branch plus|git commit vertical|git compare|git fork|git merge|git pull request|git pull request closed|git pull request create|git pull request draft|merge|split||code|version control|vcs|repository|delete|remove|-|add|create|+|waypoint|stop|station|diff|open|rejected|closed|cancelled|x|plus|draft|dashed|combine|join|unite|break|disband|divide|separate|branch|disunite"
-        ],
-        [
-            "GitCompareArrows",
-            "ar|git compare arrows||code|version control|diff"
+            "branch down|git branch|git branch minus|git branch plus|git commit vertical|git compare|git fork|git merge|git pull request|git pull request closed|git pull request create|git pull request draft|merge|split|git compare arrows||code|version control|vcs|repository|delete|remove|-|add|create|+|waypoint|stop|station|diff|open|rejected|closed|cancelled|x|plus|draft|dashed|combine|join|unite|break|disband|divide|separate|branch|disunite"
         ],
         [
             "GitGraph",
@@ -1490,7 +1486,7 @@
         ],
         [
             "Hand",
-            "hand|hand fist|hand grab|hand metal|hand platter|handbag||wave|move|mouse|grab|clench|strength|power|unity|solidarity|rebellion|victory|triumph|support|fight|combat|brawl|hand|rock|waiter|waitress|restaurant|table service|served|dinner|dining|meal|course|luxury|bag|baggage|carry|clutch|fashion|luggage|purse|tote|travel"
+            "hand|hand fist|hand grab|hand metal|hand platter||wave|move|mouse|grab|clench|strength|power|unity|solidarity|rebellion|victory|triumph|support|fight|combat|brawl|hand|rock|waiter|waitress|restaurant|table service|served|dinner|dining|meal|course|luxury"
         ],
         [
             "HandCoins",
@@ -1514,7 +1510,7 @@
         ],
         [
             "Hd",
-            "hd|hdmi port||tv|resolution|video|high definition|720p|1080p|socket|plug|slot|controller|connector|interface|console|signal|audio|visual|av|data|input|output"
+            "hd||tv|resolution|video|high definition|720p|1080p"
         ],
         [
             "HeadphoneOff",
@@ -1746,7 +1742,7 @@
         ],
         [
             "LockOpen",
-            "lock open||security"
+            "lock open|door open||security|entrance|entry|exit|ingress|egress|gate|gateway|emergency exit"
         ],
         [
             "LogOut",
@@ -1755,6 +1751,10 @@
         [
             "Magnet",
             "magnet||horseshoe|lock|science|snap"
+        ],
+        [
+            "Mail",
+            "envelope|mail|mail minus|mail plus|mail x||email|message|letter|unread|communication|remove|delete|add|create|new|compose"
         ],
         [
             "MailBadge",
@@ -1769,6 +1769,10 @@
             "envelope open|mail clock||email|message|letter|unread|scheduled|delayed|sendlater|delivery|reminder|pending|outgoing|timer"
         ],
         [
+            "MailOpen",
+            "bookmark open|mail open||email|message|letter|read"
+        ],
+        [
             "MailQuestionMark",
             "calendar mark|mail question mark||email|message|letter|delivery|undelivered"
         ],
@@ -1778,7 +1782,11 @@
         ],
         [
             "Mailbox",
-            "mailbox|mail|mail minus|mail plus|mail x|mails||emails|messages|letters|mailing list|newsletter|mail|post|letter|receive|email|message|unread|communication|remove|delete|add|create|new|compose|multiple|copy"
+            "mailbox||emails|messages|letters|mailing list|newsletter|mail|post|letter|receive"
+        ],
+        [
+            "Mails",
+            "envelopes|mails||emails|messages|letters|multiple|mailing list|newsletter|copy"
         ],
         [
             "Map",
@@ -1810,7 +1818,7 @@
         ],
         [
             "MemoryStick",
-            "memo|memory stick||ram|random access|technology|computer|chip|circuit|specs|capacity|gigabytes|gb"
+            "flash drive|memory stick||ram|random access|technology|computer|chip|circuit|specs|capacity|gigabytes|gb"
         ],
         [
             "Menu",
@@ -1846,7 +1854,7 @@
         ],
         [
             "Mic",
-            "mic|mic vocal|microwave||record|sound|listen|radio|podcast|microphone|audio|voice|lyrics|music|karaoke|singing|oven|cooker|toaster oven|bake"
+            "mic|mic vocal||record|sound|listen|radio|podcast|microphone|audio|voice|lyrics|music|karaoke|singing"
         ],
         [
             "MicAudioLines",
@@ -1970,7 +1978,7 @@
         ],
         [
             "PaperBag",
-            "bag|paper bag||storage|package|lunch|takeout|eco-friendly|kraft|retail|doggybag"
+            "bag|paper bag|handbag||storage|package|lunch|takeout|eco-friendly|kraft|retail|doggybag|bag|baggage|carry|clutch|fashion|luggage|purse|tote|travel"
         ],
         [
             "Paperclip",
@@ -1986,7 +1994,7 @@
         ],
         [
             "Pen",
-            "pen|highlighter|pen off|pencil|pencil off|pentagon|user pen|user round pen|wifi pen||pencil|change|create|draw|writer|writing|biro|ink|marker|felt tip|stationery|artist|write|edit|note|sign|mark|text|pen|office|school|disabled|inactive|non-editable|locked|read-only|unmodifiable|frozen|restricted|rubber|sketch|draft|shape|person|account|contact|profile|wifi|network"
+            "pen|highlighter|pen off|pencil|pencil off|user pen|user round pen|wifi pen||pencil|change|create|draw|writer|writing|biro|ink|marker|felt tip|stationery|artist|write|edit|note|sign|mark|text|pen|office|school|disabled|inactive|non-editable|locked|read-only|unmodifiable|frozen|restricted|rubber|sketch|draft|person|account|contact|profile|wifi|network"
         ],
         [
             "PenLine",
@@ -2021,10 +2029,6 @@
             "phone outgoing||call"
         ],
         [
-            "Pi",
-            "pie|pi||constant|code|coding|programming|symbol|trigonometry|geometry|formula"
-        ],
-        [
             "PictureInPicture",
             "inbox in|picture in picture||display|play|video|pop out|always on top|window|inset|multitask"
         ],
@@ -2057,18 +2061,6 @@
             "pizza slice|pizza|slice||pie|quiche|food|restaurant|meal|delivery|italian|cutter|scalpel|knife"
         ],
         [
-            "Plane",
-            "plane|bird|drone|helicopter|tickets plane||plane|trip|airplane|travel|flight|airport|vacation|peace|freedom|wing|avian|tweet|quadcopter|uav|aerial|flying|technology|airborne|robotics|transport|rotor|aviation|helipad|gear|flyer|helicopter|aircraft|vehicle|fly|takeoff|passenger|pass|check-in"
-        ],
-        [
-            "PlaneLanding",
-            "plane 3|plane landing||arrival|plane|trip|airplane|landing|travel|flight"
-        ],
-        [
-            "PlaneTakeoff",
-            "plane 2|plane takeoff||departure|plane|trip|airplane|takeoff|travel|flight"
-        ],
-        [
             "Play",
             "play|square play|tv minimal play||music|audio|video|start|run|media|flatscreen|television|stream|display|widescreen|high-definition|hd|1080p|4k|8k|smart|digital|movie|live|ott|running|film|home cinema|entertainment|showtime|channels|catchup"
         ],
@@ -2078,7 +2070,7 @@
         ],
         [
             "Plug",
-            "plug|cable|ethernet port|plug zap||electricity|energy|electronics|socket|outlet|power|voltage|current|charger|connect|utility|cord|wire|connector|connection|link|signal|console|computer|equipment|recharging|supply|disconnected|unplugged|plugs|interface|input|output|audio video|av|rca|scart|tv|television|optical|internet|tech|network|cable|lan|port|router|switch|hub|modem|web|online|networking|communication|plug|slot|controller|data|charge|charging|battery"
+            "plug|cable|ethernet port|plug zap|hdmi port||electricity|energy|electronics|socket|outlet|power|voltage|current|charger|connect|utility|cord|wire|connector|connection|link|signal|console|computer|equipment|recharging|supply|disconnected|unplugged|plugs|interface|input|output|audio video|av|rca|scart|tv|television|optical|internet|tech|network|cable|lan|port|router|switch|hub|modem|web|online|networking|communication|plug|slot|controller|data|charge|charging|battery|audio|video|visual"
         ],
         [
             "Plug2",
@@ -2153,8 +2145,8 @@
             "star rainbow|rainbow||colors|colours|spectrum|light|prism|arc|clear|sunshine"
         ],
         [
-            "Rat",
-            "aspect ratio square|rat|ratio||mouse|mice|gerbil|rodent|pet|pest|plague|disease|screens|sizes|rotate|rotation|adjust|aspect ratio|proportions|16:9|widescreen|4:3|resolution|responsive|mobile|desktop|dimensions|monitor|orientation|portrait|landscape"
+            "Ratio",
+            "aspect ratio square|ratio||screens|sizes|rotate|rotation|adjust|aspect ratio|proportions|16:9|widescreen|4:3|resolution|responsive|mobile|desktop|dimensions|monitor|orientation|portrait|landscape"
         ],
         [
             "Receipt",
@@ -2194,7 +2186,7 @@
         ],
         [
             "Refrigerator",
-            "fridge|refrigerator||frigerator|fridge|freezer|cooler|icebox|chiller|cold storage|kitchen|food|appliance|cold|home"
+            "fridge|refrigerator|microwave||frigerator|fridge|freezer|cooler|icebox|chiller|cold storage|kitchen|food|appliance|cold|home|oven|cooker|toaster oven|bake"
         ],
         [
             "RemoveFormatting",
@@ -2261,8 +2253,8 @@
             "save add|save plus||floppy disk|save|plus|add|update|create"
         ],
         [
-            "Scale",
-            "scale|gavel|scale 3d|scale3d|zodiac libra||balance|legal|license|right|rule|law|justice|weight|measure|compare|judge|fair|ethics|decision|court|judgment|hands|penalty|authority|hammer|mallet|gizmo|transform|size|axis|scales|air|harmony|astrology|star sign|horoscope|constellation|celestial"
+            "Scale3d",
+            "scale|scale 3d|scale3d||gizmo|transform|size|axis"
         ],
         [
             "Scaling",
@@ -2334,7 +2326,7 @@
         ],
         [
             "Shapes",
-            "shapes|hexagon|octagon minus|octagon x|square dot|square equal|square square|squircle|squircle dashed||triangle|equilateral|square|circle|classification|different|collection|toy|blocks|learning|shape|node.js|logo|stop|forbidden|subtract|remove|decrease|reduce|-|traffic|halt|restricted|delete|alert|warning|times|clear|math|git|diff|modified|.|calculate|=|float|center|rectangle|pending|progress|issue|draft|code|coding|version control"
+            "shapes|hexagon|octagon minus|octagon x|square dot|square equal|square square|squircle|squircle dashed|pentagon||triangle|equilateral|square|circle|classification|different|collection|toy|blocks|learning|shape|node.js|logo|stop|forbidden|subtract|remove|decrease|reduce|-|traffic|halt|restricted|delete|alert|warning|times|clear|math|git|diff|modified|.|calculate|=|float|center|rectangle|pending|progress|issue|draft|code|coding|version control"
         ],
         [
             "Share",
@@ -2422,7 +2414,7 @@
         ],
         [
             "Signal",
-            "signal|signal high|signal low|signal medium|signal zero||connection|wireless|gsm|phone|2g|3g|4g|5g|lost"
+            "station|signal|signal high|signal low|signal medium|signal zero||connection|wireless|gsm|phone|2g|3g|4g|5g|lost"
         ],
         [
             "Signature",
@@ -2641,10 +2633,6 @@
             "store||shop|supermarket|stand|boutique|building|retail|business|market|ecommerce"
         ],
         [
-            "Subscript",
-            "subscription|subscript||text"
-        ],
-        [
             "Sun",
             "sun|solar panel|sun dim|sun medium|sun snow|thermometer sun||brightness|weather|light|summer|day|bright|solar panel|solar|panel|sun|energy|electricity|dim|low|brightness low|medium|air conditioning|temperature|hot|cold|seasons|celsius|fahrenheit|warm"
         ],
@@ -2858,7 +2846,7 @@
         ],
         [
             "Video",
-            "video|videotape||camera|movie|film|recording|motion picture|camcorder|reel|record|media|vhs|showreel|cassette"
+            "video|videotape|cctv||camera|movie|film|recording|motion picture|camcorder|reel|record|media|vhs|showreel|cassette|surveillance|videotape|crime|watching"
         ],
         [
             "VideoOff",
@@ -10662,6 +10650,7 @@
         "outline": "umriss|gliederung|contorno|esquema|contour|plan|контур|обрис",
         "whole": "ganz|gesamt|entero|completo|entier|complet|цілии|весь",
         "word": "wort|palabra|mot|слово",
+        "subscript": "tiefgestellt|index|subindice|indice|нижніи індекс",
         "letter": "brief|buchstabe|letra|carta|lettre|лист|літера",
         "font": "schriftart|schrift|fuente|tipografia|police|police de caracteres|шрифт",
         "size": "große|tamano|taille|розмір",
@@ -10945,11 +10934,19 @@
         "grooming": "korperpflege|fellpflege|aseo|cuidado personal|toilettage|soins personnels|догляд|грумінг",
         "fresh": "frisch|fresco|frais|свіжии",
         "clean": "sauber|reinigen|limpio|limpiar|propre|nettoyer|чистии|прибирати",
-        "cup": "tasse|becher|taza|copa|coupe|чашка|кубок",
+        "bottle": "flasche|botella|bouteille|пляшка|пляшечка",
+        "pill": "pille|tablette|pastilla|pildora|pilule|comprime|таблетка|пігулка",
         "amphora": "amphore|anfora|амфора",
         "blender": "mixer|standmixer|licuadora|batidora|mixeur|blender|блендер",
         "can": "dose|buchse|lata|poder|canette|boite de conserve|банка|консервна банка",
         "soda": "limonade|sprudel|refresco|soda|boisson gazeuse|газована вода|содова",
+        "prescription": "rezept|verschreibung|receta|prescripcion|ordonnance|prescription|рецепт|приписання",
+        "drug": "medikament|droge|medicamento|droga|medicament|drogue|ліки|наркотик",
+        "capsule": "kapsel|capsula|capsule|gelule|капсула",
+        "jar": "glas|einmachglas|tarro|frasco|bocal|pot|банка|слоік",
+        "container": "behalter|container|contenedor|recipiente|conteneur|recipient|контеинер|ємність",
+        "pharmaceutical": "pharmazeutisch|arzneimittel|farmaceutico|pharmaceutique|фармацевтичнии|ліки",
+        "tablet": "tablet|tablette|tableta|pastilla|планшет|таблетка",
         "pottery": "topferei|keramik|ceramica|alfareria|poterie|гончарство|кераміка",
         "artifact": "artefakt|artefacto|artefact|артефакт",
         "artefact": "artefakt|artefacto|artefact|артефакт",
@@ -10971,7 +10968,6 @@
         "smoothie": "smoothie|fruchtshake|batido|смузі",
         "drink": "getrank|trinken|bebida|beber|boisson|boire|напіи|пити",
         "blade": "klinge|blatt|hoja|cuchilla|lame|лезо|клинок",
-        "container": "behalter|container|contenedor|recipiente|conteneur|recipient|контеинер|ємність",
         "kitchen": "kuche|cocina|cuisine|кухня",
         "milkshake": "milchshake|shake|batido|malteada|milk-shake|молочнии коктеиль|мілкшеик",
         "cocktail": "cocktail|coctel|коктеиль",
@@ -10994,8 +10990,6 @@
         "beer": "bier|cerveza|biere|пиво",
         "alcohol": "alkohol|alcohol|alcool|алкоголь|випивка",
         "waste": "abfall|verschwendung|residuos|desperdicio|dechets|gaspillage|відходи|марнувати",
-        "straw": "strohhalm|stroh|paja|pajita|paille|соломинка|солома",
-        "water": "wasser|agua|eau|вода|поливати",
         "anchor": "anker|ancla|ancre|якір",
         "fishing": "angeln|fischen|pesca|peche|рибалка|риболовля",
         "hook": "haken|gancho|anzuelo|crochet|hamecon|гачок|гак",
@@ -11519,6 +11513,7 @@
         "equalizer": "equalizer|entzerrer|ecualizador|egaliseur|еквалаизер",
         "cancel": "abbrechen|stornieren|cancelar|annuler|скасувати|відмінити",
         "unavailable": "nicht verfugbar|unverfugbar|no disponible|indisponible|недоступнии|відсутніи",
+        "water": "wasser|agua|eau|вода|поливати",
         "level": "stufe|ebene|nivel|niveau|рівень",
         "low": "niedrig|tief|bajo|bas|faible|низькии|низько",
         "tide": "gezeiten|flut|marea|maree|приплив|відплив",
@@ -11836,6 +11831,7 @@
         "beaker": "becherglas|becher|vaso de precipitados|probeta|gobelet|мензурка|склянка",
         "conical": "kegelformig|konisch|conico|conique|конічнии|конусоподібнии",
         "round": "rund|runde|redondo|ronda|rond|arrondi|круглии|раунд",
+        "cup": "tasse|becher|taza|copa|coupe|чашка|кубок",
         "lab": "labor|laboratorio|laboratoire|labo|лабораторія|лаб",
         "experiment": "experiment|versuch|experimento|experience|experimentation|експеримент|дослід",
         "test": "test|prufung|prueba|tester|тест|перевірка",
@@ -11850,8 +11846,6 @@
         "rest": "ruhe|pause|descanso|resto|repos|reste|відпочинок|решта",
         "accommodation": "unterkunft|ubernachtung|alojamiento|hebergement|logement|проживання|житло",
         "wineglass": "weinglas|copa de vino|verre a vin|келих",
-        "bottle": "flasche|botella|bouteille|пляшка|пляшечка",
-        "martini": "martini|cocktail|мартіні|коктеиль",
         "glass": "glas|vidrio|vaso|verre|скло|склянка",
         "goblet": "pokal|kelch|copa|caliz|gobelet|coupe|кубок|келих",
         "chalice": "kelch|pokal|caliz|copa|calice|coupe|чаша|келих",
@@ -11863,10 +11857,11 @@
         "nightlife": "nachtleben|vida nocturna|vie nocturne|нічне життя",
         "sommelier": "sommelier|weinkellner|sumiller|сомельє",
         "dinner": "abendessen|cena|diner|вечеря|обід",
-        "spirit": "geist|spirituose|espiritu|esprit|spiritueux|дух|спирт",
         "abstinence": "abstinenz|enthaltsamkeit|abstinencia|abstinence|утримання|стриманість",
         "abstaining": "enthaltung|verzicht|abstenerse|abstencion|abstention|утримання|стриманість",
         "teetotalism": "abstinenz|alkoholverzicht|abstinencia del alcohol|abstemio|abstinence d'alcool|abstinence|тверезість|відмова від алкоголю",
+        "martini": "martini|cocktail|мартіні|коктеиль",
+        "spirit": "geist|spirituose|espiritu|esprit|spiritueux|дух|спирт",
         "bell": "glocke|klingel|campana|timbre|cloche|sonnette|дзвінок|дзвоник",
         "concierge": "concierge|empfang|conserje|консьєрж|портьє",
         "notification": "benachrichtigung|mitteilung|notificacion|notification|сповіщення|повідомлення",
@@ -11883,6 +11878,9 @@
         "notif": "benachrichtigung|notificacion|notification|сповіщення",
         "silent": "stumm|leise|silencioso|mudo|silencieux|тихии|безшумнии",
         "columns": "spalten|saulen|columnas|colonnes|стовпці|колони",
+        "desktop": "desktop|arbeitsplatz|escritorio|computadora de escritorio|bureau|ordinateur de bureau|робочии стіл|десктоп",
+        "applications": "anwendungen|programme|aplicaciones|applications|застосунки|програми",
+        "launch": "starten|start|lanzar|lanzamiento|lancer|lancement|запуск|запустити",
         "bicycle": "fahrrad|bicicleta|velo|bicyclette|велосипед",
         "bike": "fahrrad|rad|bici|bicicleta|velo|велосипед|баик",
         "motorbike": "motorrad|moto|motocicleta|мотоцикл|мопед",
@@ -11903,6 +11901,20 @@
         "chemical": "chemikalie|chemisch|quimico|chimique|produit chimique|хімічнии|хімікат",
         "radioactive": "radioaktiv|radiactivo|radioactif|радіоактивнии",
         "death": "tod|muerte|mort|deces|смерть",
+        "plane": "flugzeug|ebene|avion|plano|plan|літак|площина",
+        "tickets": "tickets|eintrittskarten|entradas|billetes|billets|квитки|тікети",
+        "airplane": "flugzeug|avion|літак",
+        "flight": "flug|vuelo|vol|політ|авіареис",
+        "airport": "flughafen|aeropuerto|aeroport|аеропорт",
+        "peace": "frieden|paz|paix|мир|спокіи",
+        "freedom": "freiheit|libertad|liberte|свобода|воля",
+        "wing": "flugel|ala|aile|крило",
+        "avian": "vogel-|vogelartig|aviar|ave|aviaire|oiseau|пташинии",
+        "tweet": "tweet|zwitschern|tuit|tuitear|gazouillis|твіт|чирикати",
+        "fly": "fliegen|fliege|volar|mosca|mouche|voler|літати|муха",
+        "takeoff": "abflug|start|despegue|decollage|зліт|відліт",
+        "passenger": "passagier|fahrgast|pasajero|passager|пасажир",
+        "pass": "bestehen|ausweis|pase|aprobar|passer|laissez-passer|пропуск|проити",
         "bitcoin": "bitcoin|біткоін",
         "cryptocurrency": "kryptowahrung|criptomoneda|cryptomonnaie|monnaie numerique|криптовалюта|крипта",
         "digital": "digital|numerique|цифровии",
@@ -12203,17 +12215,6 @@
         "boom": "knall|boom|explosion|auge|бум|вибух",
         "speakers": "lautsprecher|redner|altavoces|bocinas|haut-parleurs|enceintes|динаміки|колонки",
         "live": "live|leben|en vivo|vivir|en direct|vivre|наживо|в ефірі",
-        "bot": "bot|roboter|robot|бот|робот",
-        "pill": "pille|tablette|pastilla|pildora|pilule|comprime|таблетка|пігулка",
-        "robot": "roboter|robot|робот",
-        "chat": "chat|unterhaltung|charla|discussion|conversation|чат|розмова",
-        "assistant": "assistent|helfer|asistente|assistant|помічник|асистент",
-        "prescription": "rezept|verschreibung|receta|prescripcion|ordonnance|prescription|рецепт|приписання",
-        "drug": "medikament|droge|medicamento|droga|medicament|drogue|ліки|наркотик",
-        "capsule": "kapsel|capsula|capsule|gelule|капсула",
-        "jar": "glas|einmachglas|tarro|frasco|bocal|pot|банка|слоік",
-        "pharmaceutical": "pharmazeutisch|arzneimittel|farmaceutico|pharmaceutique|фармацевтичнии|ліки",
-        "tablet": "tablet|tablette|tableta|pastilla|планшет|таблетка",
         "bow": "schleife|bogen|arco|lazo|arc|nœud|бант|лук",
         "request": "anfrage|anforderung|solicitud|peticion|demande|requete|запит|прохання",
         "archer": "bogenschutze|arquero|archer|лучник",
@@ -12330,6 +12331,18 @@
         "portfolio": "portfolio|mappe|portafolio|cartera de inversiones|portefeuille|портфоліо|портфель",
         "carousel": "karussell|carrusel|carrousel|manege|карусель",
         "employment": "beschaftigung|anstellung|empleo|emploi|працевлаштування|заинятість",
+        "toolkit": "werkzeugsatz|toolkit|kit de herramientas|kit d'outils|trousse a outils|набір інструментів|інструментаріи",
+        "tools": "werkzeuge|tools|herramientas|outils|інструменти",
+        "trunk": "kofferraum|stamm|tronco|maletero|coffre|tronc|стовбур|багажник",
+        "chest": "truhe|brust|cofre|pecho|coffre|poitrine|скриня|груди",
+        "utilities": "dienstprogramme|versorgungsleistungen|servicios publicos|utilidades|utilitaires|services publics|комунальні послуги|утиліти",
+        "set": "satz|festlegen|conjunto|establecer|ensemble|definir|набір|встановити",
+        "mechanic": "mechaniker|kfz-mechaniker|mecanico|mecanicien|механік|автослюсар",
+        "workshop": "werkstatt|workshop|taller|atelier|маистерня|воркшоп",
+        "hardware": "hardware|ferreteria|materiel|quincaillerie|апаратне забезпечення|залізо",
+        "handyman": "heimwerker|handwerker|manitas|operario|bricoleur|маистер|маистер на всі руки",
+        "engineering": "ingenieurwesen|technik|ingenieria|ingenierie|інженерія|інженерна справа",
+        "craft": "handwerk|basteln|artesania|oficio|artisanat|bricolage|ремесло|рукоділля",
         "bring": "bringen|mitbringen|traer|apporter|принести|привезти",
         "front": "vorderseite|vorne|frente|delantero|devant|avant|перед|фасад",
         "over": "uber|vorbei|sobre|encima|au-dessus|sur|над|поверх",
@@ -12574,18 +12587,6 @@
         "sensitive": "empfindlich|sensibel|sensible|чутливии|делікатнии",
         "upper": "ober|oberer|superior|alto|superieur|haut|верхніи|вище",
         "chassis": "fahrgestell|chassis|chasis|шасі|рама",
-        "tools": "werkzeuge|tools|herramientas|outils|інструменти",
-        "toolkit": "werkzeugsatz|toolkit|kit de herramientas|kit d'outils|trousse a outils|набір інструментів|інструментаріи",
-        "trunk": "kofferraum|stamm|tronco|maletero|coffre|tronc|стовбур|багажник",
-        "chest": "truhe|brust|cofre|pecho|coffre|poitrine|скриня|груди",
-        "utilities": "dienstprogramme|versorgungsleistungen|servicios publicos|utilidades|utilitaires|services publics|комунальні послуги|утиліти",
-        "set": "satz|festlegen|conjunto|establecer|ensemble|definir|набір|встановити",
-        "mechanic": "mechaniker|kfz-mechaniker|mecanico|mecanicien|механік|автослюсар",
-        "workshop": "werkstatt|workshop|taller|atelier|маистерня|воркшоп",
-        "hardware": "hardware|ferreteria|materiel|quincaillerie|апаратне забезпечення|залізо",
-        "handyman": "heimwerker|handwerker|manitas|operario|bricoleur|маистер|маистер на всі руки",
-        "engineering": "ingenieurwesen|technik|ingenieria|ingenierie|інженерія|інженерна справа",
-        "craft": "handwerk|basteln|artesania|oficio|artisanat|bricolage|ремесло|рукоділля",
         "cassette": "kassette|casete|cassette|касета",
         "castle": "burg|schloss|castillo|chateau|замок|фортеця",
         "chess": "schach|ajedrez|echecs|шахи",
@@ -12775,7 +12776,6 @@
         "weblog": "blog|weblog|bitacora|journal en ligne|блог|веблог",
         "podcast": "podcast|balado|подкаст",
         "gaming": "gaming|spielen|videojuegos|juegos|jeux video|ігри|геиминг",
-        "tweet": "tweet|zwitschern|tuit|tuitear|gazouillis|твіт|чирикати",
         "record": "aufnehmen|datensatz|grabar|registro|enregistrer|disque|запис|рекорд",
         "zero": "null|cero|zero|нуль|нульовии",
         "bullet": "kugel|aufzahlungspunkt|vineta|bala|puce|balle|куля|маркер",
@@ -13023,6 +13023,7 @@
         "address": "adresse|anschrift|direccion|адреса",
         "friend": "freund|freundin|amigo|ami|amie|друг|подруга",
         "acquaintance": "bekannter|bekanntschaft|conocido|connaissance|знаиомии",
+        "chat": "chat|unterhaltung|charla|discussion|conversation|чат|розмова",
         "cookie": "keks|cookie|galleta|biscuit|печиво|кукі",
         "biscuit": "keks|platzchen|galleta|biscuit|gateau sec|печиво|бісквіт",
         "consent": "einwilligung|zustimmung|consentimiento|consentement|згода|дозвіл",
@@ -13034,7 +13035,9 @@
         "copyright": "urheberrecht|copyright|derechos de autor|droit d'auteur|авторське право|копіраит",
         "license": "lizenz|fuhrerschein|licencia|licence|ліцензія|дозвіл",
         "cpu": "prozessor|cpu|procesador|processeur|процесор",
+        "bot": "bot|roboter|robot|бот|робот",
         "gpu": "grafikkarte|gpu|tarjeta grafica|carte graphique|відеокарта|графічнии процесор",
+        "robot": "roboter|robot|робот",
         "arm": "arm|brazo|bras|рука",
         "cores": "kerne|nucleos|cœurs|noyaux|ядра|серцевини",
         "technology": "technologie|technik|tecnologia|технологія|техніка",
@@ -13042,6 +13045,7 @@
         "specs": "brille|spezifikationen|gafas|especificaciones|specifications|lunettes|специфікація|характеристики",
         "gigahertz": "gigahertz|gigahercio|гігагерци|ггц",
         "ghz": "gigahertz|ghz|gigahercio|гігагерц|ггц",
+        "assistant": "assistent|helfer|asistente|assistant|помічник|асистент",
         "mental": "mental|geistig|психічнии|розумовии",
         "cerebral": "zerebral|gehirn-|cerebral|мозковии|церебральнии",
         "consciousness": "bewusstsein|conciencia|conscience|свідомість",
@@ -13095,6 +13099,7 @@
         "cheese": "kase|queso|fromage|сир",
         "parcel": "paket|packchen|paquete|parcela|colis|посилка|бандероль",
         "crate": "kiste|steige|caja|cajon|caisse|cageot|ящик|скриня",
+        "straw": "strohhalm|stroh|paja|pajita|paille|соломинка|солома",
         "dam": "staudamm|damm|presa|represa|barrage|гребля|дамба",
         "faucet": "wasserhahn|hahn|grifo|llave de agua|robinet|кран|змішувач",
         "spigot": "zapfhahn|wasserhahn|grifo|espita|robinet|cannelle|кран|затичка",
@@ -13143,15 +13148,12 @@
         "chromosome": "chromosom|cromosoma|chromosome|хромосома",
         "nucleic": "nukleinsaure|nukleinsaure-|nucleico|nucleique|нуклеіновии",
         "acid": "saure|acido|acide|кислота",
-        "doc": "dokument|documento|document|документ",
-        "desktop": "desktop|arbeitsplatz|escritorio|computadora de escritorio|bureau|ordinateur de bureau|робочии стіл|десктоп",
-        "applications": "anwendungen|programme|aplicaciones|applications|застосунки|програми",
-        "launch": "starten|start|lanzar|lanzamiento|lancer|lancement|запуск|запустити",
         "paw": "pfote|tatze|pata|huella|patte|лапа|лапка",
         "panda": "panda|pandabar|панда",
         "print": "drucken|druck|imprimir|imprimer|друкувати|друк",
         "rabbit": "kaninchen|hase|conejo|lapin|кролик",
         "squirrel": "eichhornchen|ardilla|ecureuil|білка",
+        "rat": "ratte|rata|rat|щур|пацюк",
         "puppy": "welpe|hundebaby|cachorro|chiot|цуценя|щеня",
         "hound": "jagdhund|hund|sabueso|perro de caza|chien de chasse|limier|гончак|мисливськии пес",
         "canine": "hunde-|eckzahn|canino|perro|canin|chien|собачии|іклo",
@@ -13169,17 +13171,15 @@
         "nuts": "nusse|muttern|nueces|frutos secos|noix|fruits a coque|горіхи|гаики",
         "retrieve": "abrufen|zuruckholen|recuperar|obtener|recuperer|отримати|витягти",
         "stash": "vorrat|zwischenspeichern|alijo|guardar|cachette|remiser|схованка|заначка",
+        "mice": "mause|ratones|souris|миші",
+        "gerbil": "rennmaus|jerbo|gerbo|gerbille|піщанка|піщанка гризун",
+        "plague": "pest|plage|plaga|peste|fleau|чума|епідемія",
+        "disease": "krankheit|enfermedad|maladie|хвороба|захворювання",
         "sprinkles": "streusel|zuckerstreusel|grageas|chispas de colores|vermicelles en sucre|paillettes en sucre|посипка|цукрова посипка",
         "topping": "belag|topping|cobertura|aderezo|garniture|топінг|начинка",
         "hazelnut": "haselnuss|avellana|noisette|фундук|ліщина",
         "acorn": "eichel|bellota|gland|жолудь",
         "door": "tur|puerta|porte|двері",
-        "mail": "post|e-mail|correo|courrier|courriel|пошта|лист",
-        "exit": "ausgang|verlassen|salir|salida|sortie|quitter|вихід|виити",
-        "ingress": "eingang|zutritt|entrada|acceso|entree|acces entrant|вхід|в'ізд",
-        "egress": "ausgang|austritt|salida|sortie|вихід|виізд",
-        "gate": "tor|gate|puerta|porton|portail|porte|ворота|брама",
-        "gateway": "gateway|eingangstor|puerta de enlace|pasarela|passerelle|шлюз|прохід",
         "stairwell": "treppenhaus|hueco de escalera|caja de escalera|cage d'escalier|сходова клітка",
         "staircase": "treppe|treppenhaus|escalera|escaleras|escalier|сходи|сходовии проліт",
         "stairway": "treppe|treppenaufgang|escalera|escalinata|escalier|cage d'escalier|сходи|сходовии марш",
@@ -13188,9 +13188,27 @@
         "ladder": "leiter|escalera|escalera de mano|echelle|драбина|сходи",
         "transition": "ubergang|uberblendung|transicion|transition|перехід|перехіднии ефект",
         "access": "zugriff|zugang|acceso|acces|доступ",
+        "exit": "ausgang|verlassen|salir|salida|sortie|quitter|вихід|виити",
+        "egress": "ausgang|austritt|salida|sortie|вихід|виізд",
         "route": "route|strecke|ruta|itinerario|itineraire|маршрут|шлях",
         "indoor": "drinnen|innen|interior|de interior|interieur|en salle|у приміщенні|внутрішніи",
         "auth": "authentifizierung|anmeldung|autenticacion|authentification|автентифікація|авторизація",
+        "drone": "drohne|dron|drone|дрон|безпілотник",
+        "helicopter": "hubschrauber|helikopter|helicoptero|helicoptere|гелікоптер|вертоліт",
+        "landing": "landung|landeseite|aterrizaje|pagina de inicio|atterrissage|page d'accueil|посадка|лендінг",
+        "quadcopter": "quadrocopter|drohne|cuadricoptero|dron|quadricoptere|drone|квадрокоптер|дрон",
+        "uav": "drohne|unbemanntes luftfahrzeug|dron|vehiculo aereo no tripulado|drone|vehicule aerien sans pilote|безпілотник|дрон",
+        "aerial": "antenne|luftaufnahme|antena|aereo|aerien|антена|повітрянии",
+        "flying": "fliegend|fliegen|volando|volador|vol|volant|літає|політ",
+        "airborne": "in der luft|luftgestutzt|aerotransportado|en el aire|aeroporte|en vol|повітрянии|у повітрі",
+        "robotics": "robotik|robotica|robotique|робототехніка",
+        "rotor": "rotor|laufer|ротор",
+        "aviation": "luftfahrt|flugwesen|aviacion|aviation|авіація",
+        "helipad": "hubschrauberlandeplatz|landeplatz|helipuerto|heliport|helistation|вертолітнии маиданчик|гелікоптернии маиданчик",
+        "flyer": "flyer|flugblatt|folleto|volante|prospectus|tract|листівка|флаєр",
+        "aircraft": "flugzeug|luftfahrzeug|aeronave|avion|aeronef|літак|повітряне судно",
+        "arrival": "ankunft|llegada|arrivee|прибуття",
+        "departure": "abreise|abflug|salida|partida|depart|відправлення|від'ізд",
         "droplet": "tropfchen|tropfen|gotita|gota|gouttelette|goutte|крапля|крапелька",
         "dispenser": "spender|automat|dispensador|distributeur|диспенсер|дозатор",
         "wet": "nass|feucht|mojado|humedo|mouille|humide|мокрии|вологии",
@@ -13257,6 +13275,9 @@
         "caption": "beschriftung|bildunterschrift|subtitulo|leyenda|legende|sous-titre|підпис|заголовок",
         "conceal": "verbergen|verstecken|ocultar|cacher|dissimuler|приховати|сховати",
         "mask": "maske|mascara|mascarilla|masque|маска",
+        "ingress": "eingang|zutritt|entrada|acceso|entree|acces entrant|вхід|в'ізд",
+        "gate": "tor|gate|puerta|porton|portail|porte|ворота|брама",
+        "gateway": "gateway|eingangstor|puerta de enlace|pasarela|passerelle|шлюз|прохід",
         "invisible": "unsichtbar|invisible|невидимии",
         "feather": "feder|pluma|plume|перо|пір'іна",
         "quill": "federkiel|schreibfeder|pluma|pendola|plume|plume d'oie|гусяче перо|перо",
@@ -13353,7 +13374,6 @@
         "active": "aktiv|activo|actif|активнии",
         "current": "aktuell|strom|actual|corriente|actuel|courant|поточнии|струм",
         "repo": "repository|repo|repositorio|depot|репозиторіи|репо",
-        "tickets": "tickets|eintrittskarten|entradas|billetes|billets|квитки|тікети",
         "issues": "probleme|tickets|problemas|incidencias|problemes|проблеми|питання",
         "rename": "umbenennen|renombrar|cambiar nombre|renommer|переименувати",
         "directories": "verzeichnisse|ordner|directorios|carpetas|repertoires|dossiers|каталоги|папки",
@@ -13414,6 +13434,23 @@
         "arrowhead": "pfeilspitze|punta de flecha|pointe de fleche|наконечник стріли|вістря",
         "gauge": "messgerat|anzeige|medidor|indicador|jauge|indicateur|датчик|вимірювач",
         "dial": "wahlscheibe|wahlen|marcar|esfera|cadran|composer|набір номера|циферблат",
+        "gavel": "richterhammer|hammer|mazo|martillo de juez|marteau de juge|maillet|молоток судді|суддівськии молоток",
+        "zodiac": "tierkreis|sternzeichen|zodiaco|zodiaque|зодіак|знак зодіаку",
+        "libra": "waage|libra|balance|терези",
+        "court": "gericht|platz|cancha|tribunal|terrain|суд|корт",
+        "judgment": "urteil|beurteilung|juicio|sentencia|jugement|судження|вирок",
+        "hands": "hande|manos|mains|руки|стрілки",
+        "penalty": "strafe|elfmeter|penalizacion|penalti|penalite|sanction|штраф|пенальті",
+        "decision": "entscheidung|decision|рішення",
+        "authority": "behorde|autoritat|autoridad|autorite|влада|повноваження",
+        "balance": "kontostand|waage|saldo|balance|solde|equilibre|баланс|залишок",
+        "judge": "richter|beurteilen|juez|juzgar|juge|juger|суддя|судити",
+        "fair": "messe|gerecht|feria|justo|foire|equitable|ярмарок|справедливии",
+        "ethics": "ethik|moral|etica|ethique|етика",
+        "scales": "waage|skalen|balanza|escalas|balance|echelles|ваги|терези",
+        "harmony": "harmonie|eintracht|armonia|гармонія",
+        "astrology": "astrologie|sternzeichen|astrologia|астрологія",
+        "horoscope": "horoskop|horoscopo|horoscope|гороскоп",
         "ruby": "rubin|ruby|rubi|rubis|рубін",
         "jewellery": "schmuck|joyeria|joyas|bijoux|коштовності|прикраси",
         "special": "besonders|spezial|especial|special|особливии|спеціальнии",
@@ -13428,7 +13465,6 @@
         "organism": "organismus|lebewesen|organismo|organisme|організм",
         "cilia": "wimpern|flimmerharchen|cilios|cils|cils vibratiles|віики|віичасті",
         "pathogen": "krankheitserreger|erreger|patogeno|pathogene|agent pathogene|збудник|патоген",
-        "disease": "krankheit|enfermedad|maladie|хвороба|захворювання",
         "contagion": "ansteckung|infektion|contagio|contagion|зараза|інфекція",
         "contamination": "verunreinigung|kontamination|contaminacion|contamination|забруднення|зараження",
         "microbiology": "mikrobiologie|microbiologia|microbiologie|мікробіологія",
@@ -13499,7 +13535,6 @@
         "skylight": "dachfenster|oberlicht|claraboya|tragaluz|lucarne|puits de lumiere|мансардне вікно|люк у даху",
         "fist": "faust|puno|poing|кулак",
         "platter": "platte|servierplatte|fuente|bandeja|plateau|plat de service|таця|велика тарілка",
-        "handbag": "handtasche|bolso|cartera|sac a main|жіноча сумка|сумочка",
         "clench": "ballen|zusammenbeißen|apretar|cerrar el puno|serrer|poing serre|стиснути|затиснути",
         "strength": "starke|kraft|fuerza|resistencia|force|сила|міцність",
         "unity": "einheit|einigkeit|unidad|union|unite|єдність|згуртованість",
@@ -13512,11 +13547,6 @@
         "waitress": "kellnerin|bedienung|camarera|mesera|serveuse|офіціантка",
         "served": "serviert|bedient|servido|servi|подано|обслужено",
         "dining": "speisen|essen|comedor|comer|repas|salle a manger|обід|ідальня",
-        "carry": "tragen|ubertrag|llevar|transportar|porter|transporter|нести|переносити",
-        "clutch": "kupplung|clutch|embrague|bolso de mano|embrayage|pochette|зчеплення|клатч",
-        "fashion": "mode|moda|мода",
-        "purse": "geldborse|handtasche|monedero|bolso|porte-monnaie|sac a main|гаманець|жіноча сумочка",
-        "tote": "einkaufstasche|stoffbeutel|bolsa de tela|bolso|cabas|sac fourre-tout|сумка-шопер|шопер",
         "offers": "angebote|ofertas|offres|пропозиціі|акціі",
         "mortgage": "hypothek|baukredit|hipoteca|pret immobilier|hypotheque|іпотека",
         "wage": "lohn|gehalt|salario|sueldo|salaire|заробітна плата|зарплата",
@@ -13538,7 +13568,6 @@
         "begging": "betteln|bitten|mendigar|pedir|mendicite|supplier|жебракування|прохання",
         "ssd": "ssd|festplatte|disco de estado solido|disque ssd|твердотільнии накопичувач",
         "hashtag": "hashtag|schlagwort|etiqueta|mot-diese|хештег",
-        "hdmi": "hdmi",
         "resolution": "auflosung|beschluss|resolucion|resolution|роздільна здатність|рішення",
         "audiobook": "horbuch|audiolibro|livre audio|аудіокнига",
         "listening": "zuhoren|horen|escuchando|escucha|ecoute|прослуховування|слухання",
@@ -13620,12 +13649,12 @@
         "lanyard": "schlusselband|umhangeband|cordon|cinta para el cuello|tour de cou|шнурок|ремінець для беиджа",
         "secure": "sicher|absichern|seguro|asegurar|securise|sur|безпечнии|захищении",
         "employee": "mitarbeiter|angestellter|empleado|employe|salarie|працівник|співробітник",
-        "pass": "bestehen|ausweis|pase|aprobar|passer|laissez-passer|пропуск|проити",
         "gif": "gif|animiertes bild|гіф",
         "resize": "große andern|skalieren|redimensionar|cambiar tamano|redimensionner|змінити розмір",
         "sharpen": "scharfen|anspitzen|afilar|enfocar|aiguiser|accentuer|заточити|загострити",
         "slideshow": "diashow|prasentation|presentacion de diapositivas|pase de diapositivas|diaporama|слаид-шоу|презентація",
         "showcase": "vitrine|schaufenster|escaparate|vitrina|presentation|вітрина|демонстрація",
+        "mail": "post|e-mail|correo|courrier|courriel|пошта|лист",
         "italic": "kursiv|cursiva|italique|курсив|похилии шрифт",
         "boilerplate": "textbaustein|vorlage|plantilla|texto estandar|texte type|modele standard|шаблон|типовии текст",
         "login": "anmelden|anmeldung|iniciar sesion|acceso|connexion|se connecter|вхід|логін",
@@ -13764,7 +13793,6 @@
         "lightbeam": "lichtstrahl|haz de luz|rayo de luz|faisceau lumineux|світловии промінь|промінь",
         "wayfinding": "orientierung|wegeleitsystem|orientacion|senalizacion|orientation|signaletique|орієнтування|навігація по місцевості",
         "guidance": "anleitung|fuhrung|orientacion|guia|orientation|conseils|настанови|керівництво",
-        "airport": "flughafen|aeropuerto|aeroport|аеропорт",
         "external": "extern|außerlich|externo|externe|exterieur|зовнішніи",
         "url": "url|webadresse|direccion web|adresse web|веб-адреса",
         "outbound": "ausgehend|abgehend|saliente|sortant|вихіднии|що виходить",
@@ -13819,14 +13847,13 @@
         "outgoing": "ausgehend|abgehend|saliente|sortant|вихіднии|відправлении",
         "undelivered": "nicht zugestellt|unzugestellt|no entregado|non livre|недоставлении|не доставлено",
         "mailbox": "briefkasten|postfach|buzon|boite aux lettres|поштова скринька|поштова шухляда",
-        "mails": "e-mails|post|correos|courriers|courriels|листи|пошта",
         "emails": "e-mails|correos electronicos|correos|courriels|листи|імеили",
         "messages": "nachrichten|mensajes|messages|повідомлення",
         "mailing": "versand|postversand|envio postal|correo masivo|envoi postal|publipostage|розсилка|поштове відправлення",
         "post": "beitrag|post|publicacion|publicar|publication|poster|публікація|пост",
+        "mails": "e-mails|post|correos|courriers|courriels|листи|пошта",
         "metres": "meter|metros|metres|метри",
         "allotment": "schrebergarten|kleingarten|parcela|huerto|jardin ouvrier|lotissement|город|ділянка",
-        "plane": "flugzeug|ebene|avion|plano|plan|літак|площина",
         "acres": "morgen|acker|acres|акри",
         "golf": "golf|гольф",
         "inside": "innen|drinnen|dentro|interior|interieur|dedans|всередині|усередині",
@@ -13836,7 +13863,6 @@
         "stare": "starren|anstarren|mirar fijamente|fixer|regard fixe|дивитися|втупитися",
         "masking": "maskierung|abkleben|enmascaramiento|masquage|маскування|приховування",
         "deadpan": "ausdruckslos|trocken|inexpresivo|impasible|impassible|pince-sans-rire|незворушнии|безвиразнии",
-        "memo": "notiz|memo|memorando|nota|note|нотатка|службова записка",
         "capacity": "kapazitat|fassungsvermogen|capacidad|capacite|місткість|ємність",
         "gigabytes": "gigabyte|gigabytes|gigas|gigaoctets|гігабаити|гб",
         "comment": "kommentar|comentario|comentar|commentaire|коментар",
@@ -13884,15 +13910,10 @@
         "messaging": "nachrichtenversand|messaging|mensajeria|messagerie|обмін повідомленнями|листування",
         "mic": "mikrofon|mikro|microfono|micro|мікрофон|мік",
         "vocal": "gesang|stimmlich|vocal|вокальнии|голосовии",
-        "microwave": "mikrowelle|microondas|micro-ondes|мікрохвильовка|мікрохвильова піч",
         "microphone": "mikrofon|microfono|microphone|micro|мікрофон",
         "lyrics": "songtext|liedtext|letra|letra de cancion|paroles|текст пісні|слова пісні",
         "karaoke": "karaoke|караоке",
         "singing": "singen|gesang|cantando|canto|chant|chanter|співи|спів",
-        "oven": "backofen|ofen|horno|four|духовка|піч",
-        "cooker": "herd|kocher|cocina|olla|cuisiniere|autocuiseur|плита|варильна поверхня",
-        "toaster": "toaster|tostadora|grille-pain|тостер",
-        "bake": "backen|hornear|cuire|cuire au four|пекти|випікати",
         "dictation": "diktat|diktieren|dictado|dictee|диктування|диктант",
         "cancellation": "stornierung|absage|cancelacion|annulation|скасування|відміна",
         "microchip": "mikrochip|chip|microchip|puce electronique|micropuce|мікрочіп|мікросхема",
@@ -14015,8 +14036,14 @@
         "paintbrush": "pinsel|malpinsel|pincel|brocha|pinceau|пензель|кисть",
         "watercolor": "aquarell|wasserfarbe|acuarela|aquarelle|акварель|акварельнии",
         "watercolour": "aquarell|wasserfarbe|acuarela|aquarelle|акварель|акварельнии",
+        "handbag": "handtasche|bolso|cartera|sac a main|жіноча сумка|сумочка",
         "kraft": "kraftpapier|kraft|papel kraft|papier kraft|крафт|крафтовии папір",
         "doggybag": "restebox|doggybag|bolsa para llevar|sobras|doggy bag|boite a emporter|пакунок з собою|пакет з залишками",
+        "carry": "tragen|ubertrag|llevar|transportar|porter|transporter|нести|переносити",
+        "clutch": "kupplung|clutch|embrague|bolso de mano|embrayage|pochette|зчеплення|клатч",
+        "fashion": "mode|moda|мода",
+        "purse": "geldborse|handtasche|monedero|bolso|porte-monnaie|sac a main|гаманець|жіноча сумочка",
+        "tote": "einkaufstasche|stoffbeutel|bolsa de tela|bolso|cabas|sac fourre-tout|сумка-шопер|шопер",
         "paperclip": "buroklammer|heftklammer|clip|sujetapapeles|trombone|скріпка",
         "deciduous": "laubabwerfend|laubbaum|caducifolio|caduco|caduc|feuillu|листопаднии",
         "palm": "palme|handflache|palma|palmera|palmier|paume|пальма|долоня",
@@ -14028,7 +14055,6 @@
         "island": "insel|isla|ile|острів",
         "tropical": "tropisch|tropical|тропічнии",
         "highlighter": "textmarker|leuchtstift|marcador|rotulador fluorescente|surligneur|маркер|текстовиділювач",
-        "pentagon": "funfeck|pentagon|pentagono|pentagone|п'ятикутник|пентагон",
         "editable": "bearbeitbar|editierbar|editable|modifiable|редаговании|можна редагувати",
         "only": "nur|ausschließlich|solo|solamente|seulement|uniquement|лише|тільки",
         "unmodifiable": "unveranderbar|schreibgeschutzt|no modificable|non modifiable|незміннии|не редагується",
@@ -14053,37 +14079,13 @@
         "cutter": "schneider|cutter|cortador|coupeur|різак|ніж",
         "scalpel": "skalpell|bisturi|scalpel|bistouri|скальпель",
         "knife": "messer|cuchillo|couteau|ніж",
-        "drone": "drohne|dron|drone|дрон|безпілотник",
-        "helicopter": "hubschrauber|helikopter|helicoptero|helicoptere|гелікоптер|вертоліт",
-        "airplane": "flugzeug|avion|літак",
-        "flight": "flug|vuelo|vol|політ|авіареис",
-        "peace": "frieden|paz|paix|мир|спокіи",
-        "freedom": "freiheit|libertad|liberte|свобода|воля",
-        "wing": "flugel|ala|aile|крило",
-        "avian": "vogel-|vogelartig|aviar|ave|aviaire|oiseau|пташинии",
-        "quadcopter": "quadrocopter|drohne|cuadricoptero|dron|quadricoptere|drone|квадрокоптер|дрон",
-        "uav": "drohne|unbemanntes luftfahrzeug|dron|vehiculo aereo no tripulado|drone|vehicule aerien sans pilote|безпілотник|дрон",
-        "aerial": "antenne|luftaufnahme|antena|aereo|aerien|антена|повітрянии",
-        "flying": "fliegend|fliegen|volando|volador|vol|volant|літає|політ",
-        "airborne": "in der luft|luftgestutzt|aerotransportado|en el aire|aeroporte|en vol|повітрянии|у повітрі",
-        "robotics": "robotik|robotica|robotique|робототехніка",
-        "rotor": "rotor|laufer|ротор",
-        "aviation": "luftfahrt|flugwesen|aviacion|aviation|авіація",
-        "helipad": "hubschrauberlandeplatz|landeplatz|helipuerto|heliport|helistation|вертолітнии маиданчик|гелікоптернии маиданчик",
-        "flyer": "flyer|flugblatt|folleto|volante|prospectus|tract|листівка|флаєр",
-        "aircraft": "flugzeug|luftfahrzeug|aeronave|avion|aeronef|літак|повітряне судно",
-        "fly": "fliegen|fliege|volar|mosca|mouche|voler|літати|муха",
-        "takeoff": "abflug|start|despegue|decollage|зліт|відліт",
-        "passenger": "passagier|fahrgast|pasajero|passager|пасажир",
-        "landing": "landung|landeseite|aterrizaje|pagina de inicio|atterrissage|page d'accueil|посадка|лендінг",
-        "arrival": "ankunft|llegada|arrivee|прибуття",
-        "departure": "abreise|abflug|salida|partida|depart|відправлення|від'ізд",
         "flatscreen": "flachbildschirm|flachbildfernseher|pantalla plana|ecran plat|пласкии екран|телевізор",
         "widescreen": "breitbild|breitbildformat|pantalla panoramica|pantalla ancha|ecran large|grand ecran|широкоформатнии екран|широкии екран",
         "ott": "streaming|ott|diffusion en ligne|стрімінг|онлаин-кіно",
         "showtime": "showtime|vorstellungsbeginn|hora del espectaculo|funcion|seance|heure du spectacle|час шоу|початок сеансу",
         "catchup": "aufholen|nachholen|ponerse al dia|rattrapage|replay|наздогнати|кетчуп",
         "ethernet": "ethernet|netzwerkkabel|мережевии кабель",
+        "hdmi": "hdmi",
         "outlet": "steckdose|ausgang|toma de corriente|salida|prise|sortie|розетка|вихід",
         "voltage": "spannung|volt|voltaje|tension|voltage|напруга|вольтаж",
         "cord": "schnur|kabel|cordon|cable|corde|шнур|мотузка",
@@ -14135,10 +14137,6 @@
         "spectrum": "spektrum|espectro|spectre|спектр",
         "prism": "prisma|prisme|призма",
         "sunshine": "sonnenschein|luz del sol|sol|soleil|ensoleille|сонячне світло|сонячно",
-        "rat": "ratte|rata|rat|щур|пацюк",
-        "mice": "mause|ratones|souris|миші",
-        "gerbil": "rennmaus|jerbo|gerbo|gerbille|піщанка|піщанка гризун",
-        "plague": "pest|plage|plaga|peste|fleau|чума|епідемія",
         "sizes": "großen|tamanos|tallas|tailles|розміри",
         "rotation": "drehung|rotation|rotacion|giro|обертання|поворот",
         "proportions": "proportionen|verhaltnisse|proporciones|proportions|пропорціі|співвідношення",
@@ -14163,6 +14161,7 @@
         "waiting": "wartend|warten|esperando|espera|en attente|attente|очікування|чекає",
         "fridge": "kuhlschrank|nevera|refrigerador|refrigerateur|frigo|холодильник",
         "refrigerator": "kuhlschrank|refrigerador|nevera|refrigerateur|frigo|холодильник",
+        "microwave": "mikrowelle|microondas|micro-ondes|мікрохвильовка|мікрохвильова піч",
         "frigerator": "kuhlschrank|refrigerador|nevera|refrigerateur|холодильник",
         "freezer": "gefrierschrank|tiefkuhltruhe|congelador|congelateur|морозильна камера|морозильник",
         "cooler": "kuhlbox|kuhler|nevera portatil|enfriador|glaciere|refroidisseur|охолоджувач|холодильна сумка",
@@ -14170,6 +14169,10 @@
         "chiller": "kuhler|kuhlgerat|enfriador|refroidisseur|glaciere|охолоджувач|холодильник",
         "cold": "kalt|erkaltung|frio|froid|холоднии|застуда",
         "appliance": "haushaltsgerat|gerat|electrodomestico|appareil|electromenager|прилад|техніка",
+        "oven": "backofen|ofen|horno|four|духовка|піч",
+        "cooker": "herd|kocher|cocina|olla|cuisiniere|autocuiseur|плита|варильна поверхня",
+        "toaster": "toaster|tostadora|grille-pain|тостер",
+        "bake": "backen|hornear|cuire|cuire au four|пекти|випікати",
         "infinity": "unendlich|unendlichkeit|infinito|infini|нескінченність|безмежність",
         "loop": "schleife|wiederholen|bucle|lazo|boucle|цикл|петля",
         "unlimited": "unbegrenzt|unlimitiert|ilimitado|illimite|необмежении|безлімітнии",
@@ -14229,23 +14232,6 @@
         "store": "geschaft|speichern|tienda|guardar|magasin|stocker|магазин|зберегти",
         "disks": "festplatten|disketten|discos|disques|диски",
         "unsalvageable": "nicht zu retten|unrettbar|irrecuperable|insalvable|безнадіинии|непоправнии",
-        "gavel": "richterhammer|hammer|mazo|martillo de juez|marteau de juge|maillet|молоток судді|суддівськии молоток",
-        "zodiac": "tierkreis|sternzeichen|zodiaco|zodiaque|зодіак|знак зодіаку",
-        "libra": "waage|libra|balance|терези",
-        "balance": "kontostand|waage|saldo|balance|solde|equilibre|баланс|залишок",
-        "judge": "richter|beurteilen|juez|juzgar|juge|juger|суддя|судити",
-        "fair": "messe|gerecht|feria|justo|foire|equitable|ярмарок|справедливии",
-        "ethics": "ethik|moral|etica|ethique|етика",
-        "decision": "entscheidung|decision|рішення",
-        "court": "gericht|platz|cancha|tribunal|terrain|суд|корт",
-        "judgment": "urteil|beurteilung|juicio|sentencia|jugement|судження|вирок",
-        "hands": "hande|manos|mains|руки|стрілки",
-        "penalty": "strafe|elfmeter|penalizacion|penalti|penalite|sanction|штраф|пенальті",
-        "authority": "behorde|autoritat|autoridad|autorite|влада|повноваження",
-        "scales": "waage|skalen|balanza|escalas|balance|echelles|ваги|терези",
-        "harmony": "harmonie|eintracht|armonia|гармонія",
-        "astrology": "astrologie|sternzeichen|astrologia|астрологія",
-        "horoscope": "horoskop|horoscopo|horoscope|гороскоп",
         "scaling": "skalierung|skalieren|escalado|escalar|mise a l'echelle|redimensionnement|масштабування",
         "bounds": "grenzen|begrenzungen|limites|межі|границі",
         "recognition": "erkennung|anerkennung|reconocimiento|reconnaissance|розпізнавання|визнання",
@@ -14315,6 +14301,7 @@
         "slider": "schieberegler|slider|control deslizante|deslizador|curseur|glissiere|повзунок|слаидер",
         "hexagon": "sechseck|hexagon|hexagono|hexagone|шестикутник|гексагон",
         "squircle": "squircle|abgerundetes quadrat|superelipse|cuadrado redondeado|carre arrondi|сквиркл|заокруглении квадрат",
+        "pentagon": "funfeck|pentagon|pentagono|pentagone|п'ятикутник|пентагон",
         "equilateral": "gleichseitig|equilatero|equilateral|рівносторонніи",
         "classification": "klassifizierung|einstufung|clasificacion|classification|класифікація",
         "different": "unterschiedlich|verschieden|diferente|distinto|different|різнии|іншии",
@@ -14554,12 +14541,12 @@
         "lungs": "lunge|lungen|pulmones|poumons|легені",
         "sticky": "klebrig|haftend|pegajoso|adhesivo|collant|epingle|липкии|закріплении",
         "annotation": "anmerkung|annotation|anotacion|анотація|примітка",
+        "memo": "notiz|memo|memorando|nota|note|нотатка|службова записка",
         "brainstorm": "brainstorming|ideensammlung|lluvia de ideas|remue-meninges|мозковии штурм",
         "stationary": "stationar|ortsfest|estacionario|fijo|immobile|stationnaire|нерухомии|стаціонарнии",
         "stickynote": "haftnotiz|nota adhesiva|note autocollante|стікер|нотатка",
         "ideas": "ideen|ideas|idees|ідеі|думки",
         "boutique": "boutique|modegeschaft|tienda|бутик",
-        "subscript": "tiefgestellt|index|subindice|indice|нижніи індекс",
         "dim": "dimmen|abdunkeln|atenuar|tenue|tamiser|faible|тьмянии|приглушити",
         "conditioning": "klimatisierung|konditionierung|acondicionamiento|climatisation|conditionnement|кондиціонування|підготовка",
         "seasons": "jahreszeiten|estaciones|temporadas|saisons|пори року|сезони",
