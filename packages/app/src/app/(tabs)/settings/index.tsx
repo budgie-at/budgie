@@ -42,6 +42,7 @@ import { TruncateData } from '../../../settings/components/truncate-data/truncat
 import { useScrollToAnchor } from '../../../settings/hook/use-scroll-to-anchor.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
+import { ApplePayCaptureSettingsCard } from '../../../wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card';
 
 import { SettingsPageSelector } from './settings-page.selector';
 
@@ -115,6 +116,7 @@ export default function SettingsPage() {
                             <DefaultCurrencySelector />
                             <DefaultAccountSelector />
                             <AutoAssignMccCategory />
+                            <ApplePayCaptureSettingsCard testID={SettingsPageSelector.ApplePayCaptureCard} />
                         </Animated.View>
                     </SettingsGroup>
                 </View>

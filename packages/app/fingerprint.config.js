@@ -15,6 +15,7 @@ const config = {
         '**/ios/**/*',
         '!**/ios/Podfile',
         '!**/ios/Podfile.lock',
+        '!**/modules/**/ios/**/*',
         // HINT: We have build errors with react-native-audio-api
         '**/node_modules/react-native-audio-api/**/*'
     ],

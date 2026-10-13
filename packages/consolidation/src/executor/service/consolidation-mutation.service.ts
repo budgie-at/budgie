@@ -80,8 +80,8 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                         entry =>
                             entry.kind === TransactionEntryKindEnum.PRIMARY &&
                             entry.type === TransactionEntryTypeEnum.CREDIT &&
-                            !isDefined(entry.categoryId) &&
-                            entry.categorySource === CategorySourceEnum.USER
+                            ((!isDefined(entry.categoryId) && entry.categorySource === CategorySourceEnum.USER) ||
+                                entry.categorySource === CategorySourceEnum.MCC_DEFAULT)
                     ) ?? null
                 );
             });
@@ -200,7 +200,7 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                     }
 
                     yield* transactionEntryRepository.updateById(syncedEntry.id, {
-                        categoryId: manualTransaction.entries.at(0)?.categoryId ?? null,
+                        categoryId: manualTransaction.entries.at(0)?.categoryId ?? syncedEntry.categoryId,
                         categorySource: CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE
                     });
                     yield* consolidationCopySourceTransactionTags(transactionTagsRepository, [manualTransaction.id], syncedTransaction.id);

@@ -6,6 +6,7 @@ const NO_SYNC_SERVICE = { supportsTokenAuth: false, supportsFileImport: false, s
 
 export const SYNC_PROVIDER_CAPABILITIES: Record<ExternalSourceEnum, SyncProviderCapabilitiesInterface> = {
     [ExternalSourceEnum.MANUAL]: { ...NO_SYNC_SERVICE, supportsDeposit: false },
+    [ExternalSourceEnum.APPLE_PAY_AUTOMATION]: { ...NO_SYNC_SERVICE, supportsDeposit: false },
     [ExternalSourceEnum.MONOBANK]: { supportsTokenAuth: true, supportsFileImport: false, supportsAddAccounts: true, supportsDeposit: true },
     [ExternalSourceEnum.PRIVATBANK]: {
         supportsTokenAuth: false,

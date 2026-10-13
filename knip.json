@@ -7,6 +7,8 @@
         "packages/app/babel.config.js",
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
+        "packages/app/modules/apple-wallet-capture/app.plugin.js",
+        "packages/app/modules/apple-wallet-capture/plugin/with-apple-wallet-capture.js",
         "scripts/after-install.cjs",
         "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
         "packages/sync/babel.config.js",

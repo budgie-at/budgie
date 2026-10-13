@@ -22,3 +22,4 @@
 36.bank-integration-settings.flow.yaml
 38.onboarding-first-run.flow.yaml
 39.categorize-inbox.flow.yaml
+29.apple-pay-capture-settings.flow.yaml

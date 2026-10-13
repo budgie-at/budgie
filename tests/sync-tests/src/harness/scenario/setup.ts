@@ -63,6 +63,14 @@ vi.mock('@app/@generic/runtime/app.runtime', async () => {
     return { appRuntime: testRuntime };
 });
 
+vi.mock('@app/../modules/apple-wallet-capture/src/apple-wallet-capture', async () => {
+    const { walletCaptureNativeStub } = await import('../wallet-capture/wallet-capture-native.stub');
+
+    return { appleWalletCaptureNativeModule: Effect.succeed(walletCaptureNativeStub) };
+});
+
+import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-native.stub';
+
 import { mockServer } from './mock-server';
 
 beforeAll(() => {
@@ -70,6 +78,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+    walletCaptureNativeStub.reset();
     if (!isDefined(backupDatabasePath)) {
         return Effect.runPromise(resetTestDb(testDb));
     }
