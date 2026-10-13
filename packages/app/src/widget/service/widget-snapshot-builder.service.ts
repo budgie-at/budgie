@@ -25,8 +25,8 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
-import { i18nLoadLanguageMessages } from '../../i18n/util/i18n.util';
-import { languageToLocale } from '../../i18n/util/language-to-locale.util';
+import { i18nLoadLanguageMessages } from '../../i18n/utils/i18n.util';
+import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
 import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
 import { computeRunway } from '../../runway/utils/compute-runway.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';

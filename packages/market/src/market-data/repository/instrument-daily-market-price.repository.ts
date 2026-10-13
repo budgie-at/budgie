@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { bulkUpsert } from '../../@generic/util/bulk-upsert.util';
+import { bulkUpsert } from '../../@generic/utils/bulk-upsert.util';
 
 import type { InstrumentDailyMarketPriceCreateEntityInterface } from '@budgie/contracts';
 

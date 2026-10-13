@@ -1,7 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { createFeatureOgImage } from '../../../feature/component/feature-og-image/feature-og-image';
-import { fitText } from '../../../generic/util/fit-text.util';
-import { resolveOgPlate } from '../../../generic/util/resolve-og-plate.util';
+import { fitText } from '../../../generic/utils/fit-text.util';
+import { resolveOgPlate } from '../../../generic/utils/resolve-og-plate.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 import { SECURITY_PILLAR_HUB_METADATA } from './metadata';

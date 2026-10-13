@@ -10,7 +10,7 @@ import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.const
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
-import { MODEL_IDLE_RELEASE_DELAY_MS } from '../util/ai-constants.util';
+import { MODEL_IDLE_RELEASE_DELAY_MS } from '../utils/ai-constants.util';
 import { isAiRuntimeActive } from '../utils/is-ai-runtime-active.util';
 
 import { ChatService } from './chat.service';

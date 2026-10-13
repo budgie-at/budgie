@@ -10,7 +10,7 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags-create-entity.interface';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
-import { insertTransactionTag } from '../util/insert-transaction-tag.util';
+import { insertTransactionTag } from '../utils/insert-transaction-tag.util';
 
 import type { TagSourceEnum } from '../enum/tag-source.enum';
 

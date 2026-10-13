@@ -2,7 +2,7 @@ import { EMBEDDING_MODEL_FILENAME } from '@budgie/categorization';
 
 import { AiModelStorageIdEnum } from '../enum/ai-model-storage-id.enum';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
-import { CHAT_MODEL_FILENAME } from '../util/ai-constants.util';
+import { CHAT_MODEL_FILENAME } from '../utils/ai-constants.util';
 
 import { WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_FILENAME, WHISPER_MODEL_TEMP_FILENAME } from './whisper-model.constant';
 

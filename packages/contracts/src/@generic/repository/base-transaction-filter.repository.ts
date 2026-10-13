@@ -22,7 +22,7 @@ import { PRECISION } from '../constant/precision.constant';
 import { LanguageEnum } from '../enum/language.enum';
 import { AmountRangeInterface } from '../interface/amount-range.interface';
 import { DateRangeInterface } from '../interface/date-range.interface';
-import { buildTranslatedCategoryRelation } from '../util/build-translated-category-relation.util';
+import { buildTranslatedCategoryRelation } from '../utils/build-translated-category-relation.util';
 
 class BaseTransactionFilterRepository {
     private static readonly CATEGORIZABLE_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];

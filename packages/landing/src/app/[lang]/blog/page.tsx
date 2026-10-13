@@ -3,10 +3,10 @@ import { Trans } from '@lingui/react/macro';
 
 import { BlogBrowser } from '../../../blog/component/blog-browser/blog-browser';
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
-import { resolveArticleShot } from '../../../blog/util/resolve-article-shot.util';
+import { resolveArticleShot } from '../../../blog/utils/resolve-article-shot.util';
 import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
-import { buildPageMetadata } from '../../../generic/util/build-page-metadata.util';
+import { buildPageMetadata } from '../../../generic/utils/build-page-metadata.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 

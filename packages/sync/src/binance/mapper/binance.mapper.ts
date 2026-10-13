@@ -9,7 +9,7 @@ import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
-import { encodeBinanceAccountId } from '../util/binance-account-id.util';
+import { encodeBinanceAccountId } from '../utils/binance-account-id.util';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';

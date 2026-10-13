@@ -1,4 +1,4 @@
-import { buildPageMetadata } from '../../generic/util/build-page-metadata.util';
+import { buildPageMetadata } from '../../generic/utils/build-page-metadata.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 
 import type { PageLangParam } from '../../i18n/init-lingui';

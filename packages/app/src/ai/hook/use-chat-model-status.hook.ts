@@ -7,7 +7,7 @@ import { chatModelSnapshotAtom, embeddingModelSnapshotAtom } from '../constant/a
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiModelResidencyService } from '../service/ai-model-residency.service';
-import { CHAT_DOWNLOAD_WEIGHT, EMBEDDING_DOWNLOAD_WEIGHT } from '../util/ai-constants.util';
+import { CHAT_DOWNLOAD_WEIGHT, EMBEDDING_DOWNLOAD_WEIGHT } from '../utils/ai-constants.util';
 
 interface ChatModelStatusInterface {
     readonly isReady: boolean;

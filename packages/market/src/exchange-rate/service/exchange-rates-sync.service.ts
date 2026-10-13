@@ -10,7 +10,7 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { fetchJson } from '../../@generic/util/fetch-json.util';
+import { fetchJson } from '../../@generic/utils/fetch-json.util';
 import { ExchangeRateRepository } from '../repository/exchange-rate.repository';
 
 import { ExchangeRatesService } from './exchange-rates.service';

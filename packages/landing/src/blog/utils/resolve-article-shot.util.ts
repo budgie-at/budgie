@@ -1,8 +1,8 @@
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { MediaKindEnum } from '../../generic/enum/media-kind.enum';
-import { hashText } from '../../generic/util/hash-text.util';
-import { resolveMediaAsset } from '../../generic/util/resolve-media-asset.util';
+import { hashText } from '../../generic/utils/hash-text.util';
+import { resolveMediaAsset } from '../../generic/utils/resolve-media-asset.util';
 import { isCompleteBlogCoverShot } from '../type-guard/is-complete-blog-cover-shot.type-guard';
 
 import type { BlogCoverShotInterface } from '../interface/blog-cover-shot.interface';

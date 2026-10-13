@@ -11,7 +11,7 @@ import { FeaturePageHero } from '../../../../feature/component/feature-page-hero
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
-import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
+import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';

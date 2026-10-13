@@ -7,10 +7,10 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
-import { mapSyncAccountToCreateInput } from '../../core/util/map-sync-account-to-create-input.util';
+import { mapSyncAccountToCreateInput } from '../../core/utils/map-sync-account-to-create-input.util';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { mapBinanceBalanceToAccount } from '../mapper/binance.mapper';
-import { decodeBinanceAccountId } from '../util/binance-account-id.util';
+import { decodeBinanceAccountId } from '../utils/binance-account-id.util';
 
 import { BinanceAssetCodeService } from './binance-asset-code.service';
 

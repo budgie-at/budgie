@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro';
 import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
 
-import { getCurrentYear } from '../../util/get-current-year.util';
+import { getCurrentYear } from '../../utils/get-current-year.util';
 import { Logo } from '../logo/logo';
 
 interface Props {

@@ -10,8 +10,8 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { LlamaConfigInterface } from '../interface/llama-config.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
-import { GPU_LAYERS } from '../util/ai-constants.util';
-import { downloadModel } from '../util/download-model.util';
+import { GPU_LAYERS } from '../utils/ai-constants.util';
+import { downloadModel } from '../utils/download-model.util';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 import { patchAtom } from '../utils/patch-atom.util';
 

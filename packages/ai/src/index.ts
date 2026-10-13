@@ -1,7 +1,7 @@
 export type { GenerateOptionsInterface } from './@generic/interface/generate-options.interface';
 export { ChatInvoker } from './chat/service/chat-invoker.service';
 export { AiInvokeError } from './@generic/error/ai-invoke.error';
-export { stripThinkingTags } from './@generic/util/strip-thinking-tags.util';
+export { stripThinkingTags } from './@generic/utils/strip-thinking-tags.util';
 
 export type { SuggestionInternalStatus } from './suggestion/interface/suggestion-internal-status.type';
 export type { SuggestionStatus } from './suggestion/interface/suggestion-status.type';
@@ -22,6 +22,6 @@ export {
 } from './voice/constant/audio.constant';
 export { VoiceLlmService } from './voice/service/voice-llm.service';
 
-export { calculateRMS } from './voice/util/calculate-rms.util';
-export { filterTranscriptionTokens } from './voice/util/filter-transcription-tokens.util';
-export { findAccountByCurrency } from './voice/util/find-account-by-currency.util';
+export { calculateRMS } from './voice/utils/calculate-rms.util';
+export { filterTranscriptionTokens } from './voice/utils/filter-transcription-tokens.util';
+export { findAccountByCurrency } from './voice/utils/find-account-by-currency.util';

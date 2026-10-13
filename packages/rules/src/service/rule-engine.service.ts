@@ -25,8 +25,8 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE, RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { RuleRepository } from '../repository/rule.repository';
 import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
-import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
-import { matchesRule } from '../util/matches-rule.util';
+import { extractRuleActionOutcomes } from '../utils/extract-rule-action-outcomes.util';
+import { matchesRule } from '../utils/matches-rule.util';
 
 import { RuleMatcherService } from './rule-matcher.service';
 

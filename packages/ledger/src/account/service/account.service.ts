@@ -13,7 +13,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNumber } from '@rnw-community/shared';
 
-import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { TransactionService } from '../../transaction/service/transaction.service';
 
 import type {

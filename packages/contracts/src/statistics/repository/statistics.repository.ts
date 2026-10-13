@@ -9,13 +9,13 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
-import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
+import { buildCategoryTranslationJoinCondition } from '../../@generic/utils/build-category-translation-join-condition.util';
 import {
     getDirectExchangeRateSql,
     getHistoricalExchangeRateSql,
     getInverseExchangeRateSql,
     getInverseHistoricalExchangeRateSql
-} from '../../@generic/util/get-exchange-rate-sql.util';
+} from '../../@generic/utils/get-exchange-rate-sql.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -23,7 +23,7 @@ import { RunwayDriverDimensionEnum } from '../../runway/enum/runway-driver-dimen
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { buildSpendingEntryCondition } from '../../transaction-entry/util/build-spending-entry-condition.util';
+import { buildSpendingEntryCondition } from '../../transaction-entry/utils/build-spending-entry-condition.util';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';

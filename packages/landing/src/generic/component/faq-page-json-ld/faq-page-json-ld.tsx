@@ -3,7 +3,7 @@ import { Children, type ElementType, type ReactNode, isValidElement } from 'reac
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { extractTransMessage } from '../../../i18n/util/extract-trans-message.util';
+import { extractTransMessage } from '../../../i18n/utils/extract-trans-message.util';
 import { JsonLd } from '../json-ld/json-ld';
 
 import type { I18n } from '@lingui/core';

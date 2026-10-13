@@ -20,7 +20,7 @@ import {
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 import { P2P_ORDER_EXTERNAL_ID_MARKER } from '../../../shared/constant/transfer-pair-p2p-fiat.constant';
-import { buildPrefixLikeSql } from '../../../shared/util/build-prefix-like-sql.util';
+import { buildPrefixLikeSql } from '../../../shared/utils/build-prefix-like-sql.util';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 
 import { TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL } from './transfer-pair-available-exchange-rates-sql.factory';

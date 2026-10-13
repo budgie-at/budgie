@@ -6,7 +6,7 @@ import {
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_TIME_WINDOW_SECONDS
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
-import { buildBridgeClaimTitleConditionSql } from '../../../shared/util/build-bridge-claim-title-condition-sql.util';
+import { buildBridgeClaimTitleConditionSql } from '../../../shared/utils/build-bridge-claim-title-condition-sql.util';
 
 export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs AS (
                 SELECT

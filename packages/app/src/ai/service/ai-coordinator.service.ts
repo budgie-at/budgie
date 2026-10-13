@@ -19,7 +19,7 @@ import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 import { aiCoordinatorSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 import { TranslationProgressStore } from '../store/translation-progress.store';
-import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
+import { BACKGROUND_RELEASE_DELAY_MS } from '../utils/ai-constants.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
 import { AiEmbeddingStatusService } from './ai-embedding-status.service';

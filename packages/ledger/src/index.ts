@@ -23,11 +23,11 @@ export { TransactionService } from './transaction/service/transaction.service';
 export { TransactionTransferService } from './transaction/service/transaction-transfer.service';
 export { TransferCreationService } from './transaction/service/transfer-creation.service';
 
-export { assertTransferAccountsAreNotDebt } from './transaction/util/assert-transfer-accounts-are-not-debt.util';
-export { buildTransferEntries } from './transaction/util/build-transfer-entries.util';
-export { createTransactionInput } from './transaction/util/create-transaction-input.util';
-export { getTransactionCategoryEntries } from './transaction/util/get-transaction-category-entries.util';
-export { getTransactionFeeEntries } from './transaction/util/get-transaction-fee-entries.util';
+export { assertTransferAccountsAreNotDebt } from './transaction/utils/assert-transfer-accounts-are-not-debt.util';
+export { buildTransferEntries } from './transaction/utils/build-transfer-entries.util';
+export { createTransactionInput } from './transaction/utils/create-transaction-input.util';
+export { getTransactionCategoryEntries } from './transaction/utils/get-transaction-category-entries.util';
+export { getTransactionFeeEntries } from './transaction/utils/get-transaction-fee-entries.util';
 
 export type { ImportedBatchPreparationInterface } from './transaction/interface/imported-batch-preparation.interface';
 export type { InstallmentPlanConvertInputInterface } from './installment/interface/installment-plan-convert-input.interface';

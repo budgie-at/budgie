@@ -7,7 +7,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { TRANSLATION_RESET } from '../../@generic/constant/translation-reset.constant';
 import { Db } from '../../@generic/service/db.service';
-import { makeTranslatableRepository } from '../../@generic/util/make-translatable-repository.util';
+import { makeTranslatableRepository } from '../../@generic/utils/make-translatable-repository.util';
 import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../../transaction-tags/constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
