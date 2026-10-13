@@ -66,6 +66,9 @@ struct CaptureApplePayTransactionIntent: AppIntent {
   @Parameter(title: "Amount")
   var amount: Double
 
+  @Parameter(title: "Currency")
+  var currency: String?
+
   @Parameter(title: "Merchant")
   var merchant: String
 
@@ -97,10 +100,14 @@ struct CaptureApplePayTransactionIntent: AppIntent {
 
     let trimmedMerchant = merchant.trimmingCharacters(in: .whitespacesAndNewlines)
     let trimmedCardName = cardName?.trimmingCharacters(in: .whitespacesAndNewlines)
+    let normalizedCurrency = currency?
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+      .uppercased()
 
     _ = try await AppleWalletCaptureStore.shared.enqueue(
       accountId: account.id,
       amount: amount,
+      currency: normalizedCurrency?.isEmpty == false ? normalizedCurrency : nil,
       merchant: trimmedMerchant,
       cardName: trimmedCardName
     )

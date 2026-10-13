@@ -14,6 +14,7 @@ public struct AppleWalletCaptureRecord: Codable, Sendable {
   public let captureId: String
   public let accountId: Int
   public let amount: Double
+  public let currency: String?
   public let merchant: String
   public let cardName: String?
   public let capturedAt: String

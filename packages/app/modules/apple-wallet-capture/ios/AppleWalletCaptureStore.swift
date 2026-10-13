@@ -43,7 +43,7 @@ public actor AppleWalletCaptureStore {
     return try jsonDecoder.decode([AppleWalletCaptureAccount].self, from: data)
   }
 
-  public func enqueue(accountId: Int, amount: Double, merchant: String, cardName: String?) async throws -> AppleWalletCaptureRecord {
+  public func enqueue(accountId: Int, amount: Double, currency: String?, merchant: String, cardName: String?) async throws -> AppleWalletCaptureRecord {
     try ensureStorageDirectories()
 
     let captureId = UUID().uuidString
@@ -51,6 +51,7 @@ public actor AppleWalletCaptureStore {
       captureId: captureId,
       accountId: accountId,
       amount: amount,
+      currency: currency,
       merchant: merchant,
       cardName: cardName,
       capturedAt: dateFormatter.string(from: Date()),
@@ -102,6 +103,7 @@ public actor AppleWalletCaptureStore {
       captureId: record.captureId,
       accountId: record.accountId,
       amount: record.amount,
+      currency: record.currency,
       merchant: record.merchant,
       cardName: record.cardName,
       capturedAt: record.capturedAt,

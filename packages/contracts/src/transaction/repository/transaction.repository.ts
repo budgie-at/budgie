@@ -91,6 +91,13 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                                 transactionFilters.buildVisibleTransactionCondition(),
                                 transactionFilters.buildLedgerEntryCondition(),
                                 inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.DEBT]),
+                                or(
+                                    isNull(TransactionEntityTable.externalSource),
+                                    inArray(TransactionEntityTable.externalSource, [
+                                        ExternalSourceEnum.APPLE_PAY_AUTOMATION,
+                                        ExternalSourceEnum.MANUAL
+                                    ])
+                                ),
                                 eq(TransactionEntryEntityTable.accountId, input.accountId),
                                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
                                 eq(TransactionEntryEntityTable.amount, input.amountInMicroUnits),

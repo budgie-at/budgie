@@ -1,3 +1,4 @@
+import { consolidationScopeService } from '@budgie/consolidation';
 import { AccountRepository, ExternalSourceEnum, TransactionRepository, YIELD_TO_UI, convertToMicroUnits } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import * as Cause from 'effect/Cause';
@@ -10,6 +11,7 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
 import { WalletCaptureReviewReasonEnum } from '../enum/wallet-capture-review-reason.enum';
 import { WalletCaptureStatusEnum } from '../enum/wallet-capture-status.enum';
@@ -19,7 +21,7 @@ import { WalletCaptureTransactionService } from './wallet-capture-transaction.se
 
 import type { WalletCaptureNativeRecordInterface } from '../interface/wallet-capture-native-record.interface';
 import type { WalletCaptureReviewItemInterface } from '../interface/wallet-capture-review-item.interface';
-import type { Db, DbError } from '@budgie/contracts';
+import type { Db, DbError, TransactionEntityInterface } from '@budgie/contracts';
 
 export class WalletCaptureImportService extends Context.Service<WalletCaptureImportService>()('@budgie/app/WalletCaptureImportService', {
     make: Effect.gen(function* () {
@@ -28,41 +30,84 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
         const transactionService = yield* TransactionService;
         const nativeService = yield* WalletCaptureNativeService;
         const captureTransactionService = yield* WalletCaptureTransactionService;
+        const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
         const lock = yield* Semaphore.make(1);
         const reactivity = yield* Reactivity.Reactivity;
         const duplicateWindowSeconds = 120;
+
+        const resolveUnavailableReason = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface) {
+            const account = yield* accountRepository.findById(record.accountId);
+
+            if (!isDefined(account) || !account.isActive) {
+                return WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE;
+            }
+
+            return isDefined(yield* captureTransactionService.resolveAccountAmount(record))
+                ? null
+                : WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE;
+        });
 
         const resolveReviewItem = Effect.fnUntraced(function* (
             record: WalletCaptureNativeRecordInterface
         ): Effect.fn.Return<WalletCaptureReviewItemInterface | null, DbError, Db> {
             if (record.status === WalletCaptureStatusEnum.NEEDS_REVIEW) {
+                const duplicateTransactionId = record.duplicateTransactionId ?? null;
+
                 return {
                     capture: record,
-                    duplicateTransactionId: record.duplicateTransactionId,
-                    reason: isDefined(record.duplicateTransactionId)
+                    duplicateTransactionId,
+                    reason: isDefined(duplicateTransactionId)
                         ? WalletCaptureReviewReasonEnum.DUPLICATE
                         : WalletCaptureReviewReasonEnum.INVALID_PAYLOAD
                 };
             }
 
-            const account = yield* accountRepository.findById(record.accountId);
+            const unavailableReason = yield* resolveUnavailableReason(record);
 
-            return !isDefined(account) || !account.isActive
-                ? { capture: record, duplicateTransactionId: null, reason: WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE }
-                : null;
+            return isDefined(unavailableReason) ? { capture: record, duplicateTransactionId: null, reason: unavailableReason } : null;
         });
 
         const importAndAcknowledgeCapture = Effect.fnUntraced(function* (
             record: WalletCaptureNativeRecordInterface,
             importedTransactionId: number | undefined
         ) {
-            yield* isDefined(importedTransactionId)
-                ? captureTransactionService.applyRulesToExistingCaptureTransaction(record, importedTransactionId)
-                : captureTransactionService.createCaptureTransaction(record);
+            const transactionId = isDefined(importedTransactionId)
+                ? yield* captureTransactionService
+                      .applyRulesToExistingCaptureTransaction(record, importedTransactionId)
+                      .pipe(Effect.as(importedTransactionId))
+                : yield* captureTransactionService.createCaptureTransaction(record);
             yield* nativeService.acknowledgeCaptures([record.captureId]);
+
+            return { id: transactionId, operatedAt: new Date(record.capturedAt) };
         });
 
-        const processCapture = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface, importedIds: Map<string, number>) {
+        const enqueueConsolidation = (importedCaptures: readonly Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]) => {
+            const scope = consolidationScopeService.buildFromTransactions([...importedCaptures]);
+
+            return isDefined(scope) ? transferConsolidationDrainerService.enqueue(scope) : Effect.void;
+        };
+
+        const findDuplicateCapture = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface) {
+            const accountAmount = yield* captureTransactionService.resolveAccountAmount(record);
+
+            if (!isDefined(accountAmount)) {
+                return null;
+            }
+
+            return yield* transactionRepository.findPotentialExpenseDuplicate({
+                accountId: record.accountId,
+                amountInMicroUnits: convertToMicroUnits(accountAmount.amount),
+                normalizedTitle: record.merchant.trim().toLocaleLowerCase(),
+                operatedAt: new Date(record.capturedAt),
+                timeWindowSeconds: duplicateWindowSeconds
+            });
+        });
+
+        const processCapture = Effect.fnUntraced(function* (
+            record: WalletCaptureNativeRecordInterface,
+            importedIds: Map<string, number>,
+            importedCaptures: Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]
+        ) {
             const importedTransactionId = importedIds.get(record.captureId);
 
             if (!isDefined(importedTransactionId)) {
@@ -72,13 +117,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                     return reviewItem;
                 }
 
-                const duplicateTransactionId = yield* transactionRepository.findPotentialExpenseDuplicate({
-                    accountId: record.accountId,
-                    amountInMicroUnits: convertToMicroUnits(record.amount),
-                    normalizedTitle: record.merchant.trim().toLocaleLowerCase(),
-                    operatedAt: new Date(record.capturedAt),
-                    timeWindowSeconds: duplicateWindowSeconds
-                });
+                const duplicateTransactionId = yield* findDuplicateCapture(record);
 
                 if (isDefined(duplicateTransactionId)) {
                     yield* nativeService.markNeedsReview(record.captureId, duplicateTransactionId);
@@ -87,7 +126,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 }
             }
 
-            yield* importAndAcknowledgeCapture(record, importedTransactionId);
+            importedCaptures.push(yield* importAndAcknowledgeCapture(record, importedTransactionId));
 
             return null;
         });
@@ -97,10 +136,11 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 function* () {
                     const records = yield* nativeService.getCaptures();
                     const importedIds = yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.APPLE_PAY_AUTOMATION);
+                    const importedCaptures: Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[] = [];
 
                     const results = yield* Effect.forEach(records, record =>
                         Effect.gen(function* () {
-                            const result = yield* Effect.exit(processCapture(record, importedIds));
+                            const result = yield* Effect.exit(processCapture(record, importedIds, importedCaptures));
                             if (Exit.isFailure(result) && Cause.hasInterrupts(result.cause)) {
                                 return yield* Effect.failCause(result.cause);
                             }
@@ -111,6 +151,8 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                         })
                     );
                     const failures = results.filter(Exit.isFailure);
+
+                    yield* enqueueConsolidation(importedCaptures);
 
                     if (isNotEmptyArray(failures)) {
                         return yield* Effect.failCause(
@@ -134,14 +176,18 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                         capture => capture.captureId === captureId && capture.status === WalletCaptureStatusEnum.NEEDS_REVIEW
                     );
 
-                    if (!isDefined(record)) {
+                    if (!isDefined(record) || isDefined(yield* resolveUnavailableReason(record))) {
                         return;
                     }
 
-                    yield* importAndAcknowledgeCapture(
-                        record,
-                        (yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.APPLE_PAY_AUTOMATION)).get(record.captureId)
-                    );
+                    yield* enqueueConsolidation([
+                        yield* importAndAcknowledgeCapture(
+                            record,
+                            (yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.APPLE_PAY_AUTOMATION)).get(
+                                record.captureId
+                            )
+                        )
+                    ]);
                 },
                 effect => lock.withPermit(effect)
             ),
@@ -166,6 +212,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
             AccountRepository.layer,
             TransactionRepository.layer,
             TransactionService.layer,
+            TransferConsolidationDrainerService.layer,
             WalletCaptureNativeService.layer,
             WalletCaptureTransactionService.layer
         ])

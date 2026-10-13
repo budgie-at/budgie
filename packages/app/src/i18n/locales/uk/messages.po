@@ -821,6 +821,10 @@ msgstr "Прив’яжіть Продавця до Shortcut Input → Прод�
 msgid "Bind the optional Card field to the Wallet card/pass value."
 msgstr "Прив’яжіть необов’язкове поле Картка до значення картки або перепустки з Wallet."
 
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Bind the optional Currency field to the payment currency code, for example EUR."
+msgstr "Прив’яжіть необов’язкове поле Валюта до коду валюти платежу, наприклад EUR."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Біометрична автентифікація"
@@ -871,6 +875,10 @@ msgstr "Budgie може знайти дублікати імпортів бан�
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Budgie could not open your data"
 msgstr "Budgie не вдалося відкрити ваші дані"
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "Budgie has no exchange rate for this payment currency yet."
+msgstr "Budgie ще не має курсу для валюти цього платежу."
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."

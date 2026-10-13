@@ -35,6 +35,8 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
         switch (reason) {
             case WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE:
                 return t`The selected Budgie account is archived or no longer exists.`;
+            case WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE:
+                return t`Budgie has no exchange rate for this payment currency yet.`;
             case WalletCaptureReviewReasonEnum.DUPLICATE:
                 return t`This capture looks similar to an existing transaction.`;
             case WalletCaptureReviewReasonEnum.INVALID_PAYLOAD:
@@ -45,10 +47,11 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
 
     const { capture, duplicateTransactionId, reason } = item;
     const merchant = isNotEmptyString(capture.merchant.trim()) ? capture.merchant.trim() : t`Apple Pay purchase`;
-    const amount = formatDigits(capture.amount, instrumentSymbol);
+    const amount = formatDigits(capture.amount, isNotEmptyString(capture.currency) ? capture.currency : instrumentSymbol);
     const reasonText = getReasonText(reason);
     const cardNameText = isNotEmptyString(capture.cardName) ? capture.cardName : t`Unknown card`;
-    const canImportCapture = reason !== WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE;
+    const canImportCapture =
+        reason !== WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE && reason !== WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE;
 
     const handleImport = () => void onImport(capture.captureId);
     const handleDismiss = () => void onDismiss(capture.captureId);

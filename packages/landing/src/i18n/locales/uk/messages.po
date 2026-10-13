@@ -9476,8 +9476,8 @@ msgid "In practice, for most personal applications, this is rarely visible to us
 msgstr "На практиці для більшості персональних застосунків це рідко помітно користувачам. Синхронізація достатньо швидка, щоб вікна неузгодженості були короткими. Але ваш код не повинен припускати миттєву узгодженість."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
-msgid "In the automation action list, search for Budgie. Add the action that records an Apple Pay capture. Bind the Wallet transaction amount, merchant, and card fields, then choose the Budgie account for the payment."
-msgstr "У списку дій автоматизації знайдіть Budgie. Додайте дію, яка записує захоплення Apple Pay. Прив'яжіть суму, продавця та картку транзакції Wallet, а потім виберіть рахунок Budgie для платежу."
+msgid "In the automation action list, search for Budgie. Add the action that records an Apple Pay capture. Bind the Wallet transaction amount, merchant, and card fields, add the payment currency code when you pay abroad, then choose the Budgie account for the payment."
+msgstr "У списку дій автоматизації знайдіть Budgie. Додайте дію, яка записує захоплення Apple Pay. Прив'яжіть суму, продавця та картку транзакції Wallet, додайте код валюти платежу, якщо платите за кордоном, а потім виберіть рахунок Budgie для платежу."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "In the Categorize inbox, + Tags appears right after you categorize a single group, with the tags you usually give that merchant already selected, so the category and the <0>tags</0> are done in one pass."

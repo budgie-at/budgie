@@ -53,7 +53,10 @@ describe('Wallet capture duplicate query', () => {
                 { externalId: 'unicode-existing', operatedAt },
                 { accountId: account.id, amount: 125_000_000, mccCategoryId: null }
             );
-            yield* seed.updateTransaction(transaction.id, { title: `  ${merchant}  ` });
+            yield* seed.updateTransaction(transaction.id, {
+                externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
+                title: `  ${merchant}  `
+            });
 
             expect(
                 yield* transactionRepository.findPotentialExpenseDuplicate({

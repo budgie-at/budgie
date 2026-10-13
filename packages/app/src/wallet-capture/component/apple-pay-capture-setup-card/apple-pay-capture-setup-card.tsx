@@ -17,6 +17,7 @@ export const ApplePayCaptureSetupCard = ({ testID }: Props) => {
         t`Add Budgie's Capture Apple Pay transaction action.`,
         t`Bind Amount to Shortcut Input → Amount.`,
         t`Bind Merchant to Shortcut Input → Merchant.`,
+        t`Bind the optional Currency field to the payment currency code, for example EUR.`,
         t`Bind the optional Card field to the Wallet card/pass value.`,
         t`Select a fixed Budgie account in the action's Account picker.`,
         t`Save the automation.`

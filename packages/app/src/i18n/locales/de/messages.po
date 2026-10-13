@@ -821,6 +821,10 @@ msgstr "Verknüpfe Händler mit Shortcut Input → Händler."
 msgid "Bind the optional Card field to the Wallet card/pass value."
 msgstr "Verknüpfe das optionale Feld Karte mit dem Karten-/Passwert aus Wallet."
 
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Bind the optional Currency field to the payment currency code, for example EUR."
+msgstr "Verknüpfe das optionale Feld Währung mit dem Währungscode der Zahlung, zum Beispiel EUR."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Biometrische Authentifizierung"
@@ -871,6 +875,10 @@ msgstr "Budgie kann doppelte Bank-Sync-Importe finden und Überweisungskonsolidi
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Budgie could not open your data"
 msgstr "Budgie konnte deine Daten nicht öffnen"
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "Budgie has no exchange rate for this payment currency yet."
+msgstr "Budgie hat noch keinen Wechselkurs für diese Zahlungswährung."
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."

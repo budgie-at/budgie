@@ -173,7 +173,8 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
                     <BlogArticleProse>
                         <Trans>
                             In the automation action list, search for Budgie. Add the action that records an Apple Pay capture. Bind the
-                            Wallet transaction amount, merchant, and card fields, then choose the Budgie account for the payment.
+                            Wallet transaction amount, merchant, and card fields, add the payment currency code when you pay abroad, then
+                            choose the Budgie account for the payment.
                         </Trans>
                     </BlogArticleProse>
 
