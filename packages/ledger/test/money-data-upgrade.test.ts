@@ -140,6 +140,26 @@ describe('money data upgrade', () => {
         }).pipe(Effect.provide(MoneyDataUpgradeTestLayer))
     );
 
+    it.live('picks the historical rate of the entry calendar day in a negative UTC offset', () =>
+        Effect.gen(function* () {
+            const moneyDataUpgradeService = yield* MoneyDataUpgradeService;
+            const database = yield* Db;
+            const { account, base } = yield* seedPendingExpenses();
+            const quoteInstrumentId = account.instrumentId;
+
+            yield* database.insert(HistoricalExchangeRateEntityTable).values([
+                { sourceInstrumentId: quoteInstrumentId, targetInstrumentId: base.id, rateDate: '2025-01-02', rate: 0.4 },
+                { sourceInstrumentId: quoteInstrumentId, targetInstrumentId: base.id, rateDate: '2025-01-03', rate: 0.25 }
+            ]);
+
+            yield* moneyDataUpgradeService.run(MISSING_BASE_INSTRUMENT);
+
+            const entries = (yield* database.select().from(TransactionEntryEntityTable)).filter(entry => entry.accountId === account.id);
+
+            expect(entries.map(entry => entry.baseExchangeRate)).toStrictEqual([0.4, 0.25]);
+        }).pipe(Effect.provide(MoneyDataUpgradeTestLayer))
+    );
+
     it.live('reports a missing base instrument without touching entries', () =>
         Effect.gen(function* () {
             const moneyDataUpgradeService = yield* MoneyDataUpgradeService;

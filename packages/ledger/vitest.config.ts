@@ -3,4 +3,4 @@ import { defineConfig } from 'vitest/config';
 
 const config = createTestVitestConfig(__dirname, 'test/ledger-test-layer.ts');
 
-export default defineConfig({ ...config, test: { ...config.test, include: ['test/**/*.test.ts'] } });
+export default defineConfig({ ...config, test: { ...config.test, include: ['test/**/*.test.ts'], env: { TZ: 'America/New_York' } } });
