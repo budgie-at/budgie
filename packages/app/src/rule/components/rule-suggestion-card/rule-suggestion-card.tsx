@@ -4,6 +4,8 @@ import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Alert } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
@@ -24,20 +26,20 @@ export const RuleSuggestionCard = (props: Props) => {
     const [openRuleForm] = useRuleFormModal();
 
     const confirmDuplicate = (ruleId: number) =>
-        Effect.callback<true>(resume => {
+        Effect.callback<boolean>(resume => {
             Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
                 {
                     text: t`Cancel`,
                     style: 'cancel',
                     onPress: () => {
-                        resume(Effect.interrupt);
+                        resume(Effect.succeed(false));
                     }
                 },
                 {
                     text: t`Edit existing`,
                     onPress: () => {
                         openRuleForm({ ruleId });
-                        resume(Effect.interrupt);
+                        resume(Effect.succeed(false));
                     }
                 },
                 {
@@ -55,17 +57,33 @@ export const RuleSuggestionCard = (props: Props) => {
         const rule = yield* ruleService.createFromSuggestion(suggestRuleData).pipe(
             Effect.catchTags({
                 RuleSuggestionDuplicateError: error =>
-                    Effect.andThen(confirmDuplicate(error.ruleId), ruleService.createFromSuggestionAllowingDuplicate(suggestRuleData))
+                    Effect.flatMap(confirmDuplicate(error.ruleId), isConfirmed =>
+                        isConfirmed ? ruleService.createFromSuggestionAllowingDuplicate(suggestRuleData) : Effect.succeed(null)
+                    )
             })
         );
 
+        if (!isDefined(rule)) {
+            return false;
+        }
+
         yield* Effect.forkDetach(ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast));
+
+        return true;
     });
 
-    const handleYes = (): Promise<void> => {
+    const resetCreatingWhenNotCreated = (isCreated: boolean): boolean => {
+        if (!isCreated) {
+            onCreatingChange?.(false);
+        }
+
+        return isCreated;
+    };
+
+    const handleYes = (): Promise<boolean> => {
         onCreatingChange?.(true);
 
-        return appRuntime.runPromise(createRule);
+        return appRuntime.runPromise(createRule).then(resetCreatingWhenNotCreated);
     };
 
     return (

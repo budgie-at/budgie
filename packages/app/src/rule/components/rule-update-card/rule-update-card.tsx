@@ -24,9 +24,11 @@ export const RuleUpdateCard = (props: Props) => {
 
         yield* ruleService.applySuggestedActions(updateRuleData.ruleId, updateRuleData.categoryId, updateRuleData.tagIds);
         yield* Effect.forkDetach(ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast));
+
+        return true;
     });
 
-    const handleYes = (): Promise<void> => appRuntime.runPromise(updateRule);
+    const handleYes = (): Promise<boolean> => appRuntime.runPromise(updateRule);
 
     return (
         <SwipeableRuleCard
