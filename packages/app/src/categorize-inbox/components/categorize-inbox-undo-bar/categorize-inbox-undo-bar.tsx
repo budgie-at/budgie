@@ -1,3 +1,4 @@
+import { buildRulePrefillActions } from '@budgie/categorization';
 import { RuleConditionFieldEnum, RuleConditionOperatorEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -56,18 +57,15 @@ export const CategorizeInboxUndoBar = () => {
     const handleUndoPress = (): void => void undo(lastWrite);
     const handleRulePress = (): void => {
         const ruleActions = strategy.buildRuleActions(labels.map(label => label.id));
-        const [firstRow, ...otherRows] = assignments[0].rows;
-        const sharedCategoryId = otherRows.every(row => row.categoryId === firstRow.categoryId) ? firstRow.categoryId : null;
-        const sharedTagIds = firstRow.tagIds.filter(tagId => otherRows.every(row => row.tagIds.includes(tagId)));
         const followUpTagIds = lastWrite.followUpAssignments.map(assignment => assignment.labelId);
+        const prefillActions = buildRulePrefillActions(ruleActions.categoryId, ruleActions.tagIds, assignments[0].rows, followUpTagIds);
 
         openRuleForm({
             prefillData: {
                 conditions: [
                     { field: RuleConditionFieldEnum.TITLE, operator: RuleConditionOperatorEnum.CONTAINS, value: ruleConditionValue }
                 ],
-                categoryId: ruleActions.categoryId ?? sharedCategoryId,
-                tagIds: [...new Set([...ruleActions.tagIds, ...followUpTagIds, ...sharedTagIds])]
+                ...prefillActions
             }
         });
     };
