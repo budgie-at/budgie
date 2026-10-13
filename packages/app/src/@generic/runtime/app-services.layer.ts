@@ -97,6 +97,7 @@ import { WhisperModelService } from '../../ai/service/whisper-model.service';
 import { EmbeddingProgressStore } from '../../ai/store/embedding-progress.store';
 import { TranslationProgressStore } from '../../ai/store/translation-progress.store';
 import { AuthService } from '../../auth/service/auth.service';
+import { PinAttemptService } from '../../auth/service/pin-attempt.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
@@ -213,6 +214,7 @@ export const appServicesLayer = Layer.mergeAll(
     ResyncService.layer,
     AppDataSyncService.layer,
     BackgroundSyncSessionService.layer,
+    PinAttemptService.layer,
     AuthService.layer,
     BudgetAlertMonitorService.layer,
     OnboardingService.layer,

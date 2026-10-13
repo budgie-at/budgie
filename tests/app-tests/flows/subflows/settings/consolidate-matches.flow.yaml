@@ -36,6 +36,7 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'SettingsPage.ConsolidateTransfersCard'
+      point: '50%,25%'
 - extendedWaitUntil:
       visible: '.*high-confidence transfer.*'
       timeout: 3000

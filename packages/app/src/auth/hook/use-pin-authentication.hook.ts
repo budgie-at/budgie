@@ -12,6 +12,7 @@ import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
 
 import { useAuthAttempt } from './use-auth-attempt.hook';
+import { usePinError } from './use-pin-error.hook';
 
 import type { AppStateStatus } from 'react-native';
 
@@ -106,9 +107,9 @@ export const usePinAuthentication = () => {
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
     const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
     const [input, setInput] = useState('');
-    const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
+    const { clearError, error, isLockedOut, reportIncorrectPin } = usePinError();
 
     const invalidateAuthAttempts = () => {
         const shouldClearPinInput = invalidate();
@@ -129,7 +130,7 @@ export const usePinAuthentication = () => {
             router.replace('/');
         } else if (isPinAttempt) {
             setInput('');
-            setError(t`Incorrect PIN`);
+            reportIncorrectPin();
         }
     };
 
@@ -144,10 +145,14 @@ export const usePinAuthentication = () => {
     });
 
     const addDigit = (digit: string) => {
+        if (isLockedOut) {
+            return;
+        }
+
         const nextInput = (input + digit).slice(0, PIN_LENGTH);
 
         setInput(nextInput);
-        setError(null);
+        clearError();
 
         if (input.length === PIN_LENGTH - 1 && isAppActive && isPinScreenFocused) {
             setIsLoading(true);
@@ -156,7 +161,7 @@ export const usePinAuthentication = () => {
     };
     const deleteDigit = () => {
         setInput(input.slice(0, -1));
-        setError(null);
+        clearError();
     };
     const handleBiometricAuth = () => {
         if (canUseBiometric && canStartAuthAttempt() && startBiometricAttempt(acceptAttempt(false))) {
@@ -173,6 +178,7 @@ export const usePinAuthentication = () => {
         handleBiometricAuth,
         input,
         isFaceIdAvailable,
+        isInputDisabled: isLoading || isLockedOut,
         isLoading,
         title: t`Enter your PIN`
     };
