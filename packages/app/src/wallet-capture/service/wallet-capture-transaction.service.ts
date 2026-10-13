@@ -47,34 +47,35 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 ]
             });
 
+            const prepareCaptureForRules = (record: WalletCaptureNativeRecordInterface) =>
+                ruleEngineService.prepareCreateInputsForRules([mapCaptureToTransactionInput(record)]);
+
+            const applyPostCreateRules = Effect.fnUntraced(function* (
+                transactionInputs: TransactionCreateInputInterface[],
+                postCreateIndexes: number[],
+                transactionId: number
+            ) {
+                if (isNotEmptyArray(postCreateIndexes)) {
+                    yield* ruleEngineService.applyRulesToTransactions([transactionId], transactionInputs);
+                }
+            });
+
             return {
                 createCaptureTransaction: Effect.fn('WalletCaptureTransactionService.createCaptureTransaction')(function* (
                     record: WalletCaptureNativeRecordInterface
                 ) {
-                    const prepared = yield* ruleEngineService.prepareCreateInputsForRules([mapCaptureToTransactionInput(record)]);
-                    const createdTransactions = yield* transactionService.bulkCreate(prepared.transactionInputs);
+                    const { transactionInputs, postCreateIndexes } = yield* prepareCaptureForRules(record);
+                    const [createdTransaction] = yield* transactionService.bulkCreate(transactionInputs);
 
-                    for (const postCreateIndex of prepared.postCreateIndexes) {
-                        const createdTransactionId = createdTransactions[postCreateIndex]?.id;
-                        const transactionInput = prepared.transactionInputs[postCreateIndex];
-
-                        if (isDefined(createdTransactionId) && isDefined(transactionInput)) {
-                            yield* ruleEngineService.applyRulesToTransactions([createdTransactionId], [transactionInput]);
-                        }
+                    if (isDefined(createdTransaction)) {
+                        yield* applyPostCreateRules(transactionInputs, postCreateIndexes, createdTransaction.id);
                     }
-
-                    return createdTransactions;
                 }),
                 applyRulesToExistingCaptureTransaction: Effect.fn('WalletCaptureTransactionService.applyRulesToExistingCaptureTransaction')(
                     function* (record: WalletCaptureNativeRecordInterface, transactionId: number) {
-                        const prepared = yield* ruleEngineService.prepareCreateInputsForRules([mapCaptureToTransactionInput(record)]);
+                        const { transactionInputs, postCreateIndexes } = yield* prepareCaptureForRules(record);
 
-                        if (isNotEmptyArray(prepared.postCreateIndexes)) {
-                            yield* ruleEngineService.applyRulesToTransactions(
-                                prepared.postCreateIndexes.map(() => transactionId),
-                                prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined)
-                            );
-                        }
+                        yield* applyPostCreateRules(transactionInputs, postCreateIndexes, transactionId);
                     }
                 )
             };

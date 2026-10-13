@@ -5,13 +5,11 @@ import { Platform } from 'react-native';
 
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 
-import { ApplePayCaptureSettingsCardSelector } from './apple-pay-capture-settings-card.selector';
-
 interface Props {
-    readonly testID?: string;
+    readonly testID: string;
 }
 
-export const ApplePayCaptureSettingsCard = ({ testID = ApplePayCaptureSettingsCardSelector.Card }: Props) => {
+export const ApplePayCaptureSettingsCard = ({ testID }: Props) => {
     const { t } = useLingui();
 
     const handleNavigate = () => void router.push('/settings/apple-pay-capture');

@@ -187,10 +187,7 @@ public actor AppleWalletCaptureStore {
   }
 
   private func writeProtectedDataCreatingNew(_ data: Data, to destinationURL: URL) throws {
-    let temporaryURL = destinationURL
-      .deletingLastPathComponent()
-      .appendingPathComponent("\(destinationURL.deletingPathExtension().lastPathComponent).\(UUID().uuidString)")
-      .appendingPathExtension(Self.temporaryFileExtension)
+    let temporaryURL = temporaryFileURL(for: destinationURL)
 
     do {
       try data.write(to: temporaryURL, options: [.withoutOverwriting])
@@ -205,10 +202,7 @@ public actor AppleWalletCaptureStore {
   }
 
   private func writeProtectedDataReplacingExisting(_ data: Data, to destinationURL: URL) throws {
-    let temporaryURL = destinationURL
-      .deletingLastPathComponent()
-      .appendingPathComponent("\(destinationURL.deletingPathExtension().lastPathComponent).\(UUID().uuidString)")
-      .appendingPathExtension(Self.temporaryFileExtension)
+    let temporaryURL = temporaryFileURL(for: destinationURL)
 
     do {
       try data.write(to: temporaryURL, options: [.withoutOverwriting])
@@ -226,6 +220,13 @@ public actor AppleWalletCaptureStore {
 
       throw error
     }
+  }
+
+  private func temporaryFileURL(for destinationURL: URL) -> URL {
+    return destinationURL
+      .deletingLastPathComponent()
+      .appendingPathComponent("\(destinationURL.deletingPathExtension().lastPathComponent).\(UUID().uuidString)")
+      .appendingPathExtension(Self.temporaryFileExtension)
   }
 
   private func setCompleteUntilFirstUserAuthenticationProtection(at url: URL) throws {

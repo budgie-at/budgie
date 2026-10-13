@@ -36,16 +36,15 @@ export const WalletCaptureReviewList = ({
                 const isMutating = mutatingCaptureIds[captureId];
 
                 return (
-                    <View key={captureId}>
-                        <WalletCaptureReviewCard
-                            item={item}
-                            accountTitle={accountTitle}
-                            instrumentSymbol={instrumentSymbol}
-                            isMutating={isMutating}
-                            onImport={importCapture}
-                            onDismiss={dismissCapture}
-                        />
-                    </View>
+                    <WalletCaptureReviewCard
+                        key={captureId}
+                        item={item}
+                        accountTitle={accountTitle}
+                        instrumentSymbol={instrumentSymbol}
+                        isMutating={isMutating}
+                        onImport={importCapture}
+                        onDismiss={dismissCapture}
+                    />
                 );
             })}
         </View>

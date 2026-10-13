@@ -16,11 +16,6 @@ struct BudgieWalletAccountEntity: AppEntity {
     DisplayRepresentation(title: "\(title)")
   }
 
-  init(id: Int, title: String) {
-    self.id = id
-    self.title = title
-  }
-
   init(account: AppleWalletCaptureAccount) {
     self.id = account.id
     self.title = account.title

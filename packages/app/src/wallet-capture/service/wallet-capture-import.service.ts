@@ -52,49 +52,42 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 : null;
         });
 
-        const createAndAcknowledgeCapture = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface) {
-            yield* captureTransactionService.createCaptureTransaction(record);
-            yield* nativeService.acknowledgeCaptures([record.captureId]);
-        });
-
-        const applyRulesAndAcknowledgeCapture = Effect.fnUntraced(function* (
+        const importAndAcknowledgeCapture = Effect.fnUntraced(function* (
             record: WalletCaptureNativeRecordInterface,
-            transactionId: number
+            importedTransactionId: number | undefined
         ) {
-            yield* captureTransactionService.applyRulesToExistingCaptureTransaction(record, transactionId);
+            yield* isDefined(importedTransactionId)
+                ? captureTransactionService.applyRulesToExistingCaptureTransaction(record, importedTransactionId)
+                : captureTransactionService.createCaptureTransaction(record);
             yield* nativeService.acknowledgeCaptures([record.captureId]);
         });
 
         const processCapture = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface, importedIds: Map<string, number>) {
             const importedTransactionId = importedIds.get(record.captureId);
 
-            if (isDefined(importedTransactionId)) {
-                yield* applyRulesAndAcknowledgeCapture(record, importedTransactionId);
+            if (!isDefined(importedTransactionId)) {
+                const reviewItem = yield* resolveReviewItem(record);
 
-                return null;
+                if (isDefined(reviewItem)) {
+                    return reviewItem;
+                }
+
+                const duplicateTransactionId = yield* transactionRepository.findPotentialExpenseDuplicate({
+                    accountId: record.accountId,
+                    amountInMicroUnits: convertToMicroUnits(record.amount),
+                    normalizedTitle: record.merchant.trim().toLocaleLowerCase(),
+                    operatedAt: new Date(record.capturedAt),
+                    timeWindowSeconds: duplicateWindowSeconds
+                });
+
+                if (isDefined(duplicateTransactionId)) {
+                    yield* nativeService.markNeedsReview(record.captureId, duplicateTransactionId);
+
+                    return { capture: record, duplicateTransactionId, reason: WalletCaptureReviewReasonEnum.DUPLICATE };
+                }
             }
 
-            const reviewItem = yield* resolveReviewItem(record);
-
-            if (isDefined(reviewItem)) {
-                return reviewItem;
-            }
-
-            const duplicateTransactionId = yield* transactionRepository.findPotentialExpenseDuplicate({
-                accountId: record.accountId,
-                amountInMicroUnits: convertToMicroUnits(record.amount),
-                normalizedTitle: record.merchant.trim().toLocaleLowerCase(),
-                operatedAt: new Date(record.capturedAt),
-                timeWindowSeconds: duplicateWindowSeconds
-            });
-
-            if (isDefined(duplicateTransactionId)) {
-                yield* nativeService.markNeedsReview(record.captureId, duplicateTransactionId);
-
-                return { capture: record, duplicateTransactionId, reason: WalletCaptureReviewReasonEnum.DUPLICATE };
-            }
-
-            yield* createAndAcknowledgeCapture(record);
+            yield* importAndAcknowledgeCapture(record, importedTransactionId);
 
             return null;
         });
@@ -145,15 +138,10 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                         return;
                     }
 
-                    const importedTransactionId = (yield* transactionService.findIdMapByExternalSource(
-                        ExternalSourceEnum.APPLE_PAY_AUTOMATION
-                    )).get(record.captureId);
-
-                    if (isDefined(importedTransactionId)) {
-                        yield* applyRulesAndAcknowledgeCapture(record, importedTransactionId);
-                    } else {
-                        yield* createAndAcknowledgeCapture(record);
-                    }
+                    yield* importAndAcknowledgeCapture(
+                        record,
+                        (yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.APPLE_PAY_AUTOMATION)).get(record.captureId)
+                    );
                 },
                 effect => lock.withPermit(effect)
             ),

@@ -43,7 +43,7 @@ export default function ApplePayCaptureSettingsPage() {
     } = useWalletCaptureSettings();
 
     useEffect(() => {
-        void refresh();
+        refresh();
     }, [refresh]);
 
     const handlePressInstructionsGuide = () => {
