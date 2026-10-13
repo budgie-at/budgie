@@ -6,11 +6,13 @@ import { vi } from 'vitest';
 import { PinAttemptService } from '../src/auth/service/pin-attempt.service';
 
 const secureStore = vi.hoisted(() => new Map<string, string>());
+const writeFailure = vi.hoisted(() => ({ isEnabled: false }));
 
 vi.mock('expo-secure-store', () => ({
     AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: 0,
     getItemAsync: (key: string) => Promise.resolve(secureStore.get(key) ?? null),
-    setItemAsync: (key: string, value: string) => Promise.resolve(void secureStore.set(key, value)),
+    setItemAsync: (key: string, value: string) =>
+        writeFailure.isEnabled ? Promise.reject(new Error('write failed')) : Promise.resolve(void secureStore.set(key, value)),
     deleteItemAsync: (key: string) => Promise.resolve(void secureStore.delete(key))
 }));
 
@@ -99,6 +101,49 @@ describe('PinAttemptService', () => {
             yield* pinAttemptService.reset();
 
             expect(yield* remainingMillis).toBe(0);
+        }).pipe(Effect.provide(PinAttemptService.layer))
+    );
+
+    it.effect('keeps the positive lockout when the clock rollback write is rejected', () =>
+        Effect.gen(function* () {
+            secureStore.clear();
+            writeFailure.isEnabled = false;
+            yield* TestClock.setTime(1_000_000);
+            yield* failAttempts(6).pipe(Effect.provide(PinAttemptService.layer));
+            yield* TestClock.setTime(0);
+            writeFailure.isEnabled = true;
+
+            const lockout = yield* remainingMillis.pipe(
+                Effect.provide(PinAttemptService.layer),
+                Effect.ensuring(Effect.sync(() => void (writeFailure.isEnabled = false)))
+            );
+
+            expect(lockout).toBe(60_000);
+        })
+    );
+
+    it.effect('fails closed with a one hour lockout on a corrupt record', () =>
+        Effect.gen(function* () {
+            secureStore.clear();
+            secureStore.set('user_pin_attempts', '{broken');
+            const pinAttemptService = yield* PinAttemptService;
+
+            const lockout = yield* remainingMillis;
+            const isAccepted = yield* pinAttemptService.verify(Effect.succeed(false));
+
+            expect(lockout).toBe(3_600_000);
+            expect(isAccepted).toBe(false);
+            expect(yield* remainingMillis).toBe(3_600_000);
+            expect(Array.from(secureStore.values())[0]).toContain('"failedAttempts":9');
+        }).pipe(Effect.provide(PinAttemptService.layer))
+    );
+
+    it.effect('treats a missing record as no attempts', () =>
+        Effect.gen(function* () {
+            secureStore.clear();
+
+            expect(yield* remainingMillis).toBe(0);
+            expect(secureStore.size).toBe(0);
         }).pipe(Effect.provide(PinAttemptService.layer))
     );
 });

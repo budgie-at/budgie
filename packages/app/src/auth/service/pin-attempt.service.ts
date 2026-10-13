@@ -11,6 +11,7 @@ import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { PIN_ATTEMPTS_KEY } from '../constant/pin-attempts-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.constant';
+import { PinAttemptStorageError } from '../error/pin-attempt-storage.error';
 
 export class PinAttemptService extends Context.Service<PinAttemptService>()('@budgie/app/PinAttemptService', {
     make: Effect.gen(function* () {
@@ -28,23 +29,41 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
             return durationIndex < 0 ? 0 : Duration.toMillis(lockoutDurations[durationIndex]);
         };
 
-        const readAttempts = Effect.promise(() => SecureStore.getItemAsync(PIN_ATTEMPTS_KEY, PIN_SECURE_STORE_OPTIONS)).pipe(
-            Effect.flatMap(value =>
-                isNotEmptyString(value) ? Schema.decodeUnknownEffect(PinAttemptsSchema)(value) : Effect.succeed(noAttempts)
-            ),
-            Effect.orElseSucceed(() => noAttempts)
-        );
-
         const writeAttempts = Effect.fnUntraced(function* (attempts: typeof PinAttemptsSchema.Type) {
             const value = yield* Schema.encodeEffect(PinAttemptsSchema)(attempts).pipe(Effect.orDie);
 
-            yield* Effect.promise(() => SecureStore.setItemAsync(PIN_ATTEMPTS_KEY, value, PIN_SECURE_STORE_OPTIONS));
+            yield* Effect.tryPromise({
+                try: () => SecureStore.setItemAsync(PIN_ATTEMPTS_KEY, value, PIN_SECURE_STORE_OPTIONS),
+                catch: cause => new PinAttemptStorageError({ cause })
+            });
+        });
+
+        const readAttempts = Effect.fnUntraced(function* () {
+            const value = yield* Effect.promise(() => SecureStore.getItemAsync(PIN_ATTEMPTS_KEY, PIN_SECURE_STORE_OPTIONS));
+
+            if (!isNotEmptyString(value)) {
+                return noAttempts;
+            }
+
+            return yield* Schema.decodeUnknownEffect(PinAttemptsSchema)(value).pipe(
+                Effect.catch(
+                    Effect.fnUntraced(function* () {
+                        const now = yield* Clock.currentTimeMillis;
+                        const failedAttempts = freeAttempts + lockoutDurations.length - 1;
+                        const lockedOut = { failedAttempts, lockoutStartedAt: now, lockoutEndsAt: now + getLockoutMillis(failedAttempts) };
+
+                        yield* writeAttempts(lockedOut).pipe(Effect.ignore);
+
+                        return lockedOut;
+                    })
+                )
+            );
         });
 
         const clearAttempts = Effect.promise(() => SecureStore.deleteItemAsync(PIN_ATTEMPTS_KEY, PIN_SECURE_STORE_OPTIONS));
 
         const readRemainingLockoutMillis = Effect.fnUntraced(function* () {
-            const attempts = yield* readAttempts;
+            const attempts = yield* readAttempts();
             const now = yield* Clock.currentTimeMillis;
 
             if (now >= attempts.lockoutStartedAt) {
@@ -53,7 +72,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
 
             const lockoutMillis = attempts.lockoutEndsAt - attempts.lockoutStartedAt;
 
-            yield* writeAttempts({ ...attempts, lockoutStartedAt: now, lockoutEndsAt: now + lockoutMillis });
+            yield* writeAttempts({ ...attempts, lockoutStartedAt: now, lockoutEndsAt: now + lockoutMillis }).pipe(Effect.ignore);
 
             return lockoutMillis;
         });
@@ -63,7 +82,7 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                 return yield* clearAttempts;
             }
 
-            const attempts = yield* readAttempts;
+            const attempts = yield* readAttempts();
             const now = yield* Clock.currentTimeMillis;
             const failedAttempts = attempts.failedAttempts + 1;
 
