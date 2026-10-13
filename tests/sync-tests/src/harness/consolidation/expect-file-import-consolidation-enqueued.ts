@@ -1,4 +1,4 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { TransferConsolidationDrainerService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 

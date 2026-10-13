@@ -1,10 +1,11 @@
-import { SyncWorkload } from '@budgie/sync';
+import { SyncWorkload, TransferConsolidationDrainerService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { Workload } from '../../@generic/service/workload.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
-import { TransferConsolidationDrainerService } from '../service/transfer-consolidation-drainer.service';
+
+import { transferConsolidationDrainerLayer } from './transfer-consolidation-drainer.layer';
 
 export const syncWorkloadLayer = Layer.effect(
     SyncWorkload,
@@ -25,4 +26,4 @@ export const syncWorkloadLayer = Layer.effect(
             enqueueTransferConsolidation: transferConsolidationDrainerService.enqueue
         });
     })
-).pipe(Layer.provide([Workload.layer, RuleApplicationDrainerService.layer, TransferConsolidationDrainerService.layer]));
+).pipe(Layer.provide([Workload.layer, RuleApplicationDrainerService.layer, transferConsolidationDrainerLayer]));

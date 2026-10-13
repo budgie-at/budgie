@@ -107,9 +107,9 @@ import { RuleApplicationDrainerService } from '../../rule/service/rule-applicati
 import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
 import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
+import { transferConsolidationDrainerLayer } from '../../sync/layer/transfer-consolidation-drainer.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
 import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
-import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
@@ -200,7 +200,7 @@ export const appServicesLayer = Layer.mergeAll(
     ExchangeRateBackgroundService.layer,
     HistoricalMarketDataDrainerService.layer,
     TransferConsolidationService.layer,
-    TransferConsolidationDrainerService.layer,
+    transferConsolidationDrainerLayer,
     UnpairedOwnCardTransferRepairService.layer,
     SyncRepairService.layer,
     SyncOperationMetadataService.layer,

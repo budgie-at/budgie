@@ -1,4 +1,3 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -14,7 +13,7 @@ import {
     TransactionEntityTable
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
-import { AtmCashMoveService, MonobankSyncService, TransferConsolidationService } from '@budgie/sync';
+import { AtmCashMoveService, MonobankSyncService, TransferConsolidationService, TransferConsolidationDrainerService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

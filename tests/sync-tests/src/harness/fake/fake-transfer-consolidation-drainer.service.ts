@@ -11,7 +11,7 @@ export class FakeTransferConsolidationDrainerService extends Context.Service<
         readonly enqueue: (scope?: ConsolidationScanScopeInterface | null) => Effect.Effect<void>;
         readonly cancelPending: () => Effect.Effect<void>;
     }
->()('@budgie/app/TransferConsolidationDrainerService') {
+>()('@budgie/sync/TransferConsolidationDrainerService') {
     static readonly layer = Layer.sync(FakeTransferConsolidationDrainerService, () => ({
         enqueue: vi.fn((_scope?: ConsolidationScanScopeInterface | null) => Effect.void),
         cancelPending: vi.fn(() => Effect.void)

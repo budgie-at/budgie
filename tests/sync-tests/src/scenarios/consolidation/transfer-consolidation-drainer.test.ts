@@ -1,5 +1,4 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService, TransferConsolidationDrainerService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
@@ -9,7 +8,7 @@ import { advanceScheduledDrain, TestClockLayer } from '../../harness';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
-vi.unmock('@app/sync/service/transfer-consolidation-drainer.service');
+vi.unmock('@budgie/sync');
 
 const drainDelayMs = 1500;
 const immediateTimerMs = 0;

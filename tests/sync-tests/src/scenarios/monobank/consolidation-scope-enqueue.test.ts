@@ -1,5 +1,5 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { TransferConsolidationDrainerService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

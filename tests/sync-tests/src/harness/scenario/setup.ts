@@ -4,10 +4,13 @@ import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-vi.mock('@app/sync/service/transfer-consolidation-drainer.service', async () => {
+vi.mock('@budgie/sync', async importOriginal => {
     const { FakeTransferConsolidationDrainerService } = await import('../fake/fake-transfer-consolidation-drainer.service');
 
-    return { TransferConsolidationDrainerService: FakeTransferConsolidationDrainerService };
+    return {
+        ...(await importOriginal<typeof import('@budgie/sync')>()),
+        TransferConsolidationDrainerService: FakeTransferConsolidationDrainerService
+    };
 });
 
 vi.mock('@app/@generic/drizzle/service/database-connection.service', async () => {
