@@ -9,9 +9,9 @@ import { isDefined } from '@rnw-community/shared';
 import { DatePicker } from '../../../@generic/component/date-picker/date-picker';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useToday } from '../../../@generic/hook/use-today.hook';
 import { dateTypeToDate } from '../../../@generic/utils/date/date-type-to-date.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
-import { getMonthLabel } from '../../utils/get-month-label.util';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
 
@@ -32,11 +32,13 @@ export const RecurringCalendarGrid = (props: Props) => {
     const { entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
 
     const { languageTag } = useLocaleInfo();
-    const now = new Date();
+    const now = useToday();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
-    const monthLabel = getMonthLabel(displayYear, displayMonth, languageTag);
+    const monthLabel = new Intl.DateTimeFormat(languageTag, { month: 'long', year: 'numeric' }).format(
+        new Date(displayYear, displayMonth, 1)
+    );
     const maxDate = new Date(currentYear, currentMonth + 1, 0);
     const selectedDate = isDefined(selectedDay) ? new Date(displayYear, displayMonth, selectedDay, 12, 0, 0, 0) : null;
     const datePickerKey = `${displayYear}-${displayMonth}-${selectedDay ?? 'none'}`;

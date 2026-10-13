@@ -33,7 +33,7 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
     const amountTestID = TransactionAnalyticsCardSelector.Amount(label, amount);
 
     return (
-        <Card className="flex-1 gap-y-lg p-3xl items-center">
+        <Card className="flex-1 gap-y-lg items-center">
             <CircleIcon border={false} icon={icon} variant={variant} size={28} iconSize={14} radius={14} />
             <Text
                 numberOfLines={1}

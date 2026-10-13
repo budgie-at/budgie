@@ -4,5 +4,6 @@ import { msg } from '@lingui/core/macro';
 
 export const ACCOUNT_DEBT_TYPE: Record<AccountDebtTypeEnum, MessageDescriptor> = {
     [AccountDebtTypeEnum.LENT]: msg`Lent`,
-    [AccountDebtTypeEnum.BORROW]: msg`Borrowed`
+    [AccountDebtTypeEnum.BORROW]: msg`Borrowed`,
+    [AccountDebtTypeEnum.INSTALLMENT]: msg`Installment plan`
 };

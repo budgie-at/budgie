@@ -47,6 +47,10 @@ export const TransactionEntryEntityTable = sqliteTable(
         }),
         quotedAmount: int('quoted_amount', { mode: 'number' }),
         quotedUnitPrice: int('quoted_unit_price', { mode: 'number' }),
+        operationInstrumentId: int('operation_instrument_id', { mode: 'number' }).references(() => InstrumentEntityTable.id, {
+            onDelete: 'set null'
+        }),
+        operationAmount: int('operation_amount', { mode: 'number' }),
         toIban: text('to_iban'),
         originalTransactionId: int('original_transaction_id', { mode: 'number' }).references(() => TransactionEntityTable.id, {
             onDelete: 'set null'

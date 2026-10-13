@@ -18,8 +18,6 @@ import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { DeletableRow } from '../deletable-row/deletable-row';
 
-import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
-
 import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
@@ -34,7 +32,7 @@ interface Props<T extends IdInterface> {
     sizing?: LegendListSizingInterface<T>;
 }
 
-const FOOTER_SPACER_STYLE = { height: SEARCHABLE_LIST_FOOTER_HEIGHT };
+const FOOTER_SPACER_STYLE = { height: 330 };
 const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
 
 const listFooter = <View style={FOOTER_SPACER_STYLE} />;
@@ -55,7 +53,7 @@ export const SearchablePageList = <T extends IdInterface>({
     const contentContainerStyle = {
         gap: LEGEND_LIST_CONTENT_GAP,
         paddingTop: insets.top + SCREEN_CHROME_CONTENT_INSET_TOP,
-        paddingBottom: SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM
+        paddingBottom: 220
     };
 
     const handleDeleteItem = async (id: number) => {

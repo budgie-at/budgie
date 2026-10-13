@@ -30,6 +30,7 @@
         "@lingui/core": "6.6.0",
         "@types/node": "22.20.1",
         "effect": "4.0.0",
-        "typescript": "npm:@typescript/typescript6@6.0.2"
+        "typescript": "npm:@typescript/typescript6@6.0.2",
+        "xlsx": "^0.18.5"
     }
 }

@@ -1,13 +1,13 @@
-import { budgetPeriodService } from '@budgie/budget';
+import { computePeriodWindow } from '@budgie/budget';
 import { describe, expect, it } from '@effect/vitest';
 
 const YEAR_2026 = 2026;
 
-describe('budgetPeriodService', () => {
+describe('computePeriodWindow', () => {
     it('clamps period start day to shorter months and returns the next period start', () => {
         const now = new Date('2026-02-28T12:00:00.000Z');
 
-        const window = budgetPeriodService.computePeriodWindow(31, false, now);
+        const window = computePeriodWindow(31, false, now);
 
         expect(window.periodStart.getFullYear()).toBe(YEAR_2026);
         expect(window.periodStart.getMonth()).toBe(1);
@@ -20,7 +20,7 @@ describe('budgetPeriodService', () => {
     it('uses the previous month-end before the current month-end boundary', () => {
         const now = new Date('2026-02-27T12:00:00.000Z');
 
-        const window = budgetPeriodService.computePeriodWindow(1, true, now);
+        const window = computePeriodWindow(1, true, now);
 
         expect(window.periodStart.getFullYear()).toBe(YEAR_2026);
         expect(window.periodStart.getMonth()).toBe(0);

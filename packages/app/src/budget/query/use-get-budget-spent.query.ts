@@ -1,4 +1,4 @@
-import { budgetPeriodService, BudgetRepository, BudgetSpentService } from '@budgie/budget';
+import { BudgetRepository, computePeriodWindow, computeSpent } from '@budgie/budget';
 import { AccountEntityTable, ExchangeRateEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -7,6 +7,7 @@ import * as Atom from 'effect/reactivity/Atom';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { useToday } from '../../@generic/hook/use-today.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
 import type { BudgetSpentInterface } from '@budgie/budget';
@@ -25,26 +26,26 @@ const budgetSpentAtom = Atom.family(
             [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable, ExchangeRateEntityTable],
             Effect.gen(function* () {
                 const budgetRepository = yield* BudgetRepository;
-                const budgetSpentService = yield* BudgetSpentService;
-                const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
+                const { periodStart, nextPeriodStart } = computePeriodWindow(
                     key.periodStartDay,
                     key.useLastDayOfMonth,
                     new Date(key.dayStart)
                 );
                 const entries = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, key.instrumentId);
 
-                return budgetSpentService.computeSpent(entries, key.instrumentId);
+                return computeSpent(entries, key.instrumentId);
             })
         )
 );
 
 export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): UseGetBudgetSpentResult => {
+    const today = useToday();
     const result = useLiveAtomValue(
         budgetSpentAtom({
             periodStartDay: isDefined(budget) ? budget.periodStartDay : 1,
             useLastDayOfMonth: isDefined(budget) ? budget.useLastDayOfMonth : false,
             instrumentId: isDefined(budget) ? budget.instrumentId : 0,
-            dayStart: new Date().setHours(0, 0, 0, 0)
+            dayStart: new Date(today).setHours(0, 0, 0, 0)
         })
     );
 

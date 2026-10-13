@@ -1,0 +1,17 @@
+appId: ${APP_ID}
+env:
+    TRANSACTION_ID: ${TRANSACTION_ID}
+    PROGRESS_ID: ${PROGRESS_ID}
+---
+- runFlow:
+      file: open-convert-to-installment.flow.yaml
+      env:
+          TRANSACTION_ID: ${TRANSACTION_ID}
+
+- tapOn:
+      id: 'ConvertToInstallment.CreateButton'
+
+- extendedWaitUntil:
+      visible:
+          id: '${PROGRESS_ID}'
+      timeout: 15000

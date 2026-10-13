@@ -1,9 +1,6 @@
-import { Line } from 'react-native-svg';
-
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { useThemeContext } from '../../../theme/context/theme.context';
-import { RUNWAY_CHART_COLORS } from '../../constant/runway-chart-colors.constant';
+import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_CHART_WIDTH,
@@ -18,17 +15,16 @@ interface Props {
 const MEDIAN_DASH = '2 3';
 
 export const RunwayHistoryMedianLine = ({ value, maxValue }: Props) => {
-    const colors = RUNWAY_CHART_COLORS[useThemeContext().colorScheme];
     const ratio = isPositiveNumber(maxValue) ? Math.min(value / maxValue, 1) : 0;
     const medianY = RUNWAY_HISTORY_PLOT_TOP + RUNWAY_HISTORY_BAR_AREA_HEIGHT * (1 - ratio);
 
     return (
-        <Line
+        <StyledLine
             x1={0}
             y1={medianY}
             x2={RUNWAY_HISTORY_CHART_WIDTH}
             y2={medianY}
-            stroke={colors.median}
+            strokeClassName="accent-primary"
             strokeDasharray={MEDIAN_DASH}
             strokeWidth={1}
         />

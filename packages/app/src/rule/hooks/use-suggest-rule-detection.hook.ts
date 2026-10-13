@@ -55,8 +55,8 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const isAdjustment = transaction.type === TransactionTypeEnum.ADJUSTMENT;
 
     const categoryChanged = isDefined(categoryId) && categoryId !== originalCategoryId;
-    const sortedTagIds = [...tagIds].sort();
-    const sortedOriginalTagIds = [...originalTagIds].sort();
+    const sortedTagIds = [...tagIds].sort((left, right) => left - right);
+    const sortedOriginalTagIds = [...originalTagIds].sort((left, right) => left - right);
     const tagsChanged =
         sortedTagIds.length !== sortedOriginalTagIds.length || sortedTagIds.some((id, index) => id !== sortedOriginalTagIds[index]);
 

@@ -3,6 +3,240 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
+
+
+### Bug Fixes
+
+* **consolidation:** limit FX over-refund exception to PrivatBank ([afd0ca5](https://github.com/budgie-at/budgie/commit/afd0ca5ce2bebe8bfdd703c9649bfbc3731f7c39))
+
+
+### Features
+
+* **consolidation:** consolidate FX refunds that exceed the expense ([00a47c6](https://github.com/budgie-at/budgie/commit/00a47c635c6494c9d6c5d37b9a236c01d822e168))
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+
+### Bug Fixes
+
+* **consolidation:** preserve balances across bridge transfer imports ([6cf72f2](https://github.com/budgie-at/budgie/commit/6cf72f2f9ec516f79b54cdeee2abaed8a030bc98))
+* **consolidation:** require bank record identity before absorbing transfers ([ad0b31e](https://github.com/budgie-at/budgie/commit/ad0b31ef8ce6754b28ff3e6991229aa802c6344d))
+* protect transfer history and match late installment payoffs ([ee9f2f3](https://github.com/budgie-at/budgie/commit/ee9f2f360f160a3ecc9cbe9c1856b4a35c769656))
+
+
+
+
+
+# [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.95.0](https://github.com/budgie-at/budgie/compare/v6.94.3...v6.95.0) (2026-10-07)
+
+
+### Features
+
+* keep bank sync running in the background on iOS ([45fbc6d](https://github.com/budgie-at/budgie/commit/45fbc6db6c0310dc0b0a9ab76c7208838bd9baeb))
+
+
+
+
+
+## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
+
+
+### Bug Fixes
+
+* restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+
+
+
+
+
+## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Bug Fixes
+
+* **consolidation:** keep source fee entries on paired transfers ([5b96748](https://github.com/budgie-at/budgie/commit/5b96748f3590f7960112aa6df53f91ccf59f641e))
+* **consolidation:** offer MCC-less Erste AUTOMAT withdrawals for the move to cash ([1c2f34f](https://github.com/budgie-at/budgie/commit/1c2f34f1221b284ea6cffe14cb1b9c20969b5b69))
+* **consolidation:** prefer exact-amount manual duplicates over approximate ones ([9f746ef](https://github.com/budgie-at/budgie/commit/9f746efcb4cf1449818f94831ee4c6e0f4757fcc))
+* **consolidation:** require numeric identifiers in Erste AUTOMAT titles ([4a13b37](https://github.com/budgie-at/budgie/commit/4a13b37977ef886324a6c0043a5741732a02f7d2))
+
+
+### Features
+
+* **consolidation:** match hand-typed duplicates up to one percent off within three hours ([182fd01](https://github.com/budgie-at/budgie/commit/182fd011ee2954c201ac22b377990654ea03c525))
+* **consolidation:** pair cross-currency transfers by the bank-stored rate ([53753df](https://github.com/budgie-at/budgie/commit/53753dfa653a4d2b3d0b8f576a6b31b45a1da6cc))
+
+
+
+
+
+## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **categorization:** keep user tag provenance on merges and rule tags ([62344bb](https://github.com/budgie-at/budgie/commit/62344bbb40264ee922c0ad1ca848b9f114cfc0cf))
+* **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
+
+
+
+
+
+## [6.92.1](https://github.com/budgie-at/budgie/compare/v6.92.0...v6.92.1) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** require one synced account for manual expense duplicate support ([7589414](https://github.com/budgie-at/budgie/commit/75894142769a62f841471fed42735a3fd0b1b052))
+
+
+
+
+
+# [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** match archived-source transfers on inactive accounts ([034e3f8](https://github.com/budgie-at/budgie/commit/034e3f83e4b30515f87fed64a89100bfd44721dd))
+
+
+### Features
+
+* **consolidation:** merge synced expenses into transfers from archived accounts ([9f8aef4](https://github.com/budgie-at/budgie/commit/9f8aef4adcad98e181dcb47f846798a9c4a54fbb))
+
+
+
+
+
+## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** guard PrivatBank refund currency and rank covering expenses first ([ad436ed](https://github.com/budgie-at/budgie/commit/ad436eda43f94ca49833076a7562d2a0fe610e13))
+* **consolidation:** match more refunds automatically ([dff5884](https://github.com/budgie-at/budgie/commit/dff58843850b4c912cdac5f6c32eb41999950181))
+
+
+
+
+
+## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+# [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** address review findings for manual duplicate family ([93c0888](https://github.com/budgie-at/budgie/commit/93c088859b72de34fa4fa5381b698a18da893c00))
+
+
+### Features
+
+* **consolidation:** consolidate synced duplicates of manual expenses ([5994732](https://github.com/budgie-at/budgie/commit/59947327f8f73b196c363f91e62eaa301133c551))
+
+
+
+
+
+## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
 ## [6.88.2](https://github.com/budgie-at/budgie/compare/v6.88.1...v6.88.2) (2026-10-02)
 
 **Note:** Version bump only for package @budgie/consolidation

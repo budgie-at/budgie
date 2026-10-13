@@ -27,12 +27,12 @@ const allRulesAtom = databaseQueryFamily(
         AccountEntityTable
     ],
     RuleRepository,
-    (ruleRepository, [language]: readonly [LanguageEnum, number]) => ruleRepository.findAllWithActionsAndCategories(language)
+    (ruleRepository, language: LanguageEnum) => ruleRepository.findAllWithActionsAndCategories(language)
 );
 
-export const useGetAllRulesQuery = (refreshKey = 0) => {
+export const useGetAllRulesQuery = () => {
     const language = useSetting('language');
-    const result = useLiveAtomValue(allRulesAtom([language, refreshKey]));
+    const result = useLiveAtomValue(allRulesAtom(language));
 
     return { rules: AsyncResult.getOrElse(result, () => null), isLoading: AsyncResult.isInitial(result) };
 };

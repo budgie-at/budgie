@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { GoBackButton } from '../@generic/component/go-back-button/go-back-button';
 import { LoadingOverlay } from '../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../@generic/component/page/full-page';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { PinForm } from '../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../auth/constant/pin-length.constant';
@@ -16,7 +17,8 @@ import { DatabaseImportService } from '../import/service/database-import.service
 
 export default function ImportBackupPinModal() {
     const { t } = useLingui();
-    const [, resolveImportBackupPin] = useImportBackupPinModal();
+    const [, resolveImportBackupPin, dismissImportBackupPin] = useImportBackupPinModal();
+    useModalDismiss(dismissImportBackupPin);
     const sourceUri = useImportBackupPinModalParams();
 
     const [input, setInput] = useState('');
@@ -34,6 +36,8 @@ export default function ImportBackupPinModal() {
             Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(sourceUri, pin)).pipe(
                 Effect.map(canOpenBackup => (canOpenBackup ? null : t`Incorrect PIN`)),
                 Effect.catchTags({
+                    BackupArchiveMissingDatabaseError: () => Effect.succeed(t`This backup archive does not contain a Budgie database.`),
+                    InsufficientStorageError: () => Effect.succeed(t`Not enough free storage to extract this backup.`),
                     UnsupportedBackupError: () => Effect.succeed(t`This backup was made by an older Budgie version and cannot be imported.`)
                 })
             )

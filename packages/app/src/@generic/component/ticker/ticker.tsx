@@ -1,11 +1,10 @@
-import { cn } from 'cn';
-import { styled } from 'nativewind';
 import { ReactNode, useState } from 'react';
 import { LayoutChangeEvent, View, type ViewProps } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { calculateOptimalTextSize } from '../../utils/calculate-optimal-text-size.util';
+import { cn } from '../../utils/cn.util';
 
 import { StaticChar } from './static-char';
 import { Tick } from './tick';
@@ -20,9 +19,6 @@ interface Props extends Pick<ViewProps, 'accessible' | 'testID'> {
     readonly hasAnimation?: boolean;
     readonly availableWidth?: number;
 }
-
-const TickItem = styled(Tick, { textClassName: 'textStyle' });
-const StaticCharItem = styled(StaticChar, { textClassName: 'textStyle' });
 
 export const Ticker = (props: Props) => {
     const {
@@ -64,19 +60,14 @@ export const Ticker = (props: Props) => {
 
         if (Number.isNaN(digit)) {
             elements.push(
-                <StaticCharItem
-                    key={`static-${digitCount}-${index}-${char}`}
-                    char={char}
-                    textSize={textSize}
-                    textClassName={textClassName}
-                />
+                <StaticChar key={`static-${digitCount}-${index}-${char}`} char={char} textSize={textSize} textClassName={textClassName} />
             );
 
             return;
         }
 
         elements.push(
-            <TickItem
+            <Tick
                 key={`digit-${digitCount}-${digitIndex}`}
                 num={digit}
                 textSize={textSize}

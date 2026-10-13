@@ -12,7 +12,7 @@ export const AiProgressBar = ({ progress }: Props) => {
     const progressValue = useSharedValue(0);
 
     useEffect(() => {
-        progressValue.value = progress;
+        progressValue.set(progress);
     }, [progress, progressValue]);
 
     const widthStyle = useAnimatedStyle(() => ({

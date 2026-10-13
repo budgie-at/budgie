@@ -16,12 +16,22 @@ import { EntryBaseValuationService } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { requireInstrument, seedBitcoinCryptoAccount, seedEuroBaseUahAccount, TestLayer } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+
+const seedEuroBaseUahAccount = Effect.fnUntraced(function* () {
+    const euro = yield* requireInstrument(CurrencyEnum.EUR);
+    const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
+    const account = yield* seed.account({ instrumentId: hryvnia.id });
+
+    yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+
+    return { euro, account };
+});
 
 const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_419_222;
 

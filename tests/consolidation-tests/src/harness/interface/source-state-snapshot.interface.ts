@@ -1,10 +1,11 @@
 import type { TransactionConsolidationTypeEnum, TransactionEntryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 
 export interface SourceStateSnapshotInterface {
+    readonly comment: string;
     readonly consolidationType: TransactionConsolidationTypeEnum | null;
     readonly entries: readonly Pick<
         TransactionEntryEntityInterface,
-        'accountId' | 'amount' | 'categoryId' | 'exchangeRate' | 'mccCategoryId' | 'toIban' | 'type'
+        'accountId' | 'amount' | 'categoryId' | 'categorySource' | 'exchangeRate' | 'mccCategoryId' | 'toIban' | 'type'
     >[];
     readonly exchangeRate: number;
     readonly fromAccountId: number | null;

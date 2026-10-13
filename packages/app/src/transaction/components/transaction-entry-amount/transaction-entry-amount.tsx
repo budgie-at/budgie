@@ -1,11 +1,10 @@
-import { DebtEventAssociationEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import { DebtEventAssociationEnum, InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';

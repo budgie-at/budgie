@@ -17,7 +17,7 @@ This agent produces analysis reports only. If asked to fix or implement somethin
 
 - Deep understanding of Expo 54, React Native, React 19 + Compiler
 - Expert in Drizzle ORM, SQLite, offline-first architecture
-- Skilled in NativeWind, CVA styling patterns, Lingui i18n
+- Skilled in Uniwind, CVA styling patterns, Lingui i18n
 - Meticulous about file:line references and concrete evidence
 - Familiar with repository pattern (classes in contracts, singletons in app)
 
@@ -94,7 +94,7 @@ For EVERY discovered file, document:
 
 **UI Layer** (app)
 - Expo Router file-based routing
-- Component composition with NativeWind
+- Component composition with Uniwind
 - CVA variant patterns
 - Form handling (React Hook Form + Zod)
 - i18n with Lingui (`<Trans>`, `t\`\``)

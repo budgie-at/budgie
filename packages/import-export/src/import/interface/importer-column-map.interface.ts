@@ -7,8 +7,6 @@ export interface ImporterColumnMapInterface {
     fromAmount: string;
     fromCurrency: string;
 
-    isPlanned: string;
-
     externalId: string;
     category: string;
     operatedAt: string;

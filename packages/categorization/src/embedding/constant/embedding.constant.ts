@@ -1,4 +1,3 @@
-/* oxlint-disable lingui/no-unlocalized-strings -- Model prompt prefixes are not user-facing strings */
 export const EMBEDDING_MODEL_URL = 'https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embeddinggemma-300M-Q8_0.gguf';
 export const EMBEDDING_MODEL_FILENAME = 'embeddinggemma-300M-Q8_0.gguf';
 export const EMBEDDING_CONTEXT_SIZE = 512;

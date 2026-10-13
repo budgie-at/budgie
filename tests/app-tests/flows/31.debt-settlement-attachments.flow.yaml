@@ -107,6 +107,28 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.DetachDebtSettlementButton'
+- tapOn: 'Close menu'
+- extendedWaitUntil:
+      notVisible:
+          id: 'TransactionActionsMenu.DetachDebtSettlementButton'
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
+      timeout: 5000
+- tapOn:
+      id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
+- waitForAnimationToEnd
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.DetachDebtSettlementButton'
 - tapOn:
       id: 'TransactionActionsMenu.DetachDebtSettlementButton'
 - waitForAnimationToEnd

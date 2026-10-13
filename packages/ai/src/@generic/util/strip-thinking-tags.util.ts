@@ -1,1 +1,1 @@
-export const stripThinkingTags = (text: string): string => text.replace(/<think>[\s\S]*?(?:<\/think>|$)/gu, '').trim();
+export const stripThinkingTags = (text: string): string => text.replaceAll(/<think>[\s\S]*?(?:<\/think>|$)/gu, '').trim();

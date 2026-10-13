@@ -7,7 +7,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { indexnowSubmitter } from '../../../generic/service/indexnow-submitter.service';
 
-// eslint-disable-next-line func-style,no-implicit-globals -- Next.js route handlers must be exported functions
+// eslint-disable-next-line func-style -- Next.js route handlers must be exported functions
 export async function POST(request: Request): Promise<NextResponse> {
     const authHeader = request.headers.get('authorization');
     const adminSecret = process.env.ADMIN_SECRET;

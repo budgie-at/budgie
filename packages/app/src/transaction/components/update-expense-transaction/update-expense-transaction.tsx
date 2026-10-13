@@ -1,13 +1,8 @@
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
-import { getTransactionCategoryEntries } from '@budgie/ledger';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useWatch } from 'react-hook-form';
 
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
-import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
-import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
-import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
@@ -18,35 +13,20 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 
 export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const transactionId = transaction.id;
-    const simpleTransaction = useUpdateSimpleTransaction({
+    const { formRef, ...simpleTransaction } = useUpdateSimpleTransaction({
         transaction,
-        transactionId,
-        schema: ExpenseTransactionCreateInputSchema
-    });
-    const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
-
-    const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
-    const entries = useWatch({ control: simpleTransaction.form.control, name: 'entries' });
-    const categoryEntries = getTransactionCategoryEntries(entries);
-    const [openConsolidationSourceModal] = useConsolidationSourceModal();
-    const { actionsMenuProps, debtSettlementAccountTitle } = useSimpleTransactionActionsMenu({
-        transaction,
-        transactionAccountId: fromAccountId,
         transactionType: TransactionTypeEnum.EXPENSE,
-        categoryEntryCount: categoryEntries.length,
-        onDelete: simpleTransaction.handleDelete,
-        onFeePress: handleFeePress
+        openFeeOnMount
     });
-    const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
-    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
+    const [openConsolidationSourceModal] = useConsolidationSourceModal();
+    const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId: transaction.id });
 
     return (
         <UpdateSimpleTransactionPage
             form={simpleTransaction.form}
             title={t`Edit Expense`}
             onGoBack={simpleTransaction.handleGoBack}
-            right={<UpdateTransactionActionsMenu {...actionsMenuProps} />}
+            right={<UpdateTransactionActionsMenu {...simpleTransaction.actionsMenuProps} />}
         >
             <SimpleQuickForm
                 ref={formRef}
@@ -54,8 +34,8 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
                 transactionType={TransactionTypeEnum.EXPENSE}
                 accountFieldName="fromAccountId"
                 transactionTitle={transaction.title}
-                mccCategoryId={mccCategoryId}
-                debtSettlementAccountTitle={debtSettlementAccountTitle}
+                mccCategoryId={simpleTransaction.mccCategoryId}
+                debtSettlementAccount={simpleTransaction.debtSettlementAccount}
                 amountTopContent={
                     <RefundedPill
                         key={`${transaction.id}-${transaction.consolidationType}`}
@@ -64,10 +44,9 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
                         testID={TransactionCardSelector.RefundedPill(transaction.id)}
                     />
                 }
-                buildEntries={buildExpenseEntry}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
-                rulePillSlotProps={simpleTransaction}
+                ruleDetection={simpleTransaction.ruleDetection}
                 showInlineFeeAction={false}
             />
         </UpdateSimpleTransactionPage>

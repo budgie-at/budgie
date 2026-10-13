@@ -1,4 +1,4 @@
-/* oxlint-disable lingui/no-unlocalized-strings -- NativeWind class names, not user-facing copy */
+/* oxlint-disable lingui/no-unlocalized-strings -- Uniwind class names, not user-facing copy */
 import { View, ViewStyle } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 

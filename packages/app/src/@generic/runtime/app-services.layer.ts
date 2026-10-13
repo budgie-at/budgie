@@ -1,12 +1,5 @@
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
-import {
-    BudgetAlertThresholdService,
-    BudgetCategoryLimitRepository,
-    BudgetRepository,
-    BudgetService,
-    BudgetSpentService,
-    BudgetTemplateService
-} from '@budgie/budget';
+import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService } from '@budgie/budget';
 import {
     CategorizeInboxService,
     CommentEmbeddingRepository,
@@ -16,13 +9,14 @@ import {
     TransactionCategorizeInboxRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
-import { ConsolidationCoordinatorService } from '@budgie/consolidation';
+import { ConsolidationCoordinatorService, RefundConsolidationService } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
     AccountRepository,
     BankIntegrationRepository,
     CategoryRepository,
     DebtEventRepository,
+    InstallmentPlanRepository,
     InstrumentRepository,
     MccCategoryRepository,
     SettingsRepository,
@@ -47,6 +41,7 @@ import {
     CategoryService,
     ImportedBatchNormalizerService,
     ImportedTransactionEntryUpdateService,
+    InstallmentPlanService,
     RefreshedImportedEntriesService,
     TransactionBatchCreateService,
     TransactionDebtSettlementService,
@@ -74,6 +69,7 @@ import {
     PrivatbankCategoryMatcherService,
     PrivatbankSyncService,
     ResyncService,
+    SyncOperationMetadataService,
     SyncProviderRegistryService,
     SyncRepairService,
     TransferConsolidationService,
@@ -112,11 +108,11 @@ import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-tit
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
 import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
+import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
 import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
-import { TransactionRefundService } from '../../transaction/service/transaction-refund.service';
 import { WalletCaptureAccountMirrorService } from '../../wallet-capture/service/wallet-capture-account-mirror.service';
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
@@ -138,12 +134,10 @@ export const appServicesLayer = Layer.mergeAll(
     AccountRepository.layer,
     AccountBalanceRepository.layer,
     DebtEventRepository.layer,
+    InstallmentPlanRepository.layer,
     SettingsRepository.layer,
     BudgetRepository.layer,
     BudgetCategoryLimitRepository.layer,
-    BudgetSpentService.layer,
-    BudgetAlertThresholdService.layer,
-    BudgetTemplateService.layer,
     BudgetService.layer,
     RecurringService.layer,
     AccountBalanceIncrementalService.layer,
@@ -213,6 +207,7 @@ export const appServicesLayer = Layer.mergeAll(
     TransferConsolidationDrainerService.layer,
     UnpairedOwnCardTransferRepairService.layer,
     SyncRepairService.layer,
+    SyncOperationMetadataService.layer,
     PrivatbankCategoryMatcherService.layer,
     MonobankSyncService.layer,
     BinanceSyncService.layer,
@@ -221,6 +216,7 @@ export const appServicesLayer = Layer.mergeAll(
     SyncProviderRegistryService.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
+    BackgroundSyncSessionService.layer,
     AuthService.layer,
     BudgetAlertMonitorService.layer,
     OnboardingService.layer,
@@ -242,9 +238,10 @@ export const appServicesLayer = Layer.mergeAll(
     RepeatedTransactionService.layer,
     TransactionBatchCreateService.layer,
     TransactionDebtSettlementService.layer,
+    InstallmentPlanService.layer,
     TransactionDepositSafetyService.layer,
     TransactionImportService.layer,
-    TransactionRefundService.layer,
+    RefundConsolidationService.layer,
     TransactionTransferService.layer,
     TransferCreationService.layer,
     TransactionService.layer,

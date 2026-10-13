@@ -3,6 +3,229 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **sync:** restart only the resynced account's own provider sync ([cd63b6c](https://github.com/budgie-at/budgie/commit/cd63b6c47da55e5229af56b2a6948b1b3e5544c0))
+
+
+
+
+
+# [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.99.2](https://github.com/budgie-at/budgie/compare/v6.99.1...v6.99.2) (2026-10-10)
+
+
+### Bug Fixes
+
+* **sync:** resume yielded Monobank backfill until history completes ([5689e1e](https://github.com/budgie-at/budgie/commit/5689e1e97977e59268b20166b16807f10f73ae5a))
+* **sync:** stop unsafe backfill continuations ([09837f3](https://github.com/budgie-at/budgie/commit/09837f363deab6b90bfdf961a5f154c17e013072))
+
+
+
+
+
+# [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
+
+
+### Bug Fixes
+
+* clear unresolved imported operation metadata ([3ff5d29](https://github.com/budgie-at/budgie/commit/3ff5d29e963a54724ffd6dabb1006ea9ca403c05))
+* **sync:** persist operation metadata only for providers reporting a currency ([e85b7f2](https://github.com/budgie-at/budgie/commit/e85b7f2cf5d8b151a05f421431efec42b2ea0fe8))
+
+
+### Features
+
+* start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+
+
+
+
+
+## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.95.0](https://github.com/budgie-at/budgie/compare/v6.94.3...v6.95.0) (2026-10-07)
+
+
+### Features
+
+* keep bank sync running in the background on iOS ([45fbc6d](https://github.com/budgie-at/budgie/commit/45fbc6db6c0310dc0b0a9ab76c7208838bd9baeb))
+
+
+
+
+
+## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
+
+
+### Bug Fixes
+
+* restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+
+
+
+
+
+## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
+
+### Features
+
+* convert an expense into an installment plan ([3d67479](https://github.com/budgie-at/budgie/commit/3d67479b1137528cffef6679c39e3a0bbd9cc516))
+
+
+
+
+
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Bug Fixes
+
+* **sync:** count only cards archived after the transfer when checking repair uniqueness ([b256cc5](https://github.com/budgie-at/budgie/commit/b256cc5cf292db99c9403ebd1ff4faa20fc98636))
+* **sync:** ignore placeholder IBANs when matching sync accounts ([360c15b](https://github.com/budgie-at/budgie/commit/360c15b827c0c8fc67ea481fcc250562bc7460f6))
+* **sync:** read PrivatBank statement times as Kyiv time ([1b51c45](https://github.com/budgie-at/budgie/commit/1b51c45169247fc0cd8f47dce519d934d76a3361))
+* **sync:** stop repairing own-card transfers into cards archived before them ([1a1d296](https://github.com/budgie-at/budgie/commit/1a1d296020b9e66136d01265a60edc2ced65afe0))
+
+
+
+
+
+## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.92.1](https://github.com/budgie-at/budgie/compare/v6.92.0...v6.92.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **ledger:** pair refilled transactions with their own inputs before rule application ([d91159c](https://github.com/budgie-at/budgie/commit/d91159c8126ece52dd3a4cd925c394cd9d07b46c))
+
+
+### Features
+
+* **ledger:** heal re-imported transactions with a bank-row fingerprint ([6838526](https://github.com/budgie-at/budgie/commit/6838526af4adf8c7d0f9a10674a42c27175080db))
+
+
+
+
+
+# [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
 ## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
 
 **Note:** Version bump only for package @budgie/sync

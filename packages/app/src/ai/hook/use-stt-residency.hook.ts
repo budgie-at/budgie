@@ -42,7 +42,6 @@ export const useSttResidency = (): UseSttResidencyReturn => {
         }
     };
 
-    // oxlint-disable-next-line react/exhaustive-deps -- Mount-scoped lease; both callbacks only read the stable acquireFiberRef
     useEffect(() => {
         void acquireSttResidency();
 

@@ -1,3 +1,4 @@
+import { YIELD_TO_UI } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -10,7 +11,6 @@ import { AppState } from 'react-native';
 import { isEmptyArray } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
-import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerConfigInterface } from '../interface/drainer-config.interface';
@@ -224,7 +224,9 @@ export class DrainerService<E> {
     private started = false;
     private isForegroundBusy = false;
     private consecutiveFailures = 0;
+    // eslint-disable-next-line budgie/effect-no-run -- legacy class service builds its FiberHandles synchronously at construction
     private readonly loop = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
+    // eslint-disable-next-line budgie/effect-no-run -- legacy class service builds its FiberHandles synchronously at construction
     private readonly retryTimer = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
 
     constructor(

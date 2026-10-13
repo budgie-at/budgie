@@ -103,7 +103,7 @@ const groupAssets = flatAssets => {
     const entries = new Map();
 
     for (const { slug, scene, kind, locale, themes } of themesByLocale.values()) {
-        const sortedThemes = [...themes].sort();
+        const sortedThemes = [...themes].sort((left, right) => left.localeCompare(right));
         const key = `${slug}/${scene}/${kind}/${sortedThemes.join(',')}`;
         const entry = entries.get(key) ?? { slug, scene, kind, locales: [], themes: sortedThemes };
 

@@ -1,58 +1,46 @@
-import { AccountEntityInterface } from '@budgie/contracts';
-import { cn } from 'cn';
+import { AccountDebtTypeEnum, AccountEntityInterface } from '@budgie/contracts';
 import { router } from 'expo-router';
-import { PropsWithChildren, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
-import { AccountEditButton } from '../account-edit-button/account-edit-button';
+import { DebtProgressRing } from '../debt-progress-ring/debt-progress-ring';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props extends Pick<AccountEntityInterface, 'id' | 'title'> {
     readonly accessibilityLabel: string;
+    readonly debtType: AccountDebtTypeEnum;
+    readonly percentage: number;
     readonly subtitle: ReactNode;
     readonly trailing: ReactNode;
-    readonly className?: string;
 }
 
-export const DebtAccountCardFrame = ({
-    id,
-    title,
-    icon,
-    accessibilityLabel,
-    subtitle,
-    trailing,
-    className,
-    children
-}: PropsWithChildren<Props>) => {
-    const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
+export const DebtAccountCardFrame = ({ id, title, accessibilityLabel, debtType, percentage, subtitle, trailing }: Props) => {
+    const handleOpenDetails = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
 
     return (
         <Card
             accessible
+            accessibilityRole="button"
             testID={AccountCardBaseSelector.Card(title)}
             accessibilityLabel={accessibilityLabel}
-            onPress={navigateToAccount}
-            className={cn('flex-none gap-y-lg overflow-hidden px-3xl py-xl active:scale-xs', className)}
+            onPress={handleOpenDetails}
+            className="mb-3 px-xl py-lg"
         >
-            <View className="flex-row items-center gap-x-md">
-                <CircleIcon size={36} iconSize={20} icon={icon} variant="ghost" border={false} />
-
-                <View className="min-w-0 flex-1 items-start gap-y-xs">
-                    <Text className="text-sm font-medium text-primary" ellipsizeMode="tail" numberOfLines={1}>
+            <View className="flex-row items-center gap-x-lg">
+                <DebtProgressRing debtType={debtType} percentage={percentage}>
+                    <View className="h-9 w-9 items-center justify-center rounded-full bg-ghost-background">
+                        <Text className="text-base font-semibold text-primary">{title.trim().charAt(0).toLocaleUpperCase()}</Text>
+                    </View>
+                </DebtProgressRing>
+                <View className="min-w-0 flex-1 items-start gap-y-xxs">
+                    <Text className="text-base font-semibold text-primary" ellipsizeMode="tail" numberOfLines={1}>
                         {title}
                     </Text>
-
                     {subtitle}
                 </View>
-
                 {trailing}
-
-                <AccountEditButton id={id} className="-mr-xs p-xs" />
             </View>
-
-            {children}
         </Card>
     );
 };

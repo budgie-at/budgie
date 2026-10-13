@@ -13,7 +13,7 @@ import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario, TestLayer } from '../../harness';
+import { fetchExpenseEntries, runRefundScenario, seedRefundStatisticsScenario, TestLayer, testQueryService } from '../../harness';
 import { seed } from '../../harness/seed/seed';
 
 const REFUNDED_EXPENSE_AMOUNT = Number('120') * PRECISION;
@@ -30,7 +30,7 @@ describe('consolidation/refund-pair-partial', () => {
 
             expect(result.consolidated).toBe(1);
 
-            const promotedExpense = yield* fetchTransactionById(expense.id);
+            const promotedExpense = yield* testQueryService.findTransactionById(expense.id);
             expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
             const expenseEntries = yield* fetchExpenseEntries(expense.id);

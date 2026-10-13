@@ -1,3 +1,4 @@
+import { RefundConsolidationService } from '@budgie/consolidation';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
@@ -8,15 +9,14 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { TransactionRefundService } from '../service/transaction-refund.service';
 
 import type { LanguageEnum } from '@budgie/contracts';
 
 const refundableExpenseCandidatesAtom = Atom.family(
     ([refundIncomeTransactionId, search, language]: readonly [number, string, LanguageEnum]) =>
         appAtomRuntime.atom(
-            Effect.flatMap(TransactionRefundService, transactionRefundService =>
-                transactionRefundService.findRefundableExpenses(refundIncomeTransactionId, search, language)
+            Effect.flatMap(RefundConsolidationService, refundConsolidationService =>
+                refundConsolidationService.findRefundableExpenses(refundIncomeTransactionId, search, language)
             )
         )
 );

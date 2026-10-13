@@ -6,18 +6,16 @@ import { SplitEntriesModalContent } from '../transaction/components/split-entrie
 import { useSplitEntriesModal, useSplitEntriesModalParams } from '../transaction/context/split-entries-modal.context';
 
 export default function SplitEntriesModal() {
-    const [, resolveSplitEntries] = useSplitEntriesModal();
+    const [, resolveSplitEntries, dismissSplitEntries] = useSplitEntriesModal();
     const currentParams = useSplitEntriesModalParams();
-    const { backgroundColor, screenOptions } = useModalRouteState(currentParams, resolveSplitEntries, null);
-
-    const containerStyle = { flex: 1, backgroundColor };
+    const screenOptions = useModalRouteState(currentParams, dismissSplitEntries);
 
     if (!currentParams) {
         return null;
     }
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <SplitEntriesModalContent
                 initialEntries={currentParams.entries}

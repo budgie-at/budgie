@@ -1,5 +1,5 @@
 import { makeTestDbLayer, makeTestPlatformLayer, TestSeedService } from '@budgie-at/test-kit';
-import { AccountBalanceRepository, Db } from '@budgie/contracts';
+import { AccountBalanceRepository, Db, TransactionTagsRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -15,7 +15,8 @@ export const TestLayer = Layer.mergeAll(
     TransactionService.layer,
     TransferCreationService.layer,
     TransactionImportService.layer,
-    AccountBalanceRepository.layer
+    AccountBalanceRepository.layer,
+    TransactionTagsRepository.layer
 ).pipe(
     Layer.provideMerge(
         Layer.unwrap(

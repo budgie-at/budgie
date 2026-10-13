@@ -1,75 +1,48 @@
-/* jscpd:ignore-start */
-import { CategoryEntityInterface, TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
+import { CategoryEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
+import { Text } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { StatsBar } from '../../../@generic/component/stats-bar/stats-bar';
-import { statsAmountVariants } from '../../../@generic/constant/stats-variants.constant';
+import { StatisticsCard } from '../../../@generic/component/statistics-card/statistics-card';
+import { useStatisticsCardPress } from '../../../@generic/hook/use-statistics-card-press.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
-import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
 
 import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
 
 interface Props {
     readonly category: Pick<CategoryEntityInterface, 'id' | 'icon' | 'title' | 'isDefault'>;
     readonly amount: number;
-    readonly percentage: number;
+    readonly totalAmount: number;
     readonly variant: ColorPaletteVariant;
     readonly filters: TransactionFilterInterface;
     readonly isIncome: boolean;
 }
 
-export const CategoryStatisticsCard = ({ category, amount, percentage, variant, filters, isIncome }: Props) => {
-    const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
-    const router = useRouter();
+export const CategoryStatisticsCard = ({ category, amount, totalAmount, variant, filters, isIncome }: Props) => {
+    const isCategorized = isPositiveNumber(category.id);
+    const cardTestID = isCategorized ? CategoryStatisticsCardSelector.Card(category.title) : CategoryStatisticsCardSelector.Uncategorized;
 
-    const microAmount = convertFromMicroUnits(amount);
-    const cardTestID = isPositiveNumber(category.id)
-        ? CategoryStatisticsCardSelector.Card(category.title)
-        : CategoryStatisticsCardSelector.Uncategorized;
-    const amountTestID = CategoryStatisticsCardSelector.Amount(category.title, amount);
-    /* jscpd:ignore-end */
-
-    /* jscpd:ignore-start */
-    const handlePress = () => {
-        const type = isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
-        const params = isPositiveNumber(category.id)
-            ? {
-                  type,
-                  categoryId: String(category.id),
-                  ...(filters.date?.from && { startDate: filters.date.from.toISOString() }),
-                  ...(filters.date?.to && { endDate: filters.date.to.toISOString() })
-              }
-            : buildUncategorizedRouteParams({ ...filters, types: [type] }, AnalyticsTransactionsModeEnum.CATEGORIZE);
-
-        router.push({ pathname: '/analytics/transactions', params });
-    };
+    const handlePress = useStatisticsCardPress(
+        filters,
+        isIncome,
+        AnalyticsTransactionsModeEnum.CATEGORIZE,
+        isCategorized ? { categoryId: String(category.id) } : null
+    );
 
     return (
-        <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
-            <View className="flex-row items-center gap-x-md">
-                <CircleIcon icon={category.icon} variant={variant} />
-                <Text className="mr-auto text-primary text-xs">{category.title}</Text>
-                <Text className={statsAmountVariants({ variant })} testID={amountTestID}>
-                    {formatDigits(microAmount, defaultInstrument.symbol)}
-                </Text>
-            </View>
-
-            <StatsBar percentage={percentage} variant={variant} />
-
-            <Text className="text-secondary-foreground">{isIncome ? t`${percentage}% of income` : t`${percentage}% of expenses`}</Text>
-        </HapticPressable>
+        <StatisticsCard
+            amount={amount}
+            totalAmount={totalAmount}
+            variant={variant}
+            isIncome={isIncome}
+            cardTestID={cardTestID}
+            amountTestID={CategoryStatisticsCardSelector.Amount(category.title, amount)}
+            onPress={handlePress}
+        >
+            <CircleIcon icon={category.icon} variant={variant} />
+            <Text className="mr-auto text-primary text-xs">{category.title}</Text>
+        </StatisticsCard>
     );
-    /* jscpd:ignore-end */
 };

@@ -2,15 +2,13 @@ import { CategoryCreateEntityInterface, CategoryEntityInterface, CategoryReposit
 import { CategoryService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
+import { ModalFormFooter } from '../../../@generic/component/modal-form-footer/modal-form-footer';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
-import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
@@ -19,11 +17,12 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
+import { createCategory } from '../../utils/create-category.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
+import { updateCategory } from '../../utils/update-category.util';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
@@ -49,7 +48,6 @@ export const CategoryForm = (props: Props) => {
     const { t } = useLingui();
     const language = useSetting('language');
     const [openCategorySelector] = useCategorySelectorModal();
-    const [openNoteInput] = useNoteInputModal();
     const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
     const { isChatReady, modelStatus } = useChatModelStatus();
@@ -58,7 +56,7 @@ export const CategoryForm = (props: Props) => {
 
     const isEditing = isDefined(category?.id);
 
-    const { titleEn, titleTags, setTitleEn, setTitleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+    const { titleEn, titleTags, handleTitleBlur, translationFieldsProps } = useAiTranslationFields({
         entity: category ?? null,
         entityId: category?.id ?? 0,
         currentTitle: title,
@@ -70,60 +68,30 @@ export const CategoryForm = (props: Props) => {
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
 
-    /* jscpd:ignore-start -- Same note-input handlers used in tag-form */
-    const handleTitleEnPress = async () => {
-        const result = await openNoteInput({ initialValue: titleEn ?? '' });
-        if (isDefined(result)) {
-            setTitleEn(result);
-        }
-    };
-
-    const handleTitleTagsPress = async () => {
-        const result = await openNoteInput({ initialValue: titleTags ?? '' });
-        if (isDefined(result)) {
-            setTitleTags(result);
-        }
-    };
-    /* jscpd:ignore-end */
-
     const iconTerms = getCategoryIconTerms({ title, titleEn, titleTags });
 
     const handleIconSelect = (selectedIcon: UserIconType) => void setValue('icon', selectedIcon);
 
-    const handleIconPress = async () => {
-        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords: iconTerms });
-
-        if (isDefined(selectedIcon)) {
-            handleIconSelect(selectedIcon);
-        }
+    const handleIconPress = () => {
+        openIconSelector({ selectedIcon: icon, keywords: iconTerms }, selectedIcon => {
+            if (isDefined(selectedIcon)) {
+                handleIconSelect(selectedIcon);
+            }
+        });
     };
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
     };
 
-    const handleMerge = async () => {
-        if (!isDefined(category?.id)) {
-            return;
-        }
-
-        const targetCategoryId = await openCategorySelector({
-            excludeCategoryIds: [category.id],
-            description: t`Select a category to merge into`,
-            variant: 'primary'
-        });
-
-        if (!isDefined(targetCategoryId)) {
-            return;
-        }
-
+    const mergeInto = async (sourceCategoryId: number, targetCategoryId: number) => {
         try {
             const targetCategory = await appRuntime.runPromise(
                 Effect.gen(function* () {
                     const categoryRepository = yield* CategoryRepository;
                     const categoryService = yield* CategoryService;
                     const [foundCategory] = yield* categoryRepository.findById(targetCategoryId, language);
-                    yield* categoryService.mergeInto(category.id, targetCategoryId);
+                    yield* categoryService.mergeInto(sourceCategoryId, targetCategoryId);
 
                     return foundCategory;
                 })
@@ -137,44 +105,35 @@ export const CategoryForm = (props: Props) => {
         }
     };
 
-    const saveCategoryTranslation = async (categoryId: number): Promise<void> => {
-        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
+    const handleMerge = () => {
+        const sourceCategoryId = category?.id;
 
-        await appRuntime.runPromise(
-            Effect.flatMap(CategoryRepository, categoryRepository =>
-                hasTranslationData
-                    ? categoryRepository.updateTranslation(categoryId, titleEn, titleTags)
-                    : categoryRepository.clearTranslation(categoryId)
-            )
+        if (!isDefined(sourceCategoryId)) {
+            return;
+        }
+
+        openCategorySelector(
+            {
+                excludeCategoryIds: [sourceCategoryId],
+                description: t`Select a category to merge into`,
+                variant: 'primary'
+            },
+            targetCategoryId => {
+                if (isDefined(targetCategoryId)) {
+                    void mergeInto(sourceCategoryId, targetCategoryId);
+                }
+            }
         );
     };
 
     const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {
-        await appRuntime.runPromise(
-            Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.updateById(categoryId, values))
-        );
-        await saveCategoryTranslation(categoryId);
-
-        const [savedCategory] = await appRuntime.runPromise(
-            Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.findById(categoryId, language))
-        );
+        const savedCategory = await appRuntime.runPromise(updateCategory(categoryId, values, { titleEn, titleTags }, language));
 
         onSuccess({ category: savedCategory, action: 'updated' });
     };
 
     const handleCreateSubmit = async (values: CategoryCreateEntityInterface): Promise<void> => {
-        const savedCategory = await appRuntime.runPromise(
-            Effect.gen(function* () {
-                const categoryRepository = yield* CategoryRepository;
-                const createdCategory = yield* categoryRepository.create(values);
-
-                if (isNotEmptyString(titleEn) && isNotEmptyString(titleTags)) {
-                    yield* categoryRepository.updateTranslation(createdCategory.id, titleEn, titleTags);
-                }
-
-                return createdCategory;
-            })
-        );
+        const savedCategory = await appRuntime.runPromise(createCategory(values, { titleEn, titleTags }));
 
         onSuccess({ category: savedCategory, action: 'created' });
     };
@@ -214,22 +173,15 @@ export const CategoryForm = (props: Props) => {
                     testID={CategoryFormSelector.Input}
                 />
 
-                {/* jscpd:ignore-start */}
-                <AiTranslationFields
-                    titleEn={titleEn}
-                    titleTags={titleTags}
-                    isRegenerating={isRegenerating}
-                    disabled={isGenerateDisabled}
-                    onRegenerate={handleRegenerate}
-                    onTitleEnPress={handleTitleEnPress}
-                    onTitleTagsPress={handleTitleTagsPress}
-                    modelStatus={modelStatus}
-                />
-                {/* jscpd:ignore-end */}
+                <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} modelStatus={modelStatus} />
             </KeyboardAwareScrollView>
 
-            {/* jscpd:ignore-start */}
-            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+            <ModalFormFooter
+                onCancel={onCancel}
+                onSave={handleFormSubmit}
+                isSaveDisabled={isSaveDisabled}
+                saveTestID={CategoryFormSelector.Submit}
+            >
                 {isEditing ? (
                     <ModalFormMergeButton
                         testID={CategoryFormSelector.Merge}
@@ -237,13 +189,7 @@ export const CategoryForm = (props: Props) => {
                         content={t`Merge into another category`}
                     />
                 ) : null}
-
-                <View className="flex-row gap-x-md">
-                    <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelector.Submit} />
-                </View>
-            </View>
-            {/* jscpd:ignore-end */}
+            </ModalFormFooter>
         </ModalPage>
     );
 };

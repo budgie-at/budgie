@@ -1,36 +1,19 @@
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
+import { useResolveClassNames } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useFormsheetListStyles } from '../use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useModalDismiss } from '../use-modal-dismiss/use-modal-dismiss.hook';
 
-import type { ModalContextTuple } from '../../utils/create-modal-context/create-modal-context.util';
-
-export const useModalRouteState = <TParams, TResult>(
-    currentParams: TParams | null,
-    resolve: ModalContextTuple<TParams, TResult>[1],
-    emptyResult: TResult
-) => {
+export const useModalRouteState = (currentParams: unknown, dismiss: () => void) => {
     const router = useRouter();
-    const { backgroundColor } = useFormsheetListStyles();
+    const contentStyle = useResolveClassNames('bg-primary-reverse');
     const hadParamsRef = useRef(isDefined(currentParams));
-    const resolveRef = useRef(resolve);
-    const emptyResultRef = useRef(emptyResult);
 
-    const screenOptions: React.ComponentProps<typeof Stack.Screen>['options'] = { contentStyle: { backgroundColor } };
+    const screenOptions: React.ComponentProps<typeof Stack.Screen>['options'] = { contentStyle };
 
-    useEffect(() => {
-        resolveRef.current = resolve;
-        emptyResultRef.current = emptyResult;
-    }, [resolve, emptyResult]);
-
-    useEffect(
-        () => () => {
-            resolveRef.current(emptyResultRef.current, { skipBack: true });
-        },
-        []
-    );
+    useModalDismiss(dismiss);
 
     useEffect(() => {
         if (isDefined(currentParams)) {
@@ -44,5 +27,5 @@ export const useModalRouteState = <TParams, TResult>(
         }
     }, [currentParams, router]);
 
-    return { backgroundColor, screenOptions };
+    return screenOptions;
 };

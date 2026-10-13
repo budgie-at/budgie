@@ -16,12 +16,12 @@ export const TransactionTypeFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
     const [openTransactionTypeFilter] = useTransactionTypeFilterModal();
 
-    const handleOpen = async () => {
-        const result = await openTransactionTypeFilter({ value });
-
-        if (isDefined(result)) {
-            onChange(result.value);
-        }
+    const handleOpen = () => {
+        openTransactionTypeFilter({ value }, result => {
+            if (isDefined(result)) {
+                onChange(result.value);
+            }
+        });
     };
 
     const selectedTypesCount = value?.length ?? 0;

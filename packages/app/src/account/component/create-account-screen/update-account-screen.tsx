@@ -4,25 +4,15 @@ import {
     DebtAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface
 } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { Control, FieldValues } from 'react-hook-form';
-import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { Button } from '../../../@generic/component/button/button';
-import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
-import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
-import { ArchiveAccount } from '../archive-account/archive-account';
-
-import { CreateAccountScreenSelector } from './create-account-screen.selector';
+import { UpdateAccountPage } from '../update-account-page/update-account-page';
 
 interface Props<T extends FieldValues> {
     readonly account: AccountEntityInterface;
@@ -37,56 +27,29 @@ interface Props<T extends FieldValues> {
 
 export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
     const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance, balanceFieldLabel, isSubmitting } = props;
-    const { t } = useLingui();
 
-    const variant = ACCOUNT_COLOR[account.type];
     const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const minimumDecimalPlaces = showInstrumentAfterAmount ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
-        <CollapsibleChromePage
-            title={t`Account Settings`}
-            leading={<HeaderBackButton />}
-            testID={CreateAccountScreenSelector.ScrollView}
-            footer={
-                <View className="gap-md pt-xl px-7xl">
-                    <View className="flex-row gap-2">
-                        <ArchiveAccount accountId={account.id} />
-                        <Button
-                            onPress={onSubmit}
-                            size="sm"
-                            variant={variant}
-                            isLoading={isSubmitting}
-                            content={t`Update Account`}
-                            className="flex-1"
-                            testID={CreateAccountScreenSelector.SubmitButton}
-                        />
-                    </View>
-                </View>
+        <UpdateAccountPage
+            account={account}
+            control={control}
+            onSubmit={onSubmit}
+            isSubmitting={isSubmitting}
+            hero={
+                <AccountBalanceField
+                    variant={ACCOUNT_COLOR[account.type]}
+                    instrumentSymbol={instrumentSymbol}
+                    control={control}
+                    label={balanceFieldLabel}
+                    allowNegative={allowNegativeBalance}
+                    minimumDecimalPlaces={minimumDecimalPlaces}
+                    showInstrumentAfterAmount={showInstrumentAfterAmount}
+                />
             }
         >
-            <AccountBalanceField
-                variant={variant}
-                instrumentSymbol={instrumentSymbol}
-                control={control}
-                label={balanceFieldLabel}
-                allowNegative={allowNegativeBalance}
-                minimumDecimalPlaces={minimumDecimalPlaces}
-                showInstrumentAfterAmount={showInstrumentAfterAmount}
-            />
-
-            <FormLayoutGroup>
-                <AccountDetailsField
-                    control={control}
-                    variant={variant}
-                    nameInputTestID={CreateAccountScreenSelector.NameInput}
-                    selectNameOnFocus
-                />
-
-                {children}
-
-                <AccountActiveToggleField control={control} />
-            </FormLayoutGroup>
-        </CollapsibleChromePage>
+            {children}
+        </UpdateAccountPage>
     );
 };

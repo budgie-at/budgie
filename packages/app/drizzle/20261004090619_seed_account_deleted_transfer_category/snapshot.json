@@ -1,0 +1,5122 @@
+{
+  "id": "a1599e48-a0b4-4195-89fe-dc3f4677c403",
+  "prevIds": [
+    "157c595f-e566-44a3-b4af-443e333facc6"
+  ],
+  "version": "7",
+  "dialect": "sqlite",
+  "ddl": [
+    {
+      "name": "account_balances",
+      "entityType": "tables"
+    },
+    {
+      "name": "accounts",
+      "entityType": "tables"
+    },
+    {
+      "name": "bank_integrations",
+      "entityType": "tables"
+    },
+    {
+      "name": "budget_category_limits",
+      "entityType": "tables"
+    },
+    {
+      "name": "budgets",
+      "entityType": "tables"
+    },
+    {
+      "name": "categories",
+      "entityType": "tables"
+    },
+    {
+      "name": "comment_embeddings",
+      "entityType": "tables"
+    },
+    {
+      "name": "comment_embedding_tags",
+      "entityType": "tables"
+    },
+    {
+      "name": "debt_events",
+      "entityType": "tables"
+    },
+    {
+      "name": "default_category_translations",
+      "entityType": "tables"
+    },
+    {
+      "name": "exchange_rates",
+      "entityType": "tables"
+    },
+    {
+      "name": "historical_exchange_rates",
+      "entityType": "tables"
+    },
+    {
+      "name": "instrument_daily_market_prices",
+      "entityType": "tables"
+    },
+    {
+      "name": "instruments",
+      "entityType": "tables"
+    },
+    {
+      "name": "instrument_market_data_jobs",
+      "entityType": "tables"
+    },
+    {
+      "name": "mcc_categories",
+      "entityType": "tables"
+    },
+    {
+      "name": "mcc_groups",
+      "entityType": "tables"
+    },
+    {
+      "name": "merchant_embeddings",
+      "entityType": "tables"
+    },
+    {
+      "name": "merchant_embedding_tags",
+      "entityType": "tables"
+    },
+    {
+      "name": "recurring_series",
+      "entityType": "tables"
+    },
+    {
+      "name": "rule_actions",
+      "entityType": "tables"
+    },
+    {
+      "name": "rule_conditions",
+      "entityType": "tables"
+    },
+    {
+      "name": "rules",
+      "entityType": "tables"
+    },
+    {
+      "name": "settings",
+      "entityType": "tables"
+    },
+    {
+      "name": "bank_syncs",
+      "entityType": "tables"
+    },
+    {
+      "name": "tags",
+      "entityType": "tables"
+    },
+    {
+      "name": "transactions",
+      "entityType": "tables"
+    },
+    {
+      "name": "transaction_entries",
+      "entityType": "tables"
+    },
+    {
+      "name": "transaction_tags",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "account_balances"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "account_balances"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "account_balances"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "account_balances"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "account_id",
+      "entityType": "columns",
+      "table": "account_balances"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "amount",
+      "entityType": "columns",
+      "table": "account_balances"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'Home'",
+      "generated": null,
+      "name": "icon",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "parent_id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "order",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "title_search",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'CASH'",
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'LIABILITY'",
+      "generated": null,
+      "name": "nature",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'LENT'",
+      "generated": null,
+      "name": "debt_type",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "instrument_id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "external_id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "contact_id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deadline",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "target_balance",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "target_base_instrument_id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "real",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "target_base_exchange_rate",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "target_base_amount",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "real",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "interest_rate",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "external_source",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "integration_id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "iban",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "include_in_net_worth",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "is_active",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "provider",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "token",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "budget_id",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "limit_amount",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "period",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "period_start_day",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "use_last_day_of_month",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "overall_limit",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "other_limit",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "instrument_id",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "title_search",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title_en",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title_tags",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "tags_generated_at",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "icon",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "parent_id",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_default",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_system_category",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "comment",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "blob",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "embedding",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "dimensions",
+      "entityType": "columns",
+      "table": "comment_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "comment_embedding_id",
+      "entityType": "columns",
+      "table": "comment_embedding_tags"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "tag_id",
+      "entityType": "columns",
+      "table": "comment_embedding_tags"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "debt_account_id",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "transaction_id",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "transaction_entry_id",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "direction",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "operated_at",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "amount",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "base_amount",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "real",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "base_exchange_rate",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "base_instrument_id",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "default_category_translations"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "default_category_translations"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "default_category_translations"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "default_category_translations"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "default_category_translations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "language",
+      "entityType": "columns",
+      "table": "default_category_translations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "default_category_translations"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "base_instrument_id",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quote_instrument_id",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "rate",
+      "entityType": "columns",
+      "table": "exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source_instrument_id",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "target_instrument_id",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "rate_date",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "rate",
+      "entityType": "columns",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "instrument_id",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quote_instrument_id",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "price_date",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "real",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "price",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "real",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "market_cap",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "real",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "volume",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "code",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "symbol",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "price_provider",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "provider_instrument_id",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "market_cap_rank",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "instrument_id",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quote_instrument_id",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "from_date",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "to_date",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'PENDING'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "priority",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "attempts",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "locked_at",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "completed_at",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_error",
+      "entityType": "columns",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "mcc",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "mcc_group_id",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "short_description",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "full_description",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "default_category_id",
+      "entityType": "columns",
+      "table": "mcc_categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "mcc_groups"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "mcc_groups"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "mcc_groups"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "mcc_groups"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "mcc_groups"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "mcc_groups"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "mcc_description",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "comment",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "blob",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "embedding",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "dimensions",
+      "entityType": "columns",
+      "table": "merchant_embeddings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "merchant_embedding_id",
+      "entityType": "columns",
+      "table": "merchant_embedding_tags"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "tag_id",
+      "entityType": "columns",
+      "table": "merchant_embedding_tags"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "merchant_key",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "kind",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "period_days",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "amount",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "user_state",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_seen_at",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "rule_id",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "tag_id",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "account_id",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "rule_id",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "field",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "operator",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "value",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "secondary_value",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "enabled",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'ALL'",
+      "generated": null,
+      "name": "condition_match_type",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'en'",
+      "generated": null,
+      "name": "language",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "default_account_id",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "default_instrument_id",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'SYSTEM'",
+      "generated": null,
+      "name": "theme",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_pin_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_biometric_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "show_cents",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "is_vibration_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_screenshot_protection_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "apply_mcc_default_category",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "is_budget_widget_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_budget_push_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_onboarding_completed",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "onboarding_step",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_ai_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "is_runway_pill_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_runway_crypto_included",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "account_id",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "provider",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "enabled",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'BACKWARD'",
+      "generated": null,
+      "name": "mode",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'IDLE'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "backward_synced_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "backward_sync_from_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "backward_sync_limit_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "backward_batch_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "forward_synced_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "forward_sync_from_at",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "setup_balance",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "balance_adjustment_transaction_id",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "transaction_count",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "error_count",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_error",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_warning",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "binance_trade_cursor",
+      "entityType": "columns",
+      "table": "bank_syncs"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "title_search",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title_en",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title_tags",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "tags_generated_at",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "external_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "operated_at",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "''",
+      "generated": null,
+      "name": "comment",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "to_account_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "from_account_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "real",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "exchange_rate",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "external_source",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_by",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "needs_embedding",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "import_fingerprint",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "consolidation_parent_transaction_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "consolidation_type",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": {
+        "as": "(CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER))",
+        "type": "virtual"
+      },
+      "name": "operated_weekday",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": {
+        "as": "(CAST(strftime('%H', operated_at, 'unixepoch') AS INTEGER) * 60 + CAST(strftime('%M', operated_at, 'unixepoch') AS INTEGER))",
+        "type": "virtual"
+      },
+      "name": "operated_minute_of_day",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'PRIMARY'",
+      "generated": null,
+      "name": "kind",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "account_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'USER'",
+      "generated": null,
+      "name": "category_source",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "mcc_category_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "transaction_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "amount",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "external_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "real",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "1",
+      "generated": null,
+      "name": "exchange_rate",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "base_instrument_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "real",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "base_exchange_rate",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "base_amount",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quoted_instrument_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quoted_amount",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quoted_unit_price",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "to_iban",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "original_transaction_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "transaction_id",
+      "entityType": "columns",
+      "table": "transaction_tags"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "tag_id",
+      "entityType": "columns",
+      "table": "transaction_tags"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_primary",
+      "entityType": "columns",
+      "table": "transaction_tags"
+    },
+    {
+      "columns": [
+        "instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_accounts_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "accounts"
+    },
+    {
+      "columns": [
+        "target_base_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_accounts_target_base_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "accounts"
+    },
+    {
+      "columns": [
+        "integration_id"
+      ],
+      "tableTo": "bank_integrations",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_accounts_integration_id_bank_integrations_id_fk",
+      "entityType": "fks",
+      "table": "accounts"
+    },
+    {
+      "columns": [
+        "budget_id"
+      ],
+      "tableTo": "budgets",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_budget_category_limits_budget_id_budgets_id_fk",
+      "entityType": "fks",
+      "table": "budget_category_limits"
+    },
+    {
+      "columns": [
+        "category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_budget_category_limits_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "budget_category_limits"
+    },
+    {
+      "columns": [
+        "instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_budgets_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "budgets"
+    },
+    {
+      "columns": [
+        "category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_comment_embeddings_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "comment_embeddings"
+    },
+    {
+      "columns": [
+        "comment_embedding_id"
+      ],
+      "tableTo": "comment_embeddings",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_comment_embedding_tags_comment_embedding_id_comment_embeddings_id_fk",
+      "entityType": "fks",
+      "table": "comment_embedding_tags"
+    },
+    {
+      "columns": [
+        "tag_id"
+      ],
+      "tableTo": "tags",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_comment_embedding_tags_tag_id_tags_id_fk",
+      "entityType": "fks",
+      "table": "comment_embedding_tags"
+    },
+    {
+      "columns": [
+        "debt_account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_debt_events_debt_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        "transaction_id"
+      ],
+      "tableTo": "transactions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_debt_events_transaction_id_transactions_id_fk",
+      "entityType": "fks",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        "transaction_entry_id"
+      ],
+      "tableTo": "transaction_entries",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_debt_events_transaction_entry_id_transaction_entries_id_fk",
+      "entityType": "fks",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        "base_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_debt_events_base_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        "category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_default_category_translations_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "default_category_translations"
+    },
+    {
+      "columns": [
+        "source_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_historical_exchange_rates_source_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "columns": [
+        "target_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_historical_exchange_rates_target_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "columns": [
+        "instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_instrument_daily_market_prices_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "columns": [
+        "quote_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_instrument_daily_market_prices_quote_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "columns": [
+        "instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_instrument_market_data_jobs_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "columns": [
+        "quote_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_instrument_market_data_jobs_quote_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "columns": [
+        "mcc_group_id"
+      ],
+      "tableTo": "mcc_groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_mcc_categories_mcc_group_id_mcc_groups_id_fk",
+      "entityType": "fks",
+      "table": "mcc_categories"
+    },
+    {
+      "columns": [
+        "default_category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_mcc_categories_default_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "mcc_categories"
+    },
+    {
+      "columns": [
+        "category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_merchant_embeddings_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "merchant_embeddings"
+    },
+    {
+      "columns": [
+        "merchant_embedding_id"
+      ],
+      "tableTo": "merchant_embeddings",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_merchant_embedding_tags_merchant_embedding_id_merchant_embeddings_id_fk",
+      "entityType": "fks",
+      "table": "merchant_embedding_tags"
+    },
+    {
+      "columns": [
+        "tag_id"
+      ],
+      "tableTo": "tags",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_merchant_embedding_tags_tag_id_tags_id_fk",
+      "entityType": "fks",
+      "table": "merchant_embedding_tags"
+    },
+    {
+      "columns": [
+        "category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series"
+    },
+    {
+      "columns": [
+        "rule_id"
+      ],
+      "tableTo": "rules",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_rule_actions_rule_id_rules_id_fk",
+      "entityType": "fks",
+      "table": "rule_actions"
+    },
+    {
+      "columns": [
+        "category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_rule_actions_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "rule_actions"
+    },
+    {
+      "columns": [
+        "tag_id"
+      ],
+      "tableTo": "tags",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_rule_actions_tag_id_tags_id_fk",
+      "entityType": "fks",
+      "table": "rule_actions"
+    },
+    {
+      "columns": [
+        "account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_rule_actions_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "rule_actions"
+    },
+    {
+      "columns": [
+        "rule_id"
+      ],
+      "tableTo": "rules",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_rule_conditions_rule_id_rules_id_fk",
+      "entityType": "fks",
+      "table": "rule_conditions"
+    },
+    {
+      "columns": [
+        "default_account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_settings_default_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "settings"
+    },
+    {
+      "columns": [
+        "default_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_settings_default_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "settings"
+    },
+    {
+      "columns": [
+        "account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_bank_syncs_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "bank_syncs"
+    },
+    {
+      "columns": [
+        "to_account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_transactions_to_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        "from_account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_transactions_from_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        "consolidation_parent_transaction_id"
+      ],
+      "tableTo": "transactions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_transactions_consolidation_parent_transaction_id_transactions_id_fk",
+      "entityType": "fks",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        "account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_transaction_entries_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        "category_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_transaction_entries_category_id_categories_id_fk",
+      "entityType": "fks",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        "mcc_category_id"
+      ],
+      "tableTo": "mcc_categories",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_transaction_entries_mcc_category_id_mcc_categories_id_fk",
+      "entityType": "fks",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        "transaction_id"
+      ],
+      "tableTo": "transactions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_transaction_entries_transaction_id_transactions_id_fk",
+      "entityType": "fks",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        "base_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_transaction_entries_base_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        "quoted_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_transaction_entries_quoted_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        "original_transaction_id"
+      ],
+      "tableTo": "transactions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_transaction_entries_original_transaction_id_transactions_id_fk",
+      "entityType": "fks",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        "transaction_id"
+      ],
+      "tableTo": "transactions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_transaction_tags_transaction_id_transactions_id_fk",
+      "entityType": "fks",
+      "table": "transaction_tags"
+    },
+    {
+      "columns": [
+        "tag_id"
+      ],
+      "tableTo": "tags",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_transaction_tags_tag_id_tags_id_fk",
+      "entityType": "fks",
+      "table": "transaction_tags"
+    },
+    {
+      "columns": [
+        "comment_embedding_id",
+        "tag_id"
+      ],
+      "nameExplicit": false,
+      "name": "comment_embedding_tags_pk",
+      "entityType": "pks",
+      "table": "comment_embedding_tags"
+    },
+    {
+      "columns": [
+        "merchant_embedding_id",
+        "tag_id"
+      ],
+      "nameExplicit": false,
+      "name": "merchant_embedding_tags_pk",
+      "entityType": "pks",
+      "table": "merchant_embedding_tags"
+    },
+    {
+      "columns": [
+        "transaction_id",
+        "tag_id"
+      ],
+      "nameExplicit": false,
+      "name": "transaction_tags_pk",
+      "entityType": "pks",
+      "table": "transaction_tags"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "account_balances_pk",
+      "table": "account_balances",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "accounts_pk",
+      "table": "accounts",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "bank_integrations_pk",
+      "table": "bank_integrations",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "budget_category_limits_pk",
+      "table": "budget_category_limits",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "budgets_pk",
+      "table": "budgets",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "categories_pk",
+      "table": "categories",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "comment_embeddings_pk",
+      "table": "comment_embeddings",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "debt_events_pk",
+      "table": "debt_events",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "default_category_translations_pk",
+      "table": "default_category_translations",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "exchange_rates_pk",
+      "table": "exchange_rates",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "historical_exchange_rates_pk",
+      "table": "historical_exchange_rates",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "instrument_daily_market_prices_pk",
+      "table": "instrument_daily_market_prices",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "instruments_pk",
+      "table": "instruments",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "instrument_market_data_jobs_pk",
+      "table": "instrument_market_data_jobs",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "mcc_categories_pk",
+      "table": "mcc_categories",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "mcc_groups_pk",
+      "table": "mcc_groups",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "merchant_embeddings_pk",
+      "table": "merchant_embeddings",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "recurring_series_pk",
+      "table": "recurring_series",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "rule_actions_pk",
+      "table": "rule_actions",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "rule_conditions_pk",
+      "table": "rule_conditions",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "rules_pk",
+      "table": "rules",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "settings_pk",
+      "table": "settings",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "bank_syncs_pk",
+      "table": "bank_syncs",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "tags_pk",
+      "table": "tags",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "transactions_pk",
+      "table": "transactions",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "transaction_entries_pk",
+      "table": "transaction_entries",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "iban",
+          "isExpression": false
+        },
+        {
+          "value": "is_active",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"accounts\".\"deleted_at\" IS NULL AND \"accounts\".\"iban\" IS NOT NULL",
+      "origin": "manual",
+      "name": "accounts_iban_active_idx",
+      "entityType": "indexes",
+      "table": "accounts"
+    },
+    {
+      "columns": [
+        {
+          "value": "is_active",
+          "isExpression": false
+        },
+        {
+          "value": "type",
+          "isExpression": false
+        },
+        {
+          "value": "instrument_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"accounts\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "accounts_active_type_instrument_idx",
+      "entityType": "indexes",
+      "table": "accounts"
+    },
+    {
+      "columns": [
+        {
+          "value": "provider",
+          "isExpression": false
+        },
+        {
+          "value": "token",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"bank_integrations\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "bank_integrations_provider_token_unq",
+      "entityType": "indexes",
+      "table": "bank_integrations"
+    },
+    {
+      "columns": [
+        {
+          "value": "provider",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"bank_integrations\".\"token\" = '' AND \"bank_integrations\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "bank_integrations_provider_file_import_unq",
+      "entityType": "indexes",
+      "table": "bank_integrations"
+    },
+    {
+      "columns": [
+        {
+          "value": "budget_id",
+          "isExpression": false
+        },
+        {
+          "value": "category_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "deleted_at IS NULL",
+      "origin": "manual",
+      "name": "budget_category_limit_budget_category_unq",
+      "entityType": "indexes",
+      "table": "budget_category_limits"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"debt_events\".\"transaction_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "debt_events_live_transaction_unq",
+      "entityType": "indexes",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"debt_events\".\"transaction_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "debt_events_transaction_idx",
+      "entityType": "indexes",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_entry_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"debt_events\".\"transaction_entry_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "debt_events_transaction_entry_idx",
+      "entityType": "indexes",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        {
+          "value": "debt_account_id",
+          "isExpression": false
+        },
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"debt_events\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "debt_events_account_transaction_idx",
+      "entityType": "indexes",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        {
+          "value": "debt_account_id",
+          "isExpression": false
+        },
+        {
+          "value": "operated_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"debt_events\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "debt_events_account_operated_idx",
+      "entityType": "indexes",
+      "table": "debt_events"
+    },
+    {
+      "columns": [
+        {
+          "value": "category_id",
+          "isExpression": false
+        },
+        {
+          "value": "language",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "default_category_translations_category_language_idx",
+      "entityType": "indexes",
+      "table": "default_category_translations"
+    },
+    {
+      "columns": [
+        {
+          "value": "base_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "quote_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "\"created_at\" DESC",
+          "isExpression": true
+        }
+      ],
+      "isUnique": false,
+      "where": "\"exchange_rates\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "exchange_rates_lookup_idx",
+      "entityType": "indexes",
+      "table": "exchange_rates"
+    },
+    {
+      "columns": [
+        {
+          "value": "source_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "target_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "\"rate_date\" DESC",
+          "isExpression": true
+        }
+      ],
+      "isUnique": false,
+      "where": "\"historical_exchange_rates\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "historical_exchange_rates_lookup_idx",
+      "entityType": "indexes",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "columns": [
+        {
+          "value": "instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "quote_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "\"price_date\" DESC",
+          "isExpression": true
+        }
+      ],
+      "isUnique": false,
+      "where": "\"instrument_daily_market_prices\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "instrument_daily_market_prices_lookup_idx",
+      "entityType": "indexes",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "columns": [
+        {
+          "value": "status",
+          "isExpression": false
+        },
+        {
+          "value": "\"priority\" DESC",
+          "isExpression": true
+        },
+        {
+          "value": "updated_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"instrument_market_data_jobs\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "instrument_market_data_jobs_drain_idx",
+      "entityType": "indexes",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "columns": [
+        {
+          "value": "instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "quote_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "status",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"instrument_market_data_jobs\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "instrument_market_data_jobs_lookup_idx",
+      "entityType": "indexes",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "columns": [
+        {
+          "value": "operated_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_operated_at_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "operated_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_visible_operated_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "consolidation_parent_transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"consolidation_parent_transaction_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transactions_consolidation_parent_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "type",
+          "isExpression": false
+        },
+        {
+          "value": "operated_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_visible_type_operated_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "type",
+          "isExpression": false
+        },
+        {
+          "value": "from_account_id",
+          "isExpression": false
+        },
+        {
+          "value": "operated_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL AND \"transactions\".\"from_account_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transactions_visible_type_from_operated_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "type",
+          "isExpression": false
+        },
+        {
+          "value": "to_account_id",
+          "isExpression": false
+        },
+        {
+          "value": "operated_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL AND \"transactions\".\"to_account_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transactions_visible_type_to_operated_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "from_account_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"from_account_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transactions_from_account_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "to_account_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"to_account_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transactions_to_account_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "external_source",
+          "isExpression": false
+        },
+        {
+          "value": "external_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"external_id\" IS NOT NULL AND \"transactions\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_external_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "operated_weekday",
+          "isExpression": false
+        },
+        {
+          "value": "type",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_weekday_type_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "operated_minute_of_day",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_minute_of_day_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_active_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "\"operated_at\" DESC",
+          "isExpression": true
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" != ''",
+      "origin": "manual",
+      "name": "transactions_pending_merchant_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "\"operated_at\" DESC",
+          "isExpression": true
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" = '' AND \"transactions\".\"comment\" != ''",
+      "origin": "manual",
+      "name": "transactions_pending_comment_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transactions_pending_embedding_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "transaction_entries_transaction_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "account_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "transaction_entries_account_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "account_id",
+          "isExpression": false
+        },
+        {
+          "value": "external_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"external_id\" IS NOT NULL AND \"transaction_entries\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transaction_entries_account_external_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "original_transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"original_transaction_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transaction_entries_original_transaction_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "account_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+      "origin": "manual",
+      "name": "transaction_entries_ledger_account_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "account_id",
+          "isExpression": false
+        },
+        {
+          "value": "created_at",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transaction_entries_live_account_created_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "account_id",
+          "isExpression": false
+        },
+        {
+          "value": "amount",
+          "isExpression": false
+        },
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+      "origin": "manual",
+      "name": "transaction_entries_live_account_amount_transaction_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        },
+        {
+          "value": "account_id",
+          "isExpression": false
+        },
+        {
+          "value": "amount",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+      "origin": "manual",
+      "name": "transaction_entries_live_transaction_account_amount_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "category_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"category_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transaction_entries_category_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"category_id\" IS NULL AND \"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+      "origin": "manual",
+      "name": "transaction_entries_uncategorized_transaction_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "category_id",
+          "isExpression": false
+        },
+        {
+          "value": "type",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"category_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transaction_entries_category_type_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "base_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "base_amount",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "transaction_entries_base_valuation_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "quoted_instrument_id",
+          "isExpression": false
+        },
+        {
+          "value": "quoted_amount",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"quoted_instrument_id\" IS NOT NULL AND \"transaction_entries\".\"quoted_amount\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transaction_entries_quote_idx",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
+          "value": "tag_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "transaction_tags_tag_idx",
+      "entityType": "indexes",
+      "table": "transaction_tags"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"transaction_tags\".\"is_primary\" = 1",
+      "origin": "manual",
+      "name": "transaction_tags_primary_idx",
+      "entityType": "indexes",
+      "table": "transaction_tags"
+    },
+    {
+      "columns": [
+        "comment",
+        "category_id"
+      ],
+      "nameExplicit": false,
+      "name": "comment_embeddings_comment_category_id_unique",
+      "entityType": "uniques",
+      "table": "comment_embeddings"
+    },
+    {
+      "columns": [
+        "base_instrument_id",
+        "quote_instrument_id"
+      ],
+      "nameExplicit": false,
+      "name": "exchange_rates_base_instrument_id_quote_instrument_id_unique",
+      "entityType": "uniques",
+      "table": "exchange_rates"
+    },
+    {
+      "columns": [
+        "source_instrument_id",
+        "target_instrument_id",
+        "rate_date"
+      ],
+      "nameExplicit": false,
+      "name": "historical_exchange_rates_source_instrument_id_target_instrument_id_rate_date_unique",
+      "entityType": "uniques",
+      "table": "historical_exchange_rates"
+    },
+    {
+      "columns": [
+        "instrument_id",
+        "quote_instrument_id",
+        "price_date"
+      ],
+      "nameExplicit": false,
+      "name": "instrument_daily_market_prices_instrument_id_quote_instrument_id_price_date_unique",
+      "entityType": "uniques",
+      "table": "instrument_daily_market_prices"
+    },
+    {
+      "columns": [
+        "instrument_id",
+        "quote_instrument_id",
+        "from_date",
+        "to_date"
+      ],
+      "nameExplicit": false,
+      "name": "instrument_market_data_jobs_instrument_id_quote_instrument_id_from_date_to_date_unique",
+      "entityType": "uniques",
+      "table": "instrument_market_data_jobs"
+    },
+    {
+      "columns": [
+        "title",
+        "mcc_description",
+        "category_id"
+      ],
+      "nameExplicit": false,
+      "name": "merchant_embeddings_title_mcc_description_category_id_unique",
+      "entityType": "uniques",
+      "table": "merchant_embeddings"
+    },
+    {
+      "columns": [
+        "account_id"
+      ],
+      "nameExplicit": false,
+      "name": "account_balances_account_id_unique",
+      "entityType": "uniques",
+      "table": "account_balances"
+    },
+    {
+      "columns": [
+        "mcc"
+      ],
+      "nameExplicit": false,
+      "name": "mcc_categories_mcc_unique",
+      "entityType": "uniques",
+      "table": "mcc_categories"
+    },
+    {
+      "columns": [
+        "type"
+      ],
+      "nameExplicit": false,
+      "name": "mcc_groups_type_unique",
+      "entityType": "uniques",
+      "table": "mcc_groups"
+    },
+    {
+      "columns": [
+        "account_id"
+      ],
+      "nameExplicit": false,
+      "name": "bank_syncs_account_id_unique",
+      "entityType": "uniques",
+      "table": "bank_syncs"
+    },
+    {
+      "value": "type != 'SET_CATEGORY' OR category_id IS NOT NULL",
+      "name": "rule_action_set_category_requires_category_id",
+      "entityType": "checks",
+      "table": "rule_actions"
+    },
+    {
+      "value": "type != 'ADD_TAG' OR tag_id IS NOT NULL",
+      "name": "rule_action_add_tag_requires_tag_id",
+      "entityType": "checks",
+      "table": "rule_actions"
+    },
+    {
+      "value": "type != 'CONVERT_TO_TRANSFER' OR account_id IS NOT NULL",
+      "name": "rule_action_convert_to_transfer_requires_account_id",
+      "entityType": "checks",
+      "table": "rule_actions"
+    },
+    {
+      "value": "operator != 'BETWEEN' OR secondary_value IS NOT NULL",
+      "name": "rule_condition_between_requires_secondary_value",
+      "entityType": "checks",
+      "table": "rule_conditions"
+    }
+  ],
+  "renames": []
+}

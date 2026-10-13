@@ -16,7 +16,11 @@ vi.mock('@app/@generic/drizzle/service/database-connection.service', async () =>
     return { DatabaseConnectionService: FakeDatabaseConnectionService };
 });
 
-vi.mock('@app/@generic/constant/yield-to-ui.constant', () => ({ YIELD_TO_UI: Effect.void }));
+vi.mock('@budgie/contracts', async importOriginal => {
+    const { void: voidEffect } = await import('effect/Effect');
+
+    return { ...(await importOriginal<typeof import('@budgie/contracts')>()), YIELD_TO_UI: voidEffect };
+});
 
 const resolveLinguiMessage = (descriptor: unknown): string => {
     if (typeof descriptor === 'string') {

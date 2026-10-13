@@ -1,0 +1,29 @@
+appId: ${APP_ID}
+env:
+    TRANSACTION_ID: ${TRANSACTION_ID}
+---
+- runFlow:
+      file: ../navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${TRANSACTION_ID}/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.ConvertToInstallmentButton'
+      timeout: 5000
+
+- tapOn:
+      id: 'TransactionActionsMenu.ConvertToInstallmentButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'ConvertToInstallment.Page'
+      timeout: 10000

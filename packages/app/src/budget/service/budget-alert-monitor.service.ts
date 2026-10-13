@@ -1,15 +1,16 @@
 import {
     BudgetAlertScopeEnum,
-    BudgetAlertThresholdService,
     BudgetCategoryLimitRepository,
-    budgetPeriodService,
     BudgetRepository,
-    BudgetSpentService
+    computeBudgetAlertTriggers,
+    computePeriodWindow,
+    computeSpent
 } from '@budgie/budget';
 import { CategoryRepository, LanguageEnum, SettingsRepository } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Storage } from '@op-engineering/op-sqlite';
+import * as EffectArray from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,9 +19,10 @@ import * as Schema from 'effect/Schema';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { postLocalNotification } from '../../@generic/utils/request-push-permission.util';
+import { NativeCallError } from '../../@generic/error/native-call.error';
+import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
 import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
 
 import type { BudgetAlertTriggerInterface, BudgetSpentInterface } from '@budgie/budget';
@@ -28,10 +30,8 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 
 export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonitorService>()('@budgie/app/BudgetAlertMonitorService', {
     make: Effect.gen(function* () {
-        const budgetAlertThresholdService = yield* BudgetAlertThresholdService;
         const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
         const budgetRepository = yield* BudgetRepository;
-        const budgetSpentService = yield* BudgetSpentService;
         const categoryRepository = yield* CategoryRepository;
         const settingsRepository = yield* SettingsRepository;
 
@@ -54,7 +54,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             return `${trigger.scope}:${categoryKey}:${trigger.threshold}`;
         };
 
-        const computeSpent = Effect.fn('BudgetAlertMonitorService.computeSpent')(function* (
+        const loadSpent = Effect.fn('BudgetAlertMonitorService.loadSpent')(function* (
             budget: Pick<BudgetEntityInterface, 'periodStartDay' | 'useLastDayOfMonth' | 'instrumentId'>
         ) {
             if (!isPositiveNumber(budget.instrumentId)) {
@@ -63,43 +63,24 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 return empty;
             }
 
-            const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
-                budget.periodStartDay,
-                budget.useLastDayOfMonth,
-                new Date()
-            );
+            const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
             const entries = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId);
 
-            return budgetSpentService.computeSpent(entries, budget.instrumentId);
+            return computeSpent(entries, budget.instrumentId);
         });
 
         const loadDeliveredTriggerKeys = Effect.fn('BudgetAlertMonitorService.loadDeliveredTriggerKeys')(function* (storageKey: string) {
             const raw = yield* Effect.promise(() => storage.getItem(storageKey));
 
             if (!isDefined(raw)) {
-                return new Set<string>();
+                return [];
             }
 
-            return new Set(Option.getOrElse(Schema.decodeUnknownOption(firedTriggersSchema)(raw), () => []));
+            return Option.getOrElse(Schema.decodeUnknownOption(firedTriggersSchema)(raw), () => []);
         });
 
-        const filterDeliveredTriggers = Effect.fn('BudgetAlertMonitorService.filterDeliveredTriggers')(function* (
-            storageKey: string,
-            triggers: readonly BudgetAlertTriggerInterface[]
-        ) {
-            const fired = yield* loadDeliveredTriggerKeys(storageKey);
-
-            return triggers.filter(trigger => !fired.has(buildTriggerKey(trigger)));
-        });
-
-        const markDelivered = Effect.fn('BudgetAlertMonitorService.markDelivered')(function* (
-            storageKey: string,
-            trigger: BudgetAlertTriggerInterface
-        ) {
-            const fired = yield* loadDeliveredTriggerKeys(storageKey);
-            fired.add(buildTriggerKey(trigger));
-            yield* Effect.promise(() => storage.setItem(storageKey, JSON.stringify([...fired])));
-        });
+        const postNotification = (title: string, body: string) =>
+            Effect.tryPromise({ try: () => postLocalNotification(title, body), catch: cause => new NativeCallError({ cause }) });
 
         const postOverallAlert = Effect.fn('BudgetAlertMonitorService.postOverallAlert')(function* (
             threshold: number,
@@ -110,14 +91,14 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             const title = threshold >= 100 ? i18n._(msg`Budget limit reached`) : i18n._(msg`Overall budget: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${spentPercent}% of your overall budget.`);
 
-            yield* Effect.tryPromise(() => postLocalNotification(title, body));
+            yield* postNotification(title, body);
         });
 
         const postOtherAlert = Effect.fn('BudgetAlertMonitorService.postOtherAlert')(function* (threshold: number) {
             const title = threshold >= 100 ? i18n._(msg`Other budget: limit reached`) : i18n._(msg`Other budget: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${threshold}% of your budget for spending outside category limits.`);
 
-            yield* Effect.tryPromise(() => postLocalNotification(title, body));
+            yield* postNotification(title, body);
         });
 
         const postCategoryAlert = Effect.fn('BudgetAlertMonitorService.postCategoryAlert')(function* (
@@ -132,7 +113,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 threshold >= 100 ? i18n._(msg`${categoryName}: limit reached`) : i18n._(msg`${categoryName}: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${threshold}% of the limit for ${categoryName}.`);
 
-            yield* Effect.tryPromise(() => postLocalNotification(title, body));
+            yield* postNotification(title, body);
         });
 
         const postTrigger = Effect.fn('BudgetAlertMonitorService.postTrigger')(function* (
@@ -163,30 +144,29 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 const isBudgetPushEnabled = isDefined(settings) ? settings.isBudgetPushEnabled : false;
 
                 if (!isDefined(budget) || !isBudgetPushEnabled) {
-                    return [];
+                    return;
                 }
 
-                const periodStartMs = budgetPeriodService
-                    .computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date())
-                    .periodStart.getTime();
-                const spent = yield* computeSpent(budget);
+                const periodStartMs = computePeriodWindow(
+                    budget.periodStartDay,
+                    budget.useLastDayOfMonth,
+                    new Date()
+                ).periodStart.getTime();
+                const spent = yield* loadSpent(budget);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
-                const triggers = budgetAlertThresholdService.computeTriggers(budget, spent, categoryLimits);
+                const triggers = computeBudgetAlertTriggers(budget, spent, categoryLimits);
                 const storageKey = buildStorageKey(budget.id, periodStartMs);
-                const newTriggers = yield* filterDeliveredTriggers(storageKey, triggers);
-
-                yield* Effect.forEach(
-                    newTriggers,
-                    trigger =>
-                        postTrigger(trigger, budget.overallLimit, spent).pipe(
-                            Effect.as(true),
-                            Effect.orElseSucceed(() => false),
-                            Effect.flatMap(posted => (posted ? markDelivered(storageKey, trigger) : Effect.void))
-                        ),
-                    { concurrency: 'unbounded', discard: true }
+                const deliveredKeys = yield* loadDeliveredTriggerKeys(storageKey);
+                const newTriggers = triggers.filter(trigger => !deliveredKeys.includes(buildTriggerKey(trigger)));
+                const postedKeys = EffectArray.getSomes(
+                    yield* Effect.forEach(newTriggers, trigger =>
+                        postTrigger(trigger, budget.overallLimit, spent).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
+                    )
                 );
 
-                return newTriggers;
+                if (isNotEmptyArray(postedKeys)) {
+                    yield* Effect.promise(() => storage.setItem(storageKey, JSON.stringify([...deliveredKeys, ...postedKeys])));
+                }
             }),
             registerBackgroundTask: Effect.fn('BudgetAlertMonitorService.registerBackgroundTask')(function* () {
                 const options = yield* Effect.promise(() =>
@@ -211,13 +191,6 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
     })
 }) {
     static readonly layer = Layer.effect(BudgetAlertMonitorService, BudgetAlertMonitorService.make).pipe(
-        Layer.provide([
-            BudgetAlertThresholdService.layer,
-            BudgetCategoryLimitRepository.layer,
-            BudgetRepository.layer,
-            BudgetSpentService.layer,
-            CategoryRepository.layer,
-            SettingsRepository.layer
-        ])
+        Layer.provide([BudgetCategoryLimitRepository.layer, BudgetRepository.layer, CategoryRepository.layer, SettingsRepository.layer])
     );
 }

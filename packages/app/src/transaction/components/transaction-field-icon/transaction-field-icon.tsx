@@ -12,7 +12,6 @@ import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
-import { PRESSED_SCALE } from '../../constant/pressed-scale.constant';
 
 export interface TransactionFieldIconRef {
     shake: () => void;
@@ -30,6 +29,7 @@ interface Props {
     readonly testID?: string;
 }
 
+const PRESSED_SCALE = 0.95;
 const disabledOpacity = { opacity: 0.3 };
 
 export const TransactionFieldIcon = (props: Props) => {
@@ -45,11 +45,11 @@ export const TransactionFieldIcon = (props: Props) => {
     }));
 
     const handlePressIn = () => {
-        pressed.value = true;
+        pressed.set(true);
     };
 
     const handlePressOut = () => {
-        pressed.value = false;
+        pressed.set(false);
     };
 
     const hasValue = isNotEmptyString(value);

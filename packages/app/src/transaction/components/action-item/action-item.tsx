@@ -61,14 +61,14 @@ export const ActionItem = ({ icon, label, testID, variant, index, totalItems, is
     useEffect(() => {
         if (isOpen) {
             const delay = reverseIndex * STAGGER_DELAY;
-            translateY.value = withDelay(delay, withSpring(targetY, SPRING_CONFIG));
-            scale.value = withDelay(delay, withSpring(1, SPRING_CONFIG));
-            opacity.value = withDelay(delay, withSpring(1, SPRING_CONFIG));
+            translateY.set(withDelay(delay, withSpring(targetY, SPRING_CONFIG)));
+            scale.set(withDelay(delay, withSpring(1, SPRING_CONFIG)));
+            opacity.set(withDelay(delay, withSpring(1, SPRING_CONFIG)));
         } else {
             const delay = index * STAGGER_DELAY;
-            translateY.value = withDelay(delay, withSpring(0, SPRING_CONFIG));
-            scale.value = withDelay(delay, withSpring(0, SPRING_CONFIG));
-            opacity.value = withDelay(delay, withSpring(0, SPRING_CONFIG));
+            translateY.set(withDelay(delay, withSpring(0, SPRING_CONFIG)));
+            scale.set(withDelay(delay, withSpring(0, SPRING_CONFIG)));
+            opacity.set(withDelay(delay, withSpring(0, SPRING_CONFIG)));
         }
     }, [index, isOpen, opacity, reverseIndex, scale, targetY, translateY]);
 

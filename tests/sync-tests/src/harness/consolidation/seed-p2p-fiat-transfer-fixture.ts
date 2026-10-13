@@ -15,9 +15,8 @@ import { expect } from 'vitest';
 
 import { getDefined, isDefined } from '@rnw-community/shared';
 
-import { fetchCanonicalsOfType } from '../db/fetch-canonicals-of-type';
-import { fetchTransactionById } from '../db/fetch-transaction-by-id';
 import { requireInstrument } from '../db/require-instrument';
+import { testQueryService } from '../db/test-query-service';
 import { testDb } from '../scenario/setup';
 import { seed } from '../seed/seed';
 import { seedBankPair } from '../seed/seed-bank-pair';
@@ -116,7 +115,7 @@ export const seedP2pIncome = (
 
 export const fetchP2pCanonical = () =>
     Effect.gen(function* () {
-        return getDefined((yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).at(0), () => {
+        return getDefined((yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).at(0), () => {
             throw new Error('P2P canonical transaction not found');
         });
     });
@@ -131,17 +130,17 @@ export const expectConsolidatedToP2pCanonical = (
         const canonical = yield* fetchP2pCanonical();
         expect(canonical.fromAccountId).toBe(fromAccountId);
         expect(canonical.toAccountId).toBe(toAccountId);
-        expect((yield* fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonical.id);
-        expect((yield* fetchTransactionById(income.id)).consolidationParentTransactionId).toBe(canonical.id);
+        expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonical.id);
+        expect((yield* testQueryService.findTransactionById(income.id)).consolidationParentTransactionId).toBe(canonical.id);
     });
 
 export const expectP2pUnconsolidated = Effect.fnUntraced(function* (transactions: readonly TransactionEntityInterface[]) {
     const transferConsolidationService = yield* TransferConsolidationService;
 
     expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(0);
-    expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+    expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
     expect(
-        (yield* Effect.forEach(transactions, transaction => fetchTransactionById(transaction.id))).map(
+        (yield* Effect.forEach(transactions, transaction => testQueryService.findTransactionById(transaction.id))).map(
             transaction => transaction.consolidationParentTransactionId
         )
     ).toEqual(transactions.map(() => null));

@@ -1,4 +1,4 @@
-const normalizePart = (value: string | number) => String(value).replace(/[^a-zA-Z0-9]+/gu, '_');
+const normalizePart = (value: string | number) => String(value).replaceAll(/[^a-zA-Z0-9]+/gu, '_');
 
 export const DebtAccountCardSummarySelector = {
     OutstandingAmount: (title: string, amount: number) =>

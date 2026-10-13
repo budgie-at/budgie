@@ -1,11 +1,10 @@
-import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
 import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
@@ -32,8 +31,8 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
     const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
     const formattedFeeAmount = formatDigits(feeAmount, feeCurrencySymbol);
     const feeLabel = t`Fee · ${formattedFeeAmount}`;
-    const debtSettlementAccountTitle = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT].title ?? null;
-    const hasDebtSettlement = isDefined(debtSettlementAccountTitle);
+    const debtSettlementAccount = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT] ?? null;
+    const hasDebtSettlement = isDefined(debtSettlementAccount);
     const isRefundTransaction = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
     if (!isRefundTransaction && !hasFee && !hasDebtSettlement) {
@@ -50,7 +49,7 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
 
             {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 
-            <DebtSettlementPill accountTitle={debtSettlementAccountTitle} testID={debtSettlementTestID} />
+            <DebtSettlementPill account={debtSettlementAccount} testID={debtSettlementTestID} />
         </View>
     );
 };

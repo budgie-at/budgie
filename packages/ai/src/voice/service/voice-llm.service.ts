@@ -16,7 +16,7 @@ export class VoiceLlmService extends Context.Service<VoiceLlmService>()('@budgie
     make: Effect.gen(function* () {
         const chat = yield* ChatInvoker;
 
-        const escapeRegex = (term: string): string => term.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+        const escapeRegex = (term: string): string => term.replaceAll(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 
         const buildAlternation = (terms: readonly string[]): string =>
             [...terms]
@@ -229,9 +229,9 @@ export class VoiceLlmService extends Context.Service<VoiceLlmService>()('@budgie
         const cleanVoiceDescription = (description: string): string =>
             description
                 .replace(CURRENCY_TERM_PATTERN, ' ')
-                .replace(/(?:^|\s)[-–—−]+(?:\s|$)/gu, ' ')
-                .replace(/\s+/gu, ' ')
-                .replace(/^[-–—−.,!?\s]+|[-–—−.,!?\s]+$/gu, '')
+                .replaceAll(/(?:^|\s)[-–—−]+(?:\s|$)/gu, ' ')
+                .replaceAll(/\s+/gu, ' ')
+                .replaceAll(/^[-–—−.,!?\s]+|[-–—−.,!?\s]+$/gu, '')
                 .trim();
 
         const findCurrencyInSegment = (segment: string): CurrencyEnum | null => {
@@ -328,8 +328,8 @@ export class VoiceLlmService extends Context.Service<VoiceLlmService>()('@budgie
                 cleaned = `${cleaned}]`;
             }
 
-            cleaned = cleaned.replace(/,\s*\]/gu, ']');
-            cleaned = cleaned.replace(/\}\s*\{/gu, '},{');
+            cleaned = cleaned.replaceAll(/,\s*\]/gu, ']');
+            cleaned = cleaned.replaceAll(/\}\s*\{/gu, '},{');
 
             return cleaned;
         };

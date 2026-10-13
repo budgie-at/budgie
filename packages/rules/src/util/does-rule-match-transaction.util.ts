@@ -1,12 +1,13 @@
-import { RuleConditionFieldEnum, RuleConditionMatchTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { RuleConditionFieldEnum } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { evaluateRuleCondition, matchOperator } from './evaluate-rule-condition.util';
+import { matchesRule } from './matches-rule.util';
 
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
-import type { RuleConditionEntityInterface, RuleWithRelationsEntityInterface } from '@budgie/contracts';
+import type { RuleWithRelationsEntityInterface } from '@budgie/contracts';
 
 const getSuggestRuleFieldValue = (
     field: RuleConditionFieldEnum,
@@ -28,20 +29,11 @@ export const doesRuleMatchTransaction = (
     rule: RuleWithRelationsEntityInterface,
     transactionInput: RuleEvaluationInputInterface,
     suggestRuleData: SuggestRuleDataInterface
-): boolean => {
-    if (transactionInput.type === TransactionTypeEnum.ADJUSTMENT || !isNotEmptyArray(rule.conditions)) {
-        return false;
-    }
-
-    const matchesCondition = (condition: RuleConditionEntityInterface) => {
+): boolean =>
+    matchesRule(rule, transactionInput, condition => {
         const suggestValue = getSuggestRuleFieldValue(condition.field, suggestRuleData);
 
         return isDefined(suggestValue)
             ? matchOperator(condition.operator, suggestValue, condition.value, condition.secondaryValue)
             : evaluateRuleCondition(condition, transactionInput);
-    };
-
-    return rule.conditionMatchType === RuleConditionMatchTypeEnum.ANY
-        ? rule.conditions.some(matchesCondition)
-        : rule.conditions.every(matchesCondition);
-};
+    });

@@ -7,6 +7,7 @@ const CHANGED_END_BALANCE = 54_321.01;
 const buildPrivatbankRow = (date: Date, endBalance = INITIAL_END_BALANCE) => ({
     rawDate: '13.01.2026 11:42:53',
     date,
+    deviceLocalDate: date,
     category: 'Зарахування переказу',
     card: '5168 **** **** 3126',
     description: 'З гривневого рахунку ФОП',

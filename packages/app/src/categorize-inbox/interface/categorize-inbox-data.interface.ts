@@ -7,5 +7,6 @@ export interface CategorizeInboxDataInterface {
     readonly remainingCount: number;
     readonly categorizedCount: number;
     readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];
+    readonly cashWithdrawalTransactionIds: ReadonlySet<number>;
     readonly visibility: CategorizeInboxVisibilityInterface;
 }

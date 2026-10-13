@@ -1,36 +1,38 @@
-import { count } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
+import { TRANSLATION_RESET } from '../constant/translation-reset.constant';
 import { Db } from '../service/db.service';
 
 import { activeWhere } from './active-where.util';
 import { untranslatedWhere } from './untranslated-where.util';
 
-import type { TranslatableColumnsInterface } from '../interface/translatable-columns.interface';
-import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
+import type { TranslatableTableInterface } from '../interface/translatable-table.interface';
 
-export const makeTranslatableRepository = (table: SQLiteTable, columns: TranslatableColumnsInterface) => ({
+export const makeTranslatableRepository = (table: TranslatableTableInterface) => ({
     findUntranslated: Effect.fn('TranslatableRepository.findUntranslated')(function* (limit: number) {
         const rows = yield* Db.query(db =>
             db
-                .select({ id: columns.id, title: columns.title })
+                .select({ id: table.id, title: table.title })
                 .from(table)
-                .where(untranslatedWhere(columns.titleEn, columns.deletedAt))
+                .where(untranslatedWhere(table.titleEn, table.deletedAt))
                 .limit(limit)
         );
 
         return rows.map(row => ({ id: Number(row.id), title: String(row.title) }));
     }),
     countUntranslated: () =>
-        Db.query(db => db.select({ value: count() }).from(table).where(untranslatedWhere(columns.titleEn, columns.deletedAt))).pipe(
+        Db.query(db => db.select({ value: count() }).from(table).where(untranslatedWhere(table.titleEn, table.deletedAt))).pipe(
             Effect.map(([row]) => row.value)
         ),
     countAll: () =>
-        Db.query(db => db.select({ value: count() }).from(table).where(activeWhere(columns.deletedAt))).pipe(
+        Db.query(db => db.select({ value: count() }).from(table).where(activeWhere(table.deletedAt))).pipe(
             Effect.map(([row]) => row.value)
         ),
-    resetAllTranslations: () =>
-        Db.query(db =>
-            db.update(table).set({ titleEn: null, titleTags: null, tagsGeneratedAt: null }).where(activeWhere(columns.deletedAt))
-        )
+    resetAllTranslations: () => Db.query(db => db.update(table).set(TRANSLATION_RESET).where(activeWhere(table.deletedAt))),
+    updateTranslation: (id: number, titleEn: string, titleTags: string) =>
+        Db.query(db => db.update(table).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(table.id, id))).pipe(
+            Effect.asVoid
+        ),
+    clearTranslation: (id: number) => Db.query(db => db.update(table).set(TRANSLATION_RESET).where(eq(table.id, id))).pipe(Effect.asVoid)
 });

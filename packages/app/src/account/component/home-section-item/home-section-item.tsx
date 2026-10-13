@@ -1,24 +1,23 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 import { AccountRowInterface } from '../../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isBankProviderSection } from '../../type-guard/is-bank-provider-section.type-guard';
-import { isCryptoCurrencyGroup } from '../../type-guard/is-crypto-currency-group.type-guard';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
 import { AccountGridRow } from '../account-grid-row/account-grid-row';
 import { CryptoCurrencyGroupCard } from '../crypto-currency-group-card/crypto-currency-group-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 
 interface Props {
-    readonly item: AccountRowInterface | CryptoCurrencyGroupInterface;
+    readonly item: AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
     readonly section: HomeSectionInterface;
     readonly balanceSummary: HomeAccountBalanceSummaryInterface;
 }
 
 export const HomeSectionItem = ({ item, section, balanceSummary }: Props) => {
-    if (isCryptoCurrencyGroup(item)) {
+    if ('accounts' in item) {
         const balance = item.accounts.reduce(
             (total, account) => total + (balanceSummary.balancesByAccountId.get(account.id)?.balance ?? 0),
             0
@@ -27,25 +26,26 @@ export const HomeSectionItem = ({ item, section, balanceSummary }: Props) => {
         return <CryptoCurrencyGroupCard group={item} balance={balance} balancesByAccountId={balanceSummary.balancesByAccountId} />;
     }
 
+    if ('type' in item) {
+        return (
+            <DebtAccountCard
+                account={item}
+                instrumentSymbol={item.instrument.symbol}
+                debtProgressSummary={balanceSummary.balancesByAccountId.get(item.id)?.debtProgressSummary ?? null}
+            />
+        );
+    }
+
+    if (isDebtSection(section)) {
+        return null;
+    }
+
     if (isBankProviderSection(section)) {
         return (
             <AccountGridRow
                 row={item}
                 accountType={AccountTypeEnum.BANK_SYNC}
                 balancesByAccountId={balanceSummary.balancesByAccountId}
-                className="mb-3"
-            />
-        );
-    }
-
-    if (isDebtSection(section)) {
-        const debtProgressSummary = balanceSummary.balancesByAccountId.get(item.left.id)?.debtProgressSummary ?? null;
-
-        return (
-            <DebtAccountCard
-                account={item.left}
-                instrumentSymbol={item.left.instrument.symbol}
-                debtProgressSummary={debtProgressSummary}
                 className="mb-3"
             />
         );

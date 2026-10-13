@@ -3,6 +3,7 @@ import { i18n } from '@lingui/core';
 import * as Effect from 'effect/Effect';
 import { getLocales } from 'expo-localization';
 
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isEnumValue } from '../../@generic/type-guard/is-enum-value.type-guard';
 import { messages as enMessages } from '../locales/en/messages';
 
@@ -20,7 +21,9 @@ i18n.load(LanguageEnum.EN, enMessages);
 i18n.activate(LanguageEnum.EN);
 
 export const i18nLoadLanguageMessages = (language: LanguageEnum) =>
-    Effect.tryPromise(languageCatalogLoaders[language]).pipe(Effect.map(catalogModule => catalogModule.messages));
+    Effect.tryPromise({ try: languageCatalogLoaders[language], catch: cause => new NativeCallError({ cause }) }).pipe(
+        Effect.map(catalogModule => catalogModule.messages)
+    );
 
 export const i18nEnsureLanguageActivated = Effect.fn('i18n.ensureLanguageActivated')(function* (language: LanguageEnum) {
     i18n.load(language, yield* i18nLoadLanguageMessages(language));

@@ -7,7 +7,7 @@ Bank integration package for synchronizing accounts and transactions from extern
 ```bash
 pnpm build                    # Build package
 pnpm ts                       # Native TypeScript 7 check
-pnpm lint                     # Oxlint + 13-rule ESLint fallback
+pnpm lint                     # Oxlint (incl. local `lint-rules/` plugin)
 ```
 
 Integration verification lives in `tests/sync-tests/` and runs from the repository root with `pnpm --filter @budgie-at/sync-tests test`.

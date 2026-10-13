@@ -1,43 +1,25 @@
 /* eslint-disable react/jsx-max-depth */
 import { I18nProvider as LinguiProvider } from '@lingui/react';
 import * as Effect from 'effect/Effect';
-import { Stack } from 'expo-router';
+import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { SafeAreaListener, SafeAreaListenerProps, SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
-import Toast from 'react-native-toast-message';
+import { Uniwind } from 'uniwind';
+
+import { isDefined } from '@rnw-community/shared';
 
 import '../global.css';
+import { AppToastHost } from '../@generic/component/app-toast-host/app-toast-host';
 import { DatabaseRestoreScreen } from '../@generic/component/database-restore-screen/database-restore-screen';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ErrorBoundary } from '../@generic/component/error-boundary/error-boundary';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
-import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
-import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
-import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
-import { CONVERT_TO_REFUND_MODAL_OPTIONS } from '../@generic/constant/convert-to-refund-modal-options.constant';
-import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATABASE_RESTORE_I18N } from '../@generic/constant/database-restore-i18n.constant';
-import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
-import { AMOUNT_FILTER_SHEET_OPTIONS, COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
-import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
-import { IMPORT_BACKUP_PIN_MODAL_OPTIONS } from '../@generic/constant/import-backup-pin-modal-options.constant';
-import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
-import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
-import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-modal-options.constant';
-import {
-    DATE_FILTER_SHEET_OPTIONS,
-    STACKED_FILTER_MODAL_OPTIONS,
-    UNIFIED_FILTER_SHEET_OPTIONS
-} from '../@generic/constant/searchable-filter-modal-options.constant';
-import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
-import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
-import { TRANSACTION_FEE_MODAL_OPTIONS } from '../@generic/constant/transaction-fee-modal-options.constant';
-import { VOICE_REVIEW_MODAL_OPTIONS } from '../@generic/constant/voice-review-modal-options.constant';
 import { DatabaseMigrationStatusEnum } from '../@generic/drizzle/enum/database-migration-status.enum';
 import { useDatabaseMigration } from '../@generic/drizzle/hook/use-database-migration.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
@@ -47,6 +29,7 @@ import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
+import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
@@ -57,10 +40,41 @@ import { HistoricalMarketDataDrainerService } from '../market-data/service/histo
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
+const DETENT_95 = 0.95;
+const DETENT_46 = 0.46;
+const DETENT_12 = 0.12;
+const DETENT_90 = 0.9;
+const DETENT_70 = 0.7;
+const DETENT_40 = 0.4;
+const DETENT_55 = 0.55;
+const DETENT_85 = 0.85;
+const DETENT_82 = 0.82;
+const DETENT_96 = 0.96;
+
+const MODAL_OPTIONS: NativeStackNavigationOptions = { presentation: 'modal', headerShown: false };
+
+const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
+    presentation: 'pageSheet',
+    headerShown: false,
+    contentStyle: { backgroundColor: 'transparent' }
+};
+
+const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEnabled: false };
+
+const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
+
 enableScreens();
 enableFreeze();
 
 void SplashScreen.preventAutoHideAsync();
+
+if (isDefined(initialWindowMetrics)) {
+    Uniwind.updateInsets(initialWindowMetrics.insets);
+}
+
+const handleSafeAreaChange: SafeAreaListenerProps['onChange'] = ({ insets }) => {
+    Uniwind.updateInsets(insets);
+};
 
 const handleAppStateChange = (isActive: boolean): void => {
     void appRuntime.runPromise(
@@ -112,115 +126,130 @@ export const RootLayoutContent = () => {
 
     return (
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-            {__DEV__ && <DevMenuController />}
-            <ScreenshotProtectionController />
-            <I18nProvider>
-                <KeyboardProvider>
-                    <ThemeProvider>
-                        <ScreenChromeThemeProvider>
-                            <GestureHandlerRootView className="flex-1">
-                                <ErrorBoundary>
-                                    <AuthProvider>
-                                        <AuthGuard>
-                                            <CreateActionProvider>
-                                                <AiProvider>
-                                                    <ModalProvider>
-                                                        <VoiceInputProvider>
-                                                            <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                                <Stack.Screen name="(tabs)" />
-                                                                <Stack.Screen name="onboarding" />
-                                                                <Stack.Screen name="(main)/pin" />
-                                                                <Stack.Screen name="(main)/create-account" />
-                                                                <Stack.Screen name="(main)/account/[id]/details" />
-                                                                <Stack.Screen name="(main)/account/[id]/update" />
-                                                                <Stack.Screen name="(main)/currency/[id]" />
-                                                                <Stack.Screen name="(main)/create-transaction/expense" />
-                                                                <Stack.Screen name="(main)/create-transaction/income" />
-                                                                <Stack.Screen name="(main)/create-transaction/transfer" />
-                                                                <Stack.Screen name="(main)/matching-rules" />
-                                                                <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                                <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                                <Stack.Screen name="(main)/transactions/[id]/transfer" />
-                                                                <Stack.Screen name="(main)/analytics/transactions" />
-                                                                <Stack.Screen name="category-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="account-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="currency-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="language-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen
-                                                                    name="resync-window-picker"
-                                                                    options={SELECTOR_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen name="contact-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="voice-review" options={VOICE_REVIEW_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="category-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="tag-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="date-picker" options={DATE_PICKER_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="note-input" options={NOTE_INPUT_MODAL_OPTIONS} />
-                                                                <Stack.Screen
-                                                                    name="convert-to-transfer"
-                                                                    options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="convert-to-refund"
-                                                                    options={CONVERT_TO_REFUND_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen name="icon-selector" options={ICON_SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="split-entries" options={SPLIT_ENTRIES_MODAL_OPTIONS} />
-                                                                <Stack.Screen
-                                                                    name="transaction-fee"
-                                                                    options={TRANSACTION_FEE_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="consolidation-source"
-                                                                    options={CONSOLIDATION_SOURCE_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="import-column-mapper"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="import-backup-pin"
-                                                                    options={IMPORT_BACKUP_PIN_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="transaction-type-filter"
-                                                                    options={COMPACT_FILTER_SHEET_OPTIONS}
-                                                                />
-                                                                <Stack.Screen name="date-filter" options={DATE_FILTER_SHEET_OPTIONS} />
-                                                                <Stack.Screen
-                                                                    name="transaction-amount-filter"
-                                                                    options={AMOUNT_FILTER_SHEET_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="transaction-category-filter"
-                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="transaction-account-filter"
-                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="transaction-tag-filter"
-                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="rule-selector" options={RULE_SELECTOR_MODAL_OPTIONS} />
-                                                                <Stack.Screen name="rule-mcc-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                            </Stack>
-                                                        </VoiceInputProvider>
-                                                    </ModalProvider>
-                                                    <Toast config={APP_TOAST_CONFIG} />
-                                                </AiProvider>
-                                            </CreateActionProvider>
-                                        </AuthGuard>
-                                    </AuthProvider>
-                                </ErrorBoundary>
-                            </GestureHandlerRootView>
-                        </ScreenChromeThemeProvider>
-                    </ThemeProvider>
-                </KeyboardProvider>
-            </I18nProvider>
+            <SafeAreaListener onChange={handleSafeAreaChange}>
+                {__DEV__ && <DevMenuController />}
+                <ScreenshotProtectionController />
+                <I18nProvider>
+                    <KeyboardProvider>
+                        <ThemeProvider>
+                            <ScreenChromeThemeProvider>
+                                <GestureHandlerRootView className="flex-1">
+                                    <ErrorBoundary>
+                                        <AuthProvider>
+                                            <AuthGuard>
+                                                <CreateActionProvider>
+                                                    <AiProvider>
+                                                        <ModalProvider>
+                                                            <VoiceInputProvider>
+                                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                                    <Stack.Screen name="(tabs)" />
+                                                                    <Stack.Screen name="onboarding" />
+                                                                    <Stack.Screen name="(main)/pin" />
+                                                                    <Stack.Screen name="(main)/create-account" />
+                                                                    <Stack.Screen name="(main)/account/[id]/details" />
+                                                                    <Stack.Screen name="(main)/account/[id]/update" />
+                                                                    <Stack.Screen name="(main)/currency/[id]" />
+                                                                    <Stack.Screen name="(main)/create-transaction/expense" />
+                                                                    <Stack.Screen name="(main)/create-transaction/income" />
+                                                                    <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                    <Stack.Screen name="(main)/matching-rules" />
+                                                                    <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                                    <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                                    <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                                    <Stack.Screen name="(main)/analytics/transactions" />
+                                                                    <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="language-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="resync-window-picker" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="voice-review"
+                                                                        options={formSheetOptions([0.65, DETENT_95], 0)}
+                                                                    />
+                                                                    <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="date-picker"
+                                                                        options={formSheetOptions([DETENT_46])}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="note-input"
+                                                                        options={formSheetOptions([DETENT_12])}
+                                                                    />
+                                                                    <Stack.Screen name="convert-to-transfer" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="convert-to-installment"
+                                                                        options={formSheetOptions('fitToContents')}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="convert-to-refund"
+                                                                        options={formSheetOptions([DETENT_90, 1], 0)}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="icon-selector"
+                                                                        options={formSheetOptions([0.6, DETENT_90])}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="split-entries"
+                                                                        options={formSheetOptions([0.3, DETENT_70])}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-fee"
+                                                                        options={formSheetOptions('fitToContents')}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="consolidation-source"
+                                                                        options={formSheetOptions('fitToContents')}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="import-column-mapper"
+                                                                        options={formSheetOptions([0.75, DETENT_95])}
+                                                                    />
+                                                                    <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="transaction-type-filter"
+                                                                        options={formSheetOptions([DETENT_40])}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="date-filter"
+                                                                        options={formSheetOptions([DETENT_55, DETENT_85])}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-amount-filter"
+                                                                        options={formSheetOptions([DETENT_82, DETENT_96])}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-category-filter"
+                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-account-filter"
+                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-tag-filter"
+                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen name="rule-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="rule-selector" options={formSheetOptions([0.75])} />
+                                                                    <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
+                                                                </Stack>
+                                                            </VoiceInputProvider>
+                                                        </ModalProvider>
+                                                        <AppToastHost />
+                                                    </AiProvider>
+                                                </CreateActionProvider>
+                                            </AuthGuard>
+                                        </AuthProvider>
+                                    </ErrorBoundary>
+                                </GestureHandlerRootView>
+                            </ScreenChromeThemeProvider>
+                        </ThemeProvider>
+                    </KeyboardProvider>
+                </I18nProvider>
+            </SafeAreaListener>
         </SafeAreaProvider>
     );
 };

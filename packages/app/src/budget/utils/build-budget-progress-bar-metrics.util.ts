@@ -1,6 +1,6 @@
-import { isPositiveNumber } from '@rnw-community/shared';
+import { convertFromMicroUnits } from '@budgie/contracts';
 
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 const MIN_PROGRESS = 0;
 const MAX_PROGRESS = 1;

@@ -31,7 +31,6 @@ interface SuggestionResultInterface<T> {
     readonly suggestions: T[];
 }
 
-// eslint-disable-next-line max-statements -- Hook coordinates focus refresh, async suggestion fetch, and state management
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
     const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
     const requestKey = JSON.stringify(requestKeyParts);

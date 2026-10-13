@@ -7,7 +7,7 @@ const VIRTUAL_PREFIX = '\0virtual:';
 
 const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-secure-store': `export const getItem = () => null;`,
-    expo: `export const requireNativeModule = () => ({}); export const requireOptionalNativeModule = () => null;`,
+    expo: `export const requireNativeModule = () => ({}); export const requireOptionalNativeModule = () => null; export const NativeModule = class {};`,
     'expo-file-system': `
         export const File = class { constructor() {} };
         export const Directory = class { constructor() { this.uri = 'file:///tmp/sqlite/'; } };
@@ -140,20 +140,17 @@ export const createTestInlineShimPlugin = (): TestInlineShimPluginInterface => (
     }
 });
 
-export const createTestVitestConfig = (rootDir: string, setupFile: string, includeAppAlias = false) => {
+export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
     const here = (relative: string) => resolve(rootDir, relative);
 
     return {
         plugins: [createTestInlineShimPlugin()],
-        ...(includeAppAlias && {
-            resolve: {
-                alias: [{ find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') }]
-            }
-        }),
+        resolve: {
+            alias: [{ find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') }]
+        },
         test: {
             server: { deps: { inline: [/@effect\/sql-sqlite-react-native/u] } },
             environment: 'node',
-            globals: false,
             setupFiles: [here(setupFile)],
             include: ['src/scenarios/**/*.test.ts'],
             pool: 'forks',

@@ -1,8 +1,10 @@
 import { sql } from 'drizzle-orm';
-import { index, int, primaryKey, sqliteTable, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { index, int, primaryKey, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
+import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TagSourceEnum } from '../enum/tag-source.enum';
 
 export const TransactionTagsEntityTable = sqliteTable(
     'transaction_tags',
@@ -13,7 +15,11 @@ export const TransactionTagsEntityTable = sqliteTable(
         tagId: int('tag_id', { mode: 'number' })
             .references(() => TagEntityTable.id, { onDelete: 'cascade' })
             .notNull(),
-        isPrimary: int('is_primary', { mode: 'boolean' }).notNull().default(false)
+        isPrimary: int('is_primary', { mode: 'boolean' }).notNull().default(false),
+        source: text('source', { enum: convertEnumToDrizzleEnum(TagSourceEnum) })
+            .notNull()
+            .default(TagSourceEnum.USER)
+            .$type<TagSourceEnum>()
     },
     ({ transactionId, tagId, isPrimary }) => [
         primaryKey({ columns: [transactionId, tagId] }),

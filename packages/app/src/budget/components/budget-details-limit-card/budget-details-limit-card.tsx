@@ -1,3 +1,4 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -7,7 +8,6 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { buildBudgetCategoryLimitMetrics } from '../../utils/build-budget-category-limit-metrics.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 import type { UserIconType } from '@budgie/contracts';
@@ -29,8 +29,8 @@ export const BudgetDetailsLimitCard = (props: Props) => {
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 
-    const metrics = buildBudgetCategoryLimitMetrics(spent, limitAmount);
-    const remainingLabel = metrics.isOverBudget ? t`Over budget` : t`Left`;
+    const remainingAmount = limitAmount - spent;
+    const remainingLabel = remainingAmount < 0 ? t`Over budget` : t`Left`;
 
     return (
         <View className="relative" collapsable={false}>
@@ -49,16 +49,20 @@ export const BudgetDetailsLimitCard = (props: Props) => {
                     <View className="flex-1">
                         <Text className="text-secondary-foreground text-xs">{t`Spent`}</Text>
                         <Text testID={spentTestID} className="text-primary text-sm font-semibold">
-                            {formatDigits(metrics.displaySpent, currencySymbol)}
+                            {formatDigits(convertFromMicroUnits(spent), currencySymbol)}
                         </Text>
                     </View>
                     <View className="flex-1 items-center">
                         <Text className="text-secondary-foreground text-xs">{remainingLabel}</Text>
-                        <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayRemaining, currencySymbol)}</Text>
+                        <Text className="text-primary text-sm font-semibold">
+                            {formatDigits(convertFromMicroUnits(Math.abs(remainingAmount)), currencySymbol)}
+                        </Text>
                     </View>
                     <View className="flex-1 items-end">
                         <Text className="text-secondary-foreground text-xs">{t`Limit`}</Text>
-                        <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayLimit, currencySymbol)}</Text>
+                        <Text className="text-primary text-sm font-semibold">
+                            {formatDigits(convertFromMicroUnits(limitAmount), currencySymbol)}
+                        </Text>
                     </View>
                 </View>
             </Card>

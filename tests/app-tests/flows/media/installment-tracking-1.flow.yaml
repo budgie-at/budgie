@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/installment/open-convert-to-installment.flow.yaml
+      env:
+          TRANSACTION_ID: '2600'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

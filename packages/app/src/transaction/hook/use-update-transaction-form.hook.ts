@@ -10,9 +10,10 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
+
+import { useDeleteTransaction } from './use-delete-transaction.hook';
 
 interface UseTransactionFormConfig {
     readonly schema: typeof TransactionCreateInputSchema;
@@ -23,6 +24,7 @@ interface UseTransactionFormConfig {
 
 export const useUpdateTransactionForm = ({ id, schema, transaction, onAfterSubmit }: UseTransactionFormConfig) => {
     const { t } = useLingui();
+    const deleteTransaction = useDeleteTransaction();
 
     const form = useForm({
         mode: 'onSubmit',
@@ -45,27 +47,8 @@ export const useUpdateTransactionForm = ({ id, schema, transaction, onAfterSubmi
     };
 
     const handleDelete = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Are you sure?`,
-            message: t`This action cannot be undone.`,
-            confirmText: t`Delete`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            await appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.deleteById(id)));
+        if (await deleteTransaction(id)) {
             dismissAllOrReplace('/');
-        } catch (error: unknown) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not delete transaction.`,
-                text2: getErrorMessage(error)
-            });
         }
     };
 

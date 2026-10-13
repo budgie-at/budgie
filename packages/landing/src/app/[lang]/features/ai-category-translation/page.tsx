@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -11,6 +12,7 @@ import { FeaturePageHero } from '../../../../feature/component/feature-page-hero
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -37,6 +39,48 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>One category, translated on your phone</Trans>}>
+                    <Trans>
+                        One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>The name stays as you wrote it</Trans>}>
+                    <Trans>
+                        The category is called Сільпо, exactly as it was created. Below the name sits a block of AI-generated metadata,
+                        produced on your phone.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Edit Category screen for a category named Сільпо, with an AI-generated metadata block showing the English translation silpo supermarket and the search keywords groceries, supermarket, food, market, store, silpo`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="ai-category-translation-1"
+                    slug="ai-category-translation"
+                >
+                    <FeatureStory.Callout index={0} y={0.345}>
+                        <Trans>Original name, untouched</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.449}>
+                        <Trans>English translation</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={2} y={0.5}>
+                        <Trans>Search keywords</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>An English form and search keywords</Trans>}>
+                    <Trans>
+                        Budgie adds an English translation and a list of search keywords next to the original name. Both are saved with the
+                        category, so search and suggestions can find it whichever form you remember.
+                    </Trans>
+                </FeatureStory.Step>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -78,18 +122,6 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         <Trans>Edit any category or tag if its English form comes back wrong</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves
-                        both alongside the original — so search and suggestions find it either way.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>

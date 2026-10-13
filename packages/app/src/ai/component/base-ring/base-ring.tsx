@@ -1,9 +1,10 @@
-import { Circle, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 
+import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
 import { RING_CENTER, RING_CIRCUMFERENCE, RING_RADIUS, RING_SIZE, STROKE_WIDTH } from '../../constant/animated-record-button.constant';
 
 interface Props {
-    readonly stroke: string;
+    readonly strokeClassName: string;
     readonly strokeDasharray?: string;
     readonly strokeDashoffset?: number;
     readonly opacity?: number;
@@ -15,18 +16,18 @@ const DEFAULT_ROTATION = 0;
 const DEFAULT_DASHOFFSET = 0;
 
 export const BaseRing = ({
-    stroke,
+    strokeClassName,
     strokeDasharray = `${RING_CIRCUMFERENCE}`,
     strokeDashoffset = DEFAULT_DASHOFFSET,
     opacity = DEFAULT_OPACITY,
     rotation = DEFAULT_ROTATION
 }: Props) => (
     <Svg width={RING_SIZE} height={RING_SIZE}>
-        <Circle
+        <StyledCircle
             cx={RING_CENTER}
             cy={RING_CENTER}
             r={RING_RADIUS}
-            stroke={stroke}
+            strokeClassName={strokeClassName}
             strokeWidth={STROKE_WIDTH}
             strokeDasharray={strokeDasharray}
             strokeDashoffset={strokeDashoffset}

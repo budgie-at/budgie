@@ -13,7 +13,7 @@ const EMBEDDING_SEMANTIC_FIELDS = [
     'toAccountId'
 ] as const satisfies readonly (keyof TransactionCreateEntityInterface)[];
 
-const NON_INDEXABLE_TYPES: readonly TransactionTypeEnum[] = [TransactionTypeEnum.TRANSFER, TransactionTypeEnum.ADJUSTMENT];
+const NON_INDEXABLE_TYPES: ReadonlySet<TransactionTypeEnum> = new Set([TransactionTypeEnum.TRANSFER, TransactionTypeEnum.ADJUSTMENT]);
 
 type EmbeddingFlagPatch = Partial<Pick<TransactionCreateEntityInterface, 'needsEmbedding'>>;
 
@@ -22,7 +22,7 @@ export const deriveEmbeddingFlag = (input: TransactionUpdateInputInterface): Emb
         return {};
     }
 
-    if (isDefined(input.type) && NON_INDEXABLE_TYPES.includes(input.type)) {
+    if (isDefined(input.type) && NON_INDEXABLE_TYPES.has(input.type)) {
         return { needsEmbedding: false };
     }
 

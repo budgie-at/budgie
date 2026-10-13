@@ -1,4 +1,6 @@
+import { SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -6,7 +8,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
-import { useSyncTokenUpdate } from '../../hook/use-sync-token-update.hook';
+import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { useSyncToken } from '../../hook/use-sync-token.hook';
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 import { SyncTokenSectionActions } from '../sync-token-section-actions/sync-token-section-actions';
@@ -31,7 +33,7 @@ export const SyncTokenSection = ({ accountId }: Props) => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [newToken, setNewToken] = useState('');
-    const { isSaving, saveAccountSyncToken } = useSyncTokenUpdate();
+    const [runEffect, isSaving] = useEffectAction(t`Could not update token`);
 
     const token = useSyncToken(accountId);
 
@@ -45,15 +47,20 @@ export const SyncTokenSection = ({ accountId }: Props) => {
         setNewToken('');
     };
 
-    const handleSave = async () => {
-        if (!isNotEmptyString(newToken.trim())) {
+    const handleSave = () => {
+        const trimmedToken = newToken.trim();
+
+        if (!isNotEmptyString(trimmedToken)) {
             return;
         }
 
-        await saveAccountSyncToken(accountId, newToken.trim(), () => {
-            setIsEditing(false);
-            setNewToken('');
-        });
+        runEffect(
+            Effect.flatMap(SyncProviderRegistryService, registry => registry.updateAccountToken(accountId, trimmedToken)),
+            () => {
+                setIsEditing(false);
+                setNewToken('');
+            }
+        );
     };
 
     return (

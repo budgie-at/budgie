@@ -20,25 +20,18 @@ const runsOutDate = (referenceDate: Date, months: number | null): Date | null =>
 export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInterface => {
     const { series, liquid, irregularMonthlyAmount, referenceDate } = params;
     const rows = series.length < RUNWAY_MINIMUM_MONTHS ? [] : series;
-    const burn = median(rows.map(row => row.expense));
+    const burn = median(rows.map(row => row.expense)) + (isEmptyArray(rows) ? 0 : irregularMonthlyAmount);
     const income = median(rows.map(row => row.income));
     const net = income - burn;
     const netSeries = rows.map(row => row.income - row.expense);
     const runwayMonths = net < 0 ? liquid / Math.abs(net) : null;
-    const allInBurn = burn + (isEmptyArray(rows) ? 0 : irregularMonthlyAmount);
-    const allInNet = income - allInBurn;
-    const allInRunwayMonths = allInNet < 0 ? liquid / Math.abs(allInNet) : null;
 
     return {
         burn,
         income,
         net,
-        allInBurn,
-        allInNet,
         liquid,
         runwayMonths,
-        allInRunwayMonths,
-        allInRunsOutAt: runsOutDate(referenceDate, allInRunwayMonths),
         runsOutAt: runsOutDate(referenceDate, runwayMonths),
         p25Net: percentile(netSeries, P25_PERCENTILE),
         p75Net: percentile(netSeries, P75_PERCENTILE),

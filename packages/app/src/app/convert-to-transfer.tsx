@@ -5,20 +5,16 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
-import { useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
-import { useDepositCreateAction } from '../account/hooks/use-deposit-create-action.hook';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal, useConvertToTransferModalParams } from '../transaction/context/convert-to-transfer-modal.context';
-import { TransferToAccountCreateActionContext } from '../transaction/context/transfer-to-account-create-action.context';
 
 import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
@@ -27,7 +23,8 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
-    const [, resolveConvertToTransfer] = useConvertToTransferModal();
+    const [, resolveConvertToTransfer, dismissConvertToTransfer] = useConvertToTransferModal();
+    useModalDismiss(dismissConvertToTransfer);
     const currentParams = useConvertToTransferModalParams();
 
     const transactionId = currentParams?.transactionId ?? 0;
@@ -35,16 +32,12 @@ export default function ConvertToTransferModal() {
     const excludeAccountId = currentParams?.excludeAccountId ?? 0;
     const sourceAmount = currentParams?.sourceAmount ?? 0;
     const skipPostConvertNavigation = currentParams?.skipPostConvertNavigation === true;
-    const startDeposit = currentParams?.startDeposit === true;
 
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const colorVariant = isExpense ? 'default' : 'positive';
 
     const fromAccountId = isExpense ? excludeAccountId : 0;
     const toAccountId = isExpense ? 0 : excludeAccountId;
-
-    const depositCreateAction = useDepositCreateAction(isExpense, excludeAccountId, sourceAmount);
-    const hasStartedDepositRef = useRef(false);
 
     const form = useForm<TransactionCreateInputInterface>({
         mode: 'onSubmit',
@@ -63,31 +56,9 @@ export default function ConvertToTransferModal() {
         })
     });
 
-    useEffect(() => {
-        if (!startDeposit || !isDefined(depositCreateAction) || hasStartedDepositRef.current) {
-            return;
-        }
-
-        hasStartedDepositRef.current = true;
-
-        depositCreateAction
-            .onCreate()
-            .then(
-                createdAccountId =>
-                    isDefined(createdAccountId) && void form.setValue('toAccountId', createdAccountId, { shouldValidate: true })
-            )
-            .catch(() => void Toast.show({ type: 'error', text1: depositCreateAction.errorMessage }));
-    }, [startDeposit, depositCreateAction, form]);
-
-    const conversionDescription = isExpense
+    const description = isExpense
         ? t`This will convert the expense to a transfer between accounts.`
         : t`This will convert the income to a transfer between accounts.`;
-    const description = startDeposit
-        ? t`This will create a new deposit account and convert this expense into a transfer into it.`
-        : conversionDescription;
-    const pageTitle = startDeposit ? t`Start Deposit` : t`Convert to Transfer`;
-    const confirmTitle = startDeposit ? t`Start Deposit?` : t`Convert to Transfer?`;
-    const confirmText = startDeposit ? t`Start Deposit` : t`Convert`;
 
     const handleCancel = () => {
         resolveConvertToTransfer(false);
@@ -96,9 +67,9 @@ export default function ConvertToTransferModal() {
     // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
     const handleSubmit = async () => {
         const confirmed = await confirmAlert({
-            title: confirmTitle,
+            title: t`Convert to Transfer?`,
             message: description,
-            confirmText,
+            confirmText: t`Convert`,
             cancelText: t`Cancel`,
             isDestructive: false
         });
@@ -146,10 +117,11 @@ export default function ConvertToTransferModal() {
 
     return (
         <FormProvider {...form}>
-            <ModalPage testID={ConvertToTransferModalSelector.Page} header={<PageHeader title={pageTitle} onGoBack={handleCancel} />}>
-                <TransferToAccountCreateActionContext value={depositCreateAction}>
-                    <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
-                </TransferToAccountCreateActionContext>
+            <ModalPage
+                testID={ConvertToTransferModalSelector.Page}
+                header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}
+            >
+                <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
             </ModalPage>
         </FormProvider>
     );

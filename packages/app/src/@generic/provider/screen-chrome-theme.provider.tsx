@@ -1,6 +1,7 @@
+import { useUniwind } from 'uniwind';
+
 import { ScreenChromeProvider } from '@rnw-community/react-native-screen-chrome';
 
-import { useThemeContext } from '../../theme/context/theme.context';
 import { SCREEN_CHROME_CONFIG } from '../constant/screen-chrome-config.constant';
 
 import type { ReactNode } from 'react';
@@ -11,12 +12,10 @@ interface Props {
 }
 
 export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset }: Props) => {
-    const { isDarkColorSchema } = useThemeContext();
-
-    const colorScheme = isDarkColorSchema ? 'dark' : 'light';
+    const { theme } = useUniwind();
 
     return (
-        <ScreenChromeProvider colorScheme={colorScheme} config={SCREEN_CHROME_CONFIG} syncNativeScrollOffset={syncNativeScrollOffset}>
+        <ScreenChromeProvider colorScheme={theme} config={SCREEN_CHROME_CONFIG} syncNativeScrollOffset={syncNativeScrollOffset}>
             {children}
         </ScreenChromeProvider>
     );

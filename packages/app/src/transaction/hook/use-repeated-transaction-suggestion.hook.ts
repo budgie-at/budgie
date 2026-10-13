@@ -1,12 +1,15 @@
-import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
-import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { SuggestionStatus } from '@budgie/ai';
+import { LanguageEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
-import { useEffect, useRef, useState } from 'react';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
+import { useEffect, useState } from 'react';
 
-import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useFocusRefreshVersion } from '../../@generic/hook/use-focus-refresh-version.hook';
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { RepeatedTransactionService } from '../service/repeated-transaction.service';
@@ -21,62 +24,73 @@ interface UseRepeatedTransactionSuggestionParams {
     readonly categoryId: number;
 }
 
-// eslint-disable-next-line max-statements -- Hook coordinates debounce, focus refresh, and async suggestion fetch lifecycle
+const repeatedTransactionSuggestionsAtom = Atom.family(
+    ([type, accountId, amount, categoryId, language]: readonly [
+        TransactionTypeEnum,
+        number,
+        number | null,
+        number | null,
+        LanguageEnum,
+        number
+    ]) =>
+        appAtomRuntime.atom(
+            isPositiveNumber(accountId)
+                ? Effect.flatMap(RepeatedTransactionService, repeatedTransactionService =>
+                      repeatedTransactionService.getSuggestions({
+                          currentTime: new Date(),
+                          type,
+                          language,
+                          accountId,
+                          ...(isDefined(amount) && { amount }),
+                          ...(isDefined(categoryId) && { categoryId })
+                      })
+                  ).pipe(Effect.tapError(Effect.logError))
+                : Effect.succeed({ timePatterns: [], amountPatterns: [] })
+        )
+);
+
 export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionSuggestionParams): PatternSuggestionsResultInterface => {
     const { enabled, type, accountId, amount, categoryId } = params;
     const language = useSetting('language');
-
-    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
-    const [timePatterns, setTimePatterns] = useState<RepeatedTransactionPatternInterface[]>([]);
-    const [amountPatterns, setAmountPatterns] = useState<RepeatedTransactionPatternInterface[]>([]);
     const { refreshVersion } = useFocusRefreshVersion();
-
-    const lastAmountRef = useRef<number | null>(null);
-
-    const isReady = enabled && isPositiveNumber(accountId);
     const amountOrNull = isPositiveNumber(amount) ? amount : null;
-    const categoryIdOrNull = isPositiveNumber(categoryId) ? categoryId : null;
+    const [debouncedAmount, setDebouncedAmount] = useState(amountOrNull);
 
     useEffect(() => {
-        if (!isReady) {
-            return emptyFn;
-        }
-
-        const shouldDebounce = isDefined(lastAmountRef.current) && lastAmountRef.current !== amountOrNull;
-        lastAmountRef.current = amountOrNull;
-
         const fiber = appRuntime.runFork(
-            Effect.gen(function* () {
-                if (shouldDebounce) {
-                    yield* Effect.sleep(DEBOUNCE_MS);
-                }
-
-                setInternalStatus('loading');
-
-                const repeatedTransactionService = yield* RepeatedTransactionService;
-                const result = yield* repeatedTransactionService.getSuggestions({
-                    currentTime: new Date(),
-                    type,
-                    language,
-                    accountId,
-                    ...(isDefined(amountOrNull) && { amount: amountOrNull }),
-                    ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
-                });
-
-                setTimePatterns(result.timePatterns);
-                setAmountPatterns(result.amountPatterns);
-                setInternalStatus('success');
-            }).pipe(
-                Effect.tapError(Effect.logError),
-                Effect.catch(() => Effect.sync(() => void setInternalStatus('error')))
+            Effect.sleep(DEBOUNCE_MS).pipe(
+                Effect.andThen(
+                    Effect.sync(() => {
+                        setDebouncedAmount(amountOrNull);
+                    })
+                )
             )
         );
 
         return () => void fiber.interruptUnsafe();
-    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, refreshVersion, language]);
+    }, [amountOrNull]);
 
-    const isInitializing = enabled && !isReady && internalStatus === 'idle';
-    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
+    const isReady = enabled && isPositiveNumber(accountId);
+    const result = useAtomValue(
+        repeatedTransactionSuggestionsAtom([
+            type,
+            isReady ? accountId : 0,
+            debouncedAmount,
+            isPositiveNumber(categoryId) ? categoryId : null,
+            language,
+            refreshVersion
+        ])
+    );
 
-    return { status, timePatterns, amountPatterns };
+    if (!isReady) {
+        return { status: enabled ? 'initializing' : 'idle', timePatterns: [], amountPatterns: [] };
+    }
+
+    if (AsyncResult.isSuccess(result)) {
+        return { status: 'success', timePatterns: result.value.timePatterns, amountPatterns: result.value.amountPatterns };
+    }
+
+    const status: SuggestionStatus = AsyncResult.isFailure(result) ? 'error' : 'loading';
+
+    return { status, timePatterns: [], amountPatterns: [] };
 };

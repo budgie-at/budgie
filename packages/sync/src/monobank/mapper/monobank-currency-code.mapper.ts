@@ -1,23 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-const numericToCurrencyCode = new Map<number, string>([
-    [980, 'UAH'],
-    [840, 'USD'],
-    [978, 'EUR'],
-    [826, 'GBP'],
-    [985, 'PLN'],
-    [203, 'CZK'],
-    [756, 'CHF'],
-    [392, 'JPY'],
-    [156, 'CNY'],
-    [124, 'CAD'],
-    [36, 'AUD'],
-    [949, 'TRY'],
-    [643, 'RUB'],
-    [376, 'ILS'],
-    [348, 'HUF'],
-    [208, 'DKK'],
-    [578, 'NOK'],
-    [752, 'SEK']
-]);
+import { CURRENCY_CODE_BY_NUMERIC_CODE } from '../../core/constant/currency-code-by-numeric-code.constant';
 
-export const monobankCurrencyCodeMapper = (numericCode: number): string => numericToCurrencyCode.get(numericCode) ?? 'XXX';
+export const monobankCurrencyCodeMapper = (numericCode: number): string => CURRENCY_CODE_BY_NUMERIC_CODE[numericCode] ?? 'XXX';

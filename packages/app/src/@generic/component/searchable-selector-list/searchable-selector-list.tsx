@@ -1,6 +1,6 @@
 import { FlatList, View } from 'react-native';
 
-import { useFormsheetListStyles } from '../../hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { ListItemSeparator } from '../list-item-separator/list-item-separator';
 import { SelectorModalSearchHeader } from '../selector-modal-search-header/selector-modal-search-header';
 
@@ -19,11 +19,10 @@ interface Props<T> {
 
 export const SearchableSelectorList = <T,>(props: Props<T>) => {
     const { search, onSearchChange, searchPlaceholder, searchTestID, data, keyExtractor, renderItem, emptyState } = props;
-    const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
-    const containerStyle = { flex: 1, backgroundColor };
+    const contentContainerStyle = useFormsheetListContentStyle();
 
     return (
-        <View style={containerStyle}>
+        <View className="flex-1 bg-primary-reverse">
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={onSearchChange}
@@ -32,7 +31,7 @@ export const SearchableSelectorList = <T,>(props: Props<T>) => {
             />
 
             <FlatList
-                style={flatListStyle}
+                className="absolute inset-0 bg-primary-reverse"
                 data={data}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}

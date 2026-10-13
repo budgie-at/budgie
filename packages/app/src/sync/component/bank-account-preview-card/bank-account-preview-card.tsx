@@ -21,7 +21,7 @@ export const BankAccountPreviewCard = ({ preview, isSelected, onToggle }: Props)
     };
 
     return (
-        <Card className="p-4xl" onPress={handleToggle} testID={BankAccountPreviewCardSelector.Row(preview.title)}>
+        <Card onPress={handleToggle} testID={BankAccountPreviewCardSelector.Row(preview.title)}>
             <View className="flex-row items-center justify-between">
                 <View className="flex-1 mr-md">
                     <Text className="text-primary font-semibold text-base">{preview.title}</Text>

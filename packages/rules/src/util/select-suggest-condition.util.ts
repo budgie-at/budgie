@@ -23,7 +23,6 @@ const MINIMUM_CLEANED_LENGTH = 3;
 const MINIMUM_TITLE_TOKEN_LENGTH = 2;
 const MAXIMUM_TITLE_TOKEN_CONDITIONS = 3;
 
-// eslint-disable-next-line max-statements -- sequential regex cleanup steps absorbed from clean-merchant-title util per CLAUDE.md rule 38/51
 const cleanMerchantTitle = (title: string): string => {
     let cleaned = title;
 
@@ -50,7 +49,6 @@ const cleanMerchantTitle = (title: string): string => {
     return cleaned;
 };
 
-// oxlint-disable-next-line lingui/no-unlocalized-strings
 const GENERIC_TITLE_PATTERNS = ['POS PURCHASE', 'POS', 'PURCHASE', 'PAYMENT', 'WITHDRAWAL', 'TRANSFER', 'DEBIT', 'CREDIT', 'ATM'];
 
 const MINIMUM_UNIQUE_WORDS = 3;

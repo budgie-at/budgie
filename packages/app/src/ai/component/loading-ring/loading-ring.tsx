@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { LOADING_COLOR, RING_CIRCUMFERENCE, RING_SIZE } from '../../constant/animated-record-button.constant';
+import { RING_CIRCUMFERENCE, RING_SIZE } from '../../constant/animated-record-button.constant';
 import { BaseRing } from '../base-ring/base-ring';
 
 interface Props {
@@ -15,7 +15,7 @@ export const LoadingRing = ({ progress }: Props) => {
 
     return (
         <View className="absolute left-0 top-0 items-center justify-center" style={containerStyle}>
-            <BaseRing stroke={LOADING_COLOR} strokeDashoffset={strokeDashoffset} rotation={ROTATION_OFFSET} />
+            <BaseRing strokeClassName="accent-secondary-foreground" strokeDashoffset={strokeDashoffset} rotation={ROTATION_OFFSET} />
         </View>
     );
 };

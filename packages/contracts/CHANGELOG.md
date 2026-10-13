@@ -3,6 +3,188 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+
+### Bug Fixes
+
+* **ledger:** link monobank installment payoffs ([3b06cea](https://github.com/budgie-at/budgie/commit/3b06cea9b7cdfed59b0b99de1f13cb6a3dad102a))
+
+
+
+
+
+# [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
+
+
+### Features
+
+* start deposits in the synced operation currency ([4eff7d5](https://github.com/budgie-at/budgie/commit/4eff7d5e8a48cc735dc82bd4d183831695833146))
+
+
+
+
+
+## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
+
+
+### Bug Fixes
+
+* restore fees dropped by legacy transfer pairs and heal post-archive own-card transfers ([683d308](https://github.com/budgie-at/budgie/commit/683d308828879fdf8eea9a5464d08098cdb5bd9b)), closes [#1390](https://github.com/budgie-at/budgie/issues/1390)
+
+
+
+
+
+## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
+
+
+### Bug Fixes
+
+* **consolidation:** keep nested consolidations intact when archiving or resyncing an account ([9bc4669](https://github.com/budgie-at/budgie/commit/9bc4669b43227bc2d36ee6ac6ca2449737e0fc9f)), closes [#1385](https://github.com/budgie-at/budgie/issues/1385)
+
+
+
+
+
+## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* give installment plans their own edit form and find earlier parts on convert ([2bc56a1](https://github.com/budgie-at/budgie/commit/2bc56a1a19cea3795382d1d53d70e17094a3e051))
+
+
+
+
+
+# [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
+
+### Features
+
+* convert an expense into an installment plan ([3d67479](https://github.com/budgie-at/budgie/commit/3d67479b1137528cffef6679c39e3a0bbd9cc516))
+
+
+
+
+
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+
+### Features
+
+* **consolidation:** pair cross-currency transfers by the bank-stored rate ([53753df](https://github.com/budgie-at/budgie/commit/53753dfa653a4d2b3d0b8f576a6b31b45a1da6cc))
+
+
+
+
+
+## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **categorization:** keep user tag provenance on merges and rule tags ([62344bb](https://github.com/budgie-at/budgie/commit/62344bbb40264ee922c0ad1ca848b9f114cfc0cf))
+* **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
+* **categorization:** promote existing tags to USER on user picks ([02a6910](https://github.com/budgie-at/budgie/commit/02a69104fd35dfd2768472f9832ca2a5f95c2ff4))
+* **categorization:** treat inbox category accepts as non-evidence ([089c379](https://github.com/budgie-at/budgie/commit/089c3796058ce6a1b7b9cc603d7658026dab2c02))
+
+
+
+
+
+# [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
+
+
+### Bug Fixes
+
+* **ledger:** convert only visible transfers when permanently deleting an account ([58e0b66](https://github.com/budgie-at/budgie/commit/58e0b6614cc8d87fd76711e3ac04e97a433a7326))
+* **ledger:** keep archived counterpart entries when deleting an account ([7adc280](https://github.com/budgie-at/budgie/commit/7adc28084f5dd003728c541571ddf8aaa42f441c))
+
+
+### Features
+
+* **consolidation:** merge synced expenses into transfers from archived accounts ([9f8aef4](https://github.com/budgie-at/budgie/commit/9f8aef4adcad98e181dcb47f846798a9c4a54fbb))
+* **contracts:** add Transfer (account deleted) system category excluded from statistics ([17eab43](https://github.com/budgie-at/budgie/commit/17eab439fb16e2f60f1df346e51c3c7da136020f))
+
+
+
+
+
+## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **consolidation:** match more refunds automatically ([dff5884](https://github.com/budgie-at/budgie/commit/dff58843850b4c912cdac5f6c32eb41999950181))
+
+
+
+
+
+## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+# [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
+
+### Features
+
+* **contracts:** add transaction import fingerprint column and heal queries ([1984b0e](https://github.com/budgie-at/budgie/commit/1984b0e3fb14ab91808406742b751974bd075653))
+
+
+
+
+
+# [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
+
+
+### Features
+
+* **consolidation:** consolidate synced duplicates of manual expenses ([5994732](https://github.com/budgie-at/budgie/commit/59947327f8f73b196c363f91e62eaa301133c551))
+
+
+
+
+
+## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
 ## [6.88.2](https://github.com/budgie-at/budgie/compare/v6.88.1...v6.88.2) (2026-10-02)
 
 

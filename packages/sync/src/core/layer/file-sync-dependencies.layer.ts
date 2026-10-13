@@ -2,6 +2,8 @@ import { AccountRepository, BankIntegrationRepository, InstrumentRepository, Syn
 import { AccountBalanceIncrementalService, AccountService, TransactionImportService, TransactionService } from '@budgie/ledger';
 import * as Layer from 'effect/Layer';
 
+import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
+
 export const fileSyncDependenciesLayer = Layer.mergeAll(
     AccountRepository.layer,
     BankIntegrationRepository.layer,
@@ -10,5 +12,6 @@ export const fileSyncDependenciesLayer = Layer.mergeAll(
     AccountService.layer,
     AccountBalanceIncrementalService.layer,
     TransactionImportService.layer,
-    TransactionService.layer
+    TransactionService.layer,
+    SyncOperationMetadataService.layer
 );

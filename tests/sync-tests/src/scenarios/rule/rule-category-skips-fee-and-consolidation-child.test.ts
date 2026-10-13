@@ -1,12 +1,6 @@
 import {
     CategoryEntityTable,
-    RuleActionEntityTable,
     RuleActionTypeEnum,
-    RuleConditionEntityTable,
-    RuleConditionFieldEnum,
-    RuleConditionMatchTypeEnum,
-    RuleConditionOperatorEnum,
-    RuleEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum
@@ -17,6 +11,7 @@ import { eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { seed, testDb, TestLayer } from '../../harness';
+import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 const RULE_TITLE = 'Rule fee target';
 
@@ -28,27 +23,6 @@ const seedTitledExpense = (accountId: number, externalId: string) =>
         );
 
         return yield* seed.updateTransaction(expense.id, { title: RULE_TITLE });
-    });
-
-const seedCategoryRule = (categoryId: number) =>
-    Effect.gen(function* () {
-        const [rule] = yield* testDb
-            .insert(RuleEntityTable)
-            .values({ enabled: true, conditionMatchType: RuleConditionMatchTypeEnum.ALL })
-            .returning();
-
-        yield* testDb.insert(RuleConditionEntityTable).values({
-            ruleId: rule.id,
-            field: RuleConditionFieldEnum.TITLE,
-            operator: RuleConditionOperatorEnum.CONTAINS,
-            value: RULE_TITLE,
-            secondaryValue: null
-        });
-        yield* testDb
-            .insert(RuleActionEntityTable)
-            .values({ ruleId: rule.id, type: RuleActionTypeEnum.SET_CATEGORY, categoryId, tagId: null, accountId: null });
-
-        return rule;
     });
 
 describe('rule/rule-category-skips-fee-and-consolidation-child', () => {
@@ -66,7 +40,11 @@ describe('rule/rule-category-skips-fee-and-consolidation-child', () => {
                 .update(TransactionEntityTable)
                 .set({ consolidationParentTransactionId: parent.id })
                 .where(eq(TransactionEntityTable.id, child.id));
-            const rule = yield* seedCategoryRule(category.id);
+            const rule = yield* seedTitleRule(RULE_TITLE, {
+                type: RuleActionTypeEnum.SET_CATEGORY,
+                categoryId: category.id,
+                accountId: null
+            });
 
             const result = yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id);
             const directlyCategorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds([child.id], category.id);

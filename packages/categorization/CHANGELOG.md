@@ -1,0 +1,200 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* reset every mutable table in test databases and drop vitest globals ([82be5ac](https://github.com/budgie-at/budgie/commit/82be5ac7a9b4a2a8138f1b187ae695907d7d9a74))
+
+
+
+
+
+# [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.99.0](https://github.com/budgie-at/budgie/compare/v6.98.0...v6.99.0) (2026-10-09)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.98.0](https://github.com/budgie-at/budgie/compare/v6.97.1...v6.98.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **app:** prefill only user-chosen categories and stabilize inbox E2E ([e0c8ae6](https://github.com/budgie-at/budgie/commit/e0c8ae60a3593bdc47831434c121e6b025115619))
+
+
+### Features
+
+* **app:** open transactions from the inbox and prefill quick rules with category and tags ([827bdeb](https://github.com/budgie-at/budgie/commit/827bdeb0919de3a64d7ba7ae0c4a9c4128bdce9a))
+
+
+
+
+
+## [6.96.1](https://github.com/budgie-at/budgie/compare/v6.96.0...v6.96.1) (2026-10-08)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.95.0](https://github.com/budgie-at/budgie/compare/v6.94.3...v6.95.0) (2026-10-07)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.94.3](https://github.com/budgie-at/budgie/compare/v6.94.2...v6.94.3) (2026-10-07)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.94.2](https://github.com/budgie-at/budgie/compare/v6.94.1...v6.94.2) (2026-10-07)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.94.1](https://github.com/budgie-at/budgie/compare/v6.94.0...v6.94.1) (2026-10-06)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.93.0](https://github.com/budgie-at/budgie/compare/v6.92.2...v6.93.0) (2026-10-05)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.92.2](https://github.com/budgie-at/budgie/compare/v6.92.1...v6.92.2) (2026-10-04)
+
+
+### Bug Fixes
+
+* **categorization:** learn tag suggestions only from user-picked tags ([d86fab6](https://github.com/budgie-at/budgie/commit/d86fab646f9b84db78f8b4dab1de7c80b69e7504))
+* **categorization:** promote existing tags to USER on user picks ([02a6910](https://github.com/budgie-at/budgie/commit/02a69104fd35dfd2768472f9832ca2a5f95c2ff4))
+* **categorization:** treat inbox category accepts as non-evidence ([089c379](https://github.com/budgie-at/budgie/commit/089c3796058ce6a1b7b9cc603d7658026dab2c02))
+
+
+
+
+
+## [6.92.1](https://github.com/budgie-at/budgie/compare/v6.92.0...v6.92.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.92.0](https://github.com/budgie-at/budgie/compare/v6.91.2...v6.92.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.91.2](https://github.com/budgie-at/budgie/compare/v6.91.1...v6.91.2) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.91.0](https://github.com/budgie-at/budgie/compare/v6.90.0...v6.91.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.90.0](https://github.com/budgie-at/budgie/compare/v6.89.0...v6.90.0) (2026-10-04)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
+
+**Note:** Version bump only for package @budgie/categorization

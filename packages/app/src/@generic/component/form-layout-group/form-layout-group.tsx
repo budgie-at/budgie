@@ -1,7 +1,8 @@
 import { cva } from 'class-variance-authority';
-import { cn } from 'cn';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
+
+import { cn } from '../../utils/cn.util';
 
 interface Props {
     readonly className?: string;

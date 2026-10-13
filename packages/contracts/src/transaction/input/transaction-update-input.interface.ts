@@ -14,5 +14,6 @@ export type TransactionUpdateInputInterface = Partial<
         | 'externalSource'
         | 'needsEmbedding'
         | 'updatedBy'
+        | 'importFingerprint'
     >
 >;

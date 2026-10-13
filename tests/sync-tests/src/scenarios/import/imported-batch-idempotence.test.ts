@@ -3,7 +3,7 @@ import { TransactionImportService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, seed, TestLayer } from '../../harness';
+import { seed, TestLayer, testQueryService } from '../../harness';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
@@ -47,7 +47,12 @@ describe('import/imported-batch-idempotence', () => {
             const account = yield* seed.account({ externalSource: ExternalSourceEnum.ERSTE });
             const input = buildImportInput(account.id, 'erste-duplicate-id', 'ERSTE exact duplicate');
 
-            const importedTransactions = yield* transactionImportService.bulkUpsertImported([input, input], new Map());
+            const importedTransactions = yield* Effect.map(
+                transactionImportService.bulkUpsertPreparedImported(
+                    transactionImportService.prepareImportedInputs([input, input], new Map())
+                ),
+                ({ transactions }) => transactions
+            );
 
             expect(importedTransactions).toHaveLength(1);
             expect(importedTransactions[0].externalId).toBe('erste-duplicate-id');
@@ -61,16 +66,23 @@ describe('import/imported-batch-idempotence', () => {
             const firstInput = buildImportInput(account.id, 'erste-collision-id', 'FITINN MDID:MREF11065472');
             const secondInput = buildImportInput(account.id, 'erste-collision-id', 'FITINN MDID:MREF11123384');
 
-            const importedTransactions = yield* transactionImportService.bulkUpsertImported([firstInput, secondInput], new Map());
-            const firstTransaction = yield* fetchTransactionById(importedTransactions[0].id);
-            const secondTransaction = yield* fetchTransactionById(importedTransactions[1].id);
+            const importedTransactions = yield* Effect.map(
+                transactionImportService.bulkUpsertPreparedImported(
+                    transactionImportService.prepareImportedInputs([firstInput, secondInput], new Map())
+                ),
+                ({ transactions }) => transactions
+            );
+            const firstTransaction = yield* testQueryService.findTransactionById(importedTransactions[0].id);
+            const secondTransaction = yield* testQueryService.findTransactionById(importedTransactions[1].id);
             const existingTransactionIdMap = new Map([
                 ['erste-collision-id', firstTransaction.id],
                 ['erste-collision-id:2', secondTransaction.id]
             ]);
-            const reimportedTransactions = yield* transactionImportService.bulkUpsertImported(
-                [firstInput, secondInput],
-                existingTransactionIdMap
+            const reimportedTransactions = yield* Effect.map(
+                transactionImportService.bulkUpsertPreparedImported(
+                    transactionImportService.prepareImportedInputs([firstInput, secondInput], existingTransactionIdMap)
+                ),
+                ({ transactions }) => transactions
             );
 
             expect(importedTransactions).toHaveLength(2);
@@ -86,9 +98,11 @@ describe('import/imported-batch-idempotence', () => {
             const account = yield* seed.account({ externalSource: ExternalSourceEnum.ERSTE });
             const legacyFirstInput = buildImportInput(account.id, 'erste-legacy-id-1', 'FITINN MDID:MREF11065472');
             const legacySecondInput = buildImportInput(account.id, 'erste-legacy-id-2', 'FITINN MDID:MREF11123384');
-            const [legacyFirstTransaction, legacySecondTransaction] = yield* transactionImportService.bulkUpsertImported(
-                [legacyFirstInput, legacySecondInput],
-                new Map()
+            const [legacyFirstTransaction, legacySecondTransaction] = yield* Effect.map(
+                transactionImportService.bulkUpsertPreparedImported(
+                    transactionImportService.prepareImportedInputs([legacyFirstInput, legacySecondInput], new Map())
+                ),
+                ({ transactions }) => transactions
             );
             const existingTransactionIdMap = new Map([
                 ['erste-legacy-id-1', legacyFirstTransaction.id],
@@ -103,12 +117,14 @@ describe('import/imported-batch-idempotence', () => {
                 externalIdAliases: ['erste-legacy-id-2']
             };
 
-            const importedTransactions = yield* transactionImportService.bulkUpsertImported(
-                [firstInput, secondInput],
-                existingTransactionIdMap
+            const importedTransactions = yield* Effect.map(
+                transactionImportService.bulkUpsertPreparedImported(
+                    transactionImportService.prepareImportedInputs([firstInput, secondInput], existingTransactionIdMap)
+                ),
+                ({ transactions }) => transactions
             );
-            const firstTransaction = yield* fetchTransactionById(importedTransactions[0].id);
-            const secondTransaction = yield* fetchTransactionById(importedTransactions[1].id);
+            const firstTransaction = yield* testQueryService.findTransactionById(importedTransactions[0].id);
+            const secondTransaction = yield* testQueryService.findTransactionById(importedTransactions[1].id);
 
             expect(importedTransactions.map(transaction => transaction.id)).toEqual([
                 legacyFirstTransaction.id,

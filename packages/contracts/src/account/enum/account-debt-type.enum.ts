@@ -1,4 +1,5 @@
 export enum AccountDebtTypeEnum {
     LENT = 'LENT',
-    BORROW = 'BORROW'
+    BORROW = 'BORROW',
+    INSTALLMENT = 'INSTALLMENT'
 }

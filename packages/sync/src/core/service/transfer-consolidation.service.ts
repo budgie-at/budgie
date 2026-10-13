@@ -1,5 +1,5 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
-import { AccountBalanceIncrementalService, LedgerWorkload } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, InstallmentPlanService, LedgerWorkload } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -16,6 +16,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
             const ledgerWorkload = yield* LedgerWorkload;
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+            const installmentPlanService = yield* InstallmentPlanService;
             const exclusive = yield* Semaphore.make(1);
 
             const runExclusive = <A, E, R>(effect: Effect.Effect<A, E, R>) => exclusive.withPermit(ledgerWorkload.runForeground(effect));
@@ -33,6 +34,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                     const result = yield* consolidationCoordinatorService.consolidate(scope);
 
                     yield* updateBalancesAfterConsolidation(result.consolidated);
+                    yield* installmentPlanService.attachDueParts();
 
                     return result;
                 }, runExclusive),
@@ -50,6 +52,6 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
     }
 ) {
     static readonly layer = Layer.effect(TransferConsolidationService, TransferConsolidationService.make).pipe(
-        Layer.provide([ConsolidationCoordinatorService.layer, AccountBalanceIncrementalService.layer])
+        Layer.provide([ConsolidationCoordinatorService.layer, AccountBalanceIncrementalService.layer, InstallmentPlanService.layer])
     );
 }

@@ -1,5 +1,7 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/util/build-privatbank-same-original-amount-sql.util';
+
 import type { LanguageEnum } from '@budgie/contracts';
 
 const MANUAL_RECOMMENDED_AMOUNT_DISTANCE_RATIO = 0.05;
@@ -34,7 +36,7 @@ const buildManualSearchSql = (): string => `
 
 const buildManualCurrentTransactionSql = (): string => `
     current_tx AS (
-        SELECT id, type, title, operated_at
+        SELECT id, type, title, operated_at, external_source
         FROM transactions
         WHERE id = ?
           AND deleted_at IS NULL
@@ -45,7 +47,7 @@ const buildManualCurrentTransactionSql = (): string => `
 
 const buildManualCurrentEntrySql = (): string => `
     current_entry AS (
-        SELECT entry.amount, account.instrument_id
+        SELECT entry.amount, entry.exchange_rate, entry.operation_instrument_id, account.instrument_id
         FROM transaction_entries entry
         INNER JOIN current_tx ON current_tx.id = entry.transaction_id
         INNER JOIN accounts account ON account.id = entry.account_id
@@ -112,7 +114,26 @@ const buildManualCandidateWhereSql = (): string => `
       AND candidate_entry.type = ?
       AND account.instrument_id = current_entry.instrument_id
       AND candidate.type = ?
-      AND candidate_entry.amount >= current_entry.amount + COALESCE(refund_totals.refunds_total, 0)
+      AND (
+          candidate_entry.amount >= current_entry.amount + COALESCE(refund_totals.refunds_total, 0)
+          OR (
+              refund_totals.refunds_total IS NULL
+              AND ${buildPrivatbankSameOriginalAmountSql(
+                  {
+                      amount: 'current_entry.amount',
+                      exchangeRate: 'current_entry.exchange_rate',
+                      externalSource: 'current_tx.external_source',
+                      operationInstrumentId: 'current_entry.operation_instrument_id'
+                  },
+                  {
+                      amount: 'candidate_entry.amount',
+                      exchangeRate: 'candidate_entry.exchange_rate',
+                      externalSource: 'candidate.external_source',
+                      operationInstrumentId: 'candidate_entry.operation_instrument_id'
+                  }
+              )}
+          )
+      )
       AND (candidate.consolidation_type IS NULL OR candidate.consolidation_type = ?)
       AND ${buildManualSearchSql()}
 `;

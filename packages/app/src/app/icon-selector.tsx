@@ -10,8 +10,9 @@ import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-
 import { IconSuggestions } from '../@generic/component/icon-suggestions/icon-suggestions';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useIconSelectorModal, useIconSelectorModalParams } from '../@generic/context/icon-selector-modal.context';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useFormsheetListContentStyle } from '../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useIconSearchEntries } from '../@generic/hook/use-icon-search-entries.hook';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { IconSearchEntryInterface } from '../@generic/interface/icon-search-entry.interface';
 import { iconSearchService } from '../@generic/service/icon-search.service';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
@@ -24,9 +25,10 @@ const keyExtractor = (item: FlatListDataItem<IconSearchEntryInterface>, index: n
 
 export default function IconSelectorModal() {
     const { t } = useLingui();
-    const [, resolveIconSelector] = useIconSelectorModal();
+    const [, resolveIconSelector, dismissIconSelector] = useIconSelectorModal();
+    useModalDismiss(dismissIconSelector);
     const currentParams = useIconSelectorModalParams();
-    const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
+    const contentContainerStyle = useFormsheetListContentStyle();
     const [search, setSearch] = useState('');
     const entries = useIconSearchEntries();
 
@@ -34,7 +36,6 @@ export default function IconSelectorModal() {
     const hasSearch = isNotEmptyString(search.trim());
     const matchedEntries = hasSearch ? iconSearchService.rank(entries, [search]) : entries;
     const data = padFlatListData([...matchedEntries], NUM_COLUMNS);
-    const containerStyle = { flex: 1, backgroundColor };
 
     const renderItem = ({ item }: { item: FlatListDataItem<IconSearchEntryInterface> }) =>
         item.isEmpty ? (
@@ -80,7 +81,7 @@ export default function IconSelectorModal() {
     ) : null;
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
@@ -89,7 +90,7 @@ export default function IconSelectorModal() {
             />
 
             <FlatList
-                style={flatListStyle}
+                className="absolute inset-0 bg-primary-reverse"
                 data={data}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}

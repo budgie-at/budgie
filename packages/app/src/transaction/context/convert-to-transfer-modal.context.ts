@@ -1,6 +1,7 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 
 export interface ConvertToTransferModalParams {
     readonly transactionId: number;
@@ -10,10 +11,13 @@ export interface ConvertToTransferModalParams {
     readonly sourceInstrumentId: number;
     readonly sourceCode: string;
     readonly skipPostConvertNavigation?: boolean;
-    readonly startDeposit?: boolean;
 }
 
-export const [ConvertToTransferModalContext, useConvertToTransferModal, useConvertToTransferModalParams] = createModalContext<
+const [ConvertToTransferModalContext, useConvertToTransferModal, useConvertToTransferModalParams] = createModalContext<
     ConvertToTransferModalParams,
     boolean
 >(false);
+
+export { useConvertToTransferModal, useConvertToTransferModalParams };
+
+export const ConvertToTransferModalProvider = createModalProvider(ConvertToTransferModalContext, '/convert-to-transfer');

@@ -15,7 +15,7 @@ export const CtaSection = () => (
                 </p>
 
                 <div className="w-full">
-                    <WaitlistForm initialCount={2847} showCount={false} variant="cta" />
+                    <WaitlistForm showCount={false} variant="cta" />
                 </div>
             </div>
         </div>

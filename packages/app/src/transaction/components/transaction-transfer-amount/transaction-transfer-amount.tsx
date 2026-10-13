@@ -1,8 +1,7 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 

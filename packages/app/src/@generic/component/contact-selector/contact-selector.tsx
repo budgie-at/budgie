@@ -20,16 +20,16 @@ interface Props {
 }
 
 export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDescription, selectedDescription }: Props) => {
-    const { contacts } = useContacts();
+    const contacts = useContacts();
     const [openContactSelector] = useContactSelectorModal();
     const { t } = useLingui();
 
-    const handleOpen = async () => {
-        const result = await openContactSelector({ selectedContactId: contactId });
-
-        if (isDefined(result)) {
-            onSelect(result.id);
-        }
+    const handleOpen = () => {
+        openContactSelector({ selectedContactId: contactId }, selectedContact => {
+            if (isDefined(selectedContact)) {
+                onSelect(selectedContact.id);
+            }
+        });
     };
 
     const title = isNotEmptyString(contactId) ? (contacts.find(({ id }) => id === contactId)?.name ?? '') : t`Select a contact`;

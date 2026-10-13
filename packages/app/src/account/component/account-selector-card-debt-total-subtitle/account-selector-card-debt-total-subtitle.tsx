@@ -1,15 +1,22 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useDebtAccountProgressSummaryQuery } from '../../query/use-debt-account-progress-summary.query';
+
+const DEBT_TOTAL_LABEL: Record<AccountDebtTypeEnum, MessageDescriptor> = {
+    [AccountDebtTypeEnum.LENT]: msg`Total lent`,
+    [AccountDebtTypeEnum.BORROW]: msg`Total borrowed`,
+    [AccountDebtTypeEnum.INSTALLMENT]: msg`Total`
+};
 
 interface Props {
     readonly accountId: number;
@@ -26,7 +33,7 @@ export const AccountSelectorCardDebtTotalSubtitle = ({ accountId, debtType, inst
     const summary = useDebtAccountProgressSummaryQuery(accountId);
     const fallbackTotalAmount = convertFromMicroUnits(targetBalance);
     const totalAmount = isDefined(summary) && isPositiveNumber(summary.totalAmount) ? summary.totalAmount : fallbackTotalAmount;
-    const debtTotalLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Total borrowed` : t`Total lent`;
+    const debtTotalLabel = t(DEBT_TOTAL_LABEL[debtType]);
     const formattedTotalAmount = formatDigits(totalAmount, instrumentSymbol);
     const debtTotalTestID = AccountSelectorModalSelector.DebtTotal(title, totalAmount);
 

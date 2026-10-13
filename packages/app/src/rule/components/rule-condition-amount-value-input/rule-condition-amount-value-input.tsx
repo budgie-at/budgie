@@ -20,7 +20,7 @@ export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }
     const renderValueInput = ({
         field: { value, onChange }
     }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => {
-        const numericValue = parseFloat(value) || 0;
+        const numericValue = Number.parseFloat(value) || 0;
         const handleChange = (amount: number) => void onChange(amount.toString());
 
         return <AmountInput testID={testID} value={numericValue} onChangeValue={handleChange} placeholder={t`Enter amount...`} />;
@@ -29,7 +29,7 @@ export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }
     const renderSecondaryValueInput = ({
         field: { value, onChange }
     }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.secondaryValue`>) => {
-        const numericValue = parseFloat(value ?? '') || 0;
+        const numericValue = Number.parseFloat(value ?? '') || 0;
         const handleChange = (amount: number) => void onChange(amount.toString());
 
         return <AmountInput testID={secondaryTestID} value={numericValue} onChangeValue={handleChange} placeholder={t`Enter amount...`} />;

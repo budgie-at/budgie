@@ -1,4 +1,6 @@
 import {
+    ACCOUNT_DELETED_TRANSFER_CATEGORY_ID,
+    CategorySourceEnum,
     TransactionEntryCreateEntityInterface,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
@@ -9,7 +11,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 export class AccountTransferConversionService extends Context.Service<AccountTransferConversionService>()(
     '@budgie/ledger/AccountTransferConversionService',
@@ -18,37 +20,19 @@ export class AccountTransferConversionService extends Context.Service<AccountTra
             const transactionEntryRepository = yield* TransactionEntryRepository;
             const transactionRepository = yield* TransactionRepository;
 
-            const collectTransferEntries = (transfers: TransactionWithEntriesEntityInterface[], accountId: number) => {
-                const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];
-
-                for (const transfer of transfers) {
-                    const isFromDeleted = transfer.fromAccountId === accountId;
-
-                    if (isFromDeleted) {
-                        const debitEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
-                        if (isDefined(debitEntry) && isDefined(transfer.toAccountId)) {
-                            entriesToCreate.push({
-                                ...debitEntry,
-                                transactionId: transfer.id,
-                                accountId: transfer.toAccountId,
-                                type: TransactionEntryTypeEnum.DEBIT
-                            });
-                        }
-                    } else {
-                        const creditEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
-                        if (isDefined(creditEntry) && isDefined(transfer.fromAccountId)) {
-                            entriesToCreate.push({
-                                ...creditEntry,
-                                transactionId: transfer.id,
-                                accountId: transfer.fromAccountId,
-                                type: TransactionEntryTypeEnum.CREDIT
-                            });
-                        }
-                    }
-                }
-
-                return entriesToCreate;
-            };
+            const collectSurvivingEntries = (
+                transfers: TransactionWithEntriesEntityInterface[],
+                accountId: number
+            ): TransactionEntryCreateEntityInterface[] =>
+                transfers.flatMap(transfer =>
+                    transfer.entries
+                        .filter(entry => entry.accountId !== accountId)
+                        .map(entry =>
+                            entry.type === TransactionEntryTypeEnum.FEE
+                                ? entry
+                                : { ...entry, categoryId: ACCOUNT_DELETED_TRANSFER_CATEGORY_ID, categorySource: CategorySourceEnum.USER }
+                        )
+                );
 
             return {
                 convertAccountTransfers: Effect.fn('AccountTransferConversionService.convertAccountTransfers')(function* (
@@ -60,13 +44,17 @@ export class AccountTransferConversionService extends Context.Service<AccountTra
                         return;
                     }
 
+                    const orphanedTransferIds = transfers
+                        .filter(transfer => transfer.entries.every(entry => entry.accountId === accountId))
+                        .map(transfer => transfer.id);
+
+                    yield* transactionRepository.archiveByIds(orphanedTransferIds);
                     yield* transactionRepository.convertTransfersFromAccountToIncome(accountId);
                     yield* transactionRepository.convertTransfersToAccountToExpense(accountId);
 
-                    const entriesToCreate = collectTransferEntries(transfers, accountId);
-                    const transactionIds = transfers.map(transaction => transaction.id);
+                    const entriesToCreate = collectSurvivingEntries(transfers, accountId);
 
-                    yield* transactionEntryRepository.deleteByTransactionIds(transactionIds);
+                    yield* transactionEntryRepository.deleteLedgerByTransactionIds(transfers.map(transaction => transaction.id));
 
                     if (isNotEmptyArray(entriesToCreate)) {
                         yield* transactionEntryRepository.bulkCreate(entriesToCreate);

@@ -5,8 +5,7 @@ import {
     type TransactionEntryEntityInterface,
     TransactionEntryTypeEnum,
     TransactionRepository,
-    TransactionTypeEnum,
-    type TransactionWithEntriesEntityInterface
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import * as Context from 'effect/Context';
@@ -69,11 +68,6 @@ export class TransactionDepositSafetyService extends Context.Service<Transaction
                         }
 
                         yield* assertNoDepositExpenseInputs(yield* findTransactionsByEntries(existingEntries));
-                    }
-                ),
-                assertNoDepositExpenseTransactions: Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseTransactions')(
-                    function* (transactions: readonly TransactionWithEntriesEntityInterface[]) {
-                        yield* assertNoDepositExpenseInputs(transactions);
                     }
                 )
             };

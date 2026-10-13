@@ -26,7 +26,8 @@ const buildPrivatbankBankAccount = (): SyncAccountInterface => ({
 
 const buildPrivatbankRow = (): PrivatbankRowInterface => ({
     rawDate: '19.05.2026 08:40:18',
-    date: new Date('2026-05-19T06:40:18.000Z'),
+    date: new Date('2026-05-19T05:40:18.000Z'),
+    deviceLocalDate: new Date('2026-05-19T06:40:18.000Z'),
     category: 'Комуналка та Інтернет',
     card: PRIVATBANK_CARD_ID,
     description: 'TRANZZO*NICUA*AGPAY, DNIPRO',
@@ -66,7 +67,7 @@ const seedPrivatbankParsedDateTransaction = (accountId: number) =>
         const row = buildPrivatbankRow();
 
         const transaction = yield* seed.bankPairExpense(
-            { externalId: PRIVATBANK_PARSED_DATE_EXTERNAL_ID, operatedAt: row.date },
+            { externalId: PRIVATBANK_PARSED_DATE_EXTERNAL_ID, operatedAt: row.deviceLocalDate },
             {
                 amount: PRIVATBANK_TRANSACTION_AMOUNT,
                 accountId
@@ -87,7 +88,7 @@ const fetchPrivatbankTransactions = () =>
     });
 
 describe('privatbank/import-dedupe', () => {
-    it.effect('reuses transactions imported with the old parsed-date external id', () =>
+    it.effect('reuses transactions imported with the old parsed-date external id and heals their time to the Kyiv statement time', () =>
         Effect.gen(function* () {
             const accountId = yield* seedPrivatbankAccount();
             const client = new StubPrivatbankFileClient();
@@ -101,7 +102,9 @@ describe('privatbank/import-dedupe', () => {
             const transactions = yield* fetchPrivatbankTransactions();
 
             expect(transactions).toHaveLength(1);
-            expect(transactions[0]).toEqual(expect.objectContaining({ externalId: importedTransaction.id }));
+            expect(transactions[0]).toEqual(
+                expect.objectContaining({ externalId: importedTransaction.id, operatedAt: buildPrivatbankRow().date })
+            );
         }).pipe(Effect.provide(TestLayer))
     );
 

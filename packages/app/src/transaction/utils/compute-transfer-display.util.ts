@@ -51,7 +51,6 @@ const getAccountInfo = (
     code: account?.instrument.code ?? ''
 });
 
-// eslint-disable-next-line max-statements -- Display computation with multiple derived values
 export const computeTransferDisplay = (params: ComputeTransferDisplayParams): TransferDisplayResult => {
     const {
         isEditingDestination,

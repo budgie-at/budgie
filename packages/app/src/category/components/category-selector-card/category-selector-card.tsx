@@ -1,6 +1,5 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { cn } from 'cn';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -11,8 +10,8 @@ import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
-import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
 
 interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly onSelect: (id: number) => void;
@@ -27,29 +26,17 @@ const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 item
         isSelected: {
             true: '',
             false: 'border-secondary-corner/50'
-        },
-        variant: Object.fromEntries(typedObjectEntries(BACKGROUND_COLOR_PALETTE).map(([variant]) => [variant, '']))
-    },
-    compoundVariants: typedObjectEntries(BACKGROUND_COLOR_PALETTE).map(([variant, className]) => ({
-        variant,
-        className,
-        isSelected: true
-    }))
+        }
+    }
 });
 
-const textVariants = cva('font-medium text-xs text-center leading-tight', {
+const textVariants = cva('font-medium text-(length:--text-xs) text-center', {
     variants: {
         isSelected: {
             true: '',
             false: 'text-secondary-foreground'
-        },
-        variant: Object.fromEntries(typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([variant]) => [variant, '']))
-    },
-    compoundVariants: typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([variant, className]) => ({
-        variant,
-        className,
-        isSelected: true
-    }))
+        }
+    }
 });
 
 export const CategorySelectorCard = (props: Props) => {
@@ -62,7 +49,7 @@ export const CategorySelectorCard = (props: Props) => {
 
     return (
         <HapticPressable
-            className={cn(cardVariants({ isSelected, variant }), 'relative', className)}
+            className={cn(cardVariants({ isSelected }), isSelected && BACKGROUND_COLOR_PALETTE[variant], 'relative', className)}
             onPress={handleSelect}
             testID={testID}
             collapsable={false}
@@ -79,7 +66,11 @@ export const CategorySelectorCard = (props: Props) => {
 
             <View className="self-stretch flex-1 justify-center">
                 <Text
-                    className={cn(textVariants({ isSelected, variant }), 'self-stretch flex-shrink')}
+                    className={cn(
+                        textVariants({ isSelected }),
+                        isSelected && FOREGROUND_COLOR_PALETTE[variant],
+                        'self-stretch flex-shrink'
+                    )}
                     numberOfLines={2}
                     ellipsizeMode="tail"
                     {...testIDProps(testID, TestIDPartEnum.LABEL)}

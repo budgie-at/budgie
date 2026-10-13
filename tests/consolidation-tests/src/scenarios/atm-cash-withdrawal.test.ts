@@ -1,5 +1,6 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { AccountTypeEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/sync';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -70,11 +71,12 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
     it.effect('moves only the selected ATM expense to cash with its fee entry and ignores a repeated move', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
             const otherExpense = yield* seedAtmExpense(bankAccount.id, 'tx-atm-other', ATM_OPERATED_AT);
 
             expect(yield* consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds([expense.id])).toEqual([expense.id]);
-            expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(1);
+            expect(yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(1);
 
             const canonicalId = yield* fetchAtmCanonicalId();
 
@@ -86,7 +88,7 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
                 [bankAccount.id, -2 * (ATM_WITHDRAWAL_AMOUNT + ATM_WITHDRAWAL_FEE_AMOUNT)],
                 [cashAccount.id, ATM_WITHDRAWAL_AMOUNT]
             ]);
-            expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(0);
+            expect(yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(0);
             expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
             expect(yield* fetchAtmCanonicalId()).toBe(canonicalId);
         })
@@ -95,23 +97,24 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
     it.effect('does not move an ATM expense when its currency has no single active cash account', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const { expense } = yield* seedAtmCashWithdrawalFixture();
             yield* testSeedService.account({ title: 'Second Cash', type: AccountTypeEnum.CASH });
 
             expect(yield* consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds([expense.id])).toEqual([]);
-            expect(yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(0);
+            expect(yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([expense.id])).toBe(0);
             expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
         })
     );
 
     it.effect('restores the ATM expense with its fee entry and clears the cash balance when reverted', () =>
         Effect.gen(function* () {
-            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
             const stateBefore = yield* snapshotSourceState([expense.id]);
             const balancesBefore = yield* fetchLedgerBalances([bankAccount.id, cashAccount.id]);
 
-            yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id]);
+            yield* transferConsolidationService.moveAtmCashWithdrawalsToCash([expense.id]);
 
             yield* expectRevertRemovedCanonical(yield* revertSingleCanonical(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL), [
                 expense.id

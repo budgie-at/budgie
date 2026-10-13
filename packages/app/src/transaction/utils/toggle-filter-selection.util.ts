@@ -1,17 +1,17 @@
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-export const toggleFilterSelection = (prev: number[] | null, selected: number[]): number[] | null => {
+export const toggleFilterSelection = <T>(prev: T[] | null, selected: T[]): T[] | null => {
     if (!isDefined(prev)) {
         return selected;
     }
 
-    const allSelected = selected.every(id => prev.includes(id));
+    const allSelected = selected.every(item => prev.includes(item));
 
     if (allSelected) {
-        const next = prev.filter(id => !selected.includes(id));
+        const next = prev.filter(item => !selected.includes(item));
 
         return isNotEmptyArray(next) ? next : null;
     }
 
-    return Array.from(new Set([...prev, ...selected]));
+    return [...new Set([...prev, ...selected])];
 };

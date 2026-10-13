@@ -7,8 +7,8 @@ import { useDatePickerModal } from '../context/date-picker-modal.context';
 import { useNoteInputModal } from '../context/note-input-modal.context';
 
 interface UseQuickFormModalsResult {
-    readonly handleCommentPress: () => Promise<void>;
-    readonly handleDatePress: () => Promise<void>;
+    readonly handleCommentPress: () => void;
+    readonly handleDatePress: () => void;
 }
 
 export const useQuickFormModals = (): UseQuickFormModalsResult => {
@@ -18,20 +18,20 @@ export const useQuickFormModals = (): UseQuickFormModalsResult => {
 
     const [operatedAt, comment] = useWatch({ control, name: ['operatedAt', 'comment'] });
 
-    const handleCommentPress = async () => {
-        const result = await openNoteInput({ initialValue: comment });
-
-        if (isDefined(result)) {
-            setValue('comment', result);
-        }
+    const handleCommentPress = () => {
+        openNoteInput({ initialValue: comment }, noteText => {
+            if (isDefined(noteText)) {
+                setValue('comment', noteText);
+            }
+        });
     };
 
-    const handleDatePress = async () => {
-        const result = await openDatePicker({ initialDate: operatedAt });
-
-        if (isDefined(result)) {
-            setValue('operatedAt', result);
-        }
+    const handleDatePress = () => {
+        openDatePicker({ initialDate: operatedAt }, selectedDate => {
+            if (isDefined(selectedDate)) {
+                setValue('operatedAt', selectedDate);
+            }
+        });
     };
 
     return { handleCommentPress, handleDatePress };

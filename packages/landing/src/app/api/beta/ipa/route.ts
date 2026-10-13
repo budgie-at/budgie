@@ -25,7 +25,7 @@ const resolveIpaDownloadUrl = Effect.fnUntraced(function* () {
     return isDefined(buildMeta) ? findIosDevReleaseAssetUrl(release, buildMeta.assetName) : null;
 });
 
-// eslint-disable-next-line func-style,no-implicit-globals -- Next.js route handlers must be exported functions
+// eslint-disable-next-line func-style -- Next.js route handlers must be exported functions
 export async function GET(): Promise<NextResponse> {
     const ipaDownloadUrl = await Effect.runPromise(resolveIpaDownloadUrl().pipe(Effect.provide(FetchHttpClient.layer)));
 

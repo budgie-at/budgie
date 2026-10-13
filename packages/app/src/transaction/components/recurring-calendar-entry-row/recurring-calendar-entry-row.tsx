@@ -1,4 +1,4 @@
-import { RecurringSeriesUserStateEnum, UserIconNameEnum } from '@budgie/contracts';
+import { RecurringSeriesUserStateEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { RecurringAlertEnum, RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -14,7 +14,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
@@ -32,7 +31,7 @@ interface Props {
     readonly dayLabel?: string;
 }
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Row derives navigation, day-label, alert and series-action affordances from entry data
+// eslint-disable-next-line max-statements -- Row derives navigation, day-label, alert and series-action affordances from entry data
 export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
@@ -40,9 +39,11 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     const formatDigits = useFormatDigits(decimalPlaces);
     const [isRenaming, setIsRenaming] = useState(false);
 
-    const amount = convertFromMicroUnits(entry.latestAmount);
-    const formattedAmount = formatDigits(amount, defaultInstrument.symbol);
-    const alertLabels = { [RecurringAlertEnum.OVERDUE]: t`Overdue`, [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed` };
+    const formattedAmount = formatDigits(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
+    const alertLabels = {
+        [RecurringAlertEnum.OVERDUE]: t`Overdue`,
+        [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
+    };
     const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
     const description = t`${formattedAmount} · ${detail}`;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
@@ -52,7 +53,7 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
         handlePress = () => {
             router.push({
-                pathname: entry.latestAmount < 0 ? '/transactions/[id]/income' : '/transactions/[id]/expense',
+                pathname: '/transactions/[id]/expense',
                 params: { id: String(entry.latestTransactionId) }
             });
         };

@@ -1,12 +1,12 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { cn } from '../../../@generic/utils/cn.util';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';

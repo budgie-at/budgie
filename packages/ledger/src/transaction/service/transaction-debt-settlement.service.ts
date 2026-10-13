@@ -13,7 +13,8 @@ import {
     TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    isBorrowLikeDebtType
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
@@ -81,11 +82,11 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
             ): DebtEventDirectionEnum => {
                 const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
 
-                if (debtAccount.debtType === AccountDebtTypeEnum.LENT) {
-                    return isExpense ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+                if (isBorrowLikeDebtType(debtAccount.debtType)) {
+                    return isExpense ? DebtEventDirectionEnum.CLOSE : DebtEventDirectionEnum.OPEN;
                 }
 
-                return isExpense ? DebtEventDirectionEnum.CLOSE : DebtEventDirectionEnum.OPEN;
+                return isExpense ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
             };
 
             const getTransactionOrFail = Effect.fnUntraced(function* (transactionId: number) {
@@ -175,7 +176,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 primaryEntry: TransactionEntryEntityInterface,
                 debtAccount: Pick<AccountEntityInterface, 'id' | 'debtType'>
             ) {
-                if (isDefined(primaryEntry.categoryId)) {
+                if (isDefined(primaryEntry.categoryId) || debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT) {
                     return false;
                 }
 
@@ -207,36 +208,30 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 });
             });
 
-            const attachInTransaction = Effect.fn('TransactionDebtSettlementService.attachInTransaction')(function* (
-                params: AttachDebtSettlementParamsInterface
-            ) {
-                const transaction = yield* getTransactionOrFail(params.transactionId);
-                const debtAccount = yield* getDebtAccountOrFail(params.debtAccountId);
-
-                yield* assertTransactionSupportsDebtSettlement(transaction);
-                yield* assertNoSettlement(transaction);
-                const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
-                yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
-
-                const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
-
-                yield* debtEventRepository.create({
-                    debtAccountId: debtAccount.id,
-                    transactionId: transaction.id,
-                    source: DebtEventSourceEnum.INCOME_ATTACHMENT,
-                    ...fields
-                });
-                yield* transactionRepository.touchUpdatedAt(transaction.id);
-                yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
-                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
-
-                return debtAccount;
-            });
-
             return {
                 attach: Effect.fn('TransactionDebtSettlementService.attach')(
                     function* (params: AttachDebtSettlementParamsInterface) {
-                        return yield* attachInTransaction(params);
+                        const transaction = yield* getTransactionOrFail(params.transactionId);
+                        const debtAccount = yield* getDebtAccountOrFail(params.debtAccountId);
+
+                        yield* assertTransactionSupportsDebtSettlement(transaction);
+                        yield* assertNoSettlement(transaction);
+                        const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
+                        yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
+
+                        const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
+
+                        yield* debtEventRepository.create({
+                            debtAccountId: debtAccount.id,
+                            transactionId: transaction.id,
+                            source: DebtEventSourceEnum.INCOME_ATTACHMENT,
+                            ...fields
+                        });
+                        yield* transactionRepository.touchUpdatedAt(transaction.id);
+                        yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
+                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
+
+                        return debtAccount;
                     },
                     effect => Db.transaction(effect)
                 ),

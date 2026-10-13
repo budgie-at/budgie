@@ -30,12 +30,14 @@ const cardVariants = cva('flex-1 items-center gap-y-lg border-2', {
 
 const ACCOUNT_DEBT_TYPE_ICON: Record<AccountDebtTypeEnum, UserIconNameEnum> = {
     [AccountDebtTypeEnum.LENT]: UserIconNameEnum.TrendingDown,
-    [AccountDebtTypeEnum.BORROW]: UserIconNameEnum.TrendingUp
+    [AccountDebtTypeEnum.BORROW]: UserIconNameEnum.TrendingUp,
+    [AccountDebtTypeEnum.INSTALLMENT]: UserIconNameEnum.CalendarClock
 };
 
 const ACCOUNT_DEBT_TYPE_DESCRIPTION: Record<AccountDebtTypeEnum, MessageDescriptor> = {
     [AccountDebtTypeEnum.LENT]: msg`You gave money`,
-    [AccountDebtTypeEnum.BORROW]: msg`You received money`
+    [AccountDebtTypeEnum.BORROW]: msg`You received money`,
+    [AccountDebtTypeEnum.INSTALLMENT]: msg`You pay in parts`
 };
 
 export const AccountDeptTypeCard = ({ type, onSelect, isSelected, testID }: Props) => {

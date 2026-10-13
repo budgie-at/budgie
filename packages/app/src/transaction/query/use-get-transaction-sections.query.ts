@@ -1,15 +1,35 @@
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { groupTransactionsByMonth } from '../utils/group-transactions-by-month.util';
 
+import type { TransactionsByMonthSection } from '../interface/transactions-by-month-section.type';
 import type { LanguageEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type * as Atom from 'effect/reactivity/Atom';
 
 const DEFAULT_LIMIT = 20;
+
+const groupTransactionsByMonth = (
+    transactions: TransactionWithRelationsEntityInterface[],
+    formatMonthAndYear: (date: Date | string) => string
+): TransactionsByMonthSection[] => {
+    const sections: TransactionsByMonthSection[] = [];
+
+    for (const transaction of transactions) {
+        const month = formatMonthAndYear(transaction.operatedAt);
+        const last = sections.at(-1);
+
+        if (last?.date === month) {
+            last.transactions.push(transaction);
+        } else {
+            sections.push({ date: month, transactions: [transaction] });
+        }
+    }
+
+    return sections;
+};
 
 export const useGetTransactionSectionsQuery = <Transaction extends TransactionWithRelationsEntityInterface, Failure>(
     getQueryAtom: (limit: number, language: LanguageEnum) => Atom.Atom<AsyncResult.AsyncResult<Transaction[], Failure>>,
@@ -18,11 +38,8 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
     const { formatMonthAndYear } = useFormatDate();
     const language = useSetting('language');
     const queryKey = `${filterKey}|${language}`;
-    const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
-
-    useEffect(() => {
-        setLoadedCount(DEFAULT_LIMIT);
-    }, [queryKey]);
+    const [pagination, setPagination] = useState({ queryKey, loadedCount: DEFAULT_LIMIT });
+    const loadedCount = pagination.queryKey === queryKey ? pagination.loadedCount : DEFAULT_LIMIT;
 
     const result = useLiveAtomValue(getQueryAtom(loadedCount + 1, language));
     const data = AsyncResult.getOrElse(result, () => []);
@@ -32,7 +49,7 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
 
     const loadMore = () => {
         if (hasMore) {
-            setLoadedCount(prev => prev + DEFAULT_LIMIT);
+            setPagination({ queryKey, loadedCount: loadedCount + DEFAULT_LIMIT });
         }
     };
 

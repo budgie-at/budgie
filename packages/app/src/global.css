@@ -1,8 +1,5 @@
-@import 'tailwindcss/theme.css' layer(theme);
-@import 'tailwindcss/preflight.css' layer(base);
-@import 'tailwindcss/utilities.css';
-
-@import 'nativewind/theme';
+@import 'tailwindcss';
+@import 'uniwind';
 
 @theme {
     --padding-xxs: 0.143rem; /* 2px  */
@@ -70,116 +67,120 @@
     --radius-6xl: 1.571rem; /* 22px */
     --radius-7xl: 1.714rem; /* 24px */
     --stroke-25: 0.156rem;
-
-    --color-primary: rgb(0, 0, 0);
-    --color-primary-reverse: rgb(255, 255, 255);
-
-    --color-cta-foreground: rgb(255, 255, 255);
-    --color-cta-background: rgb(0, 0, 0);
-    --color-cta-corner: rgb(0, 0, 0);
-
-    --color-secondary-foreground: rgba(115, 115, 115, 1);
-    --color-secondary-corner: rgba(229, 229, 229, 1);
-    --color-secondary-background: rgba(248, 248, 248, 1);
-
-    --color-secondary-reverse-foreground: rgba(136, 136, 136, 1);
-    --color-secondary-reverse-corner: rgba(34, 34, 34, 1);
-    --color-secondary-reverse-background: rgba(10, 10, 10, 1);
-
-    --color-positive-foreground: rgba(16, 185, 129, 1);
-    --color-positive-corner: rgba(16, 185, 129, 0.2);
-    --color-positive-background: rgba(16, 185, 129, 0.1);
-
-    --color-destructive-foreground: rgba(239, 68, 68, 1);
-    --color-destructive-corner: rgba(239, 68, 68, 0.2);
-    --color-destructive-background: rgba(239, 68, 68, 0.1);
-
-    --color-warning-foreground: rgba(240, 177, 0, 1);
-    --color-warning-corner: rgba(240, 177, 0, 0.2);
-    --color-warning-background: rgba(240, 177, 0, 0.1);
-
-    --color-dark-warning-foreground: rgba(255, 105, 0, 1);
-    --color-dark-warning-corner: rgba(255, 105, 0, 0.2);
-    --color-dark-warning-background: rgba(255, 105, 0, 0.1);
-
-    --color-default-foreground: rgba(43, 127, 255, 1);
-    --color-default-corner: rgba(43, 127, 255, 0.2);
-    --color-default-background: rgba(43, 127, 255, 0.1);
-
-    --color-ghost-foreground: rgba(0, 0, 0, 1);
-    --color-ghost-corner: rgba(0, 0, 0, 0.2);
-    --color-ghost-background: rgba(10, 10, 10, 0.05);
-
-    --color-pink-foreground: rgba(246, 51, 154, 0.7);
-    --color-pink-corner: rgba(246, 51, 154, 0.2);
-    --color-pink-background: rgba(246, 51, 154, 0.1);
-
-    --color-violet-foreground: rgba(109, 40, 217, 1);
-    --color-violet-corner: rgba(109, 40, 217, 0.2);
-    --color-violet-background: rgba(109, 40, 217, 0.1);
-
-    --color-cyan-foreground: rgba(8, 105, 130, 1);
-    --color-cyan-corner: rgba(8, 105, 130, 0.2);
-    --color-cyan-background: rgba(8, 105, 130, 0.1);
-
-    --color-corner: rgba(229, 229, 229, 1);
-    --color-separator: linear-gradient(90deg, rgba(0, 0, 0, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
     --scale-xs: 0.99;
     --scale-s: 0.95;
 }
 
-.dark {
-    --color-primary: rgb(255, 255, 255);
-    --color-primary-reverse: rgb(0, 0, 0);
+@layer theme {
+    :root {
+        @variant light {
+            --color-primary: rgb(0, 0, 0);
+            --color-primary-reverse: rgb(255, 255, 255);
 
-    --color-cta-foreground: rgb(0, 0, 0);
-    --color-cta-background: rgb(255, 255, 255);
-    --color-cta-corner: rgb(255, 255, 255);
+            --color-cta-foreground: rgb(255, 255, 255);
+            --color-cta-background: rgb(0, 0, 0);
+            --color-cta-corner: rgb(0, 0, 0);
 
-    --color-secondary-foreground: rgba(136, 136, 136, 1);
-    --color-secondary-corner: rgba(34, 34, 34, 1);
-    --color-secondary-background: rgba(10, 10, 10, 1);
+            --color-secondary-foreground: rgba(115, 115, 115, 1);
+            --color-secondary-corner: rgba(229, 229, 229, 1);
+            --color-secondary-background: rgba(248, 248, 248, 1);
 
-    --color-secondary-reverse-foreground: rgba(115, 115, 115, 1);
-    --color-secondary-reverse-corner: rgba(229, 229, 229, 1);
-    --color-secondary-reverse-background: rgba(248, 248, 248, 1);
+            --color-secondary-reverse-foreground: rgba(136, 136, 136, 1);
+            --color-secondary-reverse-corner: rgba(34, 34, 34, 1);
+            --color-secondary-reverse-background: rgba(10, 10, 10, 1);
 
-    --color-positive-foreground: rgba(0, 255, 136, 1);
-    --color-positive-corner: rgba(1, 255, 136, 0.2);
-    --color-positive-background: rgba(1, 255, 136, 0.1);
+            --color-positive-foreground: rgba(16, 185, 129, 1);
+            --color-positive-corner: rgba(16, 185, 129, 0.2);
+            --color-positive-background: rgba(16, 185, 129, 0.1);
 
-    --color-destructive-foreground: rgba(255, 68, 68, 1);
-    --color-destructive-corner: rgba(255, 107, 107, 0.2);
-    --color-destructive-background: rgba(255, 68, 68, 0.2);
+            --color-destructive-foreground: rgba(239, 68, 68, 1);
+            --color-destructive-corner: rgba(239, 68, 68, 0.2);
+            --color-destructive-background: rgba(239, 68, 68, 0.1);
 
-    --color-warning-foreground: rgba(240, 177, 0, 1);
-    --color-warning-corner: rgba(240, 177, 0, 0.2);
-    --color-warning-background: rgba(240, 177, 0, 0.1);
+            --color-warning-foreground: rgba(240, 177, 0, 1);
+            --color-warning-corner: rgba(240, 177, 0, 0.2);
+            --color-warning-background: rgba(240, 177, 0, 0.1);
 
-    --color-dark-warning-foreground: rgba(255, 105, 0, 1);
-    --color-dark-warning-corner: rgba(255, 105, 0, 0.2);
-    --color-dark-warning-background: rgba(255, 105, 0, 0.1);
+            --color-dark-warning-foreground: rgba(255, 105, 0, 1);
+            --color-dark-warning-corner: rgba(255, 105, 0, 0.2);
+            --color-dark-warning-background: rgba(255, 105, 0, 0.1);
 
-    --color-default-foreground: rgba(43, 127, 255, 1);
-    --color-default-corner: rgba(43, 127, 255, 0.2);
-    --color-default-background: rgba(43, 127, 255, 0.1);
+            --color-default-foreground: rgba(43, 127, 255, 1);
+            --color-default-corner: rgba(43, 127, 255, 0.2);
+            --color-default-background: rgba(43, 127, 255, 0.1);
 
-    --color-ghost-foreground: rgba(255, 255, 255, 1);
-    --color-ghost-corner: rgba(255, 255, 255, 0.2);
-    --color-ghost-background: rgba(255, 255, 255, 0.05);
+            --color-ghost-foreground: rgba(0, 0, 0, 1);
+            --color-ghost-corner: rgba(0, 0, 0, 0.2);
+            --color-ghost-background: rgba(10, 10, 10, 0.05);
 
-    --color-pink-foreground: rgba(246, 51, 154, 0.7);
-    --color-pink-corner: rgba(246, 51, 154, 0.2);
-    --color-pink-background: rgba(246, 51, 154, 0.1);
+            --color-pink-foreground: rgba(246, 51, 154, 0.7);
+            --color-pink-corner: rgba(246, 51, 154, 0.2);
+            --color-pink-background: rgba(246, 51, 154, 0.1);
 
-    --color-violet-foreground: rgba(167, 139, 250, 1);
-    --color-violet-corner: rgba(167, 139, 250, 0.2);
-    --color-violet-background: rgba(167, 139, 250, 0.1);
+            --color-violet-foreground: rgba(109, 40, 217, 1);
+            --color-violet-corner: rgba(109, 40, 217, 0.2);
+            --color-violet-background: rgba(109, 40, 217, 0.1);
 
-    --color-cyan-foreground: rgba(34, 211, 238, 1);
-    --color-cyan-corner: rgba(34, 211, 238, 0.2);
-    --color-cyan-background: rgba(34, 211, 238, 0.1);
+            --color-cyan-foreground: rgba(8, 105, 130, 1);
+            --color-cyan-corner: rgba(8, 105, 130, 0.2);
+            --color-cyan-background: rgba(8, 105, 130, 0.1);
 
-    --color-corner: rgba(34, 34, 34, 1);
-    --color-separator: linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+            --color-corner: rgba(229, 229, 229, 1);
+        }
+
+        @variant dark {
+            --color-primary: rgb(255, 255, 255);
+            --color-primary-reverse: rgb(0, 0, 0);
+
+            --color-cta-foreground: rgb(0, 0, 0);
+            --color-cta-background: rgb(255, 255, 255);
+            --color-cta-corner: rgb(255, 255, 255);
+
+            --color-secondary-foreground: rgba(136, 136, 136, 1);
+            --color-secondary-corner: rgba(34, 34, 34, 1);
+            --color-secondary-background: rgba(10, 10, 10, 1);
+
+            --color-secondary-reverse-foreground: rgba(115, 115, 115, 1);
+            --color-secondary-reverse-corner: rgba(229, 229, 229, 1);
+            --color-secondary-reverse-background: rgba(248, 248, 248, 1);
+
+            --color-positive-foreground: rgba(0, 255, 136, 1);
+            --color-positive-corner: rgba(1, 255, 136, 0.2);
+            --color-positive-background: rgba(1, 255, 136, 0.1);
+
+            --color-destructive-foreground: rgba(255, 68, 68, 1);
+            --color-destructive-corner: rgba(255, 107, 107, 0.2);
+            --color-destructive-background: rgba(255, 68, 68, 0.2);
+
+            --color-warning-foreground: rgba(240, 177, 0, 1);
+            --color-warning-corner: rgba(240, 177, 0, 0.2);
+            --color-warning-background: rgba(240, 177, 0, 0.1);
+
+            --color-dark-warning-foreground: rgba(255, 105, 0, 1);
+            --color-dark-warning-corner: rgba(255, 105, 0, 0.2);
+            --color-dark-warning-background: rgba(255, 105, 0, 0.1);
+
+            --color-default-foreground: rgba(43, 127, 255, 1);
+            --color-default-corner: rgba(43, 127, 255, 0.2);
+            --color-default-background: rgba(43, 127, 255, 0.1);
+
+            --color-ghost-foreground: rgba(255, 255, 255, 1);
+            --color-ghost-corner: rgba(255, 255, 255, 0.2);
+            --color-ghost-background: rgba(255, 255, 255, 0.05);
+
+            --color-pink-foreground: rgba(246, 51, 154, 0.7);
+            --color-pink-corner: rgba(246, 51, 154, 0.2);
+            --color-pink-background: rgba(246, 51, 154, 0.1);
+
+            --color-violet-foreground: rgba(167, 139, 250, 1);
+            --color-violet-corner: rgba(167, 139, 250, 0.2);
+            --color-violet-background: rgba(167, 139, 250, 0.1);
+
+            --color-cyan-foreground: rgba(34, 211, 238, 1);
+            --color-cyan-corner: rgba(34, 211, 238, 0.2);
+            --color-cyan-background: rgba(34, 211, 238, 0.1);
+
+            --color-corner: rgba(34, 34, 34, 1);
+        }
+    }
 }

@@ -38,7 +38,7 @@ export const PasteTokenButton = ({ onPaste, testID }: Props) => {
 
     return (
         <Button
-            className="h-[36px] w-[36px] p-0"
+            className="h-[36px] w-[36px]"
             leftIcon={UserIconNameEnum.ClipboardPaste}
             size="sm"
             variant="secondary"

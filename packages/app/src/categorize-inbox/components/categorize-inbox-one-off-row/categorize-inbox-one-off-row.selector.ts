@@ -1,3 +1,4 @@
 export const CategorizeInboxOneOffRowSelector = {
-    Row: 'CategorizeInboxOneOffRow'
+    Row: 'CategorizeInboxOneOffRow',
+    Open: 'CategorizeInboxOneOffRow.Open'
 } as const;

@@ -1,4 +1,4 @@
-const normalizePart = (value: string | number) => value.toString().replace(/[^a-zA-Z0-9]+/gu, '_');
+const normalizePart = (value: string | number) => value.toString().replaceAll(/[^a-zA-Z0-9]+/gu, '_');
 
 export const HomePageSelector = {
     TotalBalance: 'HomePage.TotalBalance',

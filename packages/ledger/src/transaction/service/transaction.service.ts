@@ -3,14 +3,14 @@ import {
     Db,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
+    type TransactionEntryEntityInterface,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTagsRepository,
     TransactionTypeEnum,
     type TransactionUpdateServiceInputInterface,
-    TransactionUpdatedByEnum,
-    type TransactionWithEntriesEntityInterface
+    TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
@@ -23,6 +23,7 @@ import { processInputWithBatches } from '../../@generic/util/process-input-with-
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { getEntryAccountIds } from '../util/get-entry-account-ids.util';
+import { isSameLedgerEntry } from '../util/is-same-ledger-entry.util';
 import { stampForDeferredEmbedding } from '../util/stamp-for-deferred-embedding.util';
 import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../util/transaction-map-tag-ids-to-create-entities.util';
@@ -47,12 +48,24 @@ export class TransactionService extends Context.Service<TransactionService>()('@
         const transactionDepositSafetyService = yield* TransactionDepositSafetyService;
         const unconsolidationService = yield* UnconsolidationService;
 
-        const getAccountIdsFromTransactions = (transactions: readonly TransactionWithEntriesEntityInterface[]): number[] => [
-            ...new Set(transactions.flatMap(transaction => transaction.entries.map(entry => entry.accountId)))
-        ];
+        const resolveOperationMetadata = (
+            entries: TransactionCreateInputInterface['entries'],
+            existingEntries: readonly TransactionEntryEntityInterface[]
+        ): TransactionCreateInputInterface['entries'] =>
+            entries.map(entry => {
+                const matchingEntries = existingEntries.filter(existingEntry => isSameLedgerEntry(existingEntry, entry));
+                const [existingEntry] = matchingEntries;
+                const hasOperationMetadata =
+                    matchingEntries.length === 1 &&
+                    isDefined(existingEntry.operationInstrumentId) &&
+                    isDefined(existingEntry.operationAmount);
 
-        const unconsolidateByIdInTransaction = (transactionId: number) =>
-            Db.transaction(unconsolidationService.unconsolidateById(transactionId));
+                return {
+                    ...entry,
+                    operationInstrumentId: hasOperationMetadata ? existingEntry.operationInstrumentId : null,
+                    operationAmount: hasOperationMetadata ? existingEntry.operationAmount : null
+                };
+            });
 
         const upsertTransactionEntriesAndTags = Effect.fn('TransactionService.upsertTransactionEntriesAndTags')(function* ({
             transactionId,
@@ -72,10 +85,19 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId, valuations.get(entry)))
             );
 
+            const existingTags = yield* transactionTagsRepository.findByTransactionId(transactionId);
+            const submittedTagIds = new Set(input.tagIds);
+            const isTagSetUnchanged =
+                submittedTagIds.size === existingTags.length && existingTags.every(tag => submittedTagIds.has(tag.tagId));
+
             yield* transactionTagsRepository.deleteByTransactionId(transactionId);
-            if (isNotEmptyArray(input.tagIds)) {
-                yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId));
-            }
+            yield* transactionTagsRepository.bulkCreate(
+                transactionMapTagIdsToCreateEntities(
+                    input,
+                    transactionId,
+                    new Map(isTagSetUnchanged ? existingTags.map(tag => [tag.tagId, tag.source]) : [])
+                )
+            );
         });
 
         const bulkCreate = Effect.fn('TransactionService.bulkCreate')(
@@ -112,35 +134,31 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             deleteById: Effect.fn('TransactionService.deleteById')(
                 function* (id: number) {
                     const transaction = yield* transactionRepository.getByIdWithEntries(id);
-                    const accountIds = getAccountIdsFromTransactions(isDefined(transaction) ? [transaction] : []);
-
                     if (isDefined(transaction?.consolidationType)) {
-                        yield* unconsolidateByIdInTransaction(id);
+                        yield* unconsolidationService.unconsolidateById(id);
                         yield* accountBalanceIncrementalService.updateAllBalances(true);
                     } else {
                         yield* transactionRepository.deleteById(id);
                         yield* transactionTagsRepository.deleteByTransactionId(id);
                         yield* transactionEntryRepository.deleteByTransactionId(id);
-                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds);
+                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds(
+                            transaction?.entries.map(entry => entry.accountId) ?? []
+                        );
                     }
                 },
                 effect => Db.transaction(effect)
             ),
             unconsolidateById: Effect.fn('TransactionService.unconsolidateById')(
                 function* (id: number) {
-                    yield* unconsolidateByIdInTransaction(id);
+                    yield* unconsolidationService.unconsolidateById(id);
                     yield* accountBalanceIncrementalService.updateAllBalances(true);
                 },
                 effect => Db.transaction(effect)
             ),
-            findByExternalSource: Effect.fn('TransactionService.findByExternalSource')(function* (externalSource: ExternalSourceEnum) {
-                return new Set([...(yield* transactionRepository.findExternalIdsByExternalSource(externalSource))]);
-            }),
-            findIdMapByExternalSource: Effect.fn('TransactionService.findIdMapByExternalSource')(function* (
-                externalSource: ExternalSourceEnum
-            ) {
-                return yield* transactionRepository.findIdMapByExternalSource(externalSource);
-            }),
+            findByExternalSource: (externalSource: ExternalSourceEnum) =>
+                Effect.map(transactionRepository.findExternalIdsByExternalSource(externalSource), externalIds => new Set(externalIds)),
+            findIdMapByExternalSource: (externalSource: ExternalSourceEnum) =>
+                transactionRepository.findIdMapByExternalSource(externalSource),
             createBalanceAdjustment: Effect.fn('TransactionService.createBalanceAdjustment')(function* (
                 accountId: number,
                 delta: number,
@@ -200,19 +218,8 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 },
                 effect => Db.transaction(effect)
             ),
-            getEarliestTransactionTimeByAccountId: Effect.fn('TransactionService.getEarliestTransactionTimeByAccountId')(function* (
-                accountId: number
-            ) {
-                return yield* transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
-            }),
-            getEarliestTransactionTimeByExternalSource: Effect.fn('TransactionService.getEarliestTransactionTimeByExternalSource')(
-                function* (externalSource: ExternalSourceEnum) {
-                    return yield* transactionRepository.getEarliestTransactionTimeByExternalSource(externalSource);
-                }
-            ),
-            updateAllBalances: Effect.fn('TransactionService.updateAllBalances')(function* () {
-                yield* accountBalanceIncrementalService.updateAllBalances(true);
-            }),
+            getEarliestTransactionTimeByAccountId: (accountId: number) =>
+                transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest'),
             createInternal: Effect.fn('TransactionService.createInternal')(
                 function* (input: TransactionCreateInputInterface) {
                     const [transaction] = yield* bulkCreate([input]);
@@ -246,14 +253,14 @@ export class TransactionService extends Context.Service<TransactionService>()('@
 
                     yield* upsertTransactionEntriesAndTags({
                         transactionId: id,
-                        input,
+                        input: { ...input, entries: resolveOperationMetadata(input.entries, existingTransaction?.entries ?? []) },
                         operatedAt: transaction.operatedAt,
                         isConsolidated
                     });
                     yield* transactionDebtSettlementService.resyncInTransaction(id);
 
                     yield* accountBalanceIncrementalService.updateBalancesByAccountIds([
-                        ...getAccountIdsFromTransactions(isDefined(existingTransaction) ? [existingTransaction] : []),
+                        ...(existingTransaction?.entries.map(entry => entry.accountId) ?? []),
                         ...getEntryAccountIds([input])
                     ]);
 

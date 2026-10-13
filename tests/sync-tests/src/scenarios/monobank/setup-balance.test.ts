@@ -1,5 +1,4 @@
 import {
-    AccountBalanceRepository,
     AccountRepository,
     ExternalSourceEnum,
     SyncModeEnum,
@@ -19,7 +18,7 @@ import * as FiberSet from 'effect/FiberSet';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { buildMonobank, inWorkload, monobankStub, seed, skipRequestedSync, testDb, TestLayer } from '../../harness';
+import { buildMonobank, fetchAccountBalance, inWorkload, monobankStub, seed, skipRequestedSync, testDb, TestLayer } from '../../harness';
 
 import type { Services } from '../../harness/scenario/test-runtime';
 import type { AccountEntityInterface } from '@budgie/contracts';
@@ -55,12 +54,6 @@ const fetchBalanceAdjustments = (accountId: number) =>
             );
     });
 
-const readBalance = Effect.fnUntraced(function* (accountId: number) {
-    const accountBalanceRepository = yield* AccountBalanceRepository;
-
-    return (yield* accountBalanceRepository.getByAccountId(accountId)).at(0)?.balance;
-});
-
 const importHistory = Effect.fnUntraced(function* (onLaterRequest: () => Promise<void> | void = emptyFn) {
     const monobankSyncService = yield* MonobankSyncService;
 
@@ -70,7 +63,7 @@ const importHistory = Effect.fnUntraced(function* (onLaterRequest: () => Promise
 
 const expectReconciledTo = Effect.fnUntraced(function* (accountId: number, setupBalance: number) {
     expect(yield* fetchBalanceAdjustments(accountId)).toStrictEqual([expect.objectContaining({ amount: setupBalance - HISTORY_LEDGER })]);
-    expect(yield* readBalance(accountId)).toBe(setupBalance);
+    expect(yield* fetchAccountBalance(accountId)).toBe(setupBalance);
 });
 
 describe('monobank/setup-balance', () => {
@@ -82,11 +75,11 @@ describe('monobank/setup-balance', () => {
         Effect.gen(function* () {
             const runPromise = yield* FiberSet.makeRuntimePromise<Services>();
             const account = yield* setupMonobankSync(buildMonobank.account({ id: 'mono-setup', balance: 150_000 }));
-            const balancesDuringImport = new Set([yield* readBalance(account.id)]);
+            const balancesDuringImport = new Set([yield* fetchAccountBalance(account.id)]);
 
             yield* importHistory(() =>
                 runPromise(
-                    Effect.map(readBalance(account.id), balance => {
+                    Effect.map(fetchAccountBalance(account.id), balance => {
                         balancesDuringImport.add(balance);
                     })
                 )
@@ -111,7 +104,7 @@ describe('monobank/setup-balance', () => {
             yield* importHistory();
 
             expect(yield* fetchBalanceAdjustments(account.id)).toStrictEqual([]);
-            expect(yield* readBalance(account.id)).toBe(HISTORY_LEDGER);
+            expect(yield* fetchAccountBalance(account.id)).toBe(HISTORY_LEDGER);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -120,7 +113,7 @@ describe('monobank/setup-balance', () => {
             const account = yield* setupMonobankSync(
                 buildMonobank.account({ id: 'mono-credit', balance: 1_200_000, creditLimit: 1_000_000 })
             );
-            const balanceBeforeImport = yield* readBalance(account.id);
+            const balanceBeforeImport = yield* fetchAccountBalance(account.id);
 
             yield* importHistory();
 
@@ -135,7 +128,7 @@ describe('monobank/setup-balance', () => {
             const runPromise = yield* FiberSet.makeRuntimePromise<Services>();
             const account = yield* setupMonobankSync(buildMonobank.account({ id: 'mono-pause', balance: 150_000 }));
             yield* importHistory(() => runPromise(monobankSyncService.setAccountSyncEnabled(account.id, false)));
-            const pausedBalance = yield* readBalance(account.id);
+            const pausedBalance = yield* fetchAccountBalance(account.id);
             const pausedAdjustments = yield* fetchBalanceAdjustments(account.id);
 
             monobankStub.statementThen([], emptyFn);

@@ -6,6 +6,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SyncWorkload } from '../port/sync-workload.port';
+import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
 
 import { makeSyncService } from './make-sync-service.util';
 import { mapBankTransactionToCreateInput } from './map-bank-transaction-to-create-input.util';
@@ -27,6 +28,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
     const transactionImportService = yield* TransactionImportService;
     const transactionService = yield* TransactionService;
+    const syncOperationMetadataService = yield* SyncOperationMetadataService;
     const syncService = yield* makeSyncService(definition);
     const resolveMccCategoryLookupKey =
         definition.resolveMccCategoryLookupKey ?? ((transaction: SyncTransactionInterface) => transaction.category ?? '');
@@ -102,19 +104,25 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             return {
                 newTransactions: [],
                 newTransactionInputs: [],
+                refilledTransactions: [],
+                refilledTransactionInputs: [],
                 parsedTransactionCount: 0
             } satisfies FileBankSyncAccountImportResultInterface;
         }
-        const transactionInputs = transactions.map(transaction => {
-            const lookup = context.mccCategoryLookupMap.get(resolveMccCategoryLookupKey(transaction)) ?? null;
+        const transactionInputs = yield* syncOperationMetadataService.applyToInputs(
+            transactions.map(transaction => {
+                const lookup = context.mccCategoryLookupMap.get(resolveMccCategoryLookupKey(transaction)) ?? null;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, lookup, definition.provider);
-        });
+                return mapBankTransactionToCreateInput(transaction, account.id, lookup, definition.provider);
+            }),
+            transactions
+        );
         const prepared = transactionImportService.prepareImportedInputs(transactionInputs, context.existingTransactionIdMap);
 
-        const upsertedTransactions = yield* transactionImportService.bulkUpsertPreparedImported(prepared, {
-            shouldUpdateBalances: false
-        });
+        const { transactions: upsertedTransactions, refilledTransactions } = yield* transactionImportService.bulkUpsertPreparedImported(
+            prepared,
+            { shouldUpdateBalances: false }
+        );
 
         if (isNotEmptyArray(upsertedTransactions)) {
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds([account.id]);
@@ -122,10 +130,20 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
 
         const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
             !isDefined(externalId) || !prepared.externalIdMap.has(externalId);
+        const inputsByExternalId = new Map(prepared.transactionInputs.map(input => [input.externalId, input]));
+        const pairedRefills = refilledTransactions.flatMap(transaction => {
+            const input = inputsByExternalId.get(transaction.externalId);
+
+            return isDefined(input) && input.fromAccountId === transaction.fromAccountId && input.toAccountId === transaction.toAccountId
+                ? [{ transaction, input }]
+                : [];
+        });
 
         return {
             newTransactions: upsertedTransactions.filter(wasNotPreviouslyImported),
             newTransactionInputs: prepared.transactionInputs.filter(wasNotPreviouslyImported),
+            refilledTransactions: pairedRefills.map(({ transaction }) => transaction),
+            refilledTransactionInputs: pairedRefills.map(({ input }) => input),
             parsedTransactionCount: transactionInputs.length
         } satisfies FileBankSyncAccountImportResultInterface;
     });
@@ -153,12 +171,12 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap };
         const accountImportResults = yield* Db.transaction(importAccounts(client, bankAccounts, context));
 
-        const newlyImportedTransactions = accountImportResults.flatMap(result => result.newTransactions);
+        const transactionsToProcess = accountImportResults.flatMap(result => [...result.newTransactions, ...result.refilledTransactions]);
         yield* syncWorkload.enqueueRuleApplication(
-            newlyImportedTransactions.map(transaction => transaction.id),
-            accountImportResults.flatMap(result => result.newTransactionInputs)
+            transactionsToProcess.map(transaction => transaction.id),
+            accountImportResults.flatMap(result => [...result.newTransactionInputs, ...result.refilledTransactionInputs])
         );
-        const scope = consolidationScopeService.buildFromTransactions(newlyImportedTransactions);
+        const scope = consolidationScopeService.buildFromTransactions(transactionsToProcess);
         if (isDefined(scope)) {
             yield* syncWorkload.enqueueTransferConsolidation(scope);
         }

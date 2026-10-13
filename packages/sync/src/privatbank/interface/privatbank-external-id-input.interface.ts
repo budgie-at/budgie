@@ -1,6 +1,6 @@
 export interface PrivatbankExternalIdInputInterface {
     readonly rawDate: string;
-    readonly date: Date;
+    readonly deviceLocalDate: Date;
     readonly category: string;
     readonly card: string;
     readonly cardAmount: number;

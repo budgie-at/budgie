@@ -3,11 +3,10 @@ import {
     TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
-    isPositiveAdjustmentTransaction
+    isPositiveAdjustmentTransaction,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { RuleEvaluationInputInterface } from '@budgie/rules';
-
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 
 import { sortTransactionTagsByPrimary } from './sort-transaction-tags-by-primary.util';
 

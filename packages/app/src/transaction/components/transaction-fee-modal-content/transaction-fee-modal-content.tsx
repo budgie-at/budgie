@@ -47,14 +47,14 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         setFeeEntry(previous => ({ ...previous, amount }));
     };
 
-    const handleCategoryPress = async () => {
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: feeEntry.categoryId, variant });
+    const handleCategoryPress = () => {
+        openCategorySelector({ initialCategoryId: feeEntry.categoryId, variant }, selectedCategoryId => {
+            if (isDefined(selectedCategoryId)) {
+                const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
 
-        if (isDefined(selectedCategoryId)) {
-            const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
-
-            setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
-        }
+                setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
+            }
+        });
     };
 
     const handleConfirm = () => {
@@ -75,8 +75,6 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         }
     };
 
-    const handleFeeCategoryPress = () => void handleCategoryPress();
-
     return (
         <View className="px-xl pt-3xl pb-xl gap-lg">
             <SplitEntryRow
@@ -88,7 +86,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                 canDelete={false}
                 autoFocus={!isDefined(entry)}
                 onAmountChange={handleAmountChange}
-                onCategoryPress={handleFeeCategoryPress}
+                onCategoryPress={handleCategoryPress}
                 onDelete={handleRemove}
             />
 

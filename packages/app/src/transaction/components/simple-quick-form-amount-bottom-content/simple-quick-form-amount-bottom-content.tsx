@@ -4,8 +4,10 @@ import { View } from 'react-native';
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
 import { SimpleQuickFormFeePill } from '../simple-quick-form-fee-pill/simple-quick-form-fee-pill';
 
+import type { DebtSettlementAccountInterface } from '../../interface/debt-settlement-account.interface';
+
 interface Props {
-    readonly debtSettlementAccountTitle: string | null;
+    readonly debtSettlementAccount: DebtSettlementAccountInterface | null;
     readonly feeAmount: number;
     readonly feeCurrencySymbol: string;
     readonly feeInstrumentType: InstrumentTypeEnum;
@@ -14,7 +16,7 @@ interface Props {
 }
 
 export const SimpleQuickFormAmountBottomContent = ({
-    debtSettlementAccountTitle,
+    debtSettlementAccount,
     feeAmount,
     feeCurrencySymbol,
     feeInstrumentType,
@@ -22,7 +24,7 @@ export const SimpleQuickFormAmountBottomContent = ({
     onFeePress
 }: Props) => (
     <View className="items-center gap-xs">
-        <DebtSettlementPill accountTitle={debtSettlementAccountTitle} />
+        <DebtSettlementPill account={debtSettlementAccount} />
         <SimpleQuickFormFeePill
             amount={feeAmount}
             currencySymbol={feeCurrencySymbol}

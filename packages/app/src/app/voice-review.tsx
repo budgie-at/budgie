@@ -5,7 +5,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
 import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
@@ -48,10 +48,10 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 export default function VoiceReviewModal() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const [, resolveVoiceReview] = useVoiceReviewModal();
+    const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
+    useModalDismiss(dismissVoiceReview);
     const currentParams = useVoiceReviewModalParams();
     const [openCategorySelector] = useCategorySelectorModal();
-    const { backgroundColor } = useFormsheetListStyles();
 
     const initialRows = isDefined(currentParams) ? mapExtractedToReviewRows(currentParams.transactions) : [];
     const originalText = currentParams?.originalText ?? '';
@@ -64,20 +64,23 @@ export default function VoiceReviewModal() {
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
     const canDelete = rows.length > 1;
 
-    const handleCategoryPress = async (rowId: string, currentCategoryId: number | null) => {
+    const handleCategoryPress = (rowId: string, currentCategoryId: number | null) => {
         const excludeCategoryIds = rows
             .filter(row => row.id !== rowId)
             .map(row => row.categoryId)
             .filter(isPositiveNumber);
-        const selectedCategoryId = await openCategorySelector({
-            initialCategoryId: currentCategoryId,
-            excludeCategoryIds,
-            variant: 'destructive'
-        });
-
-        if (isDefined(selectedCategoryId)) {
-            setCategory(rowId, selectedCategoryId);
-        }
+        openCategorySelector(
+            {
+                initialCategoryId: currentCategoryId,
+                excludeCategoryIds,
+                variant: 'destructive'
+            },
+            selectedCategoryId => {
+                if (isDefined(selectedCategoryId)) {
+                    setCategory(rowId, selectedCategoryId);
+                }
+            }
+        );
     };
 
     const handleCancel = () => void resolveVoiceReview({ kind: 'cancelled' });
@@ -104,14 +107,12 @@ export default function VoiceReviewModal() {
         });
     };
 
-    const containerStyle = { flex: 1, backgroundColor };
-
     return (
-        <View style={containerStyle} collapsable={false} testID={VoiceReviewSelector.Page}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false} testID={VoiceReviewSelector.Page}>
             {isNotEmptyString(originalText) ? (
                 <View className="mx-lg mb-lg mt-2xl flex-row gap-x-md rounded-2xl bg-secondary-background px-lg py-md">
                     <View className="w-[2px] rounded-full bg-secondary-foreground/30" />
-                    <Text className="flex-1 text-lg leading-snug text-primary" numberOfLines={4}>
+                    <Text className="flex-1 text-(length:--text-lg) text-primary" numberOfLines={4}>
                         {originalText}
                     </Text>
                 </View>

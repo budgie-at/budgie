@@ -10,7 +10,7 @@ import { updateSettingsMutation } from '../mutation/update-settings.mutation';
 
 import type { SettingToggleKey } from '../type/setting-toggle-key.type';
 
-export const useSettingToggle = (settingKey: SettingToggleKey) => {
+export const useSettingToggle = (settingKey: SettingToggleKey, errorTitle?: string) => {
     const { t } = useLingui();
 
     return (next: boolean) => {
@@ -19,7 +19,9 @@ export const useSettingToggle = (settingKey: SettingToggleKey) => {
         return appRuntime.runPromise(
             updateSettingsMutation(input).pipe(
                 Effect.tapCause(Effect.logError),
-                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not update setting`, getErrorMessage(error))))
+                Effect.catch(error =>
+                    Effect.sync(() => void showErrorToast(errorTitle ?? t`Could not update setting`, getErrorMessage(error)))
+                )
             )
         );
     };

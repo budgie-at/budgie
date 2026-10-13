@@ -9,11 +9,10 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { SYNC_PROVIDER_CAPABILITIES } from '../../constant/sync-provider-capabilities.constant';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
-import { buildSyncStatusLabel } from '../../utils/build-sync-status-label.util';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
@@ -37,25 +36,23 @@ const statusTextVariants = cva('text-xs font-medium', {
 
 export const AccountSyncCard = ({ accountId }: Props) => {
     const { t } = useLingui();
-    const { sync, hasSync } = useAccountSync(accountId);
+    const { sync } = useAccountSync(accountId);
+    const [runEffect] = useEffectAction(t`Could not update setting`);
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
-    if (!hasSync || !isDefined(sync)) {
+    if (!isDefined(sync)) {
         return null;
     }
 
     const isForwardMode = sync.mode === SyncModeEnum.FORWARD;
-    const isSyncing = sync.status === SyncStatusEnum.SYNCING;
-    const statusLabel = buildSyncStatusLabel({ status: sync.status, isForwardMode, isSyncing });
+    const statusLabels: Record<SyncStatusEnum, string> = {
+        [SyncStatusEnum.FAILED]: t`Sync Failed`,
+        [SyncStatusEnum.SYNCING]: isForwardMode ? t`Fetching new...` : t`Syncing history...`,
+        [SyncStatusEnum.IDLE]: isForwardMode ? t`Up to date` : t`Waiting`
+    };
 
     const handleToggle = (enabled: boolean) => {
-        void appRuntime.runPromise(
-            Effect.flatMap(SyncProviderRegistryService, syncProviderRegistryService =>
-                Effect.flatMap(syncProviderRegistryService.getServiceForAccount(accountId), service =>
-                    isDefined(service) ? service.setAccountSyncEnabled(accountId, enabled) : Effect.void
-                )
-            )
-        );
+        runEffect(Effect.flatMap(SyncProviderRegistryService, registry => registry.setAccountSyncEnabled(accountId, enabled)));
     };
 
     const { supportsTokenAuth, supportsFileImport } = SYNC_PROVIDER_CAPABILITIES[sync.provider];
@@ -71,12 +68,12 @@ export const AccountSyncCard = ({ accountId }: Props) => {
         );
 
     return (
-        <Card className="p-4xl gap-y-lg">
+        <Card className="gap-y-lg">
             <View className="flex-row items-center justify-between gap-2">
                 <ResyncAccount accountId={accountId} testID={AccountSyncCardSelector.ResyncButton} />
                 <View className="content-center items-center">
                     <Text className="text-primary font-semibold text-base">{syncLabel}</Text>
-                    <Text className={statusTextVariants({ status: sync.status })}>{statusLabel}</Text>
+                    <Text className={statusTextVariants({ status: sync.status })}>{statusLabels[sync.status]}</Text>
                 </View>
                 <View className="content-center">
                     <ThemedSwitch

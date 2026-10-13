@@ -1,4 +1,4 @@
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
+import { convertToMicroUnits } from '@budgie/contracts';
 
 import type { TransactionEntryCreateEntityInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 import type { EntryBaseValuationInterface } from '@budgie/market';
@@ -24,6 +24,8 @@ export const transactionMapEntryInputToCreateEntity = (
     quotedInstrumentId: entry.quotedInstrumentId ?? null,
     quotedAmount: entry.quotedAmount ?? null,
     quotedUnitPrice: entry.quotedUnitPrice ?? null,
+    operationInstrumentId: entry.operationInstrumentId ?? null,
+    operationAmount: entry.operationAmount ?? null,
     toIban: entry.toIban ?? null,
     originalTransactionId: null
 });

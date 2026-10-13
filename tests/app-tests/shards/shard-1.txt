@@ -18,3 +18,4 @@
 28.rules-search.flow.yaml
 30.crypto-decimal-monero-account.flow.yaml
 37.deposit-lifecycle.flow.yaml
+40.installment-plan.flow.yaml

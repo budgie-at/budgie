@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Transaction pattern repository owns repeated and amount pattern queries that share private SQL helpers */
 import { SQL, and, between, desc, eq, gte, inArray, isNotNull, lte, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -7,8 +6,9 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
+import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -32,12 +32,6 @@ const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transact
 const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
 const CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id);
 
-const buildCategoryTranslationJoinCondition = (language: LanguageEnum) =>
-    and(
-        eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-        eq(DefaultCategoryTranslationEntityTable.language, language)
-    );
-
 type PatternGroupColumn = 'title' | 'comment';
 
 const PATTERN_GROUP_COLUMNS: PatternGroupColumn[] = ['title', 'comment'];
@@ -46,8 +40,6 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
     '@budgie/contracts/TransactionPatternRepository',
     {
         make: Effect.sync(() => {
-            const transactionFilters = new BaseTransactionFilterRepository();
-
             const buildTitleScopeCondition = (groupColumn: PatternGroupColumn) =>
                 groupColumn === 'title' ? ne(TransactionEntityTable.title, '') : eq(TransactionEntityTable.title, '');
 
@@ -84,7 +76,6 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
                 return new Map(amountRows.map(row => [`${row.categoryId}-${row.title}`, row.amount]));
             });
 
-            // eslint-disable-next-line max-statements -- Batched tag query replacing N+1 pattern
             const findTagsForPatterns = Effect.fnUntraced(function* (
                 patterns: ValidPatternRowInterface[],
                 groupColumn: PatternGroupColumn

@@ -22,12 +22,12 @@ export const RuleActionTagSelector = ({ index, testID }: Props) => {
     const { tags } = useGetTagByIdsQuery(isDefined(tagId) ? [tagId] : []);
 
     const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.tagId`>) => {
-        const handleOpen = async () => {
-            const selectedTagIds = await openTagsSelector({ initialTagIds: isDefined(tagId) ? [tagId] : [], singleSelect: true });
-
-            if (isNotEmptyArray(selectedTagIds)) {
-                onChange(selectedTagIds[0]);
-            }
+        const handleOpen = () => {
+            openTagsSelector({ initialTagIds: isDefined(tagId) ? [tagId] : [], singleSelect: true }, selectedTagIds => {
+                if (isNotEmptyArray(selectedTagIds)) {
+                    onChange(selectedTagIds[0]);
+                }
+            });
         };
 
         return <RuleSelectorField label={t`Tag`} value={tags?.[0]?.title ?? t`Select Tag`} onPress={handleOpen} testID={testID} />;

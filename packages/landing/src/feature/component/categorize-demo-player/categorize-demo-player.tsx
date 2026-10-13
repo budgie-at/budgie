@@ -39,7 +39,7 @@ interface Props {
 }
 
 const writeCount = (panel: HTMLElement, done: number) => {
-    const counts = Array.from(panel.querySelectorAll<HTMLElement>('[data-cdemo-count]'));
+    const counts = [...panel.querySelectorAll<HTMLElement>('[data-cdemo-count]')];
     const bar = panel.querySelector<HTMLElement>('[data-cdemo-progress]');
     const total = Math.max(0, ...counts.map(count => Number(count.dataset.from)));
 
@@ -55,7 +55,7 @@ const writeCount = (panel: HTMLElement, done: number) => {
 };
 
 const buildCountTicks = (panel: HTMLElement): (readonly [number, number])[] =>
-    Array.from(panel.querySelectorAll<HTMLElement>('.cdemo-card[data-count]')).reduce<(readonly [number, number])[]>(
+    [...panel.querySelectorAll<HTMLElement>('.cdemo-card[data-count]')].reduce<(readonly [number, number])[]>(
         (ticks, card, index) => [
             ...ticks,
             [ACCEPT_AT_MS + index * CARD_EXIT_STAGGER_MS, (ticks.at(-1)?.[1] ?? 0) + Number(card.dataset.count)]

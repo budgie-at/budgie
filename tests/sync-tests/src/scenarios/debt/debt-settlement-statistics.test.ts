@@ -1,5 +1,3 @@
-import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { DebtAccountService } from '@app/account/service/debt-account.service';
 import {
@@ -27,7 +25,9 @@ import {
     TransactionEntityTable,
     TransactionViewRepository,
     TransactionTypeEnum,
-    UserIconNameEnum
+    UserIconNameEnum,
+    convertFromMicroUnits,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';
@@ -1269,7 +1269,8 @@ const DEBT_V2_TOTAL_AMOUNT = 500 * PRECISION;
 const DEBT_V2_REPAYMENT_AMOUNT = 200 * PRECISION;
 const DEBT_V2_CATEGORY_ID_BY_DEBT_TYPE: Record<AccountDebtTypeEnum, number> = {
     [AccountDebtTypeEnum.LENT]: LENDING_CATEGORY_ID,
-    [AccountDebtTypeEnum.BORROW]: BORROWING_CATEGORY_ID
+    [AccountDebtTypeEnum.BORROW]: BORROWING_CATEGORY_ID,
+    [AccountDebtTypeEnum.INSTALLMENT]: BORROWING_CATEGORY_ID
 };
 
 const getOppositeTransactionType = (

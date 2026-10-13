@@ -6,7 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
-import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 import { AccountSelectorCreateActionCard } from '../account-selector-create-action-card/account-selector-create-action-card';
 
@@ -29,7 +29,7 @@ const keyExtractor = (item: AccountWithInstrumentEntityInterface) => item.id.toS
 export const AccountSelectContent = (props: Props) => {
     const { data, initialAccountId, search, onSelect, emptyStateDescription, showDebtTotal, createAction } = props;
     const { t } = useLingui();
-    const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
+    const contentContainerStyle = useFormsheetListContentStyle();
 
     const renderItem = ({ item }: { item: AccountWithInstrumentEntityInterface }) => (
         <AccountSelectorCard
@@ -65,7 +65,7 @@ export const AccountSelectContent = (props: Props) => {
 
     return (
         <FlatList
-            style={flatListStyle}
+            className="absolute inset-0 bg-primary-reverse"
             data={data}
             keyExtractor={keyExtractor}
             renderItem={renderItem}

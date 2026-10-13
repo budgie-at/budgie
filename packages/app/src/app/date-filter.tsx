@@ -11,6 +11,7 @@ import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-shee
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useDateFilterModal, useDateFilterModalParams } from '../@generic/context/date-filter-modal.context';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by-period.util';
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
@@ -55,7 +56,8 @@ const getCalendarVisibleDate = (range: DateRangeInterface | null): Date | null =
 
 export default function DateFilterModal() {
     const { t } = useLingui();
-    const [, resolveDateFilter] = useDateFilterModal();
+    const [, resolveDateFilter, dismissDateFilter] = useDateFilterModal();
+    useModalDismiss(dismissDateFilter);
     const currentParams = useDateFilterModalParams();
 
     const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => currentParams?.value ?? null);

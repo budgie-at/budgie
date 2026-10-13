@@ -6,13 +6,12 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { TransactionCategorizeInboxRepository } from '../../inbox/repository/transaction-categorize-inbox.repository';
+import { EmbeddingSuggestionService } from '../../suggestion/service/embedding-suggestion.service';
 import {
     EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
     EMBEDDING_AUTO_APPLY_MIN_CONFIDENCE,
-    EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
     EMBEDDING_DOCUMENT_PREFIX,
-    EMBEDDING_QUERY_PREFIX,
-    EMBEDDING_VEC_OVERSAMPLE_LIMIT
+    EMBEDDING_QUERY_PREFIX
 } from '../constant/embedding.constant';
 import { CommentEmbeddingRepository } from '../repository/comment-embedding.repository';
 import { MerchantEmbeddingRepository } from '../repository/merchant-embedding.repository';
@@ -23,6 +22,7 @@ import { buildTransactionContext } from '../util/build-transaction-context.util'
 import { serializeEmbedding } from '../util/serialize-embedding.util';
 
 import { EmbeddingInvoker } from './embedding-invoker.service';
+import { EmbeddingService } from './embedding.service';
 
 import type { AutoCategoryCandidateInterface } from '../interface/auto-category-candidate.interface';
 import type { EmbeddingIndexSourceInterface } from '../interface/embedding-index-source.interface';
@@ -35,25 +35,11 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
         const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
         const transactionCategorizeInboxRepository = yield* TransactionCategorizeInboxRepository;
         const embeddingInvoker = yield* EmbeddingInvoker;
+        const embeddingService = yield* EmbeddingService;
+        const embeddingSuggestionService = yield* EmbeddingSuggestionService;
 
         const predictCategory = Effect.fnUntraced(function* (embedding: Uint8Array) {
-            const scores = new Map<number, number>();
-            const neighbours = yield* Effect.all([
-                merchantEmbeddingRepository.findSimilarCategories(
-                    embedding,
-                    EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                    EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
-                    EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-                ),
-                commentEmbeddingRepository.findSimilarCategories(
-                    embedding,
-                    EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                    EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD,
-                    EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-                )
-            ]);
-
-            neighbours.flat().forEach(({ categoryId, score }) => scores.set(categoryId, (scores.get(categoryId) ?? 0) + score));
+            const scores = yield* embeddingSuggestionService.scoreCategories(embedding, EMBEDDING_AUTO_APPLY_DISTANCE_THRESHOLD);
 
             const [best] = [...scores].sort(([, first], [, second]) => second - first);
             const total = [...scores.values()].reduce((sum, score) => sum + score, 0);
@@ -62,12 +48,10 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
         });
 
         const autoCategorize = Effect.fnUntraced(function* (transaction: AutoCategoryCandidateInterface) {
-            const rawEmbedding = yield* embeddingInvoker.embed(
+            const queryEmbedding = yield* embeddingService.generateEmbedding(
                 `${EMBEDDING_QUERY_PREFIX}${buildTransactionContext(transaction.title, transaction.mccDescription, transaction.comment)}`
             );
-            const categoryId = isNotEmptyArray(rawEmbedding)
-                ? yield* predictCategory(serializeEmbedding(new Float32Array(rawEmbedding)))
-                : null;
+            const categoryId = isDefined(queryEmbedding) ? yield* predictCategory(serializeEmbedding(queryEmbedding)) : null;
 
             if (isDefined(categoryId)) {
                 yield* transactionCategorizeInboxRepository.updateUncategorizedCategoryByTransactionIds(
@@ -182,7 +166,9 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
             MerchantEmbeddingRepository.layer,
             CommentEmbeddingRepository.layer,
             TransactionEmbeddingRepository.layer,
-            TransactionCategorizeInboxRepository.layer
+            TransactionCategorizeInboxRepository.layer,
+            EmbeddingService.layer,
+            EmbeddingSuggestionService.layer
         ])
     );
 }

@@ -1,6 +1,7 @@
 import { AccountEntityInterface } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
 import * as Effect from 'effect/Effect';
+import * as Struct from 'effect/Struct';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -23,36 +24,30 @@ export const UpdateDepositAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
 
     const initialValues = {
-        iban: account.iban,
-        type: account.type,
-        icon: account.icon,
-        title: account.title,
-        deadline: account.deadline,
-        currentBalance: balance,
-        interestRate: account.interestRate,
-        instrumentId: account.instrumentId,
-        integrationId: account.integrationId,
-        includeInNetWorth: account.includeInNetWorth,
-        isActive: account.isActive
+        ...Struct.pick(account, [
+            'iban',
+            'type',
+            'icon',
+            'title',
+            'deadline',
+            'interestRate',
+            'instrumentId',
+            'integrationId',
+            'includeInNetWorth',
+            'isActive'
+        ]),
+        currentBalance: balance
     };
 
-    const { control, handleSubmit, instrument, isSubmitting } = useDepositAccountForm(
-        initialValues,
-        values =>
-            appRuntime.runPromise(
-                Effect.flatMap(AccountService, accountService =>
-                    accountService.updateDepositById(account.id, {
-                        title: values.title,
-                        icon: values.icon,
-                        currentBalance: values.currentBalance,
-                        interestRate: values.interestRate,
-                        deadline: values.deadline,
-                        includeInNetWorth: values.includeInNetWorth,
-                        isActive: values.isActive
-                    })
+    const { control, handleSubmit, instrument, isSubmitting } = useDepositAccountForm(initialValues, values =>
+        appRuntime.runPromise(
+            Effect.flatMap(AccountService, accountService =>
+                accountService.updateDepositById(
+                    account.id,
+                    Struct.pick(values, ['title', 'icon', 'currentBalance', 'interestRate', 'deadline', 'includeInNetWorth', 'isActive'])
                 )
-            ),
-        true
+            )
+        )
     );
 
     const stickyInstrument = useStickyDefinedValue(instrument);

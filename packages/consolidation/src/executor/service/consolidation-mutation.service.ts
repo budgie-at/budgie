@@ -1,5 +1,6 @@
 import {
     CategorySourceEnum,
+    TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -11,12 +12,13 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { P2pFiatDirectionEnum } from '../../auto/enum/p2p-fiat-direction.enum';
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
 
 import type { P2pFiatTransferCandidateInterface } from '../../auto/interface/p2p-fiat-transfer-candidate.interface';
+import type { FeeEntrySourceInterface } from '../../query/interface/fee-entry-source.interface';
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type {
     AtmCashWithdrawalCandidateInterface,
@@ -46,28 +48,41 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                             isPositiveNumber(entry.amount)
                     );
 
-            const createCanonicalFeeEntries = Effect.fnUntraced(function* (
-                accountId: number,
-                feeEntries: TransactionEntryEntityInterface[],
-                canonicalTransactionId: number
-            ) {
-                yield* transactionEntryRepository.bulkCreate(
-                    feeEntries.map(feeEntry => ({
-                        transactionId: canonicalTransactionId,
-                        accountId,
-                        categoryId: feeEntry.categoryId,
-                        categorySource: feeEntry.categorySource,
-                        mccCategoryId: feeEntry.mccCategoryId,
-                        type: TransactionEntryTypeEnum.FEE,
-                        amount: feeEntry.amount,
-                        externalId: null,
-                        exchangeRate: feeEntry.exchangeRate,
-                        baseInstrumentId: feeEntry.baseInstrumentId,
-                        baseExchangeRate: feeEntry.baseExchangeRate,
-                        baseAmount: feeEntry.baseAmount,
-                        toIban: null,
-                        originalTransactionId: null
-                    }))
+            const buildCanonicalFeeEntry = (feeEntry: FeeEntrySourceInterface, canonicalTransactionId: number) => ({
+                transactionId: canonicalTransactionId,
+                accountId: feeEntry.accountId,
+                categoryId: feeEntry.categoryId,
+                categorySource: feeEntry.categorySource,
+                mccCategoryId: feeEntry.mccCategoryId,
+                type: TransactionEntryTypeEnum.FEE,
+                amount: feeEntry.amount,
+                externalId: null,
+                exchangeRate: feeEntry.exchangeRate,
+                baseInstrumentId: feeEntry.baseInstrumentId,
+                baseExchangeRate: feeEntry.baseExchangeRate,
+                baseAmount: feeEntry.baseAmount,
+                toIban: null,
+                originalTransactionId: null
+            });
+
+            const createCanonicalFeeEntries = (feeEntries: readonly FeeEntrySourceInterface[], canonicalTransactionId: number) =>
+                transactionEntryRepository.bulkCreate(feeEntries.map(feeEntry => buildCanonicalFeeEntry(feeEntry, canonicalTransactionId)));
+
+            const findUncategorizedSyncedEntry = Effect.fnUntraced(function* (syncedTransaction: TransactionWithEntriesEntityInterface) {
+                const syncedTags = yield* transactionTagsRepository.findByTransactionId(syncedTransaction.id);
+
+                if (isNotEmptyArray(syncedTags) || isNotEmptyString(syncedTransaction.comment)) {
+                    return null;
+                }
+
+                return (
+                    syncedTransaction.entries.find(
+                        entry =>
+                            entry.kind === TransactionEntryKindEnum.PRIMARY &&
+                            entry.type === TransactionEntryTypeEnum.CREDIT &&
+                            !isDefined(entry.categoryId) &&
+                            entry.categorySource === CategorySourceEnum.USER
+                    ) ?? null
                 );
             });
 
@@ -131,8 +146,25 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                         return;
                     }
 
-                    yield* createCanonicalFeeEntries(candidate.sourceAccountId, [feeEntry], canonicalTransactionId);
+                    yield* createCanonicalFeeEntries([feeEntry], canonicalTransactionId);
                 }),
+                createTransferPairFeeEntries: Effect.fn('ConsolidationMutationService.createTransferPairFeeEntries')(function* (
+                    accountIds: number[],
+                    sourceTransactions: TransactionWithEntriesEntityInterface[],
+                    canonicalTransactionId: number
+                ) {
+                    for (const accountId of new Set(accountIds)) {
+                        const feeEntries = findFeeEntries(accountId, sourceTransactions);
+
+                        if (isNotEmptyArray(feeEntries)) {
+                            yield* createCanonicalFeeEntries(feeEntries, canonicalTransactionId);
+                        }
+                    }
+                }),
+                restoreMovedFeeEntries: (movedFeeEntries: readonly FeeEntrySourceInterface[]) =>
+                    transactionEntryRepository.bulkCreate(
+                        movedFeeEntries.map(feeEntry => buildCanonicalFeeEntry(feeEntry, feeEntry.transactionId))
+                    ),
                 createP2pFiatTransferFeeEntries: Effect.fn('ConsolidationMutationService.createP2pFiatTransferFeeEntries')(function* (
                     candidate: P2pFiatTransferCandidateInterface,
                     sourceTransactions: TransactionWithEntriesEntityInterface[],
@@ -148,7 +180,7 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                         return;
                     }
 
-                    yield* createCanonicalFeeEntries(bankAccountId, feeEntries, canonicalTransactionId);
+                    yield* createCanonicalFeeEntries(feeEntries, canonicalTransactionId);
                 }),
                 moveSourcesToCanonical: Effect.fn('ConsolidationMutationService.moveSourcesToCanonical')(function* (
                     sourceTransactionIds: number[],
@@ -156,6 +188,28 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                 ) {
                     yield* transactionEntryRepository.moveToConsolidatedTransaction(sourceTransactionIds, canonicalTransactionId);
                     yield* transactionConsolidationRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId);
+                }),
+                copyManualExpenseDuplicateUserData: Effect.fn('ConsolidationMutationService.copyManualExpenseDuplicateUserData')(function* (
+                    syncedTransaction: TransactionWithEntriesEntityInterface,
+                    manualTransaction: TransactionWithEntriesEntityInterface
+                ) {
+                    const syncedEntry = yield* findUncategorizedSyncedEntry(syncedTransaction);
+
+                    if (!isDefined(syncedEntry)) {
+                        return;
+                    }
+
+                    yield* transactionEntryRepository.updateById(syncedEntry.id, {
+                        categoryId: manualTransaction.entries.at(0)?.categoryId ?? null,
+                        categorySource: CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE
+                    });
+                    yield* consolidationCopySourceTransactionTags(transactionTagsRepository, [manualTransaction.id], syncedTransaction.id);
+
+                    if (isNotEmptyString(manualTransaction.comment)) {
+                        yield* transactionRepository.updateById(syncedTransaction.id, {
+                            comment: manualTransaction.comment
+                        });
+                    }
                 }),
                 copySourceTags: Effect.fn('ConsolidationMutationService.copySourceTags')(function* (
                     sourceTransactionIds: number[],

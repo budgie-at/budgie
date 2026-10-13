@@ -47,6 +47,7 @@ export const privatbankTransactionMapper = (row: PrivatbankRowInterface): SyncTr
         amount: Math.abs(row.cardAmount),
         operationAmount: Math.abs(row.operationAmount),
         currencyCode: privatbankCurrencyCodeMapper(row.operationCurrency),
+        operationCurrencyCode: privatbankCurrencyCodeMapper(row.operationCurrency),
         commissionRate: 0,
         cashbackAmount: 0,
         balance: row.endBalance,

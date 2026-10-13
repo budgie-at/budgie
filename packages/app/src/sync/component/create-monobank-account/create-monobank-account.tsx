@@ -2,11 +2,12 @@ import { MonobankSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { DEFAULT_SYNC_HISTORY_DEPTH } from '../../constant/sync-history-depth-options.constant';
+import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
@@ -15,33 +16,17 @@ import { TokenInputStep } from '../token-input-step/token-input-step';
 
 import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
 
-import type { ReactNode } from 'react';
-
-type SetupStep = 'token' | 'accounts' | 'history';
-
-// eslint-disable-next-line max-lines-per-function, max-statements -- Multi-step setup orchestration with per-step content and footer
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
 
-    const [step, setStep] = useState<SetupStep>('token');
+    const [step, setStep] = useState(SetupStepEnum.TOKEN);
     const [token, setToken] = useState('');
     const [historyDepth, setHistoryDepth] = useState(DEFAULT_SYNC_HISTORY_DEPTH);
 
-    const {
-        accountPreviews,
-        selectedAccounts,
-        setPreviews,
-        toggleAccount,
-        selectAllAccounts,
-        deselectAllAccounts,
-        isLoading,
-        fetchAccountPreviews,
-        handleGoBack,
-        handleSetupSync,
-        isStartSyncDisabled
-    } = useSyncAccountSetupFlow(MonobankSyncService, (monobankSyncService, selectedAccountIds) =>
-        monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds, historyDepth)
-    );
+    const { accountSelection, isLoading, fetchAccountPreviews, handleGoBack, handleSetupSync, isStartSyncDisabled } =
+        useSyncAccountSetupFlow(MonobankSyncService, (monobankSyncService, selectedAccountIds) =>
+            monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds, historyDepth)
+        );
 
     const handleFetchAccounts = async () => {
         const trimmedToken = token.trim();
@@ -55,76 +40,66 @@ export const CreateMonobankAccount = () => {
         await fetchAccountPreviews(
             monobankSyncService => monobankSyncService.fetchAccountsPreview(trimmedToken),
             previews => {
-                setPreviews(previews);
-                setStep('accounts');
+                accountSelection.setPreviews(previews);
+                setStep(SetupStepEnum.ACCOUNTS);
             }
         );
     };
 
-    const handleContinueToHistory = () => {
-        setStep('history');
+    const previousStep: Record<SetupStepEnum, SetupStepEnum | null> = {
+        [SetupStepEnum.TOKEN]: null,
+        [SetupStepEnum.ACCOUNTS]: SetupStepEnum.TOKEN,
+        [SetupStepEnum.HISTORY]: SetupStepEnum.ACCOUNTS
     };
 
     const handleStepAwareGoBack = () => {
-        if (step === 'history') {
-            setStep('accounts');
+        const stepBefore = previousStep[step];
+
+        if (!isDefined(stepBefore)) {
+            handleGoBack();
 
             return;
         }
 
-        if (step === 'accounts') {
-            setStep('token');
-
-            return;
-        }
-
-        handleGoBack();
+        setStep(stepBefore);
     };
 
-    const tokenStepContent = <TokenInputStep token={token} onTokenChange={setToken} />;
-    const accountsStepContent = (
-        <AccountSelectionStep
-            accountPreviews={accountPreviews}
-            selectedAccounts={selectedAccounts}
-            onToggle={toggleAccount}
-            onSelectAll={selectAllAccounts}
-            onDeselectAll={deselectAllAccounts}
-        />
-    );
-    const historyStepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={setHistoryDepth} />;
-
-    const stepContentByStep: Record<SetupStep, ReactNode> = {
-        token: tokenStepContent,
-        accounts: accountsStepContent,
-        history: historyStepContent
+    const handleContinueToHistory = () => {
+        setStep(SetupStepEnum.HISTORY);
     };
 
-    const tokenFooter = <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />;
-    const accountsFooter = (
-        <Button
-            onPress={handleContinueToHistory}
-            disabled={isStartSyncDisabled}
-            content={t`Continue`}
-            testID={CreateMonobankAccountSelector.ContinueButton}
-        />
-    );
-    const historyFooter = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
+    let stepContent = <TokenInputStep token={token} onTokenChange={setToken} />;
+    let footer = <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />;
 
-    const footerByStep: Record<SetupStep, ReactNode> = {
-        token: tokenFooter,
-        accounts: accountsFooter,
-        history: historyFooter
-    };
+    switch (step) {
+        case SetupStepEnum.ACCOUNTS:
+            stepContent = <AccountSelectionStep {...accountSelection} />;
+            footer = (
+                <Button
+                    onPress={handleContinueToHistory}
+                    disabled={isStartSyncDisabled}
+                    content={t`Continue`}
+                    testID={CreateMonobankAccountSelector.ContinueButton}
+                />
+            );
+            break;
+        case SetupStepEnum.HISTORY:
+            stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={setHistoryDepth} />;
+            footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
+            break;
+        default:
+            break;
+    }
 
     return (
         <SyncAccountSetupPage
             title={t`Connect Monobank`}
             description={t`Sync your Monobank accounts and transactions`}
             onGoBack={handleStepAwareGoBack}
-            footer={footerByStep[step]}
+            footer={footer}
             scrollViewTestID={CreateMonobankAccountSelector.ScrollView}
         >
-            {stepContentByStep[step]}
+            {stepContent}
         </SyncAccountSetupPage>
     );
 };

@@ -14,7 +14,7 @@ interface Props<T extends { contactId: string | null; debtType: AccountDebtTypeE
 export const DebtAccountContactField = <T extends { contactId: string | null; debtType: AccountDebtTypeEnum }>({ control }: Props<T>) => {
     const { t } = useLingui();
     const debtType = useWatch({ control, name: 'debtType' as Path<T> });
-    const isBorrowAccount = debtType === AccountDebtTypeEnum.BORROW;
+    const isBorrowAccount = debtType !== AccountDebtTypeEnum.LENT;
     const emptyDescription = isBorrowAccount ? t`Who do you owe?` : t`Who owes you?`;
     const selectedDescription = isBorrowAccount ? t`You owe` : t`Owes you`;
 

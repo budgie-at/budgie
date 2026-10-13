@@ -23,7 +23,7 @@ export const computeRefundedSummary = (
         : sumEntryAmounts(transaction.entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT));
 
     return {
-        kind: credits === debits ? RefundedSummaryKindEnum.FULL : RefundedSummaryKindEnum.PARTIAL,
+        kind: debits >= credits ? RefundedSummaryKindEnum.FULL : RefundedSummaryKindEnum.PARTIAL,
         refundsTotal: debits
     };
 };

@@ -61,6 +61,10 @@ export default ({ config }) => ({
         config: {
             usesNonExemptEncryption: false
         },
+        infoPlist: {
+            BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
+            UIBackgroundModes: ['processing']
+        },
         associatedDomains: ['applinks:budgie.at'],
         infoPlist: {
             LSApplicationQueriesSchemes: ['shortcuts']

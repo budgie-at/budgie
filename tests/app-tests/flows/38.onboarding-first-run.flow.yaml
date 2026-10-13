@@ -71,3 +71,14 @@ env:
 
 - assertNotVisible:
       id: 'AccountsEmptyState.AddAccountButton'
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://onboarding'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000
+- assertNotVisible:
+      id: 'OnboardingWelcome.Root'

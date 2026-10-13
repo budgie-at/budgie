@@ -3,6 +3,7 @@ import { RefObject } from 'react';
 import { View } from 'react-native';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { KeypadHandlersInterface } from '../../interface/keypad-handlers.interface';
 import { QuickFormAccountFieldName } from '../../interface/quick-form-account-field-name.type';
 import { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
@@ -15,12 +16,7 @@ interface Props {
     readonly accountRowRef: RefObject<TransactionAccountRowRef | null>;
     readonly fieldIconsRef: RefObject<TransactionFieldIconsRefInterface | null>;
     readonly isAmountPositive: boolean;
-    readonly keypadHandlers: {
-        readonly onDigit: (digit: string) => void;
-        readonly onDecimal: () => void;
-        readonly onBackspace: () => void;
-        readonly onLongBackspace: () => void;
-    };
+    readonly keypadHandlers: KeypadHandlersInterface;
     readonly splitEntryCount: number;
     readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
@@ -72,10 +68,7 @@ export const SimpleQuickFormControls = ({
 
         <TransactionKeypad
             variant={variant}
-            onDigit={keypadHandlers.onDigit}
-            onDecimal={keypadHandlers.onDecimal}
-            onBackspace={keypadHandlers.onBackspace}
-            onLongBackspace={keypadHandlers.onLongBackspace}
+            keypad={keypadHandlers}
             onConfirm={onConfirm}
             onCancel={onCancel}
             confirmTestID={SimpleQuickFormSelector.SubmitButton}

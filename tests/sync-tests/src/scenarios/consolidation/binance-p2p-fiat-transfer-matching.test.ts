@@ -5,22 +5,21 @@ import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import {
+    expectConsolidatedToP2pCanonical,
+    expectP2pUnconsolidated,
+    fetchP2pCanonical,
     P2P_ONE_HOUR_MS,
     P2P_OPERATED_AT,
     P2P_OUT_OF_WINDOW_OFFSET_MS,
     P2P_UAH_TOTAL,
     P2P_USDT_AMOUNT,
-    expectConsolidatedToP2pCanonical,
-    expectP2pUnconsolidated,
-    fetchCanonicalsOfType,
-    fetchP2pCanonical,
-    fetchTransactionById,
     seedBankPair,
     seedP2pFiatTransferFixture,
     seedP2pIncome,
     seedP2pPair,
     testDb,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 const ONE_SECOND_MS = 1_000;
@@ -75,7 +74,7 @@ describe('consolidation/binance-p2p-fiat-transfer time window', () => {
             );
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(0);
-            expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -152,14 +151,14 @@ describe('consolidation/binance-p2p-fiat-transfer ranked ownership', () => {
                 .where(eq(TransactionEntryEntityTable.transactionId, smallIncome.id));
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(2);
-            expect((yield* fetchTransactionById(largeExpense.id)).consolidationParentTransactionId).toBe(
-                (yield* fetchTransactionById(largeIncome.id)).consolidationParentTransactionId
+            expect((yield* testQueryService.findTransactionById(largeExpense.id)).consolidationParentTransactionId).toBe(
+                (yield* testQueryService.findTransactionById(largeIncome.id)).consolidationParentTransactionId
             );
-            expect((yield* fetchTransactionById(smallExpense.id)).consolidationParentTransactionId).toBe(
-                (yield* fetchTransactionById(smallIncome.id)).consolidationParentTransactionId
+            expect((yield* testQueryService.findTransactionById(smallExpense.id)).consolidationParentTransactionId).toBe(
+                (yield* testQueryService.findTransactionById(smallIncome.id)).consolidationParentTransactionId
             );
-            expect((yield* fetchTransactionById(largeIncome.id)).consolidationParentTransactionId).not.toBe(
-                (yield* fetchTransactionById(smallIncome.id)).consolidationParentTransactionId
+            expect((yield* testQueryService.findTransactionById(largeIncome.id)).consolidationParentTransactionId).not.toBe(
+                (yield* testQueryService.findTransactionById(smallIncome.id)).consolidationParentTransactionId
             );
         }).pipe(Effect.provide(TestLayer))
     );
@@ -192,9 +191,9 @@ describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', (
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(1);
 
             const canonicalId = (yield* fetchP2pCanonical()).id;
-            expect((yield* fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonicalId);
-            expect((yield* fetchTransactionById(closerIncome.id)).consolidationParentTransactionId).toBe(canonicalId);
-            expect((yield* fetchTransactionById(fartherIncome.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonicalId);
+            expect((yield* testQueryService.findTransactionById(closerIncome.id)).consolidationParentTransactionId).toBe(canonicalId);
+            expect((yield* testQueryService.findTransactionById(fartherIncome.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -226,15 +225,15 @@ describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', (
             );
 
             expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(2);
-            expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(2);
-            expect((yield* fetchTransactionById(firstIncome.id)).consolidationParentTransactionId).toBe(
-                (yield* fetchTransactionById(secondExpense.id)).consolidationParentTransactionId
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(2);
+            expect((yield* testQueryService.findTransactionById(firstIncome.id)).consolidationParentTransactionId).toBe(
+                (yield* testQueryService.findTransactionById(secondExpense.id)).consolidationParentTransactionId
             );
-            expect((yield* fetchTransactionById(secondIncome.id)).consolidationParentTransactionId).toBe(
-                (yield* fetchTransactionById(firstExpense.id)).consolidationParentTransactionId
+            expect((yield* testQueryService.findTransactionById(secondIncome.id)).consolidationParentTransactionId).toBe(
+                (yield* testQueryService.findTransactionById(firstExpense.id)).consolidationParentTransactionId
             );
-            expect((yield* fetchTransactionById(firstIncome.id)).consolidationParentTransactionId).not.toBeNull();
-            expect((yield* fetchTransactionById(secondIncome.id)).consolidationParentTransactionId).not.toBeNull();
+            expect((yield* testQueryService.findTransactionById(firstIncome.id)).consolidationParentTransactionId).not.toBeNull();
+            expect((yield* testQueryService.findTransactionById(secondIncome.id)).consolidationParentTransactionId).not.toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 });

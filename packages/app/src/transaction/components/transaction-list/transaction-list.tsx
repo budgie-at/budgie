@@ -45,8 +45,6 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
     const { count: uncategorizedTransactionCount } = useGetUncategorizedTransactionCountQuery(activeFilters);
     const { count: transactionCount } = useGetTransactionCountQuery(activeFilters);
 
-    const balanceAdjustmentLabel = t`Balance Adjustment`;
-    const categoriesLabel = t`Categories`;
     const emptyStateText = hasFiltersSelected
         ? { title: t`No matching transactions`, description: t`Try adjusting your filters to see more results` }
         : {
@@ -108,8 +106,6 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
                 sections={sections}
                 onEndReached={loadMore}
                 listEmptyState={listEmptyState}
-                balanceAdjustmentLabel={balanceAdjustmentLabel}
-                categoriesLabel={categoriesLabel}
                 accountId={accountId}
                 footerSpacerMultiplier={footerSpacerMultiplier}
             />

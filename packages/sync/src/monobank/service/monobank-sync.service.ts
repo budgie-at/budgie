@@ -11,16 +11,23 @@ import {
     SyncModeEnum,
     SyncRepository,
     TransactionRepository,
-    UserIconNameEnum
+    UserIconNameEnum,
+    convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, TransactionService, convertToMicroUnits } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
+import { addMonths } from 'date-fns/addMonths';
+import { addSeconds } from 'date-fns/addSeconds';
+import { fromUnixTime } from 'date-fns/fromUnixTime';
+import { getUnixTime } from 'date-fns/getUnixTime';
+import { max } from 'date-fns/max';
+import { min } from 'date-fns/min';
 import { subSeconds } from 'date-fns/subSeconds';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { UNKNOWN_SYNC_ERROR } from '../../core/constant/unknown-sync-error.constant';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
@@ -28,14 +35,15 @@ import { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.enum';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
+import { SyncOperationMetadataService } from '../../core/service/sync-operation-metadata.service';
 import { TransferConsolidationService } from '../../core/service/transfer-consolidation.service';
+import { makePollingSyncAccountSetup } from '../../core/util/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/util/make-polling-sync-service.util';
 import { mapBankTransactionToCreateInput } from '../../core/util/map-bank-transaction-to-create-input.util';
 import { resolveSyncProgressUpdate } from '../../core/util/resolve-sync-progress-update.util';
 import { MonobankClient } from '../client/monobank.client';
+import { MONOBANK_MAX_PERIOD_SECONDS } from '../constant/monobank-max-period-seconds.constant';
 import { MONOBANK_RATE_LIMIT_MS } from '../constant/monobank-rate-limit-ms.constant';
-
-import { MonobankTransactionSyncService } from './monobank-transaction-sync.service';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncBatchResultInterface } from '../../core/interface/sync-batch-result.interface';
@@ -55,17 +63,26 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const transactionService = yield* TransactionService;
         const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
         const syncWorkload = yield* SyncWorkload;
+        const syncOperationMetadataService = yield* SyncOperationMetadataService;
         const transferConsolidationService = yield* TransferConsolidationService;
         const provider = ExternalSourceEnum.MONOBANK;
+        const createOrUpdateSync = yield* makePollingSyncAccountSetup(provider);
         const providerTitle = 'Monobank';
+        const maxTransactionsPerRequest = 500;
+        const dormancyMonths = 3;
         let mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
-        const mapBankTransaction = (bankTransaction: SyncTransactionInterface, accountId: number) =>
-            mapBankTransactionToCreateInput(
-                bankTransaction,
-                accountId,
-                mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
-                provider
+        const mapBankTransactions = (bankTransactions: SyncTransactionInterface[], accountId: number) =>
+            syncOperationMetadataService.applyToInputs(
+                bankTransactions.map(bankTransaction =>
+                    mapBankTransactionToCreateInput(
+                        bankTransaction,
+                        accountId,
+                        mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
+                        provider
+                    )
+                ),
+                bankTransactions
             );
 
         const getOwnBalance = (bankAccount: SyncAccountInterface): number =>
@@ -97,7 +114,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             return `${providerTitle} ${cardType} ${account.currencyCode}`;
         };
 
-        const completeBackwardHistory = Effect.fn('AppMonobankSyncService.completeBackwardHistory')(
+        const completeBackwardHistory = Effect.fn('MonobankSyncService.completeBackwardHistory')(
             function* (sync: SyncEntityInterface, setupBalance: number, result: SyncBatchResultInterface) {
                 const setupAt = sync.forwardSyncFromAt ?? new Date();
                 const oldestTransactionAt = yield* transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
@@ -140,9 +157,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 return [];
             }
 
-            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(
-                newTransactions.map(bankTransaction => mapBankTransaction(bankTransaction, accountId))
-            );
+            const prepared = yield* ruleEngineService.prepareCreateInputsForRules(yield* mapBankTransactions(newTransactions, accountId));
             const createdTransactions = yield* transactionService.bulkCreate(prepared.transactionInputs);
             const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
             const postCreateTransactionInputs = prepared.postCreateIndexes
@@ -167,26 +182,70 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
             const createdTransactions = yield* createNewTransactions(newTransactions, accountId);
             if (isNotEmptyArray(existingTransactions)) {
-                yield* transactionService.bulkUpdateImported(
-                    existingTransactions.map(bankTransaction => mapBankTransaction(bankTransaction, accountId))
-                );
-                yield* transactionService.updateAllBalances();
+                yield* transactionService.bulkUpdateImported(yield* mapBankTransactions(existingTransactions, accountId));
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
             }
 
             return [...createdTransactions, ...buildExistingTransactionScopeSeeds(existingTransactions, existingTransactionIdMap)];
         });
 
-        const fetchTransactionBatch = Effect.fnUntraced(function* (sync: SyncEntityInterface, externalAccountId: string, token: string) {
-            const service = new MonobankTransactionSyncService(new MonobankClient(token));
+        const fetchTransactions = (client: MonobankClient, accountId: string, from: Date, to: Date) =>
+            client
+                .getTransactions(accountId, getUnixTime(from), getUnixTime(to))
+                .pipe(Effect.catchTag('SyncInvalidResponseError', () => Effect.succeed<SyncTransactionInterface[]>([])));
 
-            return sync.mode === SyncModeEnum.FORWARD
-                ? yield* service.syncTransactionsForward(externalAccountId, sync.forwardSyncFromAt ?? new Date())
-                : yield* service.syncTransactionsBackward(
-                      externalAccountId,
-                      sync.backwardSyncFromAt ?? new Date(),
-                      sync.backwardSyncedAt,
-                      sync.backwardSyncLimitAt
-                  );
+        const hasMoreTransactions = (transactions: SyncTransactionInterface[]): boolean =>
+            transactions.length === maxTransactionsPerRequest;
+
+        const getNextTimeFromTransaction = (transaction: SyncTransactionInterface): Date => addSeconds(fromUnixTime(transaction.time), -1);
+
+        const syncTransactionsForward = Effect.fnUntraced(function* (client: MonobankClient, accountId: string, from: Date) {
+            const now = new Date();
+            const to = min([now, addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS)]);
+            const transactions = yield* fetchTransactions(client, accountId, from, to);
+            const oldestTransaction = transactions.at(-1);
+
+            if (hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
+                return { nextFrom: getNextTimeFromTransaction(oldestTransaction), nextTo: to, transactions, completed: false };
+            }
+
+            return { nextFrom: to, nextTo: to, transactions, completed: to >= now };
+        });
+
+        const syncTransactionsBackward = Effect.fnUntraced(function* (
+            client: MonobankClient,
+            accountId: string,
+            sync: SyncEntityInterface
+        ) {
+            const to = sync.backwardSyncFromAt ?? new Date();
+            const limitAt = sync.backwardSyncLimitAt;
+            const firstEmptyFromInStreak = sync.backwardSyncedAt;
+
+            if (isDefined(limitAt) && to <= limitAt) {
+                return { nextTo: to, nextFrom: to, transactions: [], completed: true };
+            }
+
+            const windowFrom = addSeconds(to, -MONOBANK_MAX_PERIOD_SECONDS);
+            const from = isDefined(limitAt) ? max([windowFrom, limitAt]) : windowFrom;
+            const transactions = yield* fetchTransactions(client, accountId, from, to);
+            const oldestTransaction = transactions.at(-1);
+
+            if (hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
+                return { nextTo: getNextTimeFromTransaction(oldestTransaction), nextFrom: from, transactions, completed: false };
+            }
+
+            const reachedHistoryLimit = isDefined(limitAt) && from <= limitAt;
+            const reachedDormancyBoundary =
+                isEmptyArray(transactions) &&
+                isDefined(firstEmptyFromInStreak) &&
+                from <= addMonths(firstEmptyFromInStreak, -dormancyMonths);
+
+            return {
+                nextTo: from,
+                nextFrom: addSeconds(from, -MONOBANK_MAX_PERIOD_SECONDS),
+                transactions,
+                completed: reachedHistoryLimit || reachedDormancyBoundary
+            };
         });
 
         const fetchBankAccountsAndJars = Effect.fnUntraced(function* (token: string) {
@@ -204,7 +263,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             shouldRequestSyncWhenEnabled: true,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
-            executeSyncBatch: Effect.fn('AppMonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface) {
+            executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
                     const now = new Date();
@@ -212,11 +271,11 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     return { transactions: [], nextTo: now, nextFrom: now, completed: true };
                 }
 
-                const result = yield* fetchTransactionBatch(
-                    sync,
-                    account.externalId,
-                    yield* syncIntegrationTokenService.resolveAccountToken(provider, sync.accountId)
-                );
+                const client = new MonobankClient(token);
+                const result =
+                    sync.mode === SyncModeEnum.FORWARD
+                        ? yield* syncTransactionsForward(client, account.externalId, sync.forwardSyncFromAt ?? new Date())
+                        : yield* syncTransactionsBackward(client, account.externalId, sync);
                 yield* Effect.yieldNow;
                 const changedTransactions = yield* processFetchedTransactions(result.transactions, account.id);
                 yield* reconcileChangedTransactions(changedTransactions);
@@ -224,7 +283,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
                 return result;
             }),
-            beforeSyncRun: Effect.fn('AppMonobankSyncService.beforeSyncRun')(function* () {
+            beforeSyncRun: Effect.fn('MonobankSyncService.beforeSyncRun')(function* () {
                 mccCategoryLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
             }),
             applyProgressUpdate: (sync, result) =>
@@ -235,12 +294,12 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         return {
             ...pollingSyncService,
-            fetchAccountsPreview: Effect.fn('AppMonobankSyncService.fetchAccountsPreview')(function* (token: string) {
+            fetchAccountsPreview: Effect.fn('MonobankSyncService.fetchAccountsPreview')(function* (token: string) {
                 const bankAccounts = yield* fetchBankAccountsAndJars(token);
 
                 return isNotEmptyArray(bankAccounts) ? yield* pollingSyncService.mapAccountsToPreview(bankAccounts) : [];
             }),
-            setupAccountSyncBatch: Effect.fn('AppMonobankSyncService.setupAccountSyncBatch')(function* (
+            setupAccountSyncBatch: Effect.fn('MonobankSyncService.setupAccountSyncBatch')(function* (
                 token: string,
                 externalIds: string[],
                 historyDepth: SyncHistoryDepthEnum = SyncHistoryDepthEnum.FULL
@@ -251,13 +310,13 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     const bankAccount = bankAccounts.find(account => account.id === externalId);
                     if (isDefined(bankAccount)) {
                         const account = yield* pollingSyncService.getOrCreateSyncAccount(bankAccount);
-                        yield* pollingSyncService.createOrUpdateSync(account.id, token, historyDepth, getOwnBalance(bankAccount));
+                        yield* createOrUpdateSync(account.id, token, historyDepth, getOwnBalance(bankAccount));
                     }
                 }
 
                 yield* pollingSyncService.requestSync();
             }),
-            fetchSetupBalance: Effect.fn('AppMonobankSyncService.fetchSetupBalance')(function* (accountId: number) {
+            fetchSetupBalance: Effect.fn('MonobankSyncService.fetchSetupBalance')(function* (accountId: number) {
                 const account = yield* accountRepository.findById(accountId);
                 const token = yield* syncIntegrationTokenService.resolveAccountToken(provider, accountId);
                 const bankAccounts = yield* fetchBankAccountsAndJars(token);
@@ -278,7 +337,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             SettingsRepository.layer,
             AccountBalanceIncrementalService.layer,
             RuleEngineService.layer,
-            TransferConsolidationService.layer
+            TransferConsolidationService.layer,
+            SyncOperationMetadataService.layer
         ])
     );
 }

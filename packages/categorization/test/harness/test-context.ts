@@ -5,7 +5,7 @@ import {
     MerchantEmbeddingRepository,
     TransactionCategorizeInboxRepository
 } from '@budgie/categorization';
-import { SettingsRepository } from '@budgie/contracts';
+import { SettingsRepository, TransactionTagsRepository } from '@budgie/contracts';
 import { RuleMatcherService, RuleRepository } from '@budgie/rules';
 import * as Layer from 'effect/Layer';
 
@@ -26,5 +26,6 @@ export const TestLayer = Layer.mergeAll(
     CommentEmbeddingRepository.layer,
     RuleMatcherService.layer,
     RuleRepository.layer,
-    SettingsRepository.layer
+    SettingsRepository.layer,
+    TransactionTagsRepository.layer
 ).pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));

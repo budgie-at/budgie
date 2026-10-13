@@ -1,0 +1,1 @@
+ALTER TABLE `accounts` ADD `installment_count` integer;

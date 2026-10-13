@@ -5,7 +5,7 @@ import { TransactionInfoRoute } from '../../../../transaction/components/transac
 
 export default function IncomeTransactionInfoRoute() {
     return (
-        <TransactionInfoRoute>
+        <TransactionInfoRoute transactionType={TransactionTypeEnum.INCOME}>
             {transaction => <SimpleTransactionInfoPage transaction={transaction} transactionType={TransactionTypeEnum.INCOME} />}
         </TransactionInfoRoute>
     );

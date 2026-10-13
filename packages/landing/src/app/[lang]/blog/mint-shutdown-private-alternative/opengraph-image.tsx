@@ -1,23 +1,13 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { t } from '@lingui/core/macro';
 
-import { createBlogOgImage } from '../../../../blog/component/blog-og-image/blog-og-image';
-import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+import { createBlogOgRoute } from '../../../../blog/util/create-blog-og-route.util';
 
 export const alt = 'After Mint: A Private, Offline Alternative That Actually Sticks Around';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
-    const { lang } = await params;
-    const i18n = getI18nInstance(lang);
-
-    return createBlogOgImage(
-        t(i18n)`After Mint: A Private, Offline Alternative That Actually Sticks Around`,
-        [t(i18n)`mint-alternatives`, t(i18n)`offline-first`, t(i18n)`privacy`],
-        resolveOgPlate('net-worth-tracker', lang)
-    );
-};
-
-export default OgImage;
+export default createBlogOgRoute('net-worth-tracker', i18n => ({
+    title: t(i18n)`After Mint: A Private, Offline Alternative That Actually Sticks Around`,
+    tags: [t(i18n)`mint-alternatives`, t(i18n)`offline-first`, t(i18n)`privacy`]
+}));

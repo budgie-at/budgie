@@ -10,5 +10,7 @@ export interface CategorizeInboxRowInterface {
     readonly baseInstrumentId: number | null;
     readonly instrumentSymbol: string;
     readonly mccCategoryId: number | null;
+    readonly categoryId: number | null;
+    readonly tagIds: number[];
     readonly mcc: string | null;
 }

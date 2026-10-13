@@ -1,5 +1,4 @@
-import { Db } from '@budgie/contracts';
-import { makeLoggerLayer } from '@budgie/logger';
+import { Db, makeLoggerLayer } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Layer from 'effect/Layer';

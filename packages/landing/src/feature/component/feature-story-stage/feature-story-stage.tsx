@@ -35,7 +35,7 @@ const readCalloutIndex = (callout: HTMLElement) => {
 
 const createActivator = (grid: HTMLElement, steps: HTMLElement[], stages: HTMLElement[]) => {
     const calloutIndexes = new Map(
-        Array.from(grid.querySelectorAll<HTMLElement>('[data-story-callout]')).map(callout => [callout, readCalloutIndex(callout)])
+        [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')].map(callout => [callout, readCalloutIndex(callout)])
     );
     let activeIndex = -1;
 
@@ -112,7 +112,7 @@ const supportsScrollTimeline = () => 'CSS' in window && CSS.supports('animation-
 const skipsScrollFallback = () => window.matchMedia(STORY_STATIC_QUERY).matches || readSaveData() || supportsScrollTimeline();
 
 const trackStoryProgress = (grid: HTMLElement) => {
-    const targets = Array.from(grid.querySelectorAll<HTMLElement>(STORY_MOTION_TARGETS));
+    const targets = [...grid.querySelectorAll<HTMLElement>(STORY_MOTION_TARGETS)];
     let lastProgress = -1;
 
     const update = () => {
@@ -163,13 +163,13 @@ export const FeatureStoryStage = ({ children }: Props) => {
             return emptyFn;
         }
 
-        const steps = Array.from(grid.querySelectorAll<HTMLElement>('[data-story-step]'));
+        const steps = [...grid.querySelectorAll<HTMLElement>('[data-story-step]')];
 
         if (isEmptyArray(steps)) {
             return emptyFn;
         }
 
-        const stages = Array.from(grid.querySelectorAll<HTMLElement>('[data-story-stage]'));
+        const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
         const activate = createActivator(grid, steps, stages);
         const stopObserving = attachStoryObserver(steps, stages, activate);
         const stopProgress = skipsScrollFallback() ? emptyFn : trackStoryProgress(grid);

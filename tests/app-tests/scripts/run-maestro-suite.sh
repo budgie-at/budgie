@@ -17,10 +17,9 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
 cd "$WORKSPACE_DIR"
 
-# shellcheck disable=SC1091
 . "$SCRIPT_DIR/driver-failure-pattern.sh"
-# shellcheck disable=SC1091
 . "$SCRIPT_DIR/mobile-ci-slim-simulator.sh"
+. "$SCRIPT_DIR/flow-fixture-lookup.sh"
 
 APP_ID="$1"
 shift
@@ -29,13 +28,9 @@ OUTPUT_PATH=""
 
 E2E_RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
 SIMULATOR_UDID="${SIMULATOR_UDID:-}"
-RECURRING_EMPTY_DAY="${RECURRING_EMPTY_DAY:-}"
 DATABASE_FIXTURE_SEEDED="false"
-IOS_SIMULATOR_REBOOT_EVERY="${E2E_IOS_SIMULATOR_REBOOT_EVERY:-0}"
 APP_DATA_CONTAINER="${APP_DATA_CONTAINER:-}"
 APP_DATA_CONTAINER_OVERRIDE="$APP_DATA_CONTAINER"
-FIRST_FLOW_PREPARED_PATH="${MAESTRO_FIRST_FLOW_PREPARED_PATH-}"
-FIRST_FLOW_PREPARED_SIGNALED=false
 PRIME_FLOW_PATH="${MAESTRO_PRIME_FLOW_PATH:-$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml}"
 SKIP_FIXTURE_REFRESH="${MAESTRO_SKIP_FIXTURE_REFRESH:-false}"
 
@@ -43,44 +38,6 @@ if [ -n "$APP_DATA_CONTAINER_OVERRIDE" ] && [ ! -d "$APP_DATA_CONTAINER_OVERRIDE
     echo "App data container override is not a directory: $APP_DATA_CONTAINER_OVERRIDE" >&2
     exit 1
 fi
-
-if [ -n "$FIRST_FLOW_PREPARED_PATH" ]; then
-    case "$FIRST_FLOW_PREPARED_PATH" in
-        /*)
-            ;;
-        *)
-            echo "MAESTRO_FIRST_FLOW_PREPARED_PATH must be absolute: $FIRST_FLOW_PREPARED_PATH" >&2
-            exit 1
-            ;;
-    esac
-
-    FIRST_FLOW_PREPARED_PARENT="$(dirname "$FIRST_FLOW_PREPARED_PATH")"
-
-    if [ ! -d "$FIRST_FLOW_PREPARED_PARENT" ] || [ ! -w "$FIRST_FLOW_PREPARED_PARENT" ]; then
-        echo "First-flow preparation marker parent must be a writable directory: $FIRST_FLOW_PREPARED_PARENT" >&2
-        exit 1
-    fi
-
-    if [ -e "$FIRST_FLOW_PREPARED_PATH" ]; then
-        echo "First-flow preparation marker already exists: $FIRST_FLOW_PREPARED_PATH" >&2
-        exit 1
-    fi
-fi
-
-compute_recurring_empty_day() {
-    node <<'EOF'
-const now = new Date();
-const todayDay = now.getDate();
-const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-const upcomingDay = Math.min(lastDayOfMonth, todayDay + 5);
-const candidateDays = [21, 22, 23, 24, 26, 27, 28];
-const recurringEmptyDay =
-    candidateDays.find(candidateDay => candidateDay <= lastDayOfMonth && candidateDay !== todayDay && candidateDay !== upcomingDay) ??
-    (todayDay === 1 ? 2 : 1);
-
-process.stdout.write(String(recurringEmptyDay));
-EOF
-}
 
 capture_output_path() {
     local index
@@ -111,111 +68,15 @@ detect_booted_simulator_udid() {
     printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p'
 }
 
-compute_csv_fixtures_uri() {
-    local udid="$1"
-    local app_data_container
-
-    if [ -z "$udid" ]; then
-        return 1
-    fi
-
-    app_data_container="$(resolve_app_data_container "$udid" || true)"
-
-    if [ -z "$app_data_container" ] || [ ! -d "$app_data_container" ]; then
-        return 1
-    fi
-
-    printf 'file://%s/Documents/E2ECsvFixtures' "$app_data_container"
-}
-
-compute_db_fixtures_uri() {
-    local udid="$1"
-    local app_data_container
-
-    if [ -z "$udid" ]; then
-        return 1
-    fi
-
-    app_data_container="$(resolve_app_data_container "$udid" || true)"
-
-    if [ -z "$app_data_container" ] || [ ! -d "$app_data_container" ]; then
-        return 1
-    fi
-
-    printf 'file://%s/Documents/E2EFixtures' "$app_data_container"
-}
-
 resolve_app_data_container() {
     local udid="$1"
 
     if [ -n "$APP_DATA_CONTAINER_OVERRIDE" ]; then
-        if [ ! -d "$APP_DATA_CONTAINER_OVERRIDE" ]; then
-            return 1
-        fi
-
         printf '%s\n' "$APP_DATA_CONTAINER_OVERRIDE"
         return 0
     fi
 
     xcrun simctl get_app_container "$udid" "$APP_ID" data 2>/dev/null || true
-}
-
-resolve_flow_file_path() {
-    local flow_path="$1"
-    local nested_flow_path="$2"
-
-    if [[ "$nested_flow_path" = /* ]]; then
-        printf '%s\n' "$nested_flow_path"
-        return 0
-    fi
-
-    printf '%s/%s\n' "$(dirname "$flow_path")" "$nested_flow_path"
-}
-
-extract_database_fixture_name() {
-    local flow_path="$1"
-    local depth="${2:-0}"
-    local fixture_name
-    local nested_flow_path
-    local nested_fixture_name
-
-    fixture_name="$(sed -n "s/^[[:space:]]*FIXTURE_ROW_ID_MATCH:[[:space:]]*['\"]\\([^'\"]*\\.db\\).*['\"].*/\\1/p" "$flow_path" | head -n 1)"
-
-    if [ -n "$fixture_name" ]; then
-        printf '%s\n' "$fixture_name"
-        return 0
-    fi
-
-    if [ "$depth" -ge 3 ]; then
-        return 1
-    fi
-
-    while IFS= read -r nested_flow_path; do
-        nested_flow_path="$(resolve_flow_file_path "$flow_path" "$nested_flow_path")"
-
-        if [ ! -f "$nested_flow_path" ]; then
-            continue
-        fi
-
-        nested_fixture_name="$(extract_database_fixture_name "$nested_flow_path" "$((depth + 1))" || true)"
-
-        if [ -n "$nested_fixture_name" ]; then
-            printf '%s\n' "$nested_fixture_name"
-            return 0
-        fi
-    done < <(
-        awk '/^[[:space:]]*file:[[:space:]]*/ {
-            value = $0;
-            sub(/^[[:space:]]*file:[[:space:]]*/, "", value);
-            gsub(/'\''|"/, "", value);
-            gsub(/^[[:space:]]+|[[:space:]]+$/, "", value);
-            if (value ~ /\.flow\.yaml$/) {
-                print value;
-            }
-        }' "$flow_path"
-    )
-
-    return 1
 }
 
 collect_required_fixtures() {
@@ -332,8 +193,6 @@ seed_ios_database_fixture_if_needed() {
     local flow_path="$1"
     local fixture_name
     local app_data_container
-    local fixture_path
-    local sqlite_dir
 
     DATABASE_FIXTURE_SEEDED="false"
 
@@ -342,51 +201,32 @@ seed_ios_database_fixture_if_needed() {
     fi
 
     fixture_name="$(extract_database_fixture_name "$flow_path" || true)"
-
-    if [ -z "$fixture_name" ]; then
-        return 0
-    fi
-
     app_data_container="$(resolve_app_data_container "$DETECTED_SIMULATOR_UDID" || true)"
 
-    if [ -z "$app_data_container" ] || [ ! -d "$app_data_container" ]; then
+    if [ -z "$fixture_name" ] || [ ! -d "$app_data_container" ]; then
         return 0
     fi
 
-    fixture_path="$app_data_container/Documents/E2EFixtures/$fixture_name"
-
-    if [ ! -f "$fixture_path" ]; then
-        echo "Database fixture not found: $fixture_path" >&2
-        return 1
-    fi
-
-    sqlite_dir="$app_data_container/Documents/SQLite"
-
-    xcrun simctl terminate "$DETECTED_SIMULATOR_UDID" "$APP_ID" >/dev/null 2>&1 || true
-    xcrun simctl keychain "$DETECTED_SIMULATOR_UDID" reset >/dev/null 2>&1 || true
-    mkdir -p "$sqlite_dir"
-    rm -f "$sqlite_dir"/budgie.db*
-    cp "$fixture_path" "$sqlite_dir/budgie.db"
-    xcrun simctl launch "$DETECTED_SIMULATOR_UDID" "$APP_ID" >/dev/null
-
+    install_database_fixture "$DETECTED_SIMULATOR_UDID" "$APP_ID" "$app_data_container" "$fixture_name"
     DATABASE_FIXTURE_SEEDED="true"
     echo "Seeded active iOS database fixture $fixture_name"
 }
 
-refresh_ios_fixtures_if_needed() {
-    local fixture_count_label
+refresh_ios_fixture_state() {
     local required_fixtures=()
     local required_fixture
+    local app_data_container
 
     DETECTED_SIMULATOR_UDID="$(detect_booted_simulator_udid || true)"
+    E2E_CSV_FIXTURES_URI=""
 
     if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
         return 0
     fi
 
-    APP_DATA_CONTAINER="$(resolve_app_data_container "$DETECTED_SIMULATOR_UDID" || true)"
+    app_data_container="$(resolve_app_data_container "$DETECTED_SIMULATOR_UDID" || true)"
 
-    if [ -z "$APP_DATA_CONTAINER" ]; then
+    if [ -z "$app_data_container" ]; then
         return 0
     fi
 
@@ -396,54 +236,13 @@ refresh_ios_fixtures_if_needed() {
         fi
     done < <(collect_required_fixtures)
 
-    if [ "${#required_fixtures[@]}" -eq 0 ]; then
-        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID"
-        APP_DATA_CONTAINER="$APP_DATA_CONTAINER" \
-            sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID"
-    else
-        fixture_count_label="fixtures"
+    echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID with ${#required_fixtures[@]} fixtures"
+    APP_DATA_CONTAINER="$app_data_container" \
+        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID" ${required_fixtures[@]+"${required_fixtures[@]}"}
 
-        if [ "${#required_fixtures[@]}" -eq 1 ]; then
-            fixture_count_label="fixture"
-        fi
-
-        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID with ${#required_fixtures[@]} $fixture_count_label"
-        APP_DATA_CONTAINER="$APP_DATA_CONTAINER" \
-            sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID" "${required_fixtures[@]}"
+    if [ -d "$app_data_container" ]; then
+        E2E_CSV_FIXTURES_URI="file://$app_data_container/Documents/E2ECsvFixtures"
     fi
-}
-
-refresh_ios_fixture_state() {
-    refresh_ios_fixtures_if_needed
-    E2E_CSV_FIXTURES_URI="$(compute_csv_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
-    E2E_DB_FIXTURES_URI="$(compute_db_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
-}
-
-reboot_ios_simulator_if_needed() {
-    local flow_index="$1"
-
-    if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
-        return 0
-    fi
-
-    if [ "$IOS_SIMULATOR_REBOOT_EVERY" -le 0 ]; then
-        return 0
-    fi
-
-    if [ "$flow_index" -le 1 ]; then
-        return 0
-    fi
-
-    if [ "$(((flow_index - 1) % IOS_SIMULATOR_REBOOT_EVERY))" -ne 0 ]; then
-        return 0
-    fi
-
-    echo "Rebooting iOS simulator before flow $flow_index"
-    xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
-    xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
-    xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
-    slim_simulator "$DETECTED_SIMULATOR_UDID"
-    refresh_ios_fixture_state
 }
 
 build_maestro_args() {
@@ -552,91 +351,6 @@ create_prime_and_business_flow() {
     } > "$combined_flow_path"
 }
 
-signal_first_flow_prepared() {
-    if [ -z "$FIRST_FLOW_PREPARED_PATH" ] || [ "$FIRST_FLOW_PREPARED_SIGNALED" = true ]; then
-        return 0
-    fi
-
-    mkdir "$FIRST_FLOW_PREPARED_PATH"
-    FIRST_FLOW_PREPARED_SIGNALED=true
-}
-
-run_maestro_flow() {
-    local flow_path="$1"
-    local flow_output_path="$2"
-    local attempt_output_path="$3"
-    local include_prime="$4"
-    local args=()
-    local execution_flow_path="$flow_path"
-
-    seed_ios_database_fixture_if_needed "$flow_path"
-
-    if [ "$include_prime" = true ]; then
-        execution_flow_path="$attempt_output_path/prime-and-business.flow.yaml"
-
-        if ! create_prime_and_business_flow "$flow_path" "$execution_flow_path"; then
-            echo "Required deep-link prime flow is missing: $PRIME_FLOW_PATH" >&2
-            return 1
-        fi
-    fi
-
-    while IFS= read -r -d '' arg; do
-        args+=("$arg")
-    done < <(build_maestro_args "$flow_output_path" "$attempt_output_path")
-
-    signal_first_flow_prepared
-
-    if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
-        maestro --device "$DETECTED_SIMULATOR_UDID" test "$execution_flow_path" \
-            --config "$WORKSPACE_DIR/config.yaml" \
-            -e APP_ID="$APP_ID" \
-            -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
-            -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
-            -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
-            -e E2E_DB_FIXTURES_URI="$E2E_DB_FIXTURES_URI" \
-            -e DATABASE_FIXTURE_SEEDED="$DATABASE_FIXTURE_SEEDED" \
-            "${args[@]}"
-    else
-        maestro test "$execution_flow_path" \
-            --config "$WORKSPACE_DIR/config.yaml" \
-            -e APP_ID="$APP_ID" \
-            -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
-            -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
-            -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
-            -e E2E_DB_FIXTURES_URI="$E2E_DB_FIXTURES_URI" \
-            -e DATABASE_FIXTURE_SEEDED="$DATABASE_FIXTURE_SEEDED" \
-            "${args[@]}"
-    fi
-}
-
-is_ax_driver_failure() {
-    local console_output_path="$1"
-    local attempt_output_path="$2"
-
-    grep -Eiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" "$console_output_path" && return 0
-
-    if [ -n "$attempt_output_path" ] && [ -d "$attempt_output_path" ]; then
-        grep -REiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" "$attempt_output_path"
-        return
-    fi
-
-    return 1
-}
-
-reset_ios_simulator_after_ax_driver_failure() {
-    if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
-        return 0
-    fi
-
-    echo "Restarting iOS simulator and driver after a recoverable driver failure"
-    sh "$SCRIPT_DIR/recycle-ios-driver.sh" "$DETECTED_SIMULATOR_UDID" || true
-    xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
-    xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
-    xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
-    slim_simulator "$DETECTED_SIMULATOR_UDID"
-    refresh_ios_fixture_state
-}
-
 merge_reports() {
     local output_path="$1"
     shift
@@ -694,21 +408,93 @@ fs.writeFileSync(outputPath, xml);
 EOF
 }
 
-record_flow_timing() {
-    local flow_index="$1"
-    local flow_name="$2"
-    local flow_status="$3"
-    local attempt_count="$4"
-    local started_at="$5"
-    local duration_seconds
+run_maestro_flow() {
+    local flow_path="$1"
+    local flow_output_path="$2"
+    local attempt_output_path="$3"
+    local include_prime="$4"
+    local args=()
+    local device_args=()
+    local execution_flow_path="$flow_path"
 
-    if [ -z "$FLOW_TIMINGS_PATH" ]; then
+    seed_ios_database_fixture_if_needed "$flow_path"
+
+    if [ "$include_prime" = true ]; then
+        execution_flow_path="$attempt_output_path/prime-and-business.flow.yaml"
+
+        if ! create_prime_and_business_flow "$flow_path" "$execution_flow_path"; then
+            echo "Required deep-link prime flow is missing: $PRIME_FLOW_PATH" >&2
+            return 1
+        fi
+    fi
+
+    while IFS= read -r -d '' arg; do
+        args+=("$arg")
+    done < <(build_maestro_args "$flow_output_path" "$attempt_output_path")
+
+    if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
+        device_args=(--device "$DETECTED_SIMULATOR_UDID")
+    fi
+
+    maestro ${device_args[@]+"${device_args[@]}"} test "$execution_flow_path" \
+        --config "$WORKSPACE_DIR/config.yaml" \
+        -e APP_ID="$APP_ID" \
+        -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
+        -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
+        -e DATABASE_FIXTURE_SEEDED="$DATABASE_FIXTURE_SEEDED" \
+        "${args[@]}"
+}
+
+is_ax_driver_failure() {
+    local console_output_path="$1"
+    local attempt_output_path="$2"
+
+    grep -Eiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" "$console_output_path" && return 0
+
+    if [ -d "$attempt_output_path" ]; then
+        grep -REiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" "$attempt_output_path"
+        return
+    fi
+
+    return 1
+}
+
+reset_ios_simulator_after_ax_driver_failure() {
+    if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
         return 0
     fi
 
-    duration_seconds="$(($(date +%s) - started_at))"
+    echo "Restarting iOS simulator and driver after a recoverable driver failure"
+    sh "$SCRIPT_DIR/recycle-ios-driver.sh" "$DETECTED_SIMULATOR_UDID" || true
+    xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
+    xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
+    xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
+    slim_simulator "$DETECTED_SIMULATOR_UDID"
+    refresh_ios_fixture_state
+}
 
-    printf '%s\t%s\t%s\t%s\t%s\n' "$flow_index" "$flow_name" "$flow_status" "$attempt_count" "$duration_seconds" >> "$FLOW_TIMINGS_PATH"
+run_flow_with_driver_retries() {
+    local attempt
+    local attempt_path
+
+    for attempt in 1 2 3; do
+        attempt_path="$FLOW_ARTIFACT_PATH/attempt-$attempt"
+        mkdir -p "$attempt_path"
+
+        FLOW_STATUS=0
+        run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$attempt_path" "$INCLUDE_PRIME" > "$attempt_path/maestro-console.log" 2>&1 || FLOW_STATUS=$?
+        cat "$attempt_path/maestro-console.log"
+
+        if [ "$FLOW_STATUS" -eq 0 ]; then
+            return 0
+        fi
+
+        if [ "$attempt" -eq 3 ] || ! is_ax_driver_failure "$attempt_path/maestro-console.log" "$attempt_path"; then
+            return 1
+        fi
+
+        reset_ios_simulator_after_ax_driver_failure
+    done
 }
 
 collect_flow_paths
@@ -726,10 +512,6 @@ else
     E2E_DB_FIXTURES_URI="$(compute_db_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
 fi
 
-if [ -z "$RECURRING_EMPTY_DAY" ]; then
-    RECURRING_EMPTY_DAY="$(compute_recurring_empty_day)"
-fi
-
 DETECTED_SIMULATOR_UDID="${DETECTED_SIMULATOR_UDID:-$(detect_booted_simulator_udid || true)}"
 
 if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
@@ -740,17 +522,12 @@ if [ -z "$E2E_CSV_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_CSV_FIXTURES_URI for $APP_ID; CSV-import flows will fail." >&2
 fi
 
-if [ -z "$E2E_DB_FIXTURES_URI" ]; then
-    echo "Could not resolve E2E_DB_FIXTURES_URI for $APP_ID; database-import flows will fail." >&2
-fi
-
 capture_output_path
 
 echo "Running Maestro suite from $WORKSPACE_DIR"
 
 REPORT_DIR=""
 REPORTS=()
-FLOW_TIMINGS_PATH=""
 FLOW_INDEX=0
 FLOW_TOTAL="${#FLOW_PATHS[@]}"
 SUITE_STATUS=0
@@ -758,19 +535,15 @@ FAILED_FLOW_NAMES=""
 
 if [ -n "$OUTPUT_PATH" ]; then
     REPORT_DIR="$(dirname "$OUTPUT_PATH")/.maestro-flow-reports"
-    FLOW_TIMINGS_PATH="$(dirname "$OUTPUT_PATH")/flow-timings.tsv"
     rm -rf "$REPORT_DIR"
     mkdir -p "$REPORT_DIR"
-    printf 'index\tflow\tstatus\tattempts\tduration_seconds\n' > "$FLOW_TIMINGS_PATH"
 fi
 
 for FLOW_PATH in "${FLOW_PATHS[@]}"; do
     FLOW_INDEX=$((FLOW_INDEX + 1))
     FLOW_NAME="$(basename "$FLOW_PATH")"
     FLOW_OUTPUT_PATH=""
-    FLOW_ARTIFACT_PATH=""
     FLOW_STATUS=0
-    FLOW_STARTED_AT="$(date +%s)"
     INCLUDE_PRIME=false
 
     if [ "$FLOW_INDEX" -eq 1 ]; then
@@ -779,90 +552,24 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
 
     if [ -n "$OUTPUT_PATH" ]; then
         FLOW_OUTPUT_PATH="$REPORT_DIR/$FLOW_INDEX-$FLOW_NAME.xml"
-    fi
-
-    if [ -n "$OUTPUT_PATH" ]; then
         FLOW_ARTIFACT_PATH="$(dirname "$OUTPUT_PATH")/.maestro-flow-attempts/$FLOW_INDEX-$FLOW_NAME"
     else
         FLOW_ARTIFACT_PATH="$WORKSPACE_DIR/.maestro-flow-attempts/$FLOW_INDEX-$FLOW_NAME"
     fi
 
-    mkdir -p "$FLOW_ARTIFACT_PATH/attempt-1"
-
-    reboot_ios_simulator_if_needed "$FLOW_INDEX"
-
     echo "Running Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
 
-    if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-1" "$INCLUDE_PRIME" > "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log" 2>&1; then
-        cat "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"
-        record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" success 1 "$FLOW_STARTED_AT"
+    if run_flow_with_driver_retries; then
         echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
-
-        if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
-            REPORTS+=("$FLOW_OUTPUT_PATH")
-            merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
-        fi
     else
-        FLOW_STATUS=$?
-        cat "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"
-
-        if is_ax_driver_failure "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log" "$FLOW_ARTIFACT_PATH/attempt-1"; then
-            reset_ios_simulator_after_ax_driver_failure
-            mkdir -p "$FLOW_ARTIFACT_PATH/attempt-2"
-
-            if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-2" "$INCLUDE_PRIME" > "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log" 2>&1; then
-                cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
-                record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" success 2 "$FLOW_STARTED_AT"
-                echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL after AX driver retry: $FLOW_NAME"
-
-                if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
-                    REPORTS+=("$FLOW_OUTPUT_PATH")
-                    merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
-                fi
-
-                continue
-            else
-                FLOW_STATUS=$?
-                cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
-
-                if is_ax_driver_failure "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log" "$FLOW_ARTIFACT_PATH/attempt-2"; then
-                    reset_ios_simulator_after_ax_driver_failure
-                    mkdir -p "$FLOW_ARTIFACT_PATH/attempt-3"
-
-                    if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-3" "$INCLUDE_PRIME" > "$FLOW_ARTIFACT_PATH/attempt-3/maestro-console.log" 2>&1; then
-                        cat "$FLOW_ARTIFACT_PATH/attempt-3/maestro-console.log"
-                        record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" success 3 "$FLOW_STARTED_AT"
-                        echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL after AX driver retries: $FLOW_NAME"
-
-                        if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
-                            REPORTS+=("$FLOW_OUTPUT_PATH")
-                            merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
-                        fi
-
-                        continue
-                    else
-                        FLOW_STATUS=$?
-                        cat "$FLOW_ARTIFACT_PATH/attempt-3/maestro-console.log"
-                        record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 3 "$FLOW_STARTED_AT"
-                    fi
-                else
-                    record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 2 "$FLOW_STARTED_AT"
-                fi
-            fi
-        else
-            record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 1 "$FLOW_STARTED_AT"
-        fi
-
-        if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
-            REPORTS+=("$FLOW_OUTPUT_PATH")
-            merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
-        fi
-
-        # Keep running the remaining flows so one double-failure cannot hide
-        # every failure behind it; the suite still exits non-zero at the end.
         SUITE_STATUS="$FLOW_STATUS"
         FAILED_FLOW_NAMES="${FAILED_FLOW_NAMES}${FAILED_FLOW_NAMES:+, }${FLOW_NAME}"
         echo "Flow failed, continuing with remaining flows: $FLOW_NAME ($FLOW_INDEX/$FLOW_TOTAL)"
+    fi
+
+    if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
+        REPORTS+=("$FLOW_OUTPUT_PATH")
+        merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
     fi
 done
 

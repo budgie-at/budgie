@@ -6,11 +6,11 @@ import { isDefined } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 
-import type { UserIconNameEnum } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
     readonly label: string;
-    readonly icon?: UserIconNameEnum;
+    readonly icon?: UserIconType;
     readonly onPress?: () => void;
     readonly testID?: string;
     readonly variant?: 'default' | 'warning';

@@ -18,6 +18,7 @@ const importPrivatbankCashWithdrawal = Effect.fnUntraced(function* (privatbankAc
     const transaction = privatbankTransactionMapper({
         rawDate: '15.01.2026 12:00:00',
         date: WITHDRAWAL_OPERATED_AT,
+        deviceLocalDate: WITHDRAWAL_OPERATED_AT,
         category: PRIVATBANK_CASH_WITHDRAWAL_CATEGORY,
         card: PRIVATBANK_CARD_ID,
         description: 'ATM cash withdrawal',
@@ -30,7 +31,10 @@ const importPrivatbankCashWithdrawal = Effect.fnUntraced(function* (privatbankAc
     });
     const mccCategoryLookup = categoryMap.get(PRIVATBANK_CASH_WITHDRAWAL_CATEGORY) ?? null;
     const input = mapBankTransactionToCreateInput(transaction, privatbankAccountId, mccCategoryLookup, ExternalSourceEnum.PRIVATBANK);
-    const [imported] = yield* transactionImportService.bulkUpsertImported([input], new Map());
+    const [imported] = yield* Effect.map(
+        transactionImportService.bulkUpsertPreparedImported(transactionImportService.prepareImportedInputs([input], new Map())),
+        ({ transactions }) => transactions
+    );
 
     return imported.id;
 });

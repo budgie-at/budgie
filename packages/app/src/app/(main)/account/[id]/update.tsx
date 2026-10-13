@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
@@ -7,6 +7,7 @@ import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-s
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { UpdateDebtAccount } from '../../../../account/component/update-debt-account/update-debt-account';
 import { UpdateDepositAccount } from '../../../../account/component/update-deposit-account/update-deposit-account';
+import { UpdateInstallmentPlanAccount } from '../../../../account/component/update-installment-plan-account/update-installment-plan-account';
 import { UpdateLiabilityAccount } from '../../../../account/component/update-liability-account/update-liability-account';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 
@@ -20,6 +21,10 @@ export default function UpdateAccount() {
 
     if (!isDefined(account)) {
         return <Redirect href="/" />;
+    }
+
+    if (account.debtType === AccountDebtTypeEnum.INSTALLMENT) {
+        return <UpdateInstallmentPlanAccount account={account} />;
     }
 
     switch (account.type) {

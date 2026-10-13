@@ -1,16 +1,21 @@
-import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction, convertFromMicroUnits } from '@budgie/contracts';
+import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 
-import { emptyFn } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionListConvertToTransferBase } from '../../hook/use-transaction-list-convert-to-transfer-base.hook';
-import { buildConvertToTransferParams } from '../../utils/build-convert-to-transfer-params.util';
+import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
+import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 export const TransactionListConvertToTransferMenuItem = () => {
     const { t } = useLingui();
-    const { transaction, closeMenu, openConvertToTransfer, isConsolidated, categoryEntries } = useTransactionListConvertToTransferBase();
+    const { transaction, closeMenu } = useTransactionListContextMenu();
+    const [openConvertToTransfer] = useConvertToTransferModal();
+
+    const isConsolidated = isDefined(transaction.consolidationType);
+    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
 
     const isConvertibleTransaction = isExpenseTransaction(transaction) || isIncomeTransaction(transaction);
     const isVisible = !isConsolidated && isConvertibleTransaction && categoryEntries.length === 1;
@@ -26,9 +31,14 @@ export const TransactionListConvertToTransferMenuItem = () => {
             const [sourceEntry] = categoryEntries;
 
             openConvertToTransfer({
-                ...buildConvertToTransferParams(transaction.id, transactionType, sourceEntry),
+                transactionId: transaction.id,
+                transactionType,
+                excludeAccountId: sourceEntry.accountId,
+                sourceAmount: convertFromMicroUnits(sourceEntry.amount),
+                sourceInstrumentId: sourceEntry.account.instrumentId,
+                sourceCode: sourceEntry.account.instrument.code,
                 skipPostConvertNavigation: true
-            }).catch(emptyFn);
+            });
         });
     };
 
@@ -36,8 +46,7 @@ export const TransactionListConvertToTransferMenuItem = () => {
         <PopoverMenuItem
             icon={UserIconNameEnum.ArrowRightLeft}
             label={t`Convert to Transfer`}
-            onPress={emptyFn}
-            onPressIn={handleConvert}
+            onPress={handleConvert}
             testID={TransactionListContextMenuSelector.ConvertToTransferButton}
         />
     );

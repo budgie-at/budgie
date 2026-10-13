@@ -5,8 +5,10 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { TRANSLATION_RESET } from '../../@generic/constant/translation-reset.constant';
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { Db } from '../../@generic/service/db.service';
+import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
 import { makeTranslatableRepository } from '../../@generic/util/make-translatable-repository.util';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -35,13 +37,7 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                     title: sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`.as('title')
                 })
                 .from(CategoryEntityTable)
-                .leftJoin(
-                    DefaultCategoryTranslationEntityTable,
-                    and(
-                        eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                        eq(DefaultCategoryTranslationEntityTable.language, language)
-                    )
-                );
+                .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language));
 
         const buildSearchPatterns = (search: string): string[] => {
             const lowerSearch = search.toLowerCase();
@@ -52,14 +48,7 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
         };
 
         return {
-            ...makeTranslatableRepository(CategoryEntityTable, {
-                id: CategoryEntityTable.id,
-                title: CategoryEntityTable.title,
-                titleEn: CategoryEntityTable.titleEn,
-                titleTags: CategoryEntityTable.titleTags,
-                tagsGeneratedAt: CategoryEntityTable.tagsGeneratedAt,
-                deletedAt: CategoryEntityTable.deletedAt
-            }),
+            ...makeTranslatableRepository(CategoryEntityTable),
             bulkCreate,
             create: Effect.fn('CategoryRepository.create')(function* (input: CategoryCreateEntityInterface) {
                 const [category] = yield* bulkCreate([input]);
@@ -76,7 +65,7 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .set({
                             ...input,
                             ...(titleChanged && { titleSearch: newTitle.toLowerCase() }),
-                            ...(titleChanged && { titleEn: null, titleTags: null, tagsGeneratedAt: null })
+                            ...(titleChanged && TRANSLATION_RESET)
                         })
                         .where(eq(CategoryEntityTable.id, id))
                         .returning()
@@ -112,20 +101,6 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                     db
                         .delete(CategoryEntityTable)
                         .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false))
-                ),
-            updateTranslation: (id: number, titleEn: string, titleTags: string) =>
-                Db.query(db =>
-                    db
-                        .update(CategoryEntityTable)
-                        .set({ titleEn, titleTags, tagsGeneratedAt: new Date() })
-                        .where(eq(CategoryEntityTable.id, id))
-                ).pipe(Effect.asVoid),
-            clearTranslation: (id: number) =>
-                Db.query(db =>
-                    db
-                        .update(CategoryEntityTable)
-                        .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
-                        .where(eq(CategoryEntityTable.id, id))
                 ),
             findAllNonSystemLocalized: (language: LanguageEnum) =>
                 Db.query(db => buildLocalizedCategoryBaseQuery(db, language).where(eq(CategoryEntityTable.isSystemCategory, false))),
@@ -167,12 +142,6 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                 ),
             findById: (id: number, language: LanguageEnum) =>
                 Db.query(db => buildLocalizedCategoryBaseQuery(db, language).where(eq(CategoryEntityTable.id, id)).limit(1)),
-            findWithoutTags: () =>
-                Db.query(db =>
-                    db.query.CategoryEntityTable.findMany({
-                        where: { tagsGeneratedAt: { isNull: true }, isSystemCategory: false }
-                    })
-                ),
             findAllNonSystem: () =>
                 Db.query(db =>
                     db.query.CategoryEntityTable.findMany({

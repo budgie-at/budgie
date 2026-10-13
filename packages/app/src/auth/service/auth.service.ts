@@ -26,8 +26,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
         const unavailableBiometricTypes: BiometricTypesInterface = {
             isTouchIdAvailable: false,
             isFaceIdAvailable: false,
-            isSomeAvailable: false,
-            isLoading: false
+            isSomeAvailable: false
         };
 
         const getPin = Effect.fn('AuthService.getPin')(function* () {
@@ -84,8 +83,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                     return {
                         isSomeAvailable: isFaceIdAvailable || isTouchIdAvailable,
                         isTouchIdAvailable,
-                        isFaceIdAvailable,
-                        isLoading: false
+                        isFaceIdAvailable
                     };
                 },
                 Effect.catchDefect(() => Effect.succeed(unavailableBiometricTypes))

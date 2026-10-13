@@ -58,13 +58,28 @@ export const BudgetProgressBar = (props: Props) => {
     const formatDigits = useFormatDigits(effectiveDecimalPlaces);
     const metrics = buildBudgetProgressBarMetrics(spent, limit);
     const amountLabel = `${formatDigits(metrics.displaySpent, currencySymbol)} / ${formatDigits(metrics.displayLimit, currencySymbol)}`;
-    const remainingLabel = metrics.isOverBudget ? t`Over budget` : t`Left`;
-    const remainingAmountLabel = formatDigits(metrics.displayRemaining, currencySymbol);
 
     const bar = (
         <View className="h-3 bg-secondary-corner rounded-full overflow-hidden">
             <View className={barVariants({ tone: resolveBudgetBarTone(metrics.ratio) })} style={metrics.widthStyle} />
         </View>
+    );
+
+    const spentText = (
+        <Text className={amountTextVariants({ isAmountLight })} testID={spentTestID} accessible accessibilityLabel={amountLabel}>
+            {amountLabel}
+        </Text>
+    );
+
+    const percentText = <Text className="text-secondary-foreground text-sm">{metrics.percentLabel}</Text>;
+
+    const remainingTexts = (
+        <>
+            <Text className="text-secondary-foreground text-sm">{metrics.isOverBudget ? t`Over budget` : t`Left`}</Text>
+            <Text testID={remainingTestID} className={amountTextVariants({ isAmountLight })}>
+                {formatDigits(metrics.displayRemaining, currencySymbol)}
+            </Text>
+        </>
     );
 
     if (isCompact) {
@@ -74,23 +89,11 @@ export const BudgetProgressBar = (props: Props) => {
 
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-x-sm">
-                        <Text
-                            className={amountTextVariants({ isAmountLight })}
-                            testID={spentTestID}
-                            accessible
-                            accessibilityLabel={amountLabel}
-                        >
-                            {amountLabel}
-                        </Text>
-                        <Text className="text-secondary-foreground text-sm">{metrics.percentLabel}</Text>
+                        {spentText}
+                        {percentText}
                     </View>
 
-                    <View className="flex-row items-center gap-x-xs">
-                        <Text className="text-secondary-foreground text-sm">{remainingLabel}</Text>
-                        <Text testID={remainingTestID} className={amountTextVariants({ isAmountLight })}>
-                            {remainingAmountLabel}
-                        </Text>
-                    </View>
+                    <View className="flex-row items-center gap-x-xs">{remainingTexts}</View>
                 </View>
             </View>
         );
@@ -100,29 +103,14 @@ export const BudgetProgressBar = (props: Props) => {
         <View testID={testID} className="gap-y-md">
             {isSummaryVisible ? (
                 <View className="flex-row items-center justify-between">
-                    <Text
-                        className={amountTextVariants({ isAmountLight })}
-                        testID={spentTestID}
-                        accessible
-                        accessibilityLabel={amountLabel}
-                    >
-                        {amountLabel}
-                    </Text>
-
-                    <Text className="text-secondary-foreground text-sm">{metrics.percentLabel}</Text>
+                    {spentText}
+                    {percentText}
                 </View>
             ) : null}
 
             {bar}
 
-            {isSummaryVisible ? (
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-secondary-foreground text-sm">{remainingLabel}</Text>
-                    <Text testID={remainingTestID} className={amountTextVariants({ isAmountLight })}>
-                        {remainingAmountLabel}
-                    </Text>
-                </View>
-            ) : null}
+            {isSummaryVisible ? <View className="flex-row items-center justify-between">{remainingTexts}</View> : null}
         </View>
     );
 };

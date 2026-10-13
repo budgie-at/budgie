@@ -3,7 +3,7 @@ import { TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, TestLayer } from '../../harness';
+import { TestLayer, testQueryService } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const seedTransaction = (type: TransactionTypeEnum, needsEmbedding: boolean) =>
@@ -30,7 +30,7 @@ describe('embedding/mark-for-embedding', () => {
 
             yield* transactionEmbeddingRepository.markForEmbeddingByIds([transaction.id]);
 
-            expect((yield* fetchTransactionById(transaction.id)).needsEmbedding).toBe(true);
+            expect((yield* testQueryService.findTransactionById(transaction.id)).needsEmbedding).toBe(true);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -41,7 +41,7 @@ describe('embedding/mark-for-embedding', () => {
 
             yield* transactionEmbeddingRepository.markForEmbeddingByIds([transaction.id]);
 
-            expect((yield* fetchTransactionById(transaction.id)).needsEmbedding).toBe(false);
+            expect((yield* testQueryService.findTransactionById(transaction.id)).needsEmbedding).toBe(false);
         }).pipe(Effect.provide(TestLayer))
     );
 });

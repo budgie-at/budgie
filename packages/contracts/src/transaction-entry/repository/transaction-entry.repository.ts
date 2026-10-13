@@ -6,6 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -14,11 +15,18 @@ import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.t
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
 import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
+import type { SQL } from 'drizzle-orm';
 
 export class TransactionEntryRepository extends Context.Service<TransactionEntryRepository>()(
     '@budgie/contracts/TransactionEntryRepository',
     {
         make: Effect.sync(() => {
+            const deleteLiveEntries = (...conditions: SQL[]) =>
+                Db.query(db =>
+                    db
+                        .delete(TransactionEntryEntityTable)
+                        .where(and(isNull(TransactionEntryEntityTable.originalTransactionId), ...conditions))
+                );
             const buildPendingBaseValuationWhere = (baseInstrumentId: number) =>
                 and(
                     or(
@@ -48,8 +56,7 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                             .where(
                                 and(
                                     inArray(TransactionEntryEntityTable.transactionId, sourceTransactionIds),
-                                    isNull(TransactionEntryEntityTable.originalTransactionId),
-                                    isNull(TransactionEntryEntityTable.deletedAt)
+                                    transactionFilters.buildLedgerEntryCondition()
                                 )
                             )
                     );
@@ -73,6 +80,32 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                     );
 
                     return isDefined(entry);
+                }),
+                findTransactionIdsWithLiveEntries: Effect.fn('TransactionEntryRepository.findTransactionIdsWithLiveEntries')(function* (
+                    transactionIds: number[]
+                ) {
+                    if (!isNotEmptyArray(transactionIds)) {
+                        return new Set<number>();
+                    }
+                    const entries = yield* Db.query(db =>
+                        db
+                            .select({
+                                transactionId: TransactionEntryEntityTable.transactionId,
+                                originalTransactionId: TransactionEntryEntityTable.originalTransactionId
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .where(
+                                and(
+                                    or(
+                                        inArray(TransactionEntryEntityTable.transactionId, transactionIds),
+                                        inArray(TransactionEntryEntityTable.originalTransactionId, transactionIds)
+                                    ),
+                                    isNull(TransactionEntryEntityTable.deletedAt)
+                                )
+                            )
+                    );
+
+                    return new Set(entries.flatMap(entry => [entry.transactionId, entry.originalTransactionId]).filter(isDefined));
                 }),
                 bulkCreate: Effect.fn('TransactionEntryRepository.bulkCreate')(function* (inputs: TransactionEntryCreateEntityInterface[]) {
                     return isNotEmptyArray(inputs)
@@ -133,15 +166,17 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                           )
                         : [];
                 }),
-                deleteByTransactionIds: Effect.fn('TransactionEntryRepository.deleteByTransactionIds')(function* (
-                    transactionIds: number[]
-                ) {
-                    if (isNotEmptyArray(transactionIds)) {
-                        yield* Db.query(db =>
-                            db.delete(TransactionEntryEntityTable).where(inArray(TransactionEntryEntityTable.transactionId, transactionIds))
-                        );
-                    }
-                }),
+                deleteLedgerByTransactionIds: (transactionIds: number[]) =>
+                    Db.query(db =>
+                        db
+                            .delete(TransactionEntryEntityTable)
+                            .where(
+                                and(
+                                    inArray(TransactionEntryEntityTable.transactionId, transactionIds),
+                                    transactionFilters.buildLedgerEntryCondition()
+                                )
+                            )
+                    ),
                 moveBackToOriginalTransactions: (canonicalTransactionId: number) =>
                     Db.query(db =>
                         db
@@ -226,17 +261,13 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                     Db.query(db =>
                         db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId))
                     ),
-                deleteLedgerByTransactionId: (transactionId: number) =>
-                    Db.query(db =>
-                        db
-                            .delete(TransactionEntryEntityTable)
-                            .where(
-                                and(
-                                    eq(TransactionEntryEntityTable.transactionId, transactionId),
-                                    isNull(TransactionEntryEntityTable.originalTransactionId)
-                                )
-                            )
+                deleteLedgerByTransactionIdAndAccountId: (transactionId: number, accountId: number) =>
+                    deleteLiveEntries(
+                        eq(TransactionEntryEntityTable.transactionId, transactionId),
+                        eq(TransactionEntryEntityTable.accountId, accountId)
                     ),
+                deleteLedgerByTransactionId: (transactionId: number) =>
+                    deleteLiveEntries(eq(TransactionEntryEntityTable.transactionId, transactionId)),
                 truncate: () => Db.query(db => db.delete(TransactionEntryEntityTable)),
                 archiveByAccountIds: (accountIds: number[]) =>
                     Db.query(db =>

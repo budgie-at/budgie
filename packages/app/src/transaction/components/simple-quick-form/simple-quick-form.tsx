@@ -1,4 +1,4 @@
-import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { ReactNode, Ref, useImperativeHandle, useRef } from 'react';
 import { View } from 'react-native';
 
@@ -13,9 +13,9 @@ import { SimpleQuickFormAmountBottomContent } from '../simple-quick-form-amount-
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
 import { SimpleQuickFormDisplay } from '../simple-quick-form-display/simple-quick-form-display';
 
+import type { DebtSettlementAccountInterface } from '../../interface/debt-settlement-account.interface';
 import type { QuickFormAccountFieldName } from '../../interface/quick-form-account-field-name.type';
-import type { QuickFormBuildEntryParamsInterface } from '../../interface/quick-form-build-entry-params.interface';
-import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
+import type { RuleDetectionType } from '../../interface/rule-detection.type';
 import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 import type { TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
@@ -30,13 +30,12 @@ interface Props {
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
-    readonly debtSettlementAccountTitle?: string | null;
+    readonly debtSettlementAccount?: DebtSettlementAccountInterface | null;
     readonly amountTopContent?: ReactNode;
     readonly showInlineFeeAction?: boolean;
-    readonly buildEntries: (params: QuickFormBuildEntryParamsInterface) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
-    readonly rulePillSlotProps?: RulePillSlotPropsInterface;
+    readonly ruleDetection?: RuleDetectionType;
 }
 
 const EXPENSE_ENTRY_TYPE = TransactionEntryTypeEnum.CREDIT;
@@ -46,7 +45,7 @@ const getEntryTypeForTransaction = (transactionType: TransactionTypeEnum): Trans
     transactionType === TransactionTypeEnum.EXPENSE ? EXPENSE_ENTRY_TYPE : INCOME_ENTRY_TYPE;
 
 export const SimpleQuickForm = (props: Props) => {
-    const { debtSettlementAccountTitle = null, ref, rulePillSlotProps, showInlineFeeAction = true, ...formProps } = props;
+    const { debtSettlementAccount = null, ref, ruleDetection, showInlineFeeAction = true, ...formProps } = props;
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { accountFieldName } = props;
     const { displayValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
@@ -79,7 +78,7 @@ export const SimpleQuickForm = (props: Props) => {
         amountDisplayRef,
         fieldIconsRef,
         accountRowRef,
-        buildEntries: props.buildEntries,
+        entryType: getEntryTypeForTransaction(props.transactionType),
         isSplitActive,
         mccCategoryId: props.mccCategoryId,
         transactionType: props.transactionType,
@@ -87,7 +86,7 @@ export const SimpleQuickForm = (props: Props) => {
     });
     const amountBottomContent = (
         <SimpleQuickFormAmountBottomContent
-            debtSettlementAccountTitle={debtSettlementAccountTitle}
+            debtSettlementAccount={debtSettlementAccount}
             feeAmount={feeAmount}
             feeCurrencySymbol={currencySymbol}
             feeInstrumentType={instrumentType}
@@ -100,7 +99,7 @@ export const SimpleQuickForm = (props: Props) => {
         <View className="flex-1">
             <SimpleQuickFormDisplay
                 {...formProps}
-                {...rulePillSlotProps}
+                ruleDetection={ruleDetection}
                 amountDisplayRef={amountDisplayRef}
                 amountBottomContent={amountBottomContent}
                 currencySymbol={currencySymbol}
@@ -120,7 +119,6 @@ export const SimpleQuickForm = (props: Props) => {
 
             <SimpleQuickFormControls
                 {...formProps}
-                {...rulePillSlotProps}
                 accountRowRef={accountRowRef}
                 fieldIconsRef={fieldIconsRef}
                 splitEntryCount={formState.splitEntryCount}

@@ -30,7 +30,6 @@ const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
 const isBooting = (statuses: readonly AiSubsystemStatusEnum[]): boolean =>
     statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING);
 
-// eslint-disable-next-line max-statements -- Priority-ordered derivation table across subsystem, coordinator and drainer states
 const deriveSystemStatus = (get: Atom.AtomContext): AiSystemSnapshotInterface => {
     if (!isAiEnabled()) {
         return EMPTY_SNAPSHOT;

@@ -1,15 +1,14 @@
-/* eslint-disable max-lines, max-lines-per-function */
-import { t } from '@lingui/core/macro';
+/* eslint-disable max-lines-per-function */
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
 
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
-import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
 import { BlogArticleHeading } from '../../../../blog/component/blog-article-heading/blog-article-heading';
 import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/blog-article-hero';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
 import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
+import { BlogArticlePageShell } from '../../../../blog/component/blog-article-page-shell/blog-article-page-shell';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';
 import { BlogBreadcrumbCurrent } from '../../../../blog/component/blog-breadcrumb-current/blog-breadcrumb-current';
@@ -17,10 +16,7 @@ import { BlogBreadcrumbLink } from '../../../../blog/component/blog-breadcrumb-l
 import { BlogBreadcrumbs } from '../../../../blog/component/blog-breadcrumbs/blog-breadcrumbs';
 import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-item';
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
-import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
-import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
 import { createBlogGenerateMetadata } from '../../../../blog/util/create-blog-generate-metadata.util';
-import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 
@@ -30,23 +26,10 @@ export const generateMetadata = createBlogGenerateMetadata(ARTICLE_METADATA);
 
 export default async function WhatsNewAugustSeptember2026Article(props: PageLangParam) {
     const { lang } = await props.params;
-    const i18n = initLingui(lang);
+    initLingui(lang);
 
     return (
-        <main className="flex-1">
-            <BlogPostingJsonLd
-                author={ARTICLE_METADATA.author}
-                blogLabel={t(i18n)`Blog`}
-                date={ARTICLE_METADATA.date}
-                description={i18n._(ARTICLE_METADATA.description)}
-                homeLabel={t(i18n)`Home`}
-                image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`}
-                keywords={ARTICLE_METADATA.seoKeywords.join(', ')}
-                locale={lang}
-                slug={ARTICLE_METADATA.slug}
-                title={i18n._(ARTICLE_METADATA.title)}
-            />
-
+        <BlogArticlePageShell article={ARTICLE_METADATA} lang={lang}>
             <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
@@ -282,12 +265,6 @@ export default async function WhatsNewAugustSeptember2026Article(props: PageLang
                     </BlogFaqSection>
                 </BlogArticleSection>
             </BlogArticleContent>
-
-            <BlogArticleCta locale={lang} />
-
-            <RelatedArticles locale={lang} slugs={ARTICLE_METADATA.relatedArticleSlugs} />
-
-            <FeaturePageRelated locale={lang} slugs={ARTICLE_METADATA.relatedFeatureSlugs} />
-        </main>
+        </BlogArticlePageShell>
     );
 }

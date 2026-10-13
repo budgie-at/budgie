@@ -1,30 +1,29 @@
 import { buildTestDb, makeTestPlatformLayer, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 import {
-    AtmCashWithdrawalRepository,
+    ConsolidationCandidateRepository,
     ConsolidationCoordinatorService,
     ConsolidationExecutorService,
     ConsolidationRepairExecutorService,
-    ExistingTransferRepository,
-    IbanBridgeTransferRepository,
     P2pFiatDirectionEnum,
     P2pTransferTitleResolver,
     RefundConsolidationService,
-    RefundPairRepository,
-    TransferPairRepository,
-    UnconsolidationService
+    RefundPairRepository
 } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
     AccountRepository,
-    Db,
     StatisticsRepository,
     TransactionEntryRepository,
     TransactionRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService, LedgerWorkload, TransactionService } from '@budgie/ledger';
+import { TransferConsolidationService } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isDefined } from '@rnw-community/shared';
 
 export const testDbHandle = await buildTestDb();
 
@@ -39,14 +38,13 @@ export const TestLayer = Layer.mergeAll(
     ConsolidationExecutorService.layer,
     ConsolidationRepairExecutorService.layer,
     RefundConsolidationService.layer,
-    UnconsolidationService.layer,
-    AtmCashWithdrawalRepository.layer,
-    ExistingTransferRepository.layer,
-    IbanBridgeTransferRepository.layer,
+    ConsolidationCandidateRepository.layer,
     RefundPairRepository.layer,
-    TransferPairRepository.layer,
     AccountRepository.layer,
     AccountBalanceRepository.layer,
+    AccountBalanceIncrementalService.layer,
+    TransferConsolidationService.layer,
+    TransactionService.layer,
     StatisticsRepository.layer,
     TransactionRepository.layer,
     TransactionEntryRepository.layer,
@@ -57,11 +55,23 @@ export const TestLayer = Layer.mergeAll(
             direction === P2pFiatDirectionEnum.BUY ? `Binance P2P buy ${assetCode}` : `Binance P2P sell ${assetCode}`
         )
     ),
+    Layer.provideMerge(Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect }))),
     Layer.provideMerge(makeTestPlatformLayer(testDb)),
     Layer.provideMerge(Layer.succeed(Clock.Clock, Clock.Clock.defaultValue()))
 );
 
+export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalService, accountBalanceIncrementalService =>
+    accountBalanceIncrementalService.updateAllBalances(false)
+);
+
+export const seedStoredBalancesOnce = Effect.gen(function* () {
+    const accountBalanceRepository = yield* AccountBalanceRepository;
+    const [{ updatedAt }] = yield* accountBalanceRepository.getLatestUpdatedAt();
+
+    if (!isDefined(updatedAt)) {
+        yield* rebuildStoredBalances;
+    }
+});
+
 export const unconsolidateById = (transactionId: number) =>
-    Effect.flatMap(UnconsolidationService, unconsolidationService =>
-        Db.transaction(unconsolidationService.unconsolidateById(transactionId))
-    );
+    Effect.flatMap(TransactionService, transactionService => transactionService.unconsolidateById(transactionId));

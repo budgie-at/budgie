@@ -4,6 +4,7 @@ import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canoni
 import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { buildCalibratedTransferExclusionSql } from '../../utils/build-calibrated-transfer-exclusion-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -110,6 +111,7 @@ const IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_BASE_SQL = `
                     AND superseded_tx.consolidation_parent_transaction_id IS NULL
                     AND superseded_tx.updated_by IS NULL
                     AND superseded_tx.consolidation_type IN (${IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL})
+                    AND ${buildCalibratedTransferExclusionSql('superseded_tx', 'source_account.id, bridge_account.id')}
                     ${SUPERSEDED_SCOPE_SQL_PLACEHOLDER}
             )
             WHERE supersededMatchCount = 1

@@ -2,6 +2,7 @@ import { DEFAULT_TRANSACTION_FILTER, RUNWAY_WINDOW_MONTHS, RunwayDriverDimension
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { useToday } from '../../@generic/hook/use-today.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useSetting } from '../../settings/hook/use-setting.hook';
@@ -31,27 +32,35 @@ const runwayDriverSeriesAtom = databaseQueryFamily(
 );
 
 export const useRunwayQuery = (params: UseRunwayQueryParams) => {
-    const { dimension, liquid } = params;
+    const { dimension, liquid, isAllIn } = params;
     const language = useSetting('language');
     const { defaultInstrument } = useSettingsContext();
     const seriesResult = useLiveAtomValue(runwaySeriesAtom(defaultInstrument.id));
-    const categoryDriverResult = useLiveAtomValue(
-        runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.CATEGORY, language])
-    );
-    const tagDriverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.TAG, language]));
+    const driverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, dimension, language]));
+    const irregularDimension = isAllIn ? RunwayDriverDimensionEnum.CATEGORY : dimension;
+    const irregularDriverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, irregularDimension, language]));
+    const today = useToday();
     const seriesRows = AsyncResult.getOrElse(seriesResult, () => []);
-    const categoryDriverRows = AsyncResult.getOrElse(categoryDriverResult, () => []);
-    const tagDriverRows = AsyncResult.getOrElse(tagDriverResult, () => []);
     const monthlyBurn = median(seriesRows.map(row => row.expense));
-    const categoryBreakdown = aggregateRunwayDrivers(categoryDriverRows, monthlyBurn);
-    const tagBreakdown = aggregateRunwayDrivers(tagDriverRows, monthlyBurn);
+    const breakdown = aggregateRunwayDrivers(
+        AsyncResult.getOrElse(driverResult, () => []),
+        monthlyBurn,
+        isAllIn
+    );
+    const irregularBreakdown =
+        isAllIn && dimension !== RunwayDriverDimensionEnum.CATEGORY
+            ? aggregateRunwayDrivers(
+                  AsyncResult.getOrElse(irregularDriverResult, () => []),
+                  monthlyBurn,
+                  isAllIn
+              )
+            : breakdown;
     const computation = computeRunway({
         series: seriesRows,
         liquid,
-        irregularMonthlyAmount: categoryBreakdown.irregularMonthlyAmount,
-        referenceDate: new Date()
+        irregularMonthlyAmount: isAllIn ? irregularBreakdown.irregularMonthlyAmount : 0,
+        referenceDate: today
     });
-    const drivers = dimension === RunwayDriverDimensionEnum.CATEGORY ? categoryBreakdown.drivers : tagBreakdown.drivers;
 
-    return { computation, drivers, series: seriesRows };
+    return { computation, drivers: breakdown.drivers, series: seriesRows };
 };

@@ -3,7 +3,7 @@ import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchCanonicalsOfType, fetchTransactionById, seedAmountTransferPair, TestLayer } from '../../harness';
+import { seedAmountTransferPair, TestLayer, testQueryService } from '../../harness';
 
 describe('consolidation/refund-pair-processor-ordering', () => {
     it.effect('lets the transfer-pair processor reparent first when an income is also a transfer-pair partner', () =>
@@ -14,13 +14,17 @@ describe('consolidation/refund-pair-processor-ordering', () => {
             const result = yield* transferConsolidationService.consolidate(null);
             expect(result.consolidated).toBe(1);
 
-            const transferCanonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const transferCanonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
             expect(transferCanonicals).toHaveLength(1);
 
-            expect((yield* fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(transferCanonicals[0].id);
-            expect((yield* fetchTransactionById(income.id)).consolidationParentTransactionId).toBe(transferCanonicals[0].id);
+            expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBe(
+                transferCanonicals[0].id
+            );
+            expect((yield* testQueryService.findTransactionById(income.id)).consolidationParentTransactionId).toBe(
+                transferCanonicals[0].id
+            );
 
-            const refundCanonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.REFUND);
+            const refundCanonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.REFUND);
             expect(refundCanonicals).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );

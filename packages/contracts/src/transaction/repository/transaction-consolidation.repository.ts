@@ -7,7 +7,7 @@ import * as Layer from 'effect/Layer';
 import { isEmptyArray } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
@@ -19,8 +19,6 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
     '@budgie/contracts/TransactionConsolidationRepository',
     {
         make: Effect.sync(() => {
-            const filters = new BaseTransactionFilterRepository();
-
             const queryBuilder = new QueryBuilder();
 
             return {
@@ -49,7 +47,7 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                             .where(
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
-                                    isNull(TransactionEntityTable.deletedAt),
+                                    transactionFilters.buildVisibleTransactionCondition(),
                                     or(
                                         inArray(TransactionEntityTable.fromAccountId, accountIds),
                                         inArray(TransactionEntityTable.toAccountId, accountIds),
@@ -80,7 +78,7 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                             .where(
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
-                                    isNull(TransactionEntityTable.deletedAt),
+                                    transactionFilters.buildVisibleTransactionCondition(),
                                     inArray(TransactionEntryEntityTable.accountId, accountIds),
                                     isNotNull(TransactionEntryEntityTable.originalTransactionId),
                                     isNull(TransactionEntryEntityTable.deletedAt),
@@ -103,7 +101,10 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                             .update(TransactionEntityTable)
                             .set({ consolidationParentTransactionId: canonicalTransactionId })
                             .where(
-                                and(inArray(TransactionEntityTable.id, sourceTransactionIds), filters.buildVisibleTransactionCondition())
+                                and(
+                                    inArray(TransactionEntityTable.id, sourceTransactionIds),
+                                    transactionFilters.buildVisibleTransactionCondition()
+                                )
                             )
                     );
                 }),
@@ -180,6 +181,21 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                                 )
                             )
                     ),
+
+                detachFromConsolidation: Effect.fn('TransactionConsolidationRepository.detachFromConsolidation')(function* (
+                    sourceTransactionIds: number[]
+                ) {
+                    if (isEmptyArray(sourceTransactionIds)) {
+                        return;
+                    }
+
+                    yield* Db.query(db =>
+                        db
+                            .update(TransactionEntityTable)
+                            .set({ consolidationParentTransactionId: null })
+                            .where(inArray(TransactionEntityTable.id, sourceTransactionIds))
+                    );
+                }),
 
                 clearConsolidationParent: (canonicalTransactionId: number) =>
                     Db.query(db =>

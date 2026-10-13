@@ -6,21 +6,19 @@ import { View } from 'react-native';
 import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
 import { TextArea } from '../@generic/component/textarea/text-area';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useNoteInputModal, useNoteInputModalParams } from '../transaction/context/note-input-modal.context';
 
 import { NoteInputModalSelector } from './note-input-modal.selector';
 
 export default function NoteInputModal() {
     const { t } = useLingui();
-    const [, resolveNoteInput] = useNoteInputModal();
+    const [, resolveNoteInput, dismissNoteInput] = useNoteInputModal();
+    useModalDismiss(dismissNoteInput);
     const currentParams = useNoteInputModalParams();
-    const { backgroundColor } = useFormsheetListStyles();
 
     const initialValue = currentParams?.initialValue ?? '';
     const valueRef = useRef(initialValue);
-
-    const containerStyle = { flex: 1, backgroundColor };
 
     const handleChangeText = (text: string) => {
         valueRef.current = text;
@@ -31,7 +29,7 @@ export default function NoteInputModal() {
     };
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <View collapsable={false} className="flex-row items-end gap-md px-xl py-lg">
                 <View className="flex-1">
                     <TextArea

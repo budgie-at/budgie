@@ -7,16 +7,10 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
-import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
-import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
-import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
-import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
-import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
@@ -26,8 +20,6 @@ import type { SimilarTransactionStatsQueryInterface } from '../interface/similar
 
 export class TransactionViewRepository extends Context.Service<TransactionViewRepository>()('@budgie/contracts/TransactionViewRepository', {
     make: Effect.sync(() => {
-        const filters = new BaseTransactionFilterRepository();
-
         const queryBuilder = new QueryBuilder();
 
         const mapTransactionColumns = (query: SQL, transactionTable: typeof TransactionEntityTable): SQL =>
@@ -122,7 +114,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                     queryBuilder
                         .select({ transactionId: TransactionEntryEntityTable.transactionId })
                         .from(TransactionEntryEntityTable)
-                        .where(and(eq(TransactionEntryEntityTable.type, type), filters.buildLedgerEntryCondition()))
+                        .where(and(eq(TransactionEntryEntityTable.type, type), transactionFilters.buildLedgerEntryCondition()))
                 )
             );
 
@@ -133,55 +125,19 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                 ...(types.includes(TransactionTypeEnum.INCOME) ? [buildAdjustmentCondition(TransactionEntryTypeEnum.DEBIT)] : [])
             );
 
-        const buildWhere = (transactionFilters: TransactionFilterInterface) =>
-            and(
-                filters.buildFilterWhere(transactionFilters),
-                ...(isNotEmptyArray(transactionFilters.types) ? [buildTypeCondition(transactionFilters.types)] : [])
-            );
+        const buildWhere = (filter: TransactionFilterInterface) =>
+            and(transactionFilters.buildFilterWhere(filter), ...(isNotEmptyArray(filter.types) ? [buildTypeCondition(filter.types)] : []));
 
-        const buildUncategorizedWhere = (transactionFilters: TransactionFilterInterface) =>
+        const buildUncategorizedWhere = (filter: TransactionFilterInterface) =>
             and(
-                filters.buildFilterWhere({ ...transactionFilters, categoryIds: [] }),
-                filters.buildCategorizableTypeCondition(transactionFilters.types)
+                transactionFilters.buildFilterWhere({ ...filter, categoryIds: [] }),
+                transactionFilters.buildCategorizableTypeCondition(filter.types)
             );
-
-        const buildFullRelations = (language: LanguageEnum) =>
-            ({
-                [TransactionAssociationEnum.ENTRIES]: {
-                    where: filters.buildLedgerEntryFilter(),
-                    with: {
-                        [TransactionEntryAssociationEnum.ACCOUNT]: {
-                            with: {
-                                [AccountAssociationEnum.INSTRUMENT]: true
-                            }
-                        },
-                        [TransactionEntryAssociationEnum.CATEGORY]: buildTranslatedCategoryRelation(language),
-                        [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
-                    }
-                },
-                [TransactionAssociationEnum.TRANSACTION_TAGS]: {
-                    with: {
-                        [TransactionTagsAssociationEnum.TAG]: true
-                    }
-                },
-                [TransactionAssociationEnum.DEBT_EVENTS]: {
-                    where: { deletedAt: { isNull: true } },
-                    with: {
-                        [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
-                            with: {
-                                [AccountAssociationEnum.INSTRUMENT]: true
-                            }
-                        }
-                    }
-                },
-                [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-                [TransactionAssociationEnum.TO_ACCOUNT]: true
-            }) as const;
 
         const listOrderedByOperatedAt = (limit: number, language: LanguageEnum, where: SQL | null | undefined) =>
             Db.query(db =>
                 db.query.TransactionEntityTable.findMany({
-                    with: buildFullRelations(language),
+                    with: transactionFilters.buildFullTransactionRelations(language),
                     orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
                     limit,
                     ...(isDefined(where)
@@ -224,16 +180,16 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                 };
             }),
 
-            getAll: (limit: number, transactionFilters: TransactionFilterInterface, language: LanguageEnum) =>
-                listOrderedByOperatedAt(limit, language, buildWhere(transactionFilters)),
+            getAll: (limit: number, filter: TransactionFilterInterface, language: LanguageEnum) =>
+                listOrderedByOperatedAt(limit, language, buildWhere(filter)),
 
-            countAll: (transactionFilters: TransactionFilterInterface) =>
-                Db.query(db => db.select({ value: count() }).from(TransactionEntityTable).where(buildWhere(transactionFilters))),
+            countAll: (filter: TransactionFilterInterface) =>
+                Db.query(db => db.select({ value: count() }).from(TransactionEntityTable).where(buildWhere(filter))),
 
-            getUncategorized: (limit: number, transactionFilters: TransactionFilterInterface, language: LanguageEnum) =>
-                listOrderedByOperatedAt(limit, language, buildUncategorizedWhere(transactionFilters)),
+            getUncategorized: (limit: number, filter: TransactionFilterInterface, language: LanguageEnum) =>
+                listOrderedByOperatedAt(limit, language, buildUncategorizedWhere(filter)),
 
-            countUncategorized: (transactionFilters: TransactionFilterInterface) =>
+            countUncategorized: (filter: TransactionFilterInterface) =>
                 Db.query(db =>
                     db
                         .select({
@@ -246,14 +202,14 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                                 )
                         })
                         .from(TransactionEntityTable)
-                        .where(buildUncategorizedWhere(transactionFilters))
+                        .where(buildUncategorizedWhere(filter))
                 ),
 
             getById: (id: number, language: LanguageEnum) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findFirst({
                         where: { id },
-                        with: buildFullRelations(language)
+                        with: transactionFilters.buildFullTransactionRelations(language)
                     })
                 )
         };

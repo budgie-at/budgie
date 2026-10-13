@@ -1,13 +1,11 @@
 import { UserIconType } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ClassValue, cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { IconSelectorModalSelector } from '../../../app/icon-selector-modal.selector';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { typedObjectEntries } from '../../utils/typed-object-entries.util';
-import { typedObjectFromEntries } from '../../utils/typed-object-from-entries.util';
+import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -29,28 +27,6 @@ const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondar
     }
 });
 
-const iconVariant = cva<{ variant: Record<ColorPaletteVariant, ClassValue>; isSelected: Record<`true` | `false`, ClassValue> }>('', {
-    variants: {
-        variant: typedObjectFromEntries(typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([key]) => [key, ''])),
-        isSelected: {
-            true: '',
-            false: 'text-primary'
-        }
-    },
-    compoundVariants: [
-        ...typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([key]) => ({
-            className: FOREGROUND_COLOR_PALETTE.secondary,
-            isSelected: false,
-            variant: key
-        })),
-        ...typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([key, value]) => ({ isSelected: true, className: value, variant: key }))
-    ],
-    defaultVariants: {
-        variant: 'default',
-        isSelected: false
-    }
-});
-
 const nameVariants = cva('font-medium text-xxs px-lg', {
     variants: {
         isSelected: {
@@ -62,6 +38,7 @@ const nameVariants = cva('font-medium text-xxs px-lg', {
 
 export const IconSelectorCard = ({ className, isSelected, icon, label, onSelect, variant }: Props) => {
     const handleSelect = () => void onSelect(icon);
+    const iconClassName = isSelected ? FOREGROUND_COLOR_PALETTE[variant] : FOREGROUND_COLOR_PALETTE.secondary;
 
     return (
         <HapticPressable
@@ -70,7 +47,7 @@ export const IconSelectorCard = ({ className, isSelected, icon, label, onSelect,
             onPress={handleSelect}
         >
             <View className="p-md">
-                <Icon className={iconVariant({ variant, isSelected })} icon={icon} />
+                <Icon className={cn(iconClassName)} icon={icon} />
             </View>
 
             <Text className={nameVariants({ isSelected })} ellipsizeMode="tail" numberOfLines={1}>

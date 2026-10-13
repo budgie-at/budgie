@@ -39,8 +39,8 @@ export class MonobankClient implements SyncProviderClientInterface {
         from: number,
         to?: number
     ) {
-        const statements = yield* this.request(() =>
-            this.personalClient.statements.get({ account: accountId, from, to: to ?? getUnixTime(new Date()) })
+        const statements = yield* this.request(signal =>
+            this.personalClient.statements.get({ account: accountId, from, to: to ?? getUnixTime(new Date()) }, { signal })
         );
 
         return statements.map(statement => monobankTransactionMapper(statement, accountId));
@@ -51,7 +51,7 @@ export class MonobankClient implements SyncProviderClientInterface {
 
     private readonly fetchClientInfo = Effect.fn('MonobankClient.fetchClientInfo')(function* (this: MonobankClient) {
         if (!isDefined(this.cachedClientInfo)) {
-            this.cachedClientInfo = yield* this.request(() => this.personalClient.client.getInfo());
+            this.cachedClientInfo = yield* this.request(signal => this.personalClient.client.getInfo({ signal }));
         }
 
         return this.cachedClientInfo;
@@ -70,7 +70,7 @@ export class MonobankClient implements SyncProviderClientInterface {
         });
     }
 
-    private request<A>(run: () => Promise<A>): Effect.Effect<A, SyncError> {
+    private request<A>(run: (signal: AbortSignal) => Promise<A>): Effect.Effect<A, SyncError> {
         return Effect.tryPromise({ try: run, catch: error => this.toSyncError(error) });
     }
 

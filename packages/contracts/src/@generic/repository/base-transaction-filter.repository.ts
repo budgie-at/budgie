@@ -3,26 +3,33 @@ import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
+import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
+import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
+import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { PRECISION } from '../constant/precision.constant';
+import { LanguageEnum } from '../enum/language.enum';
 import { AmountRangeInterface } from '../interface/amount-range.interface';
 import { DateRangeInterface } from '../interface/date-range.interface';
+import { buildTranslatedCategoryRelation } from '../util/build-translated-category-relation.util';
 
-export class BaseTransactionFilterRepository {
+class BaseTransactionFilterRepository {
     private static readonly CATEGORIZABLE_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
+    readonly ledgerEntryFilter = { originalTransactionId: { isNull: true }, deletedAt: { isNull: true } } as const;
 
     private readonly queryBuilder = new QueryBuilder();
 
-    /* jscpd:ignore-start */
     buildFilterWhere({
         tagIds,
         categoryIds,
@@ -42,23 +49,6 @@ export class BaseTransactionFilterRepository {
         // eslint-disable-next-line no-undefined
         return isNotEmptyArray(conditions) ? and(...conditions) : undefined;
     }
-    /* jscpd:ignore-end */
-
-    buildCategoryCondition(categoryIds: number[]) {
-        if (isEmptyArray(categoryIds)) {
-            return this.buildUncategorizedCondition();
-        }
-
-        return this.buildSelectedCategoryCondition(categoryIds);
-    }
-
-    buildTagCondition(tagIds: number[]) {
-        if (isEmptyArray(tagIds)) {
-            return this.buildUntaggedCondition();
-        }
-
-        return this.buildSelectedTagCondition(tagIds);
-    }
 
     buildAccountCondition(accountIds: number[] | null): SQL[] {
         if (isNotEmptyArray(accountIds)) {
@@ -75,53 +65,42 @@ export class BaseTransactionFilterRepository {
         return [];
     }
 
-    buildDateCondition({ from, to }: DateRangeInterface) {
-        const parts: SQL[] = [];
-
-        if (isDefined(from)) {
-            parts.push(gte(TransactionEntityTable.operatedAt, from));
-        }
-
-        if (isDefined(to)) {
-            parts.push(lte(TransactionEntityTable.operatedAt, to));
-        }
-
-        // eslint-disable-next-line no-undefined
-        return isNotEmptyArray(parts) ? and(...parts) : undefined;
-    }
-
-    buildAmountCondition({ from, to }: AmountRangeInterface) {
-        const amountParts: SQL[] = [
-            ...(isDefined(from) ? [gte(TransactionEntryEntityTable.amount, Math.round(from * PRECISION))] : []),
-            ...(isDefined(to) ? [lte(TransactionEntryEntityTable.amount, Math.round(to * PRECISION))] : [])
-        ];
-
-        if (isEmptyArray(amountParts)) {
-            // eslint-disable-next-line no-undefined
-            return undefined;
-        }
-
-        return inArray(
-            TransactionEntityTable.id,
-            this.queryBuilder
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                .from(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        this.buildPrimaryLedgerEntryCondition(),
-                        inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
-                        ...amountParts
-                    )
-                )
-        );
-    }
-
     buildVisibleTransactionCondition() {
         return and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
     }
 
-    buildLedgerEntryFilter() {
-        return { originalTransactionId: { isNull: true }, deletedAt: { isNull: true } } as const;
+    buildFullTransactionRelations(language: LanguageEnum) {
+        return {
+            [TransactionAssociationEnum.ENTRIES]: {
+                where: this.ledgerEntryFilter,
+                with: {
+                    [TransactionEntryAssociationEnum.ACCOUNT]: {
+                        with: {
+                            [AccountAssociationEnum.INSTRUMENT]: true
+                        }
+                    },
+                    [TransactionEntryAssociationEnum.CATEGORY]: buildTranslatedCategoryRelation(language),
+                    [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
+                }
+            },
+            [TransactionAssociationEnum.TRANSACTION_TAGS]: {
+                with: {
+                    [TransactionTagsAssociationEnum.TAG]: true
+                }
+            },
+            [TransactionAssociationEnum.DEBT_EVENTS]: {
+                where: { deletedAt: { isNull: true } },
+                with: {
+                    [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
+                        with: {
+                            [AccountAssociationEnum.INSTRUMENT]: true
+                        }
+                    }
+                }
+            },
+            [TransactionAssociationEnum.FROM_ACCOUNT]: true,
+            [TransactionAssociationEnum.TO_ACCOUNT]: true
+        } as const;
     }
 
     buildLedgerEntryCondition() {
@@ -172,24 +151,61 @@ export class BaseTransactionFilterRepository {
         );
     }
 
-    buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
-        return this.queryBuilder
-            .select({ transactionId: TransactionEntryEntityTable.transactionId })
-            .from(TransactionEntryEntityTable)
-            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
+    private buildCategoryCondition(categoryIds: number[]) {
+        if (isEmptyArray(categoryIds)) {
+            return this.buildUncategorizedCondition();
+        }
+
+        return this.buildSelectedCategoryCondition(categoryIds);
     }
 
-    buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
-        return this.queryBuilder
-            .select({ transactionId: DebtEventEntityTable.transactionId })
-            .from(DebtEventEntityTable)
-            .where(
-                and(
-                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
-                    isNotNull(DebtEventEntityTable.transactionId),
-                    isNull(DebtEventEntityTable.deletedAt)
+    private buildTagCondition(tagIds: number[]) {
+        if (isEmptyArray(tagIds)) {
+            return this.buildUntaggedCondition();
+        }
+
+        return this.buildSelectedTagCondition(tagIds);
+    }
+
+    private buildDateCondition({ from, to }: DateRangeInterface) {
+        const parts: SQL[] = [];
+
+        if (isDefined(from)) {
+            parts.push(gte(TransactionEntityTable.operatedAt, from));
+        }
+
+        if (isDefined(to)) {
+            parts.push(lte(TransactionEntityTable.operatedAt, to));
+        }
+
+        // eslint-disable-next-line no-undefined
+        return isNotEmptyArray(parts) ? and(...parts) : undefined;
+    }
+
+    private buildAmountCondition({ from, to }: AmountRangeInterface) {
+        const amountParts: SQL[] = [
+            ...(isDefined(from) ? [gte(TransactionEntryEntityTable.amount, Math.round(from * PRECISION))] : []),
+            ...(isDefined(to) ? [lte(TransactionEntryEntityTable.amount, Math.round(to * PRECISION))] : [])
+        ];
+
+        if (isEmptyArray(amountParts)) {
+            // eslint-disable-next-line no-undefined
+            return undefined;
+        }
+
+        return inArray(
+            TransactionEntityTable.id,
+            this.queryBuilder
+                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .from(TransactionEntryEntityTable)
+                .where(
+                    and(
+                        this.buildPrimaryLedgerEntryCondition(),
+                        inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
+                        ...amountParts
+                    )
                 )
-            );
+        );
     }
 
     private buildUncategorizedCondition() {
@@ -225,4 +241,26 @@ export class BaseTransactionFilterRepository {
                 .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
         );
     }
+
+    private buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
+        return this.queryBuilder
+            .select({ transactionId: TransactionEntryEntityTable.transactionId })
+            .from(TransactionEntryEntityTable)
+            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
+    }
+
+    private buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
+        return this.queryBuilder
+            .select({ transactionId: DebtEventEntityTable.transactionId })
+            .from(DebtEventEntityTable)
+            .where(
+                and(
+                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
+                    isNotNull(DebtEventEntityTable.transactionId),
+                    isNull(DebtEventEntityTable.deletedAt)
+                )
+            );
+    }
 }
+
+export const transactionFilters = new BaseTransactionFilterRepository();

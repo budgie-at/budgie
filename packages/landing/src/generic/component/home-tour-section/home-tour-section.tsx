@@ -9,7 +9,6 @@ interface Props {
     readonly locale: string;
 }
 
-// eslint-disable-next-line max-lines-per-function -- Five-step scroll story is one continuous composition
 export const HomeTourSection = ({ locale }: Props) => {
     const i18n = getI18nInstance(locale);
 

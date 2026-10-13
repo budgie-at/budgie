@@ -28,7 +28,6 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
                     value={t`View source transactions`}
                     testID={TransactionInfoPageSelector.Row.Consolidation}
                     onPress={handleOpenSources}
-                    withBottomBorder={false}
                 />
             ) : null}
         </>

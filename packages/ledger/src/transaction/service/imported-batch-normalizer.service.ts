@@ -1,3 +1,4 @@
+import { convertToMicroUnits } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -28,23 +29,31 @@ export class ImportedBatchNormalizerService extends Context.Service<ImportedBatc
                 return nextMap;
             };
 
+            const buildImportFingerprint = (input: TransactionCreateInputInterface): string =>
+                JSON.stringify([
+                    input.type,
+                    input.entries.map(entry => [
+                        entry.accountId,
+                        entry.type,
+                        entry.kind ?? null,
+                        convertToMicroUnits(entry.amount),
+                        entry.exchangeRate ?? null
+                    ])
+                ]);
+
             const buildImportedInputFingerprint = (input: TransactionCreateInputInterface): string => {
                 const entriesFingerprint = input.entries.map(entry => [
-                    entry.accountId,
-                    entry.type,
-                    entry.amount,
                     entry.categoryId,
                     entry.categorySource,
                     entry.mccCategoryId,
-                    entry.exchangeRate,
                     entry.toIban
                 ]);
 
                 return JSON.stringify([
+                    buildImportFingerprint(input),
                     input.externalSource,
                     input.title,
                     input.comment,
-                    input.type,
                     input.operatedAt.getTime(),
                     input.fromAccountId,
                     input.toAccountId,
@@ -128,6 +137,7 @@ export class ImportedBatchNormalizerService extends Context.Service<ImportedBatc
             };
 
             return {
+                buildImportFingerprint,
                 normalize: (inputs: readonly TransactionCreateInputInterface[]): TransactionCreateInputInterface[] => {
                     const fingerprintOrdinalMapsByExternalId = new Map<string, Map<string, number>>();
 

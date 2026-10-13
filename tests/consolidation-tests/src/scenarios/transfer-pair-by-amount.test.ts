@@ -1,12 +1,25 @@
-import { AccountBalanceRepository, AccountRepository, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import {
+    AccountBalanceRepository,
+    AccountRepository,
+    PRECISION,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import {
+    fetchLedgerBalances,
+    fetchOwnLedgerEntries,
+    fetchSingleCanonicalId,
+    revertSingleCanonical
+} from '../harness/consolidation-revert-audit';
 import { expectConsolidationResult } from '../harness/expect-consolidation-result';
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const SLOW_WINDOW_OFFSET_MS = 30 * 60 * 1000;
+const TRANSFER_FEE_AMOUNT = 150 * PRECISION;
 
 layer(TestLayer)('consolidation/transfer-pair-by-amount', it => {
     it.effect('consolidates amount and transfer-MCC matches through consolidation services', () =>
@@ -36,6 +49,31 @@ layer(TestLayer)('consolidation/transfer-pair-by-amount', it => {
 
             expect(fromBalance?.balance).toBe(-250 * PRECISION);
             expect(toBalance?.balance).toBe(250 * PRECISION);
+        })
+    );
+
+    it.effect('keeps the bank fee of a paired transfer on its account and restores it on revert', () =>
+        Effect.gen(function* () {
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const { expense, fromAccount, toAccount } = yield* testSeedService.amountTransferPair(5_000 * PRECISION, transferMcc.id);
+
+            yield* testSeedService.feeEntry(expense.id, 'transfer-fee', { accountId: fromAccount.id, amount: TRANSFER_FEE_AMOUNT });
+
+            const balancesBefore = yield* fetchLedgerBalances([fromAccount.id, toAccount.id]);
+
+            yield* expectConsolidationResult({ found: 1, consolidated: 1 });
+
+            const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const canonicalFeeEntries = (yield* fetchOwnLedgerEntries(canonicalId)).filter(
+                entry => entry.type === TransactionEntryTypeEnum.FEE
+            );
+
+            expect(canonicalFeeEntries.map(entry => [entry.accountId, entry.amount])).toEqual([[fromAccount.id, TRANSFER_FEE_AMOUNT]]);
+            expect(yield* fetchLedgerBalances([fromAccount.id, toAccount.id])).toEqual(balancesBefore);
+
+            yield* revertSingleCanonical(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+
+            expect(yield* fetchLedgerBalances([fromAccount.id, toAccount.id])).toEqual(balancesBefore);
         })
     );
 

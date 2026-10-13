@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Text, View } from 'react-native';
 
@@ -7,7 +7,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -65,7 +64,7 @@ export const TransactionPickerRow = ({ item, isSelected = false, onPress, testID
 
     if (!isDefined(onPress)) {
         return (
-            <View className={rowClassName} testID={testID}>
+            <View accessible className={rowClassName} testID={testID}>
                 {content}
             </View>
         );

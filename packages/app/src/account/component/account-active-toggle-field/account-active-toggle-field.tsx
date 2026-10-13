@@ -1,4 +1,3 @@
-import { DebtAccountCreateInputInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, FieldValues, Path, UseControllerReturn } from 'react-hook-form';
 import { Text } from 'react-native';
@@ -11,9 +10,7 @@ interface Props<T extends FieldValues> {
     readonly control: Control<T>;
 }
 
-export const AccountActiveToggleField = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>({
-    control
-}: Props<T>) => {
+export const AccountActiveToggleField = <T extends { isActive?: boolean }>({ control }: Props<T>) => {
     const { t } = useLingui();
 
     const renderField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
@@ -27,7 +24,7 @@ export const AccountActiveToggleField = <T extends LiabilityAccountCreateInputIn
                     <ThemedSwitch
                         className="my-auto"
                         onValueChange={onChange}
-                        value={value as boolean}
+                        value={value}
                         testID={CreateAccountScreenSelector.ActiveSwitch}
                     />
                 }

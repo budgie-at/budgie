@@ -45,7 +45,6 @@ patchedDependencies:
   drizzle-orm@1.0.0-rc.4: patches/drizzle-orm@1.0.0-rc.4.patch
   expo-modules-jsi@58.0.6: patches/expo-modules-jsi@58.0.6.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
-  react-native-css@3.0.7: patches/react-native-css@3.0.7.patch
 
 peerDependencyRules:
   allowedVersions:

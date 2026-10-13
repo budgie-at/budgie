@@ -8,6 +8,7 @@ import * as Semaphore from 'effect/Semaphore';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { ManualAudioStreamAdapter } from '../adapter/manual-audio-stream.adapter';
 import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { STT_BEAM_SIZE, STT_MAX_THREADS, STT_MAX_TRANSCRIPTION_LEN, STT_TEMPERATURE } from '../constant/stt-realtime-options.constant';
@@ -44,8 +45,8 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
             }
             const audioBuffer = new ArrayBuffer(audioData.byteLength);
             new Uint8Array(audioBuffer).set(audioData);
-            const result = yield* Effect.tryPromise(
-                () =>
+            const result = yield* Effect.tryPromise({
+                try: () =>
                     whisperContext.transcribeData(audioBuffer, {
                         ...(isDefined(streamLanguage) && { language: streamLanguage }),
                         translate: false,
@@ -54,8 +55,9 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                         temperatureInc: STT_TEMPERATURE,
                         maxLen: STT_MAX_TRANSCRIPTION_LEN,
                         beamSize: STT_BEAM_SIZE
-                    }).promise
-            );
+                    }).promise,
+                catch: cause => new NativeCallError({ cause })
+            });
 
             return result.result.trim();
         });
@@ -127,7 +129,12 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                 context = null;
                 const whisperModule = whisper;
                 const exit = yield* Effect.exit(
-                    isDefined(whisperModule) ? Effect.tryPromise(() => whisperModule.releaseAllWhisper()) : Effect.void
+                    isDefined(whisperModule)
+                        ? Effect.tryPromise({
+                              try: () => whisperModule.releaseAllWhisper(),
+                              catch: cause => new NativeCallError({ cause })
+                          })
+                        : Effect.void
                 );
                 patchAtom(
                     sttSnapshotAtom,

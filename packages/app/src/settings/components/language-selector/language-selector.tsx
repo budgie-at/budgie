@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CountryFlag } from '../../../@generic/component/country-flag/country-flag';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../../../i18n/context/language-selector-modal.context';
@@ -21,13 +22,14 @@ export const LanguageSelector = () => {
 
     const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
 
-    const handleOpen = async () => {
-        const result = await openLanguageSelector({ selectedLanguage: language });
-        if (isDefined(result)) {
-            await appRuntime.runPromise(
-                updateSettingsMutation({ language: result }).pipe(Effect.andThen(i18nEnsureLanguageActivated(result)))
-            );
-        }
+    const handleOpen = () => {
+        openLanguageSelector({ selectedLanguage: language }, result => {
+            if (isDefined(result)) {
+                appRuntime.runFork(
+                    logAndContinue(updateSettingsMutation({ language: result }).pipe(Effect.andThen(i18nEnsureLanguageActivated(result))))
+                );
+            }
+        });
     };
 
     if (!isDefined(selectedLanguage)) {

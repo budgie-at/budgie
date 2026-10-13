@@ -1,13 +1,20 @@
-import { isEmptyArray } from '@rnw-community/shared';
+import { TagSourceEnum } from '@budgie/contracts';
 
-import type { TransactionTagsCreateEntityInterface } from '@budgie/contracts';
+import type { TransactionCreateInputInterface, TransactionTagsCreateEntityInterface } from '@budgie/contracts';
 
-export const transactionMapTagIdsToCreateEntities = (tagIds: number[], transactionId: number): TransactionTagsCreateEntityInterface[] => {
-    if (isEmptyArray(tagIds)) {
-        return [];
-    }
+export const transactionMapTagIdsToCreateEntities = (
+    input: Pick<TransactionCreateInputInterface, 'tagIds' | 'ruleTagIds'>,
+    transactionId: number,
+    preservedSourceByTagId: ReadonlyMap<number, TagSourceEnum> = new Map()
+): TransactionTagsCreateEntityInterface[] => {
+    const userTagIds = new Set(input.tagIds);
+    const ruleOnlyTagIds = new Set((input.ruleTagIds ?? []).filter(tagId => !userTagIds.has(tagId)));
+    const [primaryTagId] = [...userTagIds, ...ruleOnlyTagIds];
 
-    const [primaryTagId] = tagIds;
-
-    return tagIds.map(tagId => ({ transactionId, tagId, isPrimary: tagId === primaryTagId }));
+    return [...userTagIds, ...ruleOnlyTagIds].map(tagId => ({
+        transactionId,
+        tagId,
+        isPrimary: tagId === primaryTagId,
+        source: ruleOnlyTagIds.has(tagId) ? TagSourceEnum.RULE : (preservedSourceByTagId.get(tagId) ?? TagSourceEnum.USER)
+    }));
 };

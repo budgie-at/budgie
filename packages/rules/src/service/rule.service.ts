@@ -77,7 +77,6 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
 
             const existingRule = yield* ruleRepository.findByIdWithRelations(id);
             if (!isDefined(existingRule)) {
-                // oxlint-disable-next-line lingui/no-unlocalized-strings
                 return yield* Effect.die(new Error(`Rule ${id} not found`));
             }
 

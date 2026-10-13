@@ -1,7 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn } from '@rnw-community/shared';
 
@@ -13,26 +12,16 @@ interface Props {
     readonly testID?: string;
 }
 
-const BOTTOM_PADDING = 4;
 const EXIT_DURATION_MS = 160;
 
 export const TagsSelectorDoneButton = ({ count, onPress, testID }: Props) => {
     const { t } = useLingui();
-    const insets = useSafeAreaInsets();
-
-    const containerStyle = {
-        position: 'absolute' as const,
-        bottom: insets.bottom + BOTTOM_PADDING,
-        left: 0,
-        right: 0,
-        alignItems: 'center' as const
-    };
 
     return (
         <Animated.View
             entering={FadeInUp.springify()}
             exiting={FadeOutDown.duration(EXIT_DURATION_MS)}
-            style={containerStyle}
+            className="absolute inset-x-0 bottom-safe-offset-[4px] items-center"
             pointerEvents="box-none"
         >
             <HapticPressable

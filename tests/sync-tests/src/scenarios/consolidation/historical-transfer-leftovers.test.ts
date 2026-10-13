@@ -16,17 +16,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import {
-    fetchCanonicalsOfType,
-    fetchTransactionById,
-    findMccByCode,
-    seed,
-    seedBankPair,
-    seedExchangeRate,
-    testDb,
-    TestLayer,
-    expectParentedToCanonical
-} from '../../harness';
+import { expectParentedToCanonical, seed, seedBankPair, seedExchangeRate, testDb, TestLayer, testQueryService } from '../../harness';
 
 const SOURCE_IBAN = 'UA-FOP-EUR';
 const BRIDGE_IBAN = 'UA-FOP-UAH';
@@ -188,7 +178,7 @@ const seedExistingTransferBridgeCandidate = (
 const seedSameCurrencyPrivatArchivedTargetDuplicate = () =>
     Effect.gen(function* () {
         const operatedAt = new Date(2026, 0, 5, 13, 56, 56);
-        const transferMcc = yield* findMccByCode('4829');
+        const transferMcc = yield* testQueryService.findMccByCode('4829');
         const sourceAccount = yield* seed.account({
             title: 'Monobank Black',
             type: AccountTypeEnum.BANK_SYNC,
@@ -237,7 +227,7 @@ const seedSameCurrencyPrivatArchivedSyncedTargetDuplicate = () =>
 const seedLegacyCsvDeletedSourcePrivatDuplicate = () =>
     Effect.gen(function* () {
         const operatedAt = new Date(2025, 9, 23, 9, 56, 45);
-        const transferMcc = yield* findMccByCode('4829');
+        const transferMcc = yield* testQueryService.findMccByCode('4829');
         const sourceAccount = yield* seed.account({ title: 'monobank EUR', type: AccountTypeEnum.BANK });
         const archivedTargetAccount = yield* seed.account({ title: 'приватбанк UAH', type: AccountTypeEnum.BANK });
         const privatAccount = yield* seed.account({
@@ -301,7 +291,7 @@ const fetchLiveDebitEntry = (transactionId: number) =>
 
 const expectSingleCanonicalOfType = (consolidationType: TransactionConsolidationTypeEnum, fromAccountId: number, toAccountId: number) =>
     Effect.gen(function* () {
-        const canonicals = yield* fetchCanonicalsOfType(consolidationType);
+        const canonicals = yield* testQueryService.fetchCanonicalsOfType(consolidationType);
 
         expect(canonicals).toHaveLength(1);
         expect(canonicals[0].fromAccountId).toBe(fromAccountId);
@@ -329,11 +319,11 @@ const expectMovedSourceIds = (canonicalId: number, transactionIds: readonly numb
 
 const expectIncomeDuplicateNested = (existingTransfer: TransactionEntityInterface, duplicateIncome: TransactionEntityInterface) =>
     Effect.gen(function* () {
-        const canonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        const canonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
         expect(canonicals).toHaveLength(1);
         expect(canonicals[0].id).not.toBe(existingTransfer.id);
-        expect((yield* fetchTransactionById(existingTransfer.id)).consolidationType).toBeNull();
+        expect((yield* testQueryService.findTransactionById(existingTransfer.id)).consolidationType).toBeNull();
         yield* expectParentedToCanonical(canonicals[0].id, [existingTransfer.id, duplicateIncome.id]);
         expect([...new Set(yield* fetchMovedSourceIds(canonicals[0].id))].sort((left, right) => left - right)).toEqual(
             [existingTransfer.id, duplicateIncome.id].sort((left, right) => left - right)
@@ -356,7 +346,7 @@ const expectIncomeDuplicateConsolidated = Effect.fnUntraced(function* (
 
 const expectPrivatTargetRouted = (canonicalId: number, privatAccountId: number, amount: number) =>
     Effect.gen(function* () {
-        const canonical = yield* fetchTransactionById(canonicalId);
+        const canonical = yield* testQueryService.findTransactionById(canonicalId);
         const [debitEntry] = yield* fetchLiveDebitEntry(canonicalId);
 
         expect(canonical.toAccountId).toBe(privatAccountId);
@@ -463,9 +453,9 @@ describe('consolidation/historical-transfer-leftovers', () => {
             const result = yield* transferConsolidationService.consolidate(null);
 
             expect(result).toEqual({ found: 1, consolidated: 0 });
-            expect((yield* fetchTransactionById(sourceExpense.id)).consolidationParentTransactionId).toBeNull();
-            expect((yield* fetchTransactionById(bridgeIncome.id)).consolidationParentTransactionId).toBeNull();
-            expect((yield* fetchTransactionById(existingCardTransfer.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(sourceExpense.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(bridgeIncome.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(existingCardTransfer.id)).consolidationParentTransactionId).toBeNull();
             expect(yield* fetchMovedSourceIds(sourceExpense.id)).toEqual([movedSource.id]);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -483,7 +473,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
                 type: AccountTypeEnum.BANK_SYNC,
                 iban: PRIVAT_IBAN
             });
-            const transferMcc = yield* findMccByCode('4829');
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
             const existingTransfer = yield* seedTransfer('Приват Сина', operatedAt, sourceAccount.id, targetAccount.id, UAH_AMOUNT);
             const closestIncome = yield* seedBankPair.income(
                 { externalId: 'privat-income-closest', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000) },
@@ -495,14 +485,14 @@ describe('consolidation/historical-transfer-leftovers', () => {
             );
 
             yield* expectIncomeDuplicateConsolidated(existingTransfer, closestIncome);
-            expect((yield* fetchTransactionById(laterIncome.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(laterIncome.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('nests a target income duplicate with an existing cross-currency transfer', () =>
         Effect.gen(function* () {
             const operatedAt = new Date(2026, 0, 30, 8, 52, 7);
-            const transferMcc = yield* findMccByCode('4829');
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
             const { sourceAccount, targetAccount } = yield* seedHistoricalBridgeAccounts();
             const existingTransfer = yield* seedTransfer('Приват Сина', operatedAt, sourceAccount.id, targetAccount.id, 10_144_000_000);
 
@@ -528,7 +518,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
     it.effect('routes an approximate cross-currency Privat income through a canonical over an existing Monobank transfer', () =>
         Effect.gen(function* () {
             const operatedAt = new Date(2026, 0, 28, 18, 17, 48);
-            const transferMcc = yield* findMccByCode('4829');
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
             const eur = yield* seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
             const sourceAccount = yield* seed.account({
                 title: 'Monobank Black EUR',
@@ -610,7 +600,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
 
             const canonicalId = yield* expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
 
-            expect((yield* fetchTransactionById(canonicalId)).fromAccountId).toBe(sourceAccount.id);
+            expect((yield* testQueryService.findTransactionById(canonicalId)).fromAccountId).toBe(sourceAccount.id);
             yield* expectPrivatTargetRouted(canonicalId, privatAccount.id, UAH_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -637,7 +627,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
             const result = yield* transferConsolidationService.consolidate(null);
 
             expect(result).toEqual({ found: 0, consolidated: 0 });
-            expect((yield* fetchTransactionById(privatIncome.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(privatIncome.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 

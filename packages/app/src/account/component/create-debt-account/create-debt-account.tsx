@@ -1,5 +1,4 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-// jscpd:ignore-start
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -11,7 +10,6 @@ import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-// jscpd:ignore-end
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { AccountDebtOpeningService } from '../../service/account-debt-opening.service';
 import { DebtAccountService } from '../../service/debt-account.service';

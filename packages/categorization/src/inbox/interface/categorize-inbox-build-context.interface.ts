@@ -1,3 +1,5 @@
+import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
+
 import { LabelEvidenceRowInterface } from './label-evidence-row.interface';
 
 export interface CategorizeInboxBuildContextInterface {
@@ -6,4 +8,5 @@ export interface CategorizeInboxBuildContextInterface {
     readonly brand: ReadonlyMap<string, LabelEvidenceRowInterface[]>;
     readonly mcc: ReadonlyMap<string, LabelEvidenceRowInterface[]>;
     readonly defaultInstrumentId: number;
+    readonly labelKind: CategorizeInboxLabelKindEnum;
 }

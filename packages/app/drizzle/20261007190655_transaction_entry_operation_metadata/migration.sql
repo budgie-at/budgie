@@ -1,0 +1,2 @@
+ALTER TABLE `transaction_entries` ADD `operation_instrument_id` integer REFERENCES instruments(id) ON DELETE SET NULL;--> statement-breakpoint
+ALTER TABLE `transaction_entries` ADD `operation_amount` integer;

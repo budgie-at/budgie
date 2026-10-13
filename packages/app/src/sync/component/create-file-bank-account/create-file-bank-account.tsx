@@ -28,7 +28,8 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     const { t } = useLingui();
     const [step, setStep] = useState<SetupStep>('file');
     const [isLoading, setIsLoading] = useState(false);
-    const { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts } = useAccountSelection();
+    const accountSelection = useAccountSelection();
+    const { selectedAccounts, setPreviews } = accountSelection;
     const [fileUri, setFileUri] = useState<string | null>(null);
 
     const handleSelectFile = async () => {
@@ -83,13 +84,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             isLoading={isLoading}
         />
     ) : (
-        <AccountSelectionStep
-            accountPreviews={accountPreviews}
-            selectedAccounts={selectedAccounts}
-            onToggle={toggleAccount}
-            onSelectAll={selectAllAccounts}
-            onDeselectAll={deselectAllAccounts}
-        />
+        <AccountSelectionStep {...accountSelection} />
     );
     const footer = (
         <CreateFileBankAccountFooter

@@ -1,11 +1,16 @@
-import { LanguageEnum, RepeatedTransactionPatternInterface, TransactionPatternRepository, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    LanguageEnum,
+    RepeatedTransactionPatternInterface,
+    TransactionPatternRepository,
+    TransactionTypeEnum,
+    convertToMicroUnits
+} from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import {
     MINUTES_IN_DAY,
     REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT,
@@ -66,10 +71,7 @@ export class RepeatedTransactionService extends Context.Service<RepeatedTransact
             };
             const amountCacheKey = `amount:${language}:${JSON.stringify(amountQuery)}`;
 
-            return patternCacheService.memoizeAmount(
-                amountCacheKey,
-                transactionPatternRepository.findAmountBasedPatterns(amountQuery, language)
-            );
+            return patternCacheService.memoize(amountCacheKey, transactionPatternRepository.findAmountBasedPatterns(amountQuery, language));
         };
 
         return {
@@ -85,7 +87,7 @@ export class RepeatedTransactionService extends Context.Service<RepeatedTransact
                     limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
                 };
                 const repeatedCacheKey = `repeated:${language}:${JSON.stringify(repeatedQuery)}`;
-                const timeQuery = patternCacheService.memoizeRepeated(
+                const timeQuery = patternCacheService.memoize(
                     repeatedCacheKey,
                     transactionPatternRepository.findRepeatedPatterns(repeatedQuery, language)
                 );

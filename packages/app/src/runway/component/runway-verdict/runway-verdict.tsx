@@ -1,5 +1,5 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { cn } from 'cn';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -8,7 +8,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';

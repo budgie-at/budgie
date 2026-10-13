@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
-import { ACCENT_COLOR, RING_CIRCUMFERENCE, RING_SIZE } from '../../constant/animated-record-button.constant';
+import { RING_CIRCUMFERENCE, RING_SIZE } from '../../constant/animated-record-button.constant';
 import { BaseRing } from '../base-ring/base-ring';
 
 const ROTATION_DURATION = 1500;
@@ -27,7 +27,7 @@ export const SpinnerRing = () => {
 
     return (
         <Animated.View className="absolute left-0 top-0 items-center justify-center" style={animatedStyle}>
-            <BaseRing stroke={ACCENT_COLOR} strokeDasharray={`${dashLength} ${gapLength}`} opacity={RING_OPACITY} />
+            <BaseRing strokeClassName="accent-default-foreground" strokeDasharray={`${dashLength} ${gapLength}`} opacity={RING_OPACITY} />
         </Animated.View>
     );
 };

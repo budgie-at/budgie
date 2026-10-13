@@ -1,6 +1,5 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { cn } from 'cn';
 import { Text, View } from 'react-native';
 import Animated, { LinearTransition, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
@@ -8,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { light } from '../../../theme/provider/theme.provider';
+import { cn } from '../../../@generic/utils/cn.util';
 import { TagVariantType } from '../../type/tag-variant.type';
 
 interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
@@ -26,7 +25,7 @@ const TAG_CARD_HEIGHT = 56;
 const PRIMARY_SCALE = 1.04;
 const NORMAL_SCALE = 1;
 const SCALE_SPRING = { damping: 14, stiffness: 220 };
-const PRIMARY_STAR_FILL = light['--color-dark-warning-foreground'];
+const PRIMARY_STAR_FILL = 'currentColor';
 const TRANSPARENT_FILL = 'transparent';
 
 const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justify-center gap-x-md', {
@@ -35,7 +34,7 @@ const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justi
         isPrimary: { true: '', false: '' },
         variant: {
             static: 'flex-1',
-            removable: 'flex-none flex-row bg-primary border-primary py-md px-2xl'
+            removable: 'flex-none flex-row bg-primary border-primary py-md'
         }
     },
     compoundVariants: [

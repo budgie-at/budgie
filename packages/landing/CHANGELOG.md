@@ -3,6 +3,103 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Features
+
+* **landing:** show the real cached waitlist count and hide it when Redis is unavailable ([3287905](https://github.com/budgie-at/budgie/commit/3287905cf3eaa707ed95df8331c5ef8e4d5f3809))
+
+
+### Performance Improvements
+
+* **landing:** memoise the Lingui instance per locale ([2999c62](https://github.com/budgie-at/budgie/commit/2999c621c3add5fe340b84d99becc04205ca71cf))
+
+
+
+
+
+# [6.97.0](https://github.com/budgie-at/budgie/compare/v6.96.1...v6.97.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **landing:** anchor the voice mic callout on the mic button ([af21e03](https://github.com/budgie-at/budgie/commit/af21e0371ba8c5d00862d227d6b169e7c5779544))
+* **landing:** correct German grammar and MCC wording in story translations ([83cc224](https://github.com/budgie-at/budgie/commit/83cc22473e16c8e58a55106a799ff55e7e9233f3))
+* **landing:** localize on-device AI labels and tighten story copy ([dd876e0](https://github.com/budgie-at/budgie/commit/dd876e0fa0ec8606bd20be52254547abb8d30d50))
+
+
+### Features
+
+* **landing:** story layouts for voice entry and AI categorization pages ([77d7063](https://github.com/budgie-at/budgie/commit/77d7063103089a4324d06b9ee18de1241667700f))
+
+
+
+
+
+# [6.96.0](https://github.com/budgie-at/budgie/compare/v6.95.1...v6.96.0) (2026-10-08)
+
+
+### Bug Fixes
+
+* **landing:** add the ninth bento cell for on-device categorization ([45c86ba](https://github.com/budgie-at/budgie/commit/45c86baac421b2313703a9c575ec63f0d5b874c6))
+* **landing:** clarify the Ukrainian private budget app title ([4ed4aab](https://github.com/budgie-at/budgie/commit/4ed4aabe3fa39ddd971e27ebb6b41a80a9029fbf))
+* **landing:** keep the nine-cell bento text unclipped at 768px ([fb71f08](https://github.com/budgie-at/budgie/commit/fb71f084be237b30f2e1dbcc0ba5eacdc12051bb))
+* **landing:** use formal address in the new bento copy for de and es ([03de9ae](https://github.com/budgie-at/budgie/commit/03de9ae3b07a1228e1b89ed3057f9c12527c5948))
+
+
+### Features
+
+* **landing:** complete the home bento to nine screenshot cells ([adaaed6](https://github.com/budgie-at/budgie/commit/adaaed673a9f0285cfdd440ffbccda5480601970))
+
+
+
+
+
+# [6.94.0](https://github.com/budgie-at/budgie/compare/v6.93.2...v6.94.0) (2026-10-06)
+
+
+### Bug Fixes
+
+* keep the chosen installment total in sync and correct landing fee copy ([d20cbdf](https://github.com/budgie-at/budgie/commit/d20cbdf767751e72545fbcbc9d4403dc5c916f17))
+
+
+### Features
+
+* **landing:** add installment tracking media ([747b4b5](https://github.com/budgie-at/budgie/commit/747b4b5f19106df3c0006338310f0217e6cdd2da))
+* **landing:** add the installment tracking feature page ([9d065be](https://github.com/budgie-at/budgie/commit/9d065beacd82503eca2ff5c2df1171bbe11900ec))
+
+
+
+
+
+## [6.93.2](https://github.com/budgie-at/budgie/compare/v6.93.1...v6.93.2) (2026-10-06)
+
+
+### Bug Fixes
+
+* translate all missing landing strings and fail i18n on missing translations ([d74687e](https://github.com/budgie-at/budgie/commit/d74687e2bc27114c11566ba8affe586c9162a2f6))
+
+
+
+
+
+## [6.91.1](https://github.com/budgie-at/budgie/compare/v6.91.0...v6.91.1) (2026-10-04)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
+## [6.88.5](https://github.com/budgie-at/budgie/compare/v6.88.4-rewrite...v6.88.5) (2026-10-03)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
 ## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
 
 **Note:** Version bump only for package @budgie-at/landing

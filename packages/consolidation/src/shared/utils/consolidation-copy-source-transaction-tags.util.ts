@@ -15,19 +15,8 @@ export const consolidationCopySourceTransactionTags = Effect.fn('consolidationCo
     }
 
     const sourceTags = yield* transactionTagsRepository.findByTransactionIds(sourceTransactionIds);
-    const existingTags = yield* transactionTagsRepository.findByTransactionId(canonicalTransactionId);
-    const existingTagIds = new Set(existingTags.map(tag => tag.tagId));
-    const uniqueTagIds = [...new Set(sourceTags.map(tag => tag.tagId))].filter(tagId => !existingTagIds.has(tagId));
-
-    if (isEmptyArray(uniqueTagIds)) {
-        return;
-    }
 
     yield* transactionTagsRepository.bulkCreate(
-        uniqueTagIds.map(tagId => ({
-            transactionId: canonicalTransactionId,
-            tagId,
-            isPrimary: false
-        }))
+        sourceTags.map(({ tagId, source }) => ({ transactionId: canonicalTransactionId, tagId, isPrimary: false, source }))
     );
 });

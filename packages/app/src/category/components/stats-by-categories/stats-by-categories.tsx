@@ -1,10 +1,8 @@
 import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
+import { StatsSection } from '../../../@generic/component/stats-section/stats-section';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { CategoryStatInterface } from '../../interface/category-stat.interface';
 import { CategoryStatisticsCard } from '../category-statistics-card/category-statistics-card';
 
@@ -21,9 +19,6 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, filters,
     const { t } = useLingui();
 
     const renderStat = ({ category, amount }: CategoryStatInterface) => {
-        const microAmount = convertFromMicroUnits(amount);
-        const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
-
         const categoryData = category ?? {
             id: 0,
             icon: UserIconNameEnum.BadgeQuestionMark,
@@ -36,7 +31,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, filters,
                 key={category?.id ?? 'uncategorized'}
                 category={categoryData}
                 amount={amount}
-                percentage={percentage}
+                totalAmount={totalAmount}
                 variant={variant}
                 filters={filters}
                 isIncome={isIncome}
@@ -44,15 +39,5 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, filters,
         );
     };
 
-    /* jscpd:ignore-start */
-    return (
-        <View className="gap-y-md">
-            <Text className="uppercase text-secondary-foreground text-xs">{title}</Text>
-
-            <Card size="md" className="gap-y-xl">
-                {stats.map(renderStat)}
-            </Card>
-        </View>
-    );
-    /* jscpd:ignore-end */
+    return <StatsSection title={title}>{stats.map(renderStat)}</StatsSection>;
 };

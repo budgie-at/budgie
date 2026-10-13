@@ -1,9 +1,9 @@
 import { cva } from 'class-variance-authority';
-import { cn } from 'cn';
 import { ComponentProps } from 'react';
 import { TextInput } from 'react-native';
 
 import { FormFieldStatus } from '../../type/form-field-status.type';
+import { cn } from '../../utils/cn.util';
 
 interface Props extends ComponentProps<typeof TextInput> {
     readonly status?: FormFieldStatus;
@@ -11,12 +11,12 @@ interface Props extends ComponentProps<typeof TextInput> {
     readonly size?: 'sm' | 'md' | 'lg';
 }
 
-const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
+const inputVariant = cva('text-primary rounded-2xl', {
     variants: {
         size: {
-            sm: 'h-[36px] px-xl text-md/1',
-            md: 'h-[44px] px-xl text-md/1',
-            lg: 'h-[62px] px-4xl text-lg/1'
+            sm: 'h-[36px] px-xl text-md',
+            md: 'h-[44px] px-xl text-md',
+            lg: 'h-[62px] px-4xl text-(length:--text-lg)'
         },
         status: {
             error: 'border border-destructive-corner bg-destructive-background/5 text-destructive-foreground',
@@ -30,5 +30,9 @@ const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
 });
 
 export const Input = ({ size = 'sm', status = 'default', borderless = false, className, ...rest }: Props) => (
-    <TextInput {...rest} className={cn(inputVariant({ size, status, borderless }), className)} />
+    <TextInput
+        placeholderTextColorClassName="accent-primary/50"
+        {...rest}
+        className={cn(inputVariant({ size, status, borderless }), className)}
+    />
 );

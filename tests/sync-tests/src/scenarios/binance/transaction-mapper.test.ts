@@ -1,4 +1,4 @@
-import { SyncTransactionTypeEnum, binanceMapper } from '@budgie/sync';
+import { mapBinanceDepositToTransaction, mapBinanceWithdrawalToTransaction, SyncTransactionTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,7 +9,7 @@ const ACCOUNT_ID = 'SPOT:BTC';
 
 describe('binance/transaction-mapper', () => {
     it('maps a deposit to INCOME with no fee and operationAmount equal to amount', () => {
-        const transaction = binanceMapper.mapDepositToTransaction(buildBinance.deposit({ coin: 'BTC', amount: '2' }), ACCOUNT_ID);
+        const transaction = mapBinanceDepositToTransaction(buildBinance.deposit({ coin: 'BTC', amount: '2' }), ACCOUNT_ID);
 
         expect(isDefined(transaction)).toBe(true);
         expect(transaction?.type).toBe(SyncTransactionTypeEnum.INCOME);
@@ -19,7 +19,7 @@ describe('binance/transaction-mapper', () => {
     });
 
     it('maps a fee-bearing withdrawal to EXPENSE with gross amount and net operationAmount', () => {
-        const transaction = binanceMapper.mapWithdrawalToTransaction(
+        const transaction = mapBinanceWithdrawalToTransaction(
             buildBinance.withdrawal({ id: 'w-1', coin: 'BTC', amount: '1', transactionFee: '0.1' }),
             ACCOUNT_ID
         );
@@ -31,19 +31,22 @@ describe('binance/transaction-mapper', () => {
     });
 
     it('reconciles net operationAmount plus fee back to the gross amount', () => {
-        const transaction = binanceMapper.mapWithdrawalToTransaction(
+        const transaction = mapBinanceWithdrawalToTransaction(
             buildBinance.withdrawal({ id: 'w-2', coin: 'BTC', amount: '1', transactionFee: '0.25' }),
             ACCOUNT_ID
         );
 
         expect(isDefined(transaction)).toBe(true);
-        if (isDefined(transaction)) {
-            expect(transaction.operationAmount + transaction.feeAmount).toBeCloseTo(transaction.amount, 10);
+
+        if (!isDefined(transaction)) {
+            return;
         }
+
+        expect(transaction.operationAmount + transaction.feeAmount).toBeCloseTo(transaction.amount, 10);
     });
 
     it('drops the fee for a degenerate fee >= amount withdrawal', () => {
-        const transaction = binanceMapper.mapWithdrawalToTransaction(
+        const transaction = mapBinanceWithdrawalToTransaction(
             buildBinance.withdrawal({ id: 'w-3', coin: 'BTC', amount: '1', transactionFee: '1' }),
             ACCOUNT_ID
         );
@@ -54,10 +57,7 @@ describe('binance/transaction-mapper', () => {
     });
 
     it('skips a deposit whose microunit amount exceeds MAX_SAFE_INTEGER', () => {
-        const transaction = binanceMapper.mapDepositToTransaction(
-            buildBinance.deposit({ coin: 'PEPE', amount: '99999999999' }),
-            'SPOT:PEPE'
-        );
+        const transaction = mapBinanceDepositToTransaction(buildBinance.deposit({ coin: 'PEPE', amount: '99999999999' }), 'SPOT:PEPE');
 
         expect(transaction).toBeNull();
     });

@@ -45,7 +45,6 @@ const extractAndMapTransactions = Effect.fn('useLlmCategorization.extractAndMapT
     const extracted = yield* voiceLlmService.extractTransactions(text);
 
     if (!isNotEmptyArray(extracted)) {
-        // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
         return yield* Effect.die(new Error('Failed to extract transactions from text'));
     }
 
