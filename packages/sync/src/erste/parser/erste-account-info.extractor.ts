@@ -4,7 +4,7 @@ import * as Result from 'effect/Result';
 import { isDefined } from '@rnw-community/shared';
 
 import { ERSTE_NEW_BALANCE_PREFIX } from '../constant/erste.constant';
-import { parseErsteAmount } from '../util/parse-erste-amount.util';
+import { parseErsteAmount } from '../utils/parse-erste-amount.util';
 
 import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.interface';
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';

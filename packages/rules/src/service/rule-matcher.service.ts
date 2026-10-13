@@ -23,7 +23,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
-import { matchesRule } from '../util/matches-rule.util';
+import { matchesRule } from '../utils/matches-rule.util';
 
 import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';

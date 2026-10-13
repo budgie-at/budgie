@@ -1,7 +1,7 @@
 import { LanguageEnum } from '@budgie/contracts';
 
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { languageToLocale } from '../util/language-to-locale.util';
+import { languageToLocale } from '../utils/language-to-locale.util';
 
 import type { LocaleInfoInterface } from '../interface/locale-info.interface';
 

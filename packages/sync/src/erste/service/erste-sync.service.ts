@@ -14,8 +14,8 @@ import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { fileSyncDependenciesLayer } from '../../core/layer/file-sync-dependencies.layer';
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
-import { generateDefaultSyncAccountTitle } from '../../core/util/generate-default-sync-account-title.util';
-import { makeFileSyncService } from '../../core/util/make-file-sync-service.util';
+import { generateDefaultSyncAccountTitle } from '../../core/utils/generate-default-sync-account-title.util';
+import { makeFileSyncService } from '../../core/utils/make-file-sync-service.util';
 import { mapErsteAccount, mapErsteTransaction } from '../mapper/erste.mapper';
 import { parseErste } from '../parser/erste.parser';
 

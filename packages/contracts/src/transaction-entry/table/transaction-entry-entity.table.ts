@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm';
 import { index, int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';

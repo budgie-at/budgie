@@ -2,7 +2,7 @@ import { LanguageEnum } from '@budgie/contracts';
 import { IntlShape, createIntl } from '@formatjs/intl';
 import { createContext, use } from 'react';
 
-import { languageToLocale } from '../util/language-to-locale.util';
+import { languageToLocale } from '../utils/language-to-locale.util';
 
 export interface I18nContextInterface {
     intl: IntlShape;

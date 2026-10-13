@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 
 export const HistoricalExchangeRateEntityTable = sqliteTable(

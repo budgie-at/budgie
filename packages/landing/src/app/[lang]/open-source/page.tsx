@@ -16,8 +16,8 @@ import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-h
 import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { PillarHubSection } from '../../../feature/component/pillar-hub-section/pillar-hub-section';
-import { buildSoftwareSourceCodeJsonLd } from '../../../feature/util/build-software-source-code-json-ld.util';
-import { createPillarHubGenerateMetadata } from '../../../feature/util/create-pillar-hub-generate-metadata.util';
+import { buildSoftwareSourceCodeJsonLd } from '../../../feature/utils/build-software-source-code-json-ld.util';
+import { createPillarHubGenerateMetadata } from '../../../feature/utils/create-pillar-hub-generate-metadata.util';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 

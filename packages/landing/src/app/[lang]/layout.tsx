@@ -6,7 +6,7 @@ import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
 import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
-import { buildAlternates } from '../../generic/util/build-alternates.util';
+import { buildAlternates } from '../../generic/utils/build-alternates.util';
 import { clientMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';

@@ -23,9 +23,9 @@ import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error'
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
-import { makePollingSyncAccountSetup } from '../../core/util/make-polling-sync-account-setup.util';
-import { makePollingSyncService } from '../../core/util/make-polling-sync-service.util';
-import { mapBankTransactionToCreateInput } from '../../core/util/map-bank-transaction-to-create-input.util';
+import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
+import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
+import { mapBankTransactionToCreateInput } from '../../core/utils/map-bank-transaction-to-create-input.util';
 import { BinanceSignedClient } from '../client/binance-signed.client';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';

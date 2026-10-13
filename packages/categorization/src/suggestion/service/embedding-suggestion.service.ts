@@ -18,8 +18,8 @@ import {
 import { CommentEmbeddingRepository } from '../../embedding/repository/comment-embedding.repository';
 import { MerchantEmbeddingRepository } from '../../embedding/repository/merchant-embedding.repository';
 import { EmbeddingService } from '../../embedding/service/embedding.service';
-import { buildTransactionContext } from '../../embedding/util/build-transaction-context.util';
-import { serializeEmbedding } from '../../embedding/util/serialize-embedding.util';
+import { buildTransactionContext } from '../../embedding/utils/build-transaction-context.util';
+import { serializeEmbedding } from '../../embedding/utils/serialize-embedding.util';
 
 import type { CategoryEntityInterface, TagEntityInterface } from '@budgie/contracts';
 

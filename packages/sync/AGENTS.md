@@ -56,7 +56,7 @@ src/
 
 ## Orchestration
 
-Every provider sync service is a `Context.Service` whose `make` spreads a family factory from `core/util/`:
+Every provider sync service is a `Context.Service` whose `make` spreads a family factory from `core/utils/`:
 `makePollingSyncService` (Monobank, Binance) or `makeFileSyncService` (Erste, Privatbank), both built on
 `makeSyncService`. `SyncProviderRegistryService` resolves the service for an account. The services depend on
 `@budgie/contracts` repositories and `@budgie/ledger`, `@budgie/rules` and `@budgie/consolidation` services.

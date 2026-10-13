@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og';
 
 import { OgCard } from '../../generic/component/og-card/og-card';
 import { OG_IMAGE_SIZE } from '../../generic/constant/og-image.constant';
-import { resolveOgPlate } from '../../generic/util/resolve-og-plate.util';
+import { resolveOgPlate } from '../../generic/utils/resolve-og-plate.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam } from '../../i18n/init-lingui';
 import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';

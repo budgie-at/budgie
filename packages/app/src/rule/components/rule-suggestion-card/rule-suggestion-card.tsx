@@ -16,7 +16,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
-import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
+import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 const serializeCondition = (condition: RuleConditionInputInterface): string =>
