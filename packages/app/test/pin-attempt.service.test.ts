@@ -7,13 +7,15 @@ import { PinAttemptService } from '../src/auth/service/pin-attempt.service';
 
 const secureStore = vi.hoisted(() => new Map<string, string>());
 const writeFailure = vi.hoisted(() => ({ isEnabled: false }));
+const deleteFailure = vi.hoisted(() => ({ isEnabled: false }));
 
 vi.mock('expo-secure-store', () => ({
     AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: 0,
     getItemAsync: (key: string) => Promise.resolve(secureStore.get(key) ?? null),
     setItemAsync: (key: string, value: string) =>
         writeFailure.isEnabled ? Promise.reject(new Error('write failed')) : Promise.resolve(void secureStore.set(key, value)),
-    deleteItemAsync: (key: string) => Promise.resolve(void secureStore.delete(key))
+    deleteItemAsync: (key: string) =>
+        deleteFailure.isEnabled ? Promise.reject(new Error('delete failed')) : Promise.resolve(void secureStore.delete(key))
 }));
 
 const remainingMillis = Effect.flatMap(PinAttemptService, pinAttemptService => pinAttemptService.getRemainingLockoutMillis());
@@ -144,6 +146,67 @@ describe('PinAttemptService', () => {
 
             expect(yield* remainingMillis).toBe(0);
             expect(secureStore.size).toBe(0);
+        }).pipe(Effect.provide(PinAttemptService.layer))
+    );
+
+    it.effect('refuses to run the PIN check when the attempt cannot be recorded', () =>
+        Effect.gen(function* () {
+            secureStore.clear();
+            writeFailure.isEnabled = true;
+            const pinAttemptService = yield* PinAttemptService;
+            let checks = 0;
+            const check = Effect.sync(() => {
+                checks += 1;
+
+                return true;
+            });
+
+            const results = yield* Effect.forEach(Array.from({ length: 20 }), () => pinAttemptService.verify(check)).pipe(
+                Effect.ensuring(Effect.sync(() => void (writeFailure.isEnabled = false)))
+            );
+
+            expect(results.every(result => !result)).toBe(true);
+            expect(checks).toBe(0);
+            expect(yield* remainingMillis).toBe(0);
+        }).pipe(Effect.provide(PinAttemptService.layer))
+    );
+
+    it.effect('counts each wrong PIN exactly once', () =>
+        Effect.gen(function* () {
+            secureStore.clear();
+            const pinAttemptService = yield* PinAttemptService;
+
+            yield* failAttempts(2);
+
+            expect(Array.from(secureStore.values())[0]).toContain('"failedAttempts":2');
+            expect(yield* pinAttemptService.verify(Effect.succeed(false))).toBe(false);
+            expect(Array.from(secureStore.values())[0]).toContain('"failedAttempts":3');
+        }).pipe(Effect.provide(PinAttemptService.layer))
+    );
+
+    it.effect('clears the record on a correct PIN', () =>
+        Effect.gen(function* () {
+            secureStore.clear();
+            const pinAttemptService = yield* PinAttemptService;
+
+            yield* failAttempts(2);
+
+            expect(yield* pinAttemptService.verify(Effect.succeed(true))).toBe(true);
+            expect(secureStore.size).toBe(0);
+        }).pipe(Effect.provide(PinAttemptService.layer))
+    );
+
+    it.effect('accepts a correct PIN even when clearing the record fails', () =>
+        Effect.gen(function* () {
+            secureStore.clear();
+            const pinAttemptService = yield* PinAttemptService;
+            deleteFailure.isEnabled = true;
+
+            const isAccepted = yield* pinAttemptService
+                .verify(Effect.succeed(true))
+                .pipe(Effect.ensuring(Effect.sync(() => void (deleteFailure.isEnabled = false))));
+
+            expect(isAccepted).toBe(true);
         }).pipe(Effect.provide(PinAttemptService.layer))
     );
 });

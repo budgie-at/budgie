@@ -77,16 +77,19 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
             return lockoutMillis;
         });
 
-        const recordAttempt = Effect.fnUntraced(function* (isCorrect: boolean) {
-            if (isCorrect) {
-                return yield* clearAttempts;
-            }
-
+        const reserveFailedAttempt = Effect.fnUntraced(function* () {
             const attempts = yield* readAttempts();
             const now = yield* Clock.currentTimeMillis;
             const failedAttempts = attempts.failedAttempts + 1;
 
-            return yield* writeAttempts({ failedAttempts, lockoutStartedAt: now, lockoutEndsAt: now + getLockoutMillis(failedAttempts) });
+            return yield* writeAttempts({
+                failedAttempts,
+                lockoutStartedAt: now,
+                lockoutEndsAt: now + getLockoutMillis(failedAttempts)
+            }).pipe(
+                Effect.as(true),
+                Effect.catch(() => Effect.succeed(false))
+            );
         });
 
         return {
@@ -99,9 +102,15 @@ export class PinAttemptService extends Context.Service<PinAttemptService>()('@bu
                                 return false;
                             }
 
+                            if (!(yield* reserveFailedAttempt())) {
+                                return false;
+                            }
+
                             const isCorrect = yield* check;
 
-                            yield* recordAttempt(isCorrect);
+                            if (isCorrect) {
+                                yield* clearAttempts.pipe(Effect.ignoreCause);
+                            }
 
                             return isCorrect;
                         })
