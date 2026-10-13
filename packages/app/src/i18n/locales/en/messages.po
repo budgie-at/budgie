@@ -520,11 +520,11 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "AI feature turned off"
 msgstr "AI feature turned off"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "AI feature turned on"
 msgstr "AI feature turned on"
 
@@ -828,7 +828,7 @@ msgstr "Budget limit reached"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Budgie can also free {reclaimableSize} by removing downloads this feature no longer needs."
 msgstr "Budgie can also free {reclaimableSize} by removing downloads this feature no longer needs."
 
@@ -876,7 +876,7 @@ msgstr "Budgie will notify you when it finishes"
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended."
 msgstr "Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended."
 
@@ -899,7 +899,7 @@ msgstr "Can take hours"
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
@@ -1331,7 +1331,7 @@ msgstr "Could not export database"
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Could not free up space"
 msgstr "Could not free up space"
 
@@ -1440,7 +1440,7 @@ msgstr "Could not unconsolidate transaction."
 msgid "Could not undo the move to cash"
 msgstr "Could not undo the move to cash"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Could not update AI feature"
 msgstr "Could not update AI feature"
 
@@ -3887,7 +3887,7 @@ msgstr "Set up Budgie"
 msgid "Settings"
 msgstr "Settings"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Shared downloads are still needed by other features"
 msgstr "Shared downloads are still needed by other features"
 
@@ -3974,7 +3974,7 @@ msgstr "Source"
 msgid "Sources"
 msgstr "Sources"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Space freed"
 msgstr "Space freed"
 
@@ -4476,15 +4476,15 @@ msgstr "Try Again"
 msgid "Try again after Budgie finishes checking storage."
 msgstr "Try again after Budgie finishes checking storage."
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn off and free {reclaimableSize}"
 msgstr "Turn off and free {reclaimableSize}"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn off, keep downloads"
 msgstr "Turn off, keep downloads"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn on"
 msgstr "Turn on"
 

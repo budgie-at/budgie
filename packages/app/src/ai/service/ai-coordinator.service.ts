@@ -111,11 +111,16 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
                 Effect.gen(function* () {
                     yield* Effect.forEach(drainers, drainer => drainer.stop(), { discard: true });
                     yield* chatService.interrupt;
-                    yield* Effect.forEach(drainers, drainer => drainer.whenIdle(), { concurrency: 'unbounded', discard: true }).pipe(
-                        Effect.timeout(settleGraceMs)
+                    const settled = yield* Effect.forEach(drainers, drainer => drainer.whenIdle(), {
+                        concurrency: 'unbounded',
+                        discard: true
+                    }).pipe(
+                        Effect.timeout(settleGraceMs),
+                        Effect.andThen(localEmbeddingService.whenIdle.pipe(Effect.timeout(settleGraceMs))),
+                        Effect.exit
                     );
-                    yield* localEmbeddingService.whenIdle.pipe(Effect.timeout(settleGraceMs));
                     yield* aiModelResidencyService.suspend();
+                    yield* settled;
                 })
             )
         );

@@ -1,7 +1,9 @@
 import { SettingsRepository } from '@budgie/contracts';
+import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Semaphore from 'effect/Semaphore';
 import { File, Paths } from 'expo-file-system';
 
@@ -13,6 +15,7 @@ import { updateSettingsMutation } from '../../settings/mutation/update-settings.
 import { AI_FEATURE_MODEL_STORAGE_IDS } from '../constant/ai-feature-model-storage-ids.constant';
 import { AI_FEATURE_SETTING_KEY } from '../constant/ai-feature-setting-key.constant';
 import { AI_MODEL_STORAGE_FILES } from '../constant/ai-model-storage-files.constant';
+import { AI_MODEL_STORAGE_REACTIVITY_KEYS } from '../constant/ai-model-storage-reactivity-keys.constant';
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
 import { AiModelStorageIdEnum } from '../enum/ai-model-storage-id.enum';
@@ -30,6 +33,7 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
     make: Effect.gen(function* () {
         const aiCoordinatorService = yield* AiCoordinatorService;
         const settingsRepository = yield* SettingsRepository;
+        const reactivity = yield* Reactivity.Reactivity;
         const storageLock = yield* Semaphore.make(1);
 
         const statusBySubsystem: Record<AiSubsystemNameEnum, () => AiSubsystemStatusEnum> = {
@@ -199,6 +203,14 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
             yield* Effect.forEach(storageFiles, deleteStorageFile, { discard: true });
         });
 
+        const withStoppedRuntime = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+            aiCoordinatorService
+                .withStoppedRuntime(effect)
+                .pipe(Effect.catchIf(Cause.isTimeoutError, () => Effect.fail(new AiModelStorageBusyError())));
+
+        const withStorageLock = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+            storageLock.withPermit(effect).pipe(Effect.ensuring(reactivity.invalidate(AI_MODEL_STORAGE_REACTIVITY_KEYS)));
+
         const updateFeature = Effect.fnUntraced(function* (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean) {
             const currentFeatureSettings = yield* readFeatureSettings();
             const nextFeatureSettings = getFeatureSettingsAfterChange(currentFeatureSettings, featureId, isEnabled);
@@ -207,22 +219,15 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
                 ...nextFeatureSettings,
                 isAiEnabled: Object.values(nextFeatureSettings).some(Boolean)
             });
-            yield* aiCoordinatorService.withStoppedRuntime(removeUnusedDownloads ? deleteUnusedStorageFiles() : Effect.void);
+            yield* withStoppedRuntime(removeUnusedDownloads ? deleteUnusedStorageFiles() : Effect.void);
         });
 
         return {
             list,
             previewDisableFeature,
-            setFeatureEnabled: Effect.fn('AiModelStorageService.setFeatureEnabled')(function* (
-                featureId: AiFeatureIdEnum,
-                isEnabled: boolean,
-                removeUnusedDownloads: boolean
-            ) {
-                yield* storageLock.withPermit(updateFeature(featureId, isEnabled, removeUnusedDownloads));
-            }),
-            freeUnusedDownloads: Effect.fn('AiModelStorageService.freeUnusedDownloads')(function* () {
-                yield* storageLock.withPermit(aiCoordinatorService.withStoppedRuntime(deleteUnusedStorageFiles()));
-            })
+            setFeatureEnabled: (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean) =>
+                withStorageLock(updateFeature(featureId, isEnabled, removeUnusedDownloads)),
+            freeUnusedDownloads: () => withStorageLock(withStoppedRuntime(deleteUnusedStorageFiles()))
         };
     })
 }) {

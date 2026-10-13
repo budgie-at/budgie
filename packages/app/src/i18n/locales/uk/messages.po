@@ -519,11 +519,11 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "AI feature turned off"
 msgstr "Функцію ШІ вимкнено"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "AI feature turned on"
 msgstr "Функцію ШІ увімкнено"
 
@@ -827,7 +827,7 @@ msgstr "Ліміт бюджету досягнуто"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Budgie can also free {reclaimableSize} by removing downloads this feature no longer needs."
 msgstr "Budgie також може звільнити {reclaimableSize}, видаливши завантаження, які цій функції більше не потрібні."
 
@@ -875,7 +875,7 @@ msgstr "Budgie повідомить, коли імпорт завершитьс�
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Budgie will use on-device AI for this feature. Downloads may be needed again, so Wi-Fi is recommended."
 msgstr "Budgie використовуватиме ШІ на пристрої для цієї функції. Завантаження можуть знадобитися знову, тому радимо Wi-Fi."
 
@@ -898,7 +898,7 @@ msgstr "Може тривати годинами"
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
@@ -1330,7 +1330,7 @@ msgstr "Не вдалося експортувати базу даних"
 msgid "Could not fetch accounts"
 msgstr "Не вдалося отримати рахунки"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Could not free up space"
 msgstr "Не вдалося звільнити місце"
 
@@ -1439,7 +1439,7 @@ msgstr "Не вдалося розконсолідувати транзакці�
 msgid "Could not undo the move to cash"
 msgstr "Не вдалося скасувати перенесення в готівку"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Could not update AI feature"
 msgstr "Не вдалося оновити функцію ШІ"
 
@@ -3886,7 +3886,7 @@ msgstr "Налаштувати Budgie"
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Shared downloads are still needed by other features"
 msgstr "Спільні завантаження все ще потрібні іншим функціям"
 
@@ -3973,7 +3973,7 @@ msgstr "Джерело"
 msgid "Sources"
 msgstr "Джерела"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Space freed"
 msgstr "Місце звільнено"
 
@@ -4475,15 +4475,15 @@ msgstr "Спробувати знову"
 msgid "Try again after Budgie finishes checking storage."
 msgstr "Спробуйте знову, коли Budgie завершить перевірку сховища."
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn off and free {reclaimableSize}"
 msgstr "Вимкнути й звільнити {reclaimableSize}"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn off, keep downloads"
 msgstr "Вимкнути, залишити завантаження"
 
-#: src/ai/hook/use-ai-model-storage.hook.ts
+#: src/ai/hook/use-ai-model-storage-actions.hook.ts
 msgid "Turn on"
 msgstr "Увімкнути"
 
