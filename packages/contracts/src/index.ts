@@ -4,9 +4,9 @@ export type { TransactionBoundaryType } from './@generic/type/transaction-bounda
 export type { EmojiIconType } from './@generic/type/emoji-icon.type';
 export { PRECISION } from './@generic/constant/precision.constant';
 export { YIELD_TO_UI } from './@generic/constant/yield-to-ui.constant';
-export { convertFromMicroUnits } from './@generic/util/convert-from-micro-units.util';
-export { convertToMicroUnits } from './@generic/util/convert-to-micro-units.util';
-export { makeLoggerLayer } from './@generic/util/make-logger-layer.util';
+export { convertFromMicroUnits } from './@generic/utils/convert-from-micro-units.util';
+export { convertToMicroUnits } from './@generic/utils/convert-to-micro-units.util';
+export { makeLoggerLayer } from './@generic/utils/make-logger-layer.util';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';
 export { CurrencyEnum } from './@generic/enum/currency.enum';
@@ -21,14 +21,14 @@ export type { AmountRangeInterface } from './@generic/interface/amount-range.int
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
 
 export { transactionFilters } from './@generic/repository/base-transaction-filter.repository';
-export { buildTranslatedCategoryRelation } from './@generic/util/build-translated-category-relation.util';
-export { buildCategoryTranslationJoinCondition } from './@generic/util/build-category-translation-join-condition.util';
+export { buildTranslatedCategoryRelation } from './@generic/utils/build-translated-category-relation.util';
+export { buildCategoryTranslationJoinCondition } from './@generic/utils/build-category-translation-join-condition.util';
 
 export type { DB } from './@generic/type/db.type';
 export type { DbMutationInterface } from './@generic/interface/db-mutation.interface';
 export { makeEffectSqliteClientDatabase } from './@generic/drizzle/effect-sqlite-client.driver';
 
-export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util';
+export { convertAmountToBase } from './@generic/utils/convert-amount-to-base.util';
 export { Db } from './@generic/service/db.service';
 export { DbError } from './@generic/error/db.error';
 
@@ -61,8 +61,8 @@ export type { AccountFilterInterface } from './account/interface/account-filter.
 
 export { AccountRepository } from './account/repository/account.repository';
 
-export { normalizeAccountIban } from './account/util/normalize-account-iban.util';
-export { isBorrowLikeDebtType } from './account/util/is-borrow-like-debt-type.util';
+export { normalizeAccountIban } from './account/utils/normalize-account-iban.util';
+export { isBorrowLikeDebtType } from './account/utils/is-borrow-like-debt-type.util';
 
 export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
 
@@ -71,8 +71,8 @@ export type { AccountBalanceCreateEntityInterface } from './account-balance/enti
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
 
-export { getDebtLedgerBalance } from './account-balance/util/get-debt-ledger-balance.util';
-export { getDebtClosedAmount } from './account-balance/util/get-debt-closed-amount.util';
+export { getDebtLedgerBalance } from './account-balance/utils/get-debt-ledger-balance.util';
+export { getDebtClosedAmount } from './account-balance/utils/get-debt-closed-amount.util';
 
 export type { DebtAccountProgressSummaryInterface } from './account-balance/interface/debt-account-progress-summary.interface';
 
@@ -93,7 +93,7 @@ export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/
 export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
 
 export { InstallmentPlanRepository } from './installment-plan/repository/installment-plan.repository';
-export { getInstallmentDueDate } from './installment-plan/util/get-installment-due-date.util';
+export { getInstallmentDueDate } from './installment-plan/utils/get-installment-due-date.util';
 
 export type { InstallmentPlanScheduleInterface } from './installment-plan/interface/installment-plan-schedule.interface';
 
@@ -173,7 +173,7 @@ export type { MccCategoryCreateEntityInterface } from './mcc-category/entity/mcc
 export type { MccCategoryLookupInterface } from './mcc-category/interface/mcc-category-lookup.interface';
 
 export { MccCategoryRepository } from './mcc-category/repository/mcc-category.repository';
-export { loadMccCategoryLookupMap } from './mcc-category/util/load-mcc-category-lookup-map.util';
+export { loadMccCategoryLookupMap } from './mcc-category/utils/load-mcc-category-lookup-map.util';
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionUpdatedByEnum } from './transaction/enum/transaction-updated-by.enum';
@@ -214,7 +214,7 @@ export { TransactionViewRepository } from './transaction/repository/transaction-
 export { TagSourceEnum } from './transaction-tags/enum/tag-source.enum';
 
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
-export { insertTransactionTag } from './transaction-tags/util/insert-transaction-tag.util';
+export { insertTransactionTag } from './transaction-tags/utils/insert-transaction-tag.util';
 
 export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
 export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
@@ -262,7 +262,7 @@ export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-pos
 export { CategorySourceEnum } from './transaction-entry/enum/category-source.enum';
 export { TransactionEntryKindEnum } from './transaction-entry/enum/transaction-entry-kind.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
-export { buildSpendingEntryCondition } from './transaction-entry/util/build-spending-entry-condition.util';
+export { buildSpendingEntryCondition } from './transaction-entry/utils/build-spending-entry-condition.util';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';

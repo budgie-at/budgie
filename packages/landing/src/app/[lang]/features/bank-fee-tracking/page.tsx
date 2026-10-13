@@ -5,7 +5,7 @@ import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadc
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
-import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
+import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { BankFeeTrackingBenefitsSection } from './bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section';

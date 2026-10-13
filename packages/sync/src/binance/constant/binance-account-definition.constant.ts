@@ -2,7 +2,7 @@ import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/c
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { generateDefaultSyncAccountTitle } from '../../core/util/generate-default-sync-account-title.util';
+import { generateDefaultSyncAccountTitle } from '../../core/utils/generate-default-sync-account-title.util';
 
 import type { SyncServiceDefinitionInterface } from '../../core/interface/sync-service-definition.interface';
 

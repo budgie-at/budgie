@@ -2,8 +2,8 @@ import { sql } from 'drizzle-orm';
 import { index, int, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
-import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';

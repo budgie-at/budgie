@@ -382,7 +382,7 @@ Applies to pages, metadata sidecars, FAQ copy, JSON-LD, blog articles, and OG te
 
 **OG product imagery.** `OgCard` composites a locale-matched dark device plate resolved by `resolveOgPlate(mediaSlug, lang)` and degrades to the text-only card when the slug has no capture. The media slug is a page-local literal in the `opengraph-image.tsx`, never a registry field. Plates live in `public/og-plate/<media-slug>/<locale>.jpg` and are generated from `public/media` by `pnpm media:og`, because satori decodes only PNG/JPEG/GIF/SVG and rejects the WebP and AVIF stills. Re-run `pnpm media:og` after any capture change; `pnpm media:check` fails on a missing plate, an orphaned plate, or a stale one, by comparing the committed `public/og-plate/fingerprint.json` against a fresh hash of every source capture.
 
-**Metadata char budgets.** Titles fit 60 chars including the ` | Budgie` template suffix; descriptions fit 160 chars. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in sidecars may be longer — the builder clamps. Page-author details: `docs/seo-pages.md`.
+**Metadata char budgets.** Titles fit 60 chars including the ` | Budgie` template suffix; descriptions fit 160 chars. The `fitText` util (`src/generic/utils/fit-text.util.ts`) is applied inside the metadata builders, so page copy in sidecars may be longer — the builder clamps. Page-author details: `docs/seo-pages.md`.
 
 **IndexNow is automated.** `.github/workflows/landing-indexnow.yml` submits sitemap URLs to `https://budgie.at/api/indexnow` (Bearer `ADMIN_SECRET`) after a 5-minute deploy wait, with 3 retries. Manual submission is only for emergency re-crawl requests.
 

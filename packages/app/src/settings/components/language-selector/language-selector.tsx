@@ -10,7 +10,7 @@ import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../../../i18n/context/language-selector-modal.context';
-import { i18nEnsureLanguageActivated } from '../../../i18n/util/i18n.util';
+import { i18nEnsureLanguageActivated } from '../../../i18n/utils/i18n.util';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';

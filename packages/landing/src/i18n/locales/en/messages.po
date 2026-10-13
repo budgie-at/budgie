@@ -6604,7 +6604,7 @@ msgstr "csv"
 msgid "CSV and PDF files already on your device can be imported offline. Monobank sync requires a brief network call to Monobank's API, but every other import source works locally."
 msgstr "CSV and PDF files already on your device can be imported offline. Monobank sync requires a brief network call to Monobank's API, but every other import source works locally."
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "CSV and PDF import"
 msgstr "CSV and PDF import"
 
@@ -6833,7 +6833,7 @@ msgstr "Data stored locally on your device will remain accessible"
 msgid "Database Backup & Restore"
 msgstr "Database Backup & Restore"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Database backup and restore"
 msgstr "Database backup and restore"
 
@@ -10715,7 +10715,7 @@ msgstr "Monobank and Binance connect with a personal API key for live, automatic
 msgid "Monobank Auto-Sync — Budgie"
 msgstr "Monobank Auto-Sync — Budgie"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Monobank bank sync"
 msgstr "Monobank bank sync"
 
@@ -10923,7 +10923,7 @@ msgstr "Multi-Account Money Management — Budgie"
 msgid "multi-currency"
 msgstr "multi-currency"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Multi-currency"
 msgstr "Multi-currency"
 
@@ -11053,7 +11053,7 @@ msgstr "Net worth and budget come in a small size for just the headline number, 
 msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
 msgstr "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Net worth tracker"
 msgstr "Net worth tracker"
 
@@ -11834,7 +11834,7 @@ msgstr "Offline-first does not mean you cannot sync with banks. It means the syn
 msgid "Offline-first expense tracker"
 msgstr "Offline-first expense tracker"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Offline-first expense tracking"
 msgstr "Offline-first expense tracking"
 
@@ -11950,7 +11950,7 @@ msgstr "on-device AI"
 msgid "On-device AI"
 msgstr "On-device AI"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "On-device AI auto-categorization"
 msgstr "On-device AI auto-categorization"
 
@@ -12007,7 +12007,7 @@ msgstr "On-device AI means the work happens on the phone in your hand rather tha
 msgid "On-device AI switch"
 msgstr "On-device AI switch"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "On-device encryption"
 msgstr "On-device encryption"
 
@@ -12895,7 +12895,7 @@ msgstr "Pills appear on the empty form"
 msgid "pin"
 msgstr "pin"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "PIN and biometric lock"
 msgstr "PIN and biometric lock"
 
@@ -13238,7 +13238,7 @@ msgstr "Privacy Rating: Good (Apple ecosystem)"
 msgid "Privacy-First Expense Tracker"
 msgstr "Privacy-First Expense Tracker"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Privacy-first expense tracker that keeps your financial data on your device."
 msgstr "Privacy-first expense tracker that keeps your financial data on your device."
 
@@ -14078,7 +14078,7 @@ msgstr "Screen scraping means a third party can do anything you can do in your b
 msgid "Screenshot blur on balance fields and app-switcher previews"
 msgstr "Screenshot blur on balance fields and app-switcher previews"
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Screenshot protection"
 msgstr "Screenshot protection"
 
@@ -17318,7 +17318,7 @@ msgstr "voice input"
 msgid "Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories are pulled out there too."
 msgstr "Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories are pulled out there too."
 
-#: src/generic/util/build-landing-json-ld.util.ts
+#: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Voice transaction entry"
 msgstr "Voice transaction entry"
 

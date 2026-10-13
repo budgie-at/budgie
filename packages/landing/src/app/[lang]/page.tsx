@@ -12,7 +12,7 @@ import { JsonLd } from '../../generic/component/json-ld/json-ld';
 import { ProofBand } from '../../generic/component/proof-band/proof-band';
 import { TestimonialsSection } from '../../generic/component/testimonials-section/testimonials-section';
 import { TrustBanner } from '../../generic/component/trust-banner/trust-banner';
-import { buildLandingJsonLd } from '../../generic/util/build-landing-json-ld.util';
+import { buildLandingJsonLd } from '../../generic/utils/build-landing-json-ld.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 

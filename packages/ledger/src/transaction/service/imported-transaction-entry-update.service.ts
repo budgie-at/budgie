@@ -6,8 +6,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { transactionMapEntryInputToCreateEntity } from '../util/transaction-map-entry-input-to-create-entity.util';
-import { transactionResolveImportedOperationMetadata } from '../util/transaction-resolve-imported-operation-metadata.util';
+import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
+import { transactionResolveImportedOperationMetadata } from '../utils/transaction-resolve-imported-operation-metadata.util';
 
 import { TransactionDepositSafetyService } from './transaction-deposit-safety.service';
 

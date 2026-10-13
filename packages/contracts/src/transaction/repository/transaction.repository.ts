@@ -15,7 +15,7 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
-import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
+import { deriveEmbeddingFlag } from '../utils/derive-embedding-flag.util';
 
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';

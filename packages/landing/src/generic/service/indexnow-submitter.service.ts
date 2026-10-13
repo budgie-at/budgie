@@ -6,7 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { INDEXNOW_ENDPOINT, INDEXNOW_HOST, INDEXNOW_KEY } from '../constant/indexnow.constant';
 import { BASE_URL } from '../constant/seo.constant';
-import { buildSiteUrls } from '../util/build-site-urls.util';
+import { buildSiteUrls } from '../utils/build-site-urls.util';
 
 import type { IndexnowSubmitResultInterface } from '../interface/indexnow-submit-result.interface';
 

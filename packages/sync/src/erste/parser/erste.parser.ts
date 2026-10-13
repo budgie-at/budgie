@@ -5,7 +5,7 @@ import * as Result from 'effect/Result';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ERSTE_NEW_BALANCE_PREFIX } from '../constant/erste.constant';
-import { parseErsteAmount } from '../util/parse-erste-amount.util';
+import { parseErsteAmount } from '../utils/parse-erste-amount.util';
 
 import { extractErsteAccountInfo } from './erste-account-info.extractor';
 import { parseErsteCardMerchant } from './erste-card-merchant.parser';

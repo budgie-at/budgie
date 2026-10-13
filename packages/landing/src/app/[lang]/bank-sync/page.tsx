@@ -10,7 +10,7 @@ import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-h
 import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { PillarHubSection } from '../../../feature/component/pillar-hub-section/pillar-hub-section';
-import { createPillarHubGenerateMetadata } from '../../../feature/util/create-pillar-hub-generate-metadata.util';
+import { createPillarHubGenerateMetadata } from '../../../feature/utils/create-pillar-hub-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 import { BANK_SYNC_PILLAR_HUB_METADATA } from './metadata';

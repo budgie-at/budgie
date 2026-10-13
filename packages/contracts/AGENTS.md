@@ -79,7 +79,7 @@ account/
 All tables use `withBaseEntityTableColumns()` for standard columns:
 
 ```typescript
-import { withBaseEntityTableColumns } from '../@generic/util/with-base-entity-table-columns.util';
+import { withBaseEntityTableColumns } from '../@generic/utils/with-base-entity-table-columns.util';
 
 export const AccountEntityTable = sqliteTable('accounts', {
     ...withBaseEntityTableColumns(), // id, createdAt, updatedAt, deletedAt

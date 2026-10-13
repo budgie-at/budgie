@@ -1,6 +1,6 @@
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { isBorrowLikeDebtType } from '../../account/util/is-borrow-like-debt-type.util';
+import { isBorrowLikeDebtType } from '../../account/utils/is-borrow-like-debt-type.util';
 
 import { getDebtClosedAmount } from './get-debt-closed-amount.util';
 

@@ -7,10 +7,10 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { fileSyncDependenciesLayer } from '../../core/layer/file-sync-dependencies.layer';
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
-import { generateDefaultSyncAccountTitle } from '../../core/util/generate-default-sync-account-title.util';
-import { makeFileSyncService } from '../../core/util/make-file-sync-service.util';
+import { generateDefaultSyncAccountTitle } from '../../core/utils/generate-default-sync-account-title.util';
+import { makeFileSyncService } from '../../core/utils/make-file-sync-service.util';
 import { PrivatbankFileClient } from '../client/privatbank-file.client';
-import { parsePrivatbankXlsx } from '../util/parse-privatbank-xlsx.util';
+import { parsePrivatbankXlsx } from '../utils/parse-privatbank-xlsx.util';
 
 import { PrivatbankCategoryMatcherService } from './privatbank-category-matcher.service';
 

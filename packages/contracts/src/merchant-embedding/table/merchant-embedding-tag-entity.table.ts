@@ -1,6 +1,6 @@
 import { int, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core';
 
-import { tagIdColumn } from '../../@generic/util/tag-id-column.util';
+import { tagIdColumn } from '../../@generic/utils/tag-id-column.util';
 
 import { MerchantEmbeddingEntityTable } from './merchant-embedding-entity.table';
 

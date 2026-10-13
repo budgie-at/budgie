@@ -7,7 +7,7 @@ import { getLocales } from 'expo-localization';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { i18nGetOSLocale } from '../../i18n/util/i18n.util';
+import { i18nGetOSLocale } from '../../i18n/utils/i18n.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
 
 import type { OnboardingAccountInputInterface } from '../interface/onboarding-account-input.interface';
