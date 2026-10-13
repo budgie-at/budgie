@@ -1,11 +1,10 @@
-import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';

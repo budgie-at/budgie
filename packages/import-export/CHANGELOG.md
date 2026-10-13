@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **import-export:** import CSV rows with stray quotes and cover the replace rollback ([36c1f08](https://github.com/budgie-at/budgie/commit/36c1f0871d99b0ecef2a5774b27132668e413f23))
+* **import-export:** validate the CSV before replacing data and replace it atomically ([9b274aa](https://github.com/budgie-at/budgie/commit/9b274aac11e369569e6e73801e54c034e1403eb6))
+* reset every mutable table in test databases and drop vitest globals ([82be5ac](https://github.com/budgie-at/budgie/commit/82be5ac7a9b4a2a8138f1b187ae695907d7d9a74))
+
+
+
+
+
+# [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
+## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
 ## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/import-export

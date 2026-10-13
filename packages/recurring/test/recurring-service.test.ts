@@ -16,6 +16,7 @@ import {
 import { afterAll, beforeEach, expect, layer } from '@effect/vitest';
 import { between, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -54,6 +55,8 @@ const seedMonthly = (seed: Effect.Success<ReturnType<typeof seedCharges>>, title
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
 
 const calendarAsOf = (month: number, now: Date) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, now));
+
+const withFirstLaunchService = Effect.provide(Layer.fresh(RecurringService.layer));
 
 const allEntries = (data: RecurringCalendarDataInterface) =>
     [...data.entriesByDay.values(), ...data.forecastedEntriesByDay.values()].flat();
@@ -936,7 +939,7 @@ layer(TestLayer)('recurringService', it => {
                     expect(allEntries(data)).toHaveLength(userState === RecurringSeriesUserStateEnum.DISMISSED ? 0 : 1);
                     expect(allEntries(data).every(entry => entry.seriesId === saved.id && entry.title === saved.title)).toBe(true);
                     expect(yield* service.calendar(now.getFullYear(), month, now)).toEqual(data);
-                })
+                }).pipe(withFirstLaunchService)
             );
         }
     }
@@ -1002,7 +1005,7 @@ layer(TestLayer)('recurringService', it => {
                     const repository = yield* RecurringRepository;
                     const rows = yield* repository.findSeries();
                     expect(rows.find(row => row.id === saved.id)).toMatchObject({ periodDays: 30, title: 'Custom legacy bill', userState });
-                })
+                }).pipe(withFirstLaunchService)
             );
         }
     }
@@ -1052,7 +1055,7 @@ layer(TestLayer)('recurringService', it => {
             expect(entries.map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual([
                 [saved.id, 'Confirmed bill', RecurringSeriesUserStateEnum.CONFIRMED]
             ]);
-        })
+        }).pipe(withFirstLaunchService)
     );
 
     for (const userState of [RecurringSeriesUserStateEnum.CONFIRMED, RecurringSeriesUserStateEnum.DISMISSED]) {
@@ -1094,7 +1097,7 @@ layer(TestLayer)('recurringService', it => {
                     expect(
                         entries.every(entry => entry.seriesId === saved.id && entry.title === saved.title && entry.userState === userState)
                     ).toBe(true);
-                })
+                }).pipe(withFirstLaunchService)
             );
         }
         for (const previousAmount of [10, 15]) {
@@ -1181,6 +1184,27 @@ layer(TestLayer)('recurringService', it => {
         }
     }
 
+    it.effect('adopts legacy identities only on the first calendar read of a launch', () =>
+        Effect.gen(function* () {
+            expect(allEntries(yield* calendar(JULY))).toEqual([]);
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            const legacy = yield* seedSavedSeries({
+                merchantKey: 'NETFLIX',
+                title: 'NETFLIX',
+                amount: 12 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.DISMISSED,
+                lastSeenAt: new Date(2026, 4, 20)
+            });
+            const [entry] = allEntries(yield* calendar(JULY));
+            const rows = yield* Effect.flatMap(RecurringRepository, repository => repository.findSeries());
+
+            expect(entry.seriesId).not.toBe(legacy.id);
+            expect(rows.find(row => row.id === legacy.id)).toMatchObject({ merchantKey: 'NETFLIX' });
+            expect(rows).toHaveLength(2);
+        }).pipe(withFirstLaunchService)
+    );
+
     it.effect('preserves a dismissed legacy identity after qualified detection', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
@@ -1194,7 +1218,7 @@ layer(TestLayer)('recurringService', it => {
             });
             expect(allEntries(yield* calendar(JULY))).toEqual([]);
             expect(allEntries(yield* calendar(JULY))).toEqual([]);
-        })
+        }).pipe(withFirstLaunchService)
     );
 
     for (const userState of [RecurringSeriesUserStateEnum.CONFIRMED, RecurringSeriesUserStateEnum.DISMISSED]) {
@@ -1416,7 +1440,7 @@ layer(TestLayer)('recurringService', it => {
             expect(allEntries(yield* calendar(JULY)).map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual([
                 [saved.id, 'Streaming', RecurringSeriesUserStateEnum.CONFIRMED]
             ]);
-        })
+        }).pipe(withFirstLaunchService)
     );
 
     it.effect('keeps confirmation on the original stream when another stream qualifies', () =>

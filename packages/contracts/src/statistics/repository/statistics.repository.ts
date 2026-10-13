@@ -7,7 +7,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { buildCategoryTranslationJoinCondition } from '../../@generic/util/build-category-translation-join-condition.util';
 import {
@@ -36,8 +36,6 @@ import type { SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class StatisticsRepository extends Context.Service<StatisticsRepository>()('@budgie/contracts/StatisticsRepository', {
     make: Effect.sync(() => {
-        const transactionFilters = new BaseTransactionFilterRepository();
-
         const buildSpendingTransactionIdsQuery = (db: DB, baseWhere: SQL | undefined, type: TransactionTypeEnum | null) =>
             db
                 .selectDistinct({ id: TransactionEntityTable.id })

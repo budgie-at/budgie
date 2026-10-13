@@ -1,10 +1,6 @@
 import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
-import { t } from '@lingui/core/macro';
-import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { AiSubsystemNameEnum } from '../../ai/enum/ai-subsystem-name.enum';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
@@ -17,16 +13,13 @@ type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => E
 export interface UseRegenerateTranslationReturn {
     readonly regenerate: (entityId: number, title: string) => Promise<TranslationResultInterface | null>;
     readonly isRegenerating: boolean;
-    readonly error: string | null;
 }
 
 export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn): UseRegenerateTranslationReturn => {
     const [isRegenerating, setIsRegenerating] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const regenerate = (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
         setIsRegenerating(true);
-        setError(null);
 
         return appRuntime.runPromise(
             Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
@@ -35,8 +28,6 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
                     isChatReady =>
                         Effect.gen(function* () {
                             if (!isChatReady) {
-                                setError(t`LLM not ready`);
-
                                 return null;
                             }
 
@@ -50,17 +41,11 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
                 )
             ).pipe(
                 Effect.tapCause(Effect.logError),
-                Effect.catchCause(cause =>
-                    Effect.sync(() => {
-                        setError(getErrorMessage(Cause.squash(cause)));
-
-                        return null;
-                    })
-                ),
+                Effect.catchCause(() => Effect.succeed(null)),
                 Effect.ensuring(Effect.sync(() => void setIsRegenerating(false)))
             )
         );
     };
 
-    return { regenerate, isRegenerating, error };
+    return { regenerate, isRegenerating };
 };

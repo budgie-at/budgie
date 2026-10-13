@@ -17,68 +17,9 @@ APP_ID="${APP_ID:?APP_ID is required}"
 SIMULATOR_UDID="${SIMULATOR_UDID:?SIMULATOR_UDID is required}"
 MAESTRO_FLOW_ENV_FILE="${MAESTRO_FLOW_ENV_FILE:?MAESTRO_FLOW_ENV_FILE is required}"
 
-MAX_SUBFLOW_DEPTH=3
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
-resolve_flow_file_path() {
-    local flow_path="$1"
-    local nested_flow_path="$2"
-
-    if [[ "$nested_flow_path" = /* ]]; then
-        printf '%s\n' "$nested_flow_path"
-
-        return 0
-    fi
-
-    printf '%s/%s\n' "$(dirname "$flow_path")" "$nested_flow_path"
-}
-
-extract_database_fixture_name() {
-    local flow_path="$1"
-    local depth="${2:-0}"
-    local fixture_name
-    local nested_flow_path
-    local nested_fixture_name
-
-    fixture_name="$(sed -n "s/^[[:space:]]*FIXTURE_ROW_ID_MATCH:[[:space:]]*['\"]\\([^'\"]*\\.db\\).*['\"].*/\\1/p" "$flow_path" | head -n 1)"
-
-    if [ -n "$fixture_name" ]; then
-        printf '%s\n' "$fixture_name"
-
-        return 0
-    fi
-
-    if [ "$depth" -ge "$MAX_SUBFLOW_DEPTH" ]; then
-        return 1
-    fi
-
-    while IFS= read -r nested_flow_path; do
-        nested_flow_path="$(resolve_flow_file_path "$flow_path" "$nested_flow_path")"
-
-        if [ ! -f "$nested_flow_path" ]; then
-            continue
-        fi
-
-        nested_fixture_name="$(extract_database_fixture_name "$nested_flow_path" "$((depth + 1))" || true)"
-
-        if [ -n "$nested_fixture_name" ]; then
-            printf '%s\n' "$nested_fixture_name"
-
-            return 0
-        fi
-    done < <(
-        awk '/^[[:space:]]*file:[[:space:]]*/ {
-            value = $0;
-            sub(/^[[:space:]]*file:[[:space:]]*/, "", value);
-            gsub(/'\''|"/, "", value);
-            gsub(/^[[:space:]]+|[[:space:]]+$/, "", value);
-            if (value ~ /\.flow\.yaml$/) {
-                print value;
-            }
-        }' "$flow_path"
-    )
-
-    return 1
-}
+. "$SCRIPT_DIR/flow-fixture-lookup.sh"
 
 APP_DATA_CONTAINER="$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data)"
 
@@ -99,22 +40,7 @@ if [ -z "$FIXTURE_NAME" ]; then
     exit 0
 fi
 
-FIXTURE_PATH="$APP_DATA_CONTAINER/Documents/E2EFixtures/$FIXTURE_NAME"
-
-if [ ! -f "$FIXTURE_PATH" ]; then
-    echo "::error::Database fixture declared by ${FLOW_NAME:-$FLOW_PATH} was not found: $FIXTURE_PATH"
-
-    exit 1
-fi
-
-SQLITE_DIR="$APP_DATA_CONTAINER/Documents/SQLite"
-
-xcrun simctl terminate "$SIMULATOR_UDID" "$APP_ID" >/dev/null 2>&1 || true
-xcrun simctl keychain "$SIMULATOR_UDID" reset >/dev/null 2>&1 || true
-mkdir -p "$SQLITE_DIR"
-rm -f "$SQLITE_DIR"/budgie.db*
-cp "$FIXTURE_PATH" "$SQLITE_DIR/budgie.db"
-xcrun simctl launch "$SIMULATOR_UDID" "$APP_ID" >/dev/null
+install_database_fixture "$SIMULATOR_UDID" "$APP_ID" "$APP_DATA_CONTAINER" "$FIXTURE_NAME"
 
 printf 'DATABASE_FIXTURE_SEEDED=true\n' >> "$MAESTRO_FLOW_ENV_FILE"
 

@@ -1,8 +1,7 @@
 import { AccountEntityInterface } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { router } from 'expo-router';
-import { useEffect } from 'react';
-import { DefaultValues, FieldErrors, FieldValues, Resolver, useForm } from 'react-hook-form';
+import { FieldErrors, FieldValues, Resolver, useForm } from 'react-hook-form';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -10,30 +9,21 @@ import { useShowError } from '../../@generic/hook/use-show-error.hook';
 
 export const useAccountEntityForm = <T extends FieldValues>(
     resolver: Resolver<T>,
-    initialValues: DefaultValues<T>,
-    onSubmit: (values: T) => Promise<AccountEntityInterface>,
-    syncInitialValues = false
+    values: T,
+    onSubmit: (values: T) => Promise<AccountEntityInterface>
 ) => {
     const showError = useShowError();
     const form = useForm<T>({
         resolver,
         mode: 'onSubmit',
-        defaultValues: initialValues
+        values,
+        resetOptions: { keepDirtyValues: true }
     });
-    const { dirtyFields, isSubmitting } = form.formState;
-    const { reset } = form;
+    const { isSubmitting } = form.formState;
 
-    useEffect(() => {
-        if (!syncInitialValues) {
-            return;
-        }
-
-        reset(initialValues, { keepDirtyValues: true });
-    }, [dirtyFields, initialValues, reset, syncInitialValues]);
-
-    const handleSubmit = async (values: T) => {
+    const handleSubmit = async (submittedValues: T) => {
         try {
-            await onSubmit(values);
+            await onSubmit(submittedValues);
 
             router.replace('/');
         } catch (error: unknown) {

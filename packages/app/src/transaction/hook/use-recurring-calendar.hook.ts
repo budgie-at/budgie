@@ -18,7 +18,7 @@ const recurringCalendarAtom = databaseQueryFamily(
         recurringService.calendar(year, month, new Date(nowTime))
 );
 
-export const useRecurringCalendar = (displayYear: number, displayMonth: number): { readonly data?: RecurringCalendarDataInterface } => {
+export const useRecurringCalendar = (displayYear: number, displayMonth: number): RecurringCalendarDataInterface | undefined => {
     const [now, setNow] = useState(() => new Date());
     useAppState(isActive => {
         if (isActive) {
@@ -32,5 +32,5 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
 
     const result = useLiveAtomValue(recurringCalendarAtom([displayYear, displayMonth, now.getTime()]));
 
-    return { ...(AsyncResult.isSuccess(result) && { data: result.value }) };
+    return AsyncResult.isSuccess(result) ? result.value : void 0;
 };

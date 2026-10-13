@@ -18,7 +18,7 @@ export const HeroSectionHeader = () => (
         </p>
 
         <div className="hero-enter hero-action">
-            <WaitlistForm initialCount={2847} variant="hero" />
+            <WaitlistForm variant="hero" />
         </div>
     </div>
 );

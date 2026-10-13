@@ -1,5 +1,3 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
-
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
@@ -46,10 +44,6 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
     const progress = useInstrumentMarketDataProgressQuery(instrument.id, defaultInstrument.id);
     const isPositiveChange = isMarketMovePositive(latestPrice, previousPrice);
     const shouldShowProgress = prices.length < 2 && !progress.isComplete;
-    const shouldShowHoldings = instrument.type === InstrumentTypeEnum.CRYPTO;
-    const holdingsCard = shouldShowHoldings ? (
-        <CurrencyMarketHoldingsCard instrument={instrument} balance={balance} latestPrice={latestPrice} />
-    ) : null;
 
     return (
         <CollapsibleChromePage
@@ -73,7 +67,7 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
                     testID={CurrencyMarketPageSelector.Sparkline(instrument.code)}
                 />
             )}
-            {holdingsCard}
+            <CurrencyMarketHoldingsCard instrument={instrument} balance={balance} latestPrice={latestPrice} />
             <CurrencyMarketMetrics instrumentCode={instrument.code} latestPrice={latestPrice} />
         </CollapsibleChromePage>
     );

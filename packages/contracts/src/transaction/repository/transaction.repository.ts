@@ -6,7 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -22,22 +22,13 @@ import type { TransactionUpdateInputInterface } from '../input/transaction-updat
 
 export class TransactionRepository extends Context.Service<TransactionRepository>()('@budgie/contracts/TransactionRepository', {
     make: Effect.sync(() => {
-        const filters = new BaseTransactionFilterRepository();
         const NOT_DELETED_ENTRY_RELATION_WHERE = { deletedAt: { isNull: true } } as const;
         const ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
             [TransactionAssociationEnum.ENTRIES]: {
-                where: filters.buildLedgerEntryFilter(),
+                where: transactionFilters.ledgerEntryFilter,
                 with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
             }
         } as const;
-
-        const buildSingleAccountCondition = (accountId: number) =>
-            or(
-                eq(TransactionEntityTable.fromAccountId, accountId),
-                eq(TransactionEntityTable.toAccountId, accountId),
-                inArray(TransactionEntityTable.id, filters.buildTransactionIdsByEntryAccountIdsQuery([accountId])),
-                inArray(TransactionEntityTable.id, filters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
-            );
 
         const selectOperatedAtTime = Effect.fnUntraced(function* (aggregateSql: SQL<number | null>, condition: SQL | undefined) {
             const result = yield* Db.query(db =>
@@ -57,7 +48,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
         const findByIdsWithEntriesWhere = Effect.fnUntraced(function* (
             ids: number[],
-            entriesWhere: ReturnType<typeof filters.buildLedgerEntryFilter> | typeof NOT_DELETED_ENTRY_RELATION_WHERE
+            entriesWhere: typeof transactionFilters.ledgerEntryFilter | typeof NOT_DELETED_ENTRY_RELATION_WHERE
         ) {
             if (isNotEmptyArray(ids)) {
                 return yield* Db.query(db =>
@@ -139,7 +130,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     db.query.TransactionEntityTable.findMany({
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
-                                where: filters.buildLedgerEntryFilter()
+                                where: transactionFilters.ledgerEntryFilter
                             }
                         },
                         orderBy: (transaction, { desc }) => [desc(transaction.id)],
@@ -152,15 +143,9 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     })
                 ),
 
-            findByIds: Effect.fn('TransactionRepository.findByIds')(function* (ids: number[]) {
-                return yield* findByIdsWithEntriesWhere(ids, filters.buildLedgerEntryFilter());
-            }),
+            findByIds: (ids: number[]) => findByIdsWithEntriesWhere(ids, transactionFilters.ledgerEntryFilter),
 
-            findByIdsWithRefundConsolidationHistory: Effect.fn('TransactionRepository.findByIdsWithRefundConsolidationHistory')(function* (
-                ids: number[]
-            ) {
-                return yield* findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE);
-            }),
+            findByIdsWithRefundConsolidationHistory: (ids: number[]) => findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE),
 
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
                 externalSource: ExternalSourceEnum
@@ -198,20 +183,11 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
                         : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
 
-                return yield* selectOperatedAtTime(aggregateSql, buildSingleAccountCondition(accountId));
+                return yield* selectOperatedAtTime(aggregateSql, and(...transactionFilters.buildAccountCondition([accountId])));
             }),
 
-            getEarliestTransactionTimeByExternalSource: Effect.fn('TransactionRepository.getEarliestTransactionTimeByExternalSource')(
-                function* (externalSource: ExternalSourceEnum) {
-                    return yield* selectOperatedAtTime(
-                        sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`,
-                        eq(TransactionEntityTable.externalSource, externalSource)
-                    );
-                }
-            ),
-
             archiveByAccountIds: Effect.fn('TransactionRepository.archiveByAccountIds')(function* (accountIds: number[]) {
-                const ledgerEntryCondition = filters.buildLedgerEntryCondition();
+                const ledgerEntryCondition = transactionFilters.buildLedgerEntryCondition();
 
                 yield* Db.query(db =>
                     db
@@ -319,34 +295,13 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         where: { id },
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
-                                where: filters.buildLedgerEntryFilter()
+                                where: transactionFilters.ledgerEntryFilter
                             }
                         }
                     })
                 ),
 
             truncate: () => Db.query(db => db.delete(TransactionEntityTable)),
-
-            findByAccountId: (accountId: number) =>
-                Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: {
-                            OR: [
-                                { fromAccountId: accountId },
-                                { toAccountId: accountId },
-                                {
-                                    RAW: (table, { inArray: inIds }) =>
-                                        inIds(table.id, filters.buildTransactionIdsByEntryAccountIdsQuery([accountId]))
-                                },
-                                {
-                                    RAW: (table, { inArray: inIds }) =>
-                                        inIds(table.id, filters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
-                                }
-                            ]
-                        },
-                        orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
-                    })
-                ),
 
             restoreByAccountIds: (accountIds: number[]) =>
                 Db.query(db =>
@@ -372,7 +327,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         },
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
-                                where: filters.buildLedgerEntryFilter()
+                                where: transactionFilters.ledgerEntryFilter
                             }
                         }
                     })
@@ -399,7 +354,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                             and(
                                 eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
                                 eq(TransactionEntityTable.fromAccountId, accountId),
-                                filters.buildVisibleTransactionCondition()
+                                transactionFilters.buildVisibleTransactionCondition()
                             )
                         )
                 ),
@@ -413,7 +368,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                             and(
                                 eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
                                 eq(TransactionEntityTable.toAccountId, accountId),
-                                filters.buildVisibleTransactionCondition()
+                                transactionFilters.buildVisibleTransactionCondition()
                             )
                         )
                 ),

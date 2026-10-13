@@ -1,4 +1,4 @@
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 import { useTagSuggestion } from '../../../ai/hook/use-tag-suggestion.hook';
 import { CategoryScopedSuggestionRowPropsInterface } from '../../interface/category-scoped-suggestion-row-props.interface';
@@ -8,10 +8,6 @@ import { IconTitleSuggestionRowSelector } from '../icon-title-suggestion-row/ico
 interface Props extends CategoryScopedSuggestionRowPropsInterface {
     readonly onSelect: (tagId: number) => void;
 }
-
-const getTagKey = (tag: TagEntityInterface): number => tag.id;
-const getTagIcon = (): UserIconNameEnum => UserIconNameEnum.Hash;
-const getTagTitle = (tag: TagEntityInterface): string => tag.title;
 
 export const TagSuggestionRow = (props: Props) => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
@@ -25,19 +21,16 @@ export const TagSuggestionRow = (props: Props) => {
         enabled
     });
 
-    const handleSelect = (tag: TagEntityInterface): void => {
-        onSelect(tag.id);
-    };
-
     return (
         <IconTitleSuggestionRow
-            suggestions={suggestions}
+            items={suggestions.map(tag => ({
+                key: tag.id,
+                icon: UserIconNameEnum.Hash,
+                title: tag.title,
+                onSelect: () => void onSelect(tag.id)
+            }))}
             status={status}
             enabled={enabled}
-            onSelect={handleSelect}
-            getKey={getTagKey}
-            getIcon={getTagIcon}
-            getTitle={getTagTitle}
             testIDPrefix={IconTitleSuggestionRowSelector.Tag}
         />
     );

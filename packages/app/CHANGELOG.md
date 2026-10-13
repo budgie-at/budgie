@@ -3,6 +3,100 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **app:** download models to a temp file and verify size before use ([36d2927](https://github.com/budgie-at/budgie/commit/36d2927b4bee9119fabee90f08e4d20f9172c0cd))
+* **app:** keep an existing model until a verified replacement has downloaded ([a3e63b7](https://github.com/budgie-at/budgie/commit/a3e63b7d365f8c6f322f85433cd69e8b6d71efeb))
+* **app:** keep category delete void after the ledger service returns repository results ([f84e124](https://github.com/budgie-at/budgie/commit/f84e124f97c24ef2a77be0e7b9cffc0cb67e15c4))
+* **app:** keep every entry field when editing a split ([3ed52da](https://github.com/budgie-at/budgie/commit/3ed52da48944b709dbba782aeb6d1f4cee16c26d))
+* **app:** keep fixture exchange rates in E2E builds ([17a844e](https://github.com/budgie-at/budgie/commit/17a844ec1750c816224c205898c81bdaf719ebfb))
+* **app:** keep the named plural variable in the column mapper message ([5271bae](https://github.com/budgie-at/budgie/commit/5271baef44d0345fb453bcfb139935672831b2d5))
+* **app:** re-download a model whose final file has no matching verified size ([9e5e32d](https://github.com/budgie-at/budgie/commit/9e5e32d09949a2c1ca7429ed271c20695b321cd5))
+* **app:** resolve number separators without Intl formatToParts ([1e102fc](https://github.com/budgie-at/budgie/commit/1e102fccb92c8e0a977797dd70c1ad2d91880213))
+* **app:** revalue a split entry whose amount changed in the split modal ([7b90cb2](https://github.com/budgie-at/budgie/commit/7b90cb24f131e8acee5eaa4e3117a20c028beb73))
+* **app:** roll the debt deadline badge over at midnight again ([63a592c](https://github.com/budgie-at/budgie/commit/63a592c6d76dee846263bb37add94caee3cf8e58))
+* **app:** run long-press menu actions on release, not on press-in ([c25e52e](https://github.com/budgie-at/budgie/commit/c25e52ec401d08335557e44591ad7284bbbd8cc4))
+* **app:** run popover close actions after the menu modal unmounts ([f704dfe](https://github.com/budgie-at/budgie/commit/f704dfeedeea72dd1f3447add2e8f34a8bd85ce4))
+* **app:** save category title and translation in one transaction ([7b5b4c0](https://github.com/budgie-at/budgie/commit/7b5b4c0fc5a5af8eef775132d114d7686d297ae0))
+* **app:** toast every category delete and reassign failure, including defects ([7a52a08](https://github.com/budgie-at/budgie/commit/7a52a0834154ff0aafbd85a26c0e43d8fcf56edd))
+
+
+
+
+
+# [6.102.0](https://github.com/budgie-at/budgie/compare/v6.101.1...v6.102.0) (2026-10-12)
+
+
+### Bug Fixes
+
+* **app:** size home scroll spacer by displayed accounts ([ae1ab3b](https://github.com/budgie-at/budgie/commit/ae1ab3b3001b3f8247e5ddbc95da5bfca87f9634))
+
+
+### Features
+
+* **app:** redesign paid-off debts and hide them from home ([42ba446](https://github.com/budgie-at/budgie/commit/42ba446fa340728677ec21c02ac76bfac2893186))
+
+
+
+
+
+## [6.101.1](https://github.com/budgie-at/budgie/compare/v6.101.0...v6.101.1) (2026-10-12)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
+
+
+### Features
+
+* **consolidation:** consolidate FX refunds that exceed the expense ([00a47c6](https://github.com/budgie-at/budgie/commit/00a47c635c6494c9d6c5d37b9a236c01d822e168))
+
+
+
+
+
+## [6.100.9](https://github.com/budgie-at/budgie/compare/v6.100.8...v6.100.9) (2026-10-12)
+
+
+### Bug Fixes
+
+* **app:** theme the native background behind screen transitions ([f2861d6](https://github.com/budgie-at/budgie/commit/f2861d66fc754957a78b60cd63f3ea84212aeca2))
+
+
+
+
+
+## [6.100.8](https://github.com/budgie-at/budgie/compare/v6.100.7...v6.100.8) (2026-10-12)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 ## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
 
 **Note:** Version bump only for package @budgie-at/app

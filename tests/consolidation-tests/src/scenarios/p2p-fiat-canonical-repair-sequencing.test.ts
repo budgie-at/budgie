@@ -1,4 +1,8 @@
-import { ConsolidationCoordinatorService, ConsolidationRepairExecutorService, TransferPairRepository } from '@budgie/consolidation';
+import {
+    ConsolidationCoordinatorService,
+    ConsolidationRepairExecutorService,
+    ConsolidationCandidateRepository
+} from '@budgie/consolidation';
 import { afterEach, expect, layer, vi } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
@@ -14,11 +18,11 @@ layer(TestLayer)('consolidation/p2p canonical repair sequencing', it => {
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
             const consolidationRepairExecutorService = yield* ConsolidationRepairExecutorService;
-            const transferPairRepository = yield* TransferPairRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const events: string[] = [];
             const repairs: number[] = [];
 
-            vi.spyOn(transferPairRepository, 'findP2pFiatAuthoritativeRepairCandidates').mockReturnValue(
+            vi.spyOn(consolidationCandidateRepository, 'findP2pFiatAuthoritativeRepairCandidates').mockReturnValue(
                 Effect.succeed([{ canonicalTransactionId: 1 }, { canonicalTransactionId: 2 }])
             );
             vi.spyOn(consolidationRepairExecutorService, 'repairP2pFiatCanonical').mockImplementation(canonicalTransactionId =>

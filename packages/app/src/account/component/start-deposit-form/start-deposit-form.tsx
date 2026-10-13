@@ -1,20 +1,25 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { TransactionTransferService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
-import { FieldErrors, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { FieldErrors, useForm, useWatch } from 'react-hook-form';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useShowError } from '../../../@generic/hook/use-show-error.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { StartDepositFormSchema } from '../../constant/start-deposit-form-schema.constant';
-import { StartDepositFormBody } from '../start-deposit-form-body/start-deposit-form-body';
+import { DepositAccountFormScreen } from '../deposit-account-form-screen/deposit-account-form-screen';
+import { StartDepositFundingSummary } from '../start-deposit-funding-summary/start-deposit-funding-summary';
+
+import { StartDepositFormSelector } from './start-deposit-form.selector';
 
 import type { DepositAccountFormValues } from '../../interface/deposit-account-form-values.interface';
 import type {
@@ -54,9 +59,6 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
             integrationId: sourceEntry.account.integrationId
         }
     });
-    const openCreatedDeposit = (depositAccount: AccountEntityInterface) =>
-        void router.replace({ pathname: '/account/[id]/details', params: { id: String(depositAccount.id) } });
-
     const startDeposit = (values: DepositAccountFormValues) =>
         appRuntime
             .runPromise(
@@ -72,7 +74,11 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
                     })
                 )
             )
-            .then(openCreatedDeposit, showError);
+            .then(
+                (depositAccount: AccountEntityInterface) =>
+                    void router.replace({ pathname: '/account/[id]/details', params: { id: String(depositAccount.id) } }),
+                showError
+            );
 
     const handleInvalid = (errors: FieldErrors<DepositAccountFormValues>) => {
         const message = isDefined(errors.currentBalance)
@@ -84,15 +90,42 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
 
     const handleSubmit = form.handleSubmit(startDeposit, handleInvalid);
 
+    const instrumentId = useWatch({ control: form.control, name: 'instrumentId' });
+    const { instrument } = useGetInstrumentByIdQuery(instrumentId);
+
+    const { setValue } = form;
+
+    useEffect(() => {
+        if (instrumentId === sourceEntry.account.instrumentId) {
+            setValue('currentBalance', sourceAmount);
+        }
+    }, [instrumentId, sourceEntry.account.instrumentId, sourceAmount, setValue]);
+
+    const destinationCode = instrument?.code ?? '';
+
     return (
-        <StartDepositFormBody
+        <DepositAccountFormScreen
+            title={t`Start Deposit`}
             control={form.control}
-            setValue={form.setValue}
-            sourceEntry={sourceEntry}
-            sourceAmount={sourceAmount}
-            hasOperationCurrency={hasOperationCurrency}
+            instrument={instrument}
             onSubmit={handleSubmit}
             isSubmitting={form.formState.isSubmitting}
-        />
+            balanceFieldLabel={t`Receiving amount`}
+        >
+            <StartDepositFundingSummary
+                control={form.control}
+                sourceAccountTitle={sourceEntry.account.title}
+                sourceAmount={sourceAmount}
+                sourceSymbol={sourceEntry.account.instrument.symbol}
+                sourceCode={sourceEntry.account.instrument.code}
+                destinationCode={destinationCode}
+            />
+
+            {hasOperationCurrency ? null : (
+                <Text className="text-secondary-foreground text-sm mt-md" testID={StartDepositFormSelector.MissingCurrencyHint}>
+                    <Trans>The bank did not report the deposit currency. Confirm the currency and the receiving amount.</Trans>
+                </Text>
+            )}
+        </DepositAccountFormScreen>
     );
 };

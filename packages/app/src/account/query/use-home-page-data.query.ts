@@ -1,21 +1,30 @@
-import { AccountBalanceRepository, AccountTypeEnum, DebtEventEntityTable, InstrumentEntityTable } from '@budgie/contracts';
+import {
+    AccountBalanceRepository,
+    AccountTypeEnum,
+    DebtEventEntityTable,
+    InstrumentEntityTable,
+    convertFromMicroUnits
+} from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
+import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
+import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
+import { pairAccountsIntoRows } from '../utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
 
 import type { DebtSectionInterface } from '../interface/debt-section.interface';
 import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
-import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
+import type { HomeSectionInterface } from '../interface/home-section.interface';
+import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 const homeAccountRowsAtom = databaseQueryFamily(
     [...ACCOUNT_CONVERTED_BALANCE_TABLES, InstrumentEntityTable, DebtEventEntityTable],
@@ -34,6 +43,64 @@ const createHomeAccountBalanceSummary = () => ({
     fiatTotal: 0,
     netWorth: 0
 });
+
+const groupBy = <Item, Key>(items: readonly Item[], getKey: (item: Item) => Key): Map<Key, Item[]> => {
+    const groups = new Map<Key, Item[]>();
+
+    items.forEach(item => {
+        const key = getKey(item);
+
+        groups.set(key, [...(groups.get(key) ?? []), item]);
+    });
+
+    return groups;
+};
+
+const buildHomePageSections = (
+    activeAccounts: AccountWithSyncEntityInterface[],
+    integrationProviders: ReadonlyMap<number, ExternalSourceEnum>
+): HomeSectionInterface[] => {
+    const debtAccounts = activeAccounts.filter(account => account.type === AccountTypeEnum.DEBT);
+    const otherAccounts = activeAccounts.filter(account => account.type !== AccountTypeEnum.DEBT);
+    const isProviderAccount = (account: AccountWithSyncEntityInterface) =>
+        isDefined(resolveBankProviderGroup(account.integrationId, integrationProviders));
+    const providerAccounts = otherAccounts.filter(isProviderAccount);
+    const typeAccounts = otherAccounts.filter(account => !isProviderAccount(account));
+    const debtGroups = groupBy(debtAccounts, account => getDebtSectionKind(account.debtType));
+    const providerGroups = groupBy(providerAccounts, account => account.integrationId);
+
+    const typeSections = [...groupBy(typeAccounts, account => account.type)].map(([type, accounts]) => ({
+        kind: HomeSectionKindEnum.ACCOUNT_TYPE as const,
+        type,
+        data:
+            type === AccountTypeEnum.CRYPTO
+                ? [...groupBy(accounts, account => account.instrument.id).values()].map(group => ({
+                      instrument: group[0].instrument,
+                      accounts: group
+                  }))
+                : pairAccountsIntoRows(accounts)
+    }));
+
+    const debtSectionKinds = [
+        HomeSectionKindEnum.DEBT_YOU_OWE,
+        HomeSectionKindEnum.DEBT_OWED_TO_YOU
+    ] satisfies DebtSectionInterface['kind'][];
+    const debtSections = debtSectionKinds.flatMap(kind => {
+        const data = debtGroups.get(kind);
+
+        return isNotEmptyArray(data) ? [{ kind, data }] : [];
+    });
+
+    const providerSections = [...providerGroups].flatMap(([integrationId, accounts]) => {
+        const provider = resolveBankProviderGroup(integrationId, integrationProviders)?.provider;
+
+        return isDefined(provider) && isDefined(integrationId)
+            ? [{ kind: HomeSectionKindEnum.BANK_PROVIDER as const, provider, integrationId, data: pairAccountsIntoRows(accounts) }]
+            : [];
+    });
+
+    return [...typeSections, ...debtSections, ...providerSections];
+};
 
 const addTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number): void => {
     totals.set(key, (totals.get(key) ?? 0) + amount);
@@ -82,8 +149,22 @@ const addNetWorthAssetTotals = (
     summary.fiatTotal += convertedBalance;
 };
 
+const isSettledDebtAccount = (
+    account: Pick<AccountWithSyncEntityInterface, 'id' | 'type'>,
+    balanceSummary: Pick<HomeAccountBalanceSummaryInterface, 'balancesByAccountId'>,
+    decimalPlaces: number
+): boolean => {
+    const debtProgressSummary = balanceSummary.balancesByAccountId.get(account.id)?.debtProgressSummary;
+
+    return (
+        account.type === AccountTypeEnum.DEBT &&
+        isDefined(debtProgressSummary) &&
+        getDebtProgressDisplayState(debtProgressSummary, decimalPlaces).isSettled
+    );
+};
+
 export const useHomePageDataQuery = () => {
-    const { defaultInstrument } = useSettingsContext();
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const result = useLiveAtomValue(homeAccountRowsAtom(defaultInstrument.id));
     const data = AsyncResult.getOrElse(result, () => []);
     const accounts = data.map(row => {
@@ -139,5 +220,8 @@ export const useHomePageDataQuery = () => {
         return summary;
     }, createHomeAccountBalanceSummary());
 
-    return { accounts, balanceSummary };
+    const displayedAccounts = accounts.filter(account => account.isActive && !isSettledDebtAccount(account, balanceSummary, decimalPlaces));
+    const sections = buildHomePageSections(displayedAccounts, integrationProviders);
+
+    return { activeAccountCount: displayedAccounts.length, accounts, balanceSummary, sections };
 };

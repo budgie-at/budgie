@@ -50,21 +50,20 @@ export const useDebtSettlementTransactionActions = ({
             return;
         }
 
-        void openAccountSelector({
-            includeAccountTypes: [AccountTypeEnum.DEBT],
-            excludeAccountId: transactionAccountId ?? 0,
-            ...(isDefined(debtType) && { debtType }),
-            emptyStateDescription: t`Create a debt account first.`,
-            showDebtTotal: true
-        })
-            .then(async debtAccountId => {
+        openAccountSelector(
+            {
+                includeAccountTypes: [AccountTypeEnum.DEBT],
+                excludeAccountId: transactionAccountId ?? 0,
+                ...(isDefined(debtType) && { debtType }),
+                emptyStateDescription: t`Create a debt account first.`,
+                showDebtTotal: true
+            },
+            debtAccountId => {
                 if (isDefined(debtAccountId)) {
-                    await attachDebtSettlement(debtAccountId);
+                    attachDebtSettlement(debtAccountId).catch(() => void Toast.show({ type: 'error', text1: t`Could not attach debt` }));
                 }
-
-                return null;
-            })
-            .catch(() => void Toast.show({ type: 'error', text1: t`Could not attach debt` }));
+            }
+        );
     };
 
     const handleDetachDebtSettlement = () =>

@@ -46,6 +46,7 @@ export const buildPageMetadata = ({
             site: '@budgie_at',
             creator: '@budgie_at'
         },
-        ...(isDefined(updatedAt) && { other: { 'article:published_time': publishedAt, 'article:modified_time': updatedAt } })
+        ...(isDefined(updatedAt) &&
+            isDefined(publishedAt) && { other: { 'article:published_time': publishedAt, 'article:modified_time': updatedAt } })
     };
 };

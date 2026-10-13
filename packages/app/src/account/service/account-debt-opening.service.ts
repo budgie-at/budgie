@@ -13,7 +13,8 @@ import {
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
@@ -23,8 +24,6 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
-
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 import { DebtAccountService } from './debt-account.service';
 

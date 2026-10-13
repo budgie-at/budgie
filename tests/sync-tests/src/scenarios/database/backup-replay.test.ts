@@ -1,4 +1,3 @@
-import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
 import {
     AccountBalanceRepository,
     AccountEntityTable,
@@ -7,7 +6,8 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
-    TransactionEntryTypeEnum
+    TransactionEntryTypeEnum,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';

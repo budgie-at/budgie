@@ -22,7 +22,9 @@ export const CategoryIconFixRow = ({ category }: Props) => {
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
 
-    const handleOpen = () => void openCategoryForm({ category });
+    const handleOpen = () => {
+        openCategoryForm({ category });
+    };
 
     const handleSelect = (icon: UserIconType) => {
         appRuntime

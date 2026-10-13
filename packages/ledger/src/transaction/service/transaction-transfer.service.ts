@@ -9,7 +9,9 @@ import {
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    convertFromMicroUnits,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { i18n } from '@lingui/core';
@@ -20,8 +22,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../@generic/util/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
 import { DepositReceivingAmountMismatchError } from '../../account/error/deposit-receiving-amount-mismatch.error';
 import { AccountArchiveService } from '../../account/service/account-archive.service';

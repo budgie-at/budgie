@@ -5,17 +5,13 @@ export { P2P_ORDER_EXTERNAL_ID_MARKER } from './shared/constant/transfer-pair-p2
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';
 export { ConsolidationRepairExecutorService } from './executor/service/consolidation-repair-executor.service';
 export { P2pTransferTitleResolver } from './executor/service/p2p-transfer-title-resolver.service';
-export { AtmCashWithdrawalRepository } from './query/repository/atm-cash-withdrawal.repository';
-export { ExistingTransferRepository } from './query/repository/existing-transfer.repository';
-export { IbanBridgeTransferRepository } from './query/repository/iban-bridge-transfer.repository';
-export { ManualExpenseDuplicateRepository } from './query/repository/manual-expense-duplicate.repository';
+export { ConsolidationCandidateRepository } from './query/repository/consolidation-candidate.repository';
 export { RefundPairRepository } from './query/repository/refund-pair.repository';
 export { RefundAlreadyConsolidatedError } from './refund/error/refund-already-consolidated.error';
 export { RefundExceedsExpenseError } from './refund/error/refund-exceeds-expense.error';
 export { RefundNotFromIncomeError } from './refund/error/refund-not-from-income.error';
 export { RefundTransactionNotFoundError } from './refund/error/refund-transaction-not-found.error';
 export { RefundConsolidationService } from './refund/service/refund-consolidation.service';
-export { TransferPairRepository } from './query/repository/transfer-pair.repository';
 export { UnconsolidationService } from './executor/service/unconsolidation.service';
 
 export type { ConsolidationPreviewInterface } from './auto/interface/consolidation-preview.interface';

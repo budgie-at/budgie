@@ -14,18 +14,7 @@ const searchAccountsSortedAtom = databaseQueryFamily(
 );
 
 export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilterInterface) => {
-    const result = useLiveAtomValue(
-        searchAccountsSortedAtom([
-            search,
-            {
-                debtType: filter?.debtType,
-                excludeAccountId: filter?.excludeAccountId,
-                excludeTypes: filter?.excludeTypes,
-                includeTypes: filter?.includeTypes,
-                onlyActive: filter?.onlyActive
-            }
-        ])
-    );
+    const result = useLiveAtomValue(searchAccountsSortedAtom([search, filter ?? {}]));
 
     if (AsyncResult.isInitial(result)) {
         return { isLoading: true, accounts: [] };

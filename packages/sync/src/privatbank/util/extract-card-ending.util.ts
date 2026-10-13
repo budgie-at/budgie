@@ -1,3 +1,3 @@
-import { PRIVATBANK_CARD_LAST_DIGITS_LENGTH } from '../constant/privatbank.constant';
+const CARD_LAST_DIGITS_LENGTH = 4;
 
-export const extractCardEnding = (maskedCard: string): string => maskedCard.slice(-PRIVATBANK_CARD_LAST_DIGITS_LENGTH);
+export const extractCardEnding = (maskedCard: string): string => maskedCard.slice(-CARD_LAST_DIGITS_LENGTH);

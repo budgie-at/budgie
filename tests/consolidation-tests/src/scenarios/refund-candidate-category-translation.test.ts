@@ -1,6 +1,5 @@
-import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { RefundPairRepository } from '@budgie/consolidation';
-import { CategoryEntityTable, LanguageEnum, TransactionEntryEntityTable } from '@budgie/contracts';
+import { CategoryEntityTable, LanguageEnum, TransactionEntryEntityTable, convertToMicroUnits } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

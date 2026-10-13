@@ -59,5 +59,5 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
 
     const isStartSyncDisabled = isLoading || accountSelection.selectedAccounts.size === 0;
 
-    return { ...accountSelection, isLoading, fetchAccountPreviews, handleGoBack, handleSetupSync, isStartSyncDisabled };
+    return { accountSelection, isLoading, fetchAccountPreviews, handleGoBack, handleSetupSync, isStartSyncDisabled };
 };

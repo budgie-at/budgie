@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface, TransactionEntryCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
 import { RefObject } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -7,12 +7,12 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionAccountRowRef } from '../components/transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplayRef } from '../components/transaction-amount-display/transaction-amount-display';
+import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
 import { useQuickFormValidation } from './use-quick-form-validation.hook';
 
 import type { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
-import type { QuickFormBuildEntryParamsInterface } from '../interface/quick-form-build-entry-params.interface';
 import type { TransactionFieldIconsRefInterface } from '../interface/transaction-field-icons-ref.interface';
 
 interface UseQuickFormSubmitConfig {
@@ -20,7 +20,7 @@ interface UseQuickFormSubmitConfig {
     readonly amountDisplayRef: RefObject<TransactionAmountDisplayRef | null>;
     readonly fieldIconsRef: RefObject<TransactionFieldIconsRefInterface | null>;
     readonly accountRowRef: RefObject<TransactionAccountRowRef | null>;
-    readonly buildEntries: (params: QuickFormBuildEntryParamsInterface) => TransactionEntryCreateInputInterface[];
+    readonly entryType: TransactionEntryTypeEnum;
     readonly isSplitActive: boolean;
     readonly mccCategoryId: number | null;
     readonly transactionType: TransactionTypeEnum;
@@ -36,7 +36,7 @@ export const useQuickFormSubmit = ({
     amountDisplayRef,
     fieldIconsRef,
     accountRowRef,
-    buildEntries,
+    entryType,
     isSplitActive,
     mccCategoryId,
     transactionType,
@@ -72,7 +72,7 @@ export const useQuickFormSubmit = ({
             return;
         }
 
-        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount: categoryAmount, mccCategoryId });
+        const builtEntries = buildPrimaryEntry(entryType, { accountId, categoryId: formCategoryId, amount: categoryAmount, mccCategoryId });
 
         setValue('entries', [...builtEntries, ...feeEntries], { shouldValidate: false });
 

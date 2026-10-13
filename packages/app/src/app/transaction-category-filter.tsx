@@ -2,6 +2,7 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
@@ -20,7 +21,8 @@ const LIST_TOP_SPACE = 88;
 
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
-    const [, resolveTransactionCategoryFilter] = useTransactionCategoryFilterModal();
+    const [, resolveTransactionCategoryFilter, dismissTransactionCategoryFilter] = useTransactionCategoryFilterModal();
+    useModalDismiss(dismissTransactionCategoryFilter);
     const currentParams = useTransactionCategoryFilterModalParams();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);

@@ -1,4 +1,3 @@
-import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { makeTestDatabase } from '@budgie-at/test-kit';
 import {
     AccountTypeEnum,
@@ -9,7 +8,8 @@ import {
     TransactionEntryEntityTable,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { EntryBaseValuationService } from '@budgie/market';

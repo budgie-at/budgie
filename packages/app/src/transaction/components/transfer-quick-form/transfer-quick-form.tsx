@@ -1,22 +1,21 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { buildTransferEntries, getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
+import { buildTransferEntries, getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useTransactionFeeModal } from '../../context/transaction-fee-modal.context';
 import { useCurrencyConversion } from '../../hook/use-currency-conversion.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
+import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
-import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -60,15 +59,12 @@ export const TransferQuickForm = (props: Props) => {
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
-    const [openTransactionFee] = useTransactionFeeModal();
 
     const [isEditingDestination, setIsEditingDestination] = useState(false);
 
     const initialAmount = getValues('amount');
     const conversion = useCurrencyConversion();
     const entries = useWatch({ control, name: 'entries' });
-    const feeEntries = getTransactionFeeEntries(entries);
-    const feeAmount = sumEntryAmounts(feeEntries);
 
     const handleSourceAmountChange = (value: number) => {
         setValue('amount', value);
@@ -84,7 +80,6 @@ export const TransferQuickForm = (props: Props) => {
     });
 
     const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
-    const activeHandlers = activeKeypad.handlers;
 
     const fromInstrumentId = fromAccount?.instrumentId ?? 0;
     const toInstrumentId = toAccount?.instrumentId ?? 0;
@@ -124,6 +119,14 @@ export const TransferQuickForm = (props: Props) => {
     const feeCurrencySymbol = fromAccount?.instrument.symbol ?? defaultInstrument.symbol;
     const feeInstrumentType = fromAccount?.instrument.type ?? defaultInstrument.type;
 
+    const { feeAmount, handleFeePress } = useQuickFormFee({
+        accountFieldName: 'fromAccountId',
+        currencySymbol: feeCurrencySymbol,
+        entries,
+        transactionType: TransactionTypeEnum.TRANSFER,
+        variant
+    });
+
     const display = computeTransferDisplay({
         isEditingDestination,
         sourceDisplayValue: sourceKeypad.displayValue,
@@ -155,29 +158,6 @@ export const TransferQuickForm = (props: Props) => {
             setIsEditingDestination(true);
         }
     };
-
-    const openFeeModal = async () => {
-        const currentEntries = getValues('entries');
-        const currentFeeEntries = getTransactionFeeEntries(currentEntries);
-        const sourceAccountId = fromAccountId ?? 0;
-        const result = await openTransactionFee({
-            accountId: sourceAccountId,
-            currencySymbol: feeCurrencySymbol,
-            entry: currentFeeEntries.at(0) ?? null,
-            variant
-        });
-
-        if (!isDefined(result)) {
-            return;
-        }
-
-        const categoryEntries = getTransactionCategoryEntries(currentEntries);
-        const nextFeeEntries = result.map(entry => ({ ...entry, accountId: sourceAccountId, type: TransactionEntryTypeEnum.FEE }));
-
-        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldDirty: true, shouldValidate: false });
-    };
-
-    const handleFeePress = () => void openFeeModal();
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
     const amountBottomContent = showInlineFeeAction ? (
@@ -278,10 +258,7 @@ export const TransferQuickForm = (props: Props) => {
 
             <TransactionKeypad
                 variant={variant}
-                onDigit={activeHandlers.onDigit}
-                onDecimal={activeHandlers.onDecimal}
-                onBackspace={activeHandlers.onBackspace}
-                onLongBackspace={activeHandlers.onLongBackspace}
+                keypad={activeKeypad.handlers}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
                 confirmTestID={SimpleQuickFormSelector.SubmitButton}

@@ -6,7 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { AccountBalanceRepository } from '../../account-balance/repository/account-balance.repository';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
@@ -24,7 +24,6 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
-        const transactionFilters = new BaseTransactionFilterRepository();
         const queryBuilder = new QueryBuilder();
 
         const findParts = (debtAccountId: number) =>

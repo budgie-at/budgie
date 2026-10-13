@@ -1,4 +1,5 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
@@ -12,7 +13,7 @@ import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popo
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { TRANSACTION_LIST_SIZING } from '../../constant/transaction-list.constant';
+import { TransactionListItemKindEnum } from '../../enum/transaction-list-item-kind.enum';
 import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
@@ -25,16 +26,13 @@ interface Props {
     readonly sections: TransactionsByMonthSection[];
     readonly onEndReached: () => void;
     readonly listEmptyState: ReactElement;
-    readonly balanceAdjustmentLabel: string;
-    readonly categoriesLabel: string;
     readonly accountId?: number | null;
     readonly footerSpacerMultiplier?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
 
-const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
-    sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
+const getItemType = (item: TransactionListItemType) => item.type;
 
 const LIST_STYLE = { flex: 1 };
 
@@ -43,12 +41,11 @@ export const TransactionSectionsList = ({
     sections,
     onEndReached,
     listEmptyState,
-    balanceAdjustmentLabel,
-    categoriesLabel,
     accountId = null,
     footerSpacerMultiplier = 1
 }: Props) => {
     const router = useRouter();
+    const { t } = useLingui();
     const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
     const { bottom } = useSafeAreaInsets();
@@ -77,7 +74,7 @@ export const TransactionSectionsList = ({
     const menuTransaction = menuState?.transaction ?? null;
 
     const renderItem = ({ item }: { item: TransactionListItemType }) =>
-        item.type === 'header' ? (
+        item.type === TransactionListItemKindEnum.HEADER ? (
             <View className="bg-primary-reverse py-sm">
                 <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
             </View>
@@ -92,19 +89,25 @@ export const TransactionSectionsList = ({
             />
         );
 
-    const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
-        { type: 'header' as const, title: date, id: `header-${date}` },
-        ...transactions.map(transaction => ({
-            type: 'transaction' as const,
-            id: `transaction-${transaction.id}`,
-            data: {
-                transaction,
-                formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
-                accountId,
-                categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
-            }
-        }))
-    ]);
+    const stickyHeaderIndices: number[] = [];
+    const flatData: TransactionListItemType[] = [];
+
+    for (const { date, transactions } of sections) {
+        stickyHeaderIndices.push(flatData.length);
+        flatData.push(
+            { type: TransactionListItemKindEnum.HEADER, title: date, id: `header-${date}` },
+            ...transactions.map(transaction => ({
+                type: TransactionListItemKindEnum.TRANSACTION as const,
+                id: `transaction-${transaction.id}`,
+                data: {
+                    transaction,
+                    formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                    accountId,
+                    categoryLabel: getTransactionCategoryLabel(transaction, t`Balance Adjustment`, t`Categories`)
+                }
+            }))
+        );
+    }
 
     const isEmpty = isEmptyArray(flatData);
     const paddingBottom = footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
@@ -122,13 +125,13 @@ export const TransactionSectionsList = ({
                     data={flatData}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
-                    estimatedItemSize={TRANSACTION_LIST_SIZING.estimatedItemSize}
-                    stickyHeaderIndices={getStickyIndices(flatData)}
+                    estimatedItemSize={150}
+                    stickyHeaderIndices={stickyHeaderIndices}
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.3}
                     contentContainerStyle={contentContainerStyle}
                     ListEmptyComponent={listEmptyState}
-                    getItemType={TRANSACTION_LIST_SIZING.getItemType}
+                    getItemType={getItemType}
                 />
             </View>
             <TransactionListContextMenu

@@ -1,4 +1,5 @@
 import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import * as Effect from 'effect/Effect';
 
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
@@ -27,4 +28,11 @@ export const categoryEvidenceAtom = databaseQueryAtom(
 export const tagEvidenceAtom = databaseQueryAtom(
     TRANSACTION_LIST_TABLES,
     Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence())
+);
+
+export const atmCashWithdrawalTransactionIdsAtom = databaseQueryFamily(
+    TRANSACTION_LIST_TABLES,
+    ConsolidationCoordinatorService,
+    (consolidationCoordinatorService, transactionIds: readonly number[]) =>
+        consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds(transactionIds)
 );

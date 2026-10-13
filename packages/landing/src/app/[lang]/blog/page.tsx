@@ -1,56 +1,30 @@
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Suspense } from 'react';
 
 import { BlogBrowser } from '../../../blog/component/blog-browser/blog-browser';
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { resolveArticleShot } from '../../../blog/util/resolve-article-shot.util';
-import { JsonLd } from '../../../generic/component/json-ld/json-ld';
+import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
-import { BASE_URL, OG_LOCALE_MAP, TITLE_TEMPLATE_SUFFIX } from '../../../generic/constant/seo.constant';
-import { buildAlternates } from '../../../generic/util/build-alternates.util';
-import { fitText } from '../../../generic/util/fit-text.util';
+import { buildPageMetadata } from '../../../generic/util/build-page-metadata.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 import type { Metadata } from 'next';
-
-const MAX_RENDERED_TITLE_CHARS = 60;
-const MAX_DESCRIPTION_CHARS = 160;
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
 
-    const title = fitText(i18n._(msg`Financial Privacy Blog & Insights`), MAX_RENDERED_TITLE_CHARS - TITLE_TEMPLATE_SUFFIX.length);
-    const description = fitText(
-        i18n._(
+    return buildPageMetadata({
+        description: i18n._(
             msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
         ),
-        MAX_DESCRIPTION_CHARS
-    );
-
-    return {
-        title,
-        description,
-        // oxlint-disable-next-line lingui/no-unlocalized-strings
-        robots: 'index, follow',
-        alternates: buildAlternates(lang, '/blog'),
-        openGraph: {
-            title,
-            description,
-            type: 'website',
-            url: `${BASE_URL}/${lang}/blog`,
-            locale: OG_LOCALE_MAP[lang] ?? 'en_US'
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title,
-            description,
-            images: [`${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`]
-        }
-    };
+        locale: lang,
+        path: '/blog',
+        title: i18n._(msg`Financial Privacy Blog & Insights`)
+    });
 }
 
 export default async function BlogPage(props: PageLangParam) {
@@ -70,20 +44,12 @@ export default async function BlogPage(props: PageLangParam) {
         shot: resolveArticleShot(entry.slug, entry.relatedFeatureSlugs, lang)
     })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
 
-    /* oxlint-disable lingui/no-unlocalized-strings */
-    const breadcrumbData = {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-            { '@type': 'ListItem', position: 1, name: i18n._(msg`Home`), item: `${BASE_URL}/${lang}` },
-            { '@type': 'ListItem', position: 2, name: i18n._(msg`Blog`), item: `${BASE_URL}/${lang}/blog` }
-        ]
-    };
-    /* oxlint-enable lingui/no-unlocalized-strings */
-
     return (
         <main className="flex-1">
-            <JsonLd data={breadcrumbData} />
+            <BreadcrumbsJsonLd locale={lang} path="/blog">
+                <BreadcrumbsJsonLd.Item name={i18n._(msg`Home`)} path={`/${lang}`} />
+                <BreadcrumbsJsonLd.Item name={i18n._(msg`Blog`)} path={`/${lang}/blog`} />
+            </BreadcrumbsJsonLd>
             <section className="w-full py-20 md:py-32 overflow-hidden">
                 <div className="container px-4 md:px-6">
                     <Motion className="text-center mb-12">
@@ -98,9 +64,7 @@ export default async function BlogPage(props: PageLangParam) {
                         </p>
                     </Motion>
 
-                    <Suspense fallback={<div className="h-12" />}>
-                        <BlogBrowser articles={allArticles} locale={lang} />
-                    </Suspense>
+                    <BlogBrowser articles={allArticles} locale={lang} />
                 </div>
             </section>
         </main>

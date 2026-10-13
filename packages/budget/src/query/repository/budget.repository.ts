@@ -1,6 +1,6 @@
 import {
     AccountEntityTable,
-    BaseTransactionFilterRepository,
+    transactionFilters,
     BudgetEntityTable,
     Db,
     ExchangeRateEntityTable,
@@ -19,8 +19,6 @@ import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface } from '@
 
 export class BudgetRepository extends Context.Service<BudgetRepository>()('@budgie/budget/BudgetRepository', {
     make: Effect.sync(() => {
-        const filters = new BaseTransactionFilterRepository();
-
         const buildRefundAdjustedAmountSql = () =>
             sql<number>`CASE
         WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
@@ -48,10 +46,10 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
 
         const buildSpentWhere = (periodStart: Date, nextPeriodStart: Date) =>
             and(
-                filters.buildVisibleTransactionCondition(),
-                filters.buildPrimaryLedgerEntryCondition(),
-                filters.buildNonDebtAccountCondition(),
-                filters.buildExpenseAnalyticsEntryCondition(),
+                transactionFilters.buildVisibleTransactionCondition(),
+                transactionFilters.buildPrimaryLedgerEntryCondition(),
+                transactionFilters.buildNonDebtAccountCondition(),
+                transactionFilters.buildExpenseAnalyticsEntryCondition(),
                 buildSpendingEntryCondition(),
                 between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
             );

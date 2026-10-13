@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import { findMccByCode } from '../db/find-mcc-by-code';
+import { testQueryService } from '../db/test-query-service';
 
 import { seedAccountPair } from './seed-account-pair';
 import { seedBankPair } from './seed-bank-pair';
@@ -8,7 +8,7 @@ import { seedBankPair } from './seed-bank-pair';
 export const seedAmountTransferPair = (amount: number, operatedAt: Date = new Date(2026, 0, 15, 12, 0, 0)) =>
     Effect.gen(function* () {
         const { fromAccount, toAccount } = yield* seedAccountPair();
-        const transferMcc = yield* findMccByCode('4829');
+        const transferMcc = yield* testQueryService.findMccByCode('4829');
 
         const expense = yield* seedBankPair.expense(
             { externalId: 'tx-expense', operatedAt },

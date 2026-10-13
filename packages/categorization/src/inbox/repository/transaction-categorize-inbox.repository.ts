@@ -1,6 +1,6 @@
 import {
     AccountEntityTable,
-    BaseTransactionFilterRepository,
+    transactionFilters,
     CategoryEntityTable,
     CategorySourceEnum,
     Db,
@@ -26,7 +26,6 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
     '@budgie/categorization/TransactionCategorizeInboxRepository',
     {
         make: Effect.sync(() => {
-            const transactionFilters = new BaseTransactionFilterRepository();
             const writeChunkSize = 500;
 
             const writeInChunks = Effect.fnUntraced(function* (

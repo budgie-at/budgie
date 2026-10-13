@@ -12,14 +12,13 @@ import type { CategorizeInboxLastWriteInterface } from '../../interface/categori
 
 interface Props {
     readonly lastWrite: CategorizeInboxLastWriteInterface;
-    readonly onFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
 }
 
-export const CategorizeInboxFollowUpButton = ({ lastWrite, onFollowUp }: Props) => {
+export const CategorizeInboxFollowUpButton = ({ lastWrite }: Props) => {
     const { t } = useLingui();
-    const { strategy } = useCategorizeInboxContext();
+    const { strategy, applyFollowUp } = useCategorizeInboxContext();
 
-    const handlePress = (): void => void onFollowUp(lastWrite);
+    const handlePress = (): void => void applyFollowUp(lastWrite);
 
     const isApplied = isNotEmptyArray(lastWrite.followUpAssignments);
     const accessibilityState = { disabled: isApplied };

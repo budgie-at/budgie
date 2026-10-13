@@ -27,19 +27,20 @@ export const useOpenConvertToInstallment = (transaction: TransactionWithRelation
     }
 
     return () =>
-        void openConvertToInstallment({
-            transactionId: transaction.id,
-            title: transaction.title,
-            amount: Math.abs(sourceEntry.amount),
-            instrumentSymbol: sourceEntry.account.instrument.symbol,
-            accountTitle: sourceEntry.account.title,
-            operatedAt: transaction.operatedAt
-        }).then(accountId => {
-            if (isDefined(accountId)) {
-                Toast.show({ type: 'success', text1: t`Plan created` });
-                router.push({ pathname: '/account/[id]/details', params: { id: String(accountId) } });
+        void openConvertToInstallment(
+            {
+                transactionId: transaction.id,
+                title: transaction.title,
+                amount: Math.abs(sourceEntry.amount),
+                instrumentSymbol: sourceEntry.account.instrument.symbol,
+                accountTitle: sourceEntry.account.title,
+                operatedAt: transaction.operatedAt
+            },
+            accountId => {
+                if (isDefined(accountId)) {
+                    Toast.show({ type: 'success', text1: t`Plan created` });
+                    router.push({ pathname: '/account/[id]/details', params: { id: String(accountId) } });
+                }
             }
-
-            return null;
-        });
+        );
 };

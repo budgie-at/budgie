@@ -8,7 +8,9 @@ export const TagsSettingsFeatureIntro = () => {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
 
-    const handleCreate = () => void openTagForm();
+    const handleCreate = () => {
+        openTagForm();
+    };
 
     return (
         <FeatureIntro

@@ -6,9 +6,9 @@ import { SplitEntriesModalContent } from '../transaction/components/split-entrie
 import { useSplitEntriesModal, useSplitEntriesModalParams } from '../transaction/context/split-entries-modal.context';
 
 export default function SplitEntriesModal() {
-    const [, resolveSplitEntries] = useSplitEntriesModal();
+    const [, resolveSplitEntries, dismissSplitEntries] = useSplitEntriesModal();
     const currentParams = useSplitEntriesModalParams();
-    const screenOptions = useModalRouteState(currentParams, resolveSplitEntries, null);
+    const screenOptions = useModalRouteState(currentParams, dismissSplitEntries);
 
     if (!currentParams) {
         return null;

@@ -1,5 +1,4 @@
 /* eslint-disable max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
-import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeaturePageFaqItem } from '../../../feature/component/feature-page-faq-item/feature-page-faq-item';
@@ -11,36 +10,19 @@ import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-h
 import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { PillarHubSection } from '../../../feature/component/pillar-hub-section/pillar-hub-section';
-import { buildPillarHubRouteMetadata } from '../../../feature/util/build-pillar-hub-route-metadata.util';
-import { getI18nInstance } from '../../../i18n/app-router-i18n';
+import { createPillarHubGenerateMetadata } from '../../../feature/util/create-pillar-hub-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 import { BANK_SYNC_PILLAR_HUB_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildPillarHubRouteMetadata(i18n, BANK_SYNC_PILLAR_HUB_METADATA);
-}
+export const generateMetadata = createPillarHubGenerateMetadata(BANK_SYNC_PILLAR_HUB_METADATA);
 
 export default async function BankSyncPillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
     return (
-        <PillarHubPageShell
-            description={i18n._(BANK_SYNC_PILLAR_HUB_METADATA.metaDescription)}
-            homeLabel={i18n._(msg`Home`)}
-            locale={lang}
-            publishedAt={BANK_SYNC_PILLAR_HUB_METADATA.publishedAt}
-            slug={BANK_SYNC_PILLAR_HUB_METADATA.slug}
-            title={i18n._(BANK_SYNC_PILLAR_HUB_METADATA.metaTitle)}
-            updatedAt={BANK_SYNC_PILLAR_HUB_METADATA.updatedAt}
-        >
+        <PillarHubPageShell lang={lang} meta={BANK_SYNC_PILLAR_HUB_METADATA}>
             <PillarHubHero
                 breadcrumbs={<PillarHubBreadcrumbs current={i18n._(BANK_SYNC_PILLAR_HUB_METADATA.title)} locale={lang} />}
                 heading={<Trans>Bank Sync & Statement Import — Bring Your Bank Data In</Trans>}

@@ -5,8 +5,8 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { Db } from '../../@generic/service/db.service';
-import { SettingsEntityTable } from '../../schema';
 import { SettingsAssociationEnum } from '../enum/settings-association.enum';
+import { SettingsEntityTable } from '../table/settings-entity.table';
 
 import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity.interface';
 

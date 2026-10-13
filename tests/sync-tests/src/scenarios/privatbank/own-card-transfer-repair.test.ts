@@ -14,7 +14,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, seed, testDb, TestLayer } from '../../harness';
+import { seed, testDb, TestLayer, testQueryService } from '../../harness';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
@@ -125,7 +125,7 @@ const expectRepairedFromCounterpart = Effect.fnUntraced(function* (
 
     expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
     expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
-    expect((yield* fetchTransactionById(income.id)).fromAccountId).toBe(archivedCard.id);
+    expect((yield* testQueryService.findTransactionById(income.id)).fromAccountId).toBe(archivedCard.id);
 });
 
 describe('privatbank/own-card-transfer-repair', () => {
@@ -137,7 +137,7 @@ describe('privatbank/own-card-transfer-repair', () => {
             expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
             expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
 
-            const repaired = yield* fetchTransactionById(income.id);
+            const repaired = yield* testQueryService.findTransactionById(income.id);
 
             expect(repaired.type).toBe(TransactionTypeEnum.TRANSFER);
             expect(repaired.fromAccountId).toBe(archivedCard.id);
@@ -153,7 +153,7 @@ describe('privatbank/own-card-transfer-repair', () => {
             yield* unpairedOwnCardTransferRepairService.repair();
 
             yield* expectNothingLeftToRepair();
-            expect((yield* fetchTransactionById(income.id)).fromAccountId).toBe(archivedCard.id);
+            expect((yield* testQueryService.findTransactionById(income.id)).fromAccountId).toBe(archivedCard.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -181,7 +181,7 @@ describe('privatbank/own-card-transfer-repair', () => {
             yield* archiveAccount(archivedCard.id, ARCHIVED_BEFORE_INCOME_AT);
 
             yield* expectNothingLeftToRepair();
-            expect((yield* fetchTransactionById(income.id)).type).toBe(TransactionTypeEnum.INCOME);
+            expect((yield* testQueryService.findTransactionById(income.id)).type).toBe(TransactionTypeEnum.INCOME);
             yield* expectNoLiveEntriesOnAccount(archivedCard.id);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -309,7 +309,7 @@ describe('privatbank/own-card-transfer-repair', () => {
             yield* archiveAccount(archivedCard.id);
 
             expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
-            expect(yield* fetchTransactionById(supersededExpense.id)).toBeUndefined();
+            expect(yield* testQueryService.findTransactionById(supersededExpense.id)).toBeUndefined();
 
             yield* accountArchiveService.restoreById(archivedCard.id);
 
@@ -325,7 +325,7 @@ describe('privatbank/own-card-transfer-repair', () => {
                 );
 
             expect(liveExpensesOnArchivedCard).toHaveLength(0);
-            expect((yield* fetchTransactionById(income.id)).type).toBe(TransactionTypeEnum.TRANSFER);
+            expect((yield* testQueryService.findTransactionById(income.id)).type).toBe(TransactionTypeEnum.TRANSFER);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -351,8 +351,8 @@ describe('privatbank/own-card-transfer-repair', () => {
             yield* archiveAccount(archivedCard.id);
 
             expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
-            expect(yield* fetchTransactionById(nearExpense.id)).toBeUndefined();
-            expect(yield* fetchTransactionById(farExpense.id)).toBeDefined();
+            expect(yield* testQueryService.findTransactionById(nearExpense.id)).toBeUndefined();
+            expect(yield* testQueryService.findTransactionById(farExpense.id)).toBeDefined();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -391,7 +391,7 @@ describe('privatbank/own-card-transfer-repair', () => {
             expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
             expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
 
-            const healed = yield* fetchTransactionById(income.id);
+            const healed = yield* testQueryService.findTransactionById(income.id);
 
             expect(healed.type).toBe(TransactionTypeEnum.INCOME);
             expect(healed.fromAccountId).toBeNull();

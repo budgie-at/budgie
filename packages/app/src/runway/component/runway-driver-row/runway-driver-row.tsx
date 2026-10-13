@@ -1,11 +1,10 @@
-import { RunwayDriverDimensionEnum } from '@budgie/contracts';
+import { RunwayDriverDimensionEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View, ViewStyle } from 'react-native';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 

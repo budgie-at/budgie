@@ -28,7 +28,7 @@ describe('binance/rate-limit', () => {
             stubBinanceServerTime();
 
             const client = new BinanceSignedClient(BINANCE_TEST_TOKEN, Date.now() - 1);
-            const error = yield* Effect.flip(client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
+            const error = yield* Effect.flip(client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
 
             expect(error._tag).toBe('SyncDeferredError');
         }).pipe(Effect.provide(TestLayer))
@@ -40,7 +40,7 @@ describe('binance/rate-limit', () => {
             mockServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status: 429 })));
 
             const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
-            const error = yield* Effect.flip(client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
+            const error = yield* Effect.flip(client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
 
             expect(error._tag).toBe('SyncRateLimitedError');
         }).pipe(Effect.provide(TestLayer))
@@ -61,9 +61,9 @@ describe('binance/rate-limit', () => {
             const coolDownDelays = yield* withCoolDownSpy(
                 COOL_DOWN_WINDOW_MS,
                 Effect.gen(function* () {
-                    yield* client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+                    yield* client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
 
-                    yield* client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO + 1);
+                    yield* client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO + 1);
                 })
             );
 
@@ -83,7 +83,7 @@ describe('binance/rate-limit', () => {
             const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
             const coolDownDelays = yield* withCoolDownSpy(
                 COOL_DOWN_WINDOW_MS,
-                client.getTransactions('SPOT:EUR', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO)
+                client.getFiatTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO)
             );
 
             expect(coolDownDelays).toContain(COOL_DOWN_WINDOW_MS);
@@ -92,7 +92,7 @@ describe('binance/rate-limit', () => {
 });
 
 describe('binance/per-run-cache', () => {
-    it.effect('serves the second asset in the same wallet from the cached window without re-fetching', () =>
+    it.effect('serves a repeated window from the cache without re-fetching', () =>
         Effect.gen(function* () {
             stubEmptyBinanceSources();
             mockServer.use(
@@ -108,11 +108,11 @@ describe('binance/per-run-cache', () => {
             );
 
             const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
-            const btcTransactions = yield* client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
-            const ethTransactions = yield* client.getTransactions('SPOT:ETH', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+            const firstTransactions = yield* client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+            const cachedTransactions = yield* client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
 
-            expect(btcTransactions.map(transaction => transaction.id)).toEqual(['dep-btc']);
-            expect(ethTransactions.map(transaction => transaction.id)).toEqual(['dep-eth']);
+            expect(firstTransactions.map(transaction => transaction.id).sort()).toEqual(['dep-btc', 'dep-eth']);
+            expect(cachedTransactions).toEqual(firstTransactions);
         }).pipe(Effect.provide(TestLayer))
     );
 });

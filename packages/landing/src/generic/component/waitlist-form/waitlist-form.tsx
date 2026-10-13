@@ -13,6 +13,7 @@ import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 import { Button } from '../../../ui/button';
 import { joinWaitlist } from '../../action/waitlist.action';
 import { WaitlistMessageKeyEnum } from '../../enum/waitlist-message-key.enum';
+import { useWaitlistCount } from '../../hook/use-waitlist-count.hook';
 
 import { WaitlistSuccess } from './waitlist-success';
 
@@ -21,7 +22,6 @@ import type { MessageDescriptor } from '@lingui/core';
 interface Props {
     variant?: 'hero' | 'cta';
     showCount?: boolean;
-    initialCount?: number;
 }
 
 const inputVariants = cva(
@@ -78,13 +78,14 @@ const WAITLIST_ERROR_MESSAGES: Partial<Record<WaitlistMessageKeyEnum, MessageDes
 const WAITLIST_CONFIRMATION_ERROR_MESSAGE = msg`We couldn't confirm your signup. Please try again.`;
 const WAITLIST_CONFIRMATION_DEADLINE_MS = 8000;
 
-export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount = 0 }: Props) => {
+export const WaitlistForm = ({ variant = 'hero', showCount = true }: Props) => {
     const { i18n, t } = useLingui();
 
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [position, setPosition] = useState<number | undefined>();
     const [error, setError] = useState('');
+    const initialCount = useWaitlistCount(showCount);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -119,12 +120,15 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
         return <WaitlistSuccess position={position} variant={variant} />;
     }
 
-    const countText = t({
-        message: plural(initialCount, {
-            one: '#+ person already waiting',
-            other: '#+ people already waiting'
-        })
-    });
+    const hasWaitlistCount = showCount && isPositiveNumber(initialCount);
+    const countText = hasWaitlistCount
+        ? t({
+              message: plural(initialCount, {
+                  one: '#+ person already waiting',
+                  other: '#+ people already waiting'
+              })
+          })
+        : '';
 
     return (
         <div className="flex flex-col items-center gap-4">
@@ -157,7 +161,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
                 </p>
             )}
 
-            {showCount && isPositiveNumber(initialCount) && (
+            {hasWaitlistCount && (
                 <div className={countTextVariants({ variant })}>
                     <Users className="size-4" />
                     <span>{countText}</span>

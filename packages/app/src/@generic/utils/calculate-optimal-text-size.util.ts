@@ -8,26 +8,9 @@ interface Args {
     readonly defaultSize: number;
 }
 
-export const calculateOptimalTextSize = ({ containerWidth, minFontSize, maxFontSize, defaultSize, charCount }: Args) => {
-    if (!isPositiveNumber(containerWidth)) {
-        return defaultSize;
-    }
+const CHARACTER_WIDTH_RATIO = 0.6;
 
-    let minSize = minFontSize;
-    let maxSize = maxFontSize;
-    let optimalSize = maxSize;
-
-    while (minSize <= maxSize) {
-        const midSize = Math.floor((minSize + maxSize) / 2);
-        const totalWidth = charCount * (midSize * 0.6);
-
-        if (totalWidth <= containerWidth) {
-            optimalSize = midSize;
-            minSize = midSize + 1;
-        } else {
-            maxSize = midSize - 1;
-        }
-    }
-
-    return optimalSize;
-};
+export const calculateOptimalTextSize = ({ containerWidth, minFontSize, maxFontSize, defaultSize, charCount }: Args) =>
+    isPositiveNumber(containerWidth)
+        ? Math.min(maxFontSize, Math.max(minFontSize, Math.floor(containerWidth / (charCount * CHARACTER_WIDTH_RATIO))))
+        : defaultSize;

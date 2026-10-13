@@ -22,6 +22,32 @@ export const ImportDatabase = () => {
     const [openImportBackupPin] = useImportBackupPinModal();
     const [isLoading, setIsLoading] = useState(false);
 
+    const showImportError = (error: unknown) => {
+        let errorMessage = getErrorMessage(error);
+
+        if (error instanceof UnsupportedBackupError) {
+            errorMessage = t`This backup was made by an older Budgie version and cannot be imported.`;
+        } else if (error instanceof BackupArchiveMissingDatabaseError) {
+            errorMessage = t`This backup archive does not contain a Budgie database.`;
+        } else if (error instanceof InsufficientStorageError) {
+            errorMessage = t`Not enough free storage to extract this backup.`;
+        }
+        Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: errorMessage });
+    };
+
+    const importFromUri = async (uri: string, backupPin: string | null) => {
+        setIsLoading(true);
+        try {
+            await appRuntime.runPromise(
+                Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin))
+            );
+        } catch (error) {
+            showImportError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     // eslint-disable-next-line max-statements -- Import orchestration handler with file picker, backup probe, confirmation and PIN prompt
     const handleSelectAndConfirm = async () => {
         setIsLoading(true);
@@ -59,27 +85,19 @@ export const ImportDatabase = () => {
                 return;
             }
 
-            const backupPin = isBackupUnencrypted ? null : await openImportBackupPin(uri);
+            if (isBackupUnencrypted) {
+                await importFromUri(uri, null);
 
-            if (!isBackupUnencrypted && !isNotEmptyString(backupPin)) {
                 return;
             }
 
-            setIsLoading(true);
-            await appRuntime.runPromise(
-                Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin))
-            );
+            openImportBackupPin(uri, backupPin => {
+                if (isNotEmptyString(backupPin)) {
+                    void importFromUri(uri, backupPin);
+                }
+            });
         } catch (error) {
-            let errorMessage = getErrorMessage(error);
-
-            if (error instanceof UnsupportedBackupError) {
-                errorMessage = t`This backup was made by an older Budgie version and cannot be imported.`;
-            } else if (error instanceof BackupArchiveMissingDatabaseError) {
-                errorMessage = t`This backup archive does not contain a Budgie database.`;
-            } else if (error instanceof InsufficientStorageError) {
-                errorMessage = t`Not enough free storage to extract this backup.`;
-            }
-            Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: errorMessage });
+            showImportError(error);
         } finally {
             setIsLoading(false);
         }

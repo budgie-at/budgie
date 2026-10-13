@@ -5,7 +5,7 @@ import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { RuleConditionFormFieldEnum } from '../../enum/rule-condition-form-field.enum';
 import { RuleFieldValueType } from '../../type/rule-field-value.type';
-import { RuleConditionBottomSheetSelector } from '../rule-condition-bottom-sheet-selector/rule-condition-bottom-sheet-selector';
+import { RuleOptionPicker } from '../rule-option-picker/rule-option-picker';
 
 type RuleConditionOptionInterface<TValue extends string> = {
     readonly value: TValue;
@@ -27,7 +27,7 @@ export const RuleConditionEnumSelector = <T extends RuleConditionFormFieldEnum>(
     const { control } = useFormContext<RuleCreateInputInterface>();
 
     const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.${T}`>) => (
-        <RuleConditionBottomSheetSelector
+        <RuleOptionPicker
             value={value}
             onChange={onChange}
             options={options}

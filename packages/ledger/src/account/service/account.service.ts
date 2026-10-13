@@ -4,19 +4,24 @@ import {
     AccountNotFoundError,
     AccountRepository,
     Db,
-    SettingsRepository
+    SettingsRepository,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 import { TransactionService } from '../../transaction/service/transaction.service';
 
-import type { AccountEntityInterface, DepositAccountCreateInputInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DbError,
+    DepositAccountCreateInputInterface,
+    LiabilityAccountCreateInputInterface
+} from '@budgie/contracts';
 
 export class AccountService extends Context.Service<AccountService>()('@budgie/ledger/AccountService', {
     make: Effect.gen(function* () {
@@ -43,13 +48,44 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
             yield* accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro });
         });
 
-        const createAccountRecord = Effect.fn('AccountService.createAccountRecord')(function* (
-            input: Omit<LiabilityAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
-            count: number,
-            nature: AccountNatureEnum = AccountNatureEnum.LIABILITY
-        ) {
-            return yield* accountRepository.create({ ...input, order: count + 1, nature });
-        });
+        const createWithBalance = Effect.fn('AccountService.createWithBalance')(
+            function* (
+                { currentBalance, ...input }: LiabilityAccountCreateInputInterface | DepositAccountCreateInputInterface,
+                nature: AccountNatureEnum
+            ) {
+                const [{ count }] = yield* accountRepository.count();
+                const createdAccount = yield* accountRepository.create({ ...input, order: count + 1, nature });
+
+                yield* adjustBalanceTo(createdAccount.id, currentBalance);
+
+                return createdAccount;
+            },
+            effect => Db.transaction(effect)
+        );
+
+        const updateWithBalance = Effect.fn('AccountService.updateWithBalance')(
+            function* (
+                id: number,
+                {
+                    currentBalance,
+                    ...input
+                }: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>> | Partial<DepositAccountCreateInputInterface>
+            ) {
+                const updatedAccount = yield* accountRepository.updateById(id, input);
+
+                if (isNumber(currentBalance)) {
+                    yield* adjustBalanceTo(updatedAccount.id, currentBalance);
+                }
+
+                return updatedAccount;
+            },
+            effect => Db.transaction(effect)
+        );
+
+        const orFail = <A>(id: number, findAccount: Effect.Effect<A | undefined, DbError, Db>) =>
+            Effect.flatMap(findAccount, account =>
+                isDefined(account) ? Effect.succeed(account) : Effect.fail(new AccountNotFoundError({ id }))
+            );
 
         const processBatch = Effect.fn('AccountService.processBatch')(
             function* (batch: LiabilityAccountCreateInputInterface[]) {
@@ -71,12 +107,9 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
         return {
             create: Effect.fn('AccountService.create')(
                 function* (input: LiabilityAccountCreateInputInterface) {
-                    const [{ count }] = yield* accountRepository.count();
-                    const createdAccount = yield* createAccountRecord({ ...input }, count);
+                    const createdAccount = yield* createWithBalance(input, AccountNatureEnum.LIABILITY);
 
-                    yield* adjustBalanceTo(createdAccount.id, input.currentBalance);
-
-                    if (!isPositiveNumber(count)) {
+                    if (createdAccount.order === 1) {
                         yield* settingsRepository.update({ defaultAccountId: createdAccount.id });
                     }
 
@@ -84,50 +117,17 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                 },
                 effect => Db.transaction(effect)
             ),
-            createDeposit: Effect.fn('AccountService.createDeposit')(
-                function* (input: DepositAccountCreateInputInterface) {
-                    const [{ count }] = yield* accountRepository.count();
-                    const createdAccount = yield* createAccountRecord(input, count, AccountNatureEnum.ASSET);
-
-                    yield* adjustBalanceTo(createdAccount.id, input.currentBalance);
-
-                    return createdAccount;
-                },
-                effect => Db.transaction(effect)
-            ),
-            updateById: Effect.fn('AccountService.updateById')(
-                function* (id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>) {
-                    const updatedAccount = yield* accountRepository.updateById(id, input);
-
-                    if (isNumber(input.currentBalance)) {
-                        yield* adjustBalanceTo(updatedAccount.id, input.currentBalance);
-                    }
-
-                    return updatedAccount;
-                },
-                effect => Db.transaction(effect)
-            ),
-            updateDepositById: Effect.fn('AccountService.updateDepositById')(
-                function* (
-                    id: number,
-                    input: Partial<
-                        Pick<
-                            DepositAccountCreateInputInterface,
-                            'title' | 'icon' | 'currentBalance' | 'interestRate' | 'deadline' | 'includeInNetWorth' | 'isActive'
-                        >
+            createDeposit: (input: DepositAccountCreateInputInterface) => createWithBalance(input, AccountNatureEnum.ASSET),
+            updateById: (id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>) => updateWithBalance(id, input),
+            updateDepositById: (
+                id: number,
+                input: Partial<
+                    Pick<
+                        DepositAccountCreateInputInterface,
+                        'title' | 'icon' | 'currentBalance' | 'interestRate' | 'deadline' | 'includeInNetWorth' | 'isActive'
                     >
-                ) {
-                    const { currentBalance, ...accountInput } = input;
-                    const updatedAccount = yield* accountRepository.updateById(id, accountInput);
-
-                    if (isNumber(currentBalance)) {
-                        yield* adjustBalanceTo(updatedAccount.id, currentBalance);
-                    }
-
-                    return updatedAccount;
-                },
-                effect => Db.transaction(effect)
-            ),
+                >
+            ) => updateWithBalance(id, input),
             activateById: Effect.fn('AccountService.activateById')(
                 function* (id: number) {
                     yield* accountRepository.updateById(id, { isActive: true });
@@ -146,24 +146,8 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                     return acc;
                 }, {});
             }),
-            findByIdOrFail: Effect.fn('AccountService.findByIdOrFail')(function* (id: number) {
-                const account = yield* accountRepository.findById(id);
-
-                if (!isDefined(account)) {
-                    return yield* new AccountNotFoundError({ id });
-                }
-
-                return account;
-            }),
-            findByIdIncludingArchivedOrFail: Effect.fn('AccountService.findByIdIncludingArchivedOrFail')(function* (id: number) {
-                const account = yield* accountRepository.findByIdIncludingArchived(id);
-
-                if (!isDefined(account)) {
-                    return yield* new AccountNotFoundError({ id });
-                }
-
-                return account;
-            })
+            findByIdOrFail: (id: number) => orFail(id, accountRepository.findById(id)),
+            findByIdIncludingArchivedOrFail: (id: number) => orFail(id, accountRepository.findByIdIncludingArchived(id))
         };
     })
 }) {

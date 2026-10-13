@@ -1,4 +1,4 @@
-import { IbanBridgeTransferRepository } from '@budgie/consolidation';
+import { ConsolidationCandidateRepository } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -166,7 +166,7 @@ export const fetchBridgeCanonicalId = () =>
     });
 
 export const countCanonicalDuplicateCandidates = Effect.fnUntraced(function* () {
-    const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
+    const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
 
-    return (yield* ibanBridgeTransferRepository.findCanonicalDuplicateCandidates(null)).length;
+    return (yield* consolidationCandidateRepository.findIbanBridgeCanonicalDuplicateCandidates(null)).length;
 });

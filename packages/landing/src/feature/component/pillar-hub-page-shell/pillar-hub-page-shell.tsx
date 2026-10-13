@@ -1,36 +1,35 @@
+import { msg } from '@lingui/core/macro';
+
 import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
 import { WebPageJsonLd } from '../../../generic/component/web-page-json-ld/web-page-json-ld';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
+import type { PillarHubMetadataInterface } from '../../interface/pillar-hub-metadata.interface';
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly locale: string;
-    readonly slug: string;
-    readonly title: string;
-    readonly description: string;
-    readonly homeLabel: string;
-    readonly publishedAt: string;
-    readonly updatedAt: string;
+    readonly lang: string;
+    readonly meta: PillarHubMetadataInterface;
     readonly children: ReactNode;
 }
 
-export const PillarHubPageShell = ({ locale, slug, title, description, homeLabel, publishedAt, updatedAt, children }: Props) => {
-    const homePath = `/${locale}`;
-    const hubPath = `/${locale}/${slug}`;
+export const PillarHubPageShell = ({ lang, meta, children }: Props) => {
+    const i18n = getI18nInstance(lang);
+    const title = i18n._(meta.metaTitle);
 
     return (
         <main className="flex-1">
-            <BreadcrumbsJsonLd locale={locale} path={`/${slug}`}>
-                <BreadcrumbsJsonLd.Item name={homeLabel} path={homePath} />
-                <BreadcrumbsJsonLd.Item name={title} path={hubPath} />
+            <BreadcrumbsJsonLd locale={lang} path={`/${meta.slug}`}>
+                <BreadcrumbsJsonLd.Item name={i18n._(msg`Home`)} path={`/${lang}`} />
+                <BreadcrumbsJsonLd.Item name={title} path={`/${lang}/${meta.slug}`} />
             </BreadcrumbsJsonLd>
             <WebPageJsonLd
-                description={description}
-                locale={locale}
-                path={`/${slug}`}
-                publishedAt={publishedAt}
+                description={i18n._(meta.metaDescription)}
+                locale={lang}
+                path={`/${meta.slug}`}
+                publishedAt={meta.publishedAt}
                 title={title}
-                updatedAt={updatedAt}
+                updatedAt={meta.updatedAt}
             />
             {children}
         </main>

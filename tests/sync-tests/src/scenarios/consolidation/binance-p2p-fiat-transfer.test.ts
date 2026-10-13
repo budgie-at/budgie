@@ -4,14 +4,14 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import {
-    P2P_UAH_TOTAL,
-    P2P_USDT_AMOUNT,
     expectConsolidatedToP2pCanonical,
     fetchP2pCanonical,
-    fetchCanonicalsOfType,
+    P2P_UAH_TOTAL,
+    P2P_USDT_AMOUNT,
     seedP2pFiatTransferFixture,
     seedP2pPair,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 const consolidateExpectingSingleResult = Effect.fnUntraced(function* () {
@@ -78,7 +78,7 @@ describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
             const result = yield* transferConsolidationService.consolidate(null);
 
             expect(result.consolidated).toBe(0);
-            expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
         }).pipe(Effect.provide(TestLayer))
     );
 });

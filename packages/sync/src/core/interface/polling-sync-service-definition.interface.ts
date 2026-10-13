@@ -5,7 +5,7 @@ import type * as Effect from 'effect/Effect';
 import type * as HttpClient from 'effect/http/HttpClient';
 import type * as Schema from 'effect/Schema';
 
-export interface PollingSyncServiceDefinitionInterface extends Omit<SyncServiceDefinitionInterface, 'afterSyncEnabledChange'> {
+export interface PollingSyncServiceDefinitionInterface extends SyncServiceDefinitionInterface {
     readonly rateLimitMs: number;
     readonly shouldRequestSyncWhenEnabled?: boolean;
     readonly executeSyncBatch: (

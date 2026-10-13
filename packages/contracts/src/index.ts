@@ -1,5 +1,12 @@
 /* eslint-disable max-lines -- Barrel export file grows with each module */
+export type { DbQueryEffectHKTInterface } from './@generic/interface/db-query-effect-hkt.interface';
+export type { TransactionBoundaryType } from './@generic/type/transaction-boundary.type';
+export type { EmojiIconType } from './@generic/type/emoji-icon.type';
 export { PRECISION } from './@generic/constant/precision.constant';
+export { YIELD_TO_UI } from './@generic/constant/yield-to-ui.constant';
+export { convertFromMicroUnits } from './@generic/util/convert-from-micro-units.util';
+export { convertToMicroUnits } from './@generic/util/convert-to-micro-units.util';
+export { makeLoggerLayer } from './@generic/util/make-logger-layer.util';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';
 export { CurrencyEnum } from './@generic/enum/currency.enum';
@@ -8,28 +15,23 @@ export { LanguageEnum } from './@generic/enum/language.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 export { isEmojiIcon } from './@generic/type-guard/is-emoji-icon.type-guard';
 export { isUserIcon } from './@generic/type-guard/is-user-icon.type-guard';
-export type { EmojiIconType } from './@generic/type/emoji-icon.type';
 export type { UserIconType } from './@generic/type/user-icon.type';
 
 export type { AmountRangeInterface } from './@generic/interface/amount-range.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
 
-export { BaseTransactionFilterRepository } from './@generic/repository/base-transaction-filter.repository';
+export { transactionFilters } from './@generic/repository/base-transaction-filter.repository';
 export { buildTranslatedCategoryRelation } from './@generic/util/build-translated-category-relation.util';
 export { buildCategoryTranslationJoinCondition } from './@generic/util/build-category-translation-join-condition.util';
 
-export type { DB, DbConnectionType } from './@generic/type/db.type';
-export type { EffectSqliteClientOptionsInterface } from './@generic/interface/effect-sqlite-client-options.interface';
+export type { DB } from './@generic/type/db.type';
 export type { DbMutationInterface } from './@generic/interface/db-mutation.interface';
-export type { DbQueryEffectHKTInterface } from './@generic/interface/db-query-effect-hkt.interface';
-export type { TransactionBoundaryType } from './@generic/type/transaction-boundary.type';
 export { makeEffectSqliteClientDatabase } from './@generic/drizzle/effect-sqlite-client.driver';
 
 export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util';
 export { Db } from './@generic/service/db.service';
 export { DbError } from './@generic/error/db.error';
 
-export { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from './account/constant/bank-authoritative-account-types.constant';
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
 
@@ -62,13 +64,10 @@ export { AccountRepository } from './account/repository/account.repository';
 export { normalizeAccountIban } from './account/util/normalize-account-iban.util';
 export { isBorrowLikeDebtType } from './account/util/is-borrow-like-debt-type.util';
 
-export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
-
 export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
 
 export type { AccountBalanceEntityInterface } from './account-balance/entity/account-balance-entity.interface';
 export type { AccountBalanceCreateEntityInterface } from './account-balance/entity/account-balance-create-entity.interface';
-export type { AccountBalanceUpdateEntityInterface } from './account-balance/entity/account-balance-update-entity.interface';
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
 
@@ -76,11 +75,9 @@ export { getDebtLedgerBalance } from './account-balance/util/get-debt-ledger-bal
 export { getDebtClosedAmount } from './account-balance/util/get-debt-closed-amount.util';
 
 export type { DebtAccountProgressSummaryInterface } from './account-balance/interface/debt-account-progress-summary.interface';
-export type { DebtLedgerAmountsInterface } from './account-balance/interface/debt-ledger-amounts.interface';
 
 export { SyncModeEnum } from './sync/enum/sync-mode.enum';
 export { SyncStatusEnum } from './sync/enum/sync-status.enum';
-export { SyncAssociationEnum } from './sync/enum/sync-association.enum';
 export { SyncWarningEnum } from './sync/enum/sync-warning.enum';
 
 export { DebtEventDirectionEnum } from './debt-event/enum/debt-event-direction.enum';
@@ -100,13 +97,10 @@ export { getInstallmentDueDate } from './installment-plan/util/get-installment-d
 
 export type { InstallmentPlanScheduleInterface } from './installment-plan/interface/installment-plan-schedule.interface';
 
-export { BankIntegrationAssociationEnum } from './bank-integration/enum/bank-integration-association.enum';
-
 export { BankIntegrationEntityTable } from './bank-integration/table/bank-integration-entity.table';
 
 export type { BankIntegrationEntityInterface } from './bank-integration/entity/bank-integration-entity.interface';
 export type { BankIntegrationCreateEntityInterface } from './bank-integration/entity/bank-integration-create-entity.interface';
-export type { BankIntegrationUpdateEntityInterface } from './bank-integration/entity/bank-integration-update-entity.interface';
 
 export { BankIntegrationRepository } from './bank-integration/repository/bank-integration.repository';
 
@@ -119,15 +113,11 @@ export type { SyncUpdateEntityInterface } from './sync/entity/sync-update-entity
 export { SyncRepository } from './sync/repository/sync.repository';
 
 export { TAG_TITLE_MAX_LENGTH } from './tag/constant/tag-title-max-length.constant';
-export { TAG_TITLE_MIN_LENGTH } from './tag/constant/tag-title-min-length.constant';
-
-export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
 export { TagEntityTable } from './tag/table/tag-entity.table';
 
 export type { TagEntityInterface } from './tag/entity/tag-entity.interface';
 export type { TagCreateEntityInterface } from './tag/entity/tag-create-entity.interface';
-export type { TagUpdateEntityInterface } from './tag/entity/tag-update-entity.interface';
 
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
 
@@ -151,22 +141,17 @@ export type { InstrumentMarketDataJobCreateEntityInterface } from './instrument-
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
 
 export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
-export { DEBT_PAYMENT_CATEGORY_ID } from './category/constant/debt-payment-category-id.constant';
 export { LENDING_CATEGORY_ID } from './category/constant/lending-category-id.constant';
 export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id.constant';
 export { ACCOUNT_DELETED_TRANSFER_CATEGORY_ID } from './category/constant/account-deleted-transfer-category-id.constant';
 export { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID } from './category/constant/cash-withdrawal-tracked-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
-export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
 export { DEFAULT_CATEGORY_ICON } from './category/constant/default-category-icon.constant';
-
-export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
 export { CategoryEntityTable } from './category/table/category-entity.table';
 
 export type { CategoryEntityInterface } from './category/entity/category-entity.interface';
 export type { CategoryCreateEntityInterface } from './category/entity/category-create-entity.interface';
-export type { CategoryUpdateEntityInterface } from './category/entity/category-update-entity.interface';
 
 export { CategoryCreateEntitySchema } from './category/schema/category-create-entity.schema';
 
@@ -174,26 +159,12 @@ export { CategoryRepository } from './category/repository/category.repository';
 
 export { DefaultCategoryTranslationEntityTable } from './category-translation/table/default-category-translation-entity.table';
 
-export type { DefaultCategoryTranslationEntityInterface } from './category-translation/entity/default-category-translation-entity.interface';
-
-export { MCC_GROUP_TYPE_MAX_LENGTH } from './mcc-group/constant/mcc-group-type-max-length.constant';
-export { MCC_GROUP_DESCRIPTION_MAX_LENGTH } from './mcc-group/constant/mcc-group-description-max-length.constant';
-
-export { MccGroupAssociationEnum } from './mcc-group/enum/mcc-group-association.enum';
-
 export { MccGroupEntityTable } from './mcc-group/table/mcc-group-entity.table';
-
-export type { MccGroupEntityInterface } from './mcc-group/entity/mcc-group-entity.interface';
-export type { MccGroupCreateEntityInterface } from './mcc-group/entity/mcc-group-create-entity.interface';
 
 export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository';
 
 export { ATM_CASH_WITHDRAWAL_MCC } from './mcc-category/constant/atm-cash-withdrawal-mcc.constant';
-export { MCC_CODE_LENGTH } from './mcc-category/constant/mcc-code-length.constant';
-export { MCC_DESCRIPTION_MAX_LENGTH } from './mcc-category/constant/mcc-description-max-length.constant';
 export { MCC_DEFAULT_CATEGORY_SEED } from './mcc-category/constant/mcc-default-category-seed.constant';
-
-export { MccCategoryAssociationEnum } from './mcc-category/enum/mcc-category-association.enum';
 
 export { MccCategoryEntityTable } from './mcc-category/table/mcc-category-entity.table';
 
@@ -222,23 +193,12 @@ export type { TransactionWithRelationsEntityInterface } from './transaction/enti
 export type { TransactionWithEntriesEntityInterface } from './transaction/entity/transaction-with-entries-entity.interface';
 export type { TransactionWithEntriesMccCategoryEntityInterface } from './transaction/entity/transaction-with-entries-mcc-category-entity.interface';
 
-export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
-export type { TransactionExpenseWithRelationsEntityInterface } from './transaction/entity/transaction-expense-with-relations-entity.interface';
-export type { TransactionTransferWithRelationsEntityInterface } from './transaction/entity/transaction-transfer-with-relations-entity.interface';
-export type { TransactionPositiveAdjustmentWithRelationsEntityInterface } from './transaction/entity/transaction-positive-adjustment-with-relations-entity.interface';
-export type { TransactionNegativeAdjustmentWithRelationsEntityInterface } from './transaction/entity/transaction-negative-adjustment-with-relations-entity.interface';
-
-export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense-transaction-entity.interface';
-export type { TransferTransactionEntityInterface } from './transaction/entity/transfer-transaction-entity.interface';
-
 export { TRANSACTION_COMMENT_MAX_LENGTH } from './transaction/constant/transaction-comment-max-length.constant';
-export { TRANSACTION_TITLE_MAX_LENGTH } from './transaction/constant/transaction-title-max-length.constant';
 
 export { TransactionCreateInputSchema } from './transaction/schema/transaction-create-input.schema';
 
 export type { TransactionCreateInputInterface } from './transaction/input/transaction-create-input.interface';
 
-export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
 export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
 export type { ConsolidationScanScopeInterface } from './transaction/interface/consolidation-scan-scope.interface';
 export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
@@ -250,14 +210,12 @@ export { TransactionRepository } from './transaction/repository/transaction.repo
 export { TransactionConsolidationRepository } from './transaction/repository/transaction-consolidation.repository';
 export { TransactionViewRepository } from './transaction/repository/transaction-view.repository';
 
-export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 export { TagSourceEnum } from './transaction-tags/enum/tag-source.enum';
 
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
 export { insertTransactionTag } from './transaction-tags/util/insert-transaction-tag.util';
 
 export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
-export type { TransactionTagsWithTagEntityInterface } from './transaction-tags/entity/transaction-tags-with-tag-entity.interface';
 export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
 
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
@@ -269,15 +227,12 @@ export { IncomeTransactionCreateInputSchema } from './transaction/schema/income-
 export { TransferTransactionCreateInputSchema } from './transaction/schema/transfer-transaction-create-input.schema';
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
-export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
-export type { AmountPatternQueryInterface } from './transaction/interface/amount-pattern-query.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
 
 export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfer-pair-auto-confidence-bucket.enum';
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
-export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
 export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
@@ -294,7 +249,6 @@ export type { RefundCandidateInterface } from './transaction/interface/refund-ca
 export type { RefundCandidateRowInterface } from './transaction/interface/refund-candidate-row.interface';
 export type { RefundableExpenseCandidateInterface } from './transaction/interface/refundable-expense-candidate.interface';
 export type { RefundableExpenseCandidateRowInterface } from './transaction/interface/refundable-expense-candidate-row.interface';
-export type { RefundReviewConfidenceBucket } from './transaction/interface/refund-review-confidence-bucket.type';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
 export type { RefundReviewCandidateRowInterface } from './transaction/interface/refund-review-candidate-row.interface';
 
@@ -312,14 +266,11 @@ export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transa
 
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
 
-export { TransactionEntryCreateInputSchema } from './transaction-entry/schema/transaction-entry-create-input.schema';
-
 export type { TransactionEntryCreateInputInterface } from './transaction-entry/input/transaction-entry-create-input.interface';
 export type { TransactionEntryUpdateInputInterface } from './transaction-entry/input/transaction-entry-update-input.interface';
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
-export type { TransactionEntryWithMccCategoryEntityInterface } from './transaction-entry/entity/transaction-entry-with-mcc-category-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
 export type { CryptoPositionEntryRowInterface } from './transaction-entry/interface/crypto-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
@@ -327,11 +278,8 @@ export type { PendingBaseValuationBucketInterface } from './transaction-entry/in
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
 export { TransactionEntryPositionRepository } from './transaction-entry/repository/transaction-entry-position.repository';
 
-export { ExchangeRateAssociationEnum } from './exchange-rate/enum/exchange-rate-association.enum';
-
 export { ExchangeRateEntityTable } from './exchange-rate/table/exchange-rate-entity.table';
 
-export type { ExchangeRateEntityInterface } from './exchange-rate/entity/exchange-rate-entity.interface';
 export type { ExchangeRateCreateEntityInterface } from './exchange-rate/entity/exchange-rate-create-entity.interface';
 
 export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/table/historical-exchange-rate-entity.table';
@@ -339,14 +287,10 @@ export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/ta
 export type { HistoricalExchangeRateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-entity.interface';
 export type { HistoricalExchangeRateCreateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-create-entity.interface';
 
-export { SettingsAssociationEnum } from './settings/enum/settings-association.enum';
-
 export { SettingsEntityTable } from './settings/table/settings-entity.table';
 
 export type { SettingsEntityInterface } from './settings/entity/settings-entity.interface';
 export type { SettingsCreateEntityInterface } from './settings/entity/settings-create-entity.interface';
-
-export type { SettingsWithDefaultInstrumentEntityInterface } from './settings/entity/settings-with-default-instrument-entity.interface';
 
 export { SettingsRepository } from './settings/repository/settings.repository';
 
@@ -357,18 +301,8 @@ export type { StatisticsFilterInterface } from './statistics/interface/statistic
 export { MerchantEmbeddingEntityTable } from './merchant-embedding/table/merchant-embedding-entity.table';
 export { MerchantEmbeddingTagEntityTable } from './merchant-embedding/table/merchant-embedding-tag-entity.table';
 
-export { MerchantEmbeddingAssociationEnum } from './merchant-embedding/enum/merchant-embedding-association.enum';
-export { MerchantEmbeddingTagAssociationEnum } from './merchant-embedding/enum/merchant-embedding-tag-association.enum';
-
-export type { MerchantEmbeddingEntityInterface } from './merchant-embedding/entity/merchant-embedding-entity.interface';
-
 export { CommentEmbeddingEntityTable } from './comment-embedding/table/comment-embedding-entity.table';
 export { CommentEmbeddingTagEntityTable } from './comment-embedding/table/comment-embedding-tag-entity.table';
-
-export { CommentEmbeddingAssociationEnum } from './comment-embedding/enum/comment-embedding-association.enum';
-export { CommentEmbeddingTagAssociationEnum } from './comment-embedding/enum/comment-embedding-tag-association.enum';
-
-export type { CommentEmbeddingEntityInterface } from './comment-embedding/entity/comment-embedding-entity.interface';
 
 export { RuleConditionFieldEnum } from './rule/enum/rule-condition-field.enum';
 export { RuleConditionOperatorEnum } from './rule/enum/rule-condition-operator.enum';
@@ -377,7 +311,6 @@ export { RuleActionTypeEnum } from './rule/enum/rule-action-type.enum';
 export { RuleAssociationEnum } from './rule/enum/rule-association.enum';
 export { RuleEntityTable } from './rule/table/rule-entity.table';
 export { RuleCreateInputSchema } from './rule/schema/rule-create-input.schema';
-export type { RuleEntityInterface } from './rule/entity/rule-entity.interface';
 export type { RuleCreateEntityInterface } from './rule/entity/rule-create-entity.interface';
 export type { RuleUpdateEntityInterface } from './rule/entity/rule-update-entity.interface';
 export type { RuleWithRelationsEntityInterface } from './rule/entity/rule-with-relations-entity.interface';
@@ -386,18 +319,14 @@ export type { RuleCreateInputInterface } from './rule/input/rule-create-input.in
 export type { RuleUpdateInputInterface } from './rule/input/rule-update-input.interface';
 
 export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-entity.table';
-export { RuleConditionCreateInputSchema } from './rule-condition/schema/rule-condition-create-input.schema';
 export type { RuleConditionEntityInterface } from './rule-condition/entity/rule-condition-entity.interface';
 export type { RuleConditionCreateEntityInterface } from './rule-condition/entity/rule-condition-create-entity.interface';
 export type { RuleConditionCreateInputInterface } from './rule-condition/input/rule-condition-create-input.interface';
 
-export { RuleActionAssociationEnum } from './rule-action/enum/rule-action-association.enum';
 export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
-export { RuleActionCreateInputSchema } from './rule-action/schema/rule-action-create-input.schema';
 export type { RuleActionEntityInterface } from './rule-action/entity/rule-action-entity.interface';
 export type { RuleActionWithRelationsEntityInterface } from './rule-action/entity/rule-action-with-relations-entity.interface';
 export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-action-create-entity.interface';
-export type { RuleActionCreateInputInterface } from './rule-action/input/rule-action-create-input.interface';
 
 export { BudgetPeriodEnum } from './budget/enum/budget-period.enum';
 export { BudgetEntityTable } from './budget/table/budget-entity.table';
@@ -408,7 +337,6 @@ export type { BudgetUpdateEntityInterface } from './budget/entity/budget-update-
 export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
 export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit/entity/budget-category-limit-entity.interface';
 export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
-export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
 export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';
 
 export { RecurringSeriesKindEnum } from './recurring-series/enum/recurring-series-kind.enum';

@@ -1,7 +1,7 @@
 import {
     AccountEntityTable,
     AccountTypeEnum,
-    BaseTransactionFilterRepository,
+    transactionFilters,
     Db,
     MccCategoryEntityTable,
     TransactionEntityTable,
@@ -9,6 +9,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { and, count, desc, eq, inArray, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
+import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -25,21 +26,6 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
             const CHUNK_SIZE = 500;
 
             const NON_INDEXABLE_EMBEDDING_TYPES: TransactionTypeEnum[] = [TransactionTypeEnum.TRANSFER, TransactionTypeEnum.ADJUSTMENT];
-
-            const UNCATEGORIZED_CONDITION = sql`
-                EXISTS (
-                    SELECT 1 FROM transaction_entries te
-                    WHERE te.transaction_id = transactions.id
-                      AND te.deleted_at IS NULL
-                      AND te.category_id IS NULL
-                )
-            `;
-
-            const AWAITING_AUTO_CATEGORY_CONDITION = sql`
-                updated_by IS NULL
-                AND consolidation_parent_transaction_id IS NULL
-                AND type IN (${TransactionTypeEnum.INCOME}, ${TransactionTypeEnum.EXPENSE})
-            `;
 
             const NON_INDEXABLE_CONDITION = sql`
                 (title = '' AND comment = '')
@@ -78,15 +64,26 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                 ))
             `;
 
-            const transactionFilters = new BaseTransactionFilterRepository();
-
-            const AWAITING_AUTO_CATEGORY_WHERE = and(
-                eq(TransactionEntityTable.needsEmbedding, true),
+            const AUTO_CATEGORIZABLE_TRANSACTION_CONDITION = and(
                 isNull(TransactionEntityTable.updatedBy),
                 or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, '')),
                 transactionFilters.buildVisibleTransactionCondition(),
-                transactionFilters.buildCategorizableTypeCondition(null),
+                transactionFilters.buildCategorizableTypeCondition(null)
+            );
+
+            const AWAITING_AUTO_CATEGORY_WHERE = and(
+                eq(TransactionEntityTable.needsEmbedding, true),
+                AUTO_CATEGORIZABLE_TRANSACTION_CONDITION,
                 transactionFilters.buildUncategorizedEntryCondition()
+            );
+
+            const UNCATEGORIZED_CONDITION = inArray(
+                TransactionEntityTable.id,
+                new QueryBuilder()
+                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
+                    .where(transactionFilters.buildUncategorizedEntryCondition())
             );
 
             const updateInChunks = Effect.fnUntraced(function* (
@@ -98,14 +95,12 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                 }
             });
 
-            const clearFlagsWhere = (condition: SQL) =>
-                Db.mutation(
-                    { type: 'update', tables: ['transactions'] },
-                    Db.query(db =>
-                        db.run(
-                            sql`UPDATE transactions SET needs_embedding = 0 WHERE needs_embedding = 1 AND deleted_at IS NULL AND (${condition})`
-                        )
-                    )
+            const clearFlagsWhere = (condition: SQL | undefined) =>
+                Db.query(db =>
+                    db
+                        .update(TransactionEntityTable)
+                        .set({ needsEmbedding: false })
+                        .where(and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt), condition))
                 );
 
             return {
@@ -160,11 +155,15 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                         )
                     ),
 
-                clearNonIndexableFlags: () => clearFlagsWhere(sql`(${NON_INDEXABLE_CONDITION}) OR (${UNCATEGORIZED_CONDITION})`),
+                clearNonIndexableFlags: () => clearFlagsWhere(or(NON_INDEXABLE_CONDITION, UNCATEGORIZED_CONDITION)),
 
                 clearStaleFlags: () =>
                     clearFlagsWhere(
-                        sql`(${NON_INDEXABLE_CONDITION}) OR ((${UNCATEGORIZED_CONDITION}) AND NOT (${AWAITING_AUTO_CATEGORY_CONDITION})) OR (${ALREADY_INDEXED_CONDITION})`
+                        or(
+                            NON_INDEXABLE_CONDITION,
+                            and(UNCATEGORIZED_CONDITION, sql`NOT (${AUTO_CATEGORIZABLE_TRANSACTION_CONDITION})`),
+                            ALREADY_INDEXED_CONDITION
+                        )
                     ),
 
                 findAwaitingAutoCategory: (limit: number) =>

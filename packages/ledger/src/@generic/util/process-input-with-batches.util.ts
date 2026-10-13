@@ -1,8 +1,7 @@
+import { YIELD_TO_UI } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
-
-import { YIELD_TO_UI } from '../constant/yield-to-ui.constant';
 
 export const processInputWithBatches = Effect.fnUntraced(function* <T, O, E, R>(
     inputs: T[],

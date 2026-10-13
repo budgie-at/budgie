@@ -1,6 +1,4 @@
-import { RepeatedTransactionPatternInterface } from '@budgie/contracts';
-
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { RepeatedTransactionPatternInterface, convertFromMicroUnits } from '@budgie/contracts';
 
 export const getLatestPatternAmount = (patterns: RepeatedTransactionPatternInterface[], categoryId: number): number => {
     let bestAmount = 0;

@@ -1,4 +1,4 @@
-import { CategorySourceEnum, TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -14,16 +14,9 @@ import { useGetCategoryByIdQuery } from '../../../category/query/use-get-categor
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import {
-    CATEGORY_ANIMATION_DELAY,
-    CONSOLIDATION_ANIMATION_DELAY,
-    DATE_ANIMATION_DELAY,
-    NOTE_ANIMATION_DELAY,
-    SPLIT_ANIMATION_DELAY,
-    TAGS_ANIMATION_DELAY
-} from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
+import { setPrimaryCategory } from '../../utils/set-primary-category.util';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 import { TransactionFieldIconsSelector } from './transaction-field-icons.selector';
@@ -86,32 +79,26 @@ export const TransactionFieldIcons = (props: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
     const { tags } = useGetTagByIdsQuery(tagIds);
 
-    const handleCategoryPress = async () => {
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: categoryId, variant });
-
-        if (isDefined(selectedCategoryId)) {
-            const currentCategoryEntry = categoryEntries.at(0);
-
-            if (!isDefined(currentCategoryEntry)) {
+    const handleCategoryPress = () => {
+        openCategorySelector({ initialCategoryId: categoryId, variant }, selectedCategoryId => {
+            if (!isDefined(selectedCategoryId)) {
                 return;
             }
 
-            const updatedEntries = entries.map(entry =>
-                entry === currentCategoryEntry
-                    ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER }
-                    : entry
-            );
+            const updatedEntries = setPrimaryCategory(entries, selectedCategoryId);
 
-            setValue('entries', updatedEntries, { shouldValidate: false });
-        }
+            if (isDefined(updatedEntries)) {
+                setValue('entries', updatedEntries, { shouldValidate: false });
+            }
+        });
     };
 
-    const handleTagsPress = async () => {
-        const selectedTagIds = await openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true });
-
-        if (isDefined(selectedTagIds)) {
-            setValue('tagIds', selectedTagIds);
-        }
+    const handleTagsPress = () => {
+        openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true }, selectedTagIds => {
+            if (isDefined(selectedTagIds)) {
+                setValue('tagIds', selectedTagIds);
+            }
+        });
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
@@ -154,7 +141,7 @@ export const TransactionFieldIcons = (props: Props) => {
                         value={splitValue}
                         variant={variant}
                         onPress={onSplitPress}
-                        animationDelay={SPLIT_ANIMATION_DELAY}
+                        animationDelay={170}
                         testID={TransactionFieldIconsSelector.Split}
                     />
                 </Animated.View>
@@ -166,7 +153,7 @@ export const TransactionFieldIcons = (props: Props) => {
                 value={formattedDate}
                 variant={variant}
                 onPress={onDatePress}
-                animationDelay={DATE_ANIMATION_DELAY}
+                animationDelay={110}
             />
 
             <TransactionFieldIcon
@@ -175,7 +162,7 @@ export const TransactionFieldIcons = (props: Props) => {
                 value={noteValue}
                 variant={variant}
                 onPress={onCommentPress}
-                animationDelay={NOTE_ANIMATION_DELAY}
+                animationDelay={140}
                 testID={commentTestID}
             />
 
@@ -185,7 +172,7 @@ export const TransactionFieldIcons = (props: Props) => {
                     label={t`Sources`}
                     variant={variant}
                     onPress={onConsolidationPress}
-                    animationDelay={CONSOLIDATION_ANIMATION_DELAY}
+                    animationDelay={155}
                     testID={TransactionFieldIconsSelector.Sources}
                 />
             ) : null}
@@ -197,7 +184,7 @@ export const TransactionFieldIcons = (props: Props) => {
                     value={tagsValue}
                     variant={variant}
                     onPress={handleTagsPress}
-                    animationDelay={TAGS_ANIMATION_DELAY}
+                    animationDelay={80}
                     testID={tagsTestID}
                 />
             )}
@@ -211,7 +198,7 @@ export const TransactionFieldIcons = (props: Props) => {
                     variant={variant}
                     disabled={isSplitActive}
                     onPress={handleCategoryPress}
-                    animationDelay={CATEGORY_ANIMATION_DELAY}
+                    animationDelay={50}
                     testID={categoryTestID}
                 />
             )}

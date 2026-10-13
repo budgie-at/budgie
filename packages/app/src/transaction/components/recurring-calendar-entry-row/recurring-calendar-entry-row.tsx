@@ -1,4 +1,4 @@
-import { RecurringSeriesUserStateEnum, UserIconNameEnum } from '@budgie/contracts';
+import { RecurringSeriesUserStateEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { RecurringAlertEnum, RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -14,7 +14,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';

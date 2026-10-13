@@ -1,5 +1,5 @@
-/* eslint-disable max-lines, max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
-import { msg, t } from '@lingui/core/macro';
+/* eslint-disable max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeaturePageCategoryComparison } from '../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
@@ -16,23 +16,14 @@ import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-h
 import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { PillarHubSection } from '../../../feature/component/pillar-hub-section/pillar-hub-section';
-import { buildPillarHubRouteMetadata } from '../../../feature/util/build-pillar-hub-route-metadata.util';
 import { buildSoftwareSourceCodeJsonLd } from '../../../feature/util/build-software-source-code-json-ld.util';
+import { createPillarHubGenerateMetadata } from '../../../feature/util/create-pillar-hub-generate-metadata.util';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
-import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 import { OPEN_SOURCE_PILLAR_HUB_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildPillarHubRouteMetadata(i18n, OPEN_SOURCE_PILLAR_HUB_METADATA);
-}
+export const generateMetadata = createPillarHubGenerateMetadata(OPEN_SOURCE_PILLAR_HUB_METADATA);
 
 export default async function OpenSourcePillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
@@ -41,15 +32,7 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
     return (
         <>
             <JsonLd data={buildSoftwareSourceCodeJsonLd(lang)} />
-            <PillarHubPageShell
-                description={i18n._(OPEN_SOURCE_PILLAR_HUB_METADATA.metaDescription)}
-                homeLabel={i18n._(msg`Home`)}
-                locale={lang}
-                publishedAt={OPEN_SOURCE_PILLAR_HUB_METADATA.publishedAt}
-                slug={OPEN_SOURCE_PILLAR_HUB_METADATA.slug}
-                title={i18n._(OPEN_SOURCE_PILLAR_HUB_METADATA.metaTitle)}
-                updatedAt={OPEN_SOURCE_PILLAR_HUB_METADATA.updatedAt}
-            >
+            <PillarHubPageShell lang={lang} meta={OPEN_SOURCE_PILLAR_HUB_METADATA}>
                 <PillarHubHero
                     breadcrumbs={<PillarHubBreadcrumbs current={i18n._(OPEN_SOURCE_PILLAR_HUB_METADATA.title)} locale={lang} />}
                     heading={<Trans>Source-Available Personal Finance — Transparent by Design</Trans>}

@@ -1,6 +1,6 @@
 import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService } from '@budgie/budget';
 import { BudgetPeriodEnum } from '@budgie/contracts';
-import { layer } from '@effect/vitest';
+import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { TestLayer } from '../harness/test-context';

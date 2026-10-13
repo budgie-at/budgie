@@ -29,7 +29,8 @@ with `jq` rather than keeping its own copy.
 
 Scenes, in store order: `01-home`, `02-transactions`, `03-analytics`,
 `04-budget`, `05-add-expense`, `06-account`, `07-settings`. Appearances: `light`
-and `dark`; `deployed-variant.json` records which one the store carries.
+and `dark`; `deployed-variant.json` records which one the store carries, and only that
+variant is committed.
 
 `00-prime` is the exception: a Maestro-backed scene that only grants the
 deep-link trust (below) and is never composed or uploaded.
@@ -131,7 +132,8 @@ leave a locale half-published. Composition detail and the design system live in
 2. Refresh date-sensitive fixtures so the seeded data reads as current.
 3. `pnpm --filter @budgie-at/app-tests screenshots:capture --app <.app>` (both devices run by default).
 4. `screenshots:compose all all` and review `variants/light` and `variants/dark`.
-5. Commit `variants/**` and any caption edits; `raw/` and `variants/ci/` are
+   Only `variants/dark` (the deployed variant) is committed; `variants/light` is gitignored.
+5. Commit `variants/dark` and any caption edits; `raw/` and other variants are
    gitignored.
 6. `cd packages/app && fastlane store_preflight`, then
    `fastlane ios ios_screenshots`.

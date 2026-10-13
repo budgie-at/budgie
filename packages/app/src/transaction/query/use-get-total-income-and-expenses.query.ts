@@ -1,8 +1,7 @@
-import { StatisticsRepository, TransactionFilterInterface } from '@budgie/contracts';
+import { StatisticsRepository, TransactionFilterInterface, convertFromMicroUnits } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';

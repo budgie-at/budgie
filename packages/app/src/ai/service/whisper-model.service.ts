@@ -3,7 +3,6 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { Directory, File, Paths } from 'expo-file-system';
-import { createDownloadResumable } from 'expo-file-system/legacy';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -14,6 +13,7 @@ import {
     WHISPER_MODEL_TEMP_FILENAME,
     WHISPER_MODEL_URL
 } from '../constant/whisper-model.constant';
+import { downloadVerifiedFile } from '../utils/download-verified-file.util';
 
 export class WhisperModelService extends Context.Service<WhisperModelService>()('@budgie/app/WhisperModelService', {
     make: Effect.sync(() => {
@@ -52,14 +52,11 @@ export class WhisperModelService extends Context.Service<WhisperModelService>()(
         });
 
         const downloadToTempFile = Effect.fnUntraced(function* (tempFile: File, onProgress: (downloadProgress: number) => void) {
-            let expectedBytes = 0;
-            const download = createDownloadResumable(WHISPER_MODEL_URL, tempFile.uri, {}, progress => {
-                expectedBytes = progress.totalBytesExpectedToWrite;
-                onProgress(calculateProgress(progress.totalBytesWritten, expectedBytes));
+            const downloadedBytes = yield* downloadVerifiedFile(WHISPER_MODEL_URL, tempFile, (bytesWritten, expectedBytes) => {
+                onProgress(calculateProgress(bytesWritten, expectedBytes));
             });
-            const result = yield* Effect.promise(() => download.downloadAsync());
 
-            if (!isDefined(result?.uri) || !tempFile.exists || !isPositiveNumber(tempFile.size) || tempFile.size !== expectedBytes) {
+            if (!isDefined(downloadedBytes)) {
                 deleteFileIfExists(tempFile);
 
                 return yield* Effect.die(new Error(t`Whisper model download failed`));

@@ -5,7 +5,8 @@ import {
     TransactionTypeEnum,
     TransactionUpdateServiceInputInterface,
     TransactionWithRelationsEntityInterface,
-    isPositiveAdjustmentTransaction
+    isPositiveAdjustmentTransaction,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
@@ -17,7 +18,6 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
@@ -153,10 +153,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
             <TransactionKeypad
                 variant={variant}
-                onDigit={handlers.onDigit}
-                onDecimal={handlers.onDecimal}
-                onBackspace={handlers.onBackspace}
-                onLongBackspace={handlers.onLongBackspace}
+                keypad={handlers}
                 onConfirm={handleConfirm}
                 onCancel={handleGoBack}
                 isConfirmDisabled={confirmDisabled}

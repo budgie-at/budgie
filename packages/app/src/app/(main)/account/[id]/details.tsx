@@ -92,6 +92,7 @@ export default function AccountDetails() {
                 <View className="pb-md">
                     {account.type === AccountTypeEnum.DEBT ? (
                         <DebtAccountBalance
+                            accountId={id}
                             debtType={account.debtType}
                             instrumentSymbol={account.instrument.symbol}
                             summary={debtProgressSummary}

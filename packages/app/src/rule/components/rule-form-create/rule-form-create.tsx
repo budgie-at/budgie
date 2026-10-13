@@ -16,8 +16,7 @@ interface Props {
 
 export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
     const { t } = useLingui();
-    const { form, handleSubmit } = useRuleForm({ prefillData, onSuccess });
-    const { isSubmitting } = form.formState;
+    const { form, handleSubmit, isSubmitting } = useRuleForm({ prefillData, onSuccess });
 
     const header = <PageHeader title={t`Create Rule`} onGoBack={onCancel} />;
 

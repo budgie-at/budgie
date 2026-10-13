@@ -20,12 +20,12 @@ export const RuleConditionMccSelectorContent = ({ index, testID }: Props) => {
     const [openRuleMccSelector] = useRuleMccSelectorModal();
     const { mccCategories, isLoading } = useGetAllMccCategoriesQuery();
 
-    const handleOpen = async () => {
-        const result = await openRuleMccSelector({ selectedMcc: value });
-
-        if (isDefined(result)) {
-            onChange(result);
-        }
+    const handleOpen = () => {
+        openRuleMccSelector({ selectedMcc: value }, selectedMcc => {
+            if (isDefined(selectedMcc)) {
+                onChange(selectedMcc);
+            }
+        });
     };
 
     const selectedMcc = mccCategories.find(({ mcc }) => mcc === value);

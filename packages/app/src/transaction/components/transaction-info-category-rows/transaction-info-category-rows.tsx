@@ -12,8 +12,6 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly categoryLabel: string | null;
-    readonly hasFollowingRows: boolean;
 }
 
 const getMccLabel = (transaction: TransactionWithRelationsEntityInterface): string | null => {
@@ -38,15 +36,14 @@ const getCategoryIcon = (transaction: TransactionWithRelationsEntityInterface): 
     return isDefined(icon) ? icon : UserIconNameEnum.Shapes;
 };
 
-export const TransactionInfoCategoryRows = ({ transaction, categoryLabel, hasFollowingRows }: Props) => {
+export const TransactionInfoCategoryRows = ({ transaction }: Props) => {
     const { t } = useLingui();
+    const categoryLabel = getTransactionCategoryEntries(transaction.entries).at(0)?.category?.title ?? null;
     const mccLabel = getMccLabel(transaction);
     const isNoteDuplicated = isTransactionNoteDuplicated(transaction);
     const showCategory = isNotEmptyString(categoryLabel) && transaction.type !== TransactionTypeEnum.TRANSFER;
     const showMcc = isNotEmptyString(mccLabel);
     const showNote = isNotEmptyString(transaction.comment) && !isNoteDuplicated;
-    const categoryWithBottomBorder = showMcc || showNote || hasFollowingRows;
-    const mccWithBottomBorder = showNote || hasFollowingRows;
 
     return (
         <>
@@ -56,7 +53,6 @@ export const TransactionInfoCategoryRows = ({ transaction, categoryLabel, hasFol
                     label={t`Category`}
                     value={categoryLabel}
                     testID={TransactionInfoPageSelector.Row.Category}
-                    withBottomBorder={categoryWithBottomBorder}
                 />
             ) : null}
 
@@ -66,7 +62,6 @@ export const TransactionInfoCategoryRows = ({ transaction, categoryLabel, hasFol
                     label={t`Merchant code`}
                     value={mccLabel}
                     testID={TransactionInfoPageSelector.Row.MerchantCode}
-                    withBottomBorder={mccWithBottomBorder}
                 />
             ) : null}
 
@@ -76,7 +71,6 @@ export const TransactionInfoCategoryRows = ({ transaction, categoryLabel, hasFol
                     label={t`Note`}
                     value={transaction.comment}
                     testID={TransactionInfoPageSelector.Row.Note}
-                    withBottomBorder={hasFollowingRows}
                 />
             ) : null}
         </>

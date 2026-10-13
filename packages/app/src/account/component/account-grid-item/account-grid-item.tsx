@@ -1,7 +1,6 @@
-import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithSyncEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { View } from 'react-native';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { AccountCard } from '../account-card/account-card';
 
 interface Props {

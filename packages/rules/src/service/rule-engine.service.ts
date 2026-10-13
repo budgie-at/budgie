@@ -1,15 +1,21 @@
 import {
+    AccountRepository,
+    AccountTypeEnum,
     CategorySourceEnum,
     Db,
+    DebtEventRepository,
     MccCategoryRepository,
     TransactionRepository,
     TransactionTagsRepository,
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
     TagSourceEnum,
-    TransactionUpdatedByEnum
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum,
+    YIELD_TO_UI
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { TransactionTransferService, getTransactionCategoryEntries } from '@budgie/ledger';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -20,9 +26,9 @@ import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE, RULE_SET_BATCH_SIZE } from '../co
 import { RuleRepository } from '../repository/rule.repository';
 import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
+import { matchesRule } from '../util/matches-rule.util';
 
 import { RuleMatcherService } from './rule-matcher.service';
-import { RuleTransferConversionService } from './rule-transfer-conversion.service';
 
 import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
@@ -31,21 +37,62 @@ import type { RuleActionEntityInterface, RuleWithRelationsEntityInterface, Trans
 
 export class RuleEngineService extends Context.Service<RuleEngineService>()('@budgie/rules/RuleEngineService', {
     make: Effect.gen(function* () {
+        const accountRepository = yield* AccountRepository;
+        const debtEventRepository = yield* DebtEventRepository;
         const mccCategoryRepository = yield* MccCategoryRepository;
-
         const ruleRepository = yield* RuleRepository;
-
         const transactionRepository = yield* TransactionRepository;
-
         const transactionRuleRepository = yield* TransactionRuleRepository;
-
         const transactionTagsRepository = yield* TransactionTagsRepository;
-
-        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-
         const ruleMatcherService = yield* RuleMatcherService;
+        const transactionTransferService = yield* TransactionTransferService;
 
-        const ruleTransferConversionService = yield* RuleTransferConversionService;
+        const isTransferAccount = Effect.fnUntraced(function* (accountId: number) {
+            const account = yield* accountRepository.findById(accountId);
+
+            return isDefined(account) && account.type !== AccountTypeEnum.DEBT;
+        });
+
+        const convertToTransfer = Effect.fn('RuleEngineService.convertToTransfer')(function* (
+            transactionId: number,
+            targetAccountId: number
+        ) {
+            const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
+
+            if (!isDefined(transaction) || isDefined(transaction.consolidationType)) {
+                return false;
+            }
+
+            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+            const sourceAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
+            const isConvertible =
+                (isExpense || transaction.type === TransactionTypeEnum.INCOME) &&
+                isDefined(sourceAccountId) &&
+                sourceAccountId !== targetAccountId &&
+                getTransactionCategoryEntries(transaction.entries).length === 1;
+
+            if (!isConvertible) {
+                return false;
+            }
+
+            const [isSourceTransferAccount, isTargetTransferAccount, debtEvent] = yield* Effect.all([
+                isTransferAccount(sourceAccountId),
+                isTransferAccount(targetAccountId),
+                debtEventRepository.findByTransactionId(transactionId)
+            ]);
+
+            if (!isSourceTransferAccount || !isTargetTransferAccount || isDefined(debtEvent)) {
+                return false;
+            }
+
+            const params = { id: transactionId, accountId: targetAccountId, customExchangeRate: 0, feeEntries: [] };
+
+            yield* isExpense
+                ? transactionTransferService.convertExpenseToTransfer(params)
+                : transactionTransferService.convertIncomeToTransfer(params);
+
+            return true;
+        });
 
         const applySetCategoryAction = Effect.fn('RuleEngineService.applySetCategoryAction')(function* (
             transactionId: number,
@@ -87,29 +134,24 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             switch (action.type) {
                 case RuleActionTypeEnum.SET_CATEGORY:
                     yield* applySetCategoryAction(transactionId, action, appliedExclusiveActions);
-
-                    return false;
+                    break;
 
                 case RuleActionTypeEnum.ADD_TAG:
                     yield* applyAddTagAction(transactionId, action);
+                    break;
 
-                    return false;
-
-                case RuleActionTypeEnum.CONVERT_TO_TRANSFER: {
-                    if (!isDefined(action.accountId) || appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER)) {
-                        return false;
-                    }
-
-                    const converted = yield* ruleTransferConversionService.convertTransactionToTransfer(transactionId, action.accountId);
-                    if (converted) {
+                case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
+                    if (
+                        isDefined(action.accountId) &&
+                        !appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER) &&
+                        (yield* convertToTransfer(transactionId, action.accountId))
+                    ) {
                         appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
                     }
-
-                    return converted;
-                }
+                    break;
 
                 default:
-                    return false;
+                    break;
             }
         });
 
@@ -129,15 +171,9 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 
                 return 0;
             });
-            let convertedAny = false;
-
             for (const action of sortedActions) {
-                const converted = yield* applyRuleAction(transactionId, action, appliedExclusiveActions);
-
-                convertedAny ||= converted;
+                yield* applyRuleAction(transactionId, action, appliedExclusiveActions);
             }
-
-            return convertedAny;
         });
 
         const applyMatchingRulesSequentially = Effect.fn('RuleEngineService.applyMatchingRulesSequentially')(function* (
@@ -145,46 +181,21 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             matchingRules: RuleWithRelationsEntityInterface[]
         ) {
             const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
-            let convertedToTransfer = false;
 
             for (const rule of matchingRules) {
-                const converted = yield* applyRuleActions(transactionId, rule.actions, appliedExclusiveActions);
-                convertedToTransfer ||= converted;
+                yield* applyRuleActions(transactionId, rule.actions, appliedExclusiveActions);
             }
-
-            return convertedToTransfer;
         });
 
         const applyMatchedRulesInBatch = Effect.fn('RuleEngineService.applyMatchedRulesInBatch')(
             function* (matches: RuleTransactionMatchInterface[]) {
-                let convertedAny = false;
-
                 for (const match of matches) {
-                    const converted = yield* applyMatchingRulesSequentially(match.transactionId, match.matchingRules);
-
+                    yield* applyMatchingRulesSequentially(match.transactionId, match.matchingRules);
                     yield* transactionRepository.updateById(match.transactionId, { updatedBy: TransactionUpdatedByEnum.RULE });
-
-                    convertedAny ||= converted;
-                }
-
-                if (convertedAny) {
-                    yield* accountBalanceIncrementalService.updateAllBalances(true);
                 }
             },
             effect => Db.transaction(effect)
         );
-
-        const applyRulesToTransactionsBatch = Effect.fn('RuleEngineService.applyRulesToTransactionsBatch')(function* (
-            matches: RuleTransactionMatchInterface[]
-        ) {
-            yield* Effect.sleep(RULE_BATCH_DELAY_MS);
-
-            if (!isNotEmptyArray(matches)) {
-                return;
-            }
-
-            yield* applyMatchedRulesInBatch(matches);
-        });
 
         const buildMccCodeMapIfNeeded = Effect.fn('RuleEngineService.buildMccCodeMapIfNeeded')(function* (
             rules: RuleWithRelationsEntityInterface[],
@@ -210,23 +221,6 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             return new Map(mccCategories.filter(category => mccCategoryIds.has(category.id)).map(category => [category.id, category.mcc]));
         });
 
-        const findBatchMatches = (
-            batchStart: number,
-            transactionIds: number[],
-            evaluationInputs: RuleEvaluationInputInterface[],
-            rules: RuleWithRelationsEntityInterface[]
-        ): RuleTransactionMatchInterface[] =>
-            transactionIds
-                .slice(batchStart, batchStart + RULE_BATCH_SIZE)
-                .map((transactionId, offset): RuleTransactionMatchInterface => ({
-                    transactionId,
-                    matchingRules: rules.filter(rule => ruleMatcherService.evaluateRule(rule, evaluationInputs[batchStart + offset]))
-                }))
-                .filter(match => isNotEmptyArray(match.matchingRules));
-
-        const getBatchStarts = (total: number, batchSize: number): number[] =>
-            Array.from({ length: Math.ceil(total / batchSize) }, (_value, index) => index * batchSize);
-
         const toRuleEvaluationInput = (
             input: TransactionCreateInputInterface,
             mccCodeMap: Map<number, string>
@@ -239,6 +233,19 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             }))
         });
 
+        const findMatchingRulesByIndex = Effect.fnUntraced(function* (
+            rules: RuleWithRelationsEntityInterface[],
+            transactionInputs: TransactionCreateInputInterface[]
+        ) {
+            const mccCodeMap = yield* buildMccCodeMapIfNeeded(rules, transactionInputs);
+
+            return transactionInputs.map(input => {
+                const evaluationInput = toRuleEvaluationInput(input, mccCodeMap);
+
+                return rules.filter(rule => matchesRule(rule, evaluationInput));
+            });
+        });
+
         const applyRulesToTransactions = Effect.fn('RuleEngineService.applyRulesToTransactions')(function* (
             transactionIds: number[],
             transactionInputs: TransactionCreateInputInterface[]
@@ -248,12 +255,17 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 return;
             }
 
-            const mccCodeMap = yield* buildMccCodeMapIfNeeded(rules, transactionInputs);
-            const evaluationInputs = transactionInputs.map(input => toRuleEvaluationInput(input, mccCodeMap));
+            const matchingRulesByIndex = yield* findMatchingRulesByIndex(rules, transactionInputs);
+            const matches = transactionIds
+                .map((transactionId, index): RuleTransactionMatchInterface => ({
+                    transactionId,
+                    matchingRules: matchingRulesByIndex[index] ?? []
+                }))
+                .filter(match => isNotEmptyArray(match.matchingRules));
 
             yield* Effect.forEach(
-                getBatchStarts(transactionIds.length, RULE_BATCH_SIZE),
-                batchStart => applyRulesToTransactionsBatch(findBatchMatches(batchStart, transactionIds, evaluationInputs, rules)),
+                Arr.chunksOf(matches, RULE_BATCH_SIZE),
+                batch => Effect.andThen(applyMatchedRulesInBatch(batch), Effect.sleep(RULE_BATCH_DELAY_MS)),
                 { discard: true }
             );
         });
@@ -304,9 +316,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 return { transactionInputs, postCreateIndexes: [] };
             }
 
-            const mccCodeMap = yield* buildMccCodeMapIfNeeded(rules, transactionInputs);
-            const evaluationInputs = transactionInputs.map(input => toRuleEvaluationInput(input, mccCodeMap));
-            const matchingRulesByIndex = evaluationInputs.map(input => rules.filter(rule => ruleMatcherService.evaluateRule(rule, input)));
+            const matchingRulesByIndex = yield* findMatchingRulesByIndex(rules, transactionInputs);
             const preparedTransactionInputs = transactionInputs.map((input, index) =>
                 applyCreateSafeRuleActionsToInput(input, matchingRulesByIndex[index] ?? [])
             );
@@ -330,16 +340,9 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             }
 
             const { accountId } = transferAction;
-            let convertedAny = false;
 
             for (const transactionId of batchIds) {
-                const converted = yield* ruleTransferConversionService.convertTransactionToTransfer(transactionId, accountId);
-
-                convertedAny ||= converted;
-            }
-
-            if (convertedAny) {
-                yield* accountBalanceIncrementalService.updateAllBalances(true);
+                yield* convertToTransfer(transactionId, accountId);
             }
         });
 
@@ -374,7 +377,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             batchIds: number[],
             actions: RuleActionEntityInterface[]
         ) {
-            yield* Effect.sleep(1);
+            yield* YIELD_TO_UI;
 
             return yield* applyRuleActionsToTransactionBatch(batchIds, actions).pipe(
                 Effect.as(0),
@@ -387,8 +390,8 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             actions: RuleActionEntityInterface[]
         ) {
             const batchSize = hasConvertToTransferAction(actions) ? RULE_BATCH_SIZE : RULE_SET_BATCH_SIZE;
-            const failedCounts = yield* Effect.forEach(getBatchStarts(matchingIds.length, batchSize), batchStart =>
-                applyRuleToMatchingTransactionBatch(matchingIds.slice(batchStart, batchStart + batchSize), actions)
+            const failedCounts = yield* Effect.forEach(Arr.chunksOf(matchingIds, batchSize), batchIds =>
+                applyRuleToMatchingTransactionBatch(batchIds, actions)
             );
 
             return failedCounts.reduce((total, failed) => total + failed, 0);
@@ -419,14 +422,15 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 }) {
     static readonly layer = Layer.effect(RuleEngineService, RuleEngineService.make).pipe(
         Layer.provide([
+            AccountRepository.layer,
+            DebtEventRepository.layer,
             MccCategoryRepository.layer,
             RuleRepository.layer,
             TransactionRepository.layer,
             TransactionRuleRepository.layer,
             TransactionTagsRepository.layer,
             RuleMatcherService.layer,
-            RuleTransferConversionService.layer,
-            AccountBalanceIncrementalService.layer
+            TransactionTransferService.layer
         ])
     );
 }

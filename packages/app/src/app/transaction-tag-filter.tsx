@@ -2,6 +2,7 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
@@ -20,7 +21,8 @@ const LIST_TOP_SPACE = 88;
 
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
-    const [, resolveTransactionTagFilter] = useTransactionTagFilterModal();
+    const [, resolveTransactionTagFilter, dismissTransactionTagFilter] = useTransactionTagFilterModal();
+    useModalDismiss(dismissTransactionTagFilter);
     const currentParams = useTransactionTagFilterModalParams();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);

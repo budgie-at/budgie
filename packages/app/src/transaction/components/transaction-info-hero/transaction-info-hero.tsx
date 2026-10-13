@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -6,7 +6,6 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
 import { useSettingsContext } from '../../../settings/context/settings.context';

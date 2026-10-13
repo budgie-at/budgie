@@ -1,7 +1,8 @@
 import { ScrollView } from 'react-native';
 
-import { INSTALLMENT_COUNT_OPTIONS } from '../../constant/installment-count-options.constant';
 import { InstallmentCountChip } from '../installment-count-chip/installment-count-chip';
+
+const INSTALLMENT_COUNT_OPTIONS = [2, 3, 4, 6, 10, 12, 24] as const;
 
 interface Props {
     readonly selectedCount: number;

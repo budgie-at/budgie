@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 
 import { usePopoverMenuAnchor } from '../../../@generic/hook/use-popover-menu-anchor.hook';
 
-export const useDepositAccountActionsMenu = (accountId: number, handleCloseDeposit: () => Promise<void>) => {
+export const useDepositAccountActionsMenu = (accountId: number, handleCloseDeposit: () => void) => {
     const router = useRouter();
     const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
 
@@ -11,7 +11,7 @@ export const useDepositAccountActionsMenu = (accountId: number, handleCloseDepos
     };
 
     const handleCloseDepositPress = () => {
-        closeMenu(() => void handleCloseDeposit());
+        closeMenu(handleCloseDeposit);
     };
 
     return {

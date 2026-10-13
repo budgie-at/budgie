@@ -1,5 +1,8 @@
 import { TransactionViewRepository, TransactionTypeEnum } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
+import { format } from 'date-fns/format';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { subMonths } from 'date-fns/subMonths';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
@@ -21,11 +24,11 @@ const SIMILAR_STATS_MONTHS = 6;
 
 const getPrimaryAccountId = (transaction: TransactionWithRelationsEntityInterface): number | null => {
     if (transaction.type === TransactionTypeEnum.EXPENSE) {
-        return transaction.fromAccountId ?? 0;
+        return transaction.fromAccountId;
     }
 
     if (transaction.type === TransactionTypeEnum.INCOME) {
-        return transaction.toAccountId ?? 0;
+        return transaction.toAccountId;
     }
 
     return null;
@@ -35,7 +38,6 @@ const buildSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInter
     const accountId = getPrimaryAccountId(transaction);
     const categoryId = getTransactionCategoryEntries(transaction.entries).at(0)?.categoryId ?? null;
     const canFetch =
-        isDefined(accountId) &&
         isPositiveNumber(accountId) &&
         (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.INCOME);
 
@@ -55,22 +57,10 @@ const buildSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInter
     };
 };
 
-const buildMonthKey = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, '0');
-
-    return `${year}-${month}`;
-};
-
 const buildSimilarMonthKeys = (operatedAt: Date): string[] =>
-    Array.from({ length: SIMILAR_STATS_MONTHS }, (_, index) => {
-        const monthDate = new Date(operatedAt);
-        monthDate.setDate(1);
-        monthDate.setHours(0, 0, 0, 0);
-        monthDate.setMonth(monthDate.getMonth() - SIMILAR_STATS_MONTHS + 1 + index);
-
-        return buildMonthKey(monthDate);
-    });
+    Array.from({ length: SIMILAR_STATS_MONTHS }, (_, index) =>
+        format(startOfMonth(subMonths(operatedAt, SIMILAR_STATS_MONTHS - 1 - index)), 'yyyy-MM')
+    );
 
 const buildEmptyMonth = (monthKey: string, currencySymbol: string): SimilarTransactionMonthRowInterface => ({
     monthKey,

@@ -1,12 +1,17 @@
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 
-export interface TransactionTagFilterModalParams {
+interface TransactionTagFilterModalParams {
     readonly value: number[] | null;
 }
 
-export type TransactionTagFilterResult = { readonly value: number[] | null };
+type TransactionTagFilterResult = { readonly value: number[] | null };
 
-export const [TransactionTagFilterModalContext, useTransactionTagFilterModal, useTransactionTagFilterModalParams] = createModalContext<
+const [TransactionTagFilterModalContext, useTransactionTagFilterModal, useTransactionTagFilterModalParams] = createModalContext<
     TransactionTagFilterModalParams,
     TransactionTagFilterResult | null
 >(null);
+
+export { useTransactionTagFilterModal, useTransactionTagFilterModalParams };
+
+export const TransactionTagFilterModalProvider = createModalProvider(TransactionTagFilterModalContext, '/transaction-tag-filter');

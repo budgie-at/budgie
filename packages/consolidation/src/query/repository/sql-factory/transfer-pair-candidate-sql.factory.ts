@@ -10,21 +10,16 @@ export const buildTransferPairCandidatesSql = (scope: ConsolidationScanScopeInte
                 confidenceBucket,
                 expenseTransactionId,
                 expenseTransactionTitle,
-                expenseTransactionComment,
                 expenseOperatedAt as operatedAt,
-                expenseEntryId,
                 expenseAccountId as expenseEntryAccountId,
                 expenseEntryAmount,
                 expenseEntryExchangeRate,
                 expenseEntryToIban,
                 incomeTransactionId,
                 incomeTransactionTitle,
-                incomeEntryId,
                 incomeAccountId as incomeEntryAccountId,
                 incomeEntryAmount,
                 incomeEntryExchangeRate,
-                incomeEntryToIban,
-                matchType,
                 timeDiff
             FROM (${rankedCandidateSql})
             WHERE expenseRank = 1
@@ -33,28 +28,10 @@ export const buildTransferPairCandidatesSql = (scope: ConsolidationScanScopeInte
         `;
 };
 
-export const buildTransferPairManualReviewCandidatesSql = (): string => {
-    const rankedCandidateSql = buildTransferPairRankedCandidateSql(null);
-
-    return `
-            SELECT
-                confidenceBucket,
-                expenseTransactionId,
-                incomeTransactionId,
-                expenseAccountTitle,
-                incomeAccountTitle,
-                expenseCurrency,
-                incomeCurrency,
-                expenseEntryAmount,
-                incomeEntryAmount,
-                expenseOperationAmount,
-                incomeOperationAmount,
-                expenseTransactionTitle,
-                incomeTransactionTitle,
-                timeDiff
-            FROM (${rankedCandidateSql})
+export const TRANSFER_PAIR_MANUAL_REVIEW_COUNT_SQL = `
+            SELECT COUNT(*) AS count
+            FROM (${buildTransferPairRankedCandidateSql(null)})
             WHERE expenseRank = 1
                 AND incomeRank = 1
-                AND confidenceBucket IN ('REVIEW_CROSS_CURRENCY_OPERATION')
+                AND confidenceBucket = 'REVIEW_CROSS_CURRENCY_OPERATION'
         `;
-};

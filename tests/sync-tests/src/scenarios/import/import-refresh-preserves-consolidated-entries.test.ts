@@ -13,7 +13,7 @@ import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, seed, TestLayer } from '../../harness';
+import { seed, TestLayer, testQueryService } from '../../harness';
 import { snapshotTransactionState } from '../../harness/db/snapshot-transaction-state';
 import { seedRefundedExpense } from '../../harness/seed/seed-refund-fixture';
 
@@ -59,9 +59,14 @@ const fetchLedgerBalances = (accountIds: readonly number[]) =>
 
 const refreshImportedTransaction = (transaction: TransactionEntityInterface, accountId: number) =>
     Effect.flatMap(TransactionImportService, transactionImportService =>
-        transactionImportService.bulkUpsertImported(
-            [buildRefreshInput(transaction, accountId)],
-            new Map([[transaction.externalId ?? '', transaction.id]])
+        Effect.map(
+            transactionImportService.bulkUpsertPreparedImported(
+                transactionImportService.prepareImportedInputs(
+                    [buildRefreshInput(transaction, accountId)],
+                    new Map([[transaction.externalId ?? '', transaction.id]])
+                )
+            ),
+            ({ transactions }) => transactions
         )
     );
 
@@ -79,7 +84,7 @@ const expectRefreshKeepsMovedEntriesAndUndo = Effect.fnUntraced(function* (input
 
     yield* transferConsolidationService.consolidate(null);
 
-    expect((yield* fetchTransactionById(input.canonical.id)).consolidationType).toBe(input.consolidationType);
+    expect((yield* testQueryService.findTransactionById(input.canonical.id)).consolidationType).toBe(input.consolidationType);
 
     const balancesAfterConsolidation = yield* fetchLedgerBalances(input.accountIds);
     const movedStateBeforeRefresh = yield* snapshotTransactionState(input.movedSourceIds);

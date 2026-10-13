@@ -3,8 +3,8 @@ export interface PageMetadataInputInterface {
     readonly path: string;
     readonly title: string;
     readonly description: string;
-    readonly keywords: string;
-    readonly publishedAt: string;
+    readonly keywords?: string;
+    readonly publishedAt?: string;
     readonly updatedAt?: string;
     readonly author?: string;
 }

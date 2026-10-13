@@ -14,6 +14,7 @@ import {
     isBorrowLikeDebtType
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -36,24 +37,17 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
             const transactionTagsRepository = yield* TransactionTagsRepository;
             const entryBaseValuationService = yield* EntryBaseValuationService;
 
-            const getCreatedEntriesByTransactionId = (createdEntries: TransactionEntryEntityInterface[]) =>
-                createdEntries.reduce<Map<number, TransactionEntryEntityInterface[]>>((map, entry) => {
-                    map.set(entry.transactionId, [...(map.get(entry.transactionId) ?? []), entry]);
-
-                    return map;
-                }, new Map());
-
             const getIncomeDebtEventDirection = (debtAccount: Pick<AccountEntityInterface, 'debtType'>): DebtEventDirectionEnum =>
                 isBorrowLikeDebtType(debtAccount.debtType) ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
 
             const createDebtEvent = Effect.fnUntraced(function* (
                 input: TransactionCreateInputInterface,
                 transaction: TransactionEntityInterface,
-                createdEntriesByTransactionId: Map<number, TransactionEntryEntityInterface[]>
+                createdEntriesByTransactionId: Partial<Record<string, readonly TransactionEntryEntityInterface[]>>
             ) {
                 const { debtAccountId } = input;
                 const debtAccount = isDefined(debtAccountId) ? yield* accountRepository.findById(debtAccountId) : null;
-                const primaryEntries = (createdEntriesByTransactionId.get(transaction.id) ?? []).filter(
+                const primaryEntries = (createdEntriesByTransactionId[transaction.id] ?? []).filter(
                     entry => entry.kind === TransactionEntryKindEnum.PRIMARY
                 );
 
@@ -92,7 +86,7 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
                 transactions: TransactionEntityInterface[],
                 createdEntries: TransactionEntryEntityInterface[]
             ) {
-                const createdEntriesByTransactionId = getCreatedEntriesByTransactionId(createdEntries);
+                const createdEntriesByTransactionId = Arr.groupBy(createdEntries, entry => String(entry.transactionId));
 
                 yield* Effect.all(
                     transactions.flatMap((transaction, index) =>
