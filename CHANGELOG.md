@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.2](https://github.com/budgie-at/budgie/compare/v6.103.1...v6.103.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **app:** count a PIN attempt before checking it ([5601cdc](https://github.com/budgie-at/budgie/commit/5601cdc26e80571bb5c78f5b53697d8cf5e2a11a))
+* **app:** fail closed on unreadable or unwritable PIN attempt state ([1771914](https://github.com/budgie-at/budgie/commit/17719142e02e9c0ae2765c0081b76dbadfca47e9))
+* **app:** limit PIN unlock attempts with a growing wait ([1cdfc1f](https://github.com/budgie-at/budgie/commit/1cdfc1f89d6e5f5435ac76b7f734e89cef5635a7)), closes [#1475](https://github.com/budgie-at/budgie/issues/1475)
+* **app:** lock the change-PIN keypad during a PIN wait ([0aaa43f](https://github.com/budgie-at/budgie/commit/0aaa43f1580a379212bfb901bba446a183fe108d))
+
+
+
+
+
 ## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
 
 **Note:** Version bump only for package @budgie-at/root
