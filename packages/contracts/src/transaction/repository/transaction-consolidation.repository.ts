@@ -29,13 +29,17 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                         return [];
                     }
 
+                    const parentTransaction = alias(TransactionEntityTable, 'consolidation_parent_transaction');
+
                     return yield* Db.query(db =>
                         db
                             .select({
                                 id: TransactionEntityTable.id,
-                                consolidationParentTransactionId: TransactionEntityTable.consolidationParentTransactionId
+                                consolidationParentTransactionId: TransactionEntityTable.consolidationParentTransactionId,
+                                consolidationParentType: parentTransaction.consolidationType
                             })
                             .from(TransactionEntityTable)
+                            .leftJoin(parentTransaction, eq(parentTransaction.id, TransactionEntityTable.consolidationParentTransactionId))
                             .where(inArray(TransactionEntityTable.id, [...ids]))
                     );
                 }),

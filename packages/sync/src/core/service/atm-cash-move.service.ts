@@ -1,5 +1,5 @@
 import { UnconsolidationService } from '@budgie/consolidation';
-import { Db, TransactionConsolidationRepository } from '@budgie/contracts';
+import { Db, TransactionConsolidationRepository, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -36,7 +36,12 @@ export class AtmCashMoveService extends Context.Service<AtmCashMoveService>()('@
                 function* (transactionIds: readonly number[]) {
                     const transactions = yield* transactionConsolidationRepository.findConsolidationParentsByIds(transactionIds);
                     const transferIds = new Set(
-                        transactions.map(transaction => transaction.consolidationParentTransactionId).filter(isDefined)
+                        transactions
+                            .filter(
+                                transaction => transaction.consolidationParentType === TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL
+                            )
+                            .map(transaction => transaction.consolidationParentTransactionId)
+                            .filter(isDefined)
                     );
 
                     yield* Effect.forEach(transferIds, transferId => unconsolidationService.unconsolidateById(transferId), {

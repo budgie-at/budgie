@@ -147,4 +147,23 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
             expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
         })
     );
+
+    it.effect('leaves non-ATM consolidations untouched when undoing a move to cash', () =>
+        Effect.gen(function* () {
+            const atmCashMoveService = yield* AtmCashMoveService;
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const { expense, fromAccount, toAccount } = yield* testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+
+            yield* runConsolidation();
+
+            const transferId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const balancesBefore = yield* fetchLedgerBalances([fromAccount.id, toAccount.id]);
+
+            yield* atmCashMoveService.undoMoveToCash([expense.id]);
+
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(transferId);
+            expect(yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toBe(transferId);
+            expect(yield* fetchLedgerBalances([fromAccount.id, toAccount.id])).toEqual(balancesBefore);
+        })
+    );
 });
