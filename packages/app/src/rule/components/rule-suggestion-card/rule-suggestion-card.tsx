@@ -24,7 +24,7 @@ export const RuleSuggestionCard = (props: Props) => {
     const [openRuleForm] = useRuleFormModal();
 
     const confirmDuplicate = (ruleId: number) =>
-        Effect.callback<void>(resume => {
+        Effect.callback<true>(resume => {
             Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
                 {
                     text: t`Cancel`,
@@ -43,7 +43,7 @@ export const RuleSuggestionCard = (props: Props) => {
                 {
                     text: t`Create anyway`,
                     onPress: () => {
-                        resume(Effect.void);
+                        resume(Effect.succeed(true));
                     }
                 }
             ]);
@@ -52,13 +52,12 @@ export const RuleSuggestionCard = (props: Props) => {
     const createRule = Effect.gen(function* () {
         const ruleService = yield* RuleService;
         const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
-        const rule = yield* ruleService
-            .createFromSuggestion(suggestRuleData)
-            .pipe(
-                Effect.catchTag('RuleSuggestionDuplicateError', error =>
+        const rule = yield* ruleService.createFromSuggestion(suggestRuleData).pipe(
+            Effect.catchTags({
+                RuleSuggestionDuplicateError: error =>
                     Effect.andThen(confirmDuplicate(error.ruleId), ruleService.createFromSuggestionAllowingDuplicate(suggestRuleData))
-                )
-            );
+            })
+        );
 
         yield* Effect.forkDetach(ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast));
     });
