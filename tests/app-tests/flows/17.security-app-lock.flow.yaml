@@ -7,6 +7,14 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.AppLockCard'
+    timeout: 3000
+
+- assertNotVisible:
+    id: 'Icon.Fallback'
+
 - runFlow:
     file: subflows/navigation/open-settings-card.flow.yaml
     env:
