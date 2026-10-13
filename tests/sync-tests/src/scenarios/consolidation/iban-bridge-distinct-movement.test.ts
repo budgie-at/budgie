@@ -1,11 +1,11 @@
-import { IbanBridgeTransferRepository } from '@budgie/consolidation';
+import { ConsolidationCandidateRepository } from '@budgie/consolidation';
 import { AccountBalanceRepository, ExternalSourceEnum, PRECISION, TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/sync';
 import { expect, it } from '@effect/vitest';
 import { eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { findMccByCode, seed, seedBankPair, seedBankSyncAccount, testDb, TestLayer } from '../../harness';
+import { seed, seedBankPair, seedBankSyncAccount, testDb, TestLayer, testQueryService } from '../../harness';
 
 it.effect.each(
     [false, true].flatMap(crossAccountCollision => [0, 30000, 60000].map(gapMilliseconds => ({ crossAccountCollision, gapMilliseconds })))
@@ -13,13 +13,13 @@ it.effect.each(
     'retains a second real movement (collision $crossAccountCollision, gap $gapMilliseconds ms)',
     ({ crossAccountCollision, gapMilliseconds }) =>
         Effect.gen(function* () {
-            const transferMcc = yield* findMccByCode('4829');
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
             const sourceInstrument = yield* seed.instrument({ code: 'EUR', name: 'Synthetic euro', symbol: 'X' });
             const source = yield* seedBankSyncAccount('Synthetic source', ExternalSourceEnum.MONOBANK, 'UA-SOURCE', sourceInstrument.id);
             const bridge = yield* seedBankSyncAccount('Synthetic bridge', ExternalSourceEnum.MONOBANK, 'UA-BRIDGE');
             const target = yield* seedBankSyncAccount('Synthetic target', ExternalSourceEnum.MONOBANK, 'UA-TARGET');
             const service = yield* TransferConsolidationService;
-            const bridgeTransferRepository = yield* IbanBridgeTransferRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const balances = yield* AccountBalanceRepository;
             const firstTime = new Date(2026, 9, 6, 12);
             const secondTime = new Date(firstTime.getTime() + gapMilliseconds);
@@ -61,7 +61,7 @@ it.effect.each(
                     [target.id, 1000 * PRECISION]
                 ])
             );
-            const candidates = yield* bridgeTransferRepository.findCanonicalDuplicateCandidates(null);
+            const candidates = yield* consolidationCandidateRepository.findIbanBridgeCanonicalDuplicateCandidates(null);
             const result = yield* service.consolidate(null);
             const after = yield* balances.getLedgerBalances([source.id, target.id]);
             expect(candidates).toEqual([]);
@@ -107,5 +107,5 @@ it.effect.each(
             ]);
             expect(yield* service.consolidate(null)).toEqual({ found: 0, consolidated: 0 });
             expect(yield* balances.getLedgerBalances([source.id, target.id])).toEqual(before);
-        }).pipe(Effect.provide([IbanBridgeTransferRepository.layer, TestLayer]))
+        }).pipe(Effect.provide([ConsolidationCandidateRepository.layer, TestLayer]))
 );

@@ -99,7 +99,7 @@ export const RuleSuggestionCard = (props: Props) => {
     ): Promise<void> =>
         new Promise<void>((resolve, reject) => {
             const handleEditExisting = () => {
-                void openRuleForm({ ruleId: duplicateRule.id });
+                openRuleForm({ ruleId: duplicateRule.id });
                 // oxlint-disable-next-line lingui/no-unlocalized-strings
                 reject(new Error('Edit'));
             };

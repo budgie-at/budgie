@@ -5,14 +5,13 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { BINANCE_ASSET_ALIAS } from '../constant/binance-asset-alias.constant';
-
 import type { ExternalSourceEnum } from '@budgie/contracts';
 
 export class BinanceAssetCodeService extends Context.Service<BinanceAssetCodeService>()('@budgie/sync/BinanceAssetCodeService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const instrumentRepository = yield* InstrumentRepository;
+        const assetAlias: Record<string, string> = { MATIC: 'POL' };
 
         return {
             resolveEligibleSoldOffBaseAssets: Effect.fn('BinanceAssetCodeService.resolveEligibleSoldOffBaseAssets')(function* (
@@ -31,12 +30,12 @@ export class BinanceAssetCodeService extends Context.Service<BinanceAssetCodeSer
 
                 return [
                     ...assetCodes,
-                    ...Object.entries(BINANCE_ASSET_ALIAS)
+                    ...Object.entries(assetAlias)
                         .filter(([, instrumentCode]) => assetCodes.has(instrumentCode))
                         .map(([binanceAssetCode]) => binanceAssetCode)
                 ];
             }),
-            resolveInstrumentCode: (asset: string): string => BINANCE_ASSET_ALIAS[asset] ?? asset
+            resolveInstrumentCode: (asset: string): string => assetAlias[asset] ?? asset
         };
     })
 }) {

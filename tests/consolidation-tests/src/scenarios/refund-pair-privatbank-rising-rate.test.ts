@@ -1,6 +1,5 @@
-import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { RefundConsolidationService, RefundPairRepository } from '@budgie/consolidation';
-import { ExternalSourceEnum, LanguageEnum } from '@budgie/contracts';
+import { convertToMicroUnits, ExternalSourceEnum, LanguageEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

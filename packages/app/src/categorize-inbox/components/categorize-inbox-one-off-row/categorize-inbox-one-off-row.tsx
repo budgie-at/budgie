@@ -1,3 +1,4 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -6,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';

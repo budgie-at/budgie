@@ -38,8 +38,7 @@ export const AuthProvider = ({ children }: Props) => {
         isFaceIdAvailable,
         isTouchIdAvailable,
         isSomeAvailable,
-        isPinEnabled,
-        isLoading: settingsLoading
+        isPinEnabled
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

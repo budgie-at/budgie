@@ -1,7 +1,9 @@
 import { MonobankSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
-import { useEffect, useRef, useState } from 'react';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -34,16 +36,17 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
 
     const [step, setStep] = useState<AddAccountsStep>('accounts');
     const [historyDepth, setHistoryDepth] = useState(DEFAULT_SYNC_HISTORY_DEPTH);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loadResult, setLoadResult] = useState<AsyncResult.AsyncResult<unknown, unknown>>(() => AsyncResult.initial());
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [fetchErrorMessage, setFetchErrorMessage] = useState<string | null>(null);
     const [reloadToken, setReloadToken] = useState(0);
 
-    const { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts } = useAccountSelection();
+    const accountSelection = useAccountSelection();
+    const { accountPreviews, selectedAccounts, setPreviews } = accountSelection;
 
-    const setPreviewsRef = useRef(setPreviews);
-
-    const handleRetry = () => void setReloadToken(previous => previous + 1);
+    const handleRetry = () => {
+        setLoadResult(AsyncResult.initial());
+        setReloadToken(previous => previous + 1);
+    };
     const handleConfirm = async (): Promise<void> => {
         setIsSubmitting(true);
         try {
@@ -74,6 +77,8 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
         goBackOrReplace(`/bank-integration/${integration.id}`);
     };
 
+    const isLoading = AsyncResult.isInitial(loadResult);
+    const fetchErrorMessage = AsyncResult.isFailure(loadResult) ? getErrorMessage(Cause.squash(loadResult.cause)) : null;
     const canConfirm = !isLoading && !isDefined(fetchErrorMessage) && isNotEmptyArray(accountPreviews);
     const isConfirmDisabled = isSubmitting || selectedAccounts.size === 0;
 
@@ -101,27 +106,17 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
     const footer = step === 'history' ? historyFooter : accountsFooter;
 
     useEffect(() => {
-        setPreviewsRef.current = setPreviews;
-    }, [setPreviews]);
+        const fiber = appRuntime.runFork(
+            Effect.flatMap(MonobankSyncService, monobankSyncService => monobankSyncService.fetchAccountsPreview(integration.token)).pipe(
+                Effect.map(previews => previews.filter(preview => !isDefined(preview.existingAccountId))),
+                Effect.tap(previews => Effect.sync(() => void setPreviews(previews))),
+                Effect.exit,
+                Effect.tap(exit => Effect.sync(() => void setLoadResult(AsyncResult.fromExit(exit))))
+            )
+        );
 
-    useEffect(() => {
-        const loadAvailableAccounts = async (): Promise<void> => {
-            setIsLoading(true);
-            setFetchErrorMessage(null);
-            try {
-                const previews = await appRuntime.runPromise(
-                    Effect.flatMap(MonobankSyncService, monobankSyncService => monobankSyncService.fetchAccountsPreview(integration.token))
-                );
-                setPreviewsRef.current(previews.filter(preview => !isDefined(preview.existingAccountId)));
-            } catch (error) {
-                setFetchErrorMessage(getErrorMessage(error));
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        void loadAvailableAccounts();
-    }, [integration.token, reloadToken]);
+        return () => void fiber.interruptUnsafe();
+    }, [integration.token, reloadToken, setPreviews]);
 
     const stepContent =
         step === 'history' ? (
@@ -130,11 +125,7 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
             <AddBankIntegrationAccountsContent
                 isLoading={isLoading}
                 fetchErrorMessage={fetchErrorMessage}
-                accountPreviews={accountPreviews}
-                selectedAccounts={selectedAccounts}
-                onToggle={toggleAccount}
-                onSelectAll={selectAllAccounts}
-                onDeselectAll={deselectAllAccounts}
+                {...accountSelection}
                 onRetry={handleRetry}
             />
         );

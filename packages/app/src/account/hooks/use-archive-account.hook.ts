@@ -1,17 +1,15 @@
 import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useState } from 'react';
-import Toast from 'react-native-toast-message';
 
-import { EmptyFn, getErrorMessage } from '@rnw-community/shared';
+import { EmptyFn } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { useEffectAction } from '../../@generic/hook/use-effect-action.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 
 export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
     const { t } = useLingui();
-    const [isLoading, setIsLoading] = useState(false);
+    const [run, isLoading] = useEffectAction(t`Could not archive account`);
 
     const handleArchive = async () => {
         const confirmed = await confirmAlert({
@@ -26,21 +24,10 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
             return;
         }
 
-        setIsLoading(true);
-        try {
-            await appRuntime.runPromise(
-                Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.archiveById(accountId))
-            );
-            onArchived();
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not archive account`,
-                text2: getErrorMessage(error)
-            });
-        } finally {
-            setIsLoading(false);
-        }
+        run(
+            Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.archiveById(accountId)),
+            onArchived
+        );
     };
 
     return { handleArchive, isLoading };

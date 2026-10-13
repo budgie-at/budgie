@@ -12,7 +12,7 @@ export const ResyncAccount = ({ accountId, testID }: Props) => {
     const [openResyncWindowPicker] = useResyncWindowPickerModal();
 
     const handleResync = () => {
-        void openResyncWindowPicker({ accountId });
+        openResyncWindowPicker({ accountId });
     };
 
     return <Button onPress={handleResync} size="sm" variant="positive" leftIcon={UserIconNameEnum.RotateCw} testID={testID} />;

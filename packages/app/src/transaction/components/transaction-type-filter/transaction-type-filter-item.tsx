@@ -1,11 +1,18 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
-import { TRANSACTION_ICON } from '../../constant/transaction-icon.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { TransactionFilterCard } from '../transaction-filter-card/transaction-filter-card';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
+
+const TRANSACTION_ICON: Record<TransactionTypeEnum, UserIconNameEnum> = {
+    [TransactionTypeEnum.TRANSFER]: UserIconNameEnum.ArrowRightLeft,
+    [TransactionTypeEnum.INCOME]: UserIconNameEnum.TrendingUp,
+    [TransactionTypeEnum.DEBT]: UserIconNameEnum.CreditCard,
+    [TransactionTypeEnum.EXPENSE]: UserIconNameEnum.TrendingDown,
+    [TransactionTypeEnum.ADJUSTMENT]: UserIconNameEnum.BadgePlus
+};
 
 interface Props {
     readonly isSelected: boolean;

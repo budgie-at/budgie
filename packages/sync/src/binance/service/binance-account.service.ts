@@ -1,5 +1,5 @@
-import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, InstrumentRepository } from '@budgie/contracts';
-import { AccountService, convertToMicroUnits } from '@budgie/ledger';
+import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, InstrumentRepository, convertToMicroUnits } from '@budgie/contracts';
+import { AccountService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -9,7 +9,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { mapSyncAccountToCreateInput } from '../../core/util/map-sync-account-to-create-input.util';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
-import { binanceMapper } from '../mapper/binance.mapper';
+import { mapBinanceBalanceToAccount } from '../mapper/binance.mapper';
 import { decodeBinanceAccountId } from '../util/binance-account-id.util';
 
 import { BinanceAssetCodeService } from './binance-asset-code.service';
@@ -44,7 +44,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
         const decodeExchangeAccount = (codecAccountId: string): SyncAccountInterface | null => {
             const decoded = decodeBinanceAccountId(codecAccountId);
 
-            return isDefined(decoded) ? binanceMapper.mapBalanceToAccount(decoded.asset, decoded.wallet, 0) : null;
+            return isDefined(decoded) ? mapBinanceBalanceToAccount(decoded.asset, decoded.wallet, 0) : null;
         };
 
         const anchorAccountBalance = Effect.fnUntraced(function* (accountId: number, balance: number) {

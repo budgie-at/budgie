@@ -7,14 +7,14 @@ import { SearchInput } from '../../../@generic/component/search-input/search-inp
 interface Props {
     readonly search: string;
     readonly searchPlaceholder: string;
-    readonly footer: ReactNode;
+    readonly children: ReactNode;
     readonly onSearchChange: (value: string) => void;
     readonly searchTestID: string;
 }
 
 const keyboardOffset = { closed: 0, opened: 8 };
 
-export const TransactionPickerSearchDock = ({ search, searchPlaceholder, footer, onSearchChange, searchTestID }: Props) => {
+export const TransactionPickerSearchDock = ({ search, searchPlaceholder, children, onSearchChange, searchTestID }: Props) => {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const showFooter = !isSearchFocused;
 
@@ -38,7 +38,7 @@ export const TransactionPickerSearchDock = ({ search, searchPlaceholder, footer,
                     testID={searchTestID}
                 />
 
-                {showFooter ? footer : null}
+                {showFooter ? children : null}
             </View>
         </KeyboardStickyView>
     );

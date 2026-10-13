@@ -1,31 +1,38 @@
 import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
+import {
+    endOfDay,
+    endOfMonth,
+    endOfWeek,
+    endOfYear,
+    startOfDay,
+    startOfMonth,
+    startOfWeek,
+    startOfYear,
+    subMonths,
+    subWeeks
+} from 'date-fns';
 
-import { getDateRangeForDay } from './get-date-range-for-day.util';
-import { getDateRangeForLastMonth } from './get-date-range-for-last-month.util';
-import { getDateRangeForLastWeek } from './get-date-range-for-last-week.util';
-import { getDateRangeForMonthBeforeDay } from './get-date-range-for-month-before-day.util';
-import { getDateRangeForWeekBeforeDay } from './get-date-range-for-week-before-day.util';
-import { getDateRangeForYearBeforeDay } from './get-date-range-for-year-before-day.util';
+const WEEK_OPTIONS = { weekStartsOn: 1 } as const;
 
-export const getDateFilterByPeriod = (period: DatePeriodEnum): DateRangeInterface | null => {
+export const getDateFilterByPeriod = (period: DatePeriodEnum): DateRangeInterface => {
     const now = new Date();
+    const lastWeek = subWeeks(now, 1);
+    const lastMonth = subMonths(now, 1);
 
     switch (period) {
         case DatePeriodEnum.TODAY:
-            return getDateRangeForDay(now);
+            return { from: startOfDay(now), to: endOfDay(now) };
         case DatePeriodEnum.THIS_WEEK:
-            return getDateRangeForWeekBeforeDay(now);
+            return { from: startOfWeek(now, WEEK_OPTIONS), to: endOfWeek(now, WEEK_OPTIONS) };
         case DatePeriodEnum.LAST_WEEK:
-            return getDateRangeForLastWeek(now);
+            return { from: startOfWeek(lastWeek, WEEK_OPTIONS), to: endOfWeek(lastWeek, WEEK_OPTIONS) };
         case DatePeriodEnum.THIS_MONTH:
-            return getDateRangeForMonthBeforeDay(now);
+            return { from: startOfMonth(now), to: endOfMonth(now) };
         case DatePeriodEnum.LAST_MONTH:
-            return getDateRangeForLastMonth(now);
+            return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
         case DatePeriodEnum.THIS_YEAR:
-            return getDateRangeForYearBeforeDay(now);
-        case DatePeriodEnum.ALL_TIME:
-            return { from: null, to: null };
+            return { from: startOfYear(now), to: endOfYear(now) };
         default:
-            return null;
+            return { from: null, to: null };
     }
 };

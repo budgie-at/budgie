@@ -6,7 +6,7 @@
         "customConditions": ["react-native-legacy-deep-imports"],
         "noEmit": true,
         "allowJs": true,
-        "types": ["node", "vitest/globals"],
+        "types": ["node"],
         "paths": {
             "@app/*": ["../../packages/app/src/*"],
             "whisper.rn": ["../../packages/app/node_modules/whisper.rn/lib/typescript/index.d.ts"]

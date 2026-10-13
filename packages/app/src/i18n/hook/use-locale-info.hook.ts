@@ -1,29 +1,25 @@
-import { getLocales } from 'expo-localization';
-
-import { isDefined } from '@rnw-community/shared';
+import { LanguageEnum } from '@budgie/contracts';
 
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { DEFAULT_LOCALE } from '../constant/default-locale.constant';
-import { LOCALES } from '../constant/locales.constant';
-import { LocaleInfoInterface } from '../interface/locale-info.interface';
 import { languageToLocale } from '../util/language-to-locale.util';
+
+import type { LocaleInfoInterface } from '../interface/locale-info.interface';
+
+const SEPARATORS_BY_LANGUAGE: Record<LanguageEnum, Pick<LocaleInfoInterface, 'decimalSeparator' | 'digitGroupingSeparator'>> = {
+    [LanguageEnum.EN]: { decimalSeparator: '.', digitGroupingSeparator: ',' },
+    [LanguageEnum.FR]: { decimalSeparator: ',', digitGroupingSeparator: ' ' },
+    [LanguageEnum.UK]: { decimalSeparator: ',', digitGroupingSeparator: ' ' },
+    [LanguageEnum.DE]: { decimalSeparator: ',', digitGroupingSeparator: '.' },
+    [LanguageEnum.ES]: { decimalSeparator: ',', digitGroupingSeparator: '.' }
+};
 
 export const useLocaleInfo = (): LocaleInfoInterface => {
     const language = useSetting('language');
-    const [locale] = getLocales();
+    const languageTag = languageToLocale(language);
 
-    const localeTag = languageToLocale(language);
-    const localeFromSettings = LOCALES.find(({ languageTag }) => languageTag === localeTag);
-
-    if (isDefined(localeFromSettings)) {
-        return localeFromSettings;
-    }
-
-    const localeFromSystem = LOCALES.find(({ languageTag }) => languageTag === locale.languageTag);
-
-    if (isDefined(localeFromSystem)) {
-        return localeFromSystem;
-    }
-
-    return DEFAULT_LOCALE;
+    return {
+        languageTag,
+        languageCode: languageTag.split('-')[0],
+        ...SEPARATORS_BY_LANGUAGE[language]
+    };
 };

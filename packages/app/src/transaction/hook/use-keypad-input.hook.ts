@@ -1,28 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { KeypadHandlersInterface } from '../interface/keypad-handlers.interface';
 
 interface UseKeypadInputConfig {
     readonly initialValue?: number;
     readonly onChange?: (value: number) => void;
 }
 
-interface KeypadHandlers {
-    readonly onDigit: (digit: string) => void;
-    readonly onDecimal: () => void;
-    readonly onBackspace: () => void;
-    readonly onLongBackspace: () => void;
-}
-
 interface UseKeypadInputResult {
     readonly displayValue: string;
     readonly numericValue: number;
-    readonly handlers: KeypadHandlers;
-    readonly handleDigit: (digit: string) => void;
-    readonly handleDecimal: () => void;
-    readonly handleDoubleZero: () => void;
-    readonly handleBackspace: () => void;
-    readonly handleClear: () => void;
+    readonly handlers: KeypadHandlersInterface;
     readonly setFromNumeric: (value: number) => void;
 }
 
@@ -32,7 +21,6 @@ const formatNumericDisplay = (value: number, maxDecimalPlaces: number): string =
     return rounded.toString();
 };
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Keypad hook with multiple handler functions
 export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInputResult => {
     const { initialValue = 0, onChange } = config;
     const { decimalPlaces } = useSettingsContext();
@@ -85,34 +73,6 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
         });
     };
 
-    const handleDoubleZero = () => {
-        setDisplayValue(prev => {
-            if (prev === '0') {
-                return prev;
-            }
-
-            const parts = prev.split('.');
-            const hasDecimal = parts.length > 1;
-            const decimalPart = parts[1] ?? '';
-
-            if (hasDecimal) {
-                const remainingDecimals = maxDecimals - decimalPart.length;
-
-                if (remainingDecimals >= 2) {
-                    return `${prev}00`;
-                }
-
-                if (remainingDecimals === 1) {
-                    return `${prev}0`;
-                }
-
-                return prev;
-            }
-
-            return `${prev}00`;
-        });
-    };
-
     const handleBackspace = () => {
         setDisplayValue(prev => {
             if (prev.length <= 1) {
@@ -123,32 +83,20 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
         });
     };
 
-    const handleClear = () => {
-        setDisplayValue('0');
-    };
-
     const setFromNumeric = (value: number) => {
         const newDisplay = value === 0 ? '0' : formatNumericDisplay(value, maxDecimals);
 
         setDisplayValue(newDisplay);
     };
 
-    const handlers: KeypadHandlers = {
+    const handlers: KeypadHandlersInterface = {
         onDigit: handleDigit,
         onDecimal: handleDecimal,
         onBackspace: handleBackspace,
-        onLongBackspace: handleClear
+        onLongBackspace: () => {
+            setDisplayValue('0');
+        }
     };
 
-    return {
-        displayValue,
-        numericValue,
-        handlers,
-        handleDigit,
-        handleDecimal,
-        handleDoubleZero,
-        handleBackspace,
-        handleClear,
-        setFromNumeric
-    };
+    return { displayValue, numericValue, handlers, setFromNumeric };
 };

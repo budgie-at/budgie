@@ -24,16 +24,15 @@ interface Props {
     readonly onPress: () => void;
     readonly onLongPress?: () => void;
     readonly disabled?: boolean;
-    readonly spanning?: 1 | 2;
     readonly testID?: string;
 }
 
 const ICON_SIZE = 24;
-
-const PRESS_ANIMATION_CONFIG = {
-    scale: { pressed: 0.92, default: 1, damping: 15, stiffness: 300 },
-    opacity: { pressed: 0.8, default: 1, duration: 50 }
-} as const;
+const PRESSED_SCALE = 0.92;
+const PRESSED_OPACITY = 0.8;
+const SPRING_DAMPING = 15;
+const SPRING_STIFFNESS = 300;
+const OPACITY_DURATION_MS = 50;
 
 const buttonVariants = cva<{
     buttonVariant: Record<KeypadButtonVariant, ClassValue>;
@@ -72,17 +71,7 @@ const confirmTextVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValu
 });
 
 export const TransactionKeypadButton = (props: Props) => {
-    const {
-        value,
-        icon,
-        variant = 'digit',
-        colorVariant = 'positive',
-        onPress,
-        onLongPress,
-        disabled = false,
-        spanning = 1,
-        testID
-    } = props;
+    const { value, icon, variant = 'digit', colorVariant = 'positive', onPress, onLongPress, disabled = false, testID } = props;
 
     const pressed = useSharedValue(false);
 
@@ -97,25 +86,15 @@ export const TransactionKeypadButton = (props: Props) => {
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [
             {
-                scale: withSpring(pressed.value ? PRESS_ANIMATION_CONFIG.scale.pressed : PRESS_ANIMATION_CONFIG.scale.default, {
-                    damping: PRESS_ANIMATION_CONFIG.scale.damping,
-                    stiffness: PRESS_ANIMATION_CONFIG.scale.stiffness
-                })
+                scale: withSpring(pressed.value ? PRESSED_SCALE : 1, { damping: SPRING_DAMPING, stiffness: SPRING_STIFFNESS })
             }
         ],
-        opacity: withTiming(pressed.value ? PRESS_ANIMATION_CONFIG.opacity.pressed : PRESS_ANIMATION_CONFIG.opacity.default, {
-            duration: PRESS_ANIMATION_CONFIG.opacity.duration
-        })
+        opacity: withTiming(pressed.value ? PRESSED_OPACITY : 1, { duration: OPACITY_DURATION_MS })
     }));
 
-    const spanningClassName = spanning === 2 ? 'col-span-2' : '';
     const isConfirm = variant === 'confirm';
 
-    const containerClassName = cn(
-        buttonVariants({ buttonVariant: variant }),
-        isConfirm && confirmVariants({ variant: colorVariant }),
-        spanningClassName
-    );
+    const containerClassName = cn(buttonVariants({ buttonVariant: variant }), isConfirm && confirmVariants({ variant: colorVariant }));
 
     const contentClassName = cn(textVariants({ buttonVariant: variant }), isConfirm && confirmTextVariants({ variant: colorVariant }));
     const hasTestID = isDefined(testID);

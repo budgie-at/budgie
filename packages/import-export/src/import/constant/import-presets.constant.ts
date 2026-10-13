@@ -13,7 +13,6 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         toCurrency: 'Валюта',
         fromCurrency: 'Валюта 2',
         fromAmount: 'Сумма 2',
-        isPlanned: 'Запланировано',
         mcc: ''
     },
     [ImportPresetEnum.FinEye]: {
@@ -23,7 +22,6 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         fromAccount: 'incomeAccount',
         fromAmount: 'income',
         fromCurrency: 'incomeCurrency',
-        isPlanned: '',
         mcc: '',
         operatedAt: 'date',
         toAccount: 'outcomeAccount',
@@ -41,7 +39,6 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         category: 'category',
         operatedAt: 'operatedAt',
         comment: 'comment',
-        isPlanned: '',
         mcc: 'mcc'
     }
 };

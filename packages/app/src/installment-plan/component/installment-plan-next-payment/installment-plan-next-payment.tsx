@@ -1,10 +1,10 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useInstallmentPlanScheduleQuery } from '../../query/use-installment-plan-schedule.query';
 

@@ -1925,3 +1925,36 @@ section[data-density='COMPACT'] .story-intro {
         transform: translate3d(0, var(--ipv-shift, 0), 0);
     }
 }
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.fade-in {
+    animation: fade-in-up 0.5s ease-out backwards;
+    animation-delay: calc(var(--fade-in-index, 0) * 0.1s);
+}
+
+@supports (animation-timeline: view()) {
+    .fade-in-view {
+        animation: fade-in-up linear both;
+        animation-delay: 0s;
+        animation-timeline: view();
+        animation-range: entry calc(var(--fade-in-index, 0) * 4%) entry calc(30% + var(--fade-in-index, 0) * 4%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fade-in,
+    .fade-in-view {
+        animation: none;
+    }
+}

@@ -9,7 +9,6 @@
         "db:generate": "drizzle-kit generate",
         "eas-build-post-install": "cd ../.. && pnpm build",
         "generate:icons": "node --experimental-strip-types scripts/generate-icons-constant.ts",
-        "generate:typed-routes": "expo export --platform web --output-dir /tmp/expo-typed --dump-assetmap 2>/dev/null || true",
         "i18n:compile": "lingui compile --strict --typescript",
         "i18n:extract": "lingui extract --overwrite --clean",
         "i18n:sync": "pnpm i18n:extract && pnpm i18n:compile",
@@ -22,8 +21,7 @@
         "start": "expo start --dev-client -c",
         "test": "vitest run",
         "store:notes": "node --experimental-strip-types scripts/generate-store-release-notes.ts",
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p .",
-        "web": "expo start --web"
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
         "@budgie/ai": "workspace:^",
@@ -33,7 +31,6 @@
         "@budgie/contracts": "workspace:^",
         "@budgie/import-export": "workspace:*",
         "@budgie/ledger": "workspace:*",
-        "@budgie/logger": "workspace:*",
         "@budgie/market": "workspace:*",
         "@budgie/recurring": "workspace:*",
         "@budgie/rules": "workspace:*",

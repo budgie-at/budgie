@@ -48,6 +48,34 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
                     .slice(0, limit)
                     .map(([id]) => id);
 
+            const scoreCategories = Effect.fn('EmbeddingSuggestionService.scoreCategories')(function* (
+                serializedEmbedding: Uint8Array,
+                distanceThreshold: number
+            ) {
+                const neighbours = yield* Effect.all(
+                    [
+                        merchantEmbeddingRepository.findSimilarCategories(
+                            serializedEmbedding,
+                            EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                            distanceThreshold,
+                            EMBEDDING_CATEGORY_SUGGESTION_LIMIT
+                        ),
+                        commentEmbeddingRepository.findSimilarCategories(
+                            serializedEmbedding,
+                            EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                            distanceThreshold,
+                            EMBEDDING_CATEGORY_SUGGESTION_LIMIT
+                        )
+                    ],
+                    { concurrency: 'unbounded' }
+                );
+
+                return addScores(
+                    new Map<number, number>(),
+                    neighbours.flat().map(row => [row.categoryId, row.score])
+                );
+            });
+
             const prepareSuggestion = Effect.fn('EmbeddingSuggestionService.prepareSuggestion')(function* (
                 transactionTitle: string,
                 mccDescription: string | null,
@@ -83,21 +111,9 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
                     return [];
                 }
 
-                const { serialized, distanceThreshold } = resolved;
-                const [merchantResults, commentResults, mccRows] = yield* Effect.all(
+                const [scores, mccRows] = yield* Effect.all(
                     [
-                        merchantEmbeddingRepository.findSimilarCategories(
-                            serialized,
-                            EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                            distanceThreshold,
-                            EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-                        ),
-                        commentEmbeddingRepository.findSimilarCategories(
-                            serialized,
-                            EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                            distanceThreshold,
-                            EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-                        ),
+                        scoreCategories(resolved.serialized, resolved.distanceThreshold),
                         isDefined(mccCategoryId)
                             ? transactionRepository.findMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
                             : Effect.succeed([])
@@ -105,16 +121,6 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
                     { concurrency: 'unbounded' }
                 );
                 const mccMaxCount = Math.max(...mccRows.map(row => row.count));
-                const scores = new Map<number, number>();
-
-                addScores(
-                    scores,
-                    merchantResults.map(row => [row.categoryId, row.score])
-                );
-                addScores(
-                    scores,
-                    commentResults.map(row => [row.categoryId, row.score])
-                );
                 addScores(
                     scores,
                     mccRows.map(row => [row.categoryId, (row.count / mccMaxCount) * MCC_BLEND_WEIGHT])
@@ -198,7 +204,7 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
                 return commentResults.map(row => row.comment).filter(isNotEmptyString);
             });
 
-            return { suggestCategories, suggestTags, suggestComments };
+            return { scoreCategories, suggestCategories, suggestTags, suggestComments };
         })
     }
 ) {

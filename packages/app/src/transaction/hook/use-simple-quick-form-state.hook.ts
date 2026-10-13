@@ -4,6 +4,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { setPrimaryCategory } from '../utils/set-primary-category.util';
+
 import type { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
 
 export const useSimpleQuickFormState = ({
@@ -15,37 +17,20 @@ export const useSimpleQuickFormState = ({
 }) => {
     const { control, getValues, setValue } = useFormContext<TransactionCreateInputInterface>();
 
-    const watchedValues = {
-        comment: useWatch({ control, name: 'comment' }),
-        tagIds: useWatch({ control, name: 'tagIds' }),
-        entries: useWatch({ control, name: 'entries' }),
-        amount: useWatch({ control, name: 'amount' }),
-        accountId: useWatch({ control, name: accountFieldName })
-    };
-    const categoryEntries = getTransactionCategoryEntries(watchedValues.entries);
+    const comment = useWatch({ control, name: 'comment' });
+    const tagIds = useWatch({ control, name: 'tagIds' });
+    const entries = useWatch({ control, name: 'entries' });
+    const amount = useWatch({ control, name: 'amount' });
+    const watchedAccountId = useWatch({ control, name: accountFieldName });
+    const categoryEntries = getTransactionCategoryEntries(entries);
     const categoryEntry = categoryEntries.at(0);
-    const derivedValues = {
-        accountId: isDefined(watchedValues.accountId) ? watchedValues.accountId : 0,
-        categoryId: isDefined(categoryEntry) ? categoryEntry.categoryId : null,
-        splitEntryCount: categoryEntries.length,
-        hasTagsSelected: isNotEmptyArray(watchedValues.tagIds),
-        isAmountPositive: isPositiveNumber(watchedValues.amount),
-        isCategoryUserConfirmed: !isDefined(categoryEntry) || categoryEntry.categorySource !== CategorySourceEnum.MCC_DEFAULT
-    };
 
     const handleSelectCategory = (selectedCategoryId: number) => {
-        const currentEntries = getValues('entries');
-        const [currentCategoryEntry] = getTransactionCategoryEntries(currentEntries);
+        const updatedEntries = setPrimaryCategory(getValues('entries'), selectedCategoryId);
 
-        if (!isDefined(currentCategoryEntry)) {
-            return;
+        if (isDefined(updatedEntries)) {
+            setValue('entries', updatedEntries, { shouldValidate: false });
         }
-
-        const updatedEntries = currentEntries.map(entry =>
-            entry === currentCategoryEntry ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
-        );
-
-        setValue('entries', updatedEntries, { shouldValidate: false });
     };
 
     const handleSelectTag = (selectedTagId: number) => {
@@ -63,7 +48,7 @@ export const useSimpleQuickFormState = ({
     };
 
     const handleFillPatternAmount = (patternAmount: number) => {
-        if (isPositiveNumber(watchedValues.amount)) {
+        if (isPositiveNumber(amount)) {
             return;
         }
 
@@ -72,10 +57,15 @@ export const useSimpleQuickFormState = ({
     };
 
     return {
-        ...derivedValues,
-        amount: watchedValues.amount,
-        comment: watchedValues.comment,
-        entries: watchedValues.entries,
+        accountId: watchedAccountId ?? 0,
+        categoryId: categoryEntry?.categoryId ?? null,
+        splitEntryCount: categoryEntries.length,
+        hasTagsSelected: isNotEmptyArray(tagIds),
+        isAmountPositive: isPositiveNumber(amount),
+        isCategoryUserConfirmed: !isDefined(categoryEntry) || categoryEntry.categorySource !== CategorySourceEnum.MCC_DEFAULT,
+        amount,
+        comment,
+        entries,
         handleSelectCategory,
         handleSelectTag,
         handleSelectComment,

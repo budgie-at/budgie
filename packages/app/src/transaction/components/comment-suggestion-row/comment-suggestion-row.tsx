@@ -9,10 +9,6 @@ interface Props extends CategoryScopedSuggestionRowPropsInterface {
     readonly onSelect: (comment: string) => void;
 }
 
-const getCommentKey = (suggestedComment: string): string => suggestedComment;
-const getCommentIcon = (): UserIconNameEnum => UserIconNameEnum.MessageSquare;
-const getCommentTitle = (suggestedComment: string): string => suggestedComment;
-
 export const CommentSuggestionRow = (props: Props) => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
 
@@ -27,13 +23,14 @@ export const CommentSuggestionRow = (props: Props) => {
 
     return (
         <IconTitleSuggestionRow
-            suggestions={suggestions}
+            items={suggestions.map(suggestedComment => ({
+                key: suggestedComment,
+                icon: UserIconNameEnum.MessageSquare,
+                title: suggestedComment,
+                onSelect: () => void onSelect(suggestedComment)
+            }))}
             status={status}
             enabled={enabled}
-            onSelect={onSelect}
-            getKey={getCommentKey}
-            getIcon={getCommentIcon}
-            getTitle={getCommentTitle}
             testIDPrefix={IconTitleSuggestionRowSelector.Comment}
         />
     );

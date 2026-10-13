@@ -674,11 +674,9 @@
                             "packages/app/src/transaction/components/simple-quick-form-display/simple-quick-form-display.tsx",
                             "packages/app/src/transaction/components/quick-form-bottom-overlay/quick-form-bottom-overlay.tsx",
                             "packages/app/src/transaction/components/simple-quick-form/simple-quick-form.tsx",
-                            "packages/app/src/transaction/components/transaction-picker/transaction-picker.tsx",
                             "packages/app/src/transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer.tsx",
                             "packages/app/src/transaction/components/transaction-amount-display/transaction-amount-display.tsx",
                             "packages/app/src/transaction/components/transaction-field-icons/transaction-field-icons.tsx",
-                            "packages/app/src/transaction/interface/update-simple-transaction-page-props.interface.ts",
                             "packages/app/src/@generic/component/page-header/page-header.tsx",
                             "packages/app/src/@generic/component/searchable-page/searchable-page.tsx",
                             "packages/app/src/@generic/component/selector-card/selector-card.tsx",
@@ -689,10 +687,8 @@
                             "packages/app/src/@generic/component/circle-icon/circle-icon.tsx",
                             "packages/app/src/@generic/component/empty-state/empty-state.tsx",
                             "packages/app/src/@generic/component/form-amount-input/form-amount-input.tsx",
-                            "packages/app/src/@generic/component/form-page/form-page.tsx",
                             "packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx",
                             "packages/app/src/account/component/account-action-card/account-action-card.tsx",
-                            "packages/app/src/account/component/account-card-base/account-card-base.tsx",
                             "packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx",
                             "packages/app/src/auth/components/pin-form/pin-form.tsx",
                             "packages/app/src/budget/components/budget-progress-bar/budget-progress-bar.tsx",
@@ -701,17 +697,53 @@
                             "packages/app/src/settings/components/budget-setting-card/budget-setting-card.tsx",
                             "packages/app/src/tag/components/tags-select-content/tags-select-content.tsx",
                             "packages/app/src/transaction/components/split-entry-row/split-entry-row.tsx",
-                            "packages/app/src/transaction/components/transaction-field-icon/transaction-field-icon.tsx",
-                            "packages/app/src/transaction/components/transaction-keypad-button/transaction-keypad-button.tsx",
-                            "packages/app/src/transaction/components/transaction-keypad/transaction-keypad.tsx",
-                            "packages/landing/src/generic/component/blog-card/blog-card.tsx"
+                            "packages/app/src/transaction/components/transaction-field-icon/transaction-field-icon.tsx"
                         ]
                     }
                 ],
                 "react/capitalized-calls": "off",
                 "react/exhaustive-effect-dependencies": "off",
                 "budgie/consistent-this": "error",
-                "budgie/no-undef-init": "error"
+                "budgie/no-undef-init": "error",
+                "budgie/utils-folder": [
+                    "error",
+                    {
+                        "allow": [
+                            "packages/ai/src/@generic/util",
+                            "packages/ai/src/suggestion/util",
+                            "packages/ai/src/voice/util",
+                            "packages/app/src/@generic/util",
+                            "packages/app/src/ai/util",
+                            "packages/app/src/auth/util",
+                            "packages/app/src/i18n/util",
+                            "packages/app/src/rule/util",
+                            "packages/categorization/src/embedding/util",
+                            "packages/consolidation/src/shared/util",
+                            "packages/contracts/src/@generic/util",
+                            "packages/contracts/src/account-balance/util",
+                            "packages/contracts/src/account/util",
+                            "packages/contracts/src/installment-plan/util",
+                            "packages/contracts/src/mcc-category/util",
+                            "packages/contracts/src/transaction-entry/util",
+                            "packages/contracts/src/transaction-tags/util",
+                            "packages/contracts/src/transaction/util",
+                            "packages/import-export/src/import/util",
+                            "packages/landing/src/beta/util",
+                            "packages/landing/src/blog/util",
+                            "packages/landing/src/feature/util",
+                            "packages/landing/src/generic/util",
+                            "packages/landing/src/i18n/util",
+                            "packages/ledger/src/@generic/util",
+                            "packages/ledger/src/transaction/util",
+                            "packages/market/src/@generic/util",
+                            "packages/rules/src/util",
+                            "packages/sync/src/binance/util",
+                            "packages/sync/src/core/util",
+                            "packages/sync/src/erste/util",
+                            "packages/sync/src/privatbank/util"
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -1134,9 +1166,7 @@
             "files": [
                 "packages/{contracts,sync,consolidation,budget,market,ledger,rules,recurring,categorization,import-export,ai}/src/**/*.ts",
                 "packages/app/src/**/service/**/*.ts",
-                "packages/app/src/**/repository/**/*.ts",
-                "packages/app/src/**/*.task.ts",
-                "packages/app/src/**/api/**/*.ts"
+                "packages/app/src/**/*.task.ts"
             ],
             "rules": {
                 "budgie/effect-no-imperative": "error",

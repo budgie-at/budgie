@@ -34,11 +34,9 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
 
     const filters = buildUncategorizedFilters(params);
     const inbox = useCategorizeInbox(filters, strategy);
-    const { contextValue, lastWrite, undo, applyFollowUp, movedToCashTransactionIds, undoMoveToCash } = useCategorizeInboxActions(
-        strategy,
-        inbox.visibility
-    );
-    const { items, remainingCount, categorizedCount, acceptableAssignments } = inbox;
+    const contextValue = useCategorizeInboxActions(strategy, inbox);
+    const { lastWrite, movedToCashTransactionIds } = contextValue;
+    const { items, categorizedCount } = inbox;
 
     const handleGoBack = (): void => void router.back();
     const handleShowList = (): void =>
@@ -46,18 +44,7 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
 
     const emptyDescription = isPositiveNumber(categorizedCount) ? strategy.doneThisSession(categorizedCount) : strategy.emptyDescription;
     const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(lastWrite) || isNotEmptyArray(movedToCashTransactionIds));
-    const panel = hasPanel ? (
-        <CategorizeInboxPanel
-            remainingCount={remainingCount}
-            categorizedCount={categorizedCount}
-            acceptableAssignments={acceptableAssignments}
-            lastWrite={lastWrite}
-            onUndo={undo}
-            onFollowUp={applyFollowUp}
-            movedToCashTransactionIds={movedToCashTransactionIds}
-            onUndoMoveToCash={undoMoveToCash}
-        />
-    ) : null;
+    const panel = hasPanel ? <CategorizeInboxPanel /> : null;
     const listContent = isEmptyArray(items) ? (
         <View className="flex-1 justify-center gap-y-xl">
             <EmptyState circleIcon={UserIconNameEnum.PartyPopper} title={t`All caught up`} description={emptyDescription} />

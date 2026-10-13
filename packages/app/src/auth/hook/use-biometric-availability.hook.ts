@@ -10,8 +10,7 @@ const biometricAvailabilityAtom = appAtomRuntime.atom(Effect.flatMap(AuthService
 const LOADING_BIOMETRIC_AVAILABILITY = {
     isTouchIdAvailable: false,
     isFaceIdAvailable: false,
-    isSomeAvailable: false,
-    isLoading: true
+    isSomeAvailable: false
 };
 
 export const useBiometricAvailability = () =>

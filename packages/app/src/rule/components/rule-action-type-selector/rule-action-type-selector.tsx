@@ -4,8 +4,9 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
+import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { EXCLUSIVE_ACTION_TYPES } from '../../constant/exclusive-action-types.constant';
-import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selector/rule-action-bottom-sheet-selector';
+import { RuleOptionPicker } from '../rule-option-picker/rule-option-picker';
 
 interface RuleActionTypeOptionInterface {
     readonly value: RuleActionTypeEnum;
@@ -37,19 +38,17 @@ export const RuleActionTypeSelector = ({ index, testID }: Props) => {
 
     const availableOptions = RULE_ACTION_TYPE_OPTIONS.filter(({ value }) => !usedExclusiveTypes.has(value));
 
-    const options = availableOptions.map(option => ({ value: option.value, label: t(option.label) }));
-    const getDisplayValue = (value: RuleActionTypeEnum) => options.find(option => option.value === value)?.label ?? t`Select Type`;
-
     const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.type`>) => (
-        <RuleActionBottomSheetSelector
-            value={value}
-            onChange={onChange}
-            options={options}
-            label={t`Action Type`}
-            sheetTitle={t`Select Action Type`}
-            displayValue={getDisplayValue(value)}
-            testID={testID}
-        />
+        <FormItem label={t`Action Type`}>
+            <RuleOptionPicker
+                value={value}
+                onChange={onChange}
+                options={availableOptions}
+                sheetTitle={t`Select Action Type`}
+                defaultLabel={t`Select Type`}
+                testID={testID}
+            />
+        </FormItem>
     );
 
     return <Controller control={control} name={`actions.${index}.type`} render={renderSelector} />;

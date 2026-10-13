@@ -1,5 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { makeLoggerLayer } from '@budgie/logger';
+import { UserIconNameEnum, makeLoggerLayer } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';

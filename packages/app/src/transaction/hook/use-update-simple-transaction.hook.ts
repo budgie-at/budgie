@@ -26,19 +26,7 @@ export const useUpdateSimpleTransaction = ({ transaction, transactionType, openF
         onAfterSubmit: () => void learnCorrection(transactionId, transaction.entries.map(entry => entry.categoryId).filter(isDefined))
     });
 
-    const {
-        mode: ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        matchingRuleIds,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
-    } = useSuggestRuleDetection({
-        transaction,
-        control: form.control
-    });
+    const ruleDetection = useSuggestRuleDetection({ transaction, control: form.control });
 
     const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
     const transactionAccountId = useWatch({
@@ -67,14 +55,6 @@ export const useUpdateSimpleTransaction = ({ transaction, transactionType, openF
         handleSubmit,
         handleDelete,
         handleGoBack,
-        isConsolidated: isDefined(transaction.consolidationType),
-        ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        matchingRuleIds,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
+        ruleDetection
     };
 };

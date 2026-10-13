@@ -13,18 +13,15 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import {
-    expectSingleConsolidation,
-    fetchCanonicalsOfType,
-    fetchCachedBalanceAmount,
-    fetchTransactionById,
-    findMccByCode,
-    seed,
-    seedBankPair,
-    seedBankSyncAccount,
-    testDb,
-    TestLayer
-} from '../../harness';
+import { fetchCachedBalanceAmount, seed, seedBankPair, seedBankSyncAccount, testDb, TestLayer, testQueryService } from '../../harness';
+
+const expectSingleConsolidation = Effect.fnUntraced(function* () {
+    const transferConsolidationService = yield* TransferConsolidationService;
+    const result = yield* transferConsolidationService.consolidate(null);
+
+    expect(result.consolidated).toBe(1);
+    expect(result.found).toBe(1);
+});
 
 const SOURCE_IBAN = 'UA-SOURCE-EUR';
 const BRIDGE_IBAN = 'UA-BRIDGE-UAH';
@@ -36,7 +33,7 @@ const UAH_TO_EUR_RATE = EUR_AMOUNT / UAH_AMOUNT;
 
 const seedBridgeAccounts = () =>
     Effect.gen(function* () {
-        const transferMcc = yield* findMccByCode('4829');
+        const transferMcc = yield* testQueryService.findMccByCode('4829');
         const eur = yield* seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
         const sourceAccount = yield* seedBankSyncAccount('Monobank Fop EUR', null, SOURCE_IBAN, eur.id);
         const bridgeAccount = yield* seedBankSyncAccount('Monobank Fop UAH', null, BRIDGE_IBAN);
@@ -135,9 +132,9 @@ const fetchMovedSourceIds = (canonicalId: number) =>
 
 const expectCanonicalTransfer = (consolidationType: TransactionConsolidationTypeEnum, sourceAccountId: number, targetAccountId: number) =>
     Effect.gen(function* () {
-        expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+        expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
 
-        const canonicals = yield* fetchCanonicalsOfType(consolidationType);
+        const canonicals = yield* testQueryService.fetchCanonicalsOfType(consolidationType);
         expect(canonicals).toHaveLength(1);
         expect(canonicals[0].type).toBe(TransactionTypeEnum.TRANSFER);
         expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
@@ -149,7 +146,7 @@ const expectCanonicalTransfer = (consolidationType: TransactionConsolidationType
 const expectSourcesParented = (canonicalId: number, sourceTransactionIds: number[]) =>
     Effect.gen(function* () {
         for (const sourceTransactionId of sourceTransactionIds) {
-            expect((yield* fetchTransactionById(sourceTransactionId)).consolidationParentTransactionId).toBe(canonicalId);
+            expect((yield* testQueryService.findTransactionById(sourceTransactionId)).consolidationParentTransactionId).toBe(canonicalId);
         }
     });
 
@@ -167,7 +164,7 @@ const expectBridgeReclaimedIntoDirectTransfer = (
     sourceIds: number[]
 ) =>
     Effect.gen(function* () {
-        expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+        expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
 
         const canonicalId = yield* expectCanonicalTransfer(
             TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
@@ -256,9 +253,9 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
 
             expect(result.found).toBe(0);
             expect(result.consolidated).toBe(0);
-            expect((yield* fetchTransactionById(directTransfer.id)).consolidationType).toBeNull();
-            expect((yield* fetchTransactionById(bridgeIncome.id)).consolidationParentTransactionId).toBeNull();
-            expect((yield* fetchTransactionById(bridgeExpense.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(directTransfer.id)).consolidationType).toBeNull();
+            expect((yield* testQueryService.findTransactionById(bridgeIncome.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(bridgeExpense.id)).consolidationParentTransactionId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -290,7 +287,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
             );
 
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const canonicalBefore = yield* fetchTransactionById(canonicalTransfer.id);
+            const canonicalBefore = yield* testQueryService.findTransactionById(canonicalTransfer.id);
             const canonicalEntriesBefore = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
@@ -303,8 +300,8 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
             expect(yield* accountBalanceRepository.getLedgerBalances([sourceAccount.id, targetAccount.id])).toEqual(expectedBalances);
             yield* expectSingleConsolidation();
 
-            const bridgeCanonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
-            const pairCanonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const bridgeCanonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
+            const pairCanonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
             expect(bridgeCanonicals).toEqual([canonicalBefore]);
             expect(pairCanonicals).toHaveLength(1);

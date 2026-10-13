@@ -6,7 +6,8 @@ import {
     DebtEventDirectionEnum,
     DebtEventRepository,
     DebtEventSourceEnum,
-    getDebtClosedAmount
+    getDebtClosedAmount,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { EntryBaseValuationService } from '@budgie/market';
@@ -15,8 +16,6 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
-
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 import type { DebtAccountUpdateInputInterface } from '../interface/debt-account-update-input.interface';
 import type { AccountEntityInterface, DebtAccountCreateInputInterface, DebtEventEntityInterface } from '@budgie/contracts';

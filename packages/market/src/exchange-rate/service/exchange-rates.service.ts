@@ -5,6 +5,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { resolveDirectOrInverseRate } from '../../@generic/util/resolve-direct-or-inverse-rate.util';
 import { ExchangeRateRepository } from '../repository/exchange-rate.repository';
 
 export class ExchangeRatesService extends Context.Service<ExchangeRatesService>()('@budgie/market/ExchangeRatesService', {
@@ -23,24 +24,12 @@ export class ExchangeRatesService extends Context.Service<ExchangeRatesService>(
             return yield* instrumentRepository.findByCode('USD');
         });
 
-        const findDirectOrInverseConversionRate = Effect.fn('ExchangeRatesService.findDirectOrInverseConversionRate')(function* (
-            fromInstrumentId: number,
-            toInstrumentId: number
-        ) {
-            const directExchangeRate = yield* exchangeRateRepository.findByBaseAndQuoteIds(fromInstrumentId, toInstrumentId);
-
-            if (isDefined(directExchangeRate)) {
-                return directExchangeRate.rate;
-            }
-
-            const inverseExchangeRate = yield* exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, fromInstrumentId);
-
-            if (isDefined(inverseExchangeRate)) {
-                return 1 / inverseExchangeRate.rate;
-            }
-
-            return null;
-        });
+        const findDirectOrInverseConversionRate = (fromInstrumentId: number, toInstrumentId: number) =>
+            resolveDirectOrInverseRate(
+                (baseInstrumentId, quoteInstrumentId) => exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId),
+                fromInstrumentId,
+                toInstrumentId
+            );
 
         const findCurrentConversionRate = Effect.fn('ExchangeRatesService.findCurrentConversionRate')(function* (
             fromInstrumentId: number,
@@ -79,7 +68,6 @@ export class ExchangeRatesService extends Context.Service<ExchangeRatesService>(
 
         return {
             getBaseInstrument,
-            findDirectOrInverseConversionRate,
             convert: Effect.fn('ExchangeRatesService.convert')(function* (
                 fromInstrumentId: number,
                 toInstrumentId: number,

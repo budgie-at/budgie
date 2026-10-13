@@ -1,5 +1,5 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -10,12 +10,12 @@ import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxCashWithdrawalChips } from '../categorize-inbox-cash-withdrawal-chips/categorize-inbox-cash-withdrawal-chips';
+import { CategorizeInboxAlreadyTrackedChip } from '../categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip';
 import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
+import { CategorizeInboxMoveToCashChip } from '../categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip';
 import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
 
 import { CategorizeInboxClusterCardSelector } from './categorize-inbox-cluster-card.selector';
@@ -76,7 +76,10 @@ export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
 
             <View className="flex-row flex-wrap items-center gap-sm">
                 {cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? (
-                    <CategorizeInboxCashWithdrawalChips cluster={cluster} />
+                    <>
+                        <CategorizeInboxMoveToCashChip cluster={cluster} />
+                        <CategorizeInboxAlreadyTrackedChip cluster={cluster} />
+                    </>
                 ) : null}
                 <CategorizeInboxSuggestionChips cluster={cluster} />
             </View>

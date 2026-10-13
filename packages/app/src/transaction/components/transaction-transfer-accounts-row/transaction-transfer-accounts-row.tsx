@@ -40,30 +40,36 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const fromAccountSelectedTestID = isDefined(fromAccount) ? TransferQuickFormSelector.SelectedFromAccount(fromAccount.title) : void 0;
     const toAccountSelectedTestID = isDefined(toAccount) ? TransferQuickFormSelector.SelectedToAccount(toAccount.title) : void 0;
 
-    const handleFromPress = async () => {
-        const selectedAccountId = await openAccountSelector({
-            initialAccountId: fromAccountId,
-            excludeAccountId: toAccountId,
-            excludeAccountTypes: [AccountTypeEnum.DEBT],
-            onlyActive: false
-        });
-
-        if (isDefined(selectedAccountId)) {
-            setValue('fromAccountId', selectedAccountId);
-        }
+    const handleFromPress = () => {
+        openAccountSelector(
+            {
+                initialAccountId: fromAccountId,
+                excludeAccountId: toAccountId,
+                excludeAccountTypes: [AccountTypeEnum.DEBT],
+                onlyActive: false
+            },
+            selectedAccountId => {
+                if (isDefined(selectedAccountId)) {
+                    setValue('fromAccountId', selectedAccountId);
+                }
+            }
+        );
     };
 
-    const handleToPress = async () => {
-        const selectedAccountId = await openAccountSelector({
-            initialAccountId: toAccountId,
-            excludeAccountId: fromAccountId,
-            excludeAccountTypes: [AccountTypeEnum.DEBT],
-            onlyActive: false
-        });
-
-        if (isDefined(selectedAccountId)) {
-            setValue('toAccountId', selectedAccountId);
-        }
+    const handleToPress = () => {
+        openAccountSelector(
+            {
+                initialAccountId: toAccountId,
+                excludeAccountId: fromAccountId,
+                excludeAccountTypes: [AccountTypeEnum.DEBT],
+                onlyActive: false
+            },
+            selectedAccountId => {
+                if (isDefined(selectedAccountId)) {
+                    setValue('toAccountId', selectedAccountId);
+                }
+            }
+        );
     };
 
     const handleSwap = () => {

@@ -1,8 +1,8 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { Text } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';

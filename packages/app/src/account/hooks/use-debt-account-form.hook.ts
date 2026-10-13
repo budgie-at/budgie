@@ -15,14 +15,12 @@ interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'c
 
 export const useDebtAccountForm = (
     initialValues: DebtAccountFormValues,
-    onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>,
-    syncInitialValues = false
+    onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>
 ) => {
     const form = useAccountEntityForm(
         standardSchemaResolver(Schema.toStandardSchemaV1(DebtAccountCreateInputSchema)),
         initialValues,
-        onSubmit,
-        syncInitialValues
+        onSubmit
     );
 
     const [instrumentId, debtType] = useWatch({

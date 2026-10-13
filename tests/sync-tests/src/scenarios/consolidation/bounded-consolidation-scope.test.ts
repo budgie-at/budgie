@@ -3,7 +3,7 @@ import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchCanonicalsOfType, seed, seedBankPair, TestLayer } from '../../harness';
+import { seed, seedBankPair, TestLayer, testQueryService } from '../../harness';
 
 const seedScopedTransferPair = (externalIdPrefix: string, operatedAt: Date, fromAccountId: number, toAccountId: number) =>
     Effect.gen(function* () {
@@ -46,7 +46,7 @@ describe('consolidation/bounded-consolidation-scope', () => {
             });
 
             expect(result).toEqual({ found: 1, consolidated: 1 });
-            expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -58,7 +58,7 @@ describe('consolidation/bounded-consolidation-scope', () => {
             const result = yield* transferConsolidationService.consolidate(null);
 
             expect(result).toEqual({ found: 2, consolidated: 2 });
-            expect(yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(2);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(2);
         }).pipe(Effect.provide(TestLayer))
     );
 });

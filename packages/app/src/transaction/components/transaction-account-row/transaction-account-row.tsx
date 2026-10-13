@@ -44,17 +44,20 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     const transactionType = useWatch({ control, name: 'type' });
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
 
-    const handlePress = async () => {
+    const handlePress = () => {
         const isExpenseSourceAccount = transactionType === TransactionTypeEnum.EXPENSE && fieldName === 'fromAccountId';
-        const selectedAccountId = await openAccountSelector({
-            initialAccountId: accountId,
-            onlyActive: false,
-            ...(isExpenseSourceAccount && { excludeAccountTypes: [AccountTypeEnum.DEPOSIT] })
-        });
-
-        if (isDefined(selectedAccountId)) {
-            setValue(fieldName, selectedAccountId);
-        }
+        openAccountSelector(
+            {
+                initialAccountId: accountId,
+                onlyActive: false,
+                ...(isExpenseSourceAccount && { excludeAccountTypes: [AccountTypeEnum.DEPOSIT] })
+            },
+            selectedAccountId => {
+                if (isDefined(selectedAccountId)) {
+                    setValue(fieldName, selectedAccountId);
+                }
+            }
+        );
     };
 
     const displayLabel = label ?? t`Account`;

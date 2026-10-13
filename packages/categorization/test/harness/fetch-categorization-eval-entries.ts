@@ -1,6 +1,6 @@
 import {
     AccountEntityTable,
-    BaseTransactionFilterRepository,
+    transactionFilters,
     CategoryEntityTable,
     Db,
     InstrumentEntityTable,
@@ -13,7 +13,6 @@ import { and, asc, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 export const fetchCategorizationEvalEntries = Effect.fnUntraced(function* () {
-    const transactionFilters = new BaseTransactionFilterRepository();
     const entries = yield* Db.query(db =>
         db
             .select({

@@ -1,4 +1,5 @@
 /* eslint-disable max-lines -- File owns a single multi-stage Binance signed-client pipeline (balances, crypto + fiat history, HMAC signing, weight throttle) that must stay together */
+import { PRECISION } from '@budgie/contracts';
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
@@ -14,12 +15,7 @@ import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
-import { BINANCE_API_BASE_URL } from '../constant/binance-api-base-url.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
-import { BINANCE_DORMANCY_PERIOD_MS } from '../constant/binance-dormancy-period-ms.constant';
-import { BINANCE_FIAT_MAX_PERIOD_MS } from '../constant/binance-fiat-max-period-ms.constant';
-import { BINANCE_MAJOR_QUOTE_ASSETS } from '../constant/binance-major-quote-asset.constant';
-import { BINANCE_MICRO_UNITS_PRECISION as MICRO_UNITS_PRECISION } from '../constant/binance-precision.constant';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
 import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
@@ -33,7 +29,18 @@ import { BinanceLockedEarnPositionListApiSchema } from '../interface/binance-loc
 import { BinanceServerTimeApiSchema } from '../interface/binance-server-time-api.schema';
 import { BinanceTradeListApiSchema } from '../interface/binance-trade-api.schema';
 import { BinanceWithdrawalListApiSchema } from '../interface/binance-withdrawal-api.schema';
-import { binanceMapper } from '../mapper/binance.mapper';
+import {
+    mapBinanceBalanceToAccount,
+    mapBinanceC2cOrderToTransaction,
+    mapBinanceConvertToTransfer,
+    mapBinanceDepositToTransaction,
+    mapBinanceEarnRewardsToTransactions,
+    mapBinanceFiatOrderToTransaction,
+    mapBinanceTradeToTransfer,
+    mapBinanceUnrepresentableBalanceToAccount,
+    mapBinanceWithdrawalToTransaction,
+    parseBinanceAmount
+} from '../mapper/binance.mapper';
 import { decodeBinanceAccountId, encodeBinanceAccountId } from '../util/binance-account-id.util';
 
 import { BinanceWeightThrottle } from './binance-weight-throttle';
@@ -59,6 +66,10 @@ import type * as Headers from 'effect/http/Headers';
 import type * as HttpClient from 'effect/http/HttpClient';
 import type { HttpMethod } from 'effect/http/HttpMethod';
 
+const API_BASE_URL = 'https://api.binance.com';
+const DORMANCY_PERIOD_MS = 7_776_000_000;
+const FIAT_MAX_PERIOD_MS = 2592000000;
+const MAJOR_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'] as const;
 const SPOT_BALANCE_ENDPOINT = '/sapi/v3/asset/getUserAsset';
 const FUNDING_BALANCE_ENDPOINT = '/sapi/v1/asset/get-funding-asset';
 const DEPOSIT_HISTORY_ENDPOINT = '/sapi/v1/capital/deposit/hisrec';
@@ -126,40 +137,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         ];
     });
 
-    readonly getTransactions = Effect.fn('BinanceSignedClient.getTransactions')(function* (
-        this: BinanceSignedClient,
-        accountId: string,
-        from: number,
-        to?: number
-    ) {
-        const decoded = yield* this.decodeAccountId(accountId);
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-        const isSpot = decoded.wallet === BinanceWalletEnum.SPOT;
-        const c2cOrders = isSpot ? yield* this.fetchC2cOrders(startTimeMs, endTimeMs) : [];
-        const earnRewards = isSpot ? yield* this.fetchEarnRewards(startTimeMs, endTimeMs) : [];
-        const capitalSources = yield* this.fetchCapitalSources(decoded.wallet, startTimeMs, endTimeMs);
-        const fiatSources = yield* this.fetchFiatSources(startTimeMs, endTimeMs);
-
-        return this.buildTransactions(accountId, decoded.asset, {
-            deposits: capitalSources.deposits,
-            withdrawals: capitalSources.withdrawals,
-            fiatDeposits: fiatSources.fiatDeposits,
-            fiatWithdrawals: fiatSources.fiatWithdrawals,
-            c2cOrders,
-            earnRewards
-        });
-    });
-
     readonly getC2cTransactions = Effect.fn('BinanceSignedClient.getC2cTransactions')(function* (
         this: BinanceSignedClient,
         from: number,
         to?: number
     ) {
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return this.buildSourceTransactions(
-            BinanceWalletEnum.FUNDING,
-            this.emptySources({ c2cOrders: yield* this.fetchC2cOrders(startTimeMs, endTimeMs) })
+        return yield* this.getSourceTransactions(BinanceWalletEnum.FUNDING, from, to, (startTimeMs, endTimeMs) =>
+            Effect.map(this.fetchC2cOrders(startTimeMs, endTimeMs), c2cOrders => this.emptySources({ c2cOrders }))
         );
     });
 
@@ -168,11 +152,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         from: number,
         to?: number
     ) {
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return this.buildSourceTransactions(
-            BinanceWalletEnum.SPOT,
-            this.emptySources({ earnRewards: yield* this.fetchEarnRewards(startTimeMs, endTimeMs) })
+        return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
+            Effect.map(this.fetchEarnRewards(startTimeMs, endTimeMs), earnRewards => this.emptySources({ earnRewards }))
         );
     });
 
@@ -181,11 +162,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         from: number,
         to?: number
     ) {
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return this.buildSourceTransactions(
-            BinanceWalletEnum.SPOT,
-            yield* this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
+        return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
+            this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
         );
     });
 
@@ -194,9 +172,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         from: number,
         to?: number
     ) {
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return this.buildSourceTransactions(BinanceWalletEnum.SPOT, yield* this.fetchFiatSources(startTimeMs, endTimeMs));
+        return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
+            this.fetchFiatSources(startTimeMs, endTimeMs)
+        );
     });
 
     readonly getTransfers = Effect.fn('BinanceSignedClient.getTransfers')(
@@ -221,7 +199,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     );
 
     protected readonly provider = SyncProviderEnum.BINANCE;
-    protected readonly baseUrl = BINANCE_API_BASE_URL;
+    protected readonly baseUrl = API_BASE_URL;
     protected readonly headers: Record<string, string>;
     protected override readonly retryMethods: readonly HttpMethod[] = ['GET', 'POST'];
     private readonly credentials: Option.Option<BinanceCredentialsInterface>;
@@ -398,7 +376,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             );
             const convertTransfers = convertFlows
                 .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
-                .map(flow => binanceMapper.mapConvertToTransfer(flow))
+                .map(flow => mapBinanceConvertToTransfer(flow))
                 .filter(isDefined);
             const symbols = yield* this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
             const byExternalId = new Map<string, BinanceTransferInterface>();
@@ -477,7 +455,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 transfers.push(
                     ...trades
                         .filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs)
-                        .map(trade => binanceMapper.mapTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset))
+                        .map(trade => mapBinanceTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset))
                         .filter(isDefined)
                 );
                 if (isDefined(lastTrade)) {
@@ -547,8 +525,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 {
                     startTimeMs,
                     endTimeMs,
-                    periodMs: BINANCE_FIAT_MAX_PERIOD_MS,
-                    dormancyWindowCount: Math.max(1, Math.ceil(BINANCE_DORMANCY_PERIOD_MS / BINANCE_FIAT_MAX_PERIOD_MS))
+                    periodMs: FIAT_MAX_PERIOD_MS,
+                    dormancyWindowCount: Math.max(1, Math.ceil(DORMANCY_PERIOD_MS / FIAT_MAX_PERIOD_MS))
                 },
                 (windowStartMs, windowEndMs) =>
                     this.collectPages(page =>
@@ -654,6 +632,20 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
+    private getSourceTransactions(
+        wallet: BinanceWalletEnum,
+        from: number,
+        to: number | undefined,
+        fetchSources: (
+            startTimeMs: number,
+            endTimeMs: number
+        ) => Effect.Effect<BinanceTransactionSourcesInterface, SyncError, HttpClient.HttpClient>
+    ): Effect.Effect<SyncTransactionInterface[], SyncError, HttpClient.HttpClient> {
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+
+        return Effect.map(fetchSources(startTimeMs, endTimeMs), sources => this.buildSourceTransactions(wallet, sources));
+    }
+
     private decodeAccountId(accountId: string): Effect.Effect<BinanceAccountIdInterface, SyncInvalidResponseError> {
         const decoded = decodeBinanceAccountId(accountId);
 
@@ -684,26 +676,26 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private buildTransactions(accountId: string, asset: string, sources: BinanceTransactionSourcesInterface): SyncTransactionInterface[] {
         const depositTransactions = sources.deposits
             .filter(deposit => deposit.coin === asset)
-            .map(deposit => binanceMapper.mapDepositToTransaction(deposit, accountId))
+            .map(deposit => mapBinanceDepositToTransaction(deposit, accountId))
             .filter(isDefined);
         const withdrawalTransactions = sources.withdrawals
             .filter(withdrawal => withdrawal.coin === asset)
-            .map(withdrawal => binanceMapper.mapWithdrawalToTransaction(withdrawal, accountId))
+            .map(withdrawal => mapBinanceWithdrawalToTransaction(withdrawal, accountId))
             .filter(isDefined);
         const fiatDepositTransactions = sources.fiatDeposits
             .filter(order => order.fiatCurrency === asset)
-            .map(order => binanceMapper.mapFiatOrderToTransaction(order, accountId, true))
+            .map(order => mapBinanceFiatOrderToTransaction(order, accountId, true))
             .filter(isDefined);
         const fiatWithdrawalTransactions = sources.fiatWithdrawals
             .filter(order => order.fiatCurrency === asset)
-            .map(order => binanceMapper.mapFiatOrderToTransaction(order, accountId, false))
+            .map(order => mapBinanceFiatOrderToTransaction(order, accountId, false))
             .filter(isDefined);
         const c2cTransactions = sources.c2cOrders
             .filter(order => order.asset === asset)
-            .map(order => binanceMapper.mapC2cOrderToTransaction(order, accountId))
+            .map(order => mapBinanceC2cOrderToTransaction(order, accountId))
             .filter(isDefined);
         const assetEarnRewards = sources.earnRewards.filter(reward => reward.asset === asset);
-        const earnRewardTransactions = binanceMapper.mapEarnRewardsToTransactions(asset, accountId, assetEarnRewards);
+        const earnRewardTransactions = mapBinanceEarnRewardsToTransactions(asset, accountId, assetEarnRewards);
 
         return [
             ...depositTransactions,
@@ -768,7 +760,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ): BinanceTradeSymbolInterface[] {
         const symbolsById = new Map<string, BinanceTradeSymbolInterface>();
         for (const baseAsset of baseAssets) {
-            for (const quoteAsset of BINANCE_MAJOR_QUOTE_ASSETS) {
+            for (const quoteAsset of MAJOR_QUOTE_ASSETS) {
                 if (baseAsset !== quoteAsset) {
                     const symbol = `${baseAsset}${quoteAsset}`;
                     symbolsById.set(symbol, { symbol, baseAsset, quoteAsset });
@@ -791,7 +783,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         baseAssets: Set<string>,
         eligibleSoldOffBaseAssets: Set<string>
     ): BinanceTradeSymbolInterface | null {
-        for (const quoteAsset of BINANCE_MAJOR_QUOTE_ASSETS) {
+        for (const quoteAsset of MAJOR_QUOTE_ASSETS) {
             const isSelectedQuotePair = baseAssets.has(quoteAsset) && symbol.endsWith(quoteAsset) && symbol !== quoteAsset;
             if (isSelectedQuotePair) {
                 const baseAsset = symbol.slice(0, -quoteAsset.length);
@@ -809,7 +801,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
             if (isDefined(total) && total > 0) {
-                balanceByAsset.set(balance.asset, total * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : total);
+                balanceByAsset.set(balance.asset, total * PRECISION > Number.MAX_SAFE_INTEGER ? null : total);
             } else if (!isDefined(total)) {
                 balanceByAsset.set(balance.asset, null);
             }
@@ -819,7 +811,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private foldEarnPositionAmount(balanceByAsset: Map<string, number | null>, asset: string, rawAmount: string): void {
-        const quantity = binanceMapper.parseBinanceAmount(rawAmount);
+        const quantity = parseBinanceAmount(rawAmount);
         if (!isDefined(quantity)) {
             balanceByAsset.set(asset, null);
 
@@ -832,20 +824,20 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         const nextBalance = (currentBalance ?? 0) + quantity;
-        balanceByAsset.set(asset, nextBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : nextBalance);
+        balanceByAsset.set(asset, nextBalance * PRECISION > Number.MAX_SAFE_INTEGER ? null : nextBalance);
     }
 
     private buildSpotAccounts(balanceByAsset: Map<string, number | null>) {
         return [...balanceByAsset].map(([asset, total]) =>
             isDefined(total)
-                ? binanceMapper.mapBalanceToAccount(asset, BinanceWalletEnum.SPOT, total)
-                : binanceMapper.mapUnrepresentableBalanceToAccount(asset, BinanceWalletEnum.SPOT)
+                ? mapBinanceBalanceToAccount(asset, BinanceWalletEnum.SPOT, total)
+                : mapBinanceUnrepresentableBalanceToAccount(asset, BinanceWalletEnum.SPOT)
         );
     }
 
     private computeRawTotalBalance(balance: BinanceAssetBalanceApiInterface): number | null {
-        const free = binanceMapper.parseBinanceAmount(balance.free);
-        const locked = binanceMapper.parseBinanceAmount(balance.locked);
+        const free = parseBinanceAmount(balance.free);
+        const locked = parseBinanceAmount(balance.locked);
         if (!isDefined(free) || !isDefined(locked)) {
             return null;
         }
@@ -860,11 +852,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return null;
         }
 
-        if (!isDefined(totalBalance) || totalBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER) {
-            return binanceMapper.mapUnrepresentableBalanceToAccount(balance.asset, wallet);
+        if (!isDefined(totalBalance) || totalBalance * PRECISION > Number.MAX_SAFE_INTEGER) {
+            return mapBinanceUnrepresentableBalanceToAccount(balance.asset, wallet);
         }
 
-        return binanceMapper.mapBalanceToAccount(balance.asset, wallet, totalBalance);
+        return mapBinanceBalanceToAccount(balance.asset, wallet, totalBalance);
     }
 
     private sign(query: string, apiSecret: string): string {

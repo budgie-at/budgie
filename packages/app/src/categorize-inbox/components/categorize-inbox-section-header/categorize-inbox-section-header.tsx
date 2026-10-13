@@ -1,11 +1,11 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 

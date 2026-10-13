@@ -5,7 +5,7 @@
         "moduleResolution": "bundler",
         "noEmit": true,
         "allowJs": true,
-        "types": ["node", "vitest/globals"],
+        "types": ["node"],
         "paths": {
             "@app/*": ["../../packages/app/src/*"]
         }

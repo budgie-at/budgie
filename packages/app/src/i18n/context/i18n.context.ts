@@ -1,14 +1,15 @@
+import { LanguageEnum } from '@budgie/contracts';
 import { IntlShape, createIntl } from '@formatjs/intl';
 import { createContext, use } from 'react';
 
-import { DEFAULT_LOCALE } from '../constant/default-locale.constant';
+import { languageToLocale } from '../util/language-to-locale.util';
 
 export interface I18nContextInterface {
     intl: IntlShape;
 }
 
 export const I18nContext = createContext<I18nContextInterface>({
-    intl: createIntl({ locale: DEFAULT_LOCALE.languageTag })
+    intl: createIntl({ locale: languageToLocale(LanguageEnum.EN) })
 });
 
 export const useI18nContext = () => use(I18nContext);

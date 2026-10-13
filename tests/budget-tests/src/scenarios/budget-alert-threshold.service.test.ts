@@ -1,32 +1,26 @@
-import { BudgetAlertScopeEnum, BudgetAlertThresholdService } from '@budgie/budget';
-import { expect, layer } from '@effect/vitest';
-import * as Effect from 'effect/Effect';
+import { BudgetAlertScopeEnum, computeBudgetAlertTriggers } from '@budgie/budget';
+import { describe, expect, it } from '@effect/vitest';
 
-import { TestLayer } from '../harness/test-context';
+describe('computeBudgetAlertTriggers', () => {
+    it('computes overall, category, and synthetic other triggers without persistence', () => {
+        const triggers = computeBudgetAlertTriggers(
+            { overallLimit: 100_000_000, otherLimit: 20_000_000 },
+            {
+                spentOverall: 90_000_000,
+                spentByCategory: [
+                    { categoryId: 11, spent: 50_000_000 },
+                    { categoryId: 12, spent: 25_000_000 }
+                ]
+            },
+            [{ categoryId: 11, limitAmount: 50_000_000 }]
+        );
 
-layer(TestLayer)('budgetAlertThresholdService', it => {
-    it.effect('computes overall, category, and synthetic other triggers without persistence', () =>
-        Effect.gen(function* () {
-            const budgetAlertThresholdService = yield* BudgetAlertThresholdService;
-            const triggers = budgetAlertThresholdService.computeTriggers(
-                { overallLimit: 100_000_000, otherLimit: 20_000_000 },
-                {
-                    spentOverall: 90_000_000,
-                    spentByCategory: [
-                        { categoryId: 11, spent: 50_000_000 },
-                        { categoryId: 12, spent: 25_000_000 }
-                    ]
-                },
-                [{ categoryId: 11, limitAmount: 50_000_000 }]
-            );
-
-            expect(triggers).toEqual([
-                { scope: BudgetAlertScopeEnum.OVERALL, categoryId: null, threshold: 80 },
-                { scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 80 },
-                { scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 100 },
-                { scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 80 },
-                { scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 100 }
-            ]);
-        })
-    );
+        expect(triggers).toEqual([
+            { scope: BudgetAlertScopeEnum.OVERALL, categoryId: null, threshold: 80 },
+            { scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 80 },
+            { scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 100 },
+            { scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 80 },
+            { scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 100 }
+        ]);
+    });
 });

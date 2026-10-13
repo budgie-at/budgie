@@ -10,9 +10,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTypeEnum,
-    PRECISION
+    YIELD_TO_UI,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { SQL, and, or, sql } from 'drizzle-orm';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -21,7 +23,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
-import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
+import { matchesRule } from '../util/matches-rule.util';
 
 import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
@@ -70,52 +72,38 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
             return {
                 ...transaction,
-                amount: calculateAmountForRuleEvaluation(transaction) / PRECISION,
+                amount: convertFromMicroUnits(calculateAmountForRuleEvaluation(transaction)),
                 tagIds: [],
                 entries: entries.map(entry => ({
                     type: entry.type,
                     categoryId: entry.categoryId,
                     accountId: entry.accountId,
-                    amount: entry.amount / PRECISION,
+                    amount: convertFromMicroUnits(entry.amount),
                     mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
                     mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
                 }))
             };
         };
 
-        const evaluateConditions = (
-            conditions: readonly RuleConditionInputInterface[],
-            conditionMatchType: RuleConditionMatchTypeEnum,
-            input: RuleEvaluationInputInterface
-        ): boolean => {
-            const matchesCondition = (condition: RuleConditionInputInterface) => evaluateRuleCondition(condition, input);
-
-            return conditionMatchType === RuleConditionMatchTypeEnum.ANY
-                ? conditions.some(matchesCondition)
-                : conditions.every(matchesCondition);
-        };
+        const filterMatchingIds = (
+            transactions: TransactionWithEntriesMccCategoryEntityInterface[],
+            rule: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>
+        ): number[] =>
+            transactions
+                .filter(transaction => matchesRule(rule, convertTransactionForRuleEvaluation(transaction)))
+                .map(transaction => transaction.id);
 
         const filterWithFallbackConditions = Effect.fnUntraced(function* (
             candidateIds: number[],
-            fallbackConditions: RuleConditionInputInterface[],
-            conditionMatchType: RuleConditionMatchTypeEnum
+            fallbackRule: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>
         ) {
-            const matchingIds: number[] = [];
+            const matchingIdBatches = yield* Effect.forEach(Arr.chunksOf(candidateIds, RULE_SET_BATCH_SIZE), batchIds =>
+                Effect.map(transactionRepository.findByIdsWithEntries(batchIds), transactions =>
+                    filterMatchingIds(transactions, fallbackRule)
+                )
+            );
 
-            for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
-                const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
-                const transactions = yield* transactionRepository.findByIdsWithEntries(batchIds);
-
-                for (const transaction of transactions) {
-                    const input = convertTransactionForRuleEvaluation(transaction);
-
-                    if (evaluateConditions(fallbackConditions, conditionMatchType, input)) {
-                        matchingIds.push(transaction.id);
-                    }
-                }
-            }
-
-            return matchingIds;
+            return matchingIdBatches.flat();
         });
 
         const forEachTransactionBatch = Effect.fnUntraced(function* (
@@ -125,7 +113,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             let hasMore = true;
 
             while (hasMore) {
-                yield* Effect.sleep(1);
+                yield* YIELD_TO_UI;
 
                 const transactions = yield* transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
 
@@ -140,20 +128,11 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             }
         });
 
-        const scanMatchingIds = Effect.fnUntraced(function* (
-            conditions: RuleConditionInputInterface[],
-            conditionMatchType: RuleConditionMatchTypeEnum
-        ) {
+        const scanMatchingIds = Effect.fnUntraced(function* (rule: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>) {
             const matchingIds: number[] = [];
 
             yield* forEachTransactionBatch(transactions => {
-                for (const transaction of transactions) {
-                    const input = convertTransactionForRuleEvaluation(transaction);
-
-                    if (input.type !== TransactionTypeEnum.ADJUSTMENT && evaluateConditions(conditions, conditionMatchType, input)) {
-                        matchingIds.push(transaction.id);
-                    }
-                }
+                matchingIds.push(...filterMatchingIds(transactions, rule));
             });
 
             return matchingIds;
@@ -173,8 +152,6 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                     return sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
                 case RuleConditionFieldEnum.MCC_CODE:
                     return sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${MccCategoryEntityTable} WHERE ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId})`;
-                case RuleConditionFieldEnum.AMOUNT:
-                    return null;
                 default:
                     return null;
             }
@@ -286,10 +263,10 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
                 const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
 
-                return yield* filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
+                return yield* filterWithFallbackConditions(candidateIds, { conditions: fallbackConditions, conditionMatchType });
             }
 
-            return yield* scanMatchingIds(conditions, conditionMatchType);
+            return yield* scanMatchingIds({ conditions, conditionMatchType });
         });
 
         const countMatchingTransactions = Effect.fn('RuleMatcherService.countMatchingTransactions')(function* (
@@ -322,19 +299,11 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             return yield* findMatchingIds(rule.conditions, rule.conditionMatchType);
         });
 
-        const evaluateRule = (rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean => {
-            if (input.type === TransactionTypeEnum.ADJUSTMENT) {
-                return false;
-            }
-
-            if (!isNotEmptyArray(rule.conditions)) {
-                return false;
-            }
-
-            return evaluateConditions(rule.conditions, rule.conditionMatchType, input);
+        return {
+            countMatchingTransactions,
+            collectMatchingTransactionIds,
+            evaluateRule: (rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface) => matchesRule(rule, input)
         };
-
-        return { countMatchingTransactions, collectMatchingTransactionIds, evaluateRule };
     })
 }) {
     static readonly layer = Layer.effect(RuleMatcherService, RuleMatcherService.make).pipe(

@@ -1,4 +1,4 @@
-import { TransactionEntryTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionEntryTypeEnum, TransferTransactionCreateInputSchema, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider } from 'react-hook-form';
 
@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';

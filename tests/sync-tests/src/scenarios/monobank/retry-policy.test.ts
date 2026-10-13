@@ -1,4 +1,4 @@
-import { MonobankClient, MonobankTransactionSyncService } from '@budgie/sync';
+import { MonobankClient } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -10,6 +10,7 @@ import { mockServer } from '../../harness/scenario/mock-server';
 const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 
 const SUCCESS_ON_ATTEMPT = 3;
+const STATEMENT_WINDOW_SECONDS = 60;
 
 describe('monobank/retry-policy', () => {
     it.effect('retries a 5xx statement response until it succeeds', () =>
@@ -27,13 +28,13 @@ describe('monobank/retry-policy', () => {
                 })
             );
 
-            const result = yield* new MonobankTransactionSyncService(new MonobankClient('test-token')).syncTransactionsForward(
+            const transactions = yield* new MonobankClient('test-token').getTransactions(
                 'mono-card',
-                new Date()
+                Math.floor(Date.now() / 1000) - STATEMENT_WINDOW_SECONDS
             );
 
             expect(attempts).toBe(SUCCESS_ON_ATTEMPT);
-            expect(result.transactions).toHaveLength(1);
+            expect(transactions).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -49,7 +50,7 @@ describe('monobank/retry-policy', () => {
             );
 
             const exit = yield* Effect.exit(
-                new MonobankTransactionSyncService(new MonobankClient('test-token')).syncTransactionsForward('mono-card', new Date())
+                new MonobankClient('test-token').getTransactions('mono-card', Math.floor(Date.now() / 1000) - STATEMENT_WINDOW_SECONDS)
             );
 
             expect(Exit.isFailure(exit)).toBe(true);

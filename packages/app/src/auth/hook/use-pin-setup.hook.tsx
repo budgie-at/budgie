@@ -3,11 +3,11 @@ import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { authenticateWithBiometricsEffect } from '../constant/authenticate-with-biometrics-effect.constant';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
+import { BiometricAuthenticationFailedError } from '../error/biometric-authentication-failed.error';
 import { AuthService } from '../service/auth.service';
 
 import type { MessageDescriptor } from '@lingui/core';
@@ -18,7 +18,7 @@ interface Params {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple state fields and handlers
 export const usePinSetup = ({ mode }: Params) => {
-    const { isLoading: biometricLoading, isSomeAvailable } = useAuthContext();
+    const { isSomeAvailable } = useAuthContext();
 
     const [step, setStep] = useState(mode === PinSetupModeEnum.CREATE ? PinSetupStepEnum.CREATE : PinSetupStepEnum.VERIFY_OLD);
     const [input, setInput] = useState('');
@@ -82,30 +82,25 @@ export const usePinSetup = ({ mode }: Params) => {
         setInput('');
     };
 
-    const savePinAndContinue = async (isBiometricEnabled: boolean) => {
+    const savePinAndContinue = (isBiometricEnabled: boolean) => {
         setIsLoading(true);
 
-        try {
-            if (isBiometricEnabled && isSomeAvailable) {
-                const success = await appRuntime.runPromise(authenticateWithBiometricsEffect);
+        return appRuntime.runPromise(
+            Effect.gen(function* () {
+                const authService = yield* AuthService;
 
-                if (!success) {
-                    throw new Error();
+                if (isBiometricEnabled && isSomeAvailable && !(yield* authService.authenticateWithBiometrics())) {
+                    return yield* new BiometricAuthenticationFailedError();
                 }
-            }
 
-            if (mode === PinSetupModeEnum.CHANGE) {
-                await appRuntime.runPromise(Effect.flatMap(AuthService, authService => authService.changePin(tempNewPin)));
-            } else {
-                await appRuntime.runPromise(
-                    Effect.flatMap(AuthService, authService => authService.createPin(tempNewPin, isBiometricEnabled))
-                );
-            }
-        } catch {
-            setError(msg`Failed to save PIN. Please try again.`);
-        } finally {
-            setIsLoading(false);
-        }
+                yield* mode === PinSetupModeEnum.CHANGE
+                    ? authService.changePin(tempNewPin)
+                    : authService.createPin(tempNewPin, isBiometricEnabled);
+            }).pipe(
+                Effect.catchCause(() => Effect.sync(() => void setError(msg`Failed to save PIN. Please try again.`))),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+            )
+        );
     };
 
     const handleConfirmStep = async (pin: string) => {
@@ -122,7 +117,7 @@ export const usePinSetup = ({ mode }: Params) => {
             return;
         }
 
-        if (isSomeAvailable && !biometricLoading) {
+        if (isSomeAvailable) {
             setStep(PinSetupStepEnum.BIOMETRIC);
         } else {
             await savePinAndContinue(false);

@@ -1,17 +1,16 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { SyncProviderRegistryService } from '@budgie/sync';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
@@ -24,20 +23,16 @@ interface Props {
 }
 
 export const BankIntegrationAccountRow = ({ account }: Props) => {
+    const { t } = useLingui();
     const router = useRouter();
+    const [runEffect] = useEffectAction(t`Could not update setting`);
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
     const { sync, switchLabel, description, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
-        void appRuntime.runPromise(
-            Effect.flatMap(SyncProviderRegistryService, syncProviderRegistryService =>
-                Effect.flatMap(syncProviderRegistryService.getServiceForAccount(account.id), service =>
-                    isDefined(service) ? service.setAccountSyncEnabled(account.id, enabled) : Effect.void
-                )
-            )
-        );
+        void runEffect(Effect.flatMap(SyncProviderRegistryService, registry => registry.setAccountSyncEnabled(account.id, enabled)));
     const handlePress = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
 
     const toggle = isToggleVisible ? (

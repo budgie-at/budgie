@@ -1,10 +1,4 @@
-import {
-    ExistingTransferRepository,
-    IbanBridgeTransferRepository,
-    ManualExpenseDuplicateRepository,
-    RefundPairRepository,
-    TransferPairRepository
-} from '@budgie/consolidation';
+import { ConsolidationCandidateRepository, RefundPairRepository } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/sync';
 import { afterEach, expect, layer, vi } from '@effect/vitest';
@@ -26,23 +20,26 @@ layer(TestLayer)('consolidation/family-priority', it => {
     it.effect('processes automatic consolidation families in the explicit priority order', () =>
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
-            const existingTransferRepository = yield* ExistingTransferRepository;
-            const ibanBridgeTransferRepository = yield* IbanBridgeTransferRepository;
-            const manualExpenseDuplicateRepository = yield* ManualExpenseDuplicateRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const refundPairRepository = yield* RefundPairRepository;
-            const transferPairRepository = yield* TransferPairRepository;
             const familyQueries = {
-                IBAN_BRIDGE_CHAIN_TRANSFER: vi.spyOn(ibanBridgeTransferRepository, 'findChainTransferCandidates'),
-                EXISTING_TRANSFER_BRIDGE: vi.spyOn(existingTransferRepository, 'findBridgeCandidates'),
-                EXISTING_TRANSFER_CHAIN_RECLAIM: vi.spyOn(existingTransferRepository, 'findChainReclaimCandidates'),
-                IBAN_BRIDGE_CANONICAL_DUPLICATE: vi.spyOn(ibanBridgeTransferRepository, 'findCanonicalDuplicateCandidates'),
-                IBAN_BRIDGE_TRANSFER: vi.spyOn(ibanBridgeTransferRepository, 'findTransferCandidates'),
-                IBAN_BRIDGE_CANONICAL_SUPERSESSION: vi.spyOn(ibanBridgeTransferRepository, 'findCanonicalSupersessionCandidates'),
-                EXISTING_TRANSFER_INCOME_DUPLICATE: vi.spyOn(existingTransferRepository, 'findIncomeDuplicateCandidates'),
-                P2P_FIAT_TRANSFER: vi.spyOn(transferPairRepository, 'findP2pFiatAuthoritativeCandidates'),
-                TRANSFER_PAIR: vi.spyOn(transferPairRepository, 'findCandidates'),
+                IBAN_BRIDGE_CHAIN_TRANSFER: vi.spyOn(consolidationCandidateRepository, 'findIbanBridgeChainTransferCandidates'),
+                EXISTING_TRANSFER_BRIDGE: vi.spyOn(consolidationCandidateRepository, 'findExistingTransferBridgeCandidates'),
+                EXISTING_TRANSFER_CHAIN_RECLAIM: vi.spyOn(consolidationCandidateRepository, 'findExistingTransferChainReclaimCandidates'),
+                IBAN_BRIDGE_CANONICAL_DUPLICATE: vi.spyOn(consolidationCandidateRepository, 'findIbanBridgeCanonicalDuplicateCandidates'),
+                IBAN_BRIDGE_TRANSFER: vi.spyOn(consolidationCandidateRepository, 'findIbanBridgeTransferCandidates'),
+                IBAN_BRIDGE_CANONICAL_SUPERSESSION: vi.spyOn(
+                    consolidationCandidateRepository,
+                    'findIbanBridgeCanonicalSupersessionCandidates'
+                ),
+                EXISTING_TRANSFER_INCOME_DUPLICATE: vi.spyOn(
+                    consolidationCandidateRepository,
+                    'findExistingTransferIncomeDuplicateCandidates'
+                ),
+                P2P_FIAT_TRANSFER: vi.spyOn(consolidationCandidateRepository, 'findP2pFiatAuthoritativeCandidates'),
+                TRANSFER_PAIR: vi.spyOn(consolidationCandidateRepository, 'findTransferPairCandidates'),
                 REFUND: vi.spyOn(refundPairRepository, 'findCandidates'),
-                MANUAL_EXPENSE_DUPLICATE: vi.spyOn(manualExpenseDuplicateRepository, 'findCandidates')
+                MANUAL_EXPENSE_DUPLICATE: vi.spyOn(consolidationCandidateRepository, 'findManualExpenseDuplicateCandidates')
             };
 
             yield* transferConsolidationService.consolidate(null);

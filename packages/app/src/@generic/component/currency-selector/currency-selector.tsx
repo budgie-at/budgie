@@ -40,11 +40,12 @@ export const CurrencySelector = ({ instrumentId, instrumentType = InstrumentType
     const isBaseCurrency = !isDefined(rate);
     const left = <CurrencySelectorInstrumentIcon code={selectedCurrencyCode} symbol={symbol} type={instrumentType} isLargeFiatSymbol />;
 
-    const handleOpen = async () => {
-        const result = await openCurrencySelector({ selectedInstrumentId: instrumentId, instrumentType });
-        if (isDefined(result)) {
-            onChange(result);
-        }
+    const handleOpen = () => {
+        openCurrencySelector({ selectedInstrumentId: instrumentId, instrumentType }, selectedInstrument => {
+            if (isDefined(selectedInstrument)) {
+                onChange(selectedInstrument);
+            }
+        });
     };
 
     return (

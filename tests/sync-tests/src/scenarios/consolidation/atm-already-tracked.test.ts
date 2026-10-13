@@ -14,7 +14,7 @@ import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { findMccByCode, seed, seedBankPair, TestLayer } from '../../harness';
+import { seed, seedBankPair, TestLayer, testQueryService } from '../../harness';
 
 const PRECISION = 1_000_000;
 const ATM_AMOUNT = 500 * PRECISION;
@@ -70,11 +70,11 @@ describe('consolidation/atm-already-tracked', () => {
             const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: INSTRUMENT_ID });
             const atmExpense = yield* seedBankPair.expense(
                 { externalId: 'tx-atm-tracked', operatedAt: buildLastMonthDate() },
-                { accountId: bankAccount.id, amount: ATM_AMOUNT, mccCategoryId: (yield* findMccByCode('6011')).id }
+                { accountId: bankAccount.id, amount: ATM_AMOUNT, mccCategoryId: (yield* testQueryService.findMccByCode('6011')).id }
             );
             yield* seedBankPair.expense(
                 { externalId: 'tx-groceries', operatedAt: buildLastMonthDate() },
-                { accountId: bankAccount.id, amount: GROCERY_AMOUNT, mccCategoryId: (yield* findMccByCode('5411')).id }
+                { accountId: bankAccount.id, amount: GROCERY_AMOUNT, mccCategoryId: (yield* testQueryService.findMccByCode('5411')).id }
             );
             const accountIds = [bankAccount.id, cashAccount.id];
             yield* accountBalanceIncrementalService.updateAllBalances(true);

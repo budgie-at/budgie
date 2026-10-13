@@ -6,6 +6,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { atmCashWithdrawalTransactionIdsAtom } from '../constant/categorize-inbox-atoms.constant';
 
 import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
 import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
@@ -29,6 +30,7 @@ export const useCategorizeInbox = (
     const { defaultInstrument } = useSettingsContext();
     const inboxResult = AsyncResult.all([useLiveAtomValue(rowsAtom(filters)), useLiveAtomValue(evidenceAtom)]);
     const [rows, evidence] = AsyncResult.getOrElse(inboxResult, () => EMPTY_INBOX);
+    const cashWithdrawalResult = useLiveAtomValue(atmCashWithdrawalTransactionIdsAtom([...new Set(rows.map(row => row.transactionId))]));
     const [session, setSession] = useState<CategorizeInboxSessionInterface>({
         placements: new Map(),
         clustersByKey: new Map(),
@@ -60,7 +62,6 @@ export const useCategorizeInbox = (
                 hidden: new Set([...previous.hidden].filter(transactionId => !transactionIds.includes(transactionId)))
             }))
     };
-    const isLoading = AsyncResult.isInitial(inboxResult);
     const { items, remainingCount, placements, clustersByKey } = categorizeInboxEngineService.placeClusters(
         categorizeInboxEngineService.buildClusters(
             rows,
@@ -81,14 +82,14 @@ export const useCategorizeInbox = (
     }
 
     if (
-        !isLoading &&
+        !AsyncResult.isInitial(inboxResult) &&
         (placements !== session.placements || clustersByKey !== session.clustersByKey || peakRowCount !== session.peakRowCount)
     ) {
         setSession({ placements, clustersByKey, peakRowCount });
     }
 
     return {
-        isLoading,
+        isLoading: AsyncResult.isInitial(inboxResult),
         items,
         remainingCount,
         categorizedCount: Math.max(0, peakRowCount - remainingCount),
@@ -98,6 +99,7 @@ export const useCategorizeInbox = (
 
             return 'rows' in item && isDefined(labelId) && isNotEmptyArray(includedRows) ? [{ ...item, rows: includedRows, labelId }] : [];
         }),
+        cashWithdrawalTransactionIds: new Set(AsyncResult.getOrElse(cashWithdrawalResult, () => [])),
         visibility
     };
 };

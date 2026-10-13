@@ -1,8 +1,12 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
+import { t } from '@lingui/core/macro';
+
 import { isDefined } from '@rnw-community/shared';
 
+import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { BASE_URL } from '../../../generic/constant/seo.constant';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 interface Props {
     title: string;
@@ -14,23 +18,9 @@ interface Props {
     locale: string;
     slug: string;
     keywords: string;
-    homeLabel: string;
-    blogLabel: string;
 }
 
-export const BlogPostingJsonLd = ({
-    title,
-    description,
-    date,
-    dateModified,
-    author,
-    image,
-    locale,
-    slug,
-    keywords,
-    homeLabel,
-    blogLabel
-}: Props) => {
+export const BlogPostingJsonLd = ({ title, description, date, dateModified, author, image, locale, slug, keywords }: Props) => {
     const articleUrl = `${BASE_URL}/${locale}/blog/${slug}`;
     const data = {
         '@context': 'https://schema.org',
@@ -52,21 +42,16 @@ export const BlogPostingJsonLd = ({
         keywords
     };
 
-    const breadcrumbSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        '@id': `${articleUrl}#breadcrumb`,
-        itemListElement: [
-            { '@type': 'ListItem', position: 1, name: homeLabel, item: `${BASE_URL}/${locale}` },
-            { '@type': 'ListItem', position: 2, name: blogLabel, item: `${BASE_URL}/${locale}/blog` },
-            { '@type': 'ListItem', position: 3, name: title, item: articleUrl }
-        ]
-    };
+    const i18n = getI18nInstance(locale);
 
     return (
         <>
             <JsonLd data={data} />
-            <JsonLd data={breadcrumbSchema} />
+            <BreadcrumbsJsonLd locale={locale} path={`/blog/${slug}`}>
+                <BreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={`/${locale}`} />
+                <BreadcrumbsJsonLd.Item name={t(i18n)`Blog`} path={`/${locale}/blog`} />
+                <BreadcrumbsJsonLd.Item name={title} path={`/${locale}/blog/${slug}`} />
+            </BreadcrumbsJsonLd>
         </>
     );
 };

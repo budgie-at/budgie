@@ -1,7 +1,10 @@
 import { SuggestionStatus } from '@budgie/ai';
-import { useEffect, useRef, useState } from 'react';
+import * as Effect from 'effect/Effect';
+import { useEffect, useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
+
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 
 const LOADING_DELAY_MS = 400;
 
@@ -21,38 +24,28 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     const { status, hasResults, enabled } = params;
 
     const [showLoading, setShowLoading] = useState(false);
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const wasProcessingRef = useRef(false);
 
     const isProcessing = status === 'initializing' || status === 'loading';
     const isReady = status === 'success' && hasResults;
 
     useEffect(() => {
-        if (isDefined(timerRef.current)) {
-            clearTimeout(timerRef.current);
-            timerRef.current = null;
+        if (!isProcessing) {
+            return emptyFn;
         }
 
-        if (isProcessing && !wasProcessingRef.current) {
-            wasProcessingRef.current = true;
-            timerRef.current = setTimeout(() => {
-                setShowLoading(true);
-                timerRef.current = null;
-            }, LOADING_DELAY_MS);
-        }
-
-        if (!isProcessing && wasProcessingRef.current) {
-            wasProcessingRef.current = false;
-            timerRef.current = setTimeout(() => {
-                setShowLoading(false);
-                timerRef.current = null;
-            }, 0);
-        }
+        const fiber = appRuntime.runFork(
+            Effect.sleep(LOADING_DELAY_MS).pipe(
+                Effect.andThen(
+                    Effect.sync(() => {
+                        setShowLoading(true);
+                    })
+                )
+            )
+        );
 
         return () => {
-            if (isDefined(timerRef.current)) {
-                clearTimeout(timerRef.current);
-            }
+            fiber.interruptUnsafe();
+            setShowLoading(false);
         };
     }, [isProcessing]);
 

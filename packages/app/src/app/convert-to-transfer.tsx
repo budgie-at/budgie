@@ -10,6 +10,7 @@ import Toast from 'react-native-toast-message';
 
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
@@ -22,7 +23,8 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
-    const [, resolveConvertToTransfer] = useConvertToTransferModal();
+    const [, resolveConvertToTransfer, dismissConvertToTransfer] = useConvertToTransferModal();
+    useModalDismiss(dismissConvertToTransfer);
     const currentParams = useConvertToTransferModalParams();
 
     const transactionId = currentParams?.transactionId ?? 0;

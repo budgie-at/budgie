@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-export interface BlogFaqItemProps {
+interface BlogFaqItemProps {
     readonly question: ReactNode;
     readonly children: ReactNode;
 }

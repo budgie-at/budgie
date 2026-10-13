@@ -13,10 +13,10 @@ import * as Effect from 'effect/Effect';
 import {
     fetchAccountBalance,
     fetchExpenseEntries,
-    fetchTransactionById,
     runRefundScenario,
     seedRefundStatisticsScenario,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 describe('consolidation/refund-pair-full-refund', () => {
@@ -29,9 +29,9 @@ describe('consolidation/refund-pair-full-refund', () => {
 
             expect(result.consolidated).toBe(1);
 
-            const promotedExpense = yield* fetchTransactionById(expense.id);
+            const promotedExpense = yield* testQueryService.findTransactionById(expense.id);
             expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-            expect((yield* fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(expense.id);
+            expect((yield* testQueryService.findTransactionById(refunds[0].id)).consolidationParentTransactionId).toBe(expense.id);
 
             const expenseEntries = yield* fetchExpenseEntries(expense.id);
             const credits = expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT);

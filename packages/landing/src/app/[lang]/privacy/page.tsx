@@ -1,5 +1,5 @@
 /* eslint-disable max-lines, max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
-import { msg, t } from '@lingui/core/macro';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeaturePageCategoryComparison } from '../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
@@ -16,36 +16,19 @@ import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-h
 import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { PillarHubSection } from '../../../feature/component/pillar-hub-section/pillar-hub-section';
-import { buildPillarHubRouteMetadata } from '../../../feature/util/build-pillar-hub-route-metadata.util';
-import { getI18nInstance } from '../../../i18n/app-router-i18n';
+import { createPillarHubGenerateMetadata } from '../../../feature/util/create-pillar-hub-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 import { PRIVACY_PILLAR_HUB_METADATA } from './metadata';
 
-import type { Metadata } from 'next';
-
-// eslint-disable-next-line func-style
-export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
-    const { lang } = await props.params;
-    const i18n = getI18nInstance(lang);
-
-    return buildPillarHubRouteMetadata(i18n, PRIVACY_PILLAR_HUB_METADATA);
-}
+export const generateMetadata = createPillarHubGenerateMetadata(PRIVACY_PILLAR_HUB_METADATA);
 
 export default async function PrivacyPillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
     return (
-        <PillarHubPageShell
-            description={i18n._(PRIVACY_PILLAR_HUB_METADATA.metaDescription)}
-            homeLabel={i18n._(msg`Home`)}
-            locale={lang}
-            publishedAt={PRIVACY_PILLAR_HUB_METADATA.publishedAt}
-            slug={PRIVACY_PILLAR_HUB_METADATA.slug}
-            title={i18n._(PRIVACY_PILLAR_HUB_METADATA.metaTitle)}
-            updatedAt={PRIVACY_PILLAR_HUB_METADATA.updatedAt}
-        >
+        <PillarHubPageShell lang={lang} meta={PRIVACY_PILLAR_HUB_METADATA}>
             <PillarHubHero
                 breadcrumbs={<PillarHubBreadcrumbs current={i18n._(PRIVACY_PILLAR_HUB_METADATA.title)} locale={lang} />}
                 heading={<Trans>Private Expense Tracker — On Your Device, Off the Cloud</Trans>}

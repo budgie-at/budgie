@@ -3,15 +3,15 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
+import { SYNC_PROVIDER_CAPABILITIES } from '../../constant/sync-provider-capabilities.constant';
 import { BankIntegrationContext } from '../../context/bank-integration.context';
-import { getBankIntegrationCapabilities } from '../../utils/get-bank-integration-capabilities.util';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
 
 interface Props {
@@ -21,7 +21,15 @@ interface Props {
 export const BankIntegrationPage = ({ integration }: Props) => {
     const { t } = useLingui();
 
-    const capabilities = getBankIntegrationCapabilities(integration);
+    const providerCapabilities = SYNC_PROVIDER_CAPABILITIES[integration.provider];
+    const hasToken = isNotEmptyString(integration.token);
+    const supportsLiveSync = hasToken && providerCapabilities.supportsTokenAuth;
+    const capabilities = {
+        supportsLiveSync,
+        supportsFileImport: !hasToken && providerCapabilities.supportsFileImport,
+        supportsAddAccounts: supportsLiveSync && providerCapabilities.supportsAddAccounts,
+        supportsDeposit: providerCapabilities.supportsDeposit
+    };
 
     const handleAddAccounts = () =>
         void router.push({ pathname: '/bank-integration/[id]/add-accounts', params: { id: String(integration.id) } });

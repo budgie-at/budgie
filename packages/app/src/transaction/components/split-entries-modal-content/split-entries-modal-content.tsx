@@ -1,4 +1,11 @@
-import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import {
+    CategorySourceEnum,
+    TransactionEntryCreateInputInterface,
+    TransactionEntryTypeEnum,
+    UserIconNameEnum,
+    convertFromMicroUnits,
+    convertToMicroUnits
+} from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef, useState } from 'react';
@@ -12,8 +19,6 @@ import { ListItemSeparator } from '../../../@generic/component/list-item-separat
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -23,7 +28,8 @@ import {
     addLocalId,
     createEmptyEntry,
     entryKeyExtractor,
-    stripLocalId
+    stripLocalId,
+    withEntryAmount
 } from '../../utils/entry-with-local-id.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/split-entries-add-item-footer';
@@ -81,23 +87,25 @@ export const SplitEntriesModalContent = (props: Props) => {
     }, [isFullySplit, hapticNotification]);
 
     const handleAmountChange = (index: number, amount: number) => {
-        setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, amount } : entry)));
+        setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? withEntryAmount(entry, amount) : entry)));
     };
 
-    const handleCategoryPress = async (index: number) => {
+    const handleCategoryPress = (index: number) => {
         const currentCategoryId = entries[index]?.categoryId ?? null;
         const excludeCategoryIds = entries
             .filter((_, entryIndex) => entryIndex !== index)
             .map(entry => entry.categoryId)
             .filter(isPositiveNumber);
 
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant });
-
-        if (isDefined(selectedCategoryId)) {
-            setEntries(previous =>
-                previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, categoryId: selectedCategoryId } : entry))
-            );
-        }
+        openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant }, selectedCategoryId => {
+            if (isDefined(selectedCategoryId)) {
+                setEntries(previous =>
+                    previous.map((entry, entryIndex) =>
+                        entryIndex === index ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
+                    )
+                );
+            }
+        });
     };
 
     const handleAddEntry = () => {
@@ -134,13 +142,15 @@ export const SplitEntriesModalContent = (props: Props) => {
             return;
         }
 
-        const singleEntry = stripLocalId({ ...firstEntry, amount: totalAmount });
+        const singleEntry = stripLocalId(withEntryAmount(firstEntry, totalAmount));
 
         onConfirm([singleEntry]);
     };
 
     const renderItem = ({ item, index }: { item: EntryWithLocalIdInterface; index: number }) => {
-        const handleCategory = () => void handleCategoryPress(index);
+        const handleCategory = () => {
+            handleCategoryPress(index);
+        };
         const handleDelete = () => void handleRemoveEntry(index);
         const handleAmount = (amount: number) => void handleAmountChange(index, amount);
 

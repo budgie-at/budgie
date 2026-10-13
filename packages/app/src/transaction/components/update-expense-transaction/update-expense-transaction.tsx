@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
-import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
@@ -45,10 +44,9 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
                         testID={TransactionCardSelector.RefundedPill(transaction.id)}
                     />
                 }
-                buildEntries={buildExpenseEntry}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
-                rulePillSlotProps={simpleTransaction}
+                ruleDetection={simpleTransaction.ruleDetection}
                 showInlineFeeAction={false}
             />
         </UpdateSimpleTransactionPage>

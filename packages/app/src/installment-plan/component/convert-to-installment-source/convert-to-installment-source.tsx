@@ -1,7 +1,7 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { Text } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 

@@ -1,4 +1,3 @@
-import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
 import {
     AccountBalanceRepository,
     AccountDebtTypeEnum,
@@ -15,7 +14,8 @@ import {
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionEntityTable,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { TransactionDebtSettlementService, TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';

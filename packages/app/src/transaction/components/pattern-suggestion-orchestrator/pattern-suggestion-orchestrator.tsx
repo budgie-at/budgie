@@ -1,11 +1,10 @@
 import { SuggestionStatus } from '@budgie/ai';
-import { TagEntityInterface, UserIconNameEnum, UserIconType } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
-import { PatternCategorySuggestion } from '../../interface/pattern-category-suggestion.type';
 import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.type';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { getLatestPatternAmount } from '../../utils/get-latest-pattern-amount.util';
@@ -19,18 +18,6 @@ import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spa
 interface Props extends SuggestionOrchestratorSharedProps {
     readonly config: PatternSuggestionOrchestratorConfig;
 }
-
-const getPatternCategoryKey = (category: PatternCategorySuggestion): number => category.categoryId;
-const getPatternCategoryIcon = (category: PatternCategorySuggestion): UserIconType => category.categoryIcon;
-const getPatternCategoryTitle = (category: PatternCategorySuggestion): string => category.categoryTitle;
-
-const getPatternTagKey = (tag: TagEntityInterface): number => tag.id;
-const getPatternTagIcon = (): UserIconNameEnum => UserIconNameEnum.Hash;
-const getPatternTagTitle = (tag: TagEntityInterface): string => tag.title;
-
-const getPatternCommentKey = (comment: string): string => comment;
-const getPatternCommentIcon = (): UserIconNameEnum => UserIconNameEnum.MessageSquare;
-const getPatternCommentTitle = (comment: string): string => comment;
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Pattern stage orchestration includes fetching, stage resolution, and final selection handlers
 export const PatternSuggestionOrchestrator = (props: Props) => {
@@ -116,24 +103,17 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         fillPatternAmount(safeCategoryId);
     };
 
-    const handleSelectPatternCategorySuggestion = (category: PatternCategorySuggestion): void => {
-        handleSelectPatternCategory(category.categoryId);
-    };
-
-    const handleSelectPatternTagSuggestion = (tag: TagEntityInterface): void => {
-        handleSelectPatternTag(tag.id);
-    };
-
     if (isStageActive && !hasCategorySelected && config.loadPatternBeforeCategorySelection) {
         return (
             <IconTitleSuggestionRow
-                suggestions={patternCategories}
+                items={patternCategories.map(category => ({
+                    key: category.categoryId,
+                    icon: category.categoryIcon,
+                    title: category.categoryTitle,
+                    onSelect: () => void handleSelectPatternCategory(category.categoryId)
+                }))}
                 status={patternStatus}
                 enabled
-                onSelect={handleSelectPatternCategorySuggestion}
-                getKey={getPatternCategoryKey}
-                getIcon={getPatternCategoryIcon}
-                getTitle={getPatternCategoryTitle}
                 testIDPrefix={IconTitleSuggestionRowSelector.PatternCategory}
             />
         );
@@ -142,13 +122,14 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
     if (isStageActive && hasCategorySelected && !hasTagsSelected && hasPatternTags) {
         return (
             <IconTitleSuggestionRow
-                suggestions={resolvedPatternTags}
+                items={resolvedPatternTags.map(tag => ({
+                    key: tag.id,
+                    icon: UserIconNameEnum.Hash,
+                    title: tag.title,
+                    onSelect: () => void handleSelectPatternTag(tag.id)
+                }))}
                 status={patternTagStatus}
                 enabled
-                onSelect={handleSelectPatternTagSuggestion}
-                getKey={getPatternTagKey}
-                getIcon={getPatternTagIcon}
-                getTitle={getPatternTagTitle}
                 testIDPrefix={IconTitleSuggestionRowSelector.PatternTag}
             />
         );
@@ -157,13 +138,14 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
     if (isStageActive && hasCategorySelected && !hasComment && config.allowPatternComments && hasPatternComments) {
         return (
             <IconTitleSuggestionRow
-                suggestions={patternComments}
+                items={patternComments.map(patternComment => ({
+                    key: patternComment,
+                    icon: UserIconNameEnum.MessageSquare,
+                    title: patternComment,
+                    onSelect: () => void handleSelectPatternComment(patternComment)
+                }))}
                 status={patternStatus}
                 enabled
-                onSelect={handleSelectPatternComment}
-                getKey={getPatternCommentKey}
-                getIcon={getPatternCommentIcon}
-                getTitle={getPatternCommentTitle}
                 testIDPrefix={IconTitleSuggestionRowSelector.PatternComment}
             />
         );

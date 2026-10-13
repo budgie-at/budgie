@@ -4,10 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
-
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
+import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
@@ -17,10 +15,7 @@ export const CreateDepositAccount = () => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
     const { integrationId } = useLocalSearchParams<{ integrationId?: string | string[] }>();
-    const normalizedIntegrationId = normalizeRouteParam(integrationId);
-    const parsedIntegrationIdValue = Number(normalizedIntegrationId);
-    const parsedIntegrationId =
-        isDefined(normalizedIntegrationId) && isPositiveNumber(parsedIntegrationIdValue) ? parsedIntegrationIdValue : null;
+    const parsedIntegrationId = parsePositiveRouteParam(integrationId);
 
     const initialValues = {
         iban: null,
