@@ -6,14 +6,15 @@ import type { CryptoPositionLotInterface } from '../interface/crypto-position-lo
 import type { CryptoPositionInterface } from '../interface/crypto-position.interface';
 import type { CryptoPositionEntryRowInterface } from '@budgie/contracts';
 
-const consumeLots = (lots: readonly CryptoPositionLotInterface[], amount: number): readonly CryptoPositionLotInterface[] => {
+const consumeLots = (allLots: readonly CryptoPositionLotInterface[], amount: number): readonly CryptoPositionLotInterface[] => {
+    const lots = allLots.filter(lot => isPositiveNumber(lot.amount));
     let remainingAmount = amount;
     let consumedLotCount = 0;
 
     while (isPositiveNumber(remainingAmount)) {
         const lot = lots.at(consumedLotCount);
 
-        if (!isDefined(lot) || !isPositiveNumber(lot.amount)) {
+        if (!isDefined(lot)) {
             break;
         }
 

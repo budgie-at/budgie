@@ -49,8 +49,8 @@ describe('calculateCryptoPosition', () => {
         });
     });
 
-    it('stops consuming at an empty lot and does not mutate earlier results', () => {
-        const entries = [buy(0, 0), buy(1 * PRECISION, 40 * PRECISION), sell(1 * PRECISION)];
+    it('skips empty lots while consuming and does not mutate earlier results', () => {
+        const entries = [buy(0, 0), buy(2 * PRECISION, 80 * PRECISION), sell(1 * PRECISION)];
 
         expect(calculateCryptoPosition(entries)).toStrictEqual({ costBasis: 40, averageCost: 40 });
         expect(calculateCryptoPosition(entries)).toStrictEqual({ costBasis: 40, averageCost: 40 });
