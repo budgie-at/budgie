@@ -5,8 +5,6 @@ import * as Layer from 'effect/Layer';
 import { Workload } from '../../@generic/service/workload.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 
-import { transferConsolidationDrainerLayer } from './transfer-consolidation-drainer.layer';
-
 export const syncWorkloadLayer = Layer.effect(
     SyncWorkload,
     Effect.gen(function* () {
@@ -26,4 +24,4 @@ export const syncWorkloadLayer = Layer.effect(
             enqueueTransferConsolidation: transferConsolidationDrainerService.enqueue
         });
     })
-).pipe(Layer.provide([Workload.layer, RuleApplicationDrainerService.layer, transferConsolidationDrainerLayer]));
+).pipe(Layer.provide([Workload.layer, RuleApplicationDrainerService.layer]));

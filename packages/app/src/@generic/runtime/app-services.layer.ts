@@ -127,7 +127,9 @@ const ledgerWorkloadLayer = Layer.effect(
     Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
 ).pipe(Layer.provide(Workload.layer));
 
-export const appServicesLayer = Layer.mergeAll(
+const ledgerPortsLayer = Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer);
+
+export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AccountRepository.layer,
     AccountBalanceRepository.layer,
     DebtEventRepository.layer,
@@ -201,7 +203,6 @@ export const appServicesLayer = Layer.mergeAll(
     ExchangeRateBackgroundService.layer,
     HistoricalMarketDataDrainerService.layer,
     TransferConsolidationService.layer,
-    transferConsolidationDrainerLayer,
     UnpairedOwnCardTransferRepairService.layer,
     SyncRepairService.layer,
     SyncOperationMetadataService.layer,
@@ -243,7 +244,8 @@ export const appServicesLayer = Layer.mergeAll(
     TransactionTransferService.layer,
     TransferCreationService.layer,
     TransactionService.layer
-).pipe(
-    Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)),
-    Layer.provide(Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer))
+).pipe(Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)), Layer.provide(ledgerPortsLayer));
+
+export const appServicesLayer = appServicesWithoutDrainerLayer.pipe(
+    Layer.provideMerge(transferConsolidationDrainerLayer.pipe(Layer.provide(ledgerPortsLayer)))
 );

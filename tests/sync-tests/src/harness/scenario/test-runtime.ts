@@ -1,4 +1,4 @@
-import { appServicesLayer } from '@app/@generic/runtime/app-services.layer';
+import { appServicesLayer, appServicesWithoutDrainerLayer } from '@app/@generic/runtime/app-services.layer';
 import { makeTestPlatformLayer } from '@budgie-at/test-kit';
 import { BINANCE_RATE_LIMIT_MS, MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
@@ -8,6 +8,8 @@ import * as Layer from 'effect/Layer';
 import { vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
+
+import { fakeTransferConsolidationDrainerLayer } from '../fake/fake-transfer-consolidation-drainer.layer';
 
 import { testDb } from './setup';
 import { sleepMode } from './sleep-mode';
@@ -37,27 +39,38 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
     });
 };
 
-const servicesLayer = appServicesLayer.pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
+const platformLayer = makeTestPlatformLayer(testDb);
+
+const servicesLayer = appServicesWithoutDrainerLayer.pipe(
+    Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, platformLayer))
+);
+
+const realDrainerServicesLayer = appServicesLayer.pipe(Layer.provideMerge(platformLayer));
 
 export type Services = Layer.Success<typeof servicesLayer>;
 
 let testContext: Context.Context<Services> | null = null;
 
-const bindAppRuntime = Layer.effectDiscard(
-    Effect.acquireRelease(
-        Effect.tap(Effect.context<Services>(), context =>
-            Effect.sync(() => {
-                testContext = context;
-            })
-        ),
-        () =>
-            Effect.sync(() => {
-                testContext = null;
-            })
-    )
-).pipe(Layer.provideMerge(servicesLayer));
+const bindRuntime = <ROut extends Services, E>(layer: Layer.Layer<ROut, E>) =>
+    Layer.effectDiscard(
+        Effect.acquireRelease(
+            Effect.tap(Effect.context<Services>(), context =>
+                Effect.sync(() => {
+                    testContext = context;
+                })
+            ),
+            () =>
+                Effect.sync(() => {
+                    testContext = null;
+                })
+        )
+    ).pipe(Layer.provideMerge(layer));
+
+const bindAppRuntime = bindRuntime(servicesLayer);
 
 export const TestClockLayer = bindAppRuntime;
+
+export const RealDrainerTestClockLayer = bindRuntime(realDrainerServicesLayer);
 
 export const TestLayer = bindAppRuntime.pipe(
     Layer.provideMerge(
