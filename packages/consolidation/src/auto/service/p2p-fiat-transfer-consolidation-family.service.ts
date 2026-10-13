@@ -1,4 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -7,10 +8,9 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
-import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
+import { ConsolidationCandidateRepository } from '../../query/repository/consolidation-candidate.repository';
 import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 import { TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE } from '../../shared/constant/transfer-pair-p2p-fiat.constant';
-import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 import { P2pFiatDirectionEnum } from '../enum/p2p-fiat-direction.enum';
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
@@ -24,7 +24,7 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
     '@budgie/consolidation/P2pFiatTransferConsolidationFamilyService',
     {
         make: Effect.gen(function* () {
-            const transferPairRepository = yield* TransferPairRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const consolidationExecutorService = yield* ConsolidationExecutorService;
             const consolidationRepairExecutorService = yield* ConsolidationRepairExecutorService;
             const maxBankExpenseCount = 3;
@@ -52,56 +52,24 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                 return bestCandidate;
             };
 
-            const groupCandidatesByBankTransaction = (
-                candidates: P2pFiatTransferCandidateInterface[]
-            ): Map<number, P2pFiatTransferCandidateInterface[]> => {
-                const groupedCandidates = new Map<number, P2pFiatTransferCandidateInterface[]>();
-
-                for (const candidate of candidates) {
-                    for (const bankTransactionId of candidate.bankTransactionIds) {
-                        const group = groupedCandidates.get(bankTransactionId);
-
-                        if (isDefined(group)) {
-                            group.push(candidate);
-                        } else {
-                            groupedCandidates.set(bankTransactionId, [candidate]);
-                        }
-                    }
-                }
-
-                return groupedCandidates;
-            };
-
-            const groupCandidatesByP2pTransaction = (
-                candidates: P2pFiatTransferCandidateInterface[]
-            ): Map<number, P2pFiatTransferCandidateInterface[]> => {
-                const groupedCandidates = new Map<number, P2pFiatTransferCandidateInterface[]>();
-
-                for (const candidate of candidates) {
-                    const group = groupedCandidates.get(candidate.p2pTransactionId);
-
-                    if (isDefined(group)) {
-                        group.push(candidate);
-                    } else {
-                        groupedCandidates.set(candidate.p2pTransactionId, [candidate]);
-                    }
-                }
-
-                return groupedCandidates;
-            };
-
             const selectCandidates = (candidates: P2pFiatTransferCandidateInterface[]): P2pFiatTransferCandidateInterface[] => {
-                const preferredCandidates = [...groupCandidatesByP2pTransaction(candidates).values()]
+                const preferredCandidates = Object.values(Arr.groupBy(candidates, candidate => String(candidate.p2pTransactionId)))
                     .map(group => findUniqueBestCandidate(group))
                     .filter(isDefined);
-                const candidatesByBankTransaction = groupCandidatesByBankTransaction(preferredCandidates);
+                const ownersByBankTransaction = Arr.groupBy(
+                    preferredCandidates.flatMap(candidate =>
+                        candidate.bankTransactionIds.map(bankTransactionId => ({ bankTransactionId, candidate }))
+                    ),
+                    owner => String(owner.bankTransactionId)
+                );
 
                 return preferredCandidates.filter(candidate =>
-                    candidate.bankTransactionIds.every(bankTransactionId => {
-                        const owners = candidatesByBankTransaction.get(bankTransactionId) ?? [];
-
-                        return findUniqueBestCandidate(owners) === candidate;
-                    })
+                    candidate.bankTransactionIds.every(
+                        bankTransactionId =>
+                            findUniqueBestCandidate(
+                                (ownersByBankTransaction[String(bankTransactionId)] ?? []).map(owner => owner.candidate)
+                            ) === candidate
+                    )
                 );
             };
 
@@ -238,27 +206,16 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                     .map(row => buildSellCandidate(row))
                     .filter(isDefined);
 
-            const buildBuyCandidates = (rows: P2pFiatAtomicCandidateInterface[]): P2pFiatTransferCandidateInterface[] => {
-                const groupedRows = new Map<string, P2pFiatAtomicCandidateInterface[]>();
-
-                for (const row of rows) {
-                    if (row.incomeAccountType === AccountTypeEnum.CRYPTO_SYNC) {
-                        const groupKey = `${row.incomeTransactionId}:${row.expenseEntryAccountId}`;
-                        const group = groupedRows.get(groupKey);
-
-                        if (isDefined(group)) {
-                            group.push(row);
-                        } else {
-                            groupedRows.set(groupKey, [row]);
-                        }
-                    }
-                }
-
-                return [...groupedRows.values()]
+            const buildBuyCandidates = (rows: P2pFiatAtomicCandidateInterface[]): P2pFiatTransferCandidateInterface[] =>
+                Object.values(
+                    Arr.groupBy(
+                        rows.filter(row => row.incomeAccountType === AccountTypeEnum.CRYPTO_SYNC),
+                        row => `${row.incomeTransactionId}:${row.expenseEntryAccountId}`
+                    )
+                )
                     .flatMap(group => buildExpenseCombinations(group))
                     .map(combination => buildBuyCandidate(combination))
                     .filter(isDefined);
-            };
 
             const buildAuthoritativeCandidates = (
                 rows: readonly P2pFiatAuthoritativeCandidateInterface[]
@@ -277,7 +234,7 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
             const findCandidates = Effect.fn('P2pFiatTransferConsolidationFamilyService.findCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null
             ) {
-                const authoritativeRows = yield* transferPairRepository.findP2pFiatAuthoritativeCandidates(scope);
+                const authoritativeRows = yield* consolidationCandidateRepository.findP2pFiatAuthoritativeCandidates(scope);
                 const authoritativeCandidates = selectCandidates(buildAuthoritativeCandidates(authoritativeRows));
 
                 if (isNotEmptyArray(authoritativeCandidates)) {
@@ -287,7 +244,7 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                 const reservedTransactionIds = new Set(
                     authoritativeRows.flatMap(row => [row.expenseTransactionId, row.incomeTransactionId])
                 );
-                const rows = yield* transferPairRepository.findP2pFiatAtomicCandidates(scope);
+                const rows = yield* consolidationCandidateRepository.findP2pFiatAtomicCandidates(scope);
                 const unreservedRows = rows.filter(
                     row => !reservedTransactionIds.has(row.expenseTransactionId) && !reservedTransactionIds.has(row.incomeTransactionId)
                 );
@@ -297,14 +254,15 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
             });
 
             return makeConsolidationFamilyStrategy<P2pFiatTransferCandidateInterface>({
-                key: ConsolidationFamilyKeyEnum.P2P_FIAT_TRANSFER,
                 findCandidates,
                 consolidateCandidate: candidate => consolidationExecutorService.consolidateP2pFiatTransfer(candidate),
                 getSourceTransactionIds: candidate => [...candidate.sourceTransactionIds],
                 prepareProcess: Effect.fn('P2pFiatTransferConsolidationFamilyService.prepareProcess')(function* (
                     context: ConsolidationFamilyRunContextInterface
                 ) {
-                    const repairCandidates = yield* transferPairRepository.findP2pFiatAuthoritativeRepairCandidates(context.scope);
+                    const repairCandidates = yield* consolidationCandidateRepository.findP2pFiatAuthoritativeRepairCandidates(
+                        context.scope
+                    );
 
                     for (const candidate of repairCandidates) {
                         yield* consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId);
@@ -317,6 +275,10 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
     }
 ) {
     static readonly layer = Layer.effect(P2pFiatTransferConsolidationFamilyService, P2pFiatTransferConsolidationFamilyService.make).pipe(
-        Layer.provide([TransferPairRepository.layer, ConsolidationExecutorService.layer, ConsolidationRepairExecutorService.layer])
+        Layer.provide([
+            ConsolidationCandidateRepository.layer,
+            ConsolidationExecutorService.layer,
+            ConsolidationRepairExecutorService.layer
+        ])
     );
 }

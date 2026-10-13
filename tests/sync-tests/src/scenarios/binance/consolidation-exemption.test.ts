@@ -1,4 +1,4 @@
-import { TransferPairRepository } from '@budgie/consolidation';
+import { ConsolidationCandidateRepository } from '@budgie/consolidation';
 import { PRECISION, TransactionTypeEnum } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
@@ -24,7 +24,7 @@ describe('binance/consolidation-exemption', () => {
     it.effect('does not surface a synced Binance TRANSFER as a transfer-pair candidate', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const transferPairRepository = yield* TransferPairRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
 
             yield* seedAmountTransferPair(50 * PRECISION);
 
@@ -40,7 +40,7 @@ describe('binance/consolidation-exemption', () => {
             expect(binanceTransfers).toHaveLength(1);
             const transferTransactionId = binanceTransfers[0].id;
 
-            const candidates = yield* transferPairRepository.findCandidates();
+            const candidates = yield* consolidationCandidateRepository.findTransferPairCandidates(null);
 
             expect(candidates.length).toBeGreaterThan(0);
             const referencesTransfer = candidates.some(
@@ -48,6 +48,6 @@ describe('binance/consolidation-exemption', () => {
                     candidate.expenseTransactionId === transferTransactionId || candidate.incomeTransactionId === transferTransactionId
             );
             expect(referencesTransfer).toBe(false);
-        }).pipe(Effect.provide(Layer.provideMerge(TransferPairRepository.layer, TestLayer)))
+        }).pipe(Effect.provide(Layer.provideMerge(ConsolidationCandidateRepository.layer, TestLayer)))
     );
 });

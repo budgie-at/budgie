@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -20,12 +21,12 @@ export const DefaultAccountSelector = () => {
     const description = isDefined(selectedAccount) ? `${selectedAccount.title} – ${selectedAccount.instrument.code}` : null;
     const defaultAccountSelectorId = SettingsPageSelector.DefaultAccountCard(selectedAccount ?? null);
 
-    const handleOpen = async () => {
-        const accountId = await openAccountSelector({ initialAccountId: defaultAccount?.id ?? null });
-
-        if (isDefined(accountId)) {
-            await appRuntime.runPromise(updateSettingsMutation({ defaultAccountId: accountId }));
-        }
+    const handleOpen = () => {
+        openAccountSelector({ initialAccountId: defaultAccount?.id ?? null }, accountId => {
+            if (isDefined(accountId)) {
+                appRuntime.runFork(logAndContinue(updateSettingsMutation({ defaultAccountId: accountId })));
+            }
+        });
     };
 
     return (

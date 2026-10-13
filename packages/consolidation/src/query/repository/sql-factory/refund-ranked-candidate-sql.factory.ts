@@ -1,25 +1,21 @@
-import {
-    ExternalSourceEnum,
-    PRECISION,
-    REFUND_TIME_WINDOW_SECONDS,
-    REFUND_TITLE_PREFIXES,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { REFUND_TIME_WINDOW_SECONDS, REFUND_TITLE_PREFIXES, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import { buildOriginalMinorAmountSql } from '../../../shared/util/build-original-minor-amount-sql.util';
 import { buildPrefixLikeSql } from '../../../shared/util/build-prefix-like-sql.util';
+import { buildPrivatbankSameOriginalAmountSql } from '../../../shared/util/build-privatbank-same-original-amount-sql.util';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
+import type { PrivatbankRefundEntrySqlColumnsInterface } from '../../../shared/interface/privatbank-refund-entry-sql-columns.interface';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 
-const PRIVATBANK_EXCHANGE_RATE_TOLERANCE = 0.05;
-
 const AUTO_BUCKET_MEMBERSHIP_SQL = `confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
     'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE', 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE', 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT')`;
 
-const REFUND_CEILING_SQL = `CASE WHEN confidenceBucket = 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN feeAmount ELSE expenseAmount END`;
+const REFUND_CEILING_SQL = `CASE confidenceBucket WHEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN feeAmount WHEN 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT' THEN expenseOriginalMinorAmount ELSE expenseAmount END`;
+
+const REFUND_MEASURE_SQL = `CASE WHEN confidenceBucket = 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT' THEN refundOriginalMinorAmount ELSE refundAmount END`;
 
 const UNIQUE_AMOUNT_MATCH_SQL = `(confidenceBucket = 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT'
     OR (confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE') AND expenseAmount = refundAmount))`;
@@ -32,13 +28,17 @@ const buildStripPrefixesSql = (seedExpression: string, prefixes: readonly string
 const buildStripCommaSuffixSql = (seedExpression: string): string =>
     `TRIM(CASE WHEN INSTR(${seedExpression}, ',') > 0 THEN SUBSTR(${seedExpression}, 1, INSTR(${seedExpression}, ',') - 1) ELSE ${seedExpression} END)`;
 
-const buildPrivatbankOriginalAmountRefundSql = (): string => `inc.externalSource = '${ExternalSourceEnum.PRIVATBANK}'
-    AND exp.externalSource = '${ExternalSourceEnum.PRIVATBANK}'
-    AND ${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.privatbankCategoryRefund)}
+const buildPrivatbankRefundEntryColumns = (alias: string): PrivatbankRefundEntrySqlColumnsInterface => ({
+    amount: `${alias}.amount`,
+    exchangeRate: `${alias}.exchangeRate`,
+    externalSource: `${alias}.externalSource`,
+    operationInstrumentId: `${alias}.operationInstrumentId`
+});
+
+const buildPrivatbankOriginalAmountRefundSql =
+    (): string => `${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.privatbankCategoryRefund)}
     AND inc.accountId = exp.accountId
-    AND inc.exchangeRate != 1 AND exp.exchangeRate != 1
-    AND inc.originalMinorAmount = exp.originalMinorAmount
-    AND ABS(inc.exchangeRate / exp.exchangeRate - 1) <= ${PRIVATBANK_EXCHANGE_RATE_TOLERANCE}
+    AND ${buildPrivatbankSameOriginalAmountSql(buildPrivatbankRefundEntryColumns('inc'), buildPrivatbankRefundEntryColumns('exp'))}
     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}`;
 
 const buildExpenseEntriesSql = (
@@ -54,7 +54,7 @@ const buildExpenseEntriesSql = (
             expense_account.instrument_id AS instrumentId,
             expense_entry.amount AS amount, expense_entry.mcc_category_id AS mccCategoryId,
             expense_entry.exchange_rate AS exchangeRate, expense_tx.external_source AS externalSource,
-            ROUND(expense_entry.amount / expense_entry.exchange_rate / ${PRECISION / 100}) AS originalMinorAmount,
+            expense_entry.operation_instrument_id AS operationInstrumentId, ${buildOriginalMinorAmountSql('expense_entry.amount', 'expense_entry.exchange_rate')} AS originalMinorAmount,
             UPPER(TRIM(expense_tx.title)) AS rawNormTitle,
             ${autoTitle} AS autoNormTitle,
             ${reviewTitle} AS reviewNormTitle,
@@ -100,7 +100,7 @@ const buildIncomeEntriesSql = (
             income_account.instrument_id AS instrumentId,
             income_entry.amount AS amount, income_entry.mcc_category_id AS mccCategoryId,
             income_entry.exchange_rate AS exchangeRate, income_tx.external_source AS externalSource,
-            ROUND(income_entry.amount / income_entry.exchange_rate / ${PRECISION / 100}) AS originalMinorAmount,
+            income_entry.operation_instrument_id AS operationInstrumentId, ${buildOriginalMinorAmountSql('income_entry.amount', 'income_entry.exchange_rate')} AS originalMinorAmount,
             UPPER(TRIM(income_tx.title)) AS rawNormTitle,
             ${autoTitle} AS autoNormTitle,
             ${reviewTitle} AS reviewNormTitle,
@@ -126,9 +126,9 @@ const buildCompatiblePairsSql = (): string => `
             exp.expenseTxId AS expenseTxId,
             exp.accountId AS accountId,
             exp.amount AS expenseAmount,
-            exp.feeAmount AS feeAmount,
+            exp.feeAmount AS feeAmount, exp.originalMinorAmount AS expenseOriginalMinorAmount,
             inc.txId AS refundTxId,
-            inc.amount AS refundAmount,
+            inc.amount AS refundAmount, inc.originalMinorAmount AS refundOriginalMinorAmount,
             inc.operatedAt - exp.operatedAt AS timeDiff,
             CASE
                 WHEN inc.rawNormTitle = exp.rawNormTitle AND inc.accountId = exp.accountId
@@ -187,9 +187,9 @@ const buildBucketPriorityOrderSql = (): string => `
     END
 `;
 
-const buildAmountMismatchOrderSql = (): string => `CASE WHEN refundAmount = ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END`;
+const buildAmountMismatchOrderSql = (): string => `CASE WHEN ${REFUND_MEASURE_SQL} = ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END`;
 
-const buildCoveringOrderSql = (): string => `CASE WHEN refundAmount <= ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END`;
+const buildCoveringOrderSql = (): string => `CASE WHEN ${REFUND_MEASURE_SQL} <= ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END`;
 
 const buildRankedPairsSql = (): string => `
     ranked_pairs AS (
@@ -198,7 +198,7 @@ const buildRankedPairsSql = (): string => `
             COUNT(*) OVER (PARTITION BY refundTxId) AS refundCandidateCount,
             ROW_NUMBER() OVER (
                 PARTITION BY refundTxId
-                ORDER BY ${buildAmountMismatchOrderSql()}, ${buildCoveringOrderSql()}, ${buildBucketPriorityOrderSql()}, ABS(${REFUND_CEILING_SQL} - refundAmount), timeDiff
+                ORDER BY ${buildAmountMismatchOrderSql()}, ${buildCoveringOrderSql()}, ${buildBucketPriorityOrderSql()}, ABS(${REFUND_CEILING_SQL} - ${REFUND_MEASURE_SQL}), timeDiff
             ) AS refundRank,
             ROW_NUMBER() OVER (
                 PARTITION BY expenseTxId
@@ -236,7 +236,7 @@ const buildFilledCandidatesSql = (): string => `
     filled_candidates AS (
         SELECT
             *,
-            SUM(CASE WHEN isAutoEligible = 1 AND rejectedBetterRankedRefundCount = 0 THEN refundAmount ELSE 0 END)
+            SUM(CASE WHEN isAutoEligible = 1 AND rejectedBetterRankedRefundCount = 0 THEN ${REFUND_MEASURE_SQL} ELSE 0 END)
                 OVER (PARTITION BY confidenceBucket, matchType, expenseTxId, accountId
                     ORDER BY expenseRank ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS expenseFilledRefundTotal
         FROM gated_candidates
@@ -279,8 +279,8 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(scope)})
     WHERE isAutoConsolidatable = 1
-    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount, feeAmount
-    HAVING SUM(refundAmount) <= ${REFUND_CEILING_SQL}
+    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount, feeAmount, expenseOriginalMinorAmount
+    HAVING SUM(${REFUND_MEASURE_SQL}) <= ${REFUND_CEILING_SQL}
 `;
 
 export const REFUND_REVIEW_CANDIDATES_SQL = `
@@ -293,6 +293,6 @@ export const REFUND_REVIEW_CANDIDATES_SQL = `
     FROM (${buildRankedCandidateSql(null)})
     WHERE refundRank = 1
         AND (confidenceBucket = 'REVIEW_REFUND_PREFIX_TITLE_MCC' OR (${AUTO_BUCKET_MEMBERSHIP_SQL} AND isAutoConsolidatable = 0))
-    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
-    HAVING SUM(refundAmount) <= expenseAmount
+    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount, expenseOriginalMinorAmount
+    HAVING SUM(${REFUND_MEASURE_SQL}) <= CASE WHEN confidenceBucket = 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT' THEN expenseOriginalMinorAmount ELSE expenseAmount END
 `;

@@ -268,12 +268,9 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         yield* Effect.forkDetach(syncWorkload.run(sync()).pipe(Effect.ignoreCause({ log: true })));
     });
 
-    const syncService = yield* makeSyncService({
-        ...definition,
-        ...(definition.shouldRequestSyncWhenEnabled === true && {
-            afterSyncEnabledChange: (enabled: boolean) => (enabled ? requestSync() : Effect.void)
-        })
-    });
+    const syncService = yield* makeSyncService(definition, enabled =>
+        definition.shouldRequestSyncWhenEnabled === true && enabled ? requestSync() : Effect.void
+    );
 
     return {
         ...syncService,

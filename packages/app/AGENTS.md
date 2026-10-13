@@ -7,7 +7,7 @@ Main mobile application built with Expo 58, React 19 + Compiler, Expo Router 58,
 ```bash
 pnpm start                    # Expo dev server
 APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true pnpm start --port 8082
-                              # Expo dev server with @budgie/logger service logs enabled
+                              # Expo dev server with @budgie/contracts service logs enabled
 pnpm ios                      # Run on iOS simulator
 pnpm android                  # Run on Android emulator
 pnpm web                      # Run on web
@@ -245,8 +245,7 @@ Always use utility functions for microunits conversion, never manual `* PRECISIO
 
 ```typescript
 // Good
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 const displayAmount = convertFromMicroUnits(pattern.averageAmount);
 const microAmount = convertToMicroUnits(userInputAmount);
 

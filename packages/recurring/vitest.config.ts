@@ -1,7 +1,7 @@
 import { createTestVitestConfig } from '@budgie-at/test-kit/vitest';
 import { defineConfig } from 'vitest/config';
 
-const config = createTestVitestConfig(__dirname, 'test/test-context.ts', true);
+const config = createTestVitestConfig(__dirname, 'test/test-context.ts');
 
 export default defineConfig({
     ...config,

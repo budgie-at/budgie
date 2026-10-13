@@ -3,7 +3,6 @@ import { createContext, use } from 'react';
 import { emptyFn } from '@rnw-community/shared';
 
 export interface AuthContextInterface {
-    isLoading: boolean;
     isUnlocked: boolean;
     isPinEnabled: boolean;
     isSomeAvailable: boolean;
@@ -13,7 +12,6 @@ export interface AuthContextInterface {
 }
 
 export const AuthContext = createContext<AuthContextInterface>({
-    isLoading: false,
     isUnlocked: false,
     isPinEnabled: false,
     isSomeAvailable: false,

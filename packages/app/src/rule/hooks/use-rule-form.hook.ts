@@ -13,11 +13,10 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { useForm } from 'react-hook-form';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { useEffectAction } from '../../@generic/hook/use-effect-action.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { RuleApplicationDrainerService } from '../service/rule-application-drainer.service';
@@ -102,6 +101,8 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
     const defaultValues: RuleCreateInputInterface = resolveDefaultValues(providedDefaultValues, prefillData);
     const isEditing = isDefined(ruleId);
+    const [runSubmit, isSaving] = useEffectAction(isEditing ? t`Could not update rule` : t`Could not create rule`);
+    const [runDelete, isDeleting] = useEffectAction(t`Could not delete rule.`);
 
     const form = useForm<RuleCreateInputInterface>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(RuleCreateInputSchema)),
@@ -109,87 +110,71 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         mode: 'onSubmit'
     });
 
-    const confirmApplyToExisting = async (values: RuleCreateInputInterface): Promise<boolean> => {
+    const confirmApplyToExisting = Effect.fn('useRuleForm.confirmApplyToExisting')(function* (values: RuleCreateInputInterface) {
         const hasConditions = values.conditions.some(condition => isNotEmptyString(condition.value));
         if (!hasConditions) {
             return false;
         }
 
-        const count = await appRuntime.runPromise(
-            Effect.flatMap(RuleMatcherService, ruleMatcherService =>
-                ruleMatcherService.countMatchingTransactions({
-                    conditions: values.conditions,
-                    conditionMatchType: values.conditionMatchType
-                })
-            )
-        );
+        const ruleMatcherService = yield* RuleMatcherService;
+        const count = yield* ruleMatcherService.countMatchingTransactions({
+            conditions: values.conditions,
+            conditionMatchType: values.conditionMatchType
+        });
 
         if (!isPositiveNumber(count)) {
             return false;
         }
 
-        return confirmAlert({
-            title: t`Apply to existing transactions?`,
-            message: t({
-                message: plural(count, {
-                    one: '# existing transaction matches this rule.',
-                    other: '# existing transactions match this rule.'
-                })
-            }),
-            confirmText: t`Apply`,
-            cancelText: t`Skip`
-        });
-    };
+        return yield* Effect.promise(() =>
+            confirmAlert({
+                title: t`Apply to existing transactions?`,
+                message: t({
+                    message: plural(count, {
+                        one: '# existing transaction matches this rule.',
+                        other: '# existing transactions match this rule.'
+                    })
+                }),
+                confirmText: t`Apply`,
+                cancelText: t`Skip`
+            })
+        );
+    });
 
-    const enqueueApplyToExisting = (targetRuleId: number, shouldApply: boolean): void => {
+    const enqueueApplyToExisting = Effect.fn('useRuleForm.enqueueApplyToExisting')(function* (targetRuleId: number, shouldApply: boolean) {
         if (!shouldApply) {
             return;
         }
 
-        appRuntime.runFork(
-            Effect.flatMap(RuleApplicationDrainerService, ruleApplicationDrainerService =>
-                ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast)
-            )
-        );
+        const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+        yield* ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast);
+    });
+
+    const submitRule = Effect.fn('useRuleForm.submitRule')(function* (values: RuleCreateInputInterface) {
+        const shouldApply = yield* confirmApplyToExisting(values);
+        const ruleService = yield* RuleService;
+
+        if (isDefined(ruleId)) {
+            yield* ruleService.updateById(ruleId, values);
+            yield* enqueueApplyToExisting(ruleId, shouldApply);
+        } else {
+            const rule = yield* ruleService.create(values);
+            yield* enqueueApplyToExisting(rule.id, shouldApply);
+        }
+    });
+
+    const handleSubmit = (values: RuleCreateInputInterface) => {
+        runSubmit(submitRule(values), () => void onSuccess?.(isEditing ? 'updated' : 'created'));
     };
 
-    const handleSubmit = async (values: RuleCreateInputInterface) => {
-        try {
-            const shouldApply = await confirmApplyToExisting(values);
-
-            if (isEditing && isDefined(ruleId)) {
-                await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.updateById(ruleId, values)));
-                enqueueApplyToExisting(ruleId, shouldApply);
-            } else {
-                const rule = await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.create(values)));
-                enqueueApplyToExisting(rule.id, shouldApply);
-            }
-            onSuccess?.(isEditing ? 'updated' : 'created');
-        } catch (error: unknown) {
-            Toast.show({
-                type: 'error',
-                text1: isEditing ? t`Could not update rule` : t`Could not create rule`,
-                text2: getErrorMessage(error)
-            });
+    const handleDelete = () => {
+        if (isDefined(ruleId)) {
+            runDelete(
+                Effect.flatMap(RuleService, ruleService => ruleService.archiveById(ruleId)),
+                () => void onSuccess?.('deleted')
+            );
         }
     };
 
-    const handleDelete = async () => {
-        if (!isDefined(ruleId)) {
-            return;
-        }
-
-        try {
-            await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.archiveById(ruleId)));
-            onSuccess?.('deleted');
-        } catch (error: unknown) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not delete rule.`,
-                text2: getErrorMessage(error)
-            });
-        }
-    };
-
-    return { form, handleSubmit: form.handleSubmit(handleSubmit), handleDelete, isEditing };
+    return { form, handleSubmit: form.handleSubmit(handleSubmit), handleDelete, isEditing, isSubmitting: isSaving || isDeleting };
 };

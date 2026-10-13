@@ -7,125 +7,95 @@ import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { generateStableExternalIdHash } from '../../core/util/generate-stable-external-id-hash.util';
-import { ERSTE_ATM_WITHDRAWAL_MCC, ERSTE_CURRENCY_CODE_EUR, ERSTE_EXTERNAL_ID_LENGTH } from '../constant/erste.constant';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
-class ErsteMapper {
-    private static readonly ATM_WITHDRAWAL_DESCRIPTION_REGEX = /^AUTOMAT\s+\d+\s+K\d+\s/u;
+const EXTERNAL_ID_LENGTH = 32;
+const CURRENCY_CODE_EUR = 978;
+const ATM_WITHDRAWAL_MCC = 6011;
+const ATM_WITHDRAWAL_DESCRIPTION_REGEX = /^AUTOMAT\s+\d+\s+K\d+\s/u;
+const LEGACY_DETAILS = '';
 
-    mapAccount(account: ErsteAccountInfoInterface): SyncAccountInterface {
-        return {
-            id: account.iban,
-            provider: SyncProviderEnum.ERSTE,
-            currencyCode: account.currency,
-            currencyCodeNumeric: ERSTE_CURRENCY_CODE_EUR,
-            balance: account.newBalance,
-            balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
-            creditLimit: 0,
-            type: SyncAccountTypeEnum.CHECKING,
-            iban: account.iban
-        };
+const hashExternalId = (seed: string): string => generateStableExternalIdHash(seed).slice(0, EXTERNAL_ID_LENGTH);
+
+const buildStatementDateKey = (date: Date): string => {
+    const year = String(date.getFullYear()).padStart(4, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+};
+
+const buildComment = (row: ErsteRowInterface): string => {
+    if (!isNotEmptyString(row.city)) {
+        return '';
     }
 
-    mapTransaction(row: ErsteRowInterface, iban: string): SyncTransactionInterface {
-        const id = this.generateExternalId(row, iban);
-        const legacyExternalIds = this.generateLegacyExternalIds(row, iban, id);
+    return isNotEmptyString(row.countryAlpha2) ? `${row.city}, ${row.countryAlpha2}` : row.city;
+};
 
-        return {
-            id,
-            ...(isNotEmptyArray(legacyExternalIds) && { legacyExternalIds }),
-            provider: SyncProviderEnum.ERSTE,
-            accountId: iban,
-            type: row.isCredit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
-            time: getUnixTime(row.date),
-            description: row.description,
-            comment: this.buildComment(row),
-            mcc: this.resolveMcc(row),
-            originalMcc: 0,
-            amount: Math.abs(row.amount),
-            operationAmount: Math.abs(row.amount),
-            currencyCode: ERSTE_CURRENCY_CODE_EUR,
-            commissionRate: 0,
-            cashbackAmount: 0,
-            balance: 0,
-            hold: false,
-            category: '',
-            feeAmount: 0
-        };
-    }
+const generateLegacyExternalIds = (row: ErsteRowInterface, iban: string, id: string): string[] => {
+    const instant = row.date.toISOString();
+    const locationSeed = [
+        buildStatementDateKey(row.date),
+        iban,
+        row.amount,
+        row.reference,
+        row.description,
+        LEGACY_DETAILS,
+        row.city ?? '',
+        row.countryAlpha2 ?? ''
+    ].join('|');
 
-    private resolveMcc(row: ErsteRowInterface): number {
-        return !row.isCredit && ErsteMapper.ATM_WITHDRAWAL_DESCRIPTION_REGEX.test(row.description) ? ERSTE_ATM_WITHDRAWAL_MCC : 0;
-    }
+    return [
+        ...new Set([
+            hashExternalId(locationSeed),
+            hashExternalId(`${instant}|${iban}|${row.amount}|${row.reference}|${LEGACY_DETAILS}`),
+            hashExternalId(`${instant}|${iban}|${row.amount}|${row.description}`)
+        ])
+    ].filter(legacyExternalId => legacyExternalId !== id);
+};
 
-    private buildComment(row: ErsteRowInterface): string {
-        if (!isNotEmptyString(row.city)) {
-            return '';
-        }
+export const mapErsteAccount = (account: ErsteAccountInfoInterface): SyncAccountInterface => ({
+    id: account.iban,
+    provider: SyncProviderEnum.ERSTE,
+    currencyCode: 'EUR',
+    currencyCodeNumeric: CURRENCY_CODE_EUR,
+    balance: account.newBalance,
+    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
+    creditLimit: 0,
+    type: SyncAccountTypeEnum.CHECKING,
+    iban: account.iban
+});
 
-        if (isNotEmptyString(row.countryAlpha2)) {
-            return `${row.city}, ${row.countryAlpha2}`;
-        }
+export const mapErsteTransaction = (row: ErsteRowInterface, iban: string): SyncTransactionInterface => {
+    const id = hashExternalId(
+        [buildStatementDateKey(row.date), iban, row.amount, String(row.isCredit), row.reference, row.description].join('|')
+    );
+    const legacyExternalIds = generateLegacyExternalIds(row, iban, id);
 
-        return row.city;
-    }
-
-    private generateExternalId(row: ErsteRowInterface, iban: string): string {
-        const seed = [this.buildStatementDateKey(row.date), iban, row.amount, String(row.isCredit), row.reference, row.description].join(
-            '|'
-        );
-
-        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
-    }
-
-    private generateLegacyExternalIds(row: ErsteRowInterface, iban: string, id: string): string[] {
-        return [
-            ...new Set([
-                this.generateLocationLegacyExternalId(row, iban),
-                this.generateInstantReferenceDetailsLegacyExternalId(row, iban),
-                this.generateInstantDescriptionLegacyExternalId(row, iban)
-            ])
-        ].filter(legacyExternalId => legacyExternalId !== id);
-    }
-
-    private generateLocationLegacyExternalId(row: ErsteRowInterface, iban: string): string {
-        const seed = [
-            this.buildStatementDateKey(row.date),
-            iban,
-            row.amount,
-            row.reference,
-            row.description,
-            row.details,
-            row.city ?? '',
-            row.countryAlpha2 ?? ''
-        ].join('|');
-
-        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
-    }
-
-    private generateInstantReferenceDetailsLegacyExternalId(row: ErsteRowInterface, iban: string): string {
-        const seed = `${row.date.toISOString()}|${iban}|${row.amount}|${row.reference}|${row.details}`;
-
-        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
-    }
-
-    private generateInstantDescriptionLegacyExternalId(row: ErsteRowInterface, iban: string): string {
-        const seed = `${row.date.toISOString()}|${iban}|${row.amount}|${row.description}`;
-
-        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
-    }
-
-    private buildStatementDateKey(date: Date): string {
-        const year = String(date.getFullYear()).padStart(4, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-
-        return `${year}-${month}-${day}`;
-    }
-}
-
-export const ersteMapper = new ErsteMapper();
+    return {
+        id,
+        ...(isNotEmptyArray(legacyExternalIds) && { legacyExternalIds }),
+        provider: SyncProviderEnum.ERSTE,
+        accountId: iban,
+        type: row.isCredit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
+        time: getUnixTime(row.date),
+        description: row.description,
+        comment: buildComment(row),
+        mcc: !row.isCredit && ATM_WITHDRAWAL_DESCRIPTION_REGEX.test(row.description) ? ATM_WITHDRAWAL_MCC : 0,
+        originalMcc: 0,
+        amount: Math.abs(row.amount),
+        operationAmount: Math.abs(row.amount),
+        currencyCode: CURRENCY_CODE_EUR,
+        commissionRate: 0,
+        cashbackAmount: 0,
+        balance: 0,
+        hold: false,
+        category: '',
+        feeAmount: 0
+    };
+};

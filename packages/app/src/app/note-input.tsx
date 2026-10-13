@@ -6,13 +6,15 @@ import { View } from 'react-native';
 import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
 import { TextArea } from '../@generic/component/textarea/text-area';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useNoteInputModal, useNoteInputModalParams } from '../transaction/context/note-input-modal.context';
 
 import { NoteInputModalSelector } from './note-input-modal.selector';
 
 export default function NoteInputModal() {
     const { t } = useLingui();
-    const [, resolveNoteInput] = useNoteInputModal();
+    const [, resolveNoteInput, dismissNoteInput] = useNoteInputModal();
+    useModalDismiss(dismissNoteInput);
     const currentParams = useNoteInputModalParams();
 
     const initialValue = currentParams?.initialValue ?? '';

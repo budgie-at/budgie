@@ -3,14 +3,14 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryPositionRepository,
-    TransactionEntryTypeEnum
+    TransactionEntryTypeEnum,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
 import type { CryptoPositionEntryRowInterface } from '@budgie/contracts';

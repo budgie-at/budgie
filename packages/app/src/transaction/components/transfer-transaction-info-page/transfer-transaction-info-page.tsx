@@ -21,7 +21,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
     const handleOpenFee = () => void router.push(getTransactionFeeEditHref(TransactionTypeEnum.TRANSFER, transactionId));
     const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
     const handleConsolidationPress = () => {
-        void openConsolidationSource({ transactionId });
+        openConsolidationSource({ transactionId });
     };
     const consolidationProps = isConsolidated ? { onOpenConsolidationSources: handleConsolidationPress } : {};
     const actionsMenu = <TransferTransactionActionsMenu transaction={transaction} onDelete={handleDelete} onFeePress={handleOpenFee} />;

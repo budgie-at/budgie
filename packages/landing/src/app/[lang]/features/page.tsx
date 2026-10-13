@@ -3,9 +3,9 @@ import { Trans } from '@lingui/react/macro';
 
 import { FeaturesHubGrid } from '../../../feature/component/features-hub-grid/features-hub-grid';
 import { buildFeaturesItemListJsonLd } from '../../../feature/util/build-features-item-list-json-ld.util';
+import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
-import { BASE_URL } from '../../../generic/constant/seo.constant';
-import { buildAlternates } from '../../../generic/util/build-alternates.util';
+import { buildPageMetadata } from '../../../generic/util/build-page-metadata.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
@@ -22,18 +22,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         i18n
     )`Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and PIN-protected backups — all 100% offline-first.`;
 
-    return {
-        title,
-        description,
-        alternates: buildAlternates(lang, PATH),
-        openGraph: {
-            title,
-            description,
-            type: 'website',
-            url: `${BASE_URL}/${lang}${PATH}`
-        },
-        twitter: { card: 'summary_large_image', title, description, site: '@budgie_at', creator: '@budgie_at' }
-    };
+    return buildPageMetadata({ description, locale: lang, path: PATH, title });
 }
 
 export default async function FeaturesHubPage(props: PageLangParam) {
@@ -41,22 +30,14 @@ export default async function FeaturesHubPage(props: PageLangParam) {
     const i18n = getI18nInstance(lang);
     initLingui(lang);
 
-    /* oxlint-disable lingui/no-unlocalized-strings */
-    const breadcrumb = {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-            { '@type': 'ListItem', position: 1, name: t(i18n)`Home`, item: `${BASE_URL}/${lang}` },
-            { '@type': 'ListItem', position: 2, name: t(i18n)`Features`, item: `${BASE_URL}/${lang}${PATH}` }
-        ]
-    };
-    /* oxlint-enable lingui/no-unlocalized-strings */
-
     const itemList = buildFeaturesItemListJsonLd(i18n, lang);
 
     return (
         <main className="flex-1">
-            <JsonLd data={breadcrumb} />
+            <BreadcrumbsJsonLd locale={lang} path={PATH}>
+                <BreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={`/${lang}`} />
+                <BreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={`/${lang}${PATH}`} />
+            </BreadcrumbsJsonLd>
             <JsonLd data={itemList} />
             <section className="w-full pt-12 pb-8 md:pt-20 md:pb-12">
                 <div className="container px-4 md:px-6 max-w-5xl">

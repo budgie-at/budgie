@@ -140,20 +140,17 @@ export const createTestInlineShimPlugin = (): TestInlineShimPluginInterface => (
     }
 });
 
-export const createTestVitestConfig = (rootDir: string, setupFile: string, includeAppAlias = false) => {
+export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
     const here = (relative: string) => resolve(rootDir, relative);
 
     return {
         plugins: [createTestInlineShimPlugin()],
-        ...(includeAppAlias && {
-            resolve: {
-                alias: [{ find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') }]
-            }
-        }),
+        resolve: {
+            alias: [{ find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') }]
+        },
         test: {
             server: { deps: { inline: [/@effect\/sql-sqlite-react-native/u] } },
             environment: 'node',
-            globals: false,
             setupFiles: [here(setupFile)],
             include: ['src/scenarios/**/*.test.ts'],
             pool: 'forks',

@@ -32,23 +32,34 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
     const { categories } = useNonSystemCategoriesQuery();
     const labelsById = useCategorizeInboxLabels(categories);
 
-    const handlePickLabels = async (description: string): Promise<number[] | null> => {
-        const categoryId = await openCategorySelector({ description });
-
-        return isDefined(categoryId) ? [categoryId] : null;
+    const handlePickLabels = (description: string, _suggestedLabelIds: number[], onPicked: (labelIds: number[] | null) => void): void => {
+        openCategorySelector({ description }, categoryId => {
+            onPicked(isDefined(categoryId) ? [categoryId] : null);
+        });
     };
 
-    const handlePickFollowUpTagIds = async (assignment: CategorizeInboxAssignmentInterface): Promise<number[] | null> => {
-        const tagContext = categorizeInboxEngineService.buildContext(
-            await appRuntime.runPromise(Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence())),
-            defaultInstrument.id,
-            CategorizeInboxLabelKindEnum.TAG
+    const handlePickFollowUpTagIds = (
+        assignment: CategorizeInboxAssignmentInterface,
+        onPicked: (tagIds: number[] | null) => void
+    ): void => {
+        void appRuntime.runPromise(
+            Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence()).pipe(
+                Effect.map(tagEvidence =>
+                    categorizeInboxEngineService.buildContext(tagEvidence, defaultInstrument.id, CategorizeInboxLabelKindEnum.TAG)
+                ),
+                Effect.flatMap(tagContext =>
+                    Effect.sync(() => {
+                        openTagsSelector(
+                            {
+                                suggestedTagIds: categorizeInboxEngineService.suggestLabelIds(assignment.rows, tagContext),
+                                description: assignment.displayTitle
+                            },
+                            onPicked
+                        );
+                    })
+                )
+            )
         );
-
-        return openTagsSelector({
-            suggestedTagIds: categorizeInboxEngineService.suggestLabelIds(assignment.rows, tagContext),
-            description: assignment.displayTitle
-        });
     };
 
     const strategy: CategorizeInboxStrategyInterface = {

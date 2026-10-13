@@ -1,4 +1,4 @@
-import { PRECISION } from '@budgie/contracts';
+import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { ExchangeRatesService } from '@budgie/market';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from 'react';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 interface ConversionState {
     readonly destinationAmount: number;
@@ -58,7 +57,7 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
                 Effect.map(
                     result =>
                         void setState({
-                            destinationAmount: result.amount / PRECISION,
+                            destinationAmount: convertFromMicroUnits(result.amount),
                             exchangeRate: result.exchangeRate,
                             isManualRate: false
                         })

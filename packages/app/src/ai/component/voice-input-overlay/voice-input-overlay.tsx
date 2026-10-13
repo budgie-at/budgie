@@ -1,19 +1,16 @@
-import { AITransactionInterface } from '@budgie/ai';
+import { type AITransactionInterface } from '@budgie/ai';
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVoiceReviewModal } from '../../context/voice-review-modal.context';
 import { VoiceInputStateEnum } from '../../enum/voice-input-state.enum';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
-interface CollectedVoiceInputInterface {
-    readonly transactions: AITransactionInterface[];
-    readonly originalText: string;
-}
+import type { VoiceReviewModalResult } from '../../context/voice-review-modal.context';
 
 export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void }) => {
     const [openVoiceReview] = useVoiceReviewModal();
@@ -30,47 +27,51 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
 
         isLiveRef.current = true;
 
-        // eslint-disable-next-line max-statements -- Single async lifecycle: collect, route on result kind, recurse on re-record
-        const runOnce = async (): Promise<void> => {
-            const collected = await new Promise<CollectedVoiceInputInterface | null>(resolve => {
-                void startAndCollect((transactions, originalText) => void resolve({ transactions, originalText })).catch(() => {
-                    resolve(null);
-                });
-            });
-            if (!isLiveRef.current) {
-                return;
-            }
-            if (!isDefined(collected) || !isNotEmptyArray(collected.transactions)) {
-                onClose();
-
-                return;
-            }
-            const result = await openVoiceReview({ transactions: collected.transactions, originalText: collected.originalText });
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Ref value can flip during the awaited modal flow; analyzer can't see across async boundary
-            if (!isLiveRef.current) {
-                return;
-            }
-            if (result.kind === 're-record') {
-                await runOnce();
-
-                return;
-            }
-            if (result.kind === 'saved' && isNotEmptyArray(result.transactionIds)) {
-                const hasSingleSavedTransaction = result.transactionIds.length === 1;
-                onClose();
-                if (hasSingleSavedTransaction) {
-                    router.push({ pathname: '/transactions/[id]/expense', params: { id: String(result.transactionIds[0]) } });
+        const runOnce = (): void => {
+            const handleReviewResult = (result: VoiceReviewModalResult): void => {
+                if (!isLiveRef.current) {
+                    return;
+                }
+                if (result.kind === 're-record') {
+                    runOnce();
 
                     return;
                 }
-                router.push({ pathname: '/account/[id]/details', params: { id: String(result.accountId) } });
+                if (result.kind === 'saved' && isNotEmptyArray(result.transactionIds)) {
+                    const hasSingleSavedTransaction = result.transactionIds.length === 1;
+                    onClose();
+                    if (hasSingleSavedTransaction) {
+                        router.push({ pathname: '/transactions/[id]/expense', params: { id: String(result.transactionIds[0]) } });
 
-                return;
-            }
-            onClose();
+                        return;
+                    }
+                    router.push({ pathname: '/account/[id]/details', params: { id: String(result.accountId) } });
+
+                    return;
+                }
+                onClose();
+            };
+
+            const handleCollected = (transactions: AITransactionInterface[], originalText: string): void => {
+                if (!isLiveRef.current) {
+                    return;
+                }
+                if (!isNotEmptyArray(transactions)) {
+                    onClose();
+
+                    return;
+                }
+                openVoiceReview({ transactions, originalText }, handleReviewResult);
+            };
+
+            startAndCollect(handleCollected).catch(() => {
+                if (isLiveRef.current) {
+                    onClose();
+                }
+            });
         };
 
-        void runOnce();
+        runOnce();
 
         return () => {
             isLiveRef.current = false;

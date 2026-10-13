@@ -6,13 +6,17 @@ import { useModalResolver } from '../../hook/use-modal-resolver/use-modal-resolv
 import type { ModalContextTuple } from '../create-modal-context/create-modal-context.util';
 
 export const createModalProvider = <TParams, TResult>(
-    [ModalContext, ModalParamsContext]: readonly [Context<ModalContextTuple<TParams, TResult>>, Context<TParams | null>],
+    [ModalContext, ModalParamsContext, emptyResult]: readonly [
+        Context<ModalContextTuple<TParams, TResult>>,
+        Context<TParams | null>,
+        TResult
+    ],
     route: Href
 ) => {
     const ModalProvider = ({ children }: PropsWithChildren) => {
-        const { open, resolve, currentParams } = useModalResolver<TParams, TResult>(route);
+        const { open, resolve, dismiss, currentParams } = useModalResolver<TParams, TResult>(route, emptyResult);
 
-        const value: ModalContextTuple<TParams, TResult> = [open, resolve];
+        const value: ModalContextTuple<TParams, TResult> = [open, resolve, dismiss];
 
         return (
             <ModalContext value={value}>

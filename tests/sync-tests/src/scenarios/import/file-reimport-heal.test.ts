@@ -19,7 +19,7 @@ import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull, ne, or } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance, fetchTransactionById, makeStubFileBankSyncService, seed, testDb, TestLayer } from '../../harness';
+import { fetchAccountBalance, makeStubFileBankSyncService, seed, testDb, TestLayer, testQueryService } from '../../harness';
 
 import type { FileBasedSyncClientInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
@@ -140,8 +140,8 @@ const importConsolidatedRefund = () =>
         const expenseId = yield* findTransactionId('heal-expense');
         const refundId = yield* findTransactionId('heal-refund');
 
-        expect((yield* fetchTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
-        expect((yield* fetchTransactionById(expenseId)).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+        expect((yield* testQueryService.findTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
+        expect((yield* testQueryService.findTransactionById(expenseId)).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
         return { account, expenseId, refundId };
     });
@@ -175,8 +175,8 @@ describe('import/file-reimport-heal', () => {
             yield* deleteEntriesOf(refundId);
             yield* importStatement([buildExpenseRow(), buildRefundRow()]);
 
-            expect((yield* fetchTransactionById(refundId)).consolidationParentTransactionId).toBeNull();
-            expect((yield* fetchTransactionById(expenseId)).consolidationType).toBeNull();
+            expect((yield* testQueryService.findTransactionById(refundId)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.findTransactionById(expenseId)).consolidationType).toBeNull();
             expect(yield* fetchAccountBalance(account.id)).toBe(balance);
 
             yield* transferConsolidationService.consolidate(null);
@@ -186,8 +186,10 @@ describe('import/file-reimport-heal', () => {
                 .from(TransactionEntryEntityTable)
                 .where(eq(TransactionEntryEntityTable.originalTransactionId, refundId));
 
-            expect((yield* fetchTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
-            expect((yield* fetchTransactionById(expenseId)).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect((yield* testQueryService.findTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
+            expect((yield* testQueryService.findTransactionById(expenseId)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
             expect(movedEntries.map(entry => [entry.transactionId, entry.amount])).toEqual([[expenseId, EXPENSE_AMOUNT * PRECISION]]);
             expect(yield* fetchAccountBalance(account.id)).toBe(balance);
         }).pipe(Effect.provide(TestLayer))
@@ -203,7 +205,7 @@ describe('import/file-reimport-heal', () => {
                 .limit(1);
             yield* importStatement([buildExpenseRow()]);
             const expenseId = yield* findTransactionId('heal-expense');
-            const fingerprint = (yield* fetchTransactionById(expenseId)).importFingerprint;
+            const fingerprint = (yield* testQueryService.findTransactionById(expenseId)).importFingerprint;
             yield* testDb
                 .update(TransactionEntryEntityTable)
                 .set({ categoryId: category.id })
@@ -215,7 +217,7 @@ describe('import/file-reimport-heal', () => {
 
             expect(entry.amount).toBe(CHANGED_AMOUNT * PRECISION);
             expect(entry.categoryId).toBe(category.id);
-            expect((yield* fetchTransactionById(expenseId)).importFingerprint).not.toBe(fingerprint);
+            expect((yield* testQueryService.findTransactionById(expenseId)).importFingerprint).not.toBe(fingerprint);
             expect(yield* fetchAccountBalance(account.id)).toBe(-CHANGED_AMOUNT * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -245,14 +247,14 @@ describe('import/file-reimport-heal', () => {
             yield* importStatement([buildExpenseRow(CHANGED_AMOUNT)]);
 
             expect((yield* fetchLiveEntries(expenseId)).map(entry => entry.amount)).toEqual([USER_AMOUNT * PRECISION]);
-            expect((yield* fetchTransactionById(expenseId)).importFingerprint).toEqual(expect.any(String));
+            expect((yield* testQueryService.findTransactionById(expenseId)).importFingerprint).toEqual(expect.any(String));
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('does not rewrite a bank-changed amount on a consolidated row', () =>
         Effect.gen(function* () {
             const { expenseId, refundId } = yield* importConsolidatedRefund();
-            const fingerprint = (yield* fetchTransactionById(expenseId)).importFingerprint;
+            const fingerprint = (yield* testQueryService.findTransactionById(expenseId)).importFingerprint;
 
             yield* importStatement([buildExpenseRow(CHANGED_AMOUNT), buildRefundRow()]);
 
@@ -262,8 +264,8 @@ describe('import/file-reimport-heal', () => {
                 .where(eq(TransactionEntryEntityTable.transactionId, expenseId));
 
             expect(entries.map(entry => entry.amount)).toEqual([EXPENSE_AMOUNT * PRECISION, EXPENSE_AMOUNT * PRECISION]);
-            expect((yield* fetchTransactionById(expenseId)).importFingerprint).toBe(fingerprint);
-            expect((yield* fetchTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
+            expect((yield* testQueryService.findTransactionById(expenseId)).importFingerprint).toBe(fingerprint);
+            expect((yield* testQueryService.findTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
         }).pipe(Effect.provide(TestLayer))
     );
 });

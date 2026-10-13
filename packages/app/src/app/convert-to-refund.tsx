@@ -8,9 +8,9 @@ import { useConvertToRefundModal, useConvertToRefundModalParams } from '../trans
 import { ConvertToRefundModalSelector } from './convert-to-refund-modal.selector';
 
 export default function ConvertToRefundModal() {
-    const [, resolveConvertToRefund] = useConvertToRefundModal();
+    const [, resolveConvertToRefund, dismissConvertToRefund] = useConvertToRefundModal();
     const currentParams = useConvertToRefundModalParams();
-    const screenOptions = useModalRouteState(currentParams, resolveConvertToRefund, null);
+    const screenOptions = useModalRouteState(currentParams, dismissConvertToRefund);
     const refundIncomeTransactionId = currentParams?.refundIncomeTransactionId ?? 0;
 
     if (!currentParams) {

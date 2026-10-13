@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
@@ -15,11 +16,12 @@ export const DefaultCurrencySelector = () => {
     const [openCurrencySelector] = useCurrencySelectorModal();
     const { t } = useLingui();
 
-    const handleOpen = async () => {
-        const result = await openCurrencySelector({ selectedInstrumentId: defaultInstrument.id });
-        if (isDefined(result)) {
-            await appRuntime.runPromise(updateSettingsMutation({ defaultInstrumentId: result }));
-        }
+    const handleOpen = () => {
+        openCurrencySelector({ selectedInstrumentId: defaultInstrument.id }, result => {
+            if (isDefined(result)) {
+                appRuntime.runFork(logAndContinue(updateSettingsMutation({ defaultInstrumentId: result })));
+            }
+        });
     };
 
     return (

@@ -1,12 +1,5 @@
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
-import {
-    BudgetAlertThresholdService,
-    BudgetCategoryLimitRepository,
-    BudgetRepository,
-    BudgetService,
-    BudgetSpentService,
-    BudgetTemplateService
-} from '@budgie/budget';
+import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService } from '@budgie/budget';
 import {
     CategorizeInboxService,
     CommentEmbeddingRepository,
@@ -16,7 +9,7 @@ import {
     TransactionCategorizeInboxRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
-import { ConsolidationCoordinatorService } from '@budgie/consolidation';
+import { ConsolidationCoordinatorService, RefundConsolidationService } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
     AccountRepository,
@@ -121,7 +114,6 @@ import { TransferConsolidationDrainerService } from '../../sync/service/transfer
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
-import { TransactionRefundService } from '../../transaction/service/transaction-refund.service';
 import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
@@ -143,9 +135,6 @@ export const appServicesLayer = Layer.mergeAll(
     SettingsRepository.layer,
     BudgetRepository.layer,
     BudgetCategoryLimitRepository.layer,
-    BudgetSpentService.layer,
-    BudgetAlertThresholdService.layer,
-    BudgetTemplateService.layer,
     BudgetService.layer,
     RecurringService.layer,
     AccountBalanceIncrementalService.layer,
@@ -250,7 +239,7 @@ export const appServicesLayer = Layer.mergeAll(
     InstallmentPlanService.layer,
     TransactionDepositSafetyService.layer,
     TransactionImportService.layer,
-    TransactionRefundService.layer,
+    RefundConsolidationService.layer,
     TransactionTransferService.layer,
     TransferCreationService.layer,
     TransactionService.layer

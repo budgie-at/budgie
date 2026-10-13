@@ -4,15 +4,15 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import {
-    P2P_OPERATED_AT,
     expectP2pUnconsolidated,
     fetchP2pCanonical,
-    fetchTransactionById,
+    P2P_OPERATED_AT,
     seed,
     seedBankPair,
     seedP2pFiatTransferFixture,
     seedP2pIncome,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 const SPLIT_FIRST_AMOUNT = Number('1534') * PRECISION;
@@ -51,7 +51,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
             expect(canonical.toAccountId).toBe(binanceAccount.id);
             expect(canonical.exchangeRate).toBeCloseTo(SPLIT_TOTAL_AMOUNT / SPLIT_USDT_AMOUNT);
             expect(
-                (yield* Effect.forEach([firstExpense, secondExpense, income], item => fetchTransactionById(item.id))).map(
+                (yield* Effect.forEach([firstExpense, secondExpense, income], item => testQueryService.findTransactionById(item.id))).map(
                     transaction => transaction.consolidationParentTransactionId
                 )
             ).toEqual([canonical.id, canonical.id, canonical.id]);
@@ -77,7 +77,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
 
             const canonicalId = (yield* fetchP2pCanonical()).id;
             expect(
-                (yield* Effect.forEach([...expenses, income], item => fetchTransactionById(item.id))).map(
+                (yield* Effect.forEach([...expenses, income], item => testQueryService.findTransactionById(item.id))).map(
                     transaction => transaction.consolidationParentTransactionId
                 )
             ).toEqual([canonicalId, canonicalId, canonicalId, canonicalId]);

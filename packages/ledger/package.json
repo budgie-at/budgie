@@ -1,20 +1,17 @@
 {
     "name": "@budgie/ledger",
-    "version": "6.100.2",
+    "version": "6.103.0",
     "private": true,
     "description": "Ledger domain services: transactions, transfers, imports and account balances",
     "sideEffects": false,
     "exports": {
         ".": {
             "types": "./dist/esm/index.d.ts",
-            "import": "./dist/esm/index.js",
-            "react-native": "./dist/esm/index.js",
             "default": "./dist/esm/index.js"
         },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
-    "react-native": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "scripts": {
         "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",

@@ -5,13 +5,13 @@ import {
     CategoryRepository,
     InstrumentEntityInterface,
     InstrumentRepository,
-    MccCategoryEntityInterface,
     MccCategoryRepository,
     TransactionRepository,
     TransactionTypeEnum,
-    TransactionWithEntriesEntityInterface
+    TransactionWithEntriesEntityInterface,
+    YIELD_TO_UI,
+    convertFromMicroUnits
 } from '@budgie/contracts';
-import { convertFromMicroUnits } from '@budgie/ledger';
 import { format } from 'date-fns/format';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -21,6 +21,8 @@ import Papa from 'papaparse';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ExportRowInterface } from '../interface/export-row.interface';
+
+import type { ExportLookupInterface } from '../interface/export-lookup.interface';
 
 export class ExporterService extends Context.Service<ExporterService>()('@budgie/import-export/ExporterService', {
     make: Effect.gen(function* () {
@@ -44,33 +46,23 @@ export class ExporterService extends Context.Service<ExporterService>()('@budgie
             'comment',
             'mcc'
         ];
-        const accountsMap = new Map<number, AccountEntityInterface>();
-        const deletedAccountsMap = new Map<number, AccountEntityInterface>();
-        const categoriesMap = new Map<number, CategoryEntityInterface>();
-        const instrumentsMap = new Map<number, InstrumentEntityInterface>();
-        const mccCategoriesMap = new Map<number, MccCategoryEntityInterface>();
+        const toMap = <T extends { readonly id: number }>(items: readonly T[]): Map<number, T> =>
+            new Map(items.map(item => [item.id, item]));
 
-        const fillMap = <T extends { readonly id: number }>(map: Map<number, T>, items: readonly T[]): void => {
-            map.clear();
-            items.forEach(item => map.set(item.id, item));
-        };
+        const getAccount = (lookup: ExportLookupInterface, accountId: number | null): AccountEntityInterface | null =>
+            isDefined(accountId) ? (lookup.accounts.get(accountId) ?? null) : null;
 
-        const getAccount = (accountId: number | null | undefined): AccountEntityInterface | null => {
-            if (!isDefined(accountId)) {
-                return null;
-            }
-
-            return accountsMap.get(accountId) ?? deletedAccountsMap.get(accountId) ?? null;
-        };
-
-        const mapTransferTransaction = (transaction: TransactionWithEntriesEntityInterface): ExportRowInterface => {
+        const mapTransferTransaction = (
+            transaction: TransactionWithEntriesEntityInterface,
+            lookup: ExportLookupInterface
+        ): ExportRowInterface => {
             const entry = transaction.entries.at(0);
 
-            const fromAccount = getAccount(transaction.fromAccountId);
-            const toAccount = getAccount(transaction.toAccountId);
-            const fromInstrument = isDefined(fromAccount?.instrumentId) ? instrumentsMap.get(fromAccount.instrumentId) : null;
-            const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
-            const category = isDefined(entry?.categoryId) ? categoriesMap.get(entry.categoryId) : null;
+            const fromAccount = getAccount(lookup, transaction.fromAccountId);
+            const toAccount = getAccount(lookup, transaction.toAccountId);
+            const fromInstrument = isDefined(fromAccount?.instrumentId) ? lookup.instruments.get(fromAccount.instrumentId) : null;
+            const toInstrument = isDefined(toAccount?.instrumentId) ? lookup.instruments.get(toAccount.instrumentId) : null;
+            const category = isDefined(entry?.categoryId) ? lookup.categories.get(entry.categoryId) : null;
 
             const fromEntry = transaction.entries.find(transactionEntry => transactionEntry.accountId === transaction.fromAccountId);
             const toEntry = transaction.entries.find(transactionEntry => transactionEntry.accountId === transaction.toAccountId);
@@ -113,33 +105,38 @@ export class ExporterService extends Context.Service<ExporterService>()('@budgie
             mcc: ''
         });
 
-        const mapIncomeExpenseTransaction = (transaction: TransactionWithEntriesEntityInterface): ExportRowInterface[] => {
-            const toAccount = getAccount(transaction.toAccountId);
-            const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
+        const mapIncomeExpenseTransaction = (
+            transaction: TransactionWithEntriesEntityInterface,
+            lookup: ExportLookupInterface
+        ): ExportRowInterface[] => {
+            const toAccount = getAccount(lookup, transaction.toAccountId);
+            const toInstrument = isDefined(toAccount?.instrumentId) ? lookup.instruments.get(toAccount.instrumentId) : null;
 
             return transaction.entries.map(entry => {
-                const category = isDefined(entry.categoryId) ? categoriesMap.get(entry.categoryId) : null;
+                const category = isDefined(entry.categoryId) ? lookup.categories.get(entry.categoryId) : null;
                 const signedAmount = transaction.type === TransactionTypeEnum.EXPENSE ? -entry.amount : entry.amount;
-                const mcc = isDefined(entry.mccCategoryId) ? (mccCategoriesMap.get(entry.mccCategoryId)?.mcc ?? '') : '';
+                const mcc = isDefined(entry.mccCategoryId) ? (lookup.mccCategories.get(entry.mccCategoryId)?.mcc ?? '') : '';
 
                 return { ...createExportRow(transaction, toAccount, toInstrument, category, signedAmount), mcc };
             });
         };
 
-        const processTransactionsInBatches = Effect.fn('ExporterService.processTransactionsInBatches')(function* () {
+        const processTransactionsInBatches = Effect.fn('ExporterService.processTransactionsInBatches')(function* (
+            lookup: ExportLookupInterface
+        ) {
             const rows: ExportRowInterface[] = [];
             let transactions = yield* transactionRepository.getAllAfter(null, batchSize);
 
             while (isNotEmptyArray(transactions)) {
                 for (const transaction of transactions) {
                     if (transaction.type === TransactionTypeEnum.TRANSFER) {
-                        rows.push(mapTransferTransaction(transaction));
+                        rows.push(mapTransferTransaction(transaction, lookup));
                     } else if (isDefined(transaction.toAccountId)) {
-                        rows.push(...mapIncomeExpenseTransaction(transaction));
+                        rows.push(...mapIncomeExpenseTransaction(transaction, lookup));
                     }
                 }
 
-                yield* Effect.sleep(1);
+                yield* YIELD_TO_UI;
                 transactions = yield* transactionRepository.getAllAfter(transactions[transactions.length - 1].id, batchSize);
             }
 
@@ -159,13 +156,12 @@ export class ExporterService extends Context.Service<ExporterService>()('@budgie
                     { concurrency: 'unbounded' }
                 );
 
-                fillMap(accountsMap, accounts);
-                fillMap(deletedAccountsMap, deletedAccounts);
-                fillMap(categoriesMap, categories);
-                fillMap(instrumentsMap, instruments);
-                fillMap(mccCategoriesMap, mccCategories);
-
-                const rows = yield* processTransactionsInBatches();
+                const rows = yield* processTransactionsInBatches({
+                    accounts: toMap([...deletedAccounts, ...accounts]),
+                    categories: toMap(categories),
+                    instruments: toMap(instruments),
+                    mccCategories: toMap(mccCategories)
+                });
 
                 return Papa.unparse(rows, { header: true, columns: csvColumns });
             })

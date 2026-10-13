@@ -1,12 +1,19 @@
 import { RuleConditionFieldEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
+import { TRANSACTION_TYPE } from '../../../transaction/constant/transaction-type.constant';
+import { EXTERNAL_SOURCE } from '../../constant/external-source.constant';
 import { RuleConditionAccountSelector } from '../rule-condition-account-selector/rule-condition-account-selector';
 import { RuleConditionAmountValueInput } from '../rule-condition-amount-value-input/rule-condition-amount-value-input';
-import { RuleConditionExternalSourceSelector } from '../rule-condition-external-source-selector/rule-condition-external-source-selector';
 import { RuleConditionMccSelector } from '../rule-condition-mcc-selector/rule-condition-mcc-selector';
 import { RuleConditionTextValueInput } from '../rule-condition-text-value-input/rule-condition-text-value-input';
-import { RuleConditionTransactionTypeSelector } from '../rule-condition-transaction-type-selector/rule-condition-transaction-type-selector';
+import { RuleConditionValueEnumSelector } from '../rule-condition-value-enum-selector/rule-condition-value-enum-selector';
+
+const EXTERNAL_SOURCE_OPTIONS = typedObjectEntries(EXTERNAL_SOURCE).map(([value, label]) => ({ value, label }));
+
+const TRANSACTION_TYPE_OPTIONS = typedObjectEntries(TRANSACTION_TYPE).map(([value, label]) => ({ value, label }));
 
 interface Props {
     readonly index: number;
@@ -15,6 +22,7 @@ interface Props {
 }
 
 export const RuleConditionValueInput = ({ index, testID, secondaryTestID }: Props) => {
+    const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const field = useWatch({ control, name: `conditions.${index}.field` });
 
@@ -22,9 +30,25 @@ export const RuleConditionValueInput = ({ index, testID, secondaryTestID }: Prop
         case RuleConditionFieldEnum.ACCOUNT_ID:
             return <RuleConditionAccountSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.TRANSACTION_TYPE:
-            return <RuleConditionTransactionTypeSelector index={index} testID={testID} />;
+            return (
+                <RuleConditionValueEnumSelector
+                    index={index}
+                    options={TRANSACTION_TYPE_OPTIONS}
+                    sheetTitle={t`Select Transaction Type`}
+                    defaultLabel={t`Select type`}
+                    testID={testID}
+                />
+            );
         case RuleConditionFieldEnum.EXTERNAL_SOURCE:
-            return <RuleConditionExternalSourceSelector index={index} testID={testID} />;
+            return (
+                <RuleConditionValueEnumSelector
+                    index={index}
+                    options={EXTERNAL_SOURCE_OPTIONS}
+                    sheetTitle={t`Select External Source`}
+                    defaultLabel={t`Select source`}
+                    testID={testID}
+                />
+            );
         case RuleConditionFieldEnum.MCC_CODE:
             return <RuleConditionMccSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.AMOUNT:

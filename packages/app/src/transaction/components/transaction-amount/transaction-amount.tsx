@@ -2,12 +2,12 @@ import {
     TransactionEntryTypeEnum,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
-    isPositiveAdjustmentTransaction
+    isPositiveAdjustmentTransaction,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';

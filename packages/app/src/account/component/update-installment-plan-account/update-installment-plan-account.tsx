@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
@@ -9,7 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { InstallmentPlanCountField } from '../../../installment-plan/component/installment-plan-count-field/installment-plan-count-field';
 import { InstallmentPlanPaidSummary } from '../../../installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary';
 import { InstallmentPlanTotalField } from '../../../installment-plan/component/installment-plan-total-field/installment-plan-total-field';

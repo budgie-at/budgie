@@ -1,4 +1,11 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
+import {
+    AccountDebtTypeEnum,
+    AccountTypeEnum,
+    UserIconNameEnum,
+    isExpenseTransaction,
+    isIncomeTransaction,
+    convertFromMicroUnits
+} from '@budgie/contracts';
 import { TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -8,7 +15,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { AccountDebtOpeningService } from '../../../account/service/account-debt-opening.service';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -71,30 +77,33 @@ export const TransactionListAttachDebtMenuItem = () => {
           }
         : null;
 
-    const attachDebtToTransaction = async () => {
-        try {
-            const debtAccountId = await openAccountSelector({
+    const attachDebtToTransaction = () => {
+        openAccountSelector(
+            {
                 includeAccountTypes: [AccountTypeEnum.DEBT],
                 excludeAccountId: categoryEntry.accountId,
                 emptyStateDescription: t`Create a debt account first.`,
                 showDebtTotal: true,
                 ...(isDefined(borrowedDebtCreateAction) && { createAction: borrowedDebtCreateAction })
-            });
-
-            if (isDefined(debtAccountId)) {
-                await appRuntime.runPromise(
-                    Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
-                        transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId })
-                    )
-                );
+            },
+            debtAccountId => {
+                if (isDefined(debtAccountId)) {
+                    appRuntime
+                        .runPromise(
+                            Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
+                                transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId })
+                            )
+                        )
+                        .catch(() => {
+                            Toast.show({ type: 'error', text1: debtAttachmentErrorMessage });
+                        });
+                }
             }
-        } catch {
-            Toast.show({ type: 'error', text1: debtAttachmentErrorMessage });
-        }
+        );
     };
 
     const handleAttach = () => {
-        closeMenu(() => void attachDebtToTransaction());
+        closeMenu(attachDebtToTransaction);
     };
 
     return (

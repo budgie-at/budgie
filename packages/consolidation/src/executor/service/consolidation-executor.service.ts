@@ -11,13 +11,7 @@ import { P2pTransferTitleResolver } from './p2p-transfer-title-resolver.service'
 
 import type { P2pFiatTransferCandidateInterface } from '../../auto/interface/p2p-fiat-transfer-candidate.interface';
 import type { ConsolidationPlanInterface } from '../interface/consolidation-plan.interface';
-import type {
-    AtmCashWithdrawalCandidateInterface,
-    ExistingTransferBridgeCandidateInterface,
-    IbanBridgeChainTransferCandidateInterface,
-    IbanBridgeTransferCandidateInterface,
-    TransferPairCandidateInterface
-} from '@budgie/contracts';
+import type { AtmCashWithdrawalCandidateInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class ConsolidationExecutorService extends Context.Service<ConsolidationExecutorService>()(
     '@budgie/consolidation/ConsolidationExecutorService',
@@ -27,16 +21,14 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
             const consolidationMutationService = yield* ConsolidationMutationService;
             const resolveP2pTransferTitle = yield* P2pTransferTitleResolver;
 
-            const consolidateRequiredSources = Effect.fnUntraced(
-                function* (requiredSourceTransactionIds: number[], consolidationPlan: ConsolidationPlanInterface) {
-                    const hasRequiredSourceTransactionIds = requiredSourceTransactionIds.every(sourceTransactionId =>
-                        consolidationPlan.sourceTransactionIds.includes(sourceTransactionId)
-                    );
-
-                    if (!hasRequiredSourceTransactionIds) {
-                        return false;
-                    }
-
+            const consolidateWithFeeEntries = Effect.fn('ConsolidationExecutorService.consolidateWithFeeEntries')(
+                function* <E, R>(
+                    consolidationPlan: ConsolidationPlanInterface,
+                    createFeeEntries: (
+                        sourceTransactions: TransactionWithEntriesEntityInterface[],
+                        canonicalTransactionId: number
+                    ) => Effect.Effect<void, E, R>
+                ) {
                     const sourceTransactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
                         consolidationPlan.sourceTransactionIds,
                         consolidationPlan.allowedMovedSourceTransactionIds
@@ -50,11 +42,7 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
                         consolidationPlan.canonicalInput
                     );
 
-                    yield* consolidationMutationService.createTransferPairFeeEntries(
-                        [consolidationPlan.canonicalInput.fromAccountId, consolidationPlan.canonicalInput.toAccountId],
-                        sourceTransactions,
-                        canonicalTransaction.id
-                    );
+                    yield* createFeeEntries(sourceTransactions, canonicalTransaction.id);
                     yield* consolidationMutationService.moveSourcesToCanonical(
                         consolidationPlan.sourceTransactionIds,
                         canonicalTransaction.id
@@ -66,110 +54,47 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
             );
 
             return {
-                consolidatePair: Effect.fn('ConsolidationExecutorService.consolidatePair')(function* (
-                    candidate: TransferPairCandidateInterface,
-                    consolidationPlan: ConsolidationPlanInterface
-                ) {
-                    return yield* consolidateRequiredSources(
-                        [candidate.expenseTransactionId, candidate.incomeTransactionId],
-                        consolidationPlan
-                    );
-                }),
-                consolidateAtmCashWithdrawal: Effect.fn('ConsolidationExecutorService.consolidateAtmCashWithdrawal')(
-                    function* (candidate: AtmCashWithdrawalCandidateInterface, consolidationPlan: ConsolidationPlanInterface) {
-                        const sourceTransactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
-                            consolidationPlan.sourceTransactionIds
-                        );
-
-                        if (!isDefined(sourceTransactions)) {
-                            return false;
-                        }
-
-                        const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer(
-                            consolidationPlan.canonicalInput
-                        );
-
-                        yield* consolidationMutationService.createAtmCashWithdrawalFeeEntry(
-                            candidate,
+                consolidateTransfer: (consolidationPlan: ConsolidationPlanInterface) =>
+                    consolidateWithFeeEntries(consolidationPlan, (sourceTransactions, canonicalTransactionId) =>
+                        consolidationMutationService.createTransferPairFeeEntries(
+                            [consolidationPlan.canonicalInput.fromAccountId, consolidationPlan.canonicalInput.toAccountId],
                             sourceTransactions,
-                            canonicalTransaction.id
-                        );
-                        yield* consolidationMutationService.moveSourcesToCanonical(
-                            consolidationPlan.sourceTransactionIds,
-                            canonicalTransaction.id
-                        );
-
-                        return true;
-                    },
-                    effect => Db.transaction(effect)
-                ),
-                consolidateIbanBridgeTransfer: Effect.fn('ConsolidationExecutorService.consolidateIbanBridgeTransfer')(function* (
-                    candidate: IbanBridgeTransferCandidateInterface,
+                            canonicalTransactionId
+                        )
+                    ),
+                consolidateAtmCashWithdrawal: (
+                    candidate: AtmCashWithdrawalCandidateInterface,
                     consolidationPlan: ConsolidationPlanInterface
-                ) {
-                    return yield* consolidateRequiredSources(
-                        [candidate.expenseTransactionId, candidate.incomeTransactionId],
-                        consolidationPlan
-                    );
-                }),
-                consolidateExistingTransferBridge: Effect.fn('ConsolidationExecutorService.consolidateExistingTransferBridge')(function* (
-                    candidate: ExistingTransferBridgeCandidateInterface,
-                    consolidationPlan: ConsolidationPlanInterface
-                ) {
-                    return yield* consolidateRequiredSources(
-                        [candidate.sourceExpenseTransactionId, candidate.bridgeIncomeTransactionId, candidate.existingTransferId],
-                        consolidationPlan
-                    );
-                }),
-                consolidateIbanBridgeChainTransfer: Effect.fn('ConsolidationExecutorService.consolidateIbanBridgeChainTransfer')(function* (
-                    candidate: IbanBridgeChainTransferCandidateInterface,
-                    consolidationPlan: ConsolidationPlanInterface
-                ) {
-                    return yield* consolidateRequiredSources(
-                        [
-                            candidate.sourceExpenseTransactionId,
-                            candidate.bridgeIncomeTransactionId,
-                            candidate.bridgeExpenseTransactionId,
-                            candidate.targetIncomeTransactionId
-                        ],
-                        consolidationPlan
-                    );
-                }),
-                consolidateP2pFiatTransfer: Effect.fn('ConsolidationExecutorService.consolidateP2pFiatTransfer')(
-                    function* (candidate: P2pFiatTransferCandidateInterface) {
-                        const sourceTransactionIds = [...candidate.sourceTransactionIds];
-                        const sourceTransactions =
-                            yield* consolidationEligibilityService.findEligibleSourceTransactions(sourceTransactionIds);
-
-                        if (!isDefined(sourceTransactions)) {
-                            return false;
-                        }
-
-                        const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer({
-                            title: resolveP2pTransferTitle(candidate.direction, candidate.assetCode),
-                            operatedAt: candidate.operatedAt,
-                            fromAccountId: candidate.fromAccountId,
-                            toAccountId: candidate.toAccountId,
-                            fromAmount: candidate.fromAmount,
-                            toAmount: candidate.toAmount,
-                            exchangeRate: candidate.fromAmount / candidate.toAmount,
-                            consolidationType: TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER,
-                            fromEntryExchangeRate: candidate.fromEntryExchangeRate,
-                            toEntryExchangeRate: candidate.toEntryExchangeRate,
-                            fromEntryToIban: candidate.fromEntryToIban
-                        });
-
-                        yield* consolidationMutationService.createP2pFiatTransferFeeEntries(
-                            candidate,
-                            sourceTransactions,
-                            canonicalTransaction.id
-                        );
-                        yield* consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id);
-
-                        return true;
-                    },
-                    effect => Db.transaction(effect)
-                )
+                ) =>
+                    consolidateWithFeeEntries(consolidationPlan, (sourceTransactions, canonicalTransactionId) =>
+                        consolidationMutationService.createAtmCashWithdrawalFeeEntry(candidate, sourceTransactions, canonicalTransactionId)
+                    ),
+                consolidateP2pFiatTransfer: (candidate: P2pFiatTransferCandidateInterface) =>
+                    consolidateWithFeeEntries(
+                        {
+                            sourceTransactionIds: [...candidate.sourceTransactionIds],
+                            allowedMovedSourceTransactionIds: [],
+                            canonicalInput: {
+                                title: resolveP2pTransferTitle(candidate.direction, candidate.assetCode),
+                                operatedAt: candidate.operatedAt,
+                                fromAccountId: candidate.fromAccountId,
+                                toAccountId: candidate.toAccountId,
+                                fromAmount: candidate.fromAmount,
+                                toAmount: candidate.toAmount,
+                                exchangeRate: candidate.fromAmount / candidate.toAmount,
+                                consolidationType: TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER,
+                                fromEntryExchangeRate: candidate.fromEntryExchangeRate,
+                                toEntryExchangeRate: candidate.toEntryExchangeRate,
+                                fromEntryToIban: candidate.fromEntryToIban
+                            }
+                        },
+                        (sourceTransactions, canonicalTransactionId) =>
+                            consolidationMutationService.createP2pFiatTransferFeeEntries(
+                                candidate,
+                                sourceTransactions,
+                                canonicalTransactionId
+                            )
+                    )
             };
         })
     }

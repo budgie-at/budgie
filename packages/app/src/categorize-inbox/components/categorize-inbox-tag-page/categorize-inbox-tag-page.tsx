@@ -29,7 +29,8 @@ export const CategorizeInboxTagPage = ({ params }: Props) => {
         labelsById,
         rowsAtom: untaggedRowsAtom,
         evidenceAtom: tagEvidenceAtom,
-        pickLabels: (description, suggestedLabelIds) => openTagsSelector({ description, suggestedTagIds: suggestedLabelIds }),
+        pickLabels: (description, suggestedLabelIds, onPicked) =>
+            void openTagsSelector({ description, suggestedTagIds: suggestedLabelIds }, onPicked),
         pickFollowUpTagIds: null,
         buildRuleActions: tagIds => ({ categoryId: null, tagIds }),
         buildListRouteParams: filters => ({

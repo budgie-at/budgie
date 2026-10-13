@@ -6,13 +6,13 @@ import {
     SettingsRepository,
     TransactionEntryRepository,
     TransactionRepository,
-    TransactionConsolidationRepository
+    TransactionConsolidationRepository,
+    YIELD_TO_UI
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
 import { processInputWithBatches } from '../../@generic/util/process-input-with-batches.util';
 

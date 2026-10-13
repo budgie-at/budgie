@@ -1,9 +1,12 @@
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 
-export interface NoteInputModalParams {
+interface NoteInputModalParams {
     readonly initialValue?: string;
 }
 
-export const [NoteInputModalContext, useNoteInputModal, useNoteInputModalParams] = createModalContext<NoteInputModalParams, string | null>(
-    null
-);
+const [NoteInputModalContext, useNoteInputModal, useNoteInputModalParams] = createModalContext<NoteInputModalParams, string | null>(null);
+
+export { useNoteInputModal, useNoteInputModalParams };
+
+export const NoteInputModalProvider = createModalProvider(NoteInputModalContext, '/note-input');

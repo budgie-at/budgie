@@ -12,6 +12,7 @@ import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-
 import { useIconSelectorModal, useIconSelectorModalParams } from '../@generic/context/icon-selector-modal.context';
 import { useFormsheetListContentStyle } from '../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useIconSearchEntries } from '../@generic/hook/use-icon-search-entries.hook';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { IconSearchEntryInterface } from '../@generic/interface/icon-search-entry.interface';
 import { iconSearchService } from '../@generic/service/icon-search.service';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
@@ -24,7 +25,8 @@ const keyExtractor = (item: FlatListDataItem<IconSearchEntryInterface>, index: n
 
 export default function IconSelectorModal() {
     const { t } = useLingui();
-    const [, resolveIconSelector] = useIconSelectorModal();
+    const [, resolveIconSelector, dismissIconSelector] = useIconSelectorModal();
+    useModalDismiss(dismissIconSelector);
     const currentParams = useIconSelectorModalParams();
     const contentContainerStyle = useFormsheetListContentStyle();
     const [search, setSearch] = useState('');

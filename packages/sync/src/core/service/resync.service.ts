@@ -7,18 +7,19 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { MonobankSyncService } from '../../monobank/service/monobank-sync.service';
-import { SyncWorkload } from '../port/sync-workload.port';
+
+import { SyncProviderRegistryService } from './sync-provider-registry.service';
 
 import type { ResyncInputInterface } from '../interface/resync-input.interface';
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
 export class ResyncService extends Context.Service<ResyncService>()('@budgie/sync/ResyncService', {
     make: Effect.gen(function* () {
-        const syncWorkload = yield* SyncWorkload;
         const syncRepository = yield* SyncRepository;
         const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
         const unconsolidationService = yield* UnconsolidationService;
         const monobankSyncService = yield* MonobankSyncService;
+        const syncProviderRegistryService = yield* SyncProviderRegistryService;
         const millisecondsPerDay = 24 * 60 * 60 * 1000;
         const yieldEveryRows = 5;
 
@@ -57,7 +58,11 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
                     yield* Db.transaction(resyncFull(accountId, setupBalance));
                 }
 
-                yield* Effect.forkDetach(syncWorkload.run(monobankSyncService.sync()));
+                const service = yield* syncProviderRegistryService.getServiceForAccount(accountId);
+
+                if (isDefined(service) && 'requestSync' in service) {
+                    yield* service.requestSync();
+                }
             })
         };
     })
@@ -67,7 +72,8 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
             SyncRepository.layer,
             TransactionConsolidationRepository.layer,
             UnconsolidationService.layer,
-            MonobankSyncService.layer
+            MonobankSyncService.layer,
+            SyncProviderRegistryService.layer
         ])
     );
 }

@@ -12,16 +12,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import {
-    fetchCanonicalsOfType,
-    fetchTransactionById,
-    findMccByCode,
-    requireInstrument,
-    seed,
-    seedBankPair,
-    makeStubFileBankSyncService,
-    TestLayer
-} from '../../harness';
+import { makeStubFileBankSyncService, requireInstrument, seed, seedBankPair, TestLayer, testQueryService } from '../../harness';
 
 import type { ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
 import type { FileBasedSyncClientInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
@@ -107,10 +98,10 @@ const buildIncomeTransaction = (target: ImportedIncomeInterface): SyncTransactio
 const expectTransferPairCanonical = (result: { readonly consolidated: number }, sourceAccountId: number) =>
     Effect.gen(function* () {
         expect(result.consolidated).toBe(1);
-        const canonicals = yield* fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        const canonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(canonicals).toHaveLength(1);
         expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
-        expect((yield* fetchTransactionById(canonicals[0].id)).toAccountId).not.toBe(sourceAccountId);
+        expect((yield* testQueryService.findTransactionById(canonicals[0].id)).toAccountId).not.toBe(sourceAccountId);
     });
 
 const seedExistingBankExpense = (source: ExistingExpenseInterface, instrumentId: number, mccCategoryId: number) =>
@@ -134,7 +125,7 @@ const seedExistingBankExpense = (source: ExistingExpenseInterface, instrumentId:
 
 const buildMccCategoryLookup = () =>
     Effect.gen(function* () {
-        const transferMcc = yield* findMccByCode(TRANSFER_MCC_CODE);
+        const transferMcc = yield* testQueryService.findMccByCode(TRANSFER_MCC_CODE);
 
         return {
             id: transferMcc.id,

@@ -68,7 +68,8 @@ graphify-out/
 
 # Fastlane store screenshots
 packages/app/fastlane/screenshots/raw/
-packages/app/fastlane/screenshots/variants/ci/
+packages/app/fastlane/screenshots/variants/*
+!packages/app/fastlane/screenshots/variants/dark/
 packages/app/fastlane/screenshots/**/*.staging*
 packages/app/fastlane/screenshots/landing-raw/
 packages/app/fastlane/report.xml

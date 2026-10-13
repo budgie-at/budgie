@@ -1,5 +1,5 @@
-import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Href, router } from 'expo-router';
+import { ExternalSourceEnum } from '@budgie/contracts';
+import { router } from 'expo-router';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -7,14 +7,12 @@ import { CreateAccountSelector } from '../../../app/(main)/create-account/create
 
 interface Props {
     readonly title: string;
-    readonly icon?: UserIconNameEnum;
     readonly description: string;
     readonly bankProvider: ExternalSourceEnum;
-    readonly route: Href;
 }
 
-export const CreateSyncCard = ({ title, description, route, bankProvider }: Props) => {
-    const handleNavigate = () => void router.push(route);
+export const CreateSyncCard = ({ title, description, bankProvider }: Props) => {
+    const handleNavigate = () => void router.push({ pathname: '/create-account/[type]', params: { type: bankProvider } });
 
     return (
         <SimpleHorizontalCell

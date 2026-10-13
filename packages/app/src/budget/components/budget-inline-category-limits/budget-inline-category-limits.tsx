@@ -42,19 +42,20 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
     const isCategoryLimitsEmpty = isEmptyArray(fields);
     const isBottomAddButtonVisible = fields.length > BOTTOM_ADD_BUTTON_THRESHOLD;
 
-    const handleAdd = async () => {
-        const result = await openCategorySelector({
-            excludeCategoryIds: selectedCategoryIds,
-            description: t`Pick a category to set a limit`
-        });
-
-        if (isPositiveNumber(result)) {
-            shouldScrollOnNextLayoutRef.current = true;
-            append({ categoryId: result, limitAmount: 0 });
-        }
+    const handleAddPress = () => {
+        openCategorySelector(
+            {
+                excludeCategoryIds: selectedCategoryIds,
+                description: t`Pick a category to set a limit`
+            },
+            selectedCategoryId => {
+                if (isPositiveNumber(selectedCategoryId)) {
+                    shouldScrollOnNextLayoutRef.current = true;
+                    append({ categoryId: selectedCategoryId, limitAmount: 0 });
+                }
+            }
+        );
     };
-
-    const handleAddPress = () => void handleAdd();
 
     const handleLayout = () => {
         if (shouldScrollOnNextLayoutRef.current) {

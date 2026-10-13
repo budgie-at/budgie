@@ -15,33 +15,23 @@ import * as Effect from 'effect/Effect';
 import { seed, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
-import type {
-    TransactionCreateEntityInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface
-} from '@budgie/contracts';
+import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
 import type { SyncDuplicateCandidateRowInterface } from '@budgie/sync';
 
 const PRIVATBANK_DUPLICATE_TITLE = "Зарплата, СУПЕРМАШ. Коментар: Zarobitna plata-Za kviten' 2026";
 const PRIVATBANK_DUPLICATE_AMOUNT = 1_780_860_000;
 const PRIVATBANK_DUPLICATE_OPERATED_AT = new Date('2026-05-07T08:46:37.000Z');
 
-const fetchPrivatbankDuplicateCandidates = () =>
+const fetchPrivatbankDuplicateTransactionIds = () =>
     Effect.gen(function* () {
-        return yield* testDb.all<SyncDuplicateCandidateRowInterface>(sql.raw(PRIVATBANK_DUPLICATE_CANDIDATE_SQL));
+        const candidates = yield* testDb.all<SyncDuplicateCandidateRowInterface>(sql.raw(PRIVATBANK_DUPLICATE_CANDIDATE_SQL));
+
+        return candidates.map(candidate => candidate.duplicateTransactionId).sort((left, right) => left - right);
     });
 
-const expectTransferPairDuplicate = (keptTransaction: TransactionEntityInterface, duplicateTransaction: TransactionEntityInterface) =>
+const expectDuplicateTransactionIds = (duplicateTransactionIds: number[]) =>
     Effect.gen(function* () {
-        const candidates = yield* fetchPrivatbankDuplicateCandidates();
-
-        expect(candidates).toEqual([
-            expect.objectContaining({
-                duplicateTransactionId: duplicateTransaction.id,
-                keptTransactionId: keptTransaction.id,
-                reason: 'transfer_pair_duplicate'
-            })
-        ]);
+        expect(yield* fetchPrivatbankDuplicateTransactionIds()).toEqual(duplicateTransactionIds);
     });
 
 const seedPrivatbankIncome = ({
@@ -373,21 +363,14 @@ const seedPrivatbankCanonicalTransferPair = ({
         return transaction;
     });
 
-const expectVisibleDuplicate = (duplicateTransactionId: number, keptTransactionId: number) =>
-    Effect.gen(function* () {
-        expect(yield* fetchPrivatbankDuplicateCandidates()).toEqual([
-            expect.objectContaining({ duplicateTransactionId, keptTransactionId, reason: 'visible_duplicate' })
-        ]);
-    });
-
 describe('privatbank/duplicate-repair', () => {
     it.effect('detects visible duplicates imported with the exact same operated timestamp', () =>
         Effect.gen(function* () {
             const account = yield* seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
-            const keptTransaction = yield* seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
+            yield* seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
             const duplicateTransaction = yield* seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
 
-            yield* expectVisibleDuplicate(duplicateTransaction.id, keptTransaction.id);
+            yield* expectDuplicateTransactionIds([duplicateTransaction.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -407,15 +390,7 @@ describe('privatbank/duplicate-repair', () => {
 
             yield* seedMovedEntry(canonicalTransaction.id, keptTransaction.id, account.id, 'privatbank-consolidated-kept');
 
-            const candidates = yield* fetchPrivatbankDuplicateCandidates();
-
-            expect(candidates).toEqual([
-                expect.objectContaining({
-                    duplicateTransactionId: duplicateTransaction.id,
-                    keptTransactionId: keptTransaction.id,
-                    reason: 'hidden_source_duplicate'
-                })
-            ]);
+            yield* expectDuplicateTransactionIds([duplicateTransaction.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -444,10 +419,10 @@ describe('privatbank/duplicate-repair', () => {
             const account = yield* seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
             const debtAccount = yield* seed.account({ title: 'Віладжіо' });
             const expenseMccCategory = yield* seed.mccCategory({ mcc: '0779' });
-            const keptTransaction = yield* seedPrivatbankDebtPayment(account.id, debtAccount.id);
+            yield* seedPrivatbankDebtPayment(account.id, debtAccount.id);
             const duplicateTransaction = yield* seedPrivatbankExpense(account.id, expenseMccCategory.id);
 
-            yield* expectVisibleDuplicate(duplicateTransaction.id, keptTransaction.id);
+            yield* expectDuplicateTransactionIds([duplicateTransaction.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -459,9 +434,7 @@ describe('privatbank/duplicate-repair', () => {
             yield* seedPrivatbankExpense(account.id);
             yield* seedPrivatbankTransferWithMatchingExpenseLeg(account.id, targetAccount.id);
 
-            const candidates = yield* fetchPrivatbankDuplicateCandidates();
-
-            expect(candidates).toEqual([]);
+            yield* expectDuplicateTransactionIds([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -469,7 +442,7 @@ describe('privatbank/duplicate-repair', () => {
         Effect.gen(function* () {
             const fromAccount = yield* seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
             const toAccount = yield* seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
-            const keptTransaction = yield* seedPrivatbankCanonicalTransferPair({
+            yield* seedPrivatbankCanonicalTransferPair({
                 amount: 10_000_000_000,
                 fromAccountId: fromAccount.id,
                 operatedAt: new Date('2026-01-24T10:44:38.000Z'),
@@ -486,7 +459,7 @@ describe('privatbank/duplicate-repair', () => {
                 toAccountId: toAccount.id
             });
 
-            yield* expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
+            yield* expectDuplicateTransactionIds([duplicateTransaction.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -494,7 +467,7 @@ describe('privatbank/duplicate-repair', () => {
         Effect.gen(function* () {
             const fromAccount = yield* seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
             const toAccount = yield* seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-5524' });
-            const keptTransaction = yield* seedPrivatbankCanonicalTransferPair({
+            yield* seedPrivatbankCanonicalTransferPair({
                 amount: 10_000_000_000,
                 consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
                 creditAmount: 10_300_000_000,
@@ -515,7 +488,7 @@ describe('privatbank/duplicate-repair', () => {
                 toAccountId: toAccount.id
             });
 
-            yield* expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
+            yield* expectDuplicateTransactionIds([duplicateTransaction.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 

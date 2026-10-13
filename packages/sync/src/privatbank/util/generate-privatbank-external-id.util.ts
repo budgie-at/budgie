@@ -1,7 +1,8 @@
 import { generateStableExternalIdHash } from '../../core/util/generate-stable-external-id-hash.util';
-import { PRIVATBANK_EXTERNAL_ID_LENGTH } from '../constant/privatbank.constant';
 
 import type { PrivatbankExternalIdInputInterface } from '../interface/privatbank-external-id-input.interface';
+
+const EXTERNAL_ID_LENGTH = 32;
 
 export const generatePrivatbankExternalId = (input: PrivatbankExternalIdInputInterface): string =>
     generateStableExternalIdHash(
@@ -14,7 +15,7 @@ export const generatePrivatbankExternalId = (input: PrivatbankExternalIdInputInt
             input.operationAmount,
             input.operationCurrency
         ].join('|')
-    ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);
+    ).slice(0, EXTERNAL_ID_LENGTH);
 
 export const generatePrivatbankLegacyExternalId = (input: PrivatbankExternalIdInputInterface): string =>
     generateStableExternalIdHash(
@@ -30,9 +31,9 @@ export const generatePrivatbankLegacyExternalId = (input: PrivatbankExternalIdIn
             input.endBalance,
             input.balanceCurrency
         ].join('|')
-    ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);
+    ).slice(0, EXTERNAL_ID_LENGTH);
 
 export const generatePrivatbankParsedDateLegacyExternalId = (input: PrivatbankExternalIdInputInterface): string =>
     generateStableExternalIdHash(
         `${input.deviceLocalDate.toISOString()}|${input.card}|${input.cardAmount}|${input.operationAmount}|${input.description}`
-    ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);
+    ).slice(0, EXTERNAL_ID_LENGTH);

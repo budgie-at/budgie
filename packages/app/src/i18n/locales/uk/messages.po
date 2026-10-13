@@ -118,11 +118,11 @@ msgstr "{count, plural, one {# платіж} few {# платежі} many {# пл
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# виправлення синхронізації} few {# виправлення синхронізації} many {# виправлень синхронізації} other {# виправлення синхронізації}}"
 
-#: src/app/(tabs)/settings/categories.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Ця категорія має # транзакцію. Виберіть іншу категорію, щоб перепризначити її.} few {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.} many {Ця категорія має # транзакцій. Виберіть іншу категорію, щоб перепризначити їх.} other {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.}}"
 
-#: src/app/(tabs)/settings/tags.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
 
@@ -397,11 +397,11 @@ msgstr "Синхронізація рахунків"
 msgid "Account Type"
 msgstr "Тип рахунку"
 
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts"
 msgstr "Рахунки"
 
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Рахунки ({selectedAccountsCount})"
 
@@ -652,6 +652,7 @@ msgstr "Застосовувати типові категорії на осно
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
 
+#: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
@@ -677,12 +678,11 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
 msgstr "Прикріпити борг"
 
@@ -719,8 +719,7 @@ msgid "Balance"
 msgstr "Баланс"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -917,10 +916,9 @@ msgstr "Може тривати годинами"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -936,13 +934,12 @@ msgstr "Зняття готівки"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
+#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Categories"
 msgstr "Категорії"
 
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
@@ -1007,7 +1004,7 @@ msgstr "Змінити PIN-код"
 msgid "Checking"
 msgstr "Перевірка"
 
-#: src/account/component/create-bank-account/create-bank-account.tsx
+#: src/account/component/create-simple-account/create-simple-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Checking Account"
 msgstr "Поточний рахунок"
@@ -1182,23 +1179,23 @@ msgstr "Помилка конвертації"
 
 #: src/app/convert-to-transfer.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Конвертувати"
 
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Refund"
 msgstr "Перетворити на повернення"
 
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert to Refund?"
 msgstr "Перетворити на повернення?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
 
@@ -1260,7 +1257,7 @@ msgstr "Не вдалося закрити депозит"
 msgid "Could not consolidate matches"
 msgstr "Не вдалося консолідувати збіги"
 
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Could not convert to refund"
 msgstr "Не вдалося перетворити на повернення"
 
@@ -1293,7 +1290,7 @@ msgstr "Не вдалося створити транзакцію"
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
 
-#: src/app/(tabs)/settings/archived.tsx
+#: src/account/hooks/use-delete-account.hook.ts
 msgid "Could not delete account."
 msgstr "Не вдалося видалити рахунок."
 
@@ -1301,20 +1298,23 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete budget"
 msgstr "Не вдалося видалити бюджет"
 
-#: src/app/(tabs)/settings/categories.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 msgid "Could not delete category"
 msgstr "Не вдалося видалити категорію"
+
+#: src/rule/hooks/use-rules-list-page-actions.hook.ts
+msgid "Could not delete rule"
+msgstr "Не вдалося видалити правило"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Could not delete rule."
 msgstr "Не вдалося видалити правило."
 
-#: src/app/(tabs)/settings/tags.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Could not delete tag"
 msgstr "Не вдалося видалити тег"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
@@ -1370,11 +1370,11 @@ msgstr "Не вдалося відкрити GitHub"
 msgid "Could not read CSV file"
 msgstr "Не вдалося прочитати CSV-файл"
 
-#: src/app/(tabs)/settings/categories.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 msgid "Could not reassign category"
 msgstr "Не вдалося перепризначити категорію"
 
-#: src/app/(tabs)/settings/tags.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Could not reassign tag"
 msgstr "Не вдалося перепризначити тег"
 
@@ -1462,6 +1462,8 @@ msgid "Could not update rule"
 msgstr "Не вдалося оновити правило"
 
 #: src/settings/hook/use-setting-toggle.hook.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/bank-integration-account-row/bank-integration-account-row.tsx
 msgid "Could not update setting"
 msgstr "Не вдалося оновити налаштування"
 
@@ -1469,7 +1471,8 @@ msgstr "Не вдалося оновити налаштування"
 msgid "Could not update settings"
 msgstr "Не вдалося оновити налаштування"
 
-#: src/sync/hook/use-sync-token-update.hook.ts
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Could not update token"
 msgstr "Не вдалося оновити токен"
 
@@ -1593,7 +1596,7 @@ msgstr "Потрібні облікові дані"
 msgid "Crypto"
 msgstr "Криптовалюта"
 
-#: src/account/component/create-crypto-account/create-crypto-account.tsx
+#: src/account/component/create-simple-account/create-simple-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Crypto Account"
 msgstr "Крипторахунок"
@@ -1685,7 +1688,6 @@ msgstr "Рахунок за замовчуванням"
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
 msgstr "Видалити"
 
@@ -1742,7 +1744,7 @@ msgstr "Баланс депозиту не може стати відʼємни�
 msgid "Deselect all"
 msgstr "Скасувати вибір"
 
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Detach debt"
 msgstr "Відкріпити борг"
 
@@ -1804,10 +1806,6 @@ msgstr "До {date}"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Dutch (Netherlands)"
-msgstr "Нідерландська (Нідерланди)"
 
 #: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
 msgid "e.g. 1000"
@@ -1926,14 +1924,6 @@ msgstr "Увімкнути розблокування Touch ID?"
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
 msgstr "Англійська"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "English (United Kingdom)"
-msgstr "Англійська (Велика Британія)"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "English (United States)"
-msgstr "Англійська (США)"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "English Translation"
@@ -2148,7 +2138,7 @@ msgstr "Комісія, відсоток"
 msgid "Fetch Accounts"
 msgstr "Отримати рахунки"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Fetching new..."
 msgstr "Завантаження нових..."
 
@@ -2191,10 +2181,6 @@ msgstr "Знайшли проблему або маєте ідею? Відкри
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Французька"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "French (France)"
-msgstr "Французька (Франція)"
 
 #: src/transaction/components/transaction-account-line/transaction-account-line.tsx
 msgid "from"
@@ -2249,10 +2235,6 @@ msgstr "Загальний"
 #: src/i18n/constant/languages.constant.ts
 msgid "German"
 msgstr "Німецька"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "German (Germany)"
-msgstr "Німецька (Німеччина)"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Key"
@@ -2472,17 +2454,9 @@ msgstr "Відсоткова ставка % (необов'язково)"
 msgid "Invalid file"
 msgstr "Невірний файл"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Is Planned"
-msgstr "Заплановано"
-
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "It will no longer appear in the calendar."
 msgstr "Він більше не з’являтиметься в календарі."
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Italian (Italy)"
-msgstr "Італійська (Італія)"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
@@ -2569,10 +2543,6 @@ msgstr "Ліміт"
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
 msgstr "Слухаю..."
-
-#: src/@generic/hook/use-regenerate-translation.hook.ts
-msgid "LLM not ready"
-msgstr "Модель ШІ не готова"
 
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
@@ -3232,6 +3202,7 @@ msgid "Overdue"
 msgstr "Прострочено"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 msgid "Overpaid"
 msgstr "Переплачено"
 
@@ -3250,10 +3221,6 @@ msgstr "Винен вам"
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Сплачено {paidAmount} · {paidCount} з {installmentCount}"
-
-#: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
-msgid "Paid off"
-msgstr "Сплачено"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
@@ -3275,7 +3242,7 @@ msgstr "Вставте свій API-секрет Binance:"
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Pay in parts"
 msgstr "Оплата частинами"
 
@@ -3337,7 +3304,6 @@ msgstr "Назва плану"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/hooks/use-account-entity-form.hook.ts
-#: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
 msgstr "Перевірте дані рахунку"
 
@@ -3355,21 +3321,13 @@ msgstr "Будь ласка, введіть ваш API-токен Монобан
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
-#: src/app/(tabs)/settings/categories.tsx
-#: src/app/(tabs)/settings/tags.tsx
 #: src/category/components/category-form/category-form.tsx
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+#: src/category/hooks/use-delete-category.hook.ts
 #: src/tag/components/tag-form/tag-form.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Polish (Poland)"
-msgstr "Польська (Польща)"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Portuguese (Portugal)"
-msgstr "Португальська (Португалія)"
 
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Preparing valuation"
@@ -3472,7 +3430,7 @@ msgstr "Перерахунок балансів"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
-#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "Receiving amount"
 msgstr "Сума зарахування"
 
@@ -3667,7 +3625,7 @@ msgstr "Зберегти комісію"
 msgid "Savings"
 msgstr "Заощадження"
 
-#: src/account/component/create-cash-account/create-cash-account.tsx
+#: src/account/component/create-simple-account/create-simple-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
@@ -3814,7 +3772,7 @@ msgstr "Вибрати категорію"
 msgid "Select column..."
 msgstr "Виберіть стовпець..."
 
-#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select External Source"
 msgstr "Вибрати зовнішнє джерело"
 
@@ -3838,7 +3796,7 @@ msgstr "Вибрати MCC-код"
 msgid "Select Operator"
 msgstr "Вибрати оператор"
 
-#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select source"
 msgstr "Вибрати джерело"
 
@@ -3858,11 +3816,11 @@ msgstr "Оберіть завантажений PDF-файл"
 msgid "Select the exported XLSX file"
 msgstr "Оберіть експортований XLSX-файл"
 
-#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select Transaction Type"
 msgstr "Вибрати тип транзакції"
 
-#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select type"
 msgstr "Вибрати тип"
 
@@ -3907,7 +3865,8 @@ msgid "Set Category"
 msgstr "Встановити категорію"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/components/transfer-transaction-actions-menu/transfer-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Set fee"
 msgstr "Встановити комісію"
 
@@ -4001,7 +3960,7 @@ msgstr "Щось пішло не так"
 
 #: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/app/(tabs)/settings/archived.tsx
+#: src/account/hooks/use-delete-account.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Щось пішло не так. Будь ласка, спробуйте пізніше."
 
@@ -4021,10 +3980,6 @@ msgstr "Місце звільнено"
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Іспанська"
-
-#: src/i18n/constant/locales.constant.ts
-msgid "Spanish (Spain)"
-msgstr "Іспанська (Іспанія)"
 
 #: src/ai/component/ai-feature-toggle-row/ai-feature-toggle-row.tsx
 msgid "Speak an expense and Budgie fills in the transaction."
@@ -4047,9 +4002,9 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
-#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
-#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Start Deposit"
 msgstr "Розпочати депозит"
 
@@ -4138,7 +4093,7 @@ msgstr "Дані синхронізації виправлено"
 msgid "Sync data repairs"
 msgstr "Виправлення даних синхронізації"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
 
@@ -4162,7 +4117,7 @@ msgstr "Синхронізуйте свої рахунки та транзакц
 msgid "Syncing bank history"
 msgstr "Синхронізація банківської історії"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
 
@@ -4191,12 +4146,12 @@ msgstr "Назва тегу"
 #: src/app/(tabs)/settings/tags.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Теги"
 
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Tags ({selectedTagsCount})"
 msgstr "Теги ({selectedTagsCount})"
 
@@ -4234,7 +4189,7 @@ msgstr "Торкніться для вибору"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
-#: src/account/component/start-deposit-form-body/start-deposit-form-body.tsx
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Банк не передав валюту депозиту. Підтвердіть валюту та суму зарахування."
 
@@ -4253,7 +4208,6 @@ msgstr "Цей рахунок буде приховано з головного 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
-#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
@@ -4312,7 +4266,7 @@ msgstr "Це конвертує дохід у переказ між рахунк
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Це залишить один запис із повною сумою транзакції."
 
-#: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Це прив’яже вибрану витрату до цього доходу-повернення. Ви можете скасувати це на аркуші джерел повернення."
 
@@ -4388,6 +4342,7 @@ msgstr "Потрібен токен"
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
+#: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
@@ -4547,7 +4502,6 @@ msgid "typical month {amount}"
 msgstr "типовий місяць {amount}"
 
 #: src/i18n/constant/languages.constant.ts
-#: src/i18n/constant/locales.constant.ts
 msgid "Ukrainian"
 msgstr "Українська"
 
@@ -4590,7 +4544,7 @@ msgstr "Без тегу"
 msgid "Unused downloads"
 msgstr "Невикористані завантаження"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Up to date"
 msgstr "Актуальний"
 
@@ -4683,7 +4637,7 @@ msgstr "Переглянути вихідні транзакції"
 msgid "Volume"
 msgstr "Обсяг"
 
-#: src/sync/utils/build-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Очікування"
 

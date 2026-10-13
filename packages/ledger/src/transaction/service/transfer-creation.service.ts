@@ -10,7 +10,8 @@ import {
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
-    TransactionTagsRepository
+    TransactionTagsRepository,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { i18n } from '@lingui/core';
@@ -20,7 +21,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { assertTransferAccountsAreNotDebt } from '../util/assert-transfer-accounts-are-not-debt.util';
 import { buildAdditionalTransferEntries } from '../util/build-additional-transfer-entries.util';

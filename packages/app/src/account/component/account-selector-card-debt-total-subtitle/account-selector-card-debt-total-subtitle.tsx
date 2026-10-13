@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -7,7 +7,6 @@ import { Text, View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';

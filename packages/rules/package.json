@@ -1,20 +1,17 @@
 {
     "name": "@budgie/rules",
-    "version": "6.100.2",
+    "version": "6.103.0",
     "private": true,
     "description": "Rules engine domain services",
     "sideEffects": false,
     "exports": {
         ".": {
             "types": "./dist/esm/index.d.ts",
-            "import": "./dist/esm/index.js",
-            "react-native": "./dist/esm/index.js",
             "default": "./dist/esm/index.js"
         },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
-    "react-native": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "scripts": {
         "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
@@ -29,7 +26,6 @@
     "dependencies": {
         "@budgie/contracts": "workspace:^",
         "@budgie/ledger": "workspace:*",
-        "@budgie/market": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
         "drizzle-orm": "1.0.0-rc.4",
         "effect": "4.0.0"

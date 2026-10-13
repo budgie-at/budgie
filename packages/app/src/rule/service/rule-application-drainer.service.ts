@@ -1,3 +1,4 @@
+import { YIELD_TO_UI } from '@budgie/contracts';
 import { RuleEngineService } from '@budgie/rules';
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
@@ -6,7 +7,6 @@ import * as Layer from 'effect/Layer';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 

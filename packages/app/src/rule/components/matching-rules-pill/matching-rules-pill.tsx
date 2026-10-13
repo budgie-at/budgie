@@ -27,7 +27,7 @@ export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Props
         const [matchingRuleId] = matchingRuleIds;
 
         if (matchingRuleIds.length === 1 && isDefined(matchingRuleId)) {
-            void openRuleForm({ ruleId: matchingRuleId });
+            openRuleForm({ ruleId: matchingRuleId });
 
             return;
         }

@@ -3,9 +3,7 @@ import { Text } from 'react-native';
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { RuleSelectorButton } from '../rule-selector-button/rule-selector-button';
 
 interface Props {
     readonly label: string;
@@ -17,15 +15,7 @@ interface Props {
 
 export const RuleSelectorField = ({ label, value, onPress, hint, testID }: Props) => (
     <FormItem label={label}>
-        <HapticPressable
-            testID={testID}
-            onPress={onPress}
-            className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
-        >
-            <Text className="text-primary text-sm" {...testIDProps(testID, TestIDPartEnum.VALUE)}>
-                {value}
-            </Text>
-        </HapticPressable>
+        <RuleSelectorButton testID={testID} value={value} onPress={onPress} />
 
         {isNotEmptyString(hint) ? <Text className="text-secondary-foreground text-xs">{hint}</Text> : null}
     </FormItem>

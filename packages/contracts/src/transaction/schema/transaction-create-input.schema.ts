@@ -1,5 +1,6 @@
 import * as Schema from 'effect/Schema';
 
+import { OptionalNullablePositiveNumberSchema } from '../../@generic/schema/optional-nullable-positive-number.schema';
 import { PositiveNumberSchema } from '../../@generic/schema/positive-number.schema';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryCreateInputSchema } from '../../transaction-entry/schema/transaction-entry-create-input.schema';
@@ -22,10 +23,10 @@ export const TransactionCreateInputSchema = Schema.Struct({
     updatedBy: Schema.NullOr(Schema.Enum(TransactionUpdatedByEnum)),
     needsEmbedding: Schema.optional(Schema.Boolean),
     importFingerprint: Schema.optional(Schema.NullOr(Schema.String)),
-    consolidationParentTransactionId: Schema.optional(Schema.NullOr(PositiveNumberSchema)),
+    consolidationParentTransactionId: OptionalNullablePositiveNumberSchema,
     consolidationType: Schema.optional(Schema.NullOr(Schema.Enum(TransactionConsolidationTypeEnum))),
     amount: Schema.Finite,
-    debtAccountId: Schema.optional(Schema.NullOr(PositiveNumberSchema)),
+    debtAccountId: OptionalNullablePositiveNumberSchema,
     externalIdAliases: Schema.optional(Schema.mutable(Schema.Array(Schema.String))),
     tagIds: Schema.mutable(Schema.Array(Schema.Finite)),
     ruleTagIds: Schema.optional(Schema.mutable(Schema.Array(Schema.Finite))),

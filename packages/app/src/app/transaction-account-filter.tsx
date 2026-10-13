@@ -10,6 +10,7 @@ import { FeatureIntro } from '../@generic/component/feature-intro/feature-intro'
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSkeleton } from '../@generic/component/filter-sheet/filter-sheet-skeleton/filter-sheet-skeleton';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { AccountsGroup } from '../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
@@ -34,11 +35,12 @@ const ANALYTICS_ACCOUNT_FILTER_TYPES = [
     AccountTypeEnum.SAVINGS
 ] satisfies Exclude<AccountTypeEnum, AccountTypeEnum.DEBT>[];
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks, handlers, and per-account-type group blocks
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
-    const [, resolveTransactionAccountFilter] = useTransactionAccountFilterModal();
+    const [, resolveTransactionAccountFilter, dismissTransactionAccountFilter] = useTransactionAccountFilterModal();
+    useModalDismiss(dismissTransactionAccountFilter);
     const currentParams = useTransactionAccountFilterModalParams();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
@@ -80,59 +82,15 @@ export default function TransactionAccountFilterModal() {
 
                 {isNotEmptyArray(accountGroups) && !isLoading ? (
                     <View className="gap-y-lg">
-                        {isNotEmptyArray(accountsGrouped.BANK) ? (
+                        {accountGroups.map(group => (
                             <AccountsGroup
+                                key={group.type}
                                 onSelect={handleSelect}
-                                type={AccountTypeEnum.BANK}
-                                accounts={accountsGrouped.BANK}
+                                type={group.type}
+                                accounts={group.accounts}
                                 selectedAccountIds={selectedIds}
                             />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.BANK_SYNC) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.BANK_SYNC}
-                                accounts={accountsGrouped.BANK_SYNC}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.CASH) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.CASH}
-                                accounts={accountsGrouped.CASH}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.CRYPTO) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.CRYPTO}
-                                accounts={accountsGrouped.CRYPTO}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.STOCKS) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.STOCKS}
-                                accounts={accountsGrouped.STOCKS}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(accountsGrouped.SAVINGS) ? (
-                            <AccountsGroup
-                                onSelect={handleSelect}
-                                type={AccountTypeEnum.SAVINGS}
-                                accounts={accountsGrouped.SAVINGS}
-                                selectedAccountIds={selectedIds}
-                            />
-                        ) : null}
+                        ))}
                     </View>
                 ) : null}
 

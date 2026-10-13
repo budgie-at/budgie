@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Features
+
+* **landing:** show the real cached waitlist count and hide it when Redis is unavailable ([3287905](https://github.com/budgie-at/budgie/commit/3287905cf3eaa707ed95df8331c5ef8e4d5f3809))
+
+
+### Performance Improvements
+
+* **landing:** memoise the Lingui instance per locale ([2999c62](https://github.com/budgie-at/budgie/commit/2999c621c3add5fe340b84d99becc04205ca71cf))
+
+
+
+
+
 # [6.97.0](https://github.com/budgie-at/budgie/compare/v6.96.1...v6.97.0) (2026-10-08)
 
 

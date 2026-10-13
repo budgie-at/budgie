@@ -1,6 +1,6 @@
-import { BudgetRepository, BudgetSpentService } from '@budgie/budget';
+import { BudgetRepository, computeSpent } from '@budgie/budget';
 import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, PRECISION, StatisticsRepository, TransactionEntityTable } from '@budgie/contracts';
-import { layer } from '@effect/vitest';
+import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
@@ -15,7 +15,6 @@ layer(TestLayer)('budget spent parity with statistics', it => {
     it.effect('matches the statistics expense for consolidated children, debt accounts and fees', () =>
         Effect.gen(function* () {
             const budgetRepository = yield* BudgetRepository;
-            const budgetSpentService = yield* BudgetSpentService;
             const statisticsRepository = yield* StatisticsRepository;
             const bankAccount = yield* testSeedService.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: BASE_INSTRUMENT_ID });
             const counterpartAccount = yield* testSeedService.account({
@@ -62,7 +61,7 @@ layer(TestLayer)('budget spent parity with statistics', it => {
             yield* testSeedService.feeEntry(feeTransaction.id, 'fee', { accountId: bankAccount.id, amount: 2 * PRECISION });
 
             const entries = yield* budgetRepository.findBudgetSpentEntries(PERIOD_START, NEXT_PERIOD_START, BASE_INSTRUMENT_ID);
-            const { spentOverall } = budgetSpentService.computeSpent(entries, BASE_INSTRUMENT_ID);
+            const { spentOverall } = computeSpent(entries, BASE_INSTRUMENT_ID);
             const statistics = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(
                 { ...DEFAULT_TRANSACTION_FILTER, date: { from: PERIOD_START, to: new Date(NEXT_PERIOD_START.getTime() - 1) } },
                 BASE_INSTRUMENT_ID

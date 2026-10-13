@@ -1,3 +1,4 @@
+import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { InstallmentPlanService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -11,8 +12,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { ConvertToInstallmentFormSchema } from '../../constant/convert-to-installment-form-schema.constant';
 import { ConvertToInstallmentFee } from '../convert-to-installment-fee/convert-to-installment-fee';

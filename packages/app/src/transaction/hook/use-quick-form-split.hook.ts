@@ -1,6 +1,7 @@
 import {
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -56,6 +57,7 @@ export const useQuickFormSplit = ({
                 categoryId,
                 amount: 0,
                 type: entryType,
+                kind: TransactionEntryKindEnum.PRIMARY,
                 mccCategoryId: null,
                 externalId: null
             }
@@ -82,7 +84,7 @@ export const useQuickFormSplit = ({
         setFromNumeric(totalAmount);
     };
 
-    const handleSplitPress = async () => {
+    const handleSplitIconPress = () => {
         const currentEntries = getValues('entries');
         const currentCategoryEntries = getTransactionCategoryEntries(currentEntries);
         const currentFeeEntries = getTransactionFeeEntries(currentEntries);
@@ -91,20 +93,22 @@ export const useQuickFormSplit = ({
         const selectedAccountId = getValues(accountFieldName);
         const accountId = isDefined(selectedAccountId) ? selectedAccountId : 0;
         const splitAmount = transactionType === TransactionTypeEnum.EXPENSE ? Math.max(currentAmount - feeTotal, 0) : currentAmount;
-        const result = await openSplitEntries({
-            entries: buildInitialSplitEntries(currentCategoryEntries, accountId),
-            variant,
-            entryType,
-            currencySymbol,
-            totalAmount: splitAmount
-        });
 
-        if (isDefined(result)) {
-            applySplitResult(result, currentFeeEntries, feeTotal);
-        }
+        openSplitEntries(
+            {
+                entries: buildInitialSplitEntries(currentCategoryEntries, accountId),
+                variant,
+                entryType,
+                currencySymbol,
+                totalAmount: splitAmount
+            },
+            result => {
+                if (isDefined(result)) {
+                    applySplitResult(result, currentFeeEntries, feeTotal);
+                }
+            }
+        );
     };
-
-    const handleSplitIconPress = () => void handleSplitPress();
 
     return { handleSplitIconPress };
 };

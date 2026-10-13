@@ -6,7 +6,7 @@ export interface AccountSelectionInterface {
     readonly accountPreviews: SyncAccountPreviewInterface[];
     readonly selectedAccounts: Set<string>;
     readonly setPreviews: (previews: SyncAccountPreviewInterface[]) => void;
-    readonly toggleAccount: (externalId: string) => void;
-    readonly selectAllAccounts: EmptyFn;
-    readonly deselectAllAccounts: EmptyFn;
+    readonly onToggle: (externalId: string) => void;
+    readonly onSelectAll: EmptyFn;
+    readonly onDeselectAll: EmptyFn;
 }

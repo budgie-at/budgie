@@ -1,10 +1,4 @@
-import {
-    BaseTransactionFilterRepository,
-    Db,
-    MccCategoryEntityTable,
-    TransactionEntityTable,
-    TransactionEntryEntityTable
-} from '@budgie/contracts';
+import { transactionFilters, Db, MccCategoryEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import { and, eq, getTableName, inArray, isNull, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
@@ -29,7 +23,7 @@ const selectStaleIds = <TUpsert>(config: EmbeddingQueryConfigInterface<TUpsert>,
                 TransactionEntryEntityTable,
                 and(
                     eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
-                    new BaseTransactionFilterRepository().buildCategorizableEntryCondition()
+                    transactionFilters.buildCategorizableEntryCondition()
                 )
             )
             .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))

@@ -1,27 +1,18 @@
+import { TransactionConsolidationTypeEnum, TransferPairAutoConfidenceBucketEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { ConsolidationMutationService } from '../../executor/service/consolidation-mutation.service';
-import { AtmCashWithdrawalRepository } from '../../query/repository/atm-cash-withdrawal.repository';
-import { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
+import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
+import { buildIbanBridgeChainCanonicalInput } from '../../executor/utils/build-iban-bridge-chain-canonical-input.util';
+import { ConsolidationCandidateRepository } from '../../query/repository/consolidation-candidate.repository';
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
-import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
+import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
-import { AtmCashWithdrawalConsolidationFamilyService } from './atm-cash-withdrawal-consolidation-family.service';
-import { BridgeClaimRepairConsolidationFamilyService } from './bridge-claim-repair-consolidation-family.service';
-import { ExistingTransferBridgeConsolidationFamilyService } from './existing-transfer-bridge-consolidation-family.service';
-import { ExistingTransferChainReclaimConsolidationFamilyService } from './existing-transfer-chain-reclaim-consolidation-family.service';
-import { ExistingTransferIncomeDuplicateConsolidationFamilyService } from './existing-transfer-income-duplicate-consolidation-family.service';
-import { IbanBridgeCanonicalDuplicateConsolidationFamilyService } from './iban-bridge-canonical-duplicate-consolidation-family.service';
-import { IbanBridgeCanonicalSupersessionConsolidationFamilyService } from './iban-bridge-canonical-supersession-consolidation-family.service';
-import { IbanBridgeChainTransferConsolidationFamilyService } from './iban-bridge-chain-transfer-consolidation-family.service';
-import { IbanBridgeTransferConsolidationFamilyService } from './iban-bridge-transfer-consolidation-family.service';
-import { ManualExpenseDuplicateConsolidationFamilyService } from './manual-expense-duplicate-consolidation-family.service';
 import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-consolidation-family.service';
-import { RefundPairConsolidationFamilyService } from './refund-pair-consolidation-family.service';
-import { TransferPairConsolidationFamilyService } from './transfer-pair-consolidation-family.service';
 
 import type { FeeEntrySourceInterface } from '../../query/interface/fee-entry-source.interface';
 import type { ConsolidationFamilyStrategyInterface } from '../interface/consolidation-family-strategy.interface';
@@ -29,71 +20,256 @@ import type { ConsolidationResultInterface } from '../interface/consolidation-re
 import type {
     ConsolidationScanScopeInterface,
     ExistingTransferBridgeCandidateInterface,
-    ExistingTransferChainReclaimCandidateInterface
+    ExistingTransferChainReclaimCandidateInterface,
+    IbanBridgeChainTransferCandidateInterface,
+    IbanBridgeTransferCandidateInterface,
+    TransferPairCandidateInterface
 } from '@budgie/contracts';
 
 export class ConsolidationCoordinatorService extends Context.Service<ConsolidationCoordinatorService>()(
     '@budgie/consolidation/ConsolidationCoordinatorService',
     {
         make: Effect.gen(function* () {
-            const atmCashWithdrawalRepository = yield* AtmCashWithdrawalRepository;
-            const existingTransferRepository = yield* ExistingTransferRepository;
+            const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const refundPairRepository = yield* RefundPairRepository;
-            const transferPairRepository = yield* TransferPairRepository;
+            const consolidationExecutorService = yield* ConsolidationExecutorService;
             const consolidationMutationService = yield* ConsolidationMutationService;
-            const ibanBridgeCanonicalDuplicateFamily = yield* IbanBridgeCanonicalDuplicateConsolidationFamilyService;
-            const existingTransferIncomeDuplicateFamily = yield* ExistingTransferIncomeDuplicateConsolidationFamilyService;
-            const bridgeClaimRepairFamily = yield* BridgeClaimRepairConsolidationFamilyService;
-            const atmCashWithdrawalFamily = yield* AtmCashWithdrawalConsolidationFamilyService;
-            const families: ConsolidationFamilyStrategyInterface[] = [
-                yield* IbanBridgeChainTransferConsolidationFamilyService,
-                yield* ExistingTransferBridgeConsolidationFamilyService,
-                yield* ExistingTransferChainReclaimConsolidationFamilyService,
-                ibanBridgeCanonicalDuplicateFamily,
-                yield* IbanBridgeTransferConsolidationFamilyService,
-                yield* IbanBridgeCanonicalSupersessionConsolidationFamilyService,
-                existingTransferIncomeDuplicateFamily,
-                yield* P2pFiatTransferConsolidationFamilyService,
-                yield* TransferPairConsolidationFamilyService,
-                yield* RefundPairConsolidationFamilyService,
-                yield* ManualExpenseDuplicateConsolidationFamilyService
+            const consolidationRepairExecutorService = yield* ConsolidationRepairExecutorService;
+            const p2pFiatTransferFamily = yield* P2pFiatTransferConsolidationFamilyService;
+
+            const getIbanBridgeChainTransferSourceTransactionIds = (candidate: IbanBridgeChainTransferCandidateInterface): number[] => [
+                candidate.sourceExpenseTransactionId,
+                candidate.bridgeIncomeTransactionId,
+                candidate.bridgeExpenseTransactionId,
+                candidate.targetIncomeTransactionId
             ];
 
-            const buildExistingTransferDuplicateBlockedSourceTransactionIdSet = (
-                existingTransferBridgeCandidates: readonly ExistingTransferBridgeCandidateInterface[],
-                existingTransferChainReclaimCandidates: readonly ExistingTransferChainReclaimCandidateInterface[]
-            ): Set<number> => {
-                const sourceTransactionIds = new Set(
-                    existingTransferBridgeCandidates.flatMap(candidate => [
-                        candidate.sourceExpenseTransactionId,
-                        candidate.bridgeIncomeTransactionId,
-                        candidate.existingTransferId
-                    ])
-                );
+            const getExistingTransferBridgeSourceTransactionIds = (candidate: ExistingTransferBridgeCandidateInterface): number[] => [
+                candidate.sourceExpenseTransactionId,
+                candidate.bridgeIncomeTransactionId,
+                candidate.existingTransferId
+            ];
 
-                for (const candidate of existingTransferChainReclaimCandidates) {
-                    sourceTransactionIds.add(candidate.existingTransferId);
-                    sourceTransactionIds.add(candidate.bridgeIncomeTransactionId);
-                    sourceTransactionIds.add(candidate.bridgeExpenseTransactionId);
+            const getExistingTransferChainReclaimSourceTransactionIds = (
+                candidate: ExistingTransferChainReclaimCandidateInterface
+            ): number[] => [candidate.existingTransferId, candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
+
+            const getIbanBridgeTransferSourceTransactionIds = (candidate: IbanBridgeTransferCandidateInterface): number[] => [
+                candidate.expenseTransactionId,
+                candidate.incomeTransactionId
+            ];
+
+            const getTransferPairSourceTransactionIds = (candidate: TransferPairCandidateInterface): number[] => [
+                candidate.expenseTransactionId,
+                candidate.incomeTransactionId
+            ];
+
+            const computeTransferPairExchangeRate = (candidate: TransferPairCandidateInterface): number => {
+                if (
+                    candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_SAME_BANK_HINTED_FEE ||
+                    candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_INTERBANK_HINTED_FEE
+                ) {
+                    return 1;
                 }
 
-                return sourceTransactionIds;
+                if (candidate.expenseEntryAmount === candidate.incomeEntryAmount) {
+                    return 1;
+                }
+
+                return candidate.expenseEntryAmount / candidate.incomeEntryAmount;
             };
+
+            const getTransferPairConsolidationType = (candidate: TransferPairCandidateInterface): TransactionConsolidationTypeEnum => {
+                if (candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_SAME_BANK_HINTED_FEE) {
+                    return TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER;
+                }
+
+                return TransactionConsolidationTypeEnum.TRANSFER_PAIR;
+            };
+
+            const existingTransferIncomeDuplicateFamily = makeConsolidationFamilyStrategy({
+                findCandidates: scope => consolidationCandidateRepository.findExistingTransferIncomeDuplicateCandidates(scope),
+                consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate(candidate),
+                getSourceTransactionIds: candidate => [candidate.existingTransferId, candidate.duplicateTransactionId]
+            });
+
+            const families: ConsolidationFamilyStrategyInterface[] = [
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeChainTransferCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationExecutorService.consolidateTransfer({
+                            sourceTransactionIds: getIbanBridgeChainTransferSourceTransactionIds(candidate),
+                            allowedMovedSourceTransactionIds: [],
+                            canonicalInput: buildIbanBridgeChainCanonicalInput({
+                                title:
+                                    candidate.bridgeExpenseTransactionTitle ??
+                                    candidate.sourceExpenseTransactionTitle ??
+                                    candidate.targetIncomeTransactionTitle ??
+                                    candidate.bridgeIncomeTransactionTitle ??
+                                    '',
+                                operatedAt: candidate.operatedAt,
+                                fromAccountId: candidate.sourceAccountId,
+                                toAccountId: candidate.targetAccountId,
+                                fromAmount: candidate.sourceAmount,
+                                toAmount: candidate.targetAmount,
+                                exchangeRate: candidate.exchangeRate,
+                                fromEntryToIban: candidate.sourceExpenseEntryToIban
+                            })
+                        }),
+                    getSourceTransactionIds: getIbanBridgeChainTransferSourceTransactionIds
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findExistingTransferBridgeCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationExecutorService.consolidateTransfer({
+                            sourceTransactionIds: getExistingTransferBridgeSourceTransactionIds(candidate),
+                            allowedMovedSourceTransactionIds: [candidate.existingTransferId],
+                            canonicalInput: {
+                                title:
+                                    candidate.existingTransferTitle ??
+                                    candidate.sourceExpenseTransactionTitle ??
+                                    candidate.bridgeIncomeTransactionTitle ??
+                                    '',
+                                operatedAt: candidate.operatedAt,
+                                fromAccountId: candidate.sourceAccountId,
+                                toAccountId: candidate.targetAccountId,
+                                fromAmount: candidate.sourceAmount,
+                                toAmount: candidate.targetAmount,
+                                exchangeRate: candidate.exchangeRate,
+                                consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
+                                fromEntryExchangeRate: candidate.exchangeRate,
+                                toEntryExchangeRate: 1,
+                                fromEntryToIban: candidate.sourceExpenseEntryToIban
+                            }
+                        }),
+                    getSourceTransactionIds: getExistingTransferBridgeSourceTransactionIds
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findExistingTransferChainReclaimCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationRepairExecutorService.consolidateExistingTransferChainReclaim(candidate),
+                    getSourceTransactionIds: getExistingTransferChainReclaimSourceTransactionIds
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeCanonicalDuplicateCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate(candidate),
+                    getSourceTransactionIds: candidate => [candidate.expenseTransactionId, candidate.incomeTransactionId]
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeTransferCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationExecutorService.consolidateTransfer({
+                            sourceTransactionIds: getIbanBridgeTransferSourceTransactionIds(candidate),
+                            allowedMovedSourceTransactionIds: [],
+                            canonicalInput: {
+                                title: candidate.expenseTransactionTitle ?? candidate.incomeTransactionTitle ?? '',
+                                operatedAt: candidate.operatedAt,
+                                fromAccountId: candidate.sourceAccountId,
+                                toAccountId: candidate.targetAccountId,
+                                fromAmount: candidate.sourceAmount,
+                                toAmount: candidate.bridgeAmount,
+                                exchangeRate: candidate.exchangeRate,
+                                consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
+                                fromEntryExchangeRate: candidate.exchangeRate,
+                                toEntryExchangeRate: 1,
+                                fromEntryToIban: candidate.expenseEntryToIban
+                            }
+                        }),
+                    getSourceTransactionIds: getIbanBridgeTransferSourceTransactionIds
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeCanonicalSupersessionCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession(candidate),
+                    getSourceTransactionIds: candidate => [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId],
+                    getScopeTransactionIds: candidate => [
+                        candidate.supersededCanonicalTransactionId,
+                        candidate.canonicalTransactionId,
+                        candidate.bridgeOriginTransactionId
+                    ]
+                }),
+                existingTransferIncomeDuplicateFamily,
+                p2pFiatTransferFamily,
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findTransferPairCandidates(scope),
+                    consolidateCandidate: candidate =>
+                        consolidationExecutorService.consolidateTransfer({
+                            sourceTransactionIds: getTransferPairSourceTransactionIds(candidate),
+                            allowedMovedSourceTransactionIds: [],
+                            canonicalInput: {
+                                title: candidate.expenseTransactionTitle ?? candidate.incomeTransactionTitle ?? '',
+                                operatedAt: candidate.operatedAt,
+                                fromAccountId: candidate.expenseEntryAccountId,
+                                toAccountId: candidate.incomeEntryAccountId,
+                                fromAmount: candidate.expenseEntryAmount,
+                                toAmount: candidate.incomeEntryAmount,
+                                exchangeRate: computeTransferPairExchangeRate(candidate),
+                                consolidationType: getTransferPairConsolidationType(candidate),
+                                fromEntryExchangeRate: candidate.expenseEntryExchangeRate,
+                                toEntryExchangeRate: candidate.incomeEntryExchangeRate,
+                                fromEntryToIban: candidate.expenseEntryToIban
+                            }
+                        }),
+                    getSourceTransactionIds: getTransferPairSourceTransactionIds
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => refundPairRepository.findCandidates(scope),
+                    consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateRefund(candidate),
+                    getSourceTransactionIds: candidate => [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds]
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findManualExpenseDuplicateCandidates(scope),
+                    consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateManualExpenseDuplicate(candidate),
+                    getSourceTransactionIds: candidate => [candidate.syncedTransactionId, candidate.manualTransactionId]
+                })
+            ];
+
+            const bridgeClaimRepairFamily = makeConsolidationFamilyStrategy({
+                findCandidates: () => consolidationCandidateRepository.findBridgeClaimedRepairCandidates(),
+                consolidateCandidate: candidate => consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate),
+                getSourceTransactionIds: candidate => [candidate.canonicalTransferId, candidate.claimedIncomeTransactionId]
+            });
+
+            const atmCashWithdrawalFamily = makeConsolidationFamilyStrategy({
+                findCandidates: scope => consolidationCandidateRepository.findAtmCashWithdrawalCandidates(scope),
+                consolidateCandidate: candidate =>
+                    consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, {
+                        sourceTransactionIds: [candidate.transactionId],
+                        allowedMovedSourceTransactionIds: [],
+                        canonicalInput: {
+                            title: candidate.transactionTitle ?? '',
+                            operatedAt: candidate.operatedAt,
+                            fromAccountId: candidate.sourceAccountId,
+                            toAccountId: candidate.targetCashAccountId,
+                            fromAmount: candidate.amount,
+                            toAmount: candidate.amount,
+                            exchangeRate: 1,
+                            consolidationType: TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL,
+                            fromEntryExchangeRate: 1,
+                            toEntryExchangeRate: 1,
+                            fromEntryToIban: null
+                        }
+                    }),
+                getSourceTransactionIds: candidate => [candidate.transactionId]
+            });
 
             const findExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
                 'ConsolidationCoordinatorService.findExistingTransferIncomeDuplicateRepairCandidates'
             )(function* () {
-                const existingTransferBridgeCandidates = yield* existingTransferRepository.findBridgeCandidates(null);
+                const existingTransferBridgeCandidates = yield* consolidationCandidateRepository.findExistingTransferBridgeCandidates(null);
                 yield* CONSOLIDATION_YIELD;
-                const existingTransferChainReclaimCandidates = yield* existingTransferRepository.findChainReclaimCandidates(null);
+                const existingTransferChainReclaimCandidates =
+                    yield* consolidationCandidateRepository.findExistingTransferChainReclaimCandidates(null);
                 yield* CONSOLIDATION_YIELD;
-                const rawExistingTransferIncomeDuplicateCandidates = yield* existingTransferRepository.findIncomeDuplicateCandidates(null);
+                const rawExistingTransferIncomeDuplicateCandidates =
+                    yield* consolidationCandidateRepository.findExistingTransferIncomeDuplicateCandidates(null);
                 yield* CONSOLIDATION_YIELD;
 
-                const blockedSourceTransactionIds = buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
-                    existingTransferBridgeCandidates,
-                    existingTransferChainReclaimCandidates
-                );
+                const blockedSourceTransactionIds = new Set([
+                    ...existingTransferBridgeCandidates.flatMap(getExistingTransferBridgeSourceTransactionIds),
+                    ...existingTransferChainReclaimCandidates.flatMap(getExistingTransferChainReclaimSourceTransactionIds)
+                ]);
                 const existingTransferIncomeDuplicateCandidates = rawExistingTransferIncomeDuplicateCandidates.filter(
                     candidate =>
                         !blockedSourceTransactionIds.has(candidate.existingTransferId) &&
@@ -109,7 +285,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 
             const findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
                 function* () {
-                    const candidates = yield* transferPairRepository.findBridgeClaimedRepairCandidates();
+                    const candidates = yield* consolidationCandidateRepository.findBridgeClaimedRepairCandidates();
                     yield* CONSOLIDATION_YIELD;
 
                     return candidates;
@@ -119,7 +295,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const findAtmCashWithdrawalCandidates = Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalCandidates')(function* (
                 transactionIds: readonly number[]
             ) {
-                const candidates = yield* atmCashWithdrawalRepository.findCandidates(null);
+                const candidates = yield* consolidationCandidateRepository.findAtmCashWithdrawalCandidates(null);
 
                 return candidates.filter(candidate => transactionIds.includes(candidate.transactionId));
             });
@@ -172,13 +348,16 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     return found;
                 }),
                 countManualReviewCandidates: Effect.fn('ConsolidationCoordinatorService.countManualReviewCandidates')(function* () {
-                    const [manualReviewCandidates, refundReviewCandidates] = yield* Effect.all(
-                        [transferPairRepository.findManualReviewCandidates(), refundPairRepository.findReviewCandidates()],
+                    const [manualReviewCandidateCount, refundReviewCandidates] = yield* Effect.all(
+                        [
+                            consolidationCandidateRepository.countTransferPairManualReviewCandidates(),
+                            refundPairRepository.findReviewCandidates()
+                        ],
                         { concurrency: 'unbounded' }
                     );
                     yield* CONSOLIDATION_YIELD;
 
-                    return manualReviewCandidates.length + refundReviewCandidates.length;
+                    return manualReviewCandidateCount + refundReviewCandidates.length;
                 }),
                 findAtmCashWithdrawalTransactionIds: Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalTransactionIds')(
                     function* (transactionIds: readonly number[]) {
@@ -214,10 +393,10 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 countMissingTransferFeeRepairCandidates: Effect.fn(
                     'ConsolidationCoordinatorService.countMissingTransferFeeRepairCandidates'
                 )(function* () {
-                    return countCanonicals(yield* transferPairRepository.findMissingTransferFeeEntries());
+                    return countCanonicals(yield* consolidationCandidateRepository.findMissingTransferFeeEntries());
                 }),
                 repairMissingTransferFees: Effect.fn('ConsolidationCoordinatorService.repairMissingTransferFees')(function* () {
-                    const movedFeeEntries = yield* transferPairRepository.findMissingTransferFeeEntries();
+                    const movedFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries();
 
                     yield* consolidationMutationService.restoreMovedFeeEntries(movedFeeEntries);
 
@@ -241,24 +420,12 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 ) {
     static readonly layer = Layer.effect(ConsolidationCoordinatorService, ConsolidationCoordinatorService.make).pipe(
         Layer.provide([
-            AtmCashWithdrawalRepository.layer,
-            ExistingTransferRepository.layer,
+            ConsolidationCandidateRepository.layer,
             RefundPairRepository.layer,
-            TransferPairRepository.layer,
+            ConsolidationExecutorService.layer,
             ConsolidationMutationService.layer,
-            AtmCashWithdrawalConsolidationFamilyService.layer,
-            BridgeClaimRepairConsolidationFamilyService.layer,
-            ExistingTransferBridgeConsolidationFamilyService.layer,
-            ExistingTransferChainReclaimConsolidationFamilyService.layer,
-            ExistingTransferIncomeDuplicateConsolidationFamilyService.layer,
-            IbanBridgeCanonicalDuplicateConsolidationFamilyService.layer,
-            IbanBridgeCanonicalSupersessionConsolidationFamilyService.layer,
-            IbanBridgeChainTransferConsolidationFamilyService.layer,
-            IbanBridgeTransferConsolidationFamilyService.layer,
-            ManualExpenseDuplicateConsolidationFamilyService.layer,
-            P2pFiatTransferConsolidationFamilyService.layer,
-            RefundPairConsolidationFamilyService.layer,
-            TransferPairConsolidationFamilyService.layer
+            ConsolidationRepairExecutorService.layer,
+            P2pFiatTransferConsolidationFamilyService.layer
         ])
     );
 }

@@ -10,14 +10,12 @@ import { useAccountEntityForm } from './use-account-entity-form.hook';
 
 export const useDepositAccountForm = (
     initialValues: DepositAccountFormValues,
-    onSubmit: (values: DepositAccountFormValues) => Promise<AccountEntityInterface>,
-    syncInitialValues = false
+    onSubmit: (values: DepositAccountFormValues) => Promise<AccountEntityInterface>
 ) => {
     const form = useAccountEntityForm(
         standardSchemaResolver(Schema.toStandardSchemaV1(DepositAccountCreateInputSchema)),
         initialValues,
-        onSubmit,
-        syncInitialValues
+        onSubmit
     );
 
     const instrumentId = useWatch({ control: form.control, name: 'instrumentId' });

@@ -10,7 +10,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, runRefundScenario, seed, testDb, TestLayer } from '../../harness';
+import { runRefundScenario, seed, testDb, TestLayer, testQueryService } from '../../harness';
 import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 describe('rule/rule-transfer-conversion-skips-consolidated-canonical', () => {
@@ -29,11 +29,13 @@ describe('rule/rule-transfer-conversion-skips-consolidated-canonical', () => {
                 accountId: targetAccount.id
             });
 
-            expect((yield* fetchTransactionById(expense.id)).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect((yield* testQueryService.findTransactionById(expense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
 
             yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id);
 
-            const canonical = yield* fetchTransactionById(expense.id);
+            const canonical = yield* testQueryService.findTransactionById(expense.id);
             const movedEntries = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)

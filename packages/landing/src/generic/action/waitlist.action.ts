@@ -6,6 +6,7 @@ import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 import * as SchemaTransformation from 'effect/SchemaTransformation';
 import * as Semaphore from 'effect/Semaphore';
+import { unstable_cache as cacheServerResult } from 'next/cache';
 import { createClient } from 'redis';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -163,20 +164,26 @@ const joinWaitlistProgram = Effect.fn('joinWaitlist')(function* (input: unknown)
     );
 });
 
+const WAITLIST_COUNT_REVALIDATE_SECONDS = 300;
+
 const getWaitlistCountProgram = Effect.fn('getWaitlistCount')(function* () {
     const client = yield* getRedisClient();
 
     if (!isDefined(client)) {
-        return 0;
+        return yield* Effect.fail('client_unavailable');
     }
 
     return yield* runRedisCommand(client, async () => await client.get(WAITLIST_TOTAL_KEY), REDIS_COMMAND_DEADLINE_MS).pipe(
         Effect.flatMap(Schema.decodeUnknownEffect(WaitlistCountSchema)),
-        Effect.tapError(() => Effect.logError('count_failed')),
-        Effect.orElseSucceed(() => 0)
+        Effect.tapError(() => Effect.logError('count_failed'))
     );
+});
+
+const getCachedWaitlistCount = cacheServerResult(async () => await Effect.runPromise(getWaitlistCountProgram()), ['waitlist-count'], {
+    revalidate: WAITLIST_COUNT_REVALIDATE_SECONDS
 });
 
 export const joinWaitlist = async (input: unknown) => await Effect.runPromise(joinWaitlistProgram(input));
 
-export const getWaitlistCount = async (): Promise<number> => await Effect.runPromise(getWaitlistCountProgram());
+export const getWaitlistCount = async (): Promise<number | null> =>
+    await Effect.runPromise(Effect.tryPromise(getCachedWaitlistCount).pipe(Effect.orElseSucceed(() => null)));

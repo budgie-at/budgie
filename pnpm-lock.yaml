@@ -176,9 +176,6 @@ importers:
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../ledger
-      '@budgie/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@budgie/market':
         specifier: workspace:*
         version: link:../market
@@ -420,6 +417,9 @@ importers:
       '@babel/plugin-transform-class-static-block':
         specifier: 7.29.7
         version: 7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
+      '@effect/vitest':
+        specifier: 4.0.0
+        version: 4.0.0(effect@4.0.0)(vitest@5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))
       '@lingui/babel-plugin-lingui-macro':
         specifier: 6.8.0
         version: 6.8.0(@babel/core@7.29.7(supports-color@8.1.1))
@@ -468,6 +468,9 @@ importers:
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
   packages/budget:
     dependencies:
@@ -626,9 +629,6 @@ importers:
       effect:
         specifier: 4.0.0
         version: 4.0.0
-      framer-motion:
-        specifier: ^12.43.0
-        version: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       lucide-react:
         specifier: ^1.49.0
         version: 1.49.0(@types/react@19.2.18)(react@19.3.0)
@@ -719,12 +719,6 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
-  packages/logger:
-    dependencies:
-      effect:
-        specifier: 4.0.0
-        version: 4.0.0
-
   packages/market:
     dependencies:
       '@budgie/contracts':
@@ -804,9 +798,6 @@ importers:
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../ledger
-      '@budgie/market':
-        specifier: workspace:*
-        version: link:../market
       '@rnw-community/shared':
         specifier: ^2.2.0
         version: 2.15.0
@@ -6876,20 +6867,6 @@ packages:
   fraction.js@5.3.4:
     resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
-  framer-motion@12.43.0:
-    resolution: {integrity: sha512-1eaL3RvR/kAlbG7UYcpMptEyzPoENO0c6w7ZnB3/hh2vSAz/6uGAFn6fdoqTBguNstf3MsFhJHsD/0DHiclG+g==}
-    peerDependencies:
-      '@emotion/is-prop-valid': '*'
-      react: 19.3.0
-      react-dom: 19.3.0
-    peerDependenciesMeta:
-      '@emotion/is-prop-valid':
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-
   fresh@0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==}
     engines: {node: '>= 0.6'}
@@ -7940,12 +7917,6 @@ packages:
 
   moo@0.5.2:
     resolution: {integrity: sha512-iSAJLHYKnX41mKcJKjqvnAN9sf0LMDTXDEvFv+ffuRR9a1MIuXLjMNL6EsnDHSkKLTWNqQQ5uo61P4EbU4NU+Q==}
-
-  motion-dom@12.43.0:
-    resolution: {integrity: sha512-azKON4d9S65PEoFUiQTMTgPheEmzf2QngdRc50AKfJp9Q9mmcBVw22c8eMq9k8kxOFHdL7+WZY7N/5F/lwiDag==}
-
-  motion-utils@12.39.0:
-    resolution: {integrity: sha512-8nadJAJjTtqRkmRF36FoJTrywK9nnFmnPwnSMyxaOCU7GDjN9RTMJIxx9De8ErM+vpPhMccr/6fo5WciyQLnMQ==}
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
@@ -10707,6 +10678,11 @@ snapshots:
     dependencies:
       effect: 4.0.0
       vitest: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+
+  '@effect/vitest@4.0.0(effect@4.0.0)(vitest@5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))':
+    dependencies:
+      effect: 4.0.0
+      vitest: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
   '@emnapi/core@1.10.0':
     dependencies:
@@ -13788,6 +13764,16 @@ snapshots:
       msw: 2.15.0(@types/node@22.20.1)(typescript@6.0.2)
       vite: 8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)
 
+  '@vitest/mocker@5.0.2(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      '@vitest/spy': 5.0.2
+      estree-walker: 3.0.3
+      magic-string: 1.4.2
+    optionalDependencies:
+      msw: 2.15.0(@types/node@22.20.1)(typescript@6.0.2)
+      vite: 8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)
+
   '@vitest/spy@5.0.2': {}
 
   '@vnaidin/react-native-cryptocurrency-icons@0.0.36(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)':
@@ -15551,15 +15537,6 @@ snapshots:
 
   fraction.js@5.3.4: {}
 
-  framer-motion@12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
-    dependencies:
-      motion-dom: 12.43.0
-      motion-utils: 12.39.0
-      tslib: 2.8.1
-    optionalDependencies:
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-
   fresh@0.5.2: {}
 
   fs-constants@1.0.0: {}
@@ -16746,12 +16723,6 @@ snapshots:
   modify-values@1.0.1: {}
 
   moo@0.5.2: {}
-
-  motion-dom@12.43.0:
-    dependencies:
-      motion-utils: 12.39.0
-
-  motion-utils@12.39.0: {}
 
   ms@2.0.0: {}
 
@@ -18932,6 +18903,27 @@ snapshots:
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/mocker': 5.0.2(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
+      chai: 6.2.2
+      es-module-lexer: 2.3.2
+      expect-type: 1.4.0
+      magic-string: 1.4.2
+      obug: 2.2.1
+      picomatch: 4.0.7
+      std-env: 4.2.0
+      tinybench: 6.2.0
+      tinyexec: 1.3.1
+      tinyglobby: 0.2.17
+      vite: 8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)
+      why-is-node-running: 3.2.2
+    optionalDependencies:
+      '@types/node': 22.20.1
+    transitivePeerDependencies:
+      - msw
+
+  vitest@5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)):
+    dependencies:
+      '@types/chai': 5.2.3
+      '@vitest/mocker': 5.0.2(msw@2.15.0(@types/node@22.20.1)(typescript@6.0.2))(vite@8.0.16(@types/node@22.20.1)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0

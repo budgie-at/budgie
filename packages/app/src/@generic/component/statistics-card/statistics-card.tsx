@@ -1,3 +1,4 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { PropsWithChildren } from 'react';
 import { Text, View } from 'react-native';
@@ -8,7 +9,6 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { statsAmountVariants } from '../../constant/stats-variants.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { convertFromMicroUnits } from '../../utils/convert-from-micro-units.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { StatsBar } from '../stats-bar/stats-bar';
 

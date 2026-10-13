@@ -2,7 +2,6 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
-import { buildIncomeEntry } from '../../utils/build-income-entry.util';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
@@ -32,10 +31,9 @@ export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateT
                 transactionTitle={transaction.title}
                 mccCategoryId={simpleTransaction.mccCategoryId}
                 debtSettlementAccount={simpleTransaction.debtSettlementAccount}
-                buildEntries={buildIncomeEntry}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
-                rulePillSlotProps={simpleTransaction}
+                ruleDetection={simpleTransaction.ruleDetection}
                 showInlineFeeAction={false}
             />
         </UpdateSimpleTransactionPage>

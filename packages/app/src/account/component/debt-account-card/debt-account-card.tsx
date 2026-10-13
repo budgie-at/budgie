@@ -11,7 +11,6 @@ import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { DebtAccountCardDeadline } from '../debt-account-card-deadline/debt-account-card-deadline';
 import { DebtAccountCardEmpty } from '../debt-account-card-empty/debt-account-card-empty';
 import { DebtAccountCardFrame } from '../debt-account-card-frame/debt-account-card-frame';
-import { DebtAccountCardSettled } from '../debt-account-card-settled/debt-account-card-settled';
 import { DebtAccountCardSkeleton } from '../debt-account-card-skeleton/debt-account-card-skeleton';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
 import { DebtAccountCardSummarySelector } from '../debt-account-card-summary/debt-account-card-summary.selector';
@@ -48,9 +47,7 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = debtProgressSummary;
     const displayPercentage = percentage >= 100 ? 100 : Math.floor(percentage);
-    const isSettled = !isPositiveNumber(outstandingAmount) && percentage >= 100;
-    const statusBadge = isSettled ? <DebtAccountCardSettled debtType={debtType} /> : deadlineBadge;
-    const separator = isDefined(statusBadge) ? <Text className="text-xs text-secondary-foreground">·</Text> : null;
+    const separator = isDefined(deadlineBadge) ? <Text className="text-xs text-secondary-foreground">·</Text> : null;
     const progressSubtitle = (
         <View className="flex-row items-center gap-x-xs">
             <Text
@@ -60,11 +57,11 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
                 <Trans>{displayPercentage}%</Trans>
             </Text>
             {separator}
-            {statusBadge}
+            {deadlineBadge}
         </View>
     );
     const subtitle =
-        debtType === AccountDebtTypeEnum.INSTALLMENT && !isSettled ? (
+        debtType === AccountDebtTypeEnum.INSTALLMENT ? (
             <InstallmentPlanNextPayment accountId={id} instrumentSymbol={instrumentSymbol} fallback={progressSubtitle} />
         ) : (
             progressSubtitle

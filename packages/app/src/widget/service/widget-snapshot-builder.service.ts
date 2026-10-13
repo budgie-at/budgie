@@ -1,4 +1,4 @@
-import { BudgetCategoryLimitRepository, budgetPeriodService, BudgetRepository, BudgetSpentService } from '@budgie/budget';
+import { BudgetCategoryLimitRepository, BudgetRepository, computePeriodWindow, computeSpent, getInclusiveEnd } from '@budgie/budget';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -8,7 +8,8 @@ import {
     LanguageEnum,
     RUNWAY_WINDOW_MONTHS,
     SettingsRepository,
-    StatisticsRepository
+    StatisticsRepository,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { setupI18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
@@ -22,7 +23,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { i18nLoadLanguageMessages } from '../../i18n/util/i18n.util';
@@ -53,7 +53,6 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             const categoryRepository = yield* CategoryRepository;
             const budgetRepository = yield* BudgetRepository;
             const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
-            const budgetSpentService = yield* BudgetSpentService;
             const emptyRunway: WidgetRunwaySnapshotInterface = { isPositive: true, label: '' };
             const topCategoryCount = 3;
             const topAccountTypeCount = 4;
@@ -264,11 +263,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     return null;
                 }
 
-                const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
-                    budget.periodStartDay,
-                    budget.useLastDayOfMonth,
-                    new Date()
-                );
+                const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
                 const [entries, limits, instrument] = yield* Effect.all(
                     [
                         budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId),
@@ -277,33 +272,38 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     ],
                     { concurrency: 'unbounded' }
                 );
-                const spent = budgetSpentService.computeSpent(entries, budget.instrumentId);
+                const spent = computeSpent(entries, budget.instrumentId);
                 const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
                 const spentAmount = convertFromMicroUnits(spent.spentOverall);
                 const limitAmount = convertFromMicroUnits(budget.overallLimit);
-                const periodEnd = budgetPeriodService.getInclusiveEnd(nextPeriodStart);
+                const periodEnd = getInclusiveEnd(nextPeriodStart);
                 const categories = yield* buildBudgetCategories(limits, spent.spentByCategory, context);
 
-                return Array.from({ length: Math.max(differenceInCalendarDays(periodEnd, new Date()) + 1, 1) }, (_entry, index) => {
-                    const daysRemaining = index + 1;
+                const daysCount = Math.max(differenceInCalendarDays(periodEnd, new Date()) + 1, 1);
+                const sharedFields = {
+                    formattedSpent: formatWithSymbol(spentAmount, symbol, context),
+                    formattedLimit: formatWithSymbol(limitAmount, symbol, context),
+                    formattedRemaining: formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context),
+                    progressRatio: spentAmount / limitAmount,
+                    formattedProgress: formatPercent(spentAmount / limitAmount, context),
+                    isOverLimit: spentAmount > limitAmount,
+                    categories
+                };
+
+                return Array.from({ length: daysCount }, (_entry, index) => {
+                    const daysRemaining = daysCount - index;
 
                     return {
-                        date: startOfDay(addDays(periodEnd, -index)),
+                        date: startOfDay(addDays(periodEnd, -(daysRemaining - 1))),
                         budget: {
-                            formattedSpent: formatWithSymbol(spentAmount, symbol, context),
-                            formattedLimit: formatWithSymbol(limitAmount, symbol, context),
-                            formattedRemaining: formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context),
-                            progressRatio: spentAmount / limitAmount,
-                            formattedProgress: formatPercent(spentAmount / limitAmount, context),
-                            isOverLimit: spentAmount > limitAmount,
+                            ...sharedFields,
                             formattedDaysLeft: context.i18n._(
                                 msg({ message: plural(daysRemaining, { one: '# day left', other: '# days left' }) })
                             ),
-                            formattedSafePerDay: formatWithSymbol(Math.max(limitAmount - spentAmount, 0) / daysRemaining, symbol, context),
-                            categories
+                            formattedSafePerDay: formatWithSymbol(Math.max(limitAmount - spentAmount, 0) / daysRemaining, symbol, context)
                         }
                     };
-                }).reverse();
+                });
             });
 
             const buildSnapshot = Effect.fn('WidgetSnapshotBuilderService.buildSnapshot')(function* (isMaskForced: boolean) {
@@ -337,8 +337,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             InstrumentRepository.layer,
             CategoryRepository.layer,
             BudgetRepository.layer,
-            BudgetCategoryLimitRepository.layer,
-            BudgetSpentService.layer
+            BudgetCategoryLimitRepository.layer
         ])
     );
 }

@@ -1,7 +1,8 @@
 import {
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
-    isPositiveAdjustmentTransaction
+    isPositiveAdjustmentTransaction,
+    convertFromMicroUnits
 } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
@@ -9,7 +10,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';

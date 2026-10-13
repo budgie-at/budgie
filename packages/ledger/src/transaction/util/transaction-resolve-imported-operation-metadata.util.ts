@@ -1,8 +1,6 @@
-import { TransactionEntryKindEnum } from '@budgie/contracts';
-
 import { isDefined } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
+import { isSameLedgerEntry } from './is-same-ledger-entry.util';
 
 import type { TransactionEntryCreateInputInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
@@ -20,10 +18,7 @@ export const transactionResolveImportedOperationMetadata = (
     if (
         !Object.hasOwn(input, 'operationInstrumentId') &&
         !Object.hasOwn(input, 'operationAmount') &&
-        existingEntry.accountId === input.accountId &&
-        existingEntry.amount === convertToMicroUnits(input.amount) &&
-        existingEntry.type === input.type &&
-        existingEntry.kind === (input.kind ?? TransactionEntryKindEnum.PRIMARY) &&
+        isSameLedgerEntry(existingEntry, input) &&
         isDefined(existingEntry.operationInstrumentId) &&
         isDefined(existingEntry.operationAmount)
     ) {

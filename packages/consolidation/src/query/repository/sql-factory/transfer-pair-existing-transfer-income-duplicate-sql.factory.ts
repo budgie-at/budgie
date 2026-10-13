@@ -256,8 +256,7 @@ const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_BASE_SQL = `
                 FROM candidate_rows
             )
             SELECT confidenceBucket, existingTransferId, existingTransferTitle, duplicateTransactionId, duplicateTransactionTitle,
-                sourceAccountId, sourceAccountTitle, targetAccountId, targetAccountTitle, existingTransferTargetEntryId,
-                sourceAmount, existingTransferTargetAmount, amount, exchangeRate, amountDelta, timeDiff
+                sourceAccountId, targetAccountId, sourceAmount, amount, exchangeRate, timeDiff
             FROM ranked_candidates
             WHERE existingTransferRank = 1 AND duplicateRank = 1
                 AND (

@@ -4,34 +4,21 @@ import { router, useIsFocused, useNavigation } from 'expo-router';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { authenticateWithBiometricsEffect } from '../constant/authenticate-with-biometrics-effect.constant';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
-import { AuthService } from '../service/auth.service';
 
-import { useAuthAttemptTracker } from './use-auth-attempt-tracker.hook';
+import { useAuthAttempt } from './use-auth-attempt.hook';
 
-import type * as Fiber from 'effect/Fiber';
 import type { AppStateStatus } from 'react-native';
-
-const usePinFormState = () => {
-    const [input, setInput] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const pinVerificationFiberRef = useRef<Fiber.Fiber<boolean> | null>(null);
-
-    return { error, input, isLoading, pinVerificationFiberRef, setError, setInput, setIsLoading };
-};
 
 const useAuthAttemptFocus = (invalidateAuthAttempts: () => void) => {
     const navigation = useNavigation();
     const isPinScreenFocused = useIsFocused();
     const isPinScreenFocusedRef = useRef(false);
-    const isPinScreenMountedRef = useRef(false);
     const handlePinScreenFocus = useEffectEvent(() => {
         if (isPinScreenFocusedRef.current) {
             return;
@@ -48,11 +35,9 @@ const useAuthAttemptFocus = (invalidateAuthAttempts: () => void) => {
         isPinScreenFocusedRef.current = false;
         invalidateAuthAttempts();
     });
-    const canStartAuthAttempt = () => isPinScreenMountedRef.current && isPinScreenFocusedRef.current && AppState.currentState === 'active';
+    const canStartAuthAttempt = () => isPinScreenFocusedRef.current && AppState.currentState === 'active';
 
     useEffect(() => {
-        isPinScreenMountedRef.current = true;
-
         if (navigation.isFocused()) {
             handlePinScreenFocus();
         } else {
@@ -65,73 +50,20 @@ const useAuthAttemptFocus = (invalidateAuthAttempts: () => void) => {
         return () => {
             unsubscribeFocus();
             unsubscribeBlur();
-            isPinScreenMountedRef.current = false;
             handlePinScreenBlur();
         };
     }, [navigation]);
 
-    return { canStartAuthAttempt, isPinScreenFocused, isPinScreenFocusedRef, isPinScreenMountedRef };
+    return { canStartAuthAttempt, isPinScreenFocused };
 };
 
-const useAuthAttemptLifecycle = (
-    resetAuthLoading: () => void,
-    setPinInput: (input: string) => void,
-    acceptAuthAttempt: (success: boolean, isPinAttempt: boolean) => void,
-    authAttemptTracker: ReturnType<typeof useAuthAttemptTracker>
-) => {
+const useIsAppActive = (onBackground: () => void) => {
     const [isAppActive, setIsAppActive] = useState(AppState.currentState === 'active');
-    const {
-        clearDeferredAuthAttempt,
-        invalidateAuthAttempt,
-        isCurrentAuthAttempt,
-        readDeferredAuthAttempt,
-        settleAuthAttempt,
-        storeDeferredAuthAttempt
-    } = authAttemptTracker;
-    const invalidateAuthAttempts = () => {
-        const shouldClearPinInput = invalidateAuthAttempt();
-
-        resetAuthLoading();
-
-        if (shouldClearPinInput) {
-            setPinInput('');
-        }
-    };
-    const { canStartAuthAttempt, isPinScreenFocused, isPinScreenFocusedRef, isPinScreenMountedRef } =
-        useAuthAttemptFocus(invalidateAuthAttempts);
-    const completeAuthAttempt = (authAttemptGeneration: number, success: boolean, isPinAttempt: boolean) => {
-        const isCurrentAttempt =
-            isCurrentAuthAttempt(authAttemptGeneration) && isPinScreenMountedRef.current && isPinScreenFocusedRef.current;
-
-        if (!isCurrentAttempt) {
-            return;
-        }
-
-        if (AppState.currentState === 'inactive') {
-            storeDeferredAuthAttempt(authAttemptGeneration, success, isPinAttempt);
-
-            return;
-        }
-
-        if (AppState.currentState === 'active') {
-            settleAuthAttempt();
-            clearDeferredAuthAttempt();
-            acceptAuthAttempt(success, isPinAttempt);
-        }
-    };
     const handleAppStateChange = useEffectEvent((nextAppState: AppStateStatus) => {
-        const deferredAuthAttempt = readDeferredAuthAttempt();
-
         setIsAppActive(nextAppState === 'active');
 
         if (nextAppState === 'background') {
-            invalidateAuthAttempts();
-
-            return;
-        }
-
-        if (nextAppState === 'active' && isDefined(deferredAuthAttempt)) {
-            completeAuthAttempt(deferredAuthAttempt.authAttemptGeneration, deferredAuthAttempt.success, deferredAuthAttempt.isPinAttempt);
+            onBackground();
         }
     });
 
@@ -141,138 +73,96 @@ const useAuthAttemptLifecycle = (
         return () => void appStateSubscription.remove();
     }, []);
 
-    return { canStartAuthAttempt, completeAuthAttempt, isAppActive, isPinScreenFocused };
+    return isAppActive;
 };
 
-const useAutomaticBiometricAuthentication = (
-    canStart: boolean,
-    authAttemptLifecycle: ReturnType<typeof useAuthAttemptLifecycle>,
-    setIsLoading: (isLoading: boolean) => void,
-    authAttemptTracker: ReturnType<typeof useAuthAttemptTracker>
-) => {
-    const [hasAttemptedBiometric, setHasAttemptedBiometric] = useState(false);
-    const { canStartAuthAttempt, completeAuthAttempt } = authAttemptLifecycle;
-    const { beginBiometricAuthAttempt, releaseBiometricAuthAttempt } = authAttemptTracker;
-    const handleAutomaticBiometricResult = useEffectEvent((authAttemptGeneration: number, success: boolean) => {
-        completeAuthAttempt(authAttemptGeneration, success, false);
-    });
-    const handleAutomaticBiometricSettlement = useEffectEvent((authAttemptGeneration: number) => {
-        releaseBiometricAuthAttempt(authAttemptGeneration);
-    });
-    const handleAutomaticBiometricStart = useEffectEvent(() => {
-        if (!canStart || hasAttemptedBiometric || !canStartAuthAttempt()) {
-            return;
+const useAuthAttemptGate = (invalidateAuthAttempts: () => void) => ({
+    ...useAuthAttemptFocus(invalidateAuthAttempts),
+    isAppActive: useIsAppActive(invalidateAuthAttempts)
+});
+
+const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
+    const [hasAttempted, setHasAttempted] = useState(false);
+    const canStartAutomatically = canStart && !hasAttempted;
+    const handleStart = useEffectEvent(() => {
+        if (attempt()) {
+            setHasAttempted(true);
         }
-
-        const authAttemptGeneration = beginBiometricAuthAttempt();
-
-        if (!isDefined(authAttemptGeneration)) {
-            return;
-        }
-
-        setHasAttemptedBiometric(true);
-        setIsLoading(true);
-        void appRuntime
-            .runPromise(authenticateWithBiometricsEffect)
-            .then(success => void handleAutomaticBiometricResult(authAttemptGeneration, success))
-            .finally(() => void handleAutomaticBiometricSettlement(authAttemptGeneration));
     });
+
     useEffect(() => {
-        if (!canStart || hasAttemptedBiometric) {
+        if (!canStartAutomatically) {
             return emptyFn;
         }
 
-        const automaticBiometricTimeout = setTimeout(handleAutomaticBiometricStart);
+        const automaticBiometricFiber = appRuntime.runFork(Effect.sleep(0).pipe(Effect.andThen(Effect.sync(handleStart))));
 
-        return () => void clearTimeout(automaticBiometricTimeout);
-    }, [canStart, hasAttemptedBiometric]);
+        return () => void automaticBiometricFiber.interruptUnsafe();
+    }, [canStartAutomatically]);
 };
 
 export const usePinAuthentication = () => {
     const { t } = useLingui();
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
     const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
-    const { error, input, isLoading, pinVerificationFiberRef, setError, setInput, setIsLoading } = usePinFormState();
-    const authAttemptTracker = useAuthAttemptTracker();
+    const [input, setInput] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
 
-    const resetAuthLoading = () => {
+    const invalidateAuthAttempts = () => {
+        const shouldClearPinInput = invalidate();
+
         setIsLoading(false);
-    };
-    const acceptAuthAttempt = (success: boolean, isPinAttempt: boolean) => {
-        if (!success && isPinAttempt) {
+
+        if (shouldClearPinInput) {
             setInput('');
-            setError(t`Incorrect PIN`);
-            resetAuthLoading();
-
-            return;
         }
+    };
+    const { canStartAuthAttempt, isAppActive, isPinScreenFocused } = useAuthAttemptGate(invalidateAuthAttempts);
 
-        resetAuthLoading();
+    const acceptAttempt = (isPinAttempt: boolean) => (success: boolean) => {
+        setIsLoading(false);
 
         if (success) {
             setIsUnlocked(true);
             router.replace('/');
+        } else if (isPinAttempt) {
+            setInput('');
+            setError(t`Incorrect PIN`);
         }
     };
-    const authAttemptLifecycle = useAuthAttemptLifecycle(resetAuthLoading, setInput, acceptAuthAttempt, authAttemptTracker);
-    const { canStartAuthAttempt, completeAuthAttempt, isAppActive, isPinScreenFocused } = authAttemptLifecycle;
 
-    const handlePinSubmit = (pin: string) => {
-        if (!isAppActive || !isPinScreenFocused) {
-            return;
+    useAutomaticBiometric(canUseBiometric && isAppActive && isPinScreenFocused, () => {
+        if (!canStartAuthAttempt() || !startBiometricAttempt(acceptAttempt(false))) {
+            return false;
         }
-
-        const authAttemptGeneration = authAttemptTracker.beginAuthAttempt(true);
 
         setIsLoading(true);
-        pinVerificationFiberRef.current?.interruptUnsafe();
-        pinVerificationFiberRef.current = appRuntime.runFork(
-            Effect.flatMap(AuthService, authService => authService.verifyPin(pin)).pipe(
-                Effect.tapError(Effect.logError),
-                Effect.orElseSucceed(() => false),
-                Effect.tap(success => Effect.sync(() => void completeAuthAttempt(authAttemptGeneration, success, true)))
-            )
-        );
-    };
+
+        return true;
+    });
+
     const addDigit = (digit: string) => {
         const nextInput = (input + digit).slice(0, PIN_LENGTH);
 
         setInput(nextInput);
         setError(null);
 
-        if (input.length === PIN_LENGTH - 1) {
-            handlePinSubmit(nextInput);
+        if (input.length === PIN_LENGTH - 1 && isAppActive && isPinScreenFocused) {
+            setIsLoading(true);
+            startPinAttempt(nextInput, acceptAttempt(true));
         }
     };
     const deleteDigit = () => {
         setInput(input.slice(0, -1));
         setError(null);
     };
-    const handleBiometricAuth = async () => {
-        if (!canUseBiometric || !canStartAuthAttempt()) {
-            return;
-        }
-
-        const authAttemptGeneration = authAttemptTracker.beginBiometricAuthAttempt();
-
-        if (!isDefined(authAttemptGeneration)) {
-            return;
-        }
-
-        setIsLoading(true);
-
-        try {
-            completeAuthAttempt(authAttemptGeneration, await appRuntime.runPromise(authenticateWithBiometricsEffect), false);
-        } finally {
-            authAttemptTracker.releaseBiometricAuthAttempt(authAttemptGeneration);
+    const handleBiometricAuth = () => {
+        if (canUseBiometric && canStartAuthAttempt() && startBiometricAttempt(acceptAttempt(false))) {
+            setIsLoading(true);
         }
     };
-    useAutomaticBiometricAuthentication(
-        canUseBiometric && isAppActive && isPinScreenFocused,
-        authAttemptLifecycle,
-        setIsLoading,
-        authAttemptTracker
-    );
 
     return {
         addDigit,

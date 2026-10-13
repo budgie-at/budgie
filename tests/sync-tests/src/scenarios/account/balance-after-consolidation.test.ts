@@ -1,10 +1,18 @@
-import { AccountBalanceRepository } from '@budgie/contracts';
+import { AccountBalanceRepository, AccountTypeEnum } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { findMccByCode, seedBankAndCashAccounts, seedBankPair, testDb, TestLayer } from '../../harness';
+import { seed, seedBankPair, testDb, TestLayer, testQueryService } from '../../harness';
+
+const seedBankAndCashAccounts = () =>
+    Effect.gen(function* () {
+        return {
+            bankAccount: yield* seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 }),
+            cashAccount: yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 })
+        };
+    });
 
 const AMOUNT = 500_000_000;
 
@@ -17,7 +25,7 @@ describe('account/balance-after-consolidation', () => {
             const { bankAccount, cashAccount } = yield* seedBankAndCashAccounts();
             const atmExpense = yield* seedBankPair.expense(
                 { externalId: 'tx-atm', operatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-                { accountId: bankAccount.id, amount: AMOUNT, mccCategoryId: (yield* findMccByCode('6011')).id }
+                { accountId: bankAccount.id, amount: AMOUNT, mccCategoryId: (yield* testQueryService.findMccByCode('6011')).id }
             );
 
             yield* accountBalanceIncrementalService.updateAllBalances(false);

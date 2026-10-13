@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* reset every mutable table in test databases and drop vitest globals ([82be5ac](https://github.com/budgie-at/budgie/commit/82be5ac7a9b4a2a8138f1b187ae695907d7d9a74))
+* **rules:** delegate rule transfer conversion to the ledger and skip idle batch delays ([e26568d](https://github.com/budgie-at/budgie/commit/e26568d1fb77d3d939ba2dcb1e8ae9c99d403b23))
+
+
+
+
+
+# [6.101.0](https://github.com/budgie-at/budgie/compare/v6.100.9...v6.101.0) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/rules
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/rules
+
+
+
+
+
+## [6.100.6](https://github.com/budgie-at/budgie/compare/v6.100.5...v6.100.6) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/rules
+
+
+
+
+
+## [6.100.5](https://github.com/budgie-at/budgie/compare/v6.100.4...v6.100.5) (2026-10-11)
+
+**Note:** Version bump only for package @budgie/rules
+
+
+
+
+
 ## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/rules

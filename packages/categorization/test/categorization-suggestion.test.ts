@@ -112,6 +112,7 @@ const autoCategorize = Effect.fnUntraced(function* (documents: readonly FakeDocu
     ).pipe(
         Effect.provide(
             Layer.effect(EmbeddingIndexService, EmbeddingIndexService.make).pipe(
+                Layer.provide([makeSuggestionLayer(documents), EmbeddingService.layer]),
                 Layer.provide([
                     makeFakeEmbeddingLayer(documents),
                     TransactionEmbeddingRepository.layer,

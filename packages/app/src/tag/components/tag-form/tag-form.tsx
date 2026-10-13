@@ -71,33 +71,40 @@ export const TagForm = (props: Props) => {
         setValue('title', value);
     };
 
-    const handleMerge = async () => {
+    const handleMerge = () => {
         if (!isDefined(tag?.id)) {
             return;
         }
 
-        const targetTagIds = await openTagsSelector({
-            excludeTagIds: [tag.id],
-            description: t`Select a tag to merge into`,
-            singleSelect: true
-        });
+        const sourceTagId = tag.id;
 
-        const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
-        if (!isDefined(targetTagId)) {
-            return;
-        }
+        const mergeIntoTarget = async (targetTagId: number) => {
+            try {
+                const targetTag = await appRuntime.runPromise(
+                    Effect.flatMap(TagService, tagService => tagService.mergeInto(sourceTagId, targetTagId))
+                );
 
-        try {
-            const targetTag = await appRuntime.runPromise(
-                Effect.flatMap(TagService, tagService => tagService.mergeInto(tag.id, targetTagId))
-            );
-
-            if (isDefined(targetTag)) {
-                onSuccess({ tag: targetTag, action: 'merged' });
+                if (isDefined(targetTag)) {
+                    onSuccess({ tag: targetTag, action: 'merged' });
+                }
+            } catch {
+                showErrorToast(t`Could not merge tag`, t`Please try again later`);
             }
-        } catch {
-            showErrorToast(t`Could not merge tag`, t`Please try again later`);
-        }
+        };
+
+        openTagsSelector(
+            {
+                excludeTagIds: [sourceTagId],
+                description: t`Select a tag to merge into`,
+                singleSelect: true
+            },
+            targetTagIds => {
+                const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
+                if (isDefined(targetTagId)) {
+                    void mergeIntoTarget(targetTagId);
+                }
+            }
+        );
     };
 
     const handleEditSubmit = async (tagId: number, values: TagCreateEntityInterface): Promise<void> => {

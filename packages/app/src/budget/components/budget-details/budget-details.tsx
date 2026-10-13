@@ -1,5 +1,5 @@
-import { budgetPeriodService } from '@budgie/budget';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -12,7 +12,6 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useToday } from '../../../@generic/hook/use-today.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -36,8 +35,8 @@ export const BudgetDetails = ({ budget }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const periodWindow = budgetPeriodService.computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
-    const periodEnd = budgetPeriodService.getInclusiveEnd(periodWindow.nextPeriodStart);
+    const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
+    const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
     const displaySpent = convertFromMicroUnits(spent.spentOverall);

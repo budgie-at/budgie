@@ -22,18 +22,18 @@ export const ImportColumnMapper = ({ value, headers, selectedHeaders, fieldLabel
 
     const hasValue = isNotEmptyString(value);
 
-    const handleOpen = async () => {
-        const result = await openImportColumnMapper({ headers, selectedHeaders, currentValue: value, fieldLabel });
+    const handleOpen = () => {
+        openImportColumnMapper({ headers, selectedHeaders, currentValue: value, fieldLabel }, result => {
+            if (isDefined(result)) {
+                if (result.type === 'select') {
+                    onSelect(result.header);
+                }
 
-        if (isDefined(result)) {
-            if (result.type === 'select') {
-                onSelect(result.header);
+                if (result.type === 'clear') {
+                    onClear();
+                }
             }
-
-            if (result.type === 'clear') {
-                onClear();
-            }
-        }
+        });
     };
 
     const variant = hasError ? 'destructive' : 'primary';

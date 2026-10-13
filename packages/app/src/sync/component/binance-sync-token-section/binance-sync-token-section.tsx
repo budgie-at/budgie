@@ -1,5 +1,6 @@
-import { BinanceCredentialsSchema } from '@budgie/sync';
+import { BinanceCredentialsSchema, SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 import { useState } from 'react';
@@ -7,8 +8,8 @@ import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useSyncTokenUpdate } from '../../hook/use-sync-token-update.hook';
 import { useSyncToken } from '../../hook/use-sync-token.hook';
 import { BinanceSyncTokenInputs } from '../binance-sync-token-inputs/binance-sync-token-inputs';
 import { BinanceSyncTokenSummary } from '../binance-sync-token-summary/binance-sync-token-summary';
@@ -26,7 +27,7 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [apiKey, setApiKey] = useState('');
     const [apiSecret, setApiSecret] = useState('');
-    const { isSaving, saveAccountSyncToken } = useSyncTokenUpdate();
+    const [runEffect, isSaving] = useEffectAction(t`Could not update token`);
 
     const handleEdit = () => {
         const credentials = Option.getOrNull(Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema))(token));
@@ -42,7 +43,7 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
         setApiSecret('');
     };
 
-    const handleSave = async () => {
+    const handleSave = () => {
         const trimmedApiKey = apiKey.trim();
         const trimmedApiSecret = apiSecret.trim();
 
@@ -52,11 +53,16 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
             return;
         }
 
-        await saveAccountSyncToken(accountId, JSON.stringify({ apiKey: trimmedApiKey, apiSecret: trimmedApiSecret }), () => {
-            setIsEditing(false);
-            setApiKey('');
-            setApiSecret('');
-        });
+        runEffect(
+            Effect.flatMap(SyncProviderRegistryService, registry =>
+                registry.updateAccountToken(accountId, JSON.stringify({ apiKey: trimmedApiKey, apiSecret: trimmedApiSecret }))
+            ),
+            () => {
+                setIsEditing(false);
+                setApiKey('');
+                setApiSecret('');
+            }
+        );
     };
 
     return (

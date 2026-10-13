@@ -127,6 +127,9 @@ The uploaded set is `screenshots/variants/<variant>/ios`. The variant is
 `screenshots/deployed-variant.json` (currently `dark`, matching the app's own
 default theme).
 
+Only the deployed variant (`dark`) is committed; every other variant is
+composed locally or in CI and gitignored.
+
 `SCREENSHOT_VARIANT=ci` is the CI path: instead of reading a committed set, the
 lane composes `screenshots/raw/ios` — which is where mobile-ci's
 `store-screenshots` workflow downloads every capture job's artifact — into
@@ -257,8 +260,9 @@ the state file was written. It only warns and never blocks a release.
 1. Build the E2E app and capture on a Mac — see
    [screenshots/README.md](screenshots/README.md).
 2. Compose the framed sets and review them.
-3. Commit `screenshots/variants/**` and any caption changes. `screenshots/raw/`
-   and `screenshots/variants/ci/` are gitignored.
+3. Commit the deployed `screenshots/variants/dark/` set and any caption changes.
+   `screenshots/raw/`
+   and every other `screenshots/variants/*` set are gitignored.
 4. `fastlane store_preflight`, then `fastlane ios ios_metadata`,
    `fastlane ios ios_screenshots`, `fastlane android android_metadata`, and
    `fastlane android android_screenshots` as needed.

@@ -3,7 +3,7 @@ import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { runBackgroundTask } from '../../sync/utils/run-background-task.util';
+import { runBackgroundTask } from '../../@generic/utils/run-background-task.util';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ExchangeRateBackgroundService } from '../service/exchange-rate-background.service';
 

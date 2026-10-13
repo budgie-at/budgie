@@ -2,6 +2,7 @@ import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEn
 import { AccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as Struct from 'effect/Struct';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,7 +17,7 @@ import { AccountSyncCard } from '../../../sync/component/account-sync-card/accou
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
-import { useAccountForm } from '../../hooks/use-account-form.hook';
+import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
@@ -30,34 +31,14 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
 
     const formValues = {
-        externalId: account.externalId,
-        iban: account.iban,
-        type: account.type,
-        icon: account.icon,
-        title: account.title,
-        currentBalance: balance,
-        instrumentId: account.instrumentId,
-        includeInNetWorth: account.includeInNetWorth,
-        isActive: account.isActive
+        ...Struct.pick(account, ['externalId', 'iban', 'type', 'icon', 'title', 'instrumentId', 'includeInNetWorth', 'isActive']),
+        currentBalance: balance
     };
 
-    const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(
-        formValues,
-        async values =>
-            await appRuntime.runPromise(
-                Effect.flatMap(AccountService, accountService =>
-                    accountService.updateById(account.id, {
-                        externalId: values.externalId,
-                        iban: values.iban,
-                        icon: values.icon,
-                        title: values.title,
-                        currentBalance: values.currentBalance,
-                        instrumentId: values.instrumentId,
-                        includeInNetWorth: values.includeInNetWorth,
-                        isActive: values.isActive
-                    })
-                )
-            )
+    const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
+        appRuntime.runPromise(
+            Effect.flatMap(AccountService, accountService => accountService.updateById(account.id, Struct.omit(values, ['type'])))
+        )
     );
 
     const stickyInstrument = useStickyDefinedValue(instrument);

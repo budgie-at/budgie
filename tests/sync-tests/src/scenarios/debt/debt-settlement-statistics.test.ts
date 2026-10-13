@@ -1,5 +1,3 @@
-import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { DebtAccountService } from '@app/account/service/debt-account.service';
 import {
@@ -27,7 +25,9 @@ import {
     TransactionEntityTable,
     TransactionViewRepository,
     TransactionTypeEnum,
-    UserIconNameEnum
+    UserIconNameEnum,
+    convertFromMicroUnits,
+    convertToMicroUnits
 } from '@budgie/contracts';
 import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';

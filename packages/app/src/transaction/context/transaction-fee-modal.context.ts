@@ -1,9 +1,10 @@
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
-export interface TransactionFeeModalParamsInterface {
+interface TransactionFeeModalParamsInterface {
     readonly accountId: number;
     readonly currencySymbol: string;
     readonly entry: TransactionEntryCreateInputInterface | null;
@@ -12,7 +13,11 @@ export interface TransactionFeeModalParamsInterface {
 
 export type TransactionFeeModalResult = readonly TransactionEntryCreateInputInterface[];
 
-export const [TransactionFeeModalContext, useTransactionFeeModal, useTransactionFeeModalParams] = createModalContext<
+const [TransactionFeeModalContext, useTransactionFeeModal, useTransactionFeeModalParams] = createModalContext<
     TransactionFeeModalParamsInterface,
     TransactionFeeModalResult | null
 >(null);
+
+export { useTransactionFeeModal, useTransactionFeeModalParams };
+
+export const TransactionFeeModalProvider = createModalProvider(TransactionFeeModalContext, '/transaction-fee');

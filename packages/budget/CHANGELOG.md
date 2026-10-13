@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **app:** save category title and translation in one transaction ([7b5b4c0](https://github.com/budgie-at/budgie/commit/7b5b4c0fc5a5af8eef775132d114d7686d297ae0))
+
+
+
+
+
+## [6.100.7](https://github.com/budgie-at/budgie/compare/v6.100.6...v6.100.7) (2026-10-12)
+
+**Note:** Version bump only for package @budgie/budget
+
+
+
+
+
 ## [6.100.2](https://github.com/budgie-at/budgie/compare/v6.100.1...v6.100.2) (2026-10-11)
 
 **Note:** Version bump only for package @budgie/budget

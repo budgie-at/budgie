@@ -22,7 +22,9 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
+import { createCategory } from '../../utils/create-category.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
+import { updateCategory } from '../../utils/update-category.util';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
@@ -73,40 +75,26 @@ export const CategoryForm = (props: Props) => {
 
     const handleIconSelect = (selectedIcon: UserIconType) => void setValue('icon', selectedIcon);
 
-    const handleIconPress = async () => {
-        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords: iconTerms });
-
-        if (isDefined(selectedIcon)) {
-            handleIconSelect(selectedIcon);
-        }
+    const handleIconPress = () => {
+        openIconSelector({ selectedIcon: icon, keywords: iconTerms }, selectedIcon => {
+            if (isDefined(selectedIcon)) {
+                handleIconSelect(selectedIcon);
+            }
+        });
     };
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
     };
 
-    const handleMerge = async () => {
-        if (!isDefined(category?.id)) {
-            return;
-        }
-
-        const targetCategoryId = await openCategorySelector({
-            excludeCategoryIds: [category.id],
-            description: t`Select a category to merge into`,
-            variant: 'primary'
-        });
-
-        if (!isDefined(targetCategoryId)) {
-            return;
-        }
-
+    const mergeInto = async (sourceCategoryId: number, targetCategoryId: number) => {
         try {
             const targetCategory = await appRuntime.runPromise(
                 Effect.gen(function* () {
                     const categoryRepository = yield* CategoryRepository;
                     const categoryService = yield* CategoryService;
                     const [foundCategory] = yield* categoryRepository.findById(targetCategoryId, language);
-                    yield* categoryService.mergeInto(category.id, targetCategoryId);
+                    yield* categoryService.mergeInto(sourceCategoryId, targetCategoryId);
 
                     return foundCategory;
                 })
@@ -120,44 +108,35 @@ export const CategoryForm = (props: Props) => {
         }
     };
 
-    const saveCategoryTranslation = async (categoryId: number): Promise<void> => {
-        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
+    const handleMerge = () => {
+        const sourceCategoryId = category?.id;
 
-        await appRuntime.runPromise(
-            Effect.flatMap(CategoryRepository, categoryRepository =>
-                hasTranslationData
-                    ? categoryRepository.updateTranslation(categoryId, titleEn, titleTags)
-                    : categoryRepository.clearTranslation(categoryId)
-            )
+        if (!isDefined(sourceCategoryId)) {
+            return;
+        }
+
+        openCategorySelector(
+            {
+                excludeCategoryIds: [sourceCategoryId],
+                description: t`Select a category to merge into`,
+                variant: 'primary'
+            },
+            targetCategoryId => {
+                if (isDefined(targetCategoryId)) {
+                    void mergeInto(sourceCategoryId, targetCategoryId);
+                }
+            }
         );
     };
 
     const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {
-        await appRuntime.runPromise(
-            Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.updateById(categoryId, values))
-        );
-        await saveCategoryTranslation(categoryId);
-
-        const [savedCategory] = await appRuntime.runPromise(
-            Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.findById(categoryId, language))
-        );
+        const savedCategory = await appRuntime.runPromise(updateCategory(categoryId, values, { titleEn, titleTags }, language));
 
         onSuccess({ category: savedCategory, action: 'updated' });
     };
 
     const handleCreateSubmit = async (values: CategoryCreateEntityInterface): Promise<void> => {
-        const savedCategory = await appRuntime.runPromise(
-            Effect.gen(function* () {
-                const categoryRepository = yield* CategoryRepository;
-                const createdCategory = yield* categoryRepository.create(values);
-
-                if (isNotEmptyString(titleEn) && isNotEmptyString(titleTags)) {
-                    yield* categoryRepository.updateTranslation(createdCategory.id, titleEn, titleTags);
-                }
-
-                return createdCategory;
-            })
-        );
+        const savedCategory = await appRuntime.runPromise(createCategory(values, { titleEn, titleTags }));
 
         onSuccess({ category: savedCategory, action: 'created' });
     };

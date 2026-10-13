@@ -6,26 +6,21 @@ import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/
 import { RuleSuggestionCard } from '../../../rule/components/rule-suggestion-card/rule-suggestion-card';
 import { RuleUpdateCard } from '../../../rule/components/rule-update-card/rule-update-card';
 
-import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
+import type { RuleDetectionType } from '../../interface/rule-detection.type';
 
-export const RulePillSlot = (props: RulePillSlotPropsInterface) => {
-    const {
-        ruleDetectionMode = RuleDetectionModeEnum.NONE,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        matchingRuleIds,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
-    } = props;
+interface Props {
+    readonly ruleDetection?: RuleDetectionType;
+}
 
-    if (
-        ruleDetectionMode === RuleDetectionModeEnum.SUGGEST &&
-        isDefined(suggestRuleData) &&
-        isDefined(onRuleCreated) &&
-        isDefined(onDismiss)
-    ) {
+export const RulePillSlot = ({ ruleDetection }: Props) => {
+    if (!isDefined(ruleDetection)) {
+        return null;
+    }
+
+    const { mode, suggestRuleData, updateRuleData, matchingRulesCount, matchingRuleIds, onRuleCreated, onDismiss, onCreatingChange } =
+        ruleDetection;
+
+    if (mode === RuleDetectionModeEnum.SUGGEST) {
         return (
             <RuleSuggestionCard
                 suggestRuleData={suggestRuleData}
@@ -36,16 +31,11 @@ export const RulePillSlot = (props: RulePillSlotPropsInterface) => {
         );
     }
 
-    if (
-        ruleDetectionMode === RuleDetectionModeEnum.UPDATE &&
-        isDefined(updateRuleData) &&
-        isDefined(onRuleCreated) &&
-        isDefined(onDismiss)
-    ) {
+    if (mode === RuleDetectionModeEnum.UPDATE && isDefined(updateRuleData)) {
         return <RuleUpdateCard updateRuleData={updateRuleData} onRuleUpdated={onRuleCreated} onDismiss={onDismiss} />;
     }
 
-    if (ruleDetectionMode === RuleDetectionModeEnum.MATCH && isPositiveNumber(matchingRulesCount) && isDefined(matchingRuleIds)) {
+    if (mode === RuleDetectionModeEnum.MATCH && isPositiveNumber(matchingRulesCount)) {
         return <MatchingRulesPill matchingRulesCount={matchingRulesCount} matchingRuleIds={matchingRuleIds} />;
     }
 

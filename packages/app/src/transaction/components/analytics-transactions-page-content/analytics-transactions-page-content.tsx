@@ -38,8 +38,6 @@ export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoad
                 sections={sections}
                 onEndReached={onLoadMore}
                 listEmptyState={listEmptyState}
-                balanceAdjustmentLabel={t`Balance Adjustment`}
-                categoriesLabel={t`Categories`}
                 footerSpacerMultiplier={0}
             />
         </Page>

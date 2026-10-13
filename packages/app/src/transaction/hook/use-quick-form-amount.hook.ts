@@ -3,6 +3,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useGetAccountByIdQuery } from '../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { KeypadHandlersInterface } from '../interface/keypad-handlers.interface';
 import { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
 
 import { useKeypadInput } from './use-keypad-input.hook';
@@ -16,7 +17,7 @@ interface UseQuickFormAmountResult {
     readonly numericValue: number;
     readonly currencySymbol: string;
     readonly instrumentType: InstrumentTypeEnum;
-    readonly keypadHandlers: ReturnType<typeof useKeypadInput>['handlers'];
+    readonly keypadHandlers: KeypadHandlersInterface;
     readonly setFromNumeric: (value: number) => void;
 }
 
