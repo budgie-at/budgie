@@ -53,6 +53,7 @@ export { ResyncService } from './core/service/resync.service';
 export { SyncOperationMetadataService } from './core/service/sync-operation-metadata.service';
 export { SyncProviderRegistryService } from './core/service/sync-provider-registry.service';
 export { SyncRepairService } from './core/service/sync-repair.service';
+export { AtmCashMoveService } from './core/service/atm-cash-move.service';
 export { TransferConsolidationService } from './core/service/transfer-consolidation.service';
 export { generateDefaultSyncAccountTitle } from './core/utils/generate-default-sync-account-title.util';
 export { makeFileSyncService } from './core/utils/make-file-sync-service.util';

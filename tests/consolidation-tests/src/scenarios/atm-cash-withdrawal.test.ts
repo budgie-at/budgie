@@ -1,6 +1,6 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { AccountTypeEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { AtmCashMoveService, TransferConsolidationService } from '@budgie/sync';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -122,6 +122,29 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
             yield* expectSourceStateRestored(stateBefore);
             expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
             expect(yield* fetchOwnLedgerEntries(expense.id)).toHaveLength(ATM_EXPENSE_LEDGER_ENTRY_COUNT);
+        })
+    );
+
+    it.effect('moves only unconsolidated selected ATM expenses to cash and undoes the move with balances restored', () =>
+        Effect.gen(function* () {
+            const atmCashMoveService = yield* AtmCashMoveService;
+            const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
+            const otherExpense = yield* seedAtmExpense(bankAccount.id, 'tx-atm-cash-move-other', ATM_OPERATED_AT);
+            const balancesBefore = yield* fetchLedgerBalances([bankAccount.id, cashAccount.id]);
+
+            expect(yield* atmCashMoveService.moveToCash([expense.id])).toEqual([expense.id]);
+            expect(yield* atmCashMoveService.moveToCash([expense.id, otherExpense.id])).toEqual([otherExpense.id]);
+            expect((yield* testQueryService.fetchTransactionById(otherExpense.id)).consolidationParentTransactionId).not.toBeNull();
+            expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual([
+                [bankAccount.id, -2 * (ATM_WITHDRAWAL_AMOUNT + ATM_WITHDRAWAL_FEE_AMOUNT)],
+                [cashAccount.id, 2 * ATM_WITHDRAWAL_AMOUNT]
+            ]);
+
+            yield* atmCashMoveService.undoMoveToCash([expense.id, otherExpense.id]);
+
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
+            expect((yield* testQueryService.fetchTransactionById(otherExpense.id)).consolidationParentTransactionId).toBeNull();
+            expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
         })
     );
 });

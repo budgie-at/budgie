@@ -22,6 +22,23 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
             const queryBuilder = new QueryBuilder();
 
             return {
+                findConsolidationParentsByIds: Effect.fn('TransactionConsolidationRepository.findConsolidationParentsByIds')(function* (
+                    ids: readonly number[]
+                ) {
+                    if (isEmptyArray(ids)) {
+                        return [];
+                    }
+
+                    return yield* Db.query(db =>
+                        db
+                            .select({
+                                id: TransactionEntityTable.id,
+                                consolidationParentTransactionId: TransactionEntityTable.consolidationParentTransactionId
+                            })
+                            .from(TransactionEntityTable)
+                            .where(inArray(TransactionEntityTable.id, [...ids]))
+                    );
+                }),
                 findActiveAutoConsolidatedByAccountIds: Effect.fn(
                     'TransactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds'
                 )(function* (accountIds: number[]) {

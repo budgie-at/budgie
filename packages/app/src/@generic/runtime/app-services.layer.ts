@@ -66,6 +66,7 @@ import {
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
 import {
+    AtmCashMoveService,
     BinanceSyncService,
     ErsteSyncService,
     MonobankSyncService,
@@ -97,7 +98,6 @@ import { EmbeddingProgressStore } from '../../ai/store/embedding-progress.store'
 import { TranslationProgressStore } from '../../ai/store/translation-progress.store';
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
-import { CategorizeInboxCashService } from '../../categorize-inbox/service/categorize-inbox-cash.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
@@ -169,7 +169,7 @@ export const appServicesLayer = Layer.mergeAll(
     RuleApplicationDrainerService.layer,
     TransactionCategorizeInboxRepository.layer,
     CategorizeInboxService.layer,
-    CategorizeInboxCashService.layer,
+    AtmCashMoveService.layer,
     ChatService.layer,
     LocalEmbeddingService.layer,
     WhisperModelService.layer,
