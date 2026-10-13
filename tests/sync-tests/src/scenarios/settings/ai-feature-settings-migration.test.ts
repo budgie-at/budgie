@@ -7,9 +7,16 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { applyMigration, testDb, TestLayer } from '../../harness';
+import { testDb, TestLayer } from '../../harness';
 
 const MIGRATIONS_FOLDER = resolve(process.cwd(), '../../packages/app/drizzle');
+const applyMigration = (migrationName: string) =>
+    Effect.forEach(
+        readFileSync(resolve(MIGRATIONS_FOLDER, migrationName, 'migration.sql'), 'utf8').split('--> statement-breakpoint'),
+        statement => testDb.$client.unsafe(statement).raw,
+        { discard: true }
+    );
+
 const AI_FEATURE_SETTINGS_COLUMNS = ['is_ai_voice_input_enabled', 'is_ai_suggestions_enabled', 'is_ai_translations_enabled'];
 const AI_FEATURE_SETTINGS_SCHEMA_PATTERN = /ALTER\s+TABLE\s+`settings`\s+ADD/iu;
 const AI_FEATURE_SETTINGS_BACKFILL_PATTERN = /UPDATE\s+`settings`/iu;
