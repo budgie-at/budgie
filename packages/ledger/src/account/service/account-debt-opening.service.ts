@@ -1,6 +1,5 @@
 import {
     AccountDebtTypeEnum,
-    AccountNatureEnum,
     AccountRepository,
     BORROWING_CATEGORY_ID,
     CategorySourceEnum,
@@ -16,17 +15,20 @@ import {
     TransactionTypeEnum,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
-import { t } from '@lingui/core/macro';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
+import { getTransactionCategoryEntries } from '../../transaction/utils/get-transaction-category-entries.util';
+
+import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
 import { DebtAccountService } from './debt-account.service';
 
+import type { DebtOpeningMessagesInterface } from '../interface/debt-opening-messages.interface';
 import type {
     AccountEntityInterface,
     DebtAccountCreateInputInterface,
@@ -34,7 +36,7 @@ import type {
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
-export class AccountDebtOpeningService extends Context.Service<AccountDebtOpeningService>()('@budgie/app/AccountDebtOpeningService', {
+export class AccountDebtOpeningService extends Context.Service<AccountDebtOpeningService>()('@budgie/ledger/AccountDebtOpeningService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const debtEventRepository = yield* DebtEventRepository;
@@ -45,16 +47,6 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
         const entryBaseValuationService = yield* EntryBaseValuationService;
         const exchangeRatesService = yield* ExchangeRatesService;
         const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
-
-        const createZeroTargetDebtAccount = Effect.fn('AccountDebtOpeningService.createZeroTargetDebtAccount')(function* (
-            input: DebtAccountCreateInputInterface
-        ) {
-            const [{ count }] = yield* accountRepository.count();
-
-            const nature = input.debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
-
-            return yield* accountRepository.create({ ...input, targetBalance: 0, order: count + 1, nature });
-        });
 
         const createFundingTransaction = Effect.fn('AccountDebtOpeningService.createFundingTransaction')(function* (
             input: DebtAccountCreateInputInterface,
@@ -107,25 +99,31 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
             });
         });
 
-        const getOpeningIncomeTransaction = Effect.fn('AccountDebtOpeningService.getOpeningIncomeTransaction')(function* (id: number) {
+        const getOpeningIncomeTransaction = Effect.fn('AccountDebtOpeningService.getOpeningIncomeTransaction')(function* (
+            id: number,
+            messages: DebtOpeningMessagesInterface
+        ) {
             const transaction = yield* transactionRepository.getByIdWithEntries(id);
 
             if (!isDefined(transaction)) {
-                return yield* Effect.die(new Error(t`Transaction not found`));
+                return yield* Effect.die(new Error(messages.transactionNotFound));
             }
 
             if (transaction.type !== TransactionTypeEnum.INCOME) {
-                return yield* Effect.die(new Error(t`Only income transactions can be converted`));
+                return yield* Effect.die(new Error(messages.onlyIncomeConvertible));
             }
 
             return transaction;
         });
 
-        const getAccountOrFail = Effect.fn('AccountDebtOpeningService.getAccountOrFail')(function* (id: number) {
+        const getAccountOrFail = Effect.fn('AccountDebtOpeningService.getAccountOrFail')(function* (
+            id: number,
+            messages: DebtOpeningMessagesInterface
+        ) {
             const account = yield* accountRepository.findById(id);
 
             if (!isDefined(account)) {
-                return yield* Effect.die(new Error(t`Account ${id} not found`));
+                return yield* Effect.die(new Error(messages.accountNotFound(id)));
             }
 
             return account;
@@ -141,43 +139,48 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
             return yield* debtAccountService.updateDebtTargetBaseValuation(updatedAccount, operatedAt);
         });
 
-        const getPositiveOpeningAmount = Effect.fn('AccountDebtOpeningService.getPositiveOpeningAmount')(function* (amount: number) {
+        const getPositiveOpeningAmount = Effect.fn('AccountDebtOpeningService.getPositiveOpeningAmount')(function* (
+            amount: number,
+            messages: DebtOpeningMessagesInterface
+        ) {
             const openingAmount = convertToMicroUnits(amount);
 
             if (!isPositiveNumber(openingAmount)) {
-                return yield* Effect.die(new Error(t`Enter all amounts`));
+                return yield* Effect.die(new Error(messages.enterAllAmounts));
             }
 
             return openingAmount;
         });
 
         const getSingleOpeningIncomeEntry = Effect.fn('AccountDebtOpeningService.getSingleOpeningIncomeEntry')(function* (
-            transaction: TransactionWithEntriesEntityInterface
+            transaction: TransactionWithEntriesEntityInterface,
+            messages: DebtOpeningMessagesInterface
         ) {
             const categoryEntries = getTransactionCategoryEntries(transaction.entries);
             const primaryEntry = categoryEntries.at(0);
 
             if (!isDefined(primaryEntry) || categoryEntries.length !== 1) {
-                return yield* Effect.die(new Error(t`Only single-entry incomes can be converted`));
+                return yield* Effect.die(new Error(messages.onlySingleEntryIncomeConvertible));
             }
 
             return primaryEntry;
         });
 
         const assertBorrowedDebtType = Effect.fn('AccountDebtOpeningService.assertBorrowedDebtType')(function* (
-            debtType: AccountDebtTypeEnum
+            debtType: AccountDebtTypeEnum,
+            messages: DebtOpeningMessagesInterface
         ) {
             if (debtType !== AccountDebtTypeEnum.BORROW) {
-                return yield* Effect.die(new Error(t`Borrowed debt account expected`));
+                return yield* Effect.die(new Error(messages.borrowedDebtExpected));
             }
         });
 
         return {
             openDebtWithFundingAccount: Effect.fn('AccountDebtOpeningService.openDebtWithFundingAccount')(
-                function* (input: DebtAccountCreateInputInterface, fundingAccountId: number) {
-                    const fundingAccount = yield* getAccountOrFail(fundingAccountId);
-                    const targetAmount = yield* getPositiveOpeningAmount(input.targetBalance);
-                    const account = yield* createZeroTargetDebtAccount(input);
+                function* (input: DebtAccountCreateInputInterface, fundingAccountId: number, messages: DebtOpeningMessagesInterface) {
+                    const fundingAccount = yield* getAccountOrFail(fundingAccountId, messages);
+                    const targetAmount = yield* getPositiveOpeningAmount(input.targetBalance, messages);
+                    const account = yield* debtAccountService.createDebtRecord(input, 0);
                     const conversion = yield* exchangeRatesService.convert(account.instrumentId, fundingAccount.instrumentId, targetAmount);
                     const transaction = yield* createFundingTransaction(input, fundingAccountId);
                     const entry = yield* createFundingEntry(transaction, fundingAccountId, conversion.amount);
@@ -207,13 +210,13 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
                 effect => Db.transaction(effect)
             ),
             createBorrowedDebtFromIncome: Effect.fn('AccountDebtOpeningService.createBorrowedDebtFromIncome')(
-                function* (input: DebtAccountCreateInputInterface, incomeTransactionId: number) {
-                    yield* assertBorrowedDebtType(input.debtType);
+                function* (input: DebtAccountCreateInputInterface, incomeTransactionId: number, messages: DebtOpeningMessagesInterface) {
+                    yield* assertBorrowedDebtType(input.debtType, messages);
 
-                    const transaction = yield* getOpeningIncomeTransaction(incomeTransactionId);
-                    const primaryEntry = yield* getSingleOpeningIncomeEntry(transaction);
-                    const primaryAccount = yield* getAccountOrFail(primaryEntry.accountId);
-                    const account = yield* createZeroTargetDebtAccount({ ...input, instrumentId: primaryAccount.instrumentId });
+                    const transaction = yield* getOpeningIncomeTransaction(incomeTransactionId, messages);
+                    const primaryEntry = yield* getSingleOpeningIncomeEntry(transaction, messages);
+                    const primaryAccount = yield* getAccountOrFail(primaryEntry.accountId, messages);
+                    const account = yield* debtAccountService.createDebtRecord({ ...input, instrumentId: primaryAccount.instrumentId }, 0);
 
                     yield* transactionDebtSettlementService.attach({ transactionId: incomeTransactionId, debtAccountId: account.id });
 

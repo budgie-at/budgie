@@ -1,4 +1,3 @@
-import { Workload } from '@app/@generic/service/workload.service';
 import { HistoricalMarketDataDrainerService } from '@app/market-data/service/historical-market-data-drainer.service';
 import { InstrumentMarketDataJobStatusEnum, InstrumentRepository } from '@budgie/contracts';
 import { InstrumentMarketDataJobRepository } from '@budgie/market';
@@ -7,7 +6,7 @@ import * as Effect from 'effect/Effect';
 
 import { getDefined } from '@rnw-community/shared';
 
-import { advanceScheduledDrain, pauseUserWork, TestClockLayer } from '../../harness';
+import { advanceScheduledDrain, pauseUserWork, TestClockLayer, Workload } from '../../harness';
 
 import type { InstrumentMarketDataJobEntityInterface } from '@budgie/contracts';
 

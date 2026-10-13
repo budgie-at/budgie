@@ -361,12 +361,9 @@ msgid "Account {0} not found"
 msgstr "No se encontró la cuenta {0}"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Account {accountId} not found"
 msgstr "Cuenta {accountId} no encontrada"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Account {id} not found"
-msgstr "Cuenta {id} no encontrada"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
@@ -734,7 +731,7 @@ msgstr "Sincronización bancaria restablecida"
 msgid "Base currency"
 msgstr "Moneda base"
 
-#: src/money-data/service/money-data-upgrade.service.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
 msgstr "Moneda base no encontrada"
 
@@ -781,7 +778,7 @@ msgstr "Autenticación biométrica"
 msgid "Borrowed"
 msgstr "Prestado"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Borrowed debt account expected"
 msgstr "Se esperaba una cuenta de deuda tomada prestada"
 
@@ -1880,7 +1877,7 @@ msgstr "Traducción al inglés"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa un PIN de {PIN_LENGTH} dígitos"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Introduce todos los importes"
@@ -3035,7 +3032,7 @@ msgid "Only expense transactions can be converted"
 msgstr "Solo se pueden convertir transacciones de gasto"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only income transactions can be converted"
 msgstr "Solo se pueden convertir transacciones de ingreso"
 
@@ -3044,7 +3041,7 @@ msgid "Only single-entry expenses can be converted"
 msgstr "Solo se pueden convertir gastos de una sola entrada"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Solo se pueden convertir ingresos de una sola entrada"
 
@@ -4348,7 +4345,7 @@ msgstr "La transacción debe tener exactamente un asiento principal"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Transaction not found"
 msgstr "Transacción no encontrada"
 

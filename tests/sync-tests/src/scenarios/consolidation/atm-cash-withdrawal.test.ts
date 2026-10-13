@@ -1,5 +1,3 @@
-import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -15,7 +13,7 @@ import {
     TransactionEntityTable
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
-import { MonobankSyncService, TransferConsolidationService } from '@budgie/sync';
+import { AtmCashMoveService, MonobankSyncService, TransferConsolidationService, TransferConsolidationDrainerService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -106,7 +104,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
     it.effect('keeps Monobank ATM commission as a fee entry after cash withdrawal consolidation', () =>
         Effect.gen(function* () {
-            const categorizeInboxService = yield* CategorizeInboxCashService;
+            const atmCashMoveService = yield* AtmCashMoveService;
             const monobankSyncService = yield* MonobankSyncService;
             const transferConsolidationService = yield* TransferConsolidationService;
             const transactionService = yield* TransactionService;
@@ -134,7 +132,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
             expect(result.consolidated).toBe(0);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-            expect(yield* categorizeInboxService.moveToCash([atmExpense.id])).toEqual([atmExpense.id]);
+            expect(yield* atmCashMoveService.moveToCash([atmExpense.id])).toEqual([atmExpense.id]);
 
             const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
             expect(canonical.fromAccountId).toBe(bankAccount.id);
@@ -261,7 +259,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
     it.effect('moves exactly the chosen ATM withdrawal to cash, keeps stored balances on the ledger and undoes the move', () =>
         Effect.gen(function* () {
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-            const categorizeInboxService = yield* CategorizeInboxCashService;
+            const atmCashMoveService = yield* AtmCashMoveService;
             const transferConsolidationService = yield* TransferConsolidationService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
 
@@ -282,16 +280,16 @@ describe('consolidation/atm-cash-withdrawal', () => {
             yield* accountBalanceIncrementalService.updateAllBalances(true);
             yield* expectStoredBalancesOnLedger(-800, 0);
 
-            expect(yield* categorizeInboxService.moveToCash([expense.id])).toEqual([expense.id]);
+            expect(yield* atmCashMoveService.moveToCash([expense.id])).toEqual([expense.id]);
             yield* expectStoredBalancesOnLedger(-800, 500);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(1);
             expect((yield* testQueryService.findTransactionById(otherExpense.id)).consolidationParentTransactionId).toBeNull();
 
-            expect(yield* categorizeInboxService.moveToCash([expense.id])).toEqual([]);
+            expect(yield* atmCashMoveService.moveToCash([expense.id])).toEqual([]);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(1);
             yield* expectStoredBalancesOnLedger(-800, 500);
 
-            yield* categorizeInboxService.undoMoveToCash([expense.id]);
+            yield* atmCashMoveService.undoMoveToCash([expense.id]);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
             expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
             yield* expectStoredBalancesOnLedger(-800, 0);
@@ -300,7 +298,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
     it.effect('does not move to cash when more than one cash account shares the currency', () =>
         Effect.gen(function* () {
-            const categorizeInboxService = yield* CategorizeInboxCashService;
+            const atmCashMoveService = yield* AtmCashMoveService;
             const transferConsolidationService = yield* TransferConsolidationService;
 
             const bankAccount = yield* seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
@@ -309,21 +307,21 @@ describe('consolidation/atm-cash-withdrawal', () => {
             const expense = yield* seedAtmExpense(bankAccount.id);
 
             expect(yield* transferConsolidationService.consolidate(null)).toMatchObject({ consolidated: 0 });
-            expect(yield* categorizeInboxService.moveToCash([expense.id])).toEqual([]);
+            expect(yield* atmCashMoveService.moveToCash([expense.id])).toEqual([]);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('reverts an ATM cash withdrawal canonical and restores the source expense', () =>
         Effect.gen(function* () {
-            const categorizeInboxService = yield* CategorizeInboxCashService;
+            const atmCashMoveService = yield* AtmCashMoveService;
             const transactionService = yield* TransactionService;
 
             const bankAccount = yield* seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
             yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
             const expense = yield* seedAtmExpense(bankAccount.id);
 
-            yield* categorizeInboxService.moveToCash([expense.id]);
+            yield* atmCashMoveService.moveToCash([expense.id]);
 
             const canonical = (yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL))[0];
             expect(canonical).toBeDefined();

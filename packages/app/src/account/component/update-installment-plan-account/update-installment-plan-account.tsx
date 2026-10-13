@@ -1,4 +1,5 @@
 import { AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
+import { DebtAccountService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
@@ -16,7 +17,6 @@ import { InstallmentPlanUpdateFormSchema } from '../../../installment-plan/const
 import { useInstallmentPlanScheduleQuery } from '../../../installment-plan/query/use-installment-plan-schedule.query';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useAccountEntityForm } from '../../hooks/use-account-entity-form.hook';
-import { DebtAccountService } from '../../service/debt-account.service';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 import { UpdateAccountPage } from '../update-account-page/update-account-page';
 

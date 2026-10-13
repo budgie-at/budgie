@@ -1,4 +1,5 @@
 import { AccountDebtTypeEnum, AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
+import { DebtAccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -10,7 +11,6 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { useDebtAccountManualSettledAmountQuery } from '../../query/use-debt-account-manual-settled-amount.query';
-import { DebtAccountService } from '../../service/debt-account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';

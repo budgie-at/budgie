@@ -1,4 +1,3 @@
-import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import {
     AccountBalanceRepository,
     AccountDebtTypeEnum,
@@ -17,6 +16,7 @@ import {
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
+import { AccountDebtOpeningService } from '@budgie/ledger';
 import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -24,7 +24,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchDebtProgress, TestLayer, upsertCurrencyRate } from '../../harness';
+import { fetchDebtProgress, TestLayer, upsertCurrencyRate, DEBT_OPENING_MESSAGES } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -139,7 +139,8 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
                     contactId: null,
                     deadline: null
                 },
-                fundingAccount.id
+                fundingAccount.id,
+                DEBT_OPENING_MESSAGES
             );
             const repaymentType = debtType === AccountDebtTypeEnum.LENT ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
             const isRepaymentExpense = repaymentType === TransactionTypeEnum.EXPENSE;

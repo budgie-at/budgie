@@ -1,15 +1,12 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService, TransferConsolidationDrainerService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import { vi } from 'vitest';
 
-import { advanceScheduledDrain, TestClockLayer } from '../../harness';
+import { advanceScheduledDrain, RealDrainerTestClockLayer } from '../../harness';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-vi.unmock('@app/sync/service/transfer-consolidation-drainer.service');
 
 const drainDelayMs = 1500;
 const immediateTimerMs = 0;
@@ -49,7 +46,7 @@ describe('consolidation/transfer-consolidation-drainer', () => {
                 operatedAtTo: secondScope.operatedAtTo,
                 transactionIds: [1, 2]
             });
-        }).pipe(Effect.provide(TestClockLayer))
+        }).pipe(Effect.provide(RealDrainerTestClockLayer))
     );
 
     it.effect('schedules one delayed follow-up drain for work queued during an active drain', () =>
@@ -79,6 +76,6 @@ describe('consolidation/transfer-consolidation-drainer', () => {
             yield* advanceScheduledDrain(drainDelayMs);
             expect(consolidate).toHaveBeenCalledTimes(2);
             expect(consolidate).toHaveBeenLastCalledWith(secondScope);
-        }).pipe(Effect.provide(TestClockLayer))
+        }).pipe(Effect.provide(RealDrainerTestClockLayer))
     );
 });

@@ -1,5 +1,4 @@
 import { consolidationScopeService } from '@budgie/consolidation';
-import { TransferConsolidationService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -8,16 +7,17 @@ import * as Ref from 'effect/Ref';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Workload } from '../../@generic/service/workload.service';
-import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
+import { TransferConsolidationWorkload } from '../port/transfer-consolidation-workload.port';
+
+import { TransferConsolidationService } from './transfer-consolidation.service';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export class TransferConsolidationDrainerService extends Context.Service<TransferConsolidationDrainerService>()(
-    '@budgie/app/TransferConsolidationDrainerService',
+    '@budgie/sync/TransferConsolidationDrainerService',
     {
         make: Effect.gen(function* () {
-            const workload = yield* Workload;
+            const workload = yield* TransferConsolidationWorkload;
             const transferConsolidationService = yield* TransferConsolidationService;
             const scheduleKey = 'transfer-consolidation-drain';
             const drainDelay = Duration.seconds(1.5);
@@ -47,7 +47,7 @@ export class TransferConsolidationDrainerService extends Context.Service<Transfe
                 while (yield* Ref.get(hasPendingRun)) {
                     yield* Effect.sleep(drainDelay);
                     yield* workload.awaitForegroundIdle;
-                    yield* waitForIdle;
+                    yield* workload.awaitIdle;
                     const scope = yield* takePendingScope;
                     yield* Effect.yieldNow;
                     yield* Effect.exit(workload.run(transferConsolidationService.consolidate(scope)));
@@ -72,6 +72,6 @@ export class TransferConsolidationDrainerService extends Context.Service<Transfe
     }
 ) {
     static readonly layer = Layer.effect(TransferConsolidationDrainerService, TransferConsolidationDrainerService.make).pipe(
-        Layer.provide([Workload.layer, TransferConsolidationService.layer])
+        Layer.provide(TransferConsolidationService.layer)
     );
 }

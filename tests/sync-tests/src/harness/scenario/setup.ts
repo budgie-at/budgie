@@ -4,12 +4,6 @@ import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-vi.mock('@app/sync/service/transfer-consolidation-drainer.service', async () => {
-    const { FakeTransferConsolidationDrainerService } = await import('../fake/fake-transfer-consolidation-drainer.service');
-
-    return { TransferConsolidationDrainerService: FakeTransferConsolidationDrainerService };
-});
-
 vi.mock('@app/@generic/drizzle/service/database-connection.service', async () => {
     const { FakeDatabaseConnectionService } = await import('../fake/fake-database-connection.service');
 

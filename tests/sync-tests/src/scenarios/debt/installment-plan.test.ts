@@ -1,4 +1,3 @@
-import { DebtAccountService } from '@app/account/service/debt-account.service';
 import {
     DebtEventDirectionEnum,
     DebtEventEntityTable,
@@ -10,6 +9,7 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { DebtAccountService } from '@budgie/ledger';
 import { AccountBalanceIncrementalService, InstallmentPlanService, TransactionDebtSettlementService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';

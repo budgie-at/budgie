@@ -1,3 +1,4 @@
+import { TransferConsolidationDrainerService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
@@ -9,7 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { RuleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
-import { TransferConsolidationDrainerService } from '../../../sync/service/transfer-consolidation-drainer.service';
+import { transferConsolidationDrainerLayer } from '../../../sync/layer/transfer-consolidation-drainer.layer';
 import { Workload } from '../../service/workload.service';
 
 import { DatabaseConnectionService } from './database-connection.service';
@@ -79,7 +80,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
         Layer.provide([
             Workload.layer,
             DatabaseConnectionService.layer,
-            TransferConsolidationDrainerService.layer,
+            transferConsolidationDrainerLayer,
             RuleApplicationDrainerService.layer,
             HistoricalMarketDataDrainerService.layer
         ])

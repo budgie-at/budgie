@@ -45,7 +45,7 @@ interface Props {
     readonly cardTestID?: string;
     readonly buttonTestID?: string;
     readonly layout?: CardLayout;
-    readonly onYes: () => Promise<void>;
+    readonly onYes: () => Promise<boolean>;
     readonly onComplete: () => void;
     readonly onDismiss: () => void;
 }
@@ -124,7 +124,14 @@ export const SwipeableRuleCard = (props: Props) => {
         setStatus('creating');
 
         try {
-            await onYes();
+            const isCompleted = await onYes();
+
+            if (!isCompleted) {
+                setStatus('idle');
+
+                return;
+            }
+
             setStatus('success');
             hapticNotification(NotificationFeedbackType.Success);
             setTimeout(onComplete, SUCCESS_AUTO_DISMISS_MS);

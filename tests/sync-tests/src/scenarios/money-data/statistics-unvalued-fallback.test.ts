@@ -1,4 +1,3 @@
-import { MoneyDataUpgradeService } from '@app/money-data/service/money-data-upgrade.service';
 import {
     AccountTypeEnum,
     CategoryEntityTable,
@@ -15,6 +14,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -159,7 +159,7 @@ describe('statistics fallback for unvalued entries', () => {
 
             expect(yield* transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).toBe(1);
 
-            yield* moneyDataUpgradeService.run();
+            yield* moneyDataUpgradeService.run('Base instrument not found');
 
             const [updatedEntry] = yield* testDb
                 .select()
