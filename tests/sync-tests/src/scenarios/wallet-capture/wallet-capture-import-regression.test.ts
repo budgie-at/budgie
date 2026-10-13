@@ -87,6 +87,21 @@ describe('Wallet capture import regressions', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('surfaces a reviewed capture without a duplicate as an invalid payload', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            const account = yield* walletCaptureSeedAccount();
+            const capture = walletCaptureBuild(CAPTURE_ID, { accountId: account.id, status: WalletCaptureStatusEnum.NEEDS_REVIEW });
+
+            walletCaptureNativeStub.seed([capture]);
+
+            expect(yield* walletCaptureImportService.drain()).toEqual([
+                { capture, duplicateTransactionId: null, reason: WalletCaptureReviewReasonEnum.INVALID_PAYLOAD }
+            ]);
+            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('does not dismiss an arbitrary pending capture with an available account', () =>
         Effect.gen(function* () {
             const walletCaptureImportService = yield* WalletCaptureImportService;
