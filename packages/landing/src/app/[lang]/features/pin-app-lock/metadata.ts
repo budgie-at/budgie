@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'pin-app-lock',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.PRIVACY,
     title: msg`PIN App Lock — Locks With the Encryption Key`,
     tagline: msg`The PIN unlocks the app and unlocks your data — no PIN, no readable database.`,
     metaTitle: msg`PIN Lock Finance App — Private Expense Tracker — Budgie`,

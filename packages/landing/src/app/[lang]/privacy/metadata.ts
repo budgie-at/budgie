@@ -1,9 +1,12 @@
 import { msg } from '@lingui/core/macro';
 
+import { PillarEnum } from '../../../feature/constant/pillar.enum';
+
 import type { PillarHubMetadataInterface } from '../../../feature/interface/pillar-hub-metadata.interface';
 
 export const PRIVACY_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     slug: 'privacy',
+    pillar: PillarEnum.PRIVACY,
     title: msg`Private Expense Tracker — On Your Device, Off the Cloud`,
     metaTitle: msg`Private Expense Tracker — On-Device — Budgie`,
     metaDescription: msg`Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and your own cloud backups.`,

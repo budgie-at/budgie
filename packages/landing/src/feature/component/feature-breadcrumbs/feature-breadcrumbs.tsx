@@ -18,7 +18,7 @@ export const FeatureBreadcrumbs = ({ locale, current }: Props) => (
             </li>
             <li aria-hidden>›</li>
             <li>
-                <Link className="hover:text-foreground transition-colors" href={`/${locale}/features`}>
+                <Link className="text-pillar font-medium hover:underline transition-colors" href={`/${locale}/features`}>
                     <Trans>Features</Trans>
                 </Link>
             </li>

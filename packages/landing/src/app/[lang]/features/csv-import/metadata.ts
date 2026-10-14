@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'csv-import',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.BANK,
     title: msg`CSV Bank Statement Import`,
     tagline: msg`Any bank, any column order — map it on one screen or start from a built-in preset.`,
     metaTitle: msg`CSV Import for Bank Statements & Transactions — Budgie`,

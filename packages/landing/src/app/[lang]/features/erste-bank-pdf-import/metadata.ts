@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'erste-bank-pdf-import',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.BANK,
     title: msg`Erste Bank PDF Import`,
     tagline: msg`Classic and modern PDF formats — full statement import in seconds.`,
     metaTitle: msg`Erste Bank PDF Import — Budgie`,

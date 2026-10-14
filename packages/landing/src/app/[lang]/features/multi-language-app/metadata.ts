@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'multi-language-app',
     tier: FeatureTierEnum.NICHE,
+    pillar: PillarEnum.PLANNING,
     title: msg`Budgie in Five Languages`,
     tagline: msg`English, Ukrainian, French, German, Spanish — full UI, locale-aware formatting.`,
     metaTitle: msg`Multi-Language App — Budgie`,

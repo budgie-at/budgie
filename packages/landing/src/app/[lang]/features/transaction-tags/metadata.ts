@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'transaction-tags',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.PLANNING,
     title: msg`Transaction Tags for Multi-Dimensional Tracking`,
     tagline: msg`Layer tags on top of categories — one transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags).`,
     metaTitle: msg`Custom Transaction Tags for Expense Tracking — Budgie`,

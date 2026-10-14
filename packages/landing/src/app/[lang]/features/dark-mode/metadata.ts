@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'dark-mode',
     tier: FeatureTierEnum.NICHE,
+    pillar: PillarEnum.PLANNING,
     title: msg`True Dark Mode (Not Just Dimmed)`,
     tagline: msg`OLED-friendly black, locale-aware, no white flash on cold launch.`,
     metaTitle: msg`Dark Mode Budget App — Easy on the Eyes — Budgie`,

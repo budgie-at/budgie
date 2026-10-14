@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'sync-data-repairs',
     tier: FeatureTierEnum.POWER,
+    pillar: PillarEnum.BANK,
     title: msg`Sync Data Repairs`,
     tagline: msg`Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows — manual entries are never touched.`,
     metaTitle: msg`Sync Data Repairs — Budgie`,

@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'primary-tag',
     tier: FeatureTierEnum.NICHE,
+    pillar: PillarEnum.PLANNING,
     title: msg`Primary Tag — Label Transactions for Quick Scanning`,
     tagline: msg`One tag per row. Scan a long list at a glance.`,
     metaTitle: msg`Primary Tag — Quick-Scan Transaction Labeling — Budgie`,

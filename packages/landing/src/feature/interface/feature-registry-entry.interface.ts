@@ -1,10 +1,12 @@
 import type { FeatureCategoryEnum } from '../constant/feature-category.enum';
 import type { FeatureTierEnum } from '../constant/feature-tier.enum';
+import type { PillarEnum } from '../constant/pillar.enum';
 import type { MessageDescriptor } from '@lingui/core';
 
 export interface FeatureRegistryEntryInterface {
     readonly slug: string;
     readonly tier: FeatureTierEnum;
+    readonly pillar: PillarEnum;
     readonly category?: FeatureCategoryEnum;
     readonly title: MessageDescriptor;
     readonly tagline: MessageDescriptor;

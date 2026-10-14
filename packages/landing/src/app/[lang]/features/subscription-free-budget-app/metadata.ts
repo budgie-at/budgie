@@ -2,6 +2,7 @@ import { msg } from '@lingui/core/macro';
 
 import { FeatureCategoryEnum } from '../../../../feature/constant/feature-category.enum';
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -9,6 +10,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'subscription-free-budget-app',
     tier: FeatureTierEnum.HERO,
+    pillar: PillarEnum.PRIVACY,
     category: FeatureCategoryEnum.COMPARISON,
     title: msg`Subscription-Free Budget App — Completely Free`,
     tagline: msg`Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no tier.`,

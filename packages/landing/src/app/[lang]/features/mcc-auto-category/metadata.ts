@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'mcc-auto-category',
     tier: FeatureTierEnum.POWER,
+    pillar: PillarEnum.AI,
     title: msg`MCC Auto-Categorization`,
     tagline: msg`Bank-issued codes do the work — cafes land in Restaurants & Cafes, fuel stops in Car & Fuel.`,
     metaTitle: msg`MCC Auto-Categorization for Bank Transactions — Budgie`,

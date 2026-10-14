@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'spending-analytics',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.PLANNING,
     title: msg`Spending Analytics That Actually Help`,
     tagline: msg`Category and tag breakdowns for any period — drill into any row.`,
     metaTitle: msg`Spending Analytics & Charts — Budgie`,

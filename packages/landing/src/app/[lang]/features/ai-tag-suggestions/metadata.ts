@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-tag-suggestions',
     tier: FeatureTierEnum.POWER,
+    pillar: PillarEnum.AI,
     title: msg`Automatic Tag Suggestions — Tap, Don't Type`,
     tagline: msg`After picking a category, Budgie proposes the tags you usually use as tappable pills — from your own history, on your phone.`,
     metaTitle: msg`Automatic Expense Tags — On-Device — Budgie`,

@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'crypto-investment-tracking',
     tier: FeatureTierEnum.NICHE,
+    pillar: PillarEnum.BANK,
     title: msg`Crypto Holdings Alongside Your Cash`,
     tagline: msg`Two hundred crypto assets in one dashboard, alongside your bank accounts.`,
     metaTitle: msg`Crypto Portfolio Tracking — Budgie`,

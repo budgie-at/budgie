@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'screenshot-protection',
     tier: FeatureTierEnum.NICHE,
+    pillar: PillarEnum.PRIVACY,
     title: msg`Screenshot Protection — Hide Bank Balance from Previews`,
     tagline: msg`Accidental shares stay private — balances blur in screenshots and the app switcher.`,
     metaTitle: msg`Screenshot Protection — Budgie`,

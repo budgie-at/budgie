@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'uncategorized-transactions',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.AI,
     title: msg`Uncategorized Transaction Finder`,
     tagline: msg`A filter-aware missing-category pill surfaces uncategorized transactions before they distort your budget analytics.`,
     metaTitle: msg`Uncategorized Transactions Finder`,

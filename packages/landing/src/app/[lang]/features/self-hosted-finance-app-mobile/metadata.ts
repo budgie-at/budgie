@@ -2,6 +2,7 @@ import { msg } from '@lingui/core/macro';
 
 import { FeatureCategoryEnum } from '../../../../feature/constant/feature-category.enum';
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -9,6 +10,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'self-hosted-finance-app-mobile',
     tier: FeatureTierEnum.POWER,
+    pillar: PillarEnum.PRIVACY,
     category: FeatureCategoryEnum.COMPARISON,
     title: msg`Self-Hosted Finance App on Mobile — Without Running a Server`,
     tagline: msg`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server.`,

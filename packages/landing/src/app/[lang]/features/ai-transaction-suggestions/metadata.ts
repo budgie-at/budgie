@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-transaction-suggestions',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.AI,
     title: msg`Smart Transaction Suggestions — Tap and Done`,
     tagline: msg`Open the expense form and Budgie offers tappable suggestions from your own history — category, then tags, then a comment.`,
     metaTitle: msg`Smart Expense Suggestions for Mobile — Budgie`,

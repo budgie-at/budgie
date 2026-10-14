@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'privatbank-import',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.BANK,
     title: msg`PrivatBank XLSX Import`,
     tagline: msg`One-time import, MCC-mapped — long-press an account card to jump to the picker.`,
     metaTitle: msg`PrivatBank XLSX Import — Budgie`,

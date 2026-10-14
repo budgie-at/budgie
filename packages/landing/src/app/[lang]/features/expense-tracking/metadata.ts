@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'expense-tracking',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.PLANNING,
     title: msg`Log Every Expense in Seconds`,
     tagline: msg`Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use.`,
     metaTitle: msg`Expense Tracking App, Log in Seconds — Budgie`,

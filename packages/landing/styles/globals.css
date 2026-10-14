@@ -25,6 +25,13 @@
     }
 }
 
+@theme inline {
+    --color-pillar: var(--pillar);
+    --color-pillar-on: var(--pillar-on);
+    --color-pillar-tint: var(--pillar-tint);
+    --color-pillar-tint-strong: var(--pillar-tint-2);
+}
+
 @theme {
     --color-border: hsl(var(--border));
     --color-input: hsl(var(--input));
@@ -110,8 +117,8 @@
         --card-foreground: 240 10% 3.9%;
         --popover: 0 0% 100%;
         --popover-foreground: 240 10% 3.9%;
-        --primary: 237, 77%, 59%;
-        --primary-foreground: 0, 0%, 100%;
+        --primary: 240 10% 3.9%;
+        --primary-foreground: 0 0% 98%;
         --secondary: 240 4.8% 95.9%;
         --secondary-foreground: 240 5.9% 10%;
         --muted: 216, 24%, 96%;
@@ -124,6 +131,24 @@
         --input: 240 5.9% 90%;
         --ring: 221 83% 53%;
         --radius: 1rem;
+
+        --pillar: hsl(var(--foreground));
+        --pillar-on: hsl(var(--background));
+        --pillar-tint: hsl(var(--muted));
+        --pillar-tint-2: hsl(var(--secondary));
+        --bank: oklch(0.53 0.19 258);
+        --bank-tint: oklch(0.955 0.024 255);
+        --bank-tint-2: oklch(0.91 0.05 255);
+        --ai: oklch(0.5 0.22 293);
+        --ai-tint: oklch(0.957 0.024 293);
+        --ai-tint-2: oklch(0.91 0.055 293);
+        --privacy: oklch(0.52 0.12 163);
+        --privacy-tint: oklch(0.96 0.03 163);
+        --privacy-tint-2: oklch(0.91 0.06 163);
+        --planning: oklch(0.53 0.13 62);
+        --planning-tint: oklch(0.967 0.033 85);
+        --planning-tint-2: oklch(0.92 0.07 85);
+        --pillar-contrast: oklch(0.995 0 0);
     }
 
     .dark {
@@ -133,8 +158,8 @@
         --card-foreground: 0 0% 98%;
         --popover: 240 10% 3.9%;
         --popover-foreground: 0 0% 98%;
-        --primary: 237, 77%, 59%;
-        --primary-foreground: 0, 0%, 100%;
+        --primary: 0 0% 98%;
+        --primary-foreground: 240 10% 3.9%;
         --secondary: 240 3.7% 15.9%;
         --secondary-foreground: 0 0% 98%;
         --muted: 240 3.7% 15.9%;
@@ -146,6 +171,48 @@
         --border: 240 3.7% 15.9%;
         --input: 240 3.7% 15.9%;
         --ring: 217 91% 60%;
+
+        --bank: oklch(0.74 0.14 252);
+        --bank-tint: oklch(0.205 0.04 258);
+        --bank-tint-2: oklch(0.29 0.07 258);
+        --ai: oklch(0.76 0.13 293);
+        --ai-tint: oklch(0.205 0.045 293);
+        --ai-tint-2: oklch(0.29 0.08 293);
+        --privacy: oklch(0.84 0.16 160);
+        --privacy-tint: oklch(0.2 0.035 163);
+        --privacy-tint-2: oklch(0.28 0.06 163);
+        --planning: oklch(0.84 0.15 85);
+        --planning-tint: oklch(0.205 0.035 80);
+        --planning-tint-2: oklch(0.29 0.06 80);
+        --pillar-contrast: oklch(0.145 0.004 260);
+    }
+
+    .pillar-bank {
+        --pillar: var(--bank);
+        --pillar-on: var(--pillar-contrast);
+        --pillar-tint: var(--bank-tint);
+        --pillar-tint-2: var(--bank-tint-2);
+    }
+
+    .pillar-ai {
+        --pillar: var(--ai);
+        --pillar-on: var(--pillar-contrast);
+        --pillar-tint: var(--ai-tint);
+        --pillar-tint-2: var(--ai-tint-2);
+    }
+
+    .pillar-privacy {
+        --pillar: var(--privacy);
+        --pillar-on: var(--pillar-contrast);
+        --pillar-tint: var(--privacy-tint);
+        --pillar-tint-2: var(--privacy-tint-2);
+    }
+
+    .pillar-planning {
+        --pillar: var(--planning);
+        --pillar-on: var(--pillar-contrast);
+        --pillar-tint: var(--planning-tint);
+        --pillar-tint-2: var(--planning-tint-2);
     }
 }
 
@@ -262,7 +329,7 @@
     height: calc(var(--hero-frame-width) * 2.6);
     translate: -50% 0;
     border-radius: 9999px;
-    background: radial-gradient(closest-side, color-mix(in srgb, hsl(var(--primary)) 22%, transparent), transparent);
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--pillar) 22%, transparent), transparent);
     filter: blur(2.5rem);
 }
 
@@ -396,7 +463,7 @@
 }
 
 .story-grid {
-    --story-accent: hsl(var(--primary));
+    --story-accent: var(--pillar);
     --story-ink: hsl(var(--foreground));
     --story-frame-width: min(64vw, calc(58svh / 2.1722));
     --story-frame-height: calc(var(--story-frame-width) * 2.1722);
@@ -641,7 +708,7 @@
     height: 1.125rem;
     border-radius: 999px;
     background: var(--story-accent);
-    color: hsl(var(--primary-foreground));
+    color: var(--pillar-on);
     box-shadow:
         0 0 0 0.1875rem color-mix(in srgb, var(--story-accent) 24%, transparent),
         0 0.25rem 0.625rem color-mix(in srgb, var(--story-ink) 24%, transparent);
@@ -1148,7 +1215,7 @@
     height: 130%;
     translate: -50% 0;
     border-radius: 9999px;
-    background: radial-gradient(closest-side, color-mix(in srgb, hsl(var(--primary)) 16%, transparent), transparent);
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--pillar) 16%, transparent), transparent);
     filter: blur(2rem);
 }
 
@@ -1194,7 +1261,7 @@
 
 @media (hover: hover) and (pointer: fine) {
     .bento-cell:hover {
-        border-color: color-mix(in srgb, hsl(var(--primary)) 45%, transparent);
+        border-color: color-mix(in srgb, var(--pillar) 45%, transparent);
         translate: 0 -2px;
         box-shadow: 0 0.75rem 2rem color-mix(in srgb, hsl(var(--foreground)) 8%, transparent);
     }
@@ -1276,11 +1343,7 @@
 }
 
 .accent-link {
-    color: hsl(var(--primary));
-}
-
-.dark .accent-link {
-    color: color-mix(in srgb, hsl(var(--primary)) 55%, white);
+    color: var(--pillar);
 }
 
 section[data-density='COMPACT'] {
@@ -1774,7 +1837,7 @@ section[data-density='COMPACT'] .story-intro {
     inset: -12% -18%;
     z-index: -2;
     background:
-        radial-gradient(38% 32% at 70% 30%, color-mix(in srgb, hsl(var(--primary)) 26%, transparent), transparent 70%),
+        radial-gradient(38% 32% at 70% 30%, color-mix(in srgb, var(--pillar) 26%, transparent), transparent 70%),
         radial-gradient(42% 36% at 25% 78%, color-mix(in srgb, rgb(16 185 129) 22%, transparent), transparent 72%);
     filter: blur(1.5rem);
 }
@@ -1812,8 +1875,8 @@ section[data-density='COMPACT'] .story-intro {
     width: 2rem;
     height: 2rem;
     border-radius: 0.75rem;
-    background: color-mix(in srgb, hsl(var(--primary)) 12%, transparent);
-    color: hsl(var(--primary));
+    background: var(--pillar-tint);
+    color: var(--pillar);
 }
 
 .ipv-purchase {
@@ -1886,7 +1949,7 @@ section[data-density='COMPACT'] .story-intro {
 }
 
 .ipv-segment[data-paid='true'] {
-    background: linear-gradient(90deg, hsl(var(--primary)), rgb(16 185 129));
+    background: var(--pillar);
 }
 
 @supports (animation-timeline: view()) {

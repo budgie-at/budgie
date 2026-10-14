@@ -31,7 +31,7 @@ export const FeaturePageRelatedArticles = ({ locale, slugs }: Props) => {
                 {articles.map((article, index) => (
                     <Motion index={index} key={article.slug}>
                         <Link
-                            className="block rounded-lg border border-border/60 bg-card p-4 transition-colors hover:border-emerald-500/60 hover:bg-card/80"
+                            className="block rounded-lg border border-border/60 bg-card p-4 transition-colors hover:border-pillar hover:bg-card/80"
                             href={`/${locale}/blog/${article.slug}`}
                         >
                             <h3 className="font-semibold">{i18n._(article.title)}</h3>

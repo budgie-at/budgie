@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'installment-tracking',
     tier: FeatureTierEnum.POWER,
+    pillar: PillarEnum.PLANNING,
     title: msg`Pay in Parts: Installment Tracking`,
     tagline: msg`Turn a purchase paid in parts into a plan. Budgie attaches each monthly part and shows the next payment on Home.`,
     metaTitle: msg`Installment Tracker for Pay in Parts Purchases`,

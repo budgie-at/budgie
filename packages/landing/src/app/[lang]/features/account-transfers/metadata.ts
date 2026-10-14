@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,6 +9,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'account-transfers',
     tier: FeatureTierEnum.CORE,
+    pillar: PillarEnum.PLANNING,
     title: msg`Account Transfers — Done Right`,
     tagline: msg`Cross-currency, dual-amount, exact — money between your own accounts is never an expense.`,
     metaTitle: msg`Account Transfers — Budgie`,
