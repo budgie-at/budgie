@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('privatbank-import', i18n => ({
     title: t(i18n)`PrivatBank Import`,
-    tagline: t(i18n)`XLSX, MCC-mapped, two taps.`,
+    tagline: t(i18n)`Excel export, matched categories, two taps.`,
     tags: [t(i18n)`privatbank`, t(i18n)`xlsx`, t(i18n)`import`]
 }));

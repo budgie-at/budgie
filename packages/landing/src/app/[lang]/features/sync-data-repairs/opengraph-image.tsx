@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('sync-data-repairs', i18n => ({
     title: t(i18n)`Sync Data Repairs`,
-    tagline: t(i18n)`Remove duplicate bank imports.`,
+    tagline: t(i18n)`Remove duplicate imports and fix mismatched transfers.`,
     tags: [t(i18n)`sync`, t(i18n)`repair`, t(i18n)`duplicates`]
 }));
