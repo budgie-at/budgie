@@ -133,9 +133,9 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an
-                        instrument symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and
-                        bank balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings →
+                        Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, a
+                        symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and bank
+                        balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings →
                         Runway.
                     </Trans>
                 </FeaturePageProse>
@@ -153,7 +153,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Crypto holdings are first-class instruments: symbol, quantity, and a daily price</Trans>
+                        <Trans>Crypto holdings sit next to your cash: symbol, quantity, and a daily price</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Daily prices backfilled only for the crypto accounts you actually hold</Trans>
@@ -180,7 +180,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         <Trans>Reachable straight from the crypto group on the home screen</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={8}>
-                        <Trans>Older history backfills from CoinGecko one day at a time, with a visible progress indicator</Trans>
+                        <Trans>Days since the built-in history fill in up to today, with a visible progress indicator</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -198,10 +198,9 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Beyond that seed, history is filled in from CoinGecko&apos;s public market data — but only for crypto accounts you
-                        actually hold, one day at a time, in a background queue that fetches just the days you are missing and stops. There
-                        is no ticker connection, no streaming feed, and no account: the chart you look at is read from your own database, so
-                        it renders offline once the days are there.
+                        Beyond that, Budgie fills in the days since the built-in history up to today — but only for crypto accounts you
+                        actually hold, in the background, fetching just the days you are missing and then stopping. There is no live ticker
+                        and no account: the chart you look at is read from your own database, so it renders offline once the days are there.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -211,8 +210,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Which assets can I track?</Trans>}
                     answer={
                         <Trans>
-                            Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price).
-                            Stocks, ETFs, and commodities are not supported yet.
+                            Crypto today — two hundred assets ship with the app, each with a quantity and a daily price. Stocks, ETFs, and
+                            commodities are not supported yet.
                         </Trans>
                     }
                 />
@@ -220,9 +219,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Where do prices come from?</Trans>}
                     answer={
                         <Trans>
-                            The nine largest crypto assets ship with a year of daily prices in euro and dollar. Anything beyond that is
-                            pulled from CoinGecko&apos;s public market data, one missing day at a time, and only for the crypto accounts you
-                            hold.
+                            The nine largest crypto assets ship with a year of daily prices in euro and dollar. The days since then are
+                            fetched automatically, up to today, and only for the crypto accounts you hold.
                         </Trans>
                     }
                 />
@@ -231,7 +229,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     answer={
                         <Trans>
                             Yes. Prices are stored in your local database, so the market screen renders from what you already have. A
-                            connection is only needed to extend the history further back.
+                            connection is only needed to fetch the days since the built-in history.
                         </Trans>
                     }
                 />
@@ -239,8 +237,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Do I need an account or an API key?</Trans>}
                     answer={
                         <Trans>
-                            No. There is no ticker connection and no account; the backfill uses CoinGecko&apos;s public endpoints and writes
-                            the results into your local database.
+                            No. There is no live ticker and no account to create; Budgie fetches the missing days and stores them in your
+                            local database.
                         </Trans>
                     }
                 />
@@ -248,8 +246,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>How far back does the history go?</Trans>}
                     answer={
                         <Trans>
-                            The app ships a year of daily closes for the nine largest assets. Beyond that, the background queue fills in
-                            older days a day at a time until it catches up.
+                            The app ships a year of daily closes for the nine largest assets. After that, Budgie fills in the days since
+                            then, up to today.
                         </Trans>
                     }
                 />
@@ -257,7 +255,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>What does the progress indicator show?</Trans>}
                     answer={
                         <Trans>
-                            The backfill reports its progress per asset, so you can see how much of the older history is still filling in
+                            The backfill reports its progress per asset, so you can see how much of the recent history is still filling in
                             and when it has finished.
                         </Trans>
                     }
@@ -275,8 +273,17 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Can I record buy / sell history?</Trans>}
                     answer={
                         <Trans>
-                            Yes — buys are inflows to the holding account; sells are outflows with the realized FX. The market screen turns
-                            that history into an average cost, a cost basis and an unrealized gain for the position.
+                            Yes — buys add to the holding and sells take from it. The market screen turns that history into an average cost,
+                            a cost basis and an unrealized gain for the position. Realized gains are not shown.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I connect Binance?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Connect Binance with a read-only key and your balances and history come into Budgie next to your other
+                            accounts. Other exchanges and wallets are tracked by hand.
                         </Trans>
                     }
                 />

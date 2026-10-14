@@ -8,10 +8,10 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'data-export',
     tier: FeatureTierEnum.CORE,
-    title: msg`Export Every Transaction You've Logged`,
+    title: msg`Export Your Transactions, Plus a Full Backup`,
     tagline: msg`CSV for spreadsheets. A full database backup for restore. Both yours, never ours.`,
     metaTitle: msg`Data Export — Own Your Expense History — Budgie`,
-    metaDescription: msg`One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — that you can save to iCloud, Drive, or anywhere. Your data, your call.`,
+    metaDescription: msg`One-tap CSV export of your transactions plus a compressed full backup, PIN-locked if you set a PIN. Save it to iCloud, Drive, or anywhere.`,
     primaryKeyword: 'export transactions CSV',
     seoKeywords: [
         'export transactions CSV',
