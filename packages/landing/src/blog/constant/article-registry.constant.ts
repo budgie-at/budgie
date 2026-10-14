@@ -8,6 +8,7 @@ import { ARTICLE_METADATA as OfflineFirstBankDataSafetyArticleMetadata } from '.
 import { ARTICLE_METADATA as OfflineFirstPrivacyFinancialAppArticleMetadata } from '../../app/[lang]/blog/offline-first-privacy-financial-app/metadata';
 import { ARTICLE_METADATA as OnDeviceAiBudgetAppExplainerArticleMetadata } from '../../app/[lang]/blog/on-device-ai-budget-app-explainer/metadata';
 import { ARTICLE_METADATA as OpenSourceBudgetingTransparencyArticleMetadata } from '../../app/[lang]/blog/open-source-budgeting-transparency/metadata';
+import { ARTICLE_METADATA as TrackMoneyYouLentAndBorrowedArticleMetadata } from '../../app/[lang]/blog/track-money-you-lent-and-borrowed/metadata';
 import { ARTICLE_METADATA as WhatsNewAugustSeptember2026ArticleMetadata } from '../../app/[lang]/blog/whats-new-august-september-2026/metadata';
 import { ARTICLE_METADATA as WhatsNewSeptember2026ArticleMetadata } from '../../app/[lang]/blog/whats-new-september-2026/metadata';
 import { ARTICLE_METADATA as YnabAlternativesPrivacyArticleMetadata } from '../../app/[lang]/blog/ynab-alternatives-privacy/metadata';
@@ -27,5 +28,6 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     OfflineFirstBankDataSafetyArticleMetadata,
     HistoricalExchangeRatesBudgetAnalyticsArticleMetadata,
     WhatsNewAugustSeptember2026ArticleMetadata,
-    WhatsNewSeptember2026ArticleMetadata
+    WhatsNewSeptember2026ArticleMetadata,
+    TrackMoneyYouLentAndBorrowedArticleMetadata
 ];

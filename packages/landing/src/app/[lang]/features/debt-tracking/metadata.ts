@@ -15,7 +15,7 @@ export const FEATURE_METADATA = {
     primaryKeyword: 'personal debt tracker app',
     seoKeywords: ['personal debt tracker app', 'loan tracker app', 'IOU tracker', 'debt direction tracker', 'lent and borrowed app'],
     relatedFeatureSlugs: ['installment-tracking', 'account-management', 'net-worth-tracker', 'multi-currency'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'historical-exchange-rates-budget-analytics'],
+    relatedArticleSlugs: ['track-money-you-lent-and-borrowed', 'ynab-alternatives-privacy', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-29',
     updatedAt: '2026-09-21',
     ogTags: ['debt', 'loans', 'contacts']

@@ -2422,6 +2422,10 @@ msgstr "Eine zusammengeführte Überweisung behält eine Zeile „Konsolidierung
 msgid "A month grid of what bills"
 msgstr "Ein Monatsraster dessen, was abgebucht wird"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "A new debt is left out of your net worth by default. Turn on “Include in Net Worth” on the debt and the remainder counts: money owed to you adds to it, money you owe subtracts from it. As repayments come in, the effect shrinks until it reaches zero."
+msgstr "Eine neue Schuld zählt standardmäßig nicht zu deinem Nettovermögen. Schalte bei ihr „In Nettovermögen einbeziehen“ ein, dann zählt der offene Rest: Geld, das man dir schuldet, kommt hinzu, Geld, das du schuldest, wird abgezogen. Mit jeder Rückzahlung wird der Effekt kleiner, bis er bei null ankommt."
+
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A new Settings → Runway section controls it: “Show on home” toggles the pill (on by default), and “Include crypto” folds your crypto holdings into the calculation at today’s market value (off by default, since crypto swings can otherwise dominate a cash-flow read)."
 msgstr "Ein neuer Bereich Einstellungen → Runway steuert das: „Auf der Startseite anzeigen“ schaltet die Pille ein oder aus (standardmäßig an), und „Krypto einbeziehen“ rechnet Ihre Kryptobestände zum aktuellen Marktwert in die Berechnung ein (standardmäßig aus, da Kryptoschwankungen sonst eine Cashflow-Betrachtung dominieren können)."
@@ -2510,6 +2514,10 @@ msgstr "Ein Ausgabenbericht sollte vergleichen, was das Geld an dem Tag wert war
 msgid "A steady list with pinned section headers showing each count and total"
 msgstr "Eine ruhige Liste mit fixierten Abschnittsköpfen, die Anzahl und Summe zeigen"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/metadata.ts
+msgid "A step-by-step guide to tracking money you lent to friends and money you borrowed: open a debt, attach repayments as they arrive, and see what is still owed on both sides."
+msgstr "Schritt für Schritt: So behältst du verliehenes und geliehenes Geld im Blick. Schuld anlegen, Rückzahlungen verknüpfen, sobald sie eingehen, und sehen, was auf beiden Seiten noch offen ist."
+
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "A supermarket run can carry groceries, a phone charger and a light fixture. Budgie splits the one transaction across as many category rows as the receipt needs."
 msgstr "Ein Supermarkt-Einkauf kann Lebensmittel, ein Ladegerät und eine Lampe umfassen. Budgie teilt die eine Transaktion auf so viele Kategoriezeilen auf, wie der Beleg benötigt."
@@ -2533,6 +2541,10 @@ msgstr "Eine Vorlage aus deinen eigenen letzten Ausgaben, ein allgemeiner Einsti
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 msgstr "Eine Transaktion kann mehr als ein Tag tragen. In der Liste ist nur Platz für einen Chip, also entscheidet Budgie, welcher angezeigt wird."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "A transaction without a category gets Lending or Borrowing automatically; a category you already chose stays."
+msgstr "Eine Transaktion ohne Kategorie landet automatisch in „Verliehenes Geld“ oder „Geliehenes Geld“; eine Kategorie, die du schon gewählt hast, bleibt."
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "A transfer can carry a cost"
@@ -2971,6 +2983,10 @@ msgstr "Gewähren Sie angemessene Zeit für Fixes vor der öffentlichen Offenleg
 msgid "Allow you to delete your data completely if you leave"
 msgstr "Ihnen erlauben, Ihre Daten vollständig zu löschen, wenn Sie wechseln"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Already received a loan and it shows up as an ordinary income? Long-press that income in the transaction list, choose “Attach debt” and then “New borrowed debt”. Budgie creates the debt for that amount and links the income to it in one step."
+msgstr "Du hast schon Geld geliehen bekommen und es steht als normale Einnahme da? Halte diese Einnahme in der Transaktionsliste gedrückt, wähle „Schuld verknüpfen“ und dann „Neue geliehene Schuld“. Budgie legt die Schuld über diesen Betrag an und verknüpft die Einnahme in einem Schritt damit."
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "Also pairs unmatched own-card transfer legs into a real transfer — that's a rewrite, not a deletion, and it can't be undone with one tap"
 msgstr "Verknüpft außerdem nicht zugeordnete Überweisungsteile zwischen eigenen Karten zu einer echten Überweisung — das ist eine Umwandlung, keine Löschung, und lässt sich nicht mit einem Fingertipp rückgängig machen"
@@ -3377,6 +3393,10 @@ msgstr "Ein vorhandenes Einkommen oder eine vorhandene Ausgabe als Rückzahlung 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach to a debt"
 msgstr "An eine Schuld anhängen"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Attached the wrong one? Choose “Detach debt” on the transaction screen."
+msgstr "Die falsche erwischt? Wähle auf dem Transaktionsbildschirm „Schuld trennen“."
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Attached to the transfer"
@@ -4001,6 +4021,7 @@ msgstr "Block, die Muttergesellschaft von Cash App, gab bekannt, dass ein ehemal
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -4312,6 +4333,10 @@ msgstr "Budgie-Datumsfilter-Sheet mit einem August-Kalender über der Reihe der 
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
 msgstr "Budgie-Schuldenkonto „Verliehen an Daniel“ mit 750 $, die noch zu erhalten sind, bei 37,5 % zurückgezahlt, samt zurückgezahltem und verliehenem Gesamtbetrag"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Budgie debt screen showing the amount still to receive, the percentage returned, and the returned and lent totals"
+msgstr "Budgie-Schuldenbildschirm mit dem noch zu erhaltenden Betrag, dem zurückgezahlten Anteil in Prozent sowie den Summen für erhalten und verliehen"
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
 msgstr "Budgie-Kontoansicht einer Festanlage mit einem Saldo von 15.408,40 $, einem Zinssatz von 4,35 %, einem Fälligkeitsdatum am 1. Januar 2027, 120 verbleibenden Tagen und einer voraussichtlichen Auszahlung von 15.628,76 $"
@@ -4460,6 +4485,10 @@ msgstr "Budgie-Startbildschirm mit der Gesamtsaldo-Kopfzeile, die das Nettoverm�
 msgid "Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups"
 msgstr "Budgie-Startbildschirm mit dem Gesamtsaldo, aufgeteilt in einen Bargeld-Chip und einen Krypto-Chip, über den Gruppen für Bank-, Bargeld- und Kryptokonten"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Budgie home screen with the You owe and Owed to you debt sections, each with a subtotal and progress"
+msgstr "Budgie-Startbildschirm mit den Schuldenbereichen für eigene Schulden und offene Forderungen, jeweils mit Zwischensumme und Fortschritt"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Budgie implements offline-first architecture with no compromises:"
 msgstr "Budgie implementiert die Offline-First-Architektur ohne Kompromisse:"
@@ -4476,6 +4505,10 @@ msgstr "Budgie enthält keinerlei Analyse-SDKs. Wir verwenden weder Firebase Ana
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie income transaction detail with a debt account picker listing Lent to Daniel and Borrowed from Mom"
 msgstr "Budgie-Einnahmetransaktion mit einer Schuldenkonto-Auswahl, die „Verliehen an Daniel“ und „Geliehen von Mama“ auflistet"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Budgie income transaction screen with a debt picker listing a lent debt and a borrowed debt"
+msgstr "Budgie-Einnahmebildschirm mit Schuldenauswahl, die eine verliehene und eine geliehene Schuld zeigt"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie incorporates and depends on numerous open source libraries and frameworks. We are deeply grateful to the open source community for their contributions. The following are some of the key open source components used in Budgie:"
@@ -4995,6 +5028,10 @@ msgstr "Budgie-Transaktionsliste mit einem Kontextmenü auf einer Karte: bearbei
 msgid "Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete"
 msgstr "Budgie-Transaktionsliste mit einem Kontextmenü per langem Drücken: bearbeiten, in Umbuchung umwandeln, Schuld verknüpfen und löschen"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Budgie transaction list with a long-press menu open on a transaction, showing the Attach debt action"
+msgstr "Budgie-Transaktionsliste mit geöffnetem Menü nach langem Drücken auf eine Transaktion, darin die Aktion „Schuld verknüpfen“"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie transaction list with a missing categories pill between the filter chips and the rows"
 msgstr "Budgie-Transaktionsliste mit einer Pille für fehlende Kategorien zwischen den Filter-Chips und den Zeilen"
@@ -5443,6 +5480,10 @@ msgstr "Kann ich meine Bank synchronisieren, ohne Budgie meine Bankzugangsdaten 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Can I tag transactions in bulk too?"
 msgstr "Kann ich Umsätze auch gesammelt taggen?"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Can I track a debt from years ago?"
+msgstr "Kann ich eine Schuld von vor ein paar Jahren erfassen?"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Can I track an account in a different currency?"
@@ -6844,6 +6885,15 @@ msgstr "Schulden zählen in beide Richtungen"
 msgid "Debt Tracking"
 msgstr "Schuldenverfolgung"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/opengraph-image.tsx
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "debts"
+msgstr "schulden"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Debts and your net worth"
+msgstr "Schulden und dein Nettovermögen"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Debts in another currency are valued with the exchange rate from the day the money actually moved"
 msgstr "Schulden in einer anderen Währung werden mit dem Wechselkurs vom Tag der tatsächlichen Geldbewegung bewertet"
@@ -7102,6 +7152,10 @@ msgstr "Muss ich „On-Device-KI“ einschalten?"
 msgid "Do jars sync as well?"
 msgstr "Werden Töpfe ebenfalls synchronisiert?"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Do lending and repayments distort my monthly spending?"
+msgstr "Verfälschen Verleihen und Rückzahlungen meine Monatsausgaben?"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Do local-first apps support real-time collaboration?"
 msgstr "Unterstützen Local-First-Apps Echtzeit-Zusammenarbeit?"
@@ -7287,6 +7341,10 @@ msgstr "Funktioniert die Sperre, wenn mein Telefon gejailbreakt ist?"
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Does the parser run online?"
 msgstr "Läuft der Parser online?"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Does the person who owes me need Budgie too?"
+msgstr "Braucht die Person, die mir Geld schuldet, auch Budgie?"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Does the project have clear documentation about data handling?"
@@ -7795,6 +7853,10 @@ msgstr "Alles – immer"
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Everything above runs from a database on the device. Aeroplane mode changes nothing about what you can see or do."
 msgstr "Alles oben läuft aus einer Datenbank auf dem Gerät. Der Flugmodus ändert nichts daran, was du sehen oder tun kannst."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Everything else about debts, from contacts to debts in another currency, is on the <0>debt and loan tracking</0> page."
+msgstr "Alles Weitere zu Schulden, von Kontakten bis zu Schulden in einer anderen Währung, findest du auf der Seite <0>Schulden und Darlehen verfolgen</0>."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Everything runs on your phone after a one-time download"
@@ -8311,6 +8373,14 @@ msgstr "Für Indie-Entwickler und kleine Teams verändert dies die Wirtschaftlic
 msgid "For IT professionals who understand these tradeoffs, offline-first architecture offers a path forward. Your financial data deserves the same security posture you would apply to production credentials or customer data."
 msgstr "Für IT-Fachleute, die diese Kompromisse verstehen, bietet die Offline-First-Architektur einen Weg nach vorn. Ihre Finanzdaten verdienen die gleiche Sicherheitshaltung, die Sie auf Produktionszugangsdaten oder Kundendaten anwenden würden."
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "For money you borrowed it is the other way round: an expense is a repayment, an income means you borrowed more."
+msgstr "Bei geliehenem Geld ist es umgekehrt: Eine Ausgabe ist eine Rückzahlung, eine Einnahme heißt, dass du mehr geliehen hast."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "For money you lent, an attached income is a repayment, and an attached expense means you lent a bit more."
+msgstr "Bei verliehenem Geld ist eine verknüpfte Einnahme eine Rückzahlung, eine verknüpfte Ausgabe heißt, dass du noch etwas dazu verliehen hast."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "For more details on our security architecture, visit our security section. To see the complete source code and verify everything we have described, check out our open-source section."
 msgstr "Für weitere Details zu unserer Sicherheitsarchitektur besuchen Sie unseren [Sicherheitsbereich](/{lang}#security). Um den vollständigen Quellcode einzusehen und alles zu verifizieren, was wir beschrieben haben, schauen Sie sich unseren [Open-Source-Bereich](/{lang}#open-source) an."
@@ -8436,6 +8506,7 @@ msgstr "Kostenlos, kein Konto, kein Abonnement"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -8744,6 +8815,7 @@ msgstr "Positionen fließen zusammen mit Fiat-Konten in das Nettovermögen ein"
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -8763,6 +8835,10 @@ msgstr "Startbildschirm und Analysen rechnen automatisch in Ihre Basiswährung u
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt has been settled."
 msgstr "Home gruppiert Schulden nach Richtung: „Sie schulden“ und „Ihnen geschuldet“, jeweils mit eigener Zwischensumme und einem Balken für den Stand der Tilgung."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Home groups debts into two sections: “You owe” and “Owed to you”, each with its own subtotal. Every card shows the remainder out of the total, a progress bar and the percent settled. When a return date is less than a month away, the card counts down the days, and an overdue debt turns red."
+msgstr "Der Startbildschirm teilt Schulden in zwei Bereiche: „Sie schulden“ und „Ihnen geschuldet“, jeweils mit eigener Zwischensumme. Jede Karte zeigt den Rest von der Gesamtsumme, einen Fortschrittsbalken und den beglichenen Anteil in Prozent. Ist das Rückgabedatum weniger als einen Monat entfernt, zählt die Karte die Tage herunter, und eine überfällige Schuld wird rot."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
@@ -9115,6 +9191,10 @@ msgstr "So bewerten Sie den Datenschutz einer Budget-App"
 msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "So exportieren Sie Ihre Mint-Daten (bevor es zu spät ist)"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/metadata.ts
+msgid "How to track money you lent to friends and money you borrowed: open a debt, attach repayments, and see who still owes whom at a glance."
+msgstr "Geld an Freunde verliehen oder selbst geliehen? Schuld anlegen, Rückzahlungen verknüpfen und auf einen Blick sehen, wer wem noch etwas schuldet."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your Data Stays on Your Device"
 msgstr "Wie Ihre Daten auf Ihrem Gerät bleiben"
@@ -9122,6 +9202,11 @@ msgstr "Wie Ihre Daten auf Ihrem Gerät bleiben"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your PIN Protects Your Data"
 msgstr "Wie Ihre PIN Ihre Daten schützt"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/opengraph-image.tsx
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "how-to"
+msgstr "anleitung"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "I already had debts before this change — do I need to redo anything?"
@@ -9155,9 +9240,17 @@ msgstr "Wenn beim Export eine PIN festgelegt war, ja — das Backup ist eine Kop
 msgid "If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect."
 msgstr "Sollte eine Bestimmung dieser Bedingungen als nicht durchsetzbar oder ungültig befunden werden, wird diese Bestimmung nur im notwendigen Mindestmaß eingeschränkt oder aufgehoben, sodass die übrigen Bedingungen in vollem Umfang in Kraft bleiben."
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "If more comes back than was owed, the debt does not go negative. The remainder stops at zero and a separate “Overpaid” line shows the extra, so you can settle up with a clear figure."
+msgstr "Kommt mehr zurück als geschuldet, rutscht die Schuld nicht ins Minus. Der Rest bleibt bei null stehen, und eine eigene Zeile „Überzahlt“ zeigt den Überschuss, damit ihr mit einer klaren Zahl abrechnen könnt."
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If negotiation fails, binding arbitration in accordance with Austrian law"
 msgstr "Bei gescheiterter Verhandlung ein verbindliches Schiedsverfahren nach österreichischem Recht"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "If part of an older debt has already been paid back, enter that part in the “Already returned” field (“Already repaid” for money you borrowed) and Budgie starts from the real remainder."
+msgstr "Wurde ein Teil einer älteren Schuld schon zurückgezahlt, trag ihn im Feld „Bereits erhalten“ ein (bei geliehenem Geld „Bereits zurückgezahlt“), dann startet Budgie mit dem tatsächlichen Rest."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "If privacy matters to you, we built Budgie for exactly that reason. No servers storing your transactions. No third parties with access to your spending habits. Just you and your budget, on your device."
@@ -9365,6 +9458,10 @@ msgstr "In einer Ära, in der Datenlecks und Datenschutzverletzungen täglich Sc
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "In an offline-first application:"
 msgstr "In einer Offline-First-Anwendung:"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "In Budgie that place is a debt account. It works in both directions: money you lent and money you borrowed. The money itself still moves through your real accounts, while the debt keeps the score: how much in total, how much has been returned, and how much is left."
+msgstr "In Budgie ist dieser Ort ein Schuldenkonto. Es funktioniert in beide Richtungen: für Geld, das du verliehen hast, und für Geld, das du dir geliehen hast. Das Geld selbst fließt weiter über deine echten Konten, die Schuld führt nur Buch: wie viel insgesamt, wie viel zurückgekommen ist und wie viel noch offen ist."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "In connection with a merger, acquisition, or sale of assets (users will be notified)"
@@ -9859,6 +9956,10 @@ msgstr "Lernkurve für die Methodik"
 msgid "Learning up to date"
 msgstr "Lernen aktuell"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Leave the field empty and the debt stays a plain record with no transaction behind it. That suits old debts whose money moved before you started using the app."
+msgstr "Lässt du das Feld leer, bleibt die Schuld ein einfacher Eintrag ohne Transaktion dahinter. Das passt für alte Schulden, deren Geld geflossen ist, bevor du die App genutzt hast."
+
 #: src/app/[lang]/legal/layout.tsx
 #: src/generic/component/footer/footer.tsx
 msgid "Legal"
@@ -9867,6 +9968,11 @@ msgstr "Rechtliches"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Legal Assessment"
 msgstr "Rechtliche Bewertung"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/opengraph-image.tsx
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "lending"
+msgstr "verleihen"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Lending and repayments are categorized Lending or Borrowing automatically, and count toward your monthly spending and income"
@@ -10579,6 +10685,10 @@ msgstr "Geld raus, Geld rein – erstklassige Konten mit Zielsalden, Rückgabeda
 msgid "Money owed to you"
 msgstr "Geld, das Ihnen geschuldet wird"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Money you lend to friends rarely comes back in one piece. It returns in parts, by card transfer, in cash, sometimes with a little extra. A note on your phone does not add up those parts, and your bank statement shows only a transfer to a person, not what it was for. To know who owes you, every loan and every repayment has to land in one place."
+msgstr "Geld, das du Freunden leihst, kommt selten auf einmal zurück. Es kommt in Teilen, per Überweisung, in bar, manchmal mit einem kleinen Extra. Eine Notiz im Handy rechnet diese Teile nicht zusammen, und der Kontoauszug zeigt nur eine Überweisung an eine Person, nicht wofür sie war. Um zu wissen, wer dir etwas schuldet, muss jedes Darlehen und jede Rückzahlung an einem Ort landen."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Money you owe"
 msgstr "Geld, das Sie schulden"
@@ -10875,6 +10985,10 @@ msgstr "MUSEUMSQUARTIER"
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "My friend repaid me by bank transfer — do I have to re-enter it?"
 msgstr "Ein Freund hat mir das Geld per Überweisung zurückgezahlt — muss ich das erneut erfassen?"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Name the debt, choose its currency and enter the amount in “Target balance”."
+msgstr "Gib der Schuld einen Namen, wähle die Währung und trag den Betrag bei „Zielsaldo“ ein."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Named by its destination account"
@@ -11270,6 +11384,10 @@ msgstr "Kein weißer Blitz beim Kaltstart – nativer Splash respektiert das OS-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "no-server"
 msgstr "ohne Server"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "No. A debt is your own record. The contact you pick is just a name from your phone so you can see who the debt is with; nothing is sent to that person."
+msgstr "Nein. Eine Schuld ist dein eigener Eintrag. Der gewählte Kontakt ist nur ein Name aus deinem Handy, damit du siehst, mit wem die Schuld besteht; an die Person wird nichts gesendet."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable."
@@ -11899,6 +12017,10 @@ msgstr "Ausgaben-Tracker auf dem Gerät"
 msgid "on-device-ai"
 msgstr "KI auf dem Gerät"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Once the last repayment is attached, the debt screen switches to a paid-off view: a green check, “Returned” or “Repaid” as the headline, the amount paid back and the total. The debt then disappears from Home on its own, so settled loans do not clutter the list."
+msgstr "Sobald die letzte Rückzahlung verknüpft ist, wechselt der Schuldenbildschirm in die Ansicht für erledigte Schulden: ein grüner Haken, „Erhalten“ oder „Zurückgezahlt“ als Überschrift, der zurückgezahlte Betrag und die Gesamtsumme. Danach verschwindet die Schuld von selbst vom Startbildschirm, damit erledigte Darlehen die Liste nicht verstopfen."
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Once the refund is linked to the purchase in Budgie, the plan closes at the amount you already paid and no longer shows a next payment."
 msgstr "Sobald die Erstattung in Budgie mit dem Kauf verknüpft ist, schließt der Plan beim bereits gezahlten Betrag und zeigt keine nächste Zahlung mehr."
@@ -12256,6 +12378,10 @@ msgstr "Nur wenn nötig. Namen in lateinischer Schrift überspringen die Überse
 msgid "Open a bank-synced account and tap Re-sync. Picking a window moves that account's sync cursor back to the date you chose, so the next sync starts from there instead of walking the whole history again."
 msgstr "Öffne ein bankensynchronisiertes Konto und tippe auf Neu synchronisieren. Ein Zeitfenster setzt den Sync-Zeiger dieses Kontos auf das gewählte Datum zurück, sodass die nächste Synchronisierung dort beginnt, statt den gesamten Verlauf erneut durchzugehen."
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Open a debt and the big number at the top is what is still due: “To receive” for money you lent, “To repay” for money you borrowed. Next to it is the share already settled in percent, and below are two lines: how much has come back and how much was lent or borrowed in total. Underneath you see every transaction linked to this debt."
+msgstr "Öffne eine Schuld: Die große Zahl oben ist das, was noch offen ist, „Zu erhalten“ bei verliehenem Geld, „Zu zahlen“ bei geliehenem. Daneben steht der bereits beglichene Anteil in Prozent, darunter zwei Zeilen: wie viel zurückgekommen ist und wie viel insgesamt verliehen oder geliehen wurde. Weiter unten siehst du jede Transaktion, die mit dieser Schuld verknüpft ist."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Open a debt to see what is still to receive, how much has come back and the total you lent, against the target balance and return date."
 msgstr "Öffnen Sie eine Schuld, um zu sehen, was noch zu erhalten ist, wie viel zurückgekommen ist und wie viel Sie insgesamt verliehen haben — im Vergleich zum Zielsaldo und zum Rückgabedatum."
@@ -12467,6 +12593,10 @@ msgstr "Optionale Spalten für MCC, Kommentar und Externe ID bringen die Details
 #: src/app/[lang]/privacy/page.tsx
 msgid "Optional, direct API tokens"
 msgstr "Optional, direkte API-Token"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Optionally pick a person from your phone contacts and set an expected return date."
+msgstr "Wähle bei Bedarf eine Person aus deinen Kontakten und setze ein erwartetes Rückgabedatum."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Options include:"
@@ -12729,6 +12859,10 @@ msgstr "Eine auswählen, und die gesamte Oberfläche rendert sich sofort neu —
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Pick the destination account"
 msgstr "Zielkonto auswählen"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Pick the direction: “Lent” when you gave money, “Borrowed” when you received it."
+msgstr "Wähle die Richtung: „Verliehen“, wenn du Geld gegeben hast, „Geliehen“, wenn du es bekommen hast."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Pick the expense and convert. The refund stops standing on its own: it attaches to that purchase, the expense is marked Refunded, and analytics counts the purchase net of what came back — under its original category, not as new income. Tap Revert on the refunded transaction to pull the two rows apart again."
@@ -13260,6 +13394,10 @@ msgstr "Öffentlicher Quellcode lebt von Community-Beteiligung. Wenn Sie zu Budg
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Published audit reports from recognized security firms"
 msgstr "Veröffentlichte Auditberichte von anerkannten Sicherheitsfirmen"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Purchases you pay off in parts also appear under “You owe”. They have their own payment schedule, covered in <0>installment tracking</0>."
+msgstr "Käufe, die du in Raten abbezahlst, erscheinen ebenfalls unter „Sie schulden“. Sie haben einen eigenen Zahlungsplan, mehr dazu unter <0>Ratenzahlungen verfolgen</0>."
 
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
 msgid "quick add"
@@ -14702,6 +14840,10 @@ msgstr "Bleibt bei langen Transaktionsverläufen schnell, vollständig auf dem G
 msgid "Steep learning curve"
 msgstr "Steile Lernkurve"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Step 1: create a debt and choose its direction"
+msgstr "Schritt 1: Schuld anlegen und Richtung wählen"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 1: Export Your Transaction History"
 msgstr "Schritt 1: Exportieren Sie Ihre Transaktionshistorie"
@@ -14714,9 +14856,17 @@ msgstr "Schritt 1: Exportieren Sie Ihre YNAB-Daten"
 msgid "Step 2: Set Up Your Accounts in Budgie"
 msgstr "Schritt 2: Richten Sie Ihre Konten in Budgie ein"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Step 2: show where the money came from"
+msgstr "Schritt 2: Zeig, woher das Geld kam"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 2: Understand What You’re Moving"
 msgstr "Schritt 2: Verstehen Sie, was Sie übertragen"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Step 3: attach repayments as they arrive"
+msgstr "Schritt 3: Rückzahlungen verknüpfen, sobald sie eingehen"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 3: Choose Your Migration Path"
@@ -14725,6 +14875,10 @@ msgstr "Schritt 3: Wählen Sie Ihren Migrationspfad"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 3: Import Your Transactions"
 msgstr "Schritt 3: Importieren Sie Ihre Transaktionen"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Step 4: see how much is left"
+msgstr "Schritt 4: Sieh, wie viel noch offen ist"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 4: Set Up Categories and Recurring Transactions"
@@ -15098,6 +15252,10 @@ msgstr "Mikrofon antippen und sprechen"
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap the missing categories pill above your transaction list, or Uncategorized in Analytics. The Categorize inbox groups every uncategorized transaction by merchant, so one tap on a suggestion categorizes the whole group, and a single button accepts every confident suggestion in one go."
 msgstr "Tippen Sie auf den Hinweis zu fehlenden Kategorien über Ihrer Umsatzliste oder in der Analyse auf „Nicht kategorisiert“. Der Kategorisieren-Bildschirm gruppiert alle nicht kategorisierten Umsätze nach Händler, sodass ein Tippen auf einen Vorschlag die ganze Gruppe kategorisiert und eine einzige Schaltfläche alle sicheren Vorschläge auf einmal übernimmt."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Tap the plus button, choose “Account” and then “Debt Account”."
+msgstr "Tippe auf die Plus-Taste, wähle „Konto“ und dann „Schuldenkonto“."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap to open the inbox"
@@ -15885,6 +16043,10 @@ msgstr "Die Aufnahmetaste zeigt einen Fortschrittsring, während der einmalige D
 msgid "The remainder counts down"
 msgstr "Der Rest zählt herunter"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "The remainder stops at zero, the debt counts as settled, and a separate “Overpaid” line shows the extra amount."
+msgstr "Der Rest bleibt bei null stehen, die Schuld gilt als beglichen, und eine eigene Zeile „Überzahlt“ zeigt den Überschuss."
+
 #: src/app/[lang]/open-source/page.tsx
 msgid "The repository includes the full mobile app, the on-device AI layer, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
 msgstr "Das Repository enthält die vollständige mobile App, die On-Device-KI-Schicht, das Contracts-Paket und diese Landingpage. Nichts ist hinter einem proprietären SDK oder einer geschlossenen Binärdatei verborgen."
@@ -15913,6 +16075,10 @@ msgstr "Der Regeln-Bildschirm bietet eine gewichtete Suche, die jede Bedingung, 
 msgid "The Rules screen shows what you decided, rule by rule: the conditions on top — Title contains “Spotify” and Type equals EXPENSE — and under them the category and the tag the match sets. A condition can also read the merchant code, the amount, the account or the import source, and every rule has its own switch, so turning one off never means deleting it."
 msgstr "Der Regelbildschirm zeigt, was du entschieden hast, Regel für Regel: oben die Bedingungen — Titel enthält „Spotify“ und Typ gleich EXPENSE — und darunter die Kategorie und das Tag, die der Treffer setzt. Eine Bedingung kann auch den Händlercode, den Betrag, das Konto oder die Importquelle lesen, und jede Regel hat ihren eigenen Schalter: Ausschalten heißt nie löschen."
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "The same action sits in the menu on the transaction’s own screen. The picker lists only your debts, each with its total, so it is hard to pick the wrong one."
+msgstr "Dieselbe Aktion findest du im Menü auf dem Bildschirm der Transaktion selbst. Die Auswahl zeigt nur deine Schulden, jeweils mit Gesamtsumme, sodass du dich kaum vertun kannst."
+
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "The same app, five languages deep"
 msgstr "Dieselbe App, fünf Sprachen tief"
@@ -15925,6 +16091,10 @@ msgstr "Derselbe Budgie-Kategorisieren-Bildschirm mit Fortschritt und der Schalt
 msgid "The same Budgie Missing categories list with its first uncategorised row ready to open"
 msgstr "Dieselbe Budgie-Liste „Fehlende Kategorien“, deren erste Zeile ohne Kategorie zum Öffnen bereitsteht"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "The same form has a “From account” field (“To account” for a borrowed debt). Choose the card or cash wallet the money actually left or arrived in, and Budgie records a real expense or income on it, filed under the Lending or Borrowing category. Your balance stays correct, and that month’s statistics show exactly where the money went."
+msgstr "Im selben Formular gibt es das Feld „Von Konto“ (bei einer geliehenen Schuld „Auf Konto“). Wähle die Karte oder das Bargeld, von dem das Geld wirklich abging oder auf dem es ankam, und Budgie bucht dort eine echte Ausgabe oder Einnahme in der Kategorie „Verliehenes Geld“ oder „Geliehenes Geld“. Dein Saldo stimmt, und die Statistik des Monats zeigt genau, wohin das Geld ging."
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
 msgstr "Derselbe Abgleich läuft zwischen zwei Banken und zwischen einer Karte und einem Ihrer Töpfe: Beide Seiten werden über die Gegen-IBAN und den Wechselkurs erkannt und dann zu einer einzigen Überweisung zusammengeführt – keine Doppelzählung in Ihrer Ausgabenstatistik, keine manuelle Nacharbeit."
@@ -15932,6 +16102,10 @@ msgstr "Derselbe Abgleich läuft zwischen zwei Banken und zwischen einer Karte u
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
 msgstr "Dasselbe Popover-Menü öffnet sich auf jeder Plattform, verankert an der Transaktionskarte. Es gibt kein Modal, kein Vollbildformular und keinen zusätzlichen Navigationsschritt für die gängigen Aktionen."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "The same screen has an “Archive” button. An archived debt also drops out of account pickers and totals, keeps its history, and waits under Settings → Archived Accounts, where you can restore it. More on this in <0>account management</0>."
+msgstr "Auf demselben Bildschirm gibt es die Schaltfläche „Archivieren“. Eine archivierte Schuld verschwindet auch aus der Kontoauswahl und den Summen, behält ihren Verlauf und wartet unter Einstellungen → „Archivierte Konten“, wo du sie wiederherstellen kannst. Mehr dazu unter <0>Kontoverwaltung</0>."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
@@ -16167,6 +16341,10 @@ msgstr "Dann begann der Niedergang."
 msgid "There are no private repositories containing the “real” code that handles your data differently. What you see is what runs on your device."
 msgstr "Es gibt keine privaten Repositories, die den \"echten\" Code enthalten, der Ihre Daten anders verarbeitet. Was Sie sehen, ist das, was auf Ihrem Gerät läuft."
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "There are no push reminders. The date shows on the debt card instead: within the last month it counts down the days, and once it passes the card shows how many days the debt is overdue."
+msgstr "Push-Erinnerungen gibt es nicht. Stattdessen steht das Datum auf der Schuldenkarte: Im letzten Monat davor zählt sie die Tage herunter, danach zeigt sie, wie viele Tage die Schuld überfällig ist."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "There is no background sync silently uploading your data. There is no analytics event recording what you spent money on. The operation begins and ends on your device."
 msgstr "Es gibt keine Hintergrundsynchronisierung, die stillschweigend Ihre Daten hochlädt. Es gibt kein Analyseereignis, das aufzeichnet, wofür Sie Geld ausgegeben haben. Die Operation beginnt und endet auf Ihrem Gerät."
@@ -16206,6 +16384,10 @@ msgstr "Das sind Einnahmen- oder Ausgabentransaktionen ohne Kategorie. Budgie ne
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "They are your own spending on comparable transactions — the same account, the same category, and the same merchant title — across the six months leading up to the one you are looking at, with a total and an average underneath."
 msgstr "Es sind Ihre eigenen Ausgaben für vergleichbare Transaktionen — dasselbe Konto, dieselbe Kategorie und derselbe Händlername — über die sechs Monate vor der, die Sie gerade ansehen, mit einer Summe und einem Durchschnitt darunter."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "They count as real money movements: lending is an expense in the month you gave the money, a repayment is income in the month it came back. Both are filed under Lending or Borrowing, so you can tell them apart from everyday spending."
+msgstr "Sie zählen als echte Geldbewegungen: Verleihen ist eine Ausgabe in dem Monat, in dem du das Geld gegeben hast, eine Rückzahlung ist eine Einnahme in dem Monat, in dem es zurückkam. Beides landet in „Verliehenes Geld“ oder „Geliehenes Geld“, sodass du es von alltäglichen Ausgaben unterscheiden kannst."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "They fetch your transactions and store them"
@@ -17491,6 +17673,10 @@ msgstr "Was passiert, wenn ich den Artikel zurückgebe?"
 msgid "What happens if someone picks up my unlocked phone?"
 msgstr "Was, wenn jemand mein entsperrtes Smartphone nimmt?"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "What happens if they return more than they owed?"
+msgstr "Was passiert, wenn mehr zurückkommt als geschuldet?"
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What happens to AI suggestions if I am offline?"
 msgstr "Was passiert mit KI-Vorschlägen, wenn ich offline bin?"
@@ -17872,6 +18058,10 @@ msgstr "Wenn ein Unternehmen schließt, verschwinden die Daten nicht unbedingt. 
 msgid "When a fintech company is acquired, user data is typically the most valuable asset. Consider what happens:"
 msgstr "Wenn ein Fintech-Unternehmen übernommen wird, sind Nutzerdaten typischerweise der wertvollste Vermögenswert. Bedenken Sie, was passiert:"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "When a friend sends part of the money back, it lands in your account as ordinary income. You do not need to enter it twice: long-press that transaction in the list and choose “Attach debt”, then pick the debt it belongs to."
+msgstr "Schickt dir ein Freund einen Teil des Geldes zurück, landet er als normale Einnahme auf deinem Konto. Du musst ihn nicht doppelt erfassen: Halte die Transaktion in der Liste gedrückt, wähle „Schuld verknüpfen“ und dann die Schuld, zu der sie gehört."
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "When a merchant refunds a purchase, the money reappears on your card as a positive transaction. Most expense trackers record it as income — which is technically accurate in a cash-flow sense but misleading for actual income analysis."
 msgstr "Wenn ein Händler einen Kauf erstattet, erscheint das Geld auf deiner Karte als positive Transaktion. Die meisten Ausgabentracker erfassen das als Einnahme – im Cashflow-Sinn technisch korrekt, für die echte Einkommensanalyse aber irreführend."
@@ -17919,6 +18109,10 @@ msgstr "Wenn der Quellcode öffentlich ist, kann jeder mit der relevanten Expert
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
 msgstr "Wenn die Konten unterschiedliche Währungen führen, erscheint unter dem eingegebenen Betrag, was auf der anderen Seite ankommt. Die Pille zeigt, welche Seite du steuerst — tippe darauf, um stattdessen den Empfangsbetrag einzugeben — und der Kurs, der das Paar ergeben hat, wird mit der Überweisung gespeichert."
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "When the debt is paid off"
+msgstr "Wenn die Schuld beglichen ist"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "When the displayed balance does not match reality — a cash withdrawal you forgot to log, a starting balance you estimated, or a bank figure your history cannot reproduce. Type the true number and Budgie books the difference."
@@ -18196,6 +18390,19 @@ msgstr "Solange Sie im Minus sind, zeigt eine Anzeige die verbleibenden Monate a
 msgid "Who has access to it"
 msgstr "Wer darauf Zugriff hat"
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Who owes me? How to track money you lent and borrowed"
+msgstr "Wer schuldet mir Geld? So behältst du Verliehenes und Geliehenes im Blick"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/metadata.ts
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/opengraph-image.tsx
+msgid "Who Owes Me? Track Money You Lent and Borrowed"
+msgstr "Wer schuldet mir Geld? Leihen und Borgen im Blick"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Who owes whom, right on Home"
+msgstr "Wer wem was schuldet, direkt auf dem Startbildschirm"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Why a backup file beats a vendor backup"
 msgstr "Warum eine Backup-Datei ein Anbieter-Backup übertrifft"
@@ -18277,6 +18484,10 @@ msgstr "Warum Credit Karma keine Lösung ist"
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Why CSV is the universal escape hatch"
 msgstr "Warum CSV die universelle Lösung ist"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Why debts between people get lost"
+msgstr "Warum Schulden unter Freunden verloren gehen"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Why deposits need their own account type"
@@ -18540,6 +18751,10 @@ msgstr "Werden neue Umsätze desselben Händlers automatisch kategorisiert?"
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Will old (already-imported) transactions get re-matched?"
 msgstr "Werden alte (bereits importierte) Transaktionen erneut abgeglichen?"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Will the app remind me about the return date?"
+msgstr "Erinnert mich die App an das Rückgabedatum?"
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Will the parser get my IBAN right?"
@@ -18893,6 +19108,10 @@ msgstr "Ja. Diagrammpaletten werden für die Lesbarkeit neu berechnet – Smarag
 msgid "Yes. CRDTs were specifically designed to enable real-time collaboration without central coordination. Applications like Figma and Linear demonstrate that local-first architecture can support sophisticated collaborative features. The key difference is that collaboration happens through peer synchronization rather than through a central server."
 msgstr "Ja. CRDTs wurden speziell entwickelt, um Echtzeit-Zusammenarbeit ohne zentrale Koordination zu ermöglichen. Anwendungen wie Figma und Linear demonstrieren, dass Local-First-Architektur ausgefeilte Kollaborationsfunktionen unterstützen kann. Der wesentliche Unterschied ist, dass Zusammenarbeit durch Peer-Synchronisation stattfindet, nicht über einen zentralen Server."
 
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "Yes. Create the debt without choosing an account: enter the total and what has already come back, and Budgie tracks only the remainder, without inventing past transactions."
+msgstr "Ja. Leg die Schuld an, ohne ein Konto zu wählen: Trag die Gesamtsumme und das bereits Zurückgezahlte ein, und Budgie verfolgt nur den Rest, ohne vergangene Transaktionen zu erfinden."
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Yes. Debt is a dedicated account type with explicit “I owe” / “owes me” direction. See Debt & Loan Tracking for details."
 msgstr "Ja. Schulden ist ein dedizierter Kontotyp mit expliziter Richtung „Ich schulde“ / „schuldet mir“. Weitere Details unter Schulden- & Kreditverfolgung."
@@ -19225,6 +19444,10 @@ msgstr "Sie haben bezüglich Ihrer Daten die folgenden Rechte:"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You have the right to make the contribution and grant us the rights to use it"
 msgstr "Sie berechtigt sind, den Beitrag zu leisten und uns die Rechte zu seiner Nutzung einzuräumen"
+
+#: src/app/[lang]/blog/track-money-you-lent-and-borrowed/page.tsx
+msgid "You lent a friend money for a ticket, borrowed from your parents for a deposit, and a month later nobody remembers the exact amounts. This guide shows how to keep track of debts in Budgie: who owes you, whom you owe, how much has already come back, and what is still left."
+msgstr "Du hast einem Freund Geld für ein Ticket geliehen, dir von deinen Eltern etwas für die Kaution geborgt, und einen Monat später weiß keiner mehr die genauen Beträge. Diese Anleitung zeigt, wie du Schulden in Budgie im Blick behältst: wer dir etwas schuldet, wem du etwas schuldest, wie viel schon zurückkam und was noch offen ist."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You may not assign or transfer these Terms or your rights hereunder, in whole or in part, without our prior written consent. We may assign these Terms at any time without notice."
