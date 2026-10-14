@@ -2505,6 +2505,10 @@ msgstr "A source of crashes around backup restore, PIN changes, and resetting th
 msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
 msgstr "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "A star in the tag picker shows which tag is the main one"
+msgstr "A star in the tag picker shows which tag is the main one"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "A steady list with pinned section headers showing each count and total"
 msgstr "A steady list with pinned section headers showing each count and total"
@@ -2680,6 +2684,10 @@ msgstr "Acknowledgment"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Acquisition Scenarios"
 msgstr "Acquisition Scenarios"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Actions belong on the list"
+msgstr "Actions belong on the list"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Actions that set a category, add a tag, or convert the transaction into a transfer"
@@ -2987,10 +2995,6 @@ msgstr "Always. Every transaction lets you accept, edit, or reject the suggestio
 msgid "Always. Imported transactions are normal Budgie transactions — edit, split, tag, or convert to transfer just like manual entries."
 msgstr "Always. Imported transactions are normal Budgie transactions — edit, split, tag, or convert to transfer just like manual entries."
 
-#: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they apply."
-msgstr "Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they apply."
-
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Ambiguous matches stay as two untouched rows instead of a silent guess"
 msgstr "Ambiguous matches stay as two untouched rows instead of a silent guess"
@@ -3049,8 +3053,8 @@ msgid "An expense pairs with an income when the counter-IBAN lines up, or when t
 msgstr "An expense pairs with an income when the counter-IBAN lines up, or when the amounts match — same currency, or an implied exchange rate inside a tolerance band — and both legs fall within twelve hours of each other. The match becomes one transfer carrying a debit and a credit entry, so it stops counting as spending. Pairs Budgie is not sure about are left alone as two rows rather than guessed at."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet picks the right account, the most-likely category, and the current date by default — typically two taps to a saved transaction."
-msgstr "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet picks the right account, the most-likely category, and the current date by default — typically two taps to a saved transaction."
+msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet starts with your account and the current date, and suggests a category you can accept with one tap."
+msgstr "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet starts with your account and the current date, and suggests a category you can accept with one tap."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "An explicit empty state, “No sync repairs found”, when there is nothing to fix"
@@ -3713,10 +3717,6 @@ msgstr "Bank synchronization data"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/opengraph-image.tsx
 msgid "bank-data-safety"
 msgstr "bank-data-safety"
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Bank-fee entries are included in category analytics even when attached to transfers"
-msgstr "Bank-fee entries are included in category analytics even when attached to transfers"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/metadata.ts
@@ -5006,10 +5006,6 @@ msgstr "Budgie transaction list with a yellow missing categories pill above the 
 msgid "Budgie transactions list showing 81 transactions loaded with no network request in flight"
 msgstr "Budgie transactions list showing 81 transactions loaded with no network request in flight"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
-msgstr "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
-
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-overview-section/bank-fee-tracking-overview-section.tsx
 msgid "Budgie treats the main movement and the bank fee separately. The transfer stays a transfer. The fee gets its own amount and category, so your reports show what the bank actually charged you."
 msgstr "Budgie treats the main movement and the bank fee separately. The transfer stays a transfer. The fee gets its own amount and category, so your reports show what the bank actually charged you."
@@ -5232,8 +5228,8 @@ msgid "California Consumer Privacy Act (CCPA) - United States"
 msgstr "California Consumer Privacy Act (CCPA) - United States"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Can a transaction have no primary tag?"
-msgstr "Can a transaction have no primary tag?"
+msgid "Can a transaction have several primary tags?"
+msgstr "Can a transaction have several primary tags?"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Can AI categorize the missing transactions?"
@@ -5282,10 +5278,6 @@ msgstr "Can I add transactions without an internet connection?"
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Can I auto-link transfers from my bank?"
 msgstr "Can I auto-link transfers from my bank?"
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Can I compare months?"
-msgstr "Can I compare months?"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Can I contribute to Budgie?"
@@ -5391,10 +5383,6 @@ msgstr "Can I re-sync transactions from before bank-sync was enabled?"
 msgid "Can I record buy / sell history?"
 msgstr "Can I record buy / sell history?"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Can I refund only part of an expense?"
-msgstr "Can I refund only part of an expense?"
-
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Can I rename categories without losing data?"
 msgstr "Can I rename categories without losing data?"
@@ -5435,6 +5423,10 @@ msgstr "Can I self-host Budgie?"
 msgid "Can I spend from a deposit account?"
 msgstr "Can I spend from a deposit account?"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Can I switch to another month?"
+msgstr "Can I switch to another month?"
+
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Can I sync my bank without giving Budgie my bank login?"
 msgstr "Can I sync my bank without giving Budgie my bank login?"
@@ -5468,17 +5460,9 @@ msgstr "Can I turn AI off?"
 msgid "Can I undo a bulk categorization?"
 msgstr "Can I undo a bulk categorization?"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Can I undo a refund link?"
-msgstr "Can I undo a refund link?"
-
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Can I undo a transfer?"
 msgstr "Can I undo a transfer?"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Can I undo the conversion?"
-msgstr "Can I undo the conversion?"
 
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Can I use bank sync and CSV import together?"
@@ -5655,12 +5639,16 @@ msgid "Category & Tag Translation, On-Device — Budgie"
 msgstr "Category & Tag Translation, On-Device — Budgie"
 
 #: src/app/[lang]/features/spending-analytics/metadata.ts
-msgid "Category and tag breakdown charts, monthly trends, and balance timelines — with drill-down from any chart slice to the underlying transactions. Analytics that find your gaps."
-msgstr "Category and tag breakdown charts, monthly trends, and balance timelines — with drill-down from any chart slice to the underlying transactions. Analytics that find your gaps."
+msgid "Category and tag breakdowns for any period — drill into any row."
+msgstr "Category and tag breakdowns for any period — drill into any row."
 
 #: src/app/[lang]/page.tsx
 msgid "Category and tag breakdowns for any period, each one drilling into its transactions."
 msgstr "Category and tag breakdowns for any period, each one drilling into its transactions."
+
+#: src/app/[lang]/features/spending-analytics/metadata.ts
+msgid "Category and tag breakdowns for any period, with drill-down from any row to its transactions. Analytics that find your gaps."
+msgstr "Category and tag breakdowns for any period, with drill-down from any row to its transactions. Analytics that find your gaps."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
@@ -5673,10 +5661,6 @@ msgstr "Category and tag names in Cyrillic, Greek, or Arabic get an English form
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category and tag translation for Cyrillic, Greek, and Arabic names"
 msgstr "Category and tag translation for Cyrillic, Greek, and Arabic names"
-
-#: src/app/[lang]/features/spending-analytics/metadata.ts
-msgid "Category breakdown, tag breakdown, monthly trends — drill into any chart slice."
-msgstr "Category breakdown, tag breakdown, monthly trends — drill into any chart slice."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Category chosen on device"
@@ -5829,10 +5813,6 @@ msgstr "Classic and modern PDF formats — full statement import in seconds."
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "Classic and modern PDF formats supported."
 msgstr "Classic and modern PDF formats supported."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Clean income totals — refund income links back to the expense instead of counting as earnings"
-msgstr "Clean income totals — refund income links back to the expense instead of counting as earnings"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Clean, focused interface"
@@ -6002,10 +5982,6 @@ msgstr "Coin bought, amount paid, rate"
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Combined with the date presets it turns \"where did the money go last month?\" into a two-chip question: Last Month plus everything above a threshold, and the list in front of you is the answer."
 msgstr "Combined with the date presets it turns \"where did the money go last month?\" into a two-chip question: Last Month plus everything above a threshold, and the list in front of you is the answer."
-
-#: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Comments grow vertically up to two lines so receipts and references fit without truncation"
-msgstr "Comments grow vertically up to two lines so receipts and references fit without truncation"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Commercial use except for competing SaaS offerings"
@@ -6233,8 +6209,8 @@ msgid "Contains malicious code or harmful components"
 msgstr "Contains malicious code or harmful components"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Context-aware menu — actions adapt to transaction type so you never see an invalid option"
-msgstr "Context-aware menu — actions adapt to transaction type so you never see an invalid option"
+msgid "Context-aware menu — actions adapt to the transaction so you never see an option that does not apply"
+msgstr "Context-aware menu — actions adapt to the transaction so you never see an option that does not apply"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Continue using YNAB for one month"
@@ -6248,10 +6224,6 @@ msgstr "Contributing is straightforward: open an issue, discuss the change, and 
 msgid "Controversial changes require broader consensus"
 msgstr "Controversial changes require broader consensus"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Convert a Transaction to a Transfer"
-msgstr "Convert a Transaction to a Transfer"
-
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Convert any expense or income to a transfer retroactively — no re-entry needed"
 msgstr "Convert any expense or income to a transfer retroactively — no re-entry needed"
@@ -6259,10 +6231,6 @@ msgstr "Convert any expense or income to a transfer retroactively — no re-entr
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Convert enables on selection"
 msgstr "Convert enables on selection"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Convert Income to Refund"
-msgstr "Convert Income to Refund"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Convert it to a transfer"
@@ -6316,10 +6284,6 @@ msgstr "Copyright © 2024-2026, Budgie"
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "Core Features"
 msgstr "Core Features"
-
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Corner-star badge on the transaction list — scan without opening rows"
-msgstr "Corner-star badge on the transaction list — scan without opening rows"
 
 #: src/app/[lang]/features/balance-adjustment/metadata.ts
 msgid "Correct an account balance without pretending it was income or an expense."
@@ -6425,14 +6389,6 @@ msgstr "Credit researchers in security advisories"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Crediting researchers who report valid vulnerabilities (with their permission)"
 msgstr "Crediting researchers who report valid vulnerabilities (with their permission)"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Cross-account manual search — find same-currency expenses even when the refund lands elsewhere"
-msgstr "Cross-account manual search — find same-currency expenses even when the refund lands elsewhere"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Cross-currency conversion supported — dual-amount input after destination pick"
-msgstr "Cross-currency conversion supported — dual-amount input after destination pick"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Cross-currency dual-amount display: pin send or receive, system computes the other"
@@ -7311,10 +7267,6 @@ msgstr "Does this work across two different banks?"
 msgid "Does this work for banks I import statements from?"
 msgstr "Does this work for banks I import statements from?"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Does this work for cross-currency?"
-msgstr "Does this work for cross-currency?"
-
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Does this work for income and transfers too?"
 msgstr "Does this work for income and transfers too?"
@@ -7328,8 +7280,8 @@ msgid "Does this work on iPad?"
 msgstr "Does this work on iPad?"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
-msgid "Does this work with the date filter presets?"
-msgstr "Does this work with the date filter presets?"
+msgid "Does this work with the date filter?"
+msgstr "Does this work with the date filter?"
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Does voice entry send audio to a server?"
@@ -7445,20 +7397,20 @@ msgid "Edit the deposit details"
 msgstr "Edit the deposit details"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
-msgstr "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
+msgid "Edit, convert to a transfer or refund, attach a debt or delete — whichever apply to that row. A plain tap only opens the row to read, so nothing changes by accident."
+msgstr "Edit, convert to a transfer or refund, attach a debt or delete — whichever apply to that row. A plain tap only opens the row to read, so nothing changes by accident."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Edit, convert to refund, convert to transfer, attach a debt, delete, or revert — every one of them starts from the list."
-msgstr "Edit, convert to refund, convert to transfer, attach a debt, delete, or revert — every one of them starts from the list."
+msgid "Edit, convert to refund, convert to transfer, start a deposit, pay in parts, attach a debt, delete, or revert — every one of them starts from the list, and each row shows only the ones that fit it."
+msgstr "Edit, convert to refund, convert to transfer, start a deposit, pay in parts, attach a debt, delete, or revert — every one of them starts from the list, and each row shows only the ones that fit it."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Edit, Convert to Refund, Convert to Transfer, Attach Debt, Delete, and Revert. The exact set depends on the transaction type — only income can become a refund, for example."
-msgstr "Edit, Convert to Refund, Convert to Transfer, Attach Debt, Delete, and Revert. The exact set depends on the transaction type — only income can become a refund, for example."
+msgid "Edit, Convert to Refund, Convert to Transfer, Start Deposit, Pay in parts, Attach Debt, Delete, and Revert. The exact set depends on the transaction — only income can become a refund, and Revert appears instead of Delete on merged or refunded rows."
+msgstr "Edit, Convert to Refund, Convert to Transfer, Start Deposit, Pay in parts, Attach Debt, Delete, and Revert. The exact set depends on the transaction — only income can become a refund, and Revert appears instead of Delete on merged or refunded rows."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Editing a transaction in most expense apps means tapping the row to open a detail screen, then tapping an edit button, then navigating form tabs, then saving, then going back. Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost five taps. Budgie surfaces all of them behind a single long-press gesture anchored to the transaction card itself."
-msgstr "Editing a transaction in most expense apps means tapping the row to open a detail screen, then tapping an edit button, then navigating form tabs, then saving, then going back. Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost five taps. Budgie surfaces all of them behind a single long-press gesture anchored to the transaction card itself."
+msgid "Editing a transaction in most expense apps means opening a detail screen, then an edit button, then a form. Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost that much. Budgie puts them behind a single long-press anchored to the transaction card itself."
+msgstr "Editing a transaction in most expense apps means opening a detail screen, then an edit button, then a form. Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost that much. Budgie puts them behind a single long-press anchored to the transaction card itself."
 
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 msgid "edits"
@@ -7684,8 +7636,8 @@ msgid "Every dependency in Budgie is evaluated for privacy implications before i
 msgstr "Every dependency in Budgie is evaluated for privacy implications before inclusion. We specifically avoid:"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving the screen."
-msgstr "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving the screen."
+msgid "Every entry is amount + account + category + tags + comment + date. Split an entry across categories right in the quick-entry form. Long-press any transaction in the list for a menu to edit, delete, convert to a transfer, or link income back to a refunded expense without leaving the screen."
+msgstr "Every entry is amount + account + category + tags + comment + date. Split an entry across categories right in the quick-entry form. Long-press any transaction in the list for a menu to edit, delete, convert to a transfer, or link income back to a refunded expense without leaving the screen."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to replace the whole batch and try again."
@@ -7861,13 +7813,8 @@ msgid "Expense Tracking"
 msgstr "Expense Tracking"
 
 #: src/app/[lang]/features/expense-tracking/metadata.ts
-#: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Expense Tracking, Reimagined"
-msgstr "Expense Tracking, Reimagined"
-
-#: src/app/[lang]/features/expense-tracking/metadata.ts
-msgid "Expense Tracking, Reimagined — Budgie"
-msgstr "Expense Tracking, Reimagined — Budgie"
+msgid "Expense Tracking App, Log in Seconds — Budgie"
+msgstr "Expense Tracking App, Log in Seconds — Budgie"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "expense-tracking"
@@ -8001,6 +7948,10 @@ msgstr "Familiar budgeting methodology"
 msgid "FAQ"
 msgstr "FAQ"
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Fast entry: account and date are pre-filled, and a suggested category is one tap away"
+msgstr "Fast entry: account and date are pre-filled, and a suggested category is one tap away"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Fast performance with large transaction histories"
 msgstr "Fast performance with large transaction histories"
@@ -8046,10 +7997,6 @@ msgstr "Features"
 msgid "Fee 0%"
 msgstr "Fee 0%"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Fee entries on the original transaction carry over to the transfer automatically"
-msgstr "Fee entries on the original transaction carry over to the transfer automatically"
-
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Fee pills keep the transaction list readable without hiding the cost"
 msgstr "Fee pills keep the transaction list readable without hiding the cost"
@@ -8057,6 +8004,10 @@ msgstr "Fee pills keep the transaction list readable without hiding the cost"
 #: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
 msgid "fees"
 msgstr "fees"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Fees on transfers count as spending in your fee category"
+msgstr "Fees on transfers count as spending in your fee category"
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Fees work on expenses, income, and transfers — not only card purchases"
@@ -8225,10 +8176,6 @@ msgstr "Five screens of the real app, in the order you actually meet them."
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Five screens: the press that opens the menu, the actions behind it, a transfer finished in one screen, and a refund linked to the purchase it reverses."
 msgstr "Five screens: the press that opens the menu, the actions behind it, a transfer finished in one screen, and a refund linked to the purchase it reverses."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Five taps is four taps too many"
-msgstr "Five taps is four taps too many"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
@@ -9662,6 +9609,10 @@ msgstr "It all happens on your phone"
 msgid "It builds on it. The pill still counts uncategorized transactions under your filters, the inbox groups them for fast triage, and the plain list is one tap away in the inbox header."
 msgstr "It builds on it. The pill still counts uncategorized transactions under your filters, the inbox groups them for fast triage, and the plain list is one tap away in the inbox header."
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "It decides which tag the list shows when a transaction has several. The row shows that tag as a chip with a count of the others, so you can scan a long list for #vacation or #shared without opening any row."
+msgstr "It decides which tag the list shows when a transaction has several. The row shows that tag as a chip with a count of the others, so you can scan a long list for #vacation or #shared without opening any row."
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "It doesn't delete anything. It rewrites a synced income or expense row into a transfer, pointing it at the closed card that received or sent it. That's a bigger change than a duplicate soft-delete, and unlike the soft-delete it has no one-tap undo."
 msgstr "It doesn't delete anything. It rewrites a synced income or expense row into a transfer, pointing it at the closed card that received or sent it. That's a bigger change than a duplicate soft-delete, and unlike the soft-delete it has no one-tap undo."
@@ -10028,13 +9979,18 @@ msgstr "local-llm"
 msgid "Locked when you are, current when it matters"
 msgstr "Locked when you are, current when it matters"
 
+#: src/app/[lang]/features/expense-tracking/metadata.ts
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Log Every Expense in Seconds"
+msgstr "Log Every Expense in Seconds"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
 msgstr "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
 
 #: src/app/[lang]/features/expense-tracking/metadata.ts
-msgid "Log expenses, income, and transfers in seconds. Budgie tracks every transaction on-device, opens each one in a read-only detail view, and shows six months of comparable spending before you edit."
-msgstr "Log expenses, income, and transfers in seconds. Budgie tracks every transaction on-device, opens each one in a read-only detail view, and shows six months of comparable spending before you edit."
+msgid "Log expenses, income, and transfers in seconds. Each transaction opens read-only with six months of comparable spending before you edit."
+msgstr "Log expenses, income, and transfers in seconds. Each transaction opens read-only with six months of comparable spending before you edit."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Log into YNAB on the web"
@@ -10053,20 +10009,20 @@ msgid "Long-press a PrivatBank account card on the home screen to jump straight 
 msgstr "Long-press a PrivatBank account card on the home screen to jump straight to the file picker for that account — pick a fresh export and Budgie merges it in, skipping anything already imported."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Long-press a tag chip on the card to rotate which one is primary. The choice persists across edits, and the badge stays through bank-sync re-imports."
-msgstr "Long-press a tag chip on the card to rotate which one is primary. The choice persists across edits, and the badge stays through bank-sync re-imports."
+msgid "Long-press a tag in the picker to make it the main one"
+msgstr "Long-press a tag in the picker to make it the main one"
 
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Long-press a tag chip on the transaction card. The tap rotates which of that transaction's tags is primary."
-msgstr "Long-press a tag chip on the transaction card. The tap rotates which of that transaction's tags is primary."
+#: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
+msgid "Long-press a transaction in Budgie for a menu: edit, convert to refund or transfer, attach a debt, delete, or revert — no edit form."
+msgstr "Long-press a transaction in Budgie for a menu: edit, convert to refund or transfer, attach a debt, delete, or revert — no edit form."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Long-press any row for context actions: edit, delete, split, convert to transfer, convert to refund"
-msgstr "Long-press any row for context actions: edit, delete, split, convert to transfer, convert to refund"
+msgid "Long-press any row for actions such as edit, delete, convert to transfer or refund, and attach a debt"
+msgstr "Long-press any row for actions such as edit, delete, convert to transfer or refund, and attach a debt"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Long-press any transaction card for a native context menu — edit, delete, split, convert to transfer, or convert income to a refund without opening the full edit form."
-msgstr "Long-press any transaction card for a native context menu — edit, delete, split, convert to transfer, or convert income to a refund without opening the full edit form."
+msgid "Long-press any transaction card for a menu — edit, delete, convert to a transfer, convert income to a refund, attach a debt and more, without opening the full edit form."
+msgstr "Long-press any transaction card for a menu — edit, delete, convert to a transfer, convert income to a refund, attach a debt and more, without opening the full edit form."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required."
@@ -10075,10 +10031,6 @@ msgstr "Long-press any transaction card to edit, convert to refund or transfer, 
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
 msgstr "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
-
-#: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
-msgid "Long-press any transaction in Budgie for a popover menu: edit, convert to refund, convert to transfer, attach a debt, delete, or revert. Two taps where the rest of the market needs five."
-msgstr "Long-press any transaction in Budgie for a popover menu: edit, convert to refund, convert to transfer, attach a debt, delete, or revert. Two taps where the rest of the market needs five."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Long-press for every action"
@@ -10092,10 +10044,6 @@ msgstr "Long-Press Quick Actions on Every Transaction"
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Long-press the transfer in the list and Edit or Delete. There is no second transaction to chase — editing or deleting the transfer moves both account balances back together."
 msgstr "Long-press the transfer in the list and Edit or Delete. There is no second transaction to chase — editing or deleting the transfer moves both account balances back together."
-
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Long-press to rotate which tag is primary — single gesture"
-msgstr "Long-press to rotate which tag is primary — single gesture"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Long-Term Data Requirements"
@@ -10202,10 +10150,6 @@ msgstr "Manual override is one tap. Open the consolidated transaction, choose Re
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Manual override is two taps in Settings. The theme switch is non-flickering on cold launch (no white-flash). Charts and accents recolor for legibility."
 msgstr "Manual override is two taps in Settings. The theme switch is non-flickering on cold launch (no white-flash). Charts and accents recolor for legibility."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and date so the closest refund target appears first."
-msgstr "Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and date so the closest refund target appears first."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Manual server snapshots"
@@ -10329,10 +10273,6 @@ msgstr "MCC is the universal merchant taxonomy banks already attach to every car
 msgid "MCC mapping pre-fills bank-synced transactions; AI suggestions cover manual ones"
 msgstr "MCC mapping pre-fills bank-synced transactions; AI suggestions cover manual ones"
 
-#: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries"
-msgstr "MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries"
-
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "MCC short and full description visible in the transaction edit form"
 msgstr "MCC short and full description visible in the transaction edit form"
@@ -10348,10 +10288,6 @@ msgstr "Merchant Category Code — the universal 4-digit code your bank attaches
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Merchant recognised locally"
 msgstr "Merchant recognised locally"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Merchant refunds arrive as positive income, but they usually reverse an earlier expense. Linking the income to that expense keeps income and spending analytics honest."
-msgstr "Merchant refunds arrive as positive income, but they usually reverse an earlier expense. Linking the income to that expense keeps income and spending analytics honest."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/opengraph-image.tsx
 msgid "merchants"
@@ -10476,10 +10412,6 @@ msgstr "Missing Features Developers Need"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Missing some advanced features"
 msgstr "Missing some advanced features"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account doesn't credit. Budgie's \"Convert to transfer\" action takes the existing transaction and turns it into a transfer to the account you pick."
-msgstr "Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account doesn't credit. Budgie's \"Convert to transfer\" action takes the existing transaction and turns it into a transfer to the account you pick."
 
 #: src/app/[lang]/features/expense-tracking/opengraph-image.tsx
 msgid "mobile"
@@ -11166,10 +11098,6 @@ msgstr "No official bank sync (community importers available)"
 msgid "No official mobile app (third-party options exist)"
 msgstr "No official mobile app (third-party options exist)"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
-msgstr "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
-
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No repair runs until you confirm on the repair card — no background cleanup"
 msgstr "No repair runs until you confirm on the repair card — no background cleanup"
@@ -11269,6 +11197,10 @@ msgstr "No white flash on cold launch — native splash respects the OS theme"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "no-server"
 msgstr "no-server"
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "No. A tagged transaction has exactly one primary tag, the first one by default."
+msgstr "No. A tagged transaction has exactly one primary tag, the first one by default."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable."
@@ -11918,10 +11850,6 @@ msgstr "One backup file, encrypted once you set a PIN. No account, restore by pi
 msgid "One badge. Scan a list at a glance."
 msgstr "One badge. Scan a list at a glance."
 
-#: src/app/[lang]/features/primary-tag/metadata.ts
-msgid "One badge. Scan a long list at a glance."
-msgstr "One badge. Scan a long list at a glance."
-
 #: src/app/[lang]/features/bank-integration-management/metadata.ts
 msgid "One bank connection holds the credential and backs every account under it — cards, jars, and deposits. Change the token once and all of them follow; close one account and the rest keep syncing."
 msgstr "One bank connection holds the credential and backs every account under it — cards, jars, and deposits. Change the token once and all of them follow; close one account and the rest keep syncing."
@@ -11997,6 +11925,10 @@ msgstr "One limit for the month"
 msgid "One limit, split the way you actually spend"
 msgstr "One limit, split the way you actually spend"
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "One menu on every platform — no full-screen form to open first"
+msgstr "One menu on every platform — no full-screen form to open first"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One number, everything in it"
 msgstr "One number, everything in it"
@@ -12029,10 +11961,6 @@ msgstr "One per transaction — never ambiguous, always quick to scan"
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "One PIN. Real encryption."
 msgstr "One PIN. Real encryption."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "One popover menu on every platform — no modal, no full-screen form to open first"
-msgstr "One popover menu on every platform — no modal, no full-screen form to open first"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "One purchase, one plan, no spreadsheet"
@@ -12130,6 +12058,10 @@ msgstr "One switch, downloads on demand"
 msgid "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
 msgstr "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "One tag chip per row on the transaction list — scan without opening rows"
+msgstr "One tag chip per row on the transaction list — scan without opening rows"
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
 msgstr "One tag chip, plus a count"
@@ -12137,6 +12069,10 @@ msgstr "One tag chip, plus a count"
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "One tag needs no border"
 msgstr "One tag needs no border"
+
+#: src/app/[lang]/features/primary-tag/metadata.ts
+msgid "One tag per row. Scan a long list at a glance."
+msgstr "One tag per row. Scan a long list at a glance."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
@@ -12153,10 +12089,6 @@ msgstr "One tap on the mic"
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "One total, your base currency"
 msgstr "One total, your base currency"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "One transaction carries both account entries automatically — no double-entry by you"
-msgstr "One transaction carries both account entries automatically — no double-entry by you"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One transaction, two ways to file it"
@@ -12177,10 +12109,6 @@ msgstr "One-off months stand out"
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "One-offs"
 msgstr "One-offs"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "One-tap action from any transaction's long-press menu"
-msgstr "One-tap action from any transaction's long-press menu"
 
 #: src/app/[lang]/features/data-export/metadata.ts
 msgid "One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — that you can save to iCloud, Drive, or anywhere. Your data, your call."
@@ -12384,12 +12312,8 @@ msgid "Open the list behind the inbox"
 msgstr "Open the list behind the inbox"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically."
-msgstr "Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically."
-
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Open the tag picker and long-press any tag to make it the one the list shows — no separate settings screen."
-msgstr "Open the tag picker and long-press any tag to make it the one the list shows — no separate settings screen."
+msgid "Open the sheet, type the amount, tap save. The form starts with your account and today's date, and suggests a category you can accept with one tap."
+msgstr "Open the sheet, type the amount, tap save. The form starts with your account and today's date, and suggests a category you can accept with one tap."
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Open the transfer and add a fee. It is filed under Bank Fees & Charges and saved alongside the transfer, so the $900 you moved stays $900."
@@ -12434,10 +12358,6 @@ msgstr "Opens Binance API management"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Opt-in on-device notifications when a limit reaches 80% and again at 100%, once per period"
 msgstr "Opt-in on-device notifications when a limit reaches 80% and again at 100%, once per period"
-
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Optional — transactions without a primary tag stay clean and badge-free"
-msgstr "Optional — transactions without a primary tag stay clean and badge-free"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Optional bank sync uses your own API tokens — never a third-party aggregator"
@@ -12588,10 +12508,6 @@ msgstr "Pairs match if the implied FX rate falls within a plausible tolerance ba
 msgid "Pairs with the PIN lock for a fuller privacy seal"
 msgstr "Pairs with the PIN lock for a fuller privacy seal"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Partial and full refunds — Budgie compares the refund amount with the original expense"
-msgstr "Partial and full refunds — Budgie compares the refund amount with the original expense"
-
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Past that one download, no AI feature opens a connection. There is no provider in the loop to trust."
 msgstr "Past that one download, no AI feature opens a connection. There is no provider in the loop to trust."
@@ -12684,10 +12600,6 @@ msgstr "Permission is hereby granted, free of charge, to any person obtaining a 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Persists across app relaunch and device restarts"
 msgstr "Persists across app relaunch and device restarts"
-
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Persists across edits and bank-sync re-imports"
-msgstr "Persists across edits and bank-sync re-imports"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Personal and Private by Nature"
@@ -12893,8 +12805,8 @@ msgid "Please report it responsibly by emailing security@budgie.at"
 msgstr "Please report it responsibly by emailing security@budgie.at"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Plus, amount, save. The account, today's date and the likely category are already filled in for you."
-msgstr "Plus, amount, save. The account, today's date and the likely category are already filled in for you."
+msgid "Plus, amount, save. The account and today's date are already filled in, and a suggested category is one tap away."
+msgstr "Plus, amount, save. The account and today's date are already filled in, and a suggested category is one tap away."
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Point Budgie at any CSV and map its columns onto Budgie's fields on one screen — or start from a built-in preset and adjust."
@@ -12945,8 +12857,8 @@ msgid "Press and hold a row"
 msgstr "Press and hold a row"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Press and hold any transaction card for about 300ms. The native context menu appears anchored to the card."
-msgstr "Press and hold any transaction card for about 300ms. The native context menu appears anchored to the card."
+msgid "Press and hold any transaction card. Budgie's own menu appears next to the card."
+msgstr "Press and hold any transaction card. Budgie's own menu appears next to the card."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Preview every parsed transaction before write — no surprises"
@@ -13191,17 +13103,9 @@ msgstr "Professional penetration testers and security consultants"
 msgid "Professional security audits are a significant investment that demonstrates a project’s commitment to security. Look for:"
 msgstr "Professional security audits are a significant investment that demonstrates a project’s commitment to security. Look for:"
 
-#: src/app/[lang]/features/primary-tag/metadata.ts
-msgid "Promote one tag per transaction to \"primary\" — it pins as a corner-star badge so you can scan #vacation or #shared at a glance without opening rows."
-msgstr "Promote one tag per transaction to \"primary\" — it pins as a corner-star badge so you can scan #vacation or #shared at a glance without opening rows."
-
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
 msgstr "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
-
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Promote one tag per transaction to \"primary\"; it pins as a corner-star badge on the list so you can scan #vacation or #shared without opening anything."
-msgstr "Promote one tag per transaction to \"primary\"; it pins as a corner-star badge on the list so you can scan #vacation or #shared without opening anything."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Pros:"
@@ -13378,8 +13282,8 @@ msgid "Reading only, never trading"
 msgstr "Reading only, never trading"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
-msgid "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest"
-msgstr "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest"
+msgid "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year, a custom range and the rest"
+msgstr "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year, a custom range and the rest"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Reads your balances back"
@@ -13700,10 +13604,6 @@ msgstr "Returned it? The plan closes too"
 msgid "Returned vs lent"
 msgstr "Returned vs lent"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Reversible audit trail — Revert restores the original income and expense rows"
-msgstr "Reversible audit trail — Revert restores the original income and expense rows"
-
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Revert restores both originals"
 msgstr "Revert restores both originals"
@@ -13884,8 +13784,8 @@ msgid "scanning"
 msgstr "scanning"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Scanning a long transaction list for one tag is hard. Budgie's primary-tag concept solves it visually — the most important tag for that row gets a corner-star badge."
-msgstr "Scanning a long transaction list for one tag is hard. Budgie's primary-tag concept solves it visually — the most important tag for that row gets a corner-star badge."
+msgid "Scanning a long transaction list for one tag is hard. Budgie shows the main tag of each row as a chip, with a count of the others, so you can scan #vacation or #shared without opening anything."
+msgstr "Scanning a long transaction list for one tag is hard. Budgie shows the main tag of each row as a chip, with a count of the others, so you can scan #vacation or #shared without opening anything."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Scans 24 months of history to detect a pattern, not just the current month"
@@ -14361,10 +14261,6 @@ msgstr "Single-device focus means no automatic cloud sync between devices. We th
 msgid "Single-device focus means no automatic sync between phone and tablet"
 msgstr "Single-device focus means no automatic sync between phone and tablet"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Six actions, no form"
-msgstr "Six actions, no form"
-
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
 msgstr "Six monthly bars on that view show what you usually spend at the same place, in the same category"
@@ -14554,10 +14450,6 @@ msgstr "Spending analytics that actually help"
 msgid "Spending Analytics That Actually Help"
 msgstr "Spending Analytics That Actually Help"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Spending analytics updates in place — old expense falls out cleanly"
-msgstr "Spending analytics updates in place — old expense falls out cleanly"
-
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Spending by category and by tag, for any period, and every slice opens the transactions underneath it."
 msgstr "Spending by category and by tag, for any period, and every slice opens the transactions underneath it."
@@ -14598,6 +14490,10 @@ msgstr "split"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Split a Transaction Across Categories"
 msgstr "Split a Transaction Across Categories"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Split one entry across several categories right in the quick-entry form"
+msgstr "Split one entry across several categories right in the quick-entry form"
 
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "Split Transactions"
@@ -14648,6 +14544,10 @@ msgstr "SQLite database you own and control"
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Start a transaction from your Home Screen"
 msgstr "Start a transaction from your Home Screen"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Start any action from the list — long-press the row, then pick it"
+msgstr "Start any action from the list — long-press the row, then pick it"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
@@ -15496,6 +15396,26 @@ msgstr "The first row takes you to Binance's API management page, and the number
 msgid "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
 msgstr "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "The first tag is main automatically, so there is nothing to set up"
+msgstr "The first tag is main automatically, so there is nothing to set up"
+
+#: src/app/[lang]/features/primary-tag/metadata.ts
+msgid "The first tag on a transaction is its primary tag, shown on the list. Long-press another tag in the picker to change it."
+msgstr "The first tag on a transaction is its primary tag, shown on the list. Long-press another tag in the picker to change it."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "The first tag you add becomes the one the list shows. Long-press another tag in the picker to make it the main one instead."
+msgstr "The first tag you add becomes the one the list shows. Long-press another tag in the picker to make it the main one instead."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "The first tag you add is the main one automatically. To pick a different one, long-press it in the tag picker; the choice stays when you edit the transaction."
+msgstr "The first tag you add is the main one automatically. To pick a different one, long-press it in the tag picker; the choice stays when you edit the transaction."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "The first tag you pick is the one the list shows. To change it, open the tag picker and long-press another tag — a star marks the main tag there."
+msgstr "The first tag you pick is the one the list shows. To change it, open the tag picker and long-press another tag — a star marks the main tag there."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
 msgstr "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
@@ -15637,6 +15557,10 @@ msgstr "The main path ranks candidates from the tags you already use by how well
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The menu opens anchored to the card you pressed, and the rest of the list dims behind it."
 msgstr "The menu opens anchored to the card you pressed, and the rest of the list dims behind it."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on every platform."
+msgstr "The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on every platform."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The menu opens right there"
@@ -15928,14 +15852,6 @@ msgstr "The same Budgie Missing categories list with its first uncategorised row
 msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
 msgstr "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
-msgstr "The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
-msgstr "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
-
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "The screen says “No sync repairs found” and leaves your data alone."
 msgstr "The screen says “No sync repairs found” and leaves your data alone."
@@ -16071,10 +15987,6 @@ msgstr "The tradeoff is capability. A cloud service can throw a warehouse of com
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The Tradeoff: Convenience vs. Privacy"
 msgstr "The Tradeoff: Convenience vs. Privacy"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
-msgstr "The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The transaction is written to a local database stored in your device’s secure app storage"
@@ -16837,10 +16749,6 @@ msgstr "Two sources, both your own data: the weekly and monthly patterns Budgie 
 msgid "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it."
 msgstr "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it."
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Two taps from list to done — long-press plus action, no intermediate screens"
-msgstr "Two taps from list to done — long-press plus action, no intermediate screens"
-
 #: src/app/[lang]/features/expense-tracking/metadata.ts
 msgid "Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use."
 msgstr "Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use."
@@ -16868,10 +16776,6 @@ msgstr "Two ways out, one screen"
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an archived account leaves the home screen and the totals but keeps every transaction, ready to search and restore. Mark it inactive when it is still real but should not clutter the home screen — an inactive account stays out of the daily list without being treated as closed. Both keep the full history."
 msgstr "Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an archived account leaves the home screen and the totals but keeps every transaction, ready to search and restore. Mark it inactive when it is still real but should not clutter the home screen — an inactive account stays out of the daily list without being treated as closed. Both keep the full history."
-
-#: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Two-tap entry: smart defaults for account, category, and date pick the right values out of the box"
-msgstr "Two-tap entry: smart defaults for account, category, and date pick the right values out of the box"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
@@ -16970,6 +16874,10 @@ msgstr "Untagged is not an error state — it is what is left over. Anything in 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Untick a row to leave it for later, or give just that row a different category"
 msgstr "Untick a row to leave it for later, or give just that row a different category"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Up to eight actions, no form"
+msgstr "Up to eight actions, no form"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
@@ -17078,10 +16986,6 @@ msgstr "Visit our GitHub repository to get started."
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "Visual and platform updates"
 msgstr "Visual and platform updates"
-
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Visual emphasis. The primary tag renders as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening any row."
-msgstr "Visual emphasis. The primary tag renders as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening any row."
 
 #: src/app/[lang]/features/voice-transaction-entry/opengraph-image.tsx
 msgid "voice"
@@ -17390,10 +17294,6 @@ msgstr "What do the monthly bars on a transaction mean?"
 msgid "What does “All Time” cover?"
 msgstr "What does “All Time” cover?"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "What does \"Convert to Transfer\" actually do?"
-msgstr "What does \"Convert to Transfer\" actually do?"
-
 #: src/app/[lang]/features/runway/page.tsx
 msgid "What does “months left” mean?"
 msgstr "What does “months left” mean?"
@@ -17597,10 +17497,6 @@ msgstr "What if the algorithm misidentifies a match?"
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "What if the app is closed mid-sync?"
 msgstr "What if the app is closed mid-sync?"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "What if the expense is on another account?"
-msgstr "What if the expense is on another account?"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "What if the last payment is a few cents different?"
@@ -17870,10 +17766,6 @@ msgstr "When a company shuts down, the data does not necessarily disappear. It o
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "When a fintech company is acquired, user data is typically the most valuable asset. Consider what happens:"
 msgstr "When a fintech company is acquired, user data is typically the most valuable asset. Consider what happens:"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "When a merchant refunds a purchase, the money reappears on your card as a positive transaction. Most expense trackers record it as income — which is technically accurate in a cash-flow sense but misleading for actual income analysis."
-msgstr "When a merchant refunds a purchase, the money reappears on your card as a positive transaction. Most expense trackers record it as income — which is technically accurate in a cash-flow sense but misleading for actual income analysis."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie files it under Lending or Borrowing and moves the debt's remaining balance, instead of you recording a second transaction."
@@ -18492,10 +18384,6 @@ msgstr "Why uncategorized transactions quietly break reports"
 msgid "Why We Chose Privacy Over Convenience"
 msgstr "Why We Chose Privacy Over Convenience"
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Why would I convert income to a refund?"
-msgstr "Why would I convert income to a refund?"
-
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
 msgid "widgets"
 msgstr "widgets"
@@ -18527,10 +18415,6 @@ msgstr "Will it work with my bank?"
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Will my analytics still work offline?"
 msgstr "Will my analytics still work offline?"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Will my analytics update?"
-msgstr "Will my analytics update?"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Will new transactions from the same merchant be categorized automatically?"
@@ -18712,10 +18596,6 @@ msgstr "Yes — Budgie's source is public. Read the network code yourself: githu
 msgid "Yes — buys are inflows to the holding account; sells are outflows with the realized FX. The market screen turns that history into an average cost, a cost basis and an unrealized gain for the position."
 msgstr "Yes — buys are inflows to the holding account; sells are outflows with the realized FX. The market screen turns that history into an average cost, a cost basis and an unrealized gain for the position."
 
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Yes — by default, none is primary. The badge appears only when you explicitly promote one."
-msgstr "Yes — by default, none is primary. The badge appears only when you explicitly promote one."
-
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Yes — cards, jars, and deposit accounts from the same bank all attach to one connection and appear together on its screen."
 msgstr "Yes — cards, jars, and deposit accounts from the same bank all attach to one connection and appear together on its screen."
@@ -18785,16 +18665,12 @@ msgid "Yes — the MCC short and full description appear in the transaction edit
 msgstr "Yes — the MCC short and full description appear in the transaction edit form for any bank-synced row."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Yes — the original spending stat falls out immediately because transfers don't count as expenses."
-msgstr "Yes — the original spending stat falls out immediately because transfers don't count as expenses."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Yes — the same popover menu opens on iPad, iPhone, and Android; there is no separate iPad presentation."
 msgstr "Yes — the same popover menu opens on iPad, iPhone, and Android; there is no separate iPad presentation."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
-msgid "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time. There is no custom range."
-msgstr "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time. There is no custom range."
+msgid "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time — or a custom range you pick on the calendar."
+msgstr "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time — or a custom range you pick on the calendar."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
@@ -18841,8 +18717,8 @@ msgid "Yes. A rule holds several actions, so the same match can set the category
 msgstr "Yes. A rule holds several actions, so the same match can set the category and add a tag, or convert the transaction into a transfer to a chosen account."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics."
-msgstr "Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics."
+msgid "Yes. A transfer stays a transfer, while its fee counts as spending in the fee category you chose."
+msgstr "Yes. A transfer stays a transfer, while its fee counts as spending in the fee category you chose."
 
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Yes. Adding transactions, budgets, tags, analytics and every screen that reads your history run entirely from the local database, so the app behaves the same in aeroplane mode. Only bank sync and exchange-rate refreshes need a connection, and they catch up when you are back online."
@@ -18921,8 +18797,8 @@ msgid "Yes. Each split row keeps its own tags and comment, fully independent of 
 msgstr "Yes. Each split row keeps its own tags and comment, fully independent of the others."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Yes. Editing a transaction keeps its primary-tag designation; bank-sync re-imports also preserve it."
-msgstr "Yes. Editing a transaction keeps its primary-tag designation; bank-sync re-imports also preserve it."
+msgid "Yes. Editing a transaction keeps its primary tag unless you pick a different one in the tag picker."
+msgstr "Yes. Editing a transaction keeps its primary tag unless you pick a different one in the tag picker."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Yes. English, Ukrainian, German, French, and Spanish are the primary languages, with dozens more covered. Budgie follows your phone's language, so there is nothing to configure."
@@ -18964,14 +18840,6 @@ msgstr "Yes. Monobank sync uses a personal API token that you generate yourself 
 msgid "Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar. Filters apply consistently."
 msgstr "Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar. Filters apply consistently."
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Yes. Open the refunded transaction and tap Revert. The income and expense return to their original standalone state."
-msgstr "Yes. Open the refunded transaction and tap Revert. The income and expense return to their original standalone state."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Yes. Pick the original expense and Budgie marks the refund as partial when the refunded amount is lower than the expense amount."
-msgstr "Yes. Pick the original expense and Budgie marks the refund as partial when the refunded amount is lower than the expense amount."
-
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Yes. Prices are stored in your local database, so the market screen renders from what you already have. A connection is only needed to extend the history further back."
 msgstr "Yes. Prices are stored in your local database, so the market screen renders from what you already have. A connection is only needed to extend the history further back."
@@ -18997,8 +18865,8 @@ msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn i
 msgstr "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."
-msgstr "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."
+msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose. One period shows at a time, there is no side-by-side month view."
+msgstr "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose. One period shows at a time, there is no side-by-side month view."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Yes. Switch to split inside the income form just like the expense form."
@@ -19008,6 +18876,10 @@ msgstr "Yes. Switch to split inside the income form just like the expense form."
 msgid "Yes. Tap any category or tag row to see every transaction that contributed to it during the current period."
 msgstr "Yes. Tap any category or tag row to see every transaction that contributed to it during the current period."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Yes. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives you a menu with Edit, Delete, Convert to Transfer, Convert to Refund and more, depending on the row. Merged or refunded transactions offer fewer actions, such as Revert."
+msgstr "Yes. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives you a menu with Edit, Delete, Convert to Transfer, Convert to Refund and more, depending on the row. Merged or refunded transactions offer fewer actions, such as Revert."
+
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Yes. Tapping a row opens the transaction list for that tag over the active period. A row belongs either to the income list or to the spending list, and the list opens on that side."
 msgstr "Yes. Tapping a row opens the transaction list for that tag over the active period. A row belongs either to the income list or to the spending list, and the list opens on that side."
@@ -19015,10 +18887,6 @@ msgstr "Yes. Tapping a row opens the transaction list for that tag over the acti
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Yes. The column you map to Date becomes the transaction's date, read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD. A row whose date cannot be read is reported instead of guessed at."
 msgstr "Yes. The column you map to Date becomes the transaction's date, read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD. A row whose date cannot be read is reported instead of guessed at."
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the source leg; destination leg gets your specified amount."
-msgstr "Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the source leg; destination leg gets your specified amount."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device database with no network call."
@@ -19188,6 +19056,10 @@ msgstr "You can’t control who sees your information"
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "You do not have to take our word for it"
 msgstr "You do not have to take our word for it"
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "You don't have to: the first tag you add is primary automatically. To change it, open the tag picker and long-press the tag you want; a star marks it there."
+msgstr "You don't have to: the first tag you add is primary automatically. To change it, open the tag picker and long-press the tag you want; a star marks it there."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You don’t mind bank sync"

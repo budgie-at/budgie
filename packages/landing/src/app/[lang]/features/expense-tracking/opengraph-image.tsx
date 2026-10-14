@@ -3,7 +3,7 @@ import { t } from '@lingui/core/macro';
 
 import { createFeatureOgRoute } from '../../../../feature/utils/create-feature-og-route.util';
 
-export const alt = 'Expense Tracking, Reimagined — Budgie';
+export const alt = 'Expense Tracking App, Log in Seconds — Budgie';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

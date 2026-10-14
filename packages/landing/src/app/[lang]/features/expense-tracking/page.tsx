@@ -30,7 +30,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Expense Tracking, Reimagined</Trans>}
+                heading={<Trans>Log Every Expense in Seconds</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
@@ -45,7 +45,10 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Intro>
 
                 <FeatureStory.Step index={0} title={<Trans>Two taps to saved</Trans>}>
-                    <Trans>Plus, amount, save. The account, today&apos;s date and the likely category are already filled in for you.</Trans>
+                    <Trans>
+                        Plus, amount, save. The account and today&apos;s date are already filled in, and a suggested category is one tap
+                        away.
+                    </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
@@ -67,8 +70,8 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Step index={1} title={<Trans>Every action on a long-press</Trans>}>
                     <Trans>
-                        Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by
-                        accident.
+                        Edit, convert to a transfer or refund, attach a debt or delete — whichever apply to that row. A plain tap only opens
+                        the row to read, so nothing changes by accident.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -110,15 +113,15 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        An expense tracker lives or dies by entry friction. Budgie&apos;s quick-entry sheet picks the right account, the
-                        most-likely category, and the current date by default — typically two taps to a saved transaction.
+                        An expense tracker lives or dies by entry friction. Budgie&apos;s quick-entry sheet starts with your account and the
+                        current date, and suggests a category you can accept with one tap.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a
-                        context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving
-                        the screen.
+                        Every entry is amount + account + category + tags + comment + date. Split an entry across categories right in the
+                        quick-entry form. Long-press any transaction in the list for a menu to edit, delete, convert to a transfer, or link
+                        income back to a refunded expense without leaving the screen.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -129,24 +132,21 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Two-tap entry: smart defaults for account, category, and date pick the right values out of the box</Trans>
+                        <Trans>Fast entry: account and date are pre-filled, and a suggested category is one tap away</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Three first-class transaction types: expense, income, transfer — never confused, never miscounted</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Long-press any row for context actions: edit, delete, split, convert to transfer, convert to refund</Trans>
+                        <Trans>Long-press any row for actions such as edit, delete, convert to transfer or refund, and attach a debt</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries</Trans>
+                        <Trans>Split one entry across several categories right in the quick-entry form</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Comments grow vertically up to two lines so receipts and references fit without truncation</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
                         <Trans>Tapping a transaction opens a read-only detail view — editing is a deliberate second step</Trans>
                     </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    <FeaturePageBenefitGridItem index={5}>
                         <Trans>Six monthly bars on that view show what you usually spend at the same place, in the same category</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -178,8 +178,8 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>How fast is the quick-entry form?</Trans>}
                     answer={
                         <Trans>
-                            Open the sheet, type the amount, tap save — that&apos;s the typical flow once defaults are tuned to your habits.
-                            The form picks your default account, the most-likely category, and today&apos;s date automatically.
+                            Open the sheet, type the amount, tap save. The form starts with your account and today&apos;s date, and suggests
+                            a category you can accept with one tap.
                         </Trans>
                     }
                 />
@@ -187,9 +187,9 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>Can I edit a transaction after saving?</Trans>}
                     answer={
                         <Trans>
-                            Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list
-                            gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they
-                            apply.
+                            Yes. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives
+                            you a menu with Edit, Delete, Convert to Transfer, Convert to Refund and more, depending on the row. Merged or
+                            refunded transactions offer fewer actions, such as Revert.
                         </Trans>
                     }
                 />
