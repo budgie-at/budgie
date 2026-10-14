@@ -8035,6 +8035,7 @@ msgid "features"
 msgstr "функції"
 
 #: src/app/[lang]/features/page.tsx
+#: src/app/[lang]/not-found.tsx
 #: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
 #: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/generic/component/footer/footer.tsx
@@ -13325,10 +13326,6 @@ msgstr "Доступний просто з криптогрупи на голо�
 #: src/blog/component/related-articles/related-articles.tsx
 msgid "Read article"
 msgstr "Читати статтю"
-
-#: src/app/[lang]/not-found.tsx
-msgid "Read Blog"
-msgstr "Читати блог"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Read first, edit on purpose"
