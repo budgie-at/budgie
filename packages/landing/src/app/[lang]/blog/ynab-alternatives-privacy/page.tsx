@@ -77,7 +77,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                                 <Trans>offline-first</Trans>
                             </Badge>
                             <Badge variant="secondary">
-                                <Trans>open source</Trans>
+                                <Trans>source-available</Trans>
                             </Badge>
                         </>
                     }
@@ -360,7 +360,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open Source</strong>: Yes
+                                <strong>Source-available</strong>: Yes
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

@@ -1172,11 +1172,11 @@ msgstr "<0>Código abierto</0>: N/A"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: No"
-msgstr "<0>Monarch Money</0>: No"
+msgstr "<0>Código abierto</0>: No"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: Yes"
-msgstr "<0>Monarch Money</0>: Sí"
+msgstr "<0>Código abierto</0>: Sí"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Opt-out</0>: Disable analytics and optional cloud features in app settings"
@@ -1606,6 +1606,10 @@ msgstr "<0>Código fuente disponible</0> — El código es público. Cualquiera 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Source-available</0>: Security claims are verifiable through code review"
 msgstr "<0>Código fuente disponible</0>: las promesas de seguridad se pueden verificar revisando el código"
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source-available</0>: Yes"
+msgstr "<0>Código disponible</0>: Sí"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
@@ -12304,10 +12308,6 @@ msgid "Open Privat24, select the card or account you want to import, and open it
 msgstr "En Privat24, selecciona la tarjeta o cuenta que quieres importar y abre su extracto. Elige un rango de fechas que cubra todo tu historial y luego expórtalo como Excel — no se pueden importar archivos PDF ni CSV. Si Privat24 te envía el archivo por correo en lugar de descargarlo, guarda el archivo adjunto desde tu bandeja de entrada y luego selecciónalo en el selector de archivos de Budgie."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "open source"
-msgstr "Código abierto para verificación"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Open Source Transparency"
 msgstr "Transparencia de código abierto"
 
@@ -14445,6 +14445,7 @@ msgstr "El código fuente está disponible públicamente — lee cada línea que
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "source-available"
 msgstr "código fuente disponible"
 

@@ -1607,6 +1607,10 @@ msgid "<0>Source-available</0>: Security claims are verifiable through code revi
 msgstr "<0>Source-available</0>: Security claims are verifiable through code review"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source-available</0>: Yes"
+msgstr "<0>Source-available</0>: Yes"
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
 msgstr "<0>Standard cloud:</0> Data stored on company servers (least private)"
 
@@ -12303,10 +12307,6 @@ msgid "Open Privat24, select the card or account you want to import, and open it
 msgstr "Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that covers your full history, then export it as Excel — PDF and CSV files can't be imported. If Privat24 emails you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie's file picker."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "open source"
-msgstr "open source"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Open Source Transparency"
 msgstr "Open Source Transparency"
 
@@ -14444,6 +14444,7 @@ msgstr "Source code is publicly available — read every line that touches your 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "source-available"
 msgstr "source-available"
 

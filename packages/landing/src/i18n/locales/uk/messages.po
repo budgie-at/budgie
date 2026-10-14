@@ -1172,11 +1172,11 @@ msgstr "<0>Відкритий код</0>: Н/Д"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: No"
-msgstr "<0>Monarch Money</0>: Ні"
+msgstr "<0>Відкритий код</0>: Ні"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: Yes"
-msgstr "<0>Monarch Money</0>: Так"
+msgstr "<0>Відкритий код</0>: Так"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Opt-out</0>: Disable analytics and optional cloud features in app settings"
@@ -1589,7 +1589,7 @@ msgstr "<0>Перевірка коду критичних шляхів</0>: За
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Source-available codebase</0> — If the developer stops maintaining the app, the code stays available to read and modify. The code is auditable. You can verify that the privacy claims are real."
-msgstr "<0>Вихідний код у відкритому доступі</0> — якщо розробник перестане підтримувати застосунок, код залишиться доступним для читання та змін. Код можна перевірити, тож ви самі переконаєтеся, що заяви про приватність справжні."
+msgstr "<0>Вихідний код, доступний для перегляду</0> — якщо розробник перестане підтримувати застосунок, код залишиться доступним для читання та змін. Код можна перевірити, тож ви самі переконаєтеся, що заяви про приватність справжні."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Source-available transparency.</0> The codebase is public, allowing security researchers and privacy advocates to verify claims."
@@ -1606,6 +1606,10 @@ msgstr "<0>Доступний вихідний код</0> — кодова ба�
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Source-available</0>: Security claims are verifiable through code review"
 msgstr "<0>Доступний вихідний код</0>: заяви про безпеку можна перевірити під час перегляду коду"
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source-available</0>: Yes"
+msgstr "<0>Вихідний код доступний</0>: Так"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
@@ -5020,7 +5024,7 @@ msgstr "Budgie перетворює код категорії продавця, 
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
-msgstr "Budgie використовує ліцензію з відкритим кодом, яка дозволяє переглядати, змінювати та вносити вклад у код, але лише ми можемо монетизувати офіційний додаток. Це забезпечує прозорість та стійкість проєкту."
+msgstr "Budgie використовує ліцензію з доступним вихідним кодом, яка дозволяє переглядати, змінювати та вносити вклад у код, але лише ми можемо монетизувати офіційний додаток. Це забезпечує прозорість та стійкість проєкту."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie uses the O'SAASY License, a source-available license that lets you read, modify, publish, and distribute the code while reserving hosted-service monetization for the original project. We chose this license for several reasons:"
@@ -12304,10 +12308,6 @@ msgid "Open Privat24, select the card or account you want to import, and open it
 msgstr "У Приват24 виберіть картку або рахунок, який хочете імпортувати, і відкрийте виписку. Виберіть період, що охоплює всю історію, а потім експортуйте його у форматі Excel — файли PDF і CSV імпортувати не можна. Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки, а потім виберіть його в засобі вибору файлів Budgie."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "open source"
-msgstr "Відкритого вихідного коду для перевірки"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Open Source Transparency"
 msgstr "Прозорість відкритого коду"
 
@@ -13199,11 +13199,11 @@ msgstr "Публічний код розв’язує й питання довг
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "public source budget app"
-msgstr "бюджетний застосунок із відкритим вихідним кодом"
+msgstr "бюджетний застосунок із вихідним кодом, доступним для перегляду"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, encryption at rest, and zero-telemetry design are all visible in the repository for any developer to verify."
-msgstr "Відкритий код — це не просто філософія розробки, це властивість безпеки. Закриті фінансові застосунки просять вас довіряти, що вони не журналюють ваші транзакції, не діляться даними з рекламодавцями та не продають поведінкові профілі. Budgie просить вас перевірити. Архітектура на пристрої, шифрування в стані спокою та відсутність телеметрії — усе це видно в репозиторії, і будь-який розробник може це перевірити."
+msgstr "Доступний вихідний код — це не просто філософія розробки, це властивість безпеки. Закриті фінансові застосунки просять вас довіряти, що вони не журналюють ваші транзакції, не діляться даними з рекламодавцями та не продають поведінкові профілі. Budgie просить вас перевірити. Архітектура на пристрої, шифрування в стані спокою та відсутність телеметрії — усе це видно в репозиторії, і будь-який розробник може це перевірити."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Public source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers. You do not have to trust us — you can check."
@@ -14423,7 +14423,7 @@ msgstr "Іноді найпростіше рішення є найбільш п�
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "source available mobile budget app"
-msgstr "мобільний бюджетний застосунок із відкритим кодом"
+msgstr "мобільний бюджетний застосунок із доступним вихідним кодом"
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "source available personal finance"
@@ -14445,6 +14445,7 @@ msgstr "Вихідний код є загальнодоступним — чит
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "source-available"
 msgstr "доступний код"
 
@@ -14464,7 +14465,7 @@ msgstr "Бюджетування з доступним кодом: чому пр
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Source-available code"
-msgstr "Код з відкритим вихідним кодом"
+msgstr "Вихідний код доступний для перегляду"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Source-available code for verification"
@@ -14497,7 +14498,7 @@ msgstr "Вихідний код доступний на GitHub"
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Source-available personal finance"
-msgstr "Особисті фінанси з відкритим кодом"
+msgstr "Особисті фінанси з доступним вихідним кодом"
 
 #: src/app/[lang]/open-source/metadata.ts
 #: src/app/[lang]/open-source/page.tsx
@@ -18411,7 +18412,7 @@ msgstr "Чому не використовувати наскрізне заши
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Why offline-first and source-available matter"
-msgstr "Чому офлайн-підхід і відкритий код мають значення"
+msgstr "Чому офлайн-підхід і доступний вихідний код мають значення"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why Offline-First Changes Everything"

@@ -1172,11 +1172,11 @@ msgstr "<0>Open Source</0>: N/A"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: No"
-msgstr "<0>Monarch Money</0>: Nein"
+msgstr "<0>Open Source</0>: Nein"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: Yes"
-msgstr "<0>Monarch Money</0>: Ja"
+msgstr "<0>Open Source</0>: Ja"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Opt-out</0>: Disable analytics and optional cloud features in app settings"
@@ -1606,6 +1606,10 @@ msgstr "<0>Einsehbarer Quellcode</0> — Die Codebasis ist öffentlich. Die Date
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Source-available</0>: Security claims are verifiable through code review"
 msgstr "<0>Einsehbarer Quellcode</0>: Sicherheitsversprechen lassen sich per Code-Review überprüfen"
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source-available</0>: Yes"
+msgstr "<0>Quellcode einsehbar</0>: Ja"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
@@ -12304,10 +12308,6 @@ msgid "Open Privat24, select the card or account you want to import, and open it
 msgstr "Wählen Sie in Privat24 die Karte oder das Konto aus, das Sie importieren möchten, und öffnen Sie den Kontoauszug. Wählen Sie einen Zeitraum, der Ihre gesamte Historie abdeckt, und exportieren Sie ihn dann als Excel-Datei — PDF- und CSV-Dateien können nicht importiert werden. Falls Privat24 Ihnen die Datei stattdessen per E-Mail zusendet, speichern Sie den Anhang aus Ihrem Postfach und wählen Sie ihn dann in Budgies Dateiauswahl aus."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "open source"
-msgstr "Open-Source-Code zur Überprüfung"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Open Source Transparency"
 msgstr "Open-Source-Transparenz"
 
@@ -14423,7 +14423,7 @@ msgstr "Manchmal ist die einfachste Lösung die privateste. Tabellenkalkulatione
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "source available mobile budget app"
-msgstr "mobile Budget-App mit offenem Quellcode"
+msgstr "mobile Budget-App mit einsehbarem Quellcode"
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "source available personal finance"
@@ -14445,6 +14445,7 @@ msgstr "Quellcode ist öffentlich verfügbar – lesen Sie jede Zeile, die Ihre 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "source-available"
 msgstr "source-available"
 
@@ -14497,7 +14498,7 @@ msgstr "Quellcode auf GitHub einsehbar"
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Source-available personal finance"
-msgstr "Persönliche Finanzen mit offenem Quellcode"
+msgstr "Persönliche Finanzen mit einsehbarem Quellcode"
 
 #: src/app/[lang]/open-source/metadata.ts
 #: src/app/[lang]/open-source/page.tsx
@@ -18411,7 +18412,7 @@ msgstr "Warum nicht Ende-zu-Ende-verschlüsselte Cloud-Synchronisierung verwende
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Why offline-first and source-available matter"
-msgstr "Warum Offline-First und offener Quellcode zählen"
+msgstr "Warum Offline-First und einsehbarer Quellcode zählen"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why Offline-First Changes Everything"
