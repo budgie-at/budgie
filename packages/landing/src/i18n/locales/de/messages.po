@@ -4491,7 +4491,7 @@ msgstr "Budgie integriert Anlagebestände in dieselbe Nettovermögensansicht wie
 
 #: src/app/[lang]/beta/page.tsx
 msgid "Budgie iOS Beta"
-msgstr "Budgie iOS Beta"
+msgstr "Budgie iOS-Beta"
 
 #: src/app/[lang]/beta/page.tsx
 msgid "Budgie iOS Beta Install"
@@ -9456,7 +9456,7 @@ msgstr "Auf dem iPhone installieren"
 
 #: src/app/[lang]/beta/page.tsx
 msgid "Install the latest development build over-the-air on a registered iPhone."
-msgstr "Installieren Sie den neuesten Entwicklungs-Build kabellos (OTA) auf einem registrierten iPhone."
+msgstr "Installiere den neuesten Entwicklungs-Build kabellos (OTA) auf einem registrierten iPhone."
 
 #: src/app/[lang]/features/installment-tracking/metadata.ts
 msgid "Installment Tracker for Pay in Parts Purchases"
@@ -15571,7 +15571,7 @@ msgstr "Die Ink & Switch-Arbeit hat diese Ideen nicht erfunden. Forscher verteil
 
 #: src/beta/component/beta-empty-state/beta-empty-state.tsx
 msgid "The iOS development build hasn't been published yet. Check back after the next build run."
-msgstr "Der iOS-Entwicklungs-Build wurde noch nicht veröffentlicht. Schauen Sie nach dem nächsten Build-Lauf noch einmal vorbei."
+msgstr "Der iOS-Entwicklungs-Build wurde noch nicht veröffentlicht. Schau nach dem nächsten Build-Lauf noch einmal vorbei."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "The key and the secret go into the two fields below, masked as you type. Fetch Accounts asks Binance what you hold and hands you the list: tick the assets you want as accounts, and Start Sync takes it from there."
