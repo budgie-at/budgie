@@ -3195,10 +3195,6 @@ msgstr "Any future solution will maintain our core principle: your financial dat
 msgid "Any group turned into a rule for future imports"
 msgstr "Any group turned into a rule for future imports"
 
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Any name that is not written in the Latin alphabet is translated. We test it with Ukrainian; other languages may work less well, so check the English form and edit it if needed."
-msgstr "Any name that is not written in the Latin alphabet is translated. We test it with Ukrainian; other languages may work less well, so check the English form and edit it if needed."
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any SDK that requires network connectivity for basic functionality"
 msgstr "Any SDK that requires network connectivity for basic functionality"
@@ -5657,17 +5653,17 @@ msgstr "Category and tag breakdowns for any period, with drill-down from any row
 msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
 msgstr "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your device, without sending anything to a server."
+msgstr "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your device, without sending anything to a server."
+
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your phone."
+msgstr "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your phone."
+
 #: src/app/[lang]/features/ai-category-translation/metadata.ts
 msgid "Category and tag names in other scripts get an English form and keywords, so search matches either. Runs on your phone."
 msgstr "Category and tag names in other scripts get an English form and keywords, so search matches either. Runs on your phone."
-
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your device, without sending anything to a server."
-msgstr "Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your device, without sending anything to a server."
-
-#: src/app/[lang]/features/ai-category-translation/metadata.ts
-msgid "Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your phone."
-msgstr "Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your phone."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category and tag translation for Cyrillic, Greek, and Arabic names"
@@ -7672,10 +7668,6 @@ msgstr "Every merge keeps its sources"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
 msgstr "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
-
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Every new or renamed category and tag is queued automatically. Names already in the Latin alphabet are not translated, but still get search keywords."
-msgstr "Every new or renamed category and tag is queued automatically. Names already in the Latin alphabet are not translated, but still get search keywords."
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Every open plan appears under You owe on Home, next to your other debts"
@@ -10829,6 +10821,10 @@ msgstr "Named by its destination account"
 msgid "Names in non-Latin scripts get an English translation, tested with Ukrainian"
 msgstr "Names in non-Latin scripts get an English translation, tested with Ukrainian"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Names not written in the Latin alphabet are picked up for translation. We test it with Ukrainian; other languages may work less well, so check the English form and edit it if needed."
+msgstr "Names not written in the Latin alphabet are picked up for translation. We test it with Ukrainian; other languages may work less well, so check the English form and edit it if needed."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Narrow by amount, not just by date"
 msgstr "Narrow by amount, not just by date"
@@ -10946,6 +10942,10 @@ msgstr "New installs start with the On-device AI card off; if you were already u
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "New manual entries get suggestions from your history instantly, with nothing to download"
 msgstr "New manual entries get suggestions from your history instantly, with nothing to download"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "New or renamed categories and tags without a saved English form are picked up automatically. Latin-alphabet names skip translation but still get search keywords."
+msgstr "New or renamed categories and tags without a saved English form are picked up automatically. Latin-alphabet names skip translation but still get search keywords."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
@@ -12025,8 +12025,8 @@ msgid "One screen to finish it"
 msgstr "One screen to finish it"
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It needs On-device AI, a one-time download of about 2.5 GB."
-msgstr "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It needs On-device AI, a one-time download of about 2.5 GB."
+msgid "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It needs On-device AI, which downloads its models once."
+msgstr "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It needs On-device AI, which downloads its models once."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "One screen: the Tags tab beside Categories, income totalled tag by tag, then spending, each with its share of the period."

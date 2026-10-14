@@ -9,7 +9,7 @@ export const FEATURE_METADATA = {
     slug: 'ai-category-translation',
     tier: FeatureTierEnum.POWER,
     title: msg`AI Category & Tag Translation`,
-    tagline: msg`Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your phone.`,
+    tagline: msg`Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your phone.`,
     metaTitle: msg`Category & Tag Translation, On-Device — Budgie`,
     metaDescription: msg`Category and tag names in other scripts get an English form and keywords, so search matches either. Runs on your phone.`,
     primaryKeyword: 'category translation budget app',

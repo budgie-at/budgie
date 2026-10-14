@@ -34,7 +34,7 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your
+                        Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your
                         device, without sending anything to a server.
                     </Trans>
                 }
@@ -44,7 +44,7 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 <FeatureStory.Intro heading={<Trans>One category, translated on your phone</Trans>}>
                     <Trans>
                         One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It
-                        needs On-device AI, a one-time download of about 2.5 GB.
+                        needs On-device AI, which downloads its models once.
                     </Trans>
                 </FeatureStory.Intro>
 
@@ -131,8 +131,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     question={<Trans>Which scripts are supported?</Trans>}
                     answer={
                         <Trans>
-                            Any name that is not written in the Latin alphabet is translated. We test it with Ukrainian; other languages may
-                            work less well, so check the English form and edit it if needed.
+                            Names not written in the Latin alphabet are picked up for translation. We test it with Ukrainian; other
+                            languages may work less well, so check the English form and edit it if needed.
                         </Trans>
                     }
                 />
@@ -158,8 +158,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     question={<Trans>Does this run on every category and tag?</Trans>}
                     answer={
                         <Trans>
-                            Every new or renamed category and tag is queued automatically. Names already in the Latin alphabet are not
-                            translated, but still get search keywords.
+                            New or renamed categories and tags without a saved English form are picked up automatically. Latin-alphabet
+                            names skip translation but still get search keywords.
                         </Trans>
                     }
                 />

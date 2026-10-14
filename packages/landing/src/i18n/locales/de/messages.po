@@ -3196,10 +3196,6 @@ msgstr "Jede zukünftige Lösung hält an unserem Kernprinzip fest: Deine Finanz
 msgid "Any group turned into a rule for future imports"
 msgstr "Jede Gruppe lässt sich in eine Regel für künftige Importe verwandeln"
 
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Any name that is not written in the Latin alphabet is translated. We test it with Ukrainian; other languages may work less well, so check the English form and edit it if needed."
-msgstr "Jeder Name, der nicht in lateinischer Schrift geschrieben ist, wird übersetzt. Wir testen es mit Ukrainisch; andere Sprachen funktionieren womöglich schlechter, prüfe also die englische Form und passe sie bei Bedarf an."
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any SDK that requires network connectivity for basic functionality"
 msgstr "Jedes SDK, das Netzwerkkonnektivität für grundlegende Funktionalität erfordert"
@@ -4180,7 +4176,7 @@ msgstr "Budgie-Bildschirm Kontoeinstellungen für eine Monobank-Karte mit geöff
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Budgie adds an English translation and a list of search keywords next to the original name. Both are saved with the category, so search and suggestions can find it whichever form you remember."
-msgstr "Budgie ergänzt neben dem Originalnamen eine englische Übersetzung und eine Liste von Suchbegriffen. Beides wird mit der Kategorie gespeichert, sodass Suche und Vorschläge sie unabhängig davon finden, an welche Form Sie sich erinnern."
+msgstr "Budgie ergänzt neben dem Originalnamen eine englische Übersetzung und eine Liste von Suchbegriffen. Beides wird mit der Kategorie gespeichert, sodass Suche und Vorschläge sie unabhängig davon finden, an welche Form du dich erinnerst."
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
@@ -5658,17 +5654,17 @@ msgstr "Kategorie- und Tag-Aufschlüsselung für jeden Zeitraum, mit Drilldown v
 msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
 msgstr "Aufschlüsselungen nach Kategorie und Tag für jeden Zeitraum, mit Absprung von jeder Zeile zu den Transaktionen dahinter."
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your device, without sending anything to a server."
+msgstr "Kategorie- und Tag-Namen in nicht-lateinischen Schriften, etwa Kyrillisch, bekommen eine englische Form und Suchbegriffe – auf deinem Gerät, ohne dass etwas an einen Server geschickt wird."
+
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your phone."
+msgstr "Kategorie- und Tag-Namen in nicht-lateinischen Schriften, etwa Kyrillisch, bekommen eine englische Form und Suchbegriffe – auf deinem Handy."
+
 #: src/app/[lang]/features/ai-category-translation/metadata.ts
 msgid "Category and tag names in other scripts get an English form and keywords, so search matches either. Runs on your phone."
 msgstr "Kategorie- und Tag-Namen in anderen Schriften bekommen eine englische Form und Suchbegriffe, damit die Suche beide findet. Läuft auf deinem Handy."
-
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your device, without sending anything to a server."
-msgstr "Kategorie- und Tag-Namen in anderen Schriften, etwa Ukrainisch, bekommen eine englische Form und Suchbegriffe — auf deinem Gerät, ohne etwas an einen Server zu senden."
-
-#: src/app/[lang]/features/ai-category-translation/metadata.ts
-msgid "Category and tag names in other scripts, such as Ukrainian, get an English form and search keywords — on your phone."
-msgstr "Kategorie- und Tag-Namen in anderen Schriften, etwa Ukrainisch, bekommen eine englische Form und Suchbegriffe — auf deinem Handy."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category and tag translation for Cyrillic, Greek, and Arabic names"
@@ -7673,10 +7669,6 @@ msgstr "Jede Zusammenführung behält ihre Quellen"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
 msgstr "Jede Monobank-Karte und jeder Topf kommt als eigenes Konto zurück – mit einem Schalter, um einzelne wegzulassen."
-
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Every new or renamed category and tag is queued automatically. Names already in the Latin alphabet are not translated, but still get search keywords."
-msgstr "Jede neue oder umbenannte Kategorie und jeder Tag wird automatisch eingereiht. Namen in lateinischer Schrift werden nicht übersetzt, bekommen aber trotzdem Suchbegriffe."
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Every open plan appears under You owe on Home, next to your other debts"
@@ -10830,6 +10822,10 @@ msgstr "Benannt nach dem Zielkonto"
 msgid "Names in non-Latin scripts get an English translation, tested with Ukrainian"
 msgstr "Namen in nicht-lateinischen Schriften bekommen eine englische Übersetzung, getestet mit Ukrainisch"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Names not written in the Latin alphabet are picked up for translation. We test it with Ukrainian; other languages may work less well, so check the English form and edit it if needed."
+msgstr "Namen, die nicht in lateinischer Schrift geschrieben sind, werden zur Übersetzung vorgemerkt. Wir testen es mit Ukrainisch; andere Sprachen funktionieren womöglich schlechter, prüfe also die englische Form und passe sie bei Bedarf an."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Narrow by amount, not just by date"
 msgstr "Nicht nur nach Datum, sondern auch nach Betrag eingrenzen"
@@ -10947,6 +10943,10 @@ msgstr "Neuinstallationen starten mit ausgeschalteter KI-auf-dem-Gerät-Karte; w
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "New manual entries get suggestions from your history instantly, with nothing to download"
 msgstr "Neue manuelle Einträge erhalten sofort Vorschläge aus deinem Verlauf – ohne Download"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "New or renamed categories and tags without a saved English form are picked up automatically. Latin-alphabet names skip translation but still get search keywords."
+msgstr "Neue oder umbenannte Kategorien und Tags ohne gespeicherte englische Form werden automatisch aufgegriffen. Namen in lateinischer Schrift werden nicht übersetzt, bekommen aber trotzdem Suchbegriffe."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
@@ -12026,8 +12026,8 @@ msgid "One screen to finish it"
 msgstr "Ein Bildschirm, und fertig"
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It needs On-device AI, a one-time download of about 2.5 GB."
-msgstr "Ein Bildschirm: eine Kategorie mit ukrainischem Namen, dazu die englische Form und die Suchbegriffe, die Budgie dafür erzeugt hat. Dafür braucht es On-Device-KI, ein einmaliger Download von etwa 2,5 GB."
+msgid "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It needs On-device AI, which downloads its models once."
+msgstr "Ein Bildschirm: eine Kategorie mit ukrainischem Namen, dazu die englische Form und die Suchbegriffe, die Budgie dafür erzeugt hat. Dafür muss On-Device-KI aktiviert sein; sie lädt ihre Modelle einmalig herunter."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "One screen: the Tags tab beside Categories, income totalled tag by tag, then spending, each with its share of the period."
