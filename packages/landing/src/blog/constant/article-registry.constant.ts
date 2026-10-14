@@ -1,5 +1,6 @@
 import { ARTICLE_METADATA as BudgieOfflineFinancialDataArticleMetadata } from '../../app/[lang]/blog/budgie-offline-financial-data/metadata';
 import { ARTICLE_METADATA as CloudBudgetingPrivacyRisksArticleMetadata } from '../../app/[lang]/blog/cloud-budgeting-privacy-risks/metadata';
+import { ARTICLE_METADATA as ErsteGeorgePdfStatementImportArticleMetadata } from '../../app/[lang]/blog/erste-george-pdf-statement-import/metadata';
 import { ARTICLE_METADATA as HistoricalExchangeRatesBudgetAnalyticsArticleMetadata } from '../../app/[lang]/blog/historical-exchange-rates-budget-analytics/metadata';
 import { ARTICLE_METADATA as LocalFirstMovementDevelopersArticleMetadata } from '../../app/[lang]/blog/local-first-movement-developers/metadata';
 import { ARTICLE_METADATA as MintAlternativesDevelopersArticleMetadata } from '../../app/[lang]/blog/mint-alternatives-developers/metadata';
@@ -27,5 +28,6 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     OfflineFirstBankDataSafetyArticleMetadata,
     HistoricalExchangeRatesBudgetAnalyticsArticleMetadata,
     WhatsNewAugustSeptember2026ArticleMetadata,
-    WhatsNewSeptember2026ArticleMetadata
+    WhatsNewSeptember2026ArticleMetadata,
+    ErsteGeorgePdfStatementImportArticleMetadata
 ];

@@ -77,6 +77,10 @@ msgstr "<0>2020-2022</0>: Feature stagnation. While competitors innovated, Mint�
 msgid "<0>2022</0>: Increasing sync issues. Bank connections became unreliable, with users reporting days of failed syncs."
 msgstr "<0>2022</0>: Increasing sync issues. Bank connections became unreliable, with users reporting days of failed syncs."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>A statement from another bank.</0> Use <1>CSV import</1>, where you match the file's columns to Budgie fields yourself."
+msgstr "<0>A statement from another bank.</0> Use <1>CSV import</1>, where you match the file's columns to Budgie fields yourself."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Access</0>: Your data is always accessible within the app"
 msgstr "<0>Access</0>: Your data is always accessible within the app"
@@ -112,6 +116,10 @@ msgstr "<0>Aggregator breach</0> — Every cloud budgeting app that uses bank-fe
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Aggregator persistence</0>: Even with direct APIs, apps often use aggregators that add another data holder"
 msgstr "<0>Aggregator persistence</0>: Even with direct APIs, apps often use aggregators that add another data holder"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>Amount</0>, recorded as an expense or as income depending on its sign, always in euros."
+msgstr "<0>Amount</0>, recorded as an expense or as income depending on its sign, always in euros."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Analytics and tracking</0>: Search for any analytics SDK initialization. You will not find Firebase, Amplitude, Mixpanel, or any similar integration."
@@ -354,6 +362,10 @@ msgstr "<0>Best For</0>: YNAB users wanting similar UX"
 msgid "<0>Better tooling</0> is making local-first development more accessible. What once required deep distributed systems expertise is becoming available through high-quality libraries and frameworks."
 msgstr "<0>Better tooling</0> is making local-first development more accessible. What once required deep distributed systems expertise is becoming available through high-quality libraries and frameworks."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>Booking text</0>, which becomes the transaction title."
+msgstr "<0>Booking text</0>, which becomes the transaction title."
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Breach impact is isolated</0> — If your device is compromised, the exposure is limited to your accounts. An aggregator breach can expose every user simultaneously."
 msgstr "<0>Breach impact is isolated</0> — If your device is compromised, the exposure is limited to your accounts. An aggregator breach can expose every user simultaneously."
@@ -374,6 +386,10 @@ msgstr "<0>Budgeting templates.</0> Many free templates available"
 msgid "<0>Budgie Licensing</0> Email: licensing@budgie.at General inquiries: hello@budgie.at Website: https://budgie.at GitHub: <1>github.com/budgie-at/budgie</1>"
 msgstr "<0>Budgie Licensing</0> Email: licensing@budgie.at General inquiries: hello@budgie.at Website: https://budgie.at GitHub: <1>github.com/budgie-at/budgie</1>"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>Budgie reports an invalid file.</0> Make sure the PDF is an account statement from Erste Bank in Austria, downloaded from George, and not a statement from another bank."
+msgstr "<0>Budgie reports an invalid file.</0> Make sure the PDF is an account statement from Erste Bank in Austria, downloaded from George, and not a statement from another bank."
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "<0>Budgie</0> Email: legal@budgie.at Website: https://budgie.at"
 msgstr "<0>Budgie</0> Email: legal@budgie.at Website: https://budgie.at"
@@ -389,6 +405,10 @@ msgstr "<0>Business model drift</0> — Free tiers disappear. Subscription price
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Can privacy policy change without notice?</0> Red flag: Changes effective immediately. Green flag: Notice period, opt-out for material changes"
 msgstr "<0>Can privacy policy change without notice?</0> Red flag: Changes effective immediately. Green flag: Notice period, opt-out for material changes"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>Cash withdrawals</0>: ATM withdrawals are recognized as such. If you keep exactly one cash account in euros, Budgie records them as transfers into it; otherwise they wait together in the Categorize inbox."
+msgstr "<0>Cash withdrawals</0>: ATM withdrawals are recognized as such. If you keep exactly one cash account in euros, Budgie records them as transfers into it; otherwise they wait together in the Categorize inbox."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Change detection:</0> Identifying what has been modified since the last sync."
@@ -548,6 +568,10 @@ msgstr "<0>Data Storage</0>: Your choice"
 msgid "<0>Database layer</0>: Examine the schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
 msgstr "<0>Database layer</0>: Examine the schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>Date</0>: one date per booking, as printed on the statement. The PDF carries no time of day."
+msgstr "<0>Date</0>: one date per booking, as printed on the statement. The PDF carries no time of day."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Delete old accounts</0>: After migration, fully delete cloud-based app accounts and revoke aggregator access"
 msgstr "<0>Delete old accounts</0>: After migration, fully delete cloud-based app accounts and revoke aggregator access"
@@ -703,6 +727,10 @@ msgstr "<0>How are credentials handled?</0> Red flag: Stored credentials (even e
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>How does the app make money?</0> Red flag: Free tier with no clear revenue model. Green flag: Clear subscription or one-time purchase"
 msgstr "<0>How does the app make money?</0> Red flag: Free tier with no clear revenue model. Green flag: Clear subscription or one-time purchase"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>IBAN</0>: stored on the account, so the next statement lands in the same place."
+msgstr "<0>IBAN</0>: stored on the account, so the next statement lands in the same place."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>iCloud sync.</0> Data syncs through your own iCloud account."
@@ -1246,6 +1274,10 @@ msgstr "<0>Persistent access</0>: Tokens allow ongoing data access until explici
 msgid "<0>Personal Use</0>: Use Budgie for your own personal finance tracking"
 msgstr "<0>Personal Use</0>: Use Budgie for your own personal finance tracking"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>Place</0>: for card payments, the city and country from the booking text are kept as a note."
+msgstr "<0>Place</0>: for card payments, the city and country from the booking text are kept as a note."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Plaid Identity</0>: Identity verification using financial data"
 msgstr "<0>Plaid Identity</0>: Identity verification using financial data"
@@ -1643,6 +1675,10 @@ msgstr "<0>The backend services</0> - All server-side code for optional features
 msgid "<0>The Bad News:</0> As of March 23, 2024, Mint is fully shut down. If you didn’t export before then, your historical data may be gone."
 msgstr "<0>The Bad News:</0> As of March 23, 2024, Mint is fully shut down. If you didn’t export before then, your historical data may be gone."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>The balance differs from the bank.</0> Some statements are probably missing. Import the earlier ones as well; bookings you already have are skipped."
+msgstr "<0>The balance differs from the bank.</0> Some statements are probably missing. Import the earlier ones as well; bookings you already have are skipped."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The build infrastructure</0> - Our CI/CD pipelines and deployment configurations"
 msgstr "<0>The build infrastructure</0> - Our CI/CD pipelines and deployment configurations"
@@ -1662,6 +1698,10 @@ msgstr "<0>The learned index lives with your data</0> — What Budgie learns fro
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>The Long Now.</0> Your data should outlive any particular application, service, or company. Data longevity is a core design principle."
 msgstr "<0>The Long Now.</0> Your data should outlive any particular application, service, or company. Data longevity is a core design principle."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "<0>The long-press reports no matching accounts.</0> The file belongs to an account you have not added yet. Add it once through Step 2."
+msgstr "<0>The long-press reports no matching accounts.</0> The file belongs to an account you have not added yet. Add it once through Step 2."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The mobile application</0> - The complete mobile app source for iOS and Android"
@@ -2373,6 +2413,10 @@ msgstr "A durable personal finance app has properties that do not depend on any 
 msgid "A euro account keeps its own currency. The figure on Home counts what it is worth in yours today."
 msgstr "A euro account keeps its own currency. The figure on Home counts what it is worth in yours today."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "A euro current account at Erste Bank in Austria, with access to George in the browser or the app."
+msgstr "A euro current account at Erste Bank in Austria, with access to George in the browser or the app."
+
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "A fee is not a transfer"
 msgstr "A fee is not a transfer"
@@ -2758,6 +2802,10 @@ msgstr "Add them to your Home Screen and your numbers are already there before y
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Added in a typical month"
 msgstr "Added in a typical month"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Adding new statements later"
+msgstr "Adding new statements later"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Additive interface — suggestions sit alongside the text field, never replacing it"
@@ -3991,6 +4039,7 @@ msgstr "Block, the parent company of Cash App, disclosed that a former employee 
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
@@ -4604,6 +4653,10 @@ msgstr "Budgie learns your recurring spending and your one-offs separately. It s
 msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
 msgstr "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Budgie lists the account it found in the file, with its IBAN. Switch it on, or tap Select all."
+msgstr "Budgie lists the account it found in the file, with its IBAN. Switch it on, or tap Select all."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie lock screen on launch, showing Enter your PIN above four empty dots and a number keypad"
 msgstr "Budgie lock screen on launch, showing Enter your PIN above four empty dots and a number keypad"
@@ -4711,6 +4764,10 @@ msgstr "Budgie New Transfer screen with 250 entered above a row naming Main Chec
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie offers full offline functionality. Actual Budget works offline when self-hosted locally. Firefly III works offline on your local network. All cloud-based options (Lunch Money, YNAB, Monarch, Copilot) require internet connectivity for full functionality."
 msgstr "Budgie offers full offline functionality. Actual Budget works offline when self-hosted locally. Firefly III works offline on your local network. All cloud-based options (Lunch Money, YNAB, Monarch, Copilot) require internet connectivity for full functionality."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Budgie on your phone. You do not need a Budgie account, and Budgie never asks for your George login."
+msgstr "Budgie on your phone. You do not need a Budgie account, and Budgie never asks for your George login."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Budgie on-device AI suggests categories as you review imported transactions. You can also define custom categories and set up recurring transaction templates for bills and subscriptions so future entries are categorized automatically."
@@ -7085,6 +7142,10 @@ msgstr "Do I need to create an account to use Budgie?"
 msgid "Do I need to do anything to get these changes?"
 msgstr "Do I need to do anything to get these changes?"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Do I need to enter my George login in Budgie?"
+msgstr "Do I need to enter my George login in Budgie?"
+
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Do I need to give Budgie my bank login?"
 msgstr "Do I need to give Budgie my bank login?"
@@ -7188,6 +7249,10 @@ msgstr "Does Budgie send my transactions to a cloud AI?"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Does Budgie store my biometric data?"
 msgstr "Does Budgie store my biometric data?"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Does Budgie sync with George automatically?"
+msgstr "Does Budgie sync with George automatically?"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Does Budgie use any analytics or crash-reporting SDKs?"
@@ -7343,6 +7408,10 @@ msgstr "Down to the last week"
 msgid "Download the ZIP file containing your data"
 msgstr "Download the ZIP file containing your data"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/metadata.ts
+msgid "Download your Erste Bank statement as a PDF in George and import it into Budgie. Bookings and the IBAN carry over, and repeats are skipped."
+msgstr "Download your Erste Bank statement as a PDF in George and import it into Budgie. Bookings and the IBAN carry over, and repeats are skipped."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Download your transaction history"
 msgstr "Download your transaction history"
@@ -7419,6 +7488,10 @@ msgstr "Each split row keeps its own tags and comment — fully independent"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Each split, its own category"
 msgstr "Each split, its own category"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Each statement covers the period since the previous one, so one file rarely holds your whole history. For the first import, take the oldest statements you need as well: Budgie builds the account balance from the bookings it imports, so missing periods leave a balance that does not match the bank. According to George's own help, past statements can be downloaded for up to three years back. Overlapping files are fine, because Budgie skips bookings it already has."
+msgstr "Each statement covers the period since the previous one, so one file rarely holds your whole history. For the first import, take the oldest statements you need as well: Budgie builds the account balance from the bookings it imports, so missing periods leave a balance that does not match the bank. According to George's own help, past statements can be downloaded for up to three years back. Overlapping files are fine, because Budgie skips bookings it already has."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Each type brings its own form"
@@ -7583,6 +7656,8 @@ msgstr "Enter your email"
 msgid "Envestnet Yodlee, another major data aggregator, faced FTC action for allegedly selling detailed financial data that could be used to identify individuals. The data included transaction-level information that, combined with other data sources, enabled detailed consumer profiling."
 msgstr "Envestnet Yodlee, another major data aggregator, faced FTC action for allegedly selling detailed financial data that could be used to identify individuals. The data included transaction-level information that, combined with other data sources, enabled detailed consumer profiling."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/opengraph-image.tsx
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "erste"
 msgstr "erste"
@@ -7602,6 +7677,10 @@ msgstr "Erste Bank PDF Import"
 #: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
 msgid "Erste Bank PDF Import — Budgie"
 msgstr "Erste Bank PDF Import — Budgie"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Euro accounts at Erste Bank in Austria, from the PDF statement you download in George. One statement covers one account."
+msgstr "Euro accounts at Erste Bank in Austria, from the PDF statement you download in George. One statement covers one account."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Even if someone intercepts the connection, they can’t decrypt it"
@@ -8428,6 +8507,7 @@ msgstr "Free, no account, no subscription"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
@@ -8553,6 +8633,14 @@ msgstr "Generic templates from a shared library"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Genuine Offline Capability"
 msgstr "Genuine Offline Capability"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "george"
+msgstr "george"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "George keeps every statement of your Erste Bank account as a PDF. Budgie reads that PDF on your phone and turns it into an account with every booking, its date and amount, so your household book stays complete without typing a single line. Below is the whole route: downloading the statement in George, importing it into Budgie, and adding newer statements later."
+msgstr "George keeps every statement of your Erste Bank account as a PDF. Budgie reads that PDF on your phone and turns it into an account with every booking, its date and amount, so your household book stays complete without typing a single line. Below is the whole route: downloading the statement in George, importing it into Budgie, and adding newer statements later."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer"
@@ -8734,6 +8822,7 @@ msgstr "Holdings roll up into net worth alongside fiat accounts"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
@@ -9106,6 +9195,11 @@ msgstr "How to Contribute"
 msgid "How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on a single screen."
 msgstr "How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on a single screen."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/metadata.ts
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "How to download an Erste Bank statement as a PDF in George and import it into Budgie: the steps in George, what carries over, and how to add new statements later."
+msgstr "How to download an Erste Bank statement as a PDF in George and import it into Budgie: the steps in George, what carries over, and how to add new statements later."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "How to Evaluate a Budgeting App’s Privacy"
 msgstr "How to Evaluate a Budgeting App’s Privacy"
@@ -9121,6 +9215,10 @@ msgstr "How Your Data Stays on Your Device"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your PIN Protects Your Data"
 msgstr "How Your PIN Protects Your Data"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "how-to"
+msgstr "how-to"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "I already had debts before this change — do I need to redo anything?"
@@ -9166,6 +9264,10 @@ msgstr "If privacy matters to you, we built Budgie for exactly that reason. No s
 msgid "If the code is public, can’t hackers use it to find vulnerabilities?"
 msgstr "If the code is public, can’t hackers use it to find vulnerabilities?"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "If the import does not work"
+msgstr "If the import does not work"
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:"
 msgstr "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:"
@@ -9174,6 +9276,10 @@ msgstr "If the Service requires account creation, you are responsible for mainta
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer."
 msgstr "If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "If you already keep an account in Budgie with the same IBAN, the bookings go into that account instead of a new one. The PDF is read on your phone: the statement is not uploaded anywhere, and the bookings are stored only on your device."
+msgstr "If you already keep an account in Budgie with the same IBAN, the bookings go into that account instead of a new one. The PDF is read on your phone: the statement is not uploaded anywhere, and the bookings are stored only on your device."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "If you currently use cloud-based financial apps, here are concrete steps to reduce your exposure."
@@ -9279,6 +9385,8 @@ msgstr "Immediately notify us of any unauthorized use of your account"
 msgid "Implement features from the roadmap"
 msgstr "Implement features from the roadmap"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/opengraph-image.tsx
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
@@ -9292,6 +9400,12 @@ msgstr "Import accounts and transactions from a PrivatBank24 XLSX export — wit
 #: src/app/[lang]/features/privatbank-import/metadata.ts
 msgid "Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works."
 msgstr "Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/metadata.ts
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/opengraph-image.tsx
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Import an Erste George PDF Statement into Budgie"
+msgstr "Import an Erste George PDF Statement into Budgie"
 
 #: src/app/[lang]/features/csv-import/metadata.ts
 msgid "Import any bank's CSV with flexible column mapping, or start from a built-in Budgie, SmartBudget or FinEye preset. Re-importing rebuilds your ledger from the file. Universal escape hatch for banks without an API."
@@ -9364,6 +9478,10 @@ msgstr "In an era where data breaches and privacy violations make headlines dail
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "In an offline-first application:"
 msgstr "In an offline-first application:"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "In Budgie, tap the + button in the tab bar and choose Account."
+msgstr "In Budgie, tap the + button in the tab bar and choose Account."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "In connection with a merger, acquisition, or sale of assets (users will be notified)"
@@ -9568,6 +9686,10 @@ msgstr "Is local-first more expensive to develop?"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Is Monarch Money better than YNAB?"
 msgstr "Is Monarch Money better than YNAB?"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Is my statement sent to a server?"
+msgstr "Is my statement sent to a server?"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Is my voice recorded anywhere?"
@@ -11298,6 +11420,14 @@ msgstr "No. Budgie bank sync connects directly from your device to supported ban
 msgid "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
 msgstr "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "No. Budgie reads the PDF on your phone and keeps the bookings there. The statement is never uploaded."
+msgstr "No. Budgie reads the PDF on your phone and keeps the bookings there. The statement is never uploaded."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "No. Budgie recognizes bookings it has already imported and skips them, so overlapping statements are safe."
+msgstr "No. Budgie recognizes bookings it has already imported and skips them, so overlapping statements are safe."
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
 msgstr "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
@@ -11313,6 +11443,10 @@ msgstr "No. Deposit accounts are excluded from normal expense source selection, 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "No. Each part stays an ordinary expense in its category on the day it left your account. The plan only keeps score of what is paid and what is left."
 msgstr "No. Each part stays an ordinary expense in its category on the day it left your account. The plan only keeps score of what is paid and what is left."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "No. Erste import works from the PDF statement. To add new bookings, download the next statement and long-press the account card in Budgie."
+msgstr "No. Erste import works from the PDF statement. To add new bookings, download the next statement and long-press the account card in Budgie."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "No. Every transaction, category, and balance lives in a database on your device, encrypted with your PIN once you set one. Budgie has no backend that receives financial data."
@@ -11441,6 +11575,10 @@ msgstr "No. Widgets are built to be read closed. They pick up every change you m
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
 msgstr "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "No. You sign in to George yourself to download the statement. Budgie only sees the PDF you choose."
+msgstr "No. You sign in to George yourself to download the statement. Budgie only sees the PDF you choose."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 #: src/app/[lang]/privacy/page.tsx
@@ -11898,6 +12036,10 @@ msgstr "on-device expense tracker"
 msgid "on-device-ai"
 msgstr "on-device-ai"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Once the account is in Budgie, you do not need to repeat the setup. Download the next statement from George, then long-press the Erste account card on Budgie's home screen. The file picker opens straight away: pick the new PDF and Budgie imports it in the background."
+msgstr "Once the account is in Budgie, you do not need to repeat the setup. Download the next statement from George, then long-press the Erste account card on Budgie's home screen. The file picker opens straight away: pick the new PDF and Budgie imports it in the background."
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Once the refund is linked to the purchase in Budgie, the plan closes at the amount you already paid and no longer shows a next payment."
 msgstr "Once the refund is linked to the purchase in Budgie, the plan closes at the amount you already paid and no longer shows a next payment."
@@ -12295,6 +12437,10 @@ msgstr "Open Banking regulations in the EU and UK, along with voluntary API prog
 msgid "Open Budgie and go to Settings, then Import Data"
 msgstr "Open Budgie and go to Settings, then Import Data"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Open its statements. In George in the browser, the account has a Kontoauszüge (statements) button; in the George app, tap Funktionen (functions) and then Kontoauszüge."
+msgstr "Open its statements. In George in the browser, the account has a Kontoauszüge (statements) button; in the George app, tap Funktionen (functions) and then Kontoauszüge."
+
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that covers your full history, then export it as Excel — PDF and CSV files can't be imported. If Privat24 emails you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie's file picker."
 msgstr "Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that covers your full history, then export it as Excel — PDF and CSV files can't be imported. If Privat24 emails you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie's file picker."
@@ -12629,6 +12775,8 @@ msgstr "Pay in Parts: Installment Tracking"
 msgid "Payments"
 msgstr "Payments"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/opengraph-image.tsx
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "pdf"
 msgstr "pdf"
@@ -12716,6 +12864,10 @@ msgstr "Pick a category and Budgie proposes tags you already use, ready to tap."
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
 msgstr "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Pick a statement from the list and download it as a PDF. If George offers several layouts, take the regular A4 statement."
+msgstr "Pick a statement from the list and download it as a PDF. If George offers several layouts, take the regular A4 statement."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Pick any range by hand"
@@ -13847,6 +13999,10 @@ msgstr "Same picker across analytics, transactions, and recurring screens"
 msgid "Save it and the <0>categorization rule</0> runs on every future bank sync and import. Budgie also offers to apply it to matching transactions you already have."
 msgstr "Save it and the <0>categorization rule</0> runs on every future bank sync and import. Budgie also offers to apply it to matching transactions you already have."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Save the file to your phone. If you downloaded it on a computer, send it to your phone and save it to your files."
+msgstr "Save the file to your phone. If you downloaded it on a computer, send it to your phone and save it to your files."
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Save through the OS share sheet — Files, iCloud, Drive, anything"
 msgstr "Save through the OS share sheet — Files, iCloud, Drive, anything"
@@ -14329,6 +14485,10 @@ msgstr "Showing results for: <0>{searchQuery}</0>"
 msgid "Shutdown Scenarios"
 msgstr "Shutdown Scenarios"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Sign in to George and open the account you want to bring into Budgie."
+msgstr "Sign in to George and open the account you want to bring into Budgie."
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Similar methodology to YNAB"
 msgstr "Similar methodology to YNAB"
@@ -14709,6 +14869,10 @@ msgstr "Step 1: Export Your Transaction History"
 msgid "Step 1: Export Your YNAB Data"
 msgstr "Step 1: Export Your YNAB Data"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Step 1. Download the statement from George as a PDF"
+msgstr "Step 1. Download the statement from George as a PDF"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 2: Set Up Your Accounts in Budgie"
 msgstr "Step 2: Set Up Your Accounts in Budgie"
@@ -14716,6 +14880,10 @@ msgstr "Step 2: Set Up Your Accounts in Budgie"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 2: Understand What You’re Moving"
 msgstr "Step 2: Understand What You’re Moving"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Step 2. Import the PDF into Budgie"
+msgstr "Step 2. Import the PDF into Budgie"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 3: Choose Your Migration Path"
@@ -15085,6 +15253,14 @@ msgstr "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the do
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Tap it, the rule exists"
 msgstr "Tap it, the rule exists"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Tap Select File and pick the PDF statement you saved."
+msgstr "Tap Select File and pick the PDF statement you saved."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Tap Start Sync. Budgie creates an account called Erste EUR, fills it with the bookings and takes you back to the home screen."
+msgstr "Tap Start Sync. Budgie creates an account called Erste EUR, fills it with the bookings and takes you back to the home screen."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Tap the mic and say what you spent. Your speech becomes text on the phone, and the audio is never sent anywhere. One sentence can produce several transactions — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, each with its own amount and category."
@@ -16024,6 +16200,10 @@ msgstr "The split screen’s “left to assign” footer could get stuck at a fr
 msgid "The spoken currency picks the matching account automatically"
 msgstr "The spoken currency picks the matching account automatically"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "The statement carries no categories, so the other bookings arrive uncategorized. Your own categorization rules run on them, and whatever is left waits in the Categorize inbox, grouped by merchant. If you also hold money in other currencies, keep it in separate accounts: <0>multi-currency tracking</0> brings everything together in your main currency."
+msgstr "The statement carries no categories, so the other bookings arrive uncategorized. Your own categorization rules run on them, and whatever is left waits in the Categorize inbox, grouped by merchant. If you also hold money in other currencies, keep it in separate accounts: <0>multi-currency tracking</0> brings everything together in your main currency."
+
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
 msgstr "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
@@ -16289,6 +16469,10 @@ msgstr "This is a valid concern known as “build verification.” Budgie uses r
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is an extraordinarily detailed financial portrait. With closed-source software, you’re trusting that portrait to remain private based solely on corporate promises and legal agreements that can change at any time."
 msgstr "This is an extraordinarily detailed financial portrait. With closed-source software, you’re trusting that portrait to remain private based solely on corporate promises and legal agreements that can change at any time."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "This is an import from a file, not a live connection to the bank. When you want newer bookings, download the next statement and import it the same way: anything already in Budgie is skipped. The feature itself is described on the <0>Erste Bank PDF import</0> page."
+msgstr "This is an import from a file, not a live connection to the bank. When you want newer bookings, download the next statement and import it the same way: anything already in Budgie is skipped. The feature itself is described on the <0>Erste Bank PDF import</0> page."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "This is more secure than screen scraping, but privacy concerns remain:"
@@ -16923,6 +17107,10 @@ msgstr "Uncategorized Transactions Finder"
 msgid "Uncategorized transactions grouped by merchant, with suggestions from your own history. No AI download needed."
 msgstr "Uncategorized transactions grouped by merchant, with suggestions from your own history. No AI download needed."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Under Account Sync, choose Erste Bank. Budgie shows the same George steps as a short reminder."
+msgstr "Under Account Sync, choose Erste Bank. Budgie shows the same George steps as a short reminder."
+
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Under each total is that tag's share — of the period's income, or of its expenses. The shares can add up past 100%, because a transaction can carry several tags and counts in full under each of them. Tapping a row opens the transactions behind it."
 msgstr "Under each total is that tag's share — of the period's income, or of its expenses. The shares can add up past 100%, because a transaction can carry several tags and counts in full under each of them. Tapping a row opens the transactions behind it."
@@ -17366,6 +17554,10 @@ msgstr "What beta testers changed after a week"
 msgid "What Budgie guarantees"
 msgstr "What Budgie guarantees"
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "What Budgie takes from the statement"
+msgstr "What Budgie takes from the statement"
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "What Changes Architecturally"
 msgstr "What Changes Architecturally"
@@ -17785,6 +17977,10 @@ msgstr "What you lent adds back"
 msgid "What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment."
 msgstr "What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment."
 
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "What you need"
+msgstr "What you need"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "What you owe subtracts"
 msgstr "What you owe subtracts"
@@ -17902,6 +18098,10 @@ msgstr "When exactly one of your existing rules already matches the transaction,
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
 msgstr "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "When it finishes, Budgie shows how many bookings were new, how many were already imported and how many it checked. Nothing is doubled, so you can import the same statement twice without harm."
+msgstr "When it finishes, Budgie shows how many bookings were new, how many were already imported and how many it checked. Nothing is doubled, so you can import the same statement twice without harm."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "When one card pays another"
@@ -18138,6 +18338,10 @@ msgstr "Which banks have direct API support?"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Which budget periods are supported?"
 msgstr "Which budget periods are supported?"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Which Erste accounts can I import?"
+msgstr "Which Erste accounts can I import?"
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Which Erste statement formats are supported?"
@@ -18511,6 +18715,10 @@ msgstr "Will Budgie ever charge for features?"
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "Will consolidation re-process my existing transactions?"
 msgstr "Will consolidation re-process my existing transactions?"
+
+#: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
+msgid "Will importing the same statement twice create duplicates?"
+msgstr "Will importing the same statement twice create duplicates?"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Will it suggest things I never bought?"
