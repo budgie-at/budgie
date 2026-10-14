@@ -3,7 +3,6 @@ import { Trans } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { MEDIA_MANIFEST } from '../../../generic/constant/media-manifest.constant';
-import { MediaKindEnum } from '../../../generic/enum/media-kind.enum';
 import { FEATURE_REGISTRY } from '../../constant/feature-registry.constant';
 import { FeatureRelatedCard } from '../feature-related-card/feature-related-card';
 
@@ -17,7 +16,7 @@ export const FeatureRelated = ({ locale, slugs }: Props) => {
         .map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug))
         .filter(isDefined)
         .flatMap(feature =>
-            MEDIA_MANIFEST.filter(entry => entry.slug === feature.slug && entry.kind === MediaKindEnum.STILL)
+            MEDIA_MANIFEST.filter(entry => entry.slug === feature.slug)
                 .slice(0, 1)
                 .map(entry => ({ feature, scene: entry.scene }))
         )

@@ -1,6 +1,5 @@
 import { StoryDensityEnum } from '../../enum/story-density.enum';
 import { FeatureStoryCallout } from '../feature-story-callout/feature-story-callout';
-import { FeatureStoryClip } from '../feature-story-clip/feature-story-clip';
 import { FeatureStoryIntro } from '../feature-story-intro/feature-story-intro';
 import { FeatureStoryPoint } from '../feature-story-point/feature-story-point';
 import { FeatureStoryShot } from '../feature-story-shot/feature-story-shot';
@@ -24,7 +23,6 @@ const FeatureStoryRoot = ({ density = StoryDensityEnum.DEFAULT, children }: Prop
 
 export const FeatureStory = Object.assign(FeatureStoryRoot, {
     Callout: FeatureStoryCallout,
-    Clip: FeatureStoryClip,
     Intro: FeatureStoryIntro,
     Point: FeatureStoryPoint,
     Shot: FeatureStoryShot,

@@ -80,17 +80,6 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         <Trans>Jars come across too</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
-
-                <FeatureStory.Step index={2} title={<Trans>Grouped under the bank</Trans>}>
-                    <Trans>Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again.</Trans>
-                </FeatureStory.Step>
-                <FeatureStory.Clip
-                    alt={t(i18n)`Screen recording of the Monobank group on the Budgie home screen opening its synced accounts`}
-                    index={2}
-                    locale={lang}
-                    scene="monobank-sync-clip-1"
-                    slug="monobank-sync"
-                />
             </FeatureStory>
 
             <FeatureBenefits>

@@ -2501,10 +2501,6 @@ msgstr "A single month says little about your habits. Runway only counts finishe
 msgid "A single Runway verdict replaces the old cash-flow widget, on-device AI comes back for existing installs with a real off switch and loads only while it's needed, and a batch of import and transfer fixes lands. Here is everything from the September 2026 cycle."
 msgstr "A single Runway verdict replaces the old cash-flow widget, on-device AI comes back for existing installs with a real off switch and loads only while it's needed, and a batch of import and transfer fixes lands. Here is everything from the September 2026 cycle."
 
-#: src/app/[lang]/features/runway/page.tsx
-msgid "A small pill on Home shows the months left or what you add a month. Tap it for the full picture."
-msgstr "A small pill on Home shows the months left or what you add a month. Tap it for the full picture."
-
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A source of crashes around backup restore, PIN changes, and resetting the app is gone: those operations now run strictly one at a time instead of racing each other."
 msgstr "A source of crashes around backup restore, PIN changes, and resetting the app is gone: those operations now run strictly one at a time instead of racing each other."
@@ -4252,6 +4248,7 @@ msgid "Budgie adds an English translation and a list of search keywords next to 
 msgstr "Budgie adds an English translation and a list of search keywords next to the original name. Both are saved with the category, so search and suggestions can find it whichever form you remember."
 
 #: src/app/[lang]/page.tsx
+#: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
 msgstr "Budgie analytics screen breaking spending down by category with amounts and percentages"
 
@@ -4717,6 +4714,7 @@ msgid "Budgie Monobank screen listing two cards and a car jar with their balance
 msgstr "Budgie Monobank screen listing two cards and a car jar with their balances"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
+#: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 msgstr "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 
@@ -8816,10 +8814,6 @@ msgstr "Group subtotal, already converted"
 msgid "Grouped by month"
 msgstr "Grouped by month"
 
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Grouped under the bank"
-msgstr "Grouped under the bank"
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Groups convert as they sum"
 msgstr "Groups convert as they sum"
@@ -8935,10 +8929,6 @@ msgstr "Home and analytics screens convert to your base currency automatically"
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt has been settled."
 msgstr "Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt has been settled."
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
-msgstr "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
 
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
 msgid "home screen"
@@ -14093,10 +14083,6 @@ msgstr "Revoke access through your bank’s connected apps settings"
 msgid "Rewind a week, not a year"
 msgstr "Rewind a week, not a year"
 
-#: src/app/[lang]/features/runway/page.tsx
-msgid "Right under your balance"
-msgstr "Right under your balance"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Roadmap Transparency"
 msgstr "Roadmap Transparency"
@@ -14275,19 +14261,6 @@ msgstr "Scans 24 months of history to detect a pattern, not just the current mon
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scheduled transactions"
 msgstr "Scheduled transactions"
-
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "Screen recording of Budgie analytics filtering spending by category and drilling into a period"
-msgstr "Screen recording of Budgie analytics filtering spending by category and drilling into a period"
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
-msgstr "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
-
-#: src/app/[lang]/features/runway/page.tsx
-msgid "Screen recording of the runway pill under the Budgie home balance opening the Runway tab"
-msgstr "Screen recording of the runway pill under the Budgie home balance opening the Runway tab"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Screen scraping means a third party can do anything you can do in your bank account. They choose not to, but the technical capability exists."

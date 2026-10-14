@@ -2502,10 +2502,6 @@ msgstr "Один місяць мало що каже про ваші звичк�
 msgid "A single Runway verdict replaces the old cash-flow widget, on-device AI comes back for existing installs with a real off switch and loads only while it's needed, and a batch of import and transfer fixes lands. Here is everything from the September 2026 cycle."
 msgstr "Єдиний висновок Runway замінює старий віджет грошового потоку, локальний ШІ повертається для наявних інсталяцій із справжнім перемикачем вимкнення та завантажується лише за потреби, а також виходить пакет виправлень імпорту й переказів. Ось усе з циклу вересня 2026 року."
 
-#: src/app/[lang]/features/runway/page.tsx
-msgid "A small pill on Home shows the months left or what you add a month. Tap it for the full picture."
-msgstr "Невеликий індикатор на головному екрані показує, скільки місяців залишилось або скільки ви додаєте щомісяця. Торкніться його, щоб побачити все."
-
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A source of crashes around backup restore, PIN changes, and resetting the app is gone: those operations now run strictly one at a time instead of racing each other."
 msgstr "Усунено джерело збоїв, пов'язаних із відновленням резервної копії, зміною PIN-коду та скиданням застосунку: тепер ці операції виконуються строго по черзі, а не змагаються одна з одною."
@@ -4253,6 +4249,7 @@ msgid "Budgie adds an English translation and a list of search keywords next to 
 msgstr "Budgie додає поруч з оригінальною назвою англійський переклад і список ключових слів для пошуку. Обидва зберігаються разом із категорією, тож пошук і підказки знайдуть її, яку б форму ви не пам’ятали."
 
 #: src/app/[lang]/page.tsx
+#: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
 msgstr "Екран аналітики Budgie з розподілом витрат за категоріями, сумами та відсотками"
 
@@ -4718,6 +4715,7 @@ msgid "Budgie Monobank screen listing two cards and a car jar with their balance
 msgstr "Екран Monobank у Budgie із двома картками та банкою на авто з їхніми балансами"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
+#: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 msgstr "Екран Monobank у Budgie із двома картками та банкою на авто — кожна з балансом і перемикачем"
 
@@ -8817,10 +8815,6 @@ msgstr "Підсумок групи, вже перерахований"
 msgid "Grouped by month"
 msgstr "Згруповано за місяцем"
 
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Grouped under the bank"
-msgstr "Згруповано під банком"
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Groups convert as they sum"
 msgstr "Групи перераховують під час підсумовування"
@@ -8936,10 +8930,6 @@ msgstr "Головний екран та аналітика автоматичн
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt has been settled."
 msgstr "Головний екран групує борги за напрямком: «Ви винні» та «Вам винні», кожен із власним підсумком і смугою погашення."
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
-msgstr "Головний екран тримає все підключення в одній групі Monobank, а шестерня поруч знову відкриває рахунки."
 
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
 msgid "home screen"
@@ -14094,10 +14084,6 @@ msgstr "Відкликати доступ через налаштування п
 msgid "Rewind a week, not a year"
 msgstr "Відмотайте тиждень, а не рік"
 
-#: src/app/[lang]/features/runway/page.tsx
-msgid "Right under your balance"
-msgstr "Одразу під вашим балансом"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Roadmap Transparency"
 msgstr "Прозорість дорожньої карти"
@@ -14276,19 +14262,6 @@ msgstr "Сканує 24 місяці історії, щоб виявити за�
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scheduled transactions"
 msgstr "Заплановані транзакції"
-
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "Screen recording of Budgie analytics filtering spending by category and drilling into a period"
-msgstr "Запис екрана аналітики Budgie з фільтруванням витрат за категоріями та переходом у період"
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
-msgstr "Запис екрана: група Monobank на головному екрані Budgie відкриває свої синхронізовані рахунки"
-
-#: src/app/[lang]/features/runway/page.tsx
-msgid "Screen recording of the runway pill under the Budgie home balance opening the Runway tab"
-msgstr "Запис екрана: індикатор запасу під балансом на головному екрані Budgie відкриває вкладку «Запас»"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Screen scraping means a third party can do anything you can do in your bank account. They choose not to, but the technical capability exists."

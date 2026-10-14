@@ -45,23 +45,12 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     <Trans>From the pill under your balance to the costs behind the number.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Right under your balance</Trans>}>
-                    <Trans>A small pill on Home shows the months left or what you add a month. Tap it for the full picture.</Trans>
-                </FeatureStory.Step>
-                <FeatureStory.Clip
-                    alt={t(i18n)`Screen recording of the runway pill under the Budgie home balance opening the Runway tab`}
-                    index={0}
-                    locale={lang}
-                    scene="runway-clip-1"
-                    slug="runway"
-                />
-
-                <FeatureStory.Step index={1} title={<Trans>Months left, and the month it ends</Trans>}>
+                <FeatureStory.Step index={0} title={<Trans>Months left, and the month it ends</Trans>}>
                     <Trans>
                         When you spend more than you earn, Runway divides your balance by the gap and names the month it runs out.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={1} locale={lang} scene="runway-1" slug="runway">
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="runway-1" slug="runway">
                     <FeatureStory.Callout y={0.234}>
                         <Trans>Months left at this pace</Trans>
                     </FeatureStory.Callout>
@@ -73,7 +62,7 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Growing is a verdict too</Trans>}>
+                <FeatureStory.Step index={1} title={<Trans>Growing is a verdict too</Trans>}>
                     <Trans>
                         Earn more than you spend and Runway shows what you add each month and how many months of spending you have.
                     </Trans>
@@ -82,7 +71,7 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie Runway tab with a growing verdict showing the amount added per month and the months of expenses covered`}
-                    index={2}
+                    index={1}
                     locale={lang}
                     scene="runway-2"
                     slug="runway"
@@ -95,12 +84,12 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={3} title={<Trans>What drives the number</Trans>}>
+                <FeatureStory.Step index={2} title={<Trans>What drives the number</Trans>}>
                     <Trans>Monthly history flags one-off months, and your biggest categories or tags are listed by monthly cost.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Runway monthly history with a one-off month highlighted above the spending drivers by category`}
-                    index={3}
+                    index={2}
                     locale={lang}
                     scene="runway-3"
                     slug="runway"
@@ -116,12 +105,12 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={4} title={<Trans>Your call in Settings</Trans>}>
+                <FeatureStory.Step index={3} title={<Trans>Your call in Settings</Trans>}>
                     <Trans>Hide the pill from Home, or let Runway count your crypto at today&apos;s market value.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie settings with the Runway section showing the show on home and include crypto switches`}
-                    index={4}
+                    index={3}
                     locale={lang}
                     scene="runway-4"
                     slug="runway"

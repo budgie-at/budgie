@@ -7,12 +7,8 @@ import { emptyFn, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-communi
 import type { ReactNode } from 'react';
 
 const STORY_DESKTOP_QUERY = '(min-width:1024px)';
-const STORY_STATIC_QUERY = '(prefers-reduced-motion:reduce)';
 const STORY_DESKTOP_ANCHOR = 0.5;
 const STORY_PINNED_ANCHOR = 0.85;
-const STORY_PROGRESS_PROPERTY = '--story-progress';
-const STORY_PROGRESS_STEPS = 400;
-const STORY_MOTION_TARGETS = '.story-frame,.story-bloom,.story-rail-progress';
 
 const readSaveData = () => {
     const connection: unknown = Reflect.get(navigator, 'connection');
@@ -107,42 +103,6 @@ const attachStoryObserver = (steps: HTMLElement[], stages: HTMLElement[], activa
     };
 };
 
-const supportsScrollTimeline = () => 'CSS' in window && CSS.supports('animation-timeline', 'view()');
-
-const skipsScrollFallback = () => window.matchMedia(STORY_STATIC_QUERY).matches || readSaveData() || supportsScrollTimeline();
-
-const trackStoryProgress = (grid: HTMLElement) => {
-    const targets = [...grid.querySelectorAll<HTMLElement>(STORY_MOTION_TARGETS)];
-    let lastProgress = -1;
-
-    const update = () => {
-        const bounds = grid.getBoundingClientRect();
-        const span = bounds.height - window.innerHeight;
-        const ratio = span > 0 ? -bounds.top / span : 0;
-        const progress = Math.round(Math.min(1, Math.max(0, ratio)) * STORY_PROGRESS_STEPS) / STORY_PROGRESS_STEPS;
-
-        if (progress === lastProgress) {
-            return;
-        }
-
-        lastProgress = progress;
-        targets.forEach(target => {
-            target.style.setProperty(STORY_PROGRESS_PROPERTY, String(progress));
-        });
-    };
-
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update, { passive: true });
-    grid.dataset.storyMotion = 'fallback';
-    update();
-
-    return () => {
-        window.removeEventListener('scroll', update);
-        window.removeEventListener('resize', update);
-        delete grid.dataset.storyMotion;
-    };
-};
-
 const startStory = (grid: HTMLElement, saveData: boolean, activate: (index: number) => void) => {
     grid.dataset.ready = '';
     grid.toggleAttribute('data-save-data', saveData);
@@ -172,13 +132,11 @@ export const FeatureStoryStage = ({ children }: Props) => {
         const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
         const activate = createActivator(grid, steps, stages);
         const stopObserving = attachStoryObserver(steps, stages, activate);
-        const stopProgress = skipsScrollFallback() ? emptyFn : trackStoryProgress(grid);
 
         startStory(grid, readSaveData(), activate);
 
         return () => {
             stopObserving();
-            stopProgress();
             grid.removeAttribute('data-ready');
         };
     }, []);
