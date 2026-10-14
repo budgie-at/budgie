@@ -4,6 +4,7 @@ import { ARTICLE_METADATA as HistoricalExchangeRatesBudgetAnalyticsArticleMetada
 import { ARTICLE_METADATA as LocalFirstMovementDevelopersArticleMetadata } from '../../app/[lang]/blog/local-first-movement-developers/metadata';
 import { ARTICLE_METADATA as MintAlternativesDevelopersArticleMetadata } from '../../app/[lang]/blog/mint-alternatives-developers/metadata';
 import { ARTICLE_METADATA as MintShutdownPrivateAlternativeArticleMetadata } from '../../app/[lang]/blog/mint-shutdown-private-alternative/metadata';
+import { ARTICLE_METADATA as MonobankApiTokenArticleMetadata } from '../../app/[lang]/blog/monobank-api-token/metadata';
 import { ARTICLE_METADATA as OfflineFirstBankDataSafetyArticleMetadata } from '../../app/[lang]/blog/offline-first-bank-data-safety/metadata';
 import { ARTICLE_METADATA as OfflineFirstPrivacyFinancialAppArticleMetadata } from '../../app/[lang]/blog/offline-first-privacy-financial-app/metadata';
 import { ARTICLE_METADATA as OnDeviceAiBudgetAppExplainerArticleMetadata } from '../../app/[lang]/blog/on-device-ai-budget-app-explainer/metadata';
@@ -27,5 +28,6 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     OfflineFirstBankDataSafetyArticleMetadata,
     HistoricalExchangeRatesBudgetAnalyticsArticleMetadata,
     WhatsNewAugustSeptember2026ArticleMetadata,
-    WhatsNewSeptember2026ArticleMetadata
+    WhatsNewSeptember2026ArticleMetadata,
+    MonobankApiTokenArticleMetadata
 ];

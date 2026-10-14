@@ -42,6 +42,10 @@ msgstr "\"Ist die Cloud nicht bequemer?\""
 msgid "“Last Month” always means the most-recent COMPLETED month — never the half-finished current one"
 msgstr "„Letzter Monat“ bezeichnet stets den zuletzt abgeschlossenen Monat – nie den laufenden"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "“Sync Failed” or the token stopped working"
+msgstr "„Synchronisation fehlgeschlagen“ oder der Token funktioniert nicht mehr"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "“We take security seriously” (how? show us the evidence)"
 msgstr "„Wir nehmen Sicherheit ernst\" (wie genau? Zeigen Sie uns die Belege)"
@@ -1908,6 +1912,10 @@ msgstr "1. Einleitung"
 msgid "1. Local-First Architecture"
 msgstr "Local-First-Architektur"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "1. Open the Monobank connection in Budgie"
+msgstr "1. Öffne die Monobank-Verbindung in Budgie"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "1. Your Data is Always at Risk"
 msgstr "Ihre Daten sind immer gefährdet"
@@ -2009,6 +2017,10 @@ msgstr "2. Daten, die wir erheben"
 msgid "2. Description of Service"
 msgstr "2. Beschreibung des Dienstes"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "2. Get your personal token from Monobank"
+msgstr "2. Hol dir deinen persönlichen Token bei Monobank"
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "2. Non-Compete for SaaS"
 msgstr "2. Wettbewerbsverbot für SaaS"
@@ -2061,6 +2073,10 @@ msgstr "Multi-Währungs-Unterstützung ohne Tracking"
 msgid "3. No Liability"
 msgstr "3. Haftungsausschluss"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "3. Paste the token into Budgie"
+msgstr "3. Füge den Token in Budgie ein"
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "3. Permitted Uses"
 msgstr "3. Zulässige Nutzungen"
@@ -2097,6 +2113,10 @@ msgstr "4. Lizenz und zulässige Nutzung"
 msgid "4. Open Source Transparency"
 msgstr "Open-Source-Transparenz"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "4. Pick your cards and jars"
+msgstr "4. Wähle deine Karten und Sparziele"
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "4. Restricted Uses"
 msgstr "4. Eingeschränkte Nutzungen"
@@ -2129,6 +2149,10 @@ msgstr "5 · −132,72 €"
 msgid "5 Languages"
 msgstr "5 Sprachen"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "5. Choose how much history to load"
+msgstr "5. Lege fest, wie viel Verlauf geladen wird"
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "5. Data Sharing and Disclosure"
 msgstr "5. Weitergabe und Offenlegung von Daten"
@@ -2160,6 +2184,10 @@ msgstr "5.3 Dienste Dritter"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "6. Contributing to Budgie"
 msgstr "6. Beiträge zu Budgie"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "6. Tap Start Sync"
+msgstr "6. Tippe auf „Synchronisation starten“"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "6. User Content and Data"
@@ -2818,6 +2846,10 @@ msgstr "Nach der Auswahl einer Kategorie schlägt das Modell auf dem Gerät bis 
 msgid "After selecting a category, the on-device model proposes up to three tags as tappable pill chips — with a lighter fallback that answers while that model is still loading."
 msgstr "Nach der Auswahl einer Kategorie schlägt das Modell auf dem Gerät bis zu drei Tags als antippbare Pill-Chips vor — mit einem leichteren Ausweichverfahren, das antwortet, während dieses Modell noch lädt."
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "After setup: each card and jar is its own account, with a switch to pause it."
+msgstr "Nach der Einrichtung ist jede Karte und jedes Sparziel ein eigenes Konto mit einem Schalter zum Pausieren."
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "After you categorize a single group, the bar at the bottom of the screen offers to create a rule. The rule editor opens already filled in with the words the group has in common and the category you just picked."
 msgstr "Nachdem Sie eine einzelne Gruppe kategorisiert haben, bietet die Leiste am unteren Bildschirmrand an, eine Regel zu erstellen. Der Regeleditor öffnet sich bereits ausgefüllt – mit den Wörtern, die alle Umsätze der Gruppe gemeinsam haben, und der Kategorie, die Sie gerade gewählt haben."
@@ -3464,6 +3496,10 @@ msgstr "Automatische Überweisungskonsolidierung – beide Seiten einer bankübe
 msgid "automation"
 msgstr "Automatisierung"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Back on Connect Monobank, paste the token into the field at the bottom; the button next to the field pastes it from your clipboard in one tap. The field hides the token as you type. Then tap Fetch Accounts."
+msgstr "Zurück auf „Monobank verbinden“ fügst du den Token unten ins Feld ein; der Button daneben übernimmt ihn mit einem Tippen aus der Zwischenablage. Das Feld verbirgt den Token bei der Eingabe. Tippe dann auf „Konten abrufen“."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Background FX-rate refresh converts every account to your base currency"
 msgstr "Hintergrund-Wechselkursaktualisierung wandelt jedes Konto in Ihre Basiswährung um"
@@ -3633,6 +3669,8 @@ msgid "bank statement import app"
 msgstr "App für Kontoauszug-Import"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
+#: src/app/[lang]/blog/monobank-api-token/opengraph-image.tsx
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
@@ -3996,6 +4034,7 @@ msgstr "Block, die Muttergesellschaft von Cash App, gab bekannt, dass ein ehemal
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
@@ -4266,6 +4305,10 @@ msgstr "Budgie-Bildschirm \"Binance verbinden\" mit der Zeile \"API-Schlüssel a
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Budgie Connect Binance screen with the Get API Key row, a four-step setup list, and the API key and secret fields"
 msgstr "Budgie-Bildschirm Binance verbinden mit der Zeile API-Schlüssel abrufen, einer vierstufigen Anleitung und den Feldern für API-Schlüssel und Secret"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Budgie Connect Monobank screen with the Get API Token button, three setup steps and the token field"
+msgstr "Budgie-Bildschirm „Monobank verbinden“ mit dem Button „API-Token abrufen“, drei Einrichtungsschritten und dem Token-Feld"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Connect Monobank screen with the Get API Token row and the token field"
@@ -5027,6 +5070,10 @@ msgstr "Budgie wandelt den Händlerkategoriecode, den die Bank jeder Kartenzahlu
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie verwendet eine Source-Available-Lizenz, die es Ihnen ermöglicht, den Code anzusehen, zu ändern und dazu beizutragen, während sichergestellt wird, dass nur wir die offizielle App monetarisieren können. Dies hält das Projekt nachhaltig und bewahrt gleichzeitig Transparenz."
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Budgie uses it for exactly two things: fetching your list of cards and jars with their balances, and fetching the transactions for the accounts you choose."
+msgstr "Budgie nutzt ihn für genau zwei Dinge: um die Liste deiner Karten und Sparziele mit ihren Salden abzurufen und um die Transaktionen der Konten zu laden, die du auswählst."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie uses the O'SAASY License, a source-available license that lets you read, modify, publish, and distribute the code while reserving hosted-service monetization for the original project. We chose this license for several reasons:"
 msgstr "Budgie verwendet die O'SAASY License, eine Source-Available-Lizenz, die es erlaubt, den Code zu lesen, zu ändern, zu veröffentlichen und zu verteilen, während die Monetarisierung gehosteter Dienste dem ursprünglichen Projekt vorbehalten bleibt. Wir haben diese Lizenz aus mehreren Gründen gewählt:"
@@ -5512,6 +5559,10 @@ msgstr "Können Strafverfolgungsbehörden über Budgie auf meine Daten zugreifen
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Can one rule do more than one thing?"
 msgstr "Kann eine Regel mehr als eine Sache bewirken?"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Can someone move my money with this token?"
+msgstr "Kann jemand mit diesem Token mein Geld bewegen?"
 
 #: src/app/[lang]/security/page.tsx
 msgid "Can someone see my balance in the app switcher?"
@@ -6399,6 +6450,10 @@ msgstr "Erstellen Sie in Budgie ein Konto für jedes Bankkonto oder jede Kreditk
 msgid "Create unlimited categories with a custom name and icon, plus AI-generated translation and search keywords"
 msgstr "Erstellen Sie unbegrenzt viele Kategorien mit eigenem Namen und Symbol, dazu eine KI-generierte Übersetzung und Suchbegriffe"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Create your personal token on that page and copy it."
+msgstr "Erstelle auf dieser Seite deinen persönlichen Token und kopiere ihn."
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Create, merge, reassign, and reorder categories until they match how you actually think about money."
 msgstr "Kategorien erstellen, zusammenführen, neu zuweisen und neu anordnen, bis sie dazu passen, wie Sie tatsächlich über Geld nachdenken."
@@ -7073,6 +7128,10 @@ msgstr "Muss ich das ganze Budget von Hand erstellen?"
 msgid "Do I have to re-add every account when my token expires?"
 msgstr "Muss ich jedes Konto neu hinzufügen, wenn mein Token abläuft?"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Do I need a separate token for each card?"
+msgstr "Brauche ich für jede Karte einen eigenen Token?"
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Do I need an account or an API key?"
 msgstr "Brauche ich ein Konto oder einen API-Schlüssel?"
@@ -7113,6 +7172,10 @@ msgstr "Ändern meine Analysefilter das Ergebnis?"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Do not publicly disclose the vulnerability until we have addressed it"
 msgstr "Die Sicherheitslücke nicht öffentlich bekannt machen, bevor wir sie behoben haben"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Do not sync history: nothing from the past is imported, only new transactions from now on."
+msgstr "„Verlauf nicht synchronisieren“: Nichts aus der Vergangenheit wird importiert, nur neue Transaktionen ab jetzt."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Do privacy-focused community members discuss the implementation?"
@@ -7177,6 +7240,10 @@ msgstr "Hat Budgie Werbung oder eine kostenpflichtige Stufe?"
 #: src/app/[lang]/security/page.tsx
 msgid "Does Budgie have any server-side security risks?"
 msgstr "Hat Budgie serverseitige Sicherheitsrisiken?"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Does Budgie need my Monobank login or card details?"
+msgstr "Braucht Budgie meinen Monobank-Login oder meine Kartendaten?"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Does Budgie send any financial data to a server?"
@@ -7799,6 +7866,10 @@ msgstr "Alles oben läuft aus einer Datenbank auf dem Gerät. Der Flugmodus änd
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Everything runs on your phone after a one-time download"
 msgstr "Alles läuft nach einem einmaligen Download auf dem Gerät"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Everything the connection does, from jars to transfers between your own cards, is described on the <0>Monobank sync</0> page."
+msgstr "Was die Verbindung alles kann, von Sparzielen bis zu Überweisungen zwischen deinen eigenen Karten, steht auf der Seite <0>Monobank-Synchronisation</0>."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Everything we have described in this article can be verified by examining our source code. Budgie is open source, and we believe this transparency is essential for any application that handles sensitive financial data."
@@ -8433,6 +8504,7 @@ msgstr "Kostenlos, kein Konto, kein Abonnement"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
@@ -8567,6 +8639,10 @@ msgstr "Gesten"
 msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
 msgstr "Bekomme Privatsphäre wie bei selbst gehosteten Finanz-Apps, ohne einen Server zu betreiben. Budgie behält Daten auf deinem Smartphone, während dein eigener Cloud-Speicher Backups übernimmt."
 
+#: src/app/[lang]/blog/monobank-api-token/metadata.ts
+msgid "Get your personal Monobank API token, paste it into Budgie and choose how much history to load. Step by step, plus privacy and sync fixes."
+msgstr "Hol dir deinen persönlichen Monobank-API-Token, füge ihn in Budgie ein und wähle, wie viel Verlauf geladen wird. Schritt für Schritt, mit Tipps."
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Getting started"
 msgstr "Der Einstieg"
@@ -8598,6 +8674,10 @@ msgstr "GnuCash ist ein Veteran der Open-Source-Finanzsoftware und bietet doppel
 #: src/app/[lang]/not-found.tsx
 msgid "Go Home"
 msgstr "Zur Startseite"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Go to New Account and tap Monobank under Account Sync. If you are still setting up the app, the onboarding offers the same Monobank connection. You land on the Connect Monobank screen."
+msgstr "Öffne „Neues Konto“ und tippe unter „Account-Synchronisierung“ auf „Monobank“. Wenn du die App gerade erst einrichtest, bietet dir das Onboarding dieselbe Monobank-Verbindung an. Du landest auf dem Bildschirm „Monobank verbinden“."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Go to Settings"
@@ -8713,6 +8793,10 @@ msgstr "Historische Daten für Ihre Ziele nicht entscheidend sind"
 msgid "Historical Exchange Rates in Budget Analytics"
 msgstr "Historische Wechselkurse in der Budgetanalyse"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "History is loading slowly"
+msgstr "Der Verlauf lädt langsam"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Hobbyist security researchers and bug hunters"
 msgstr "Hobbymäßige Sicherheitsforscher und Bug-Jäger"
@@ -8739,6 +8823,7 @@ msgstr "Positionen fließen zusammen mit Fiat-Konten in das Nettovermögen ein"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
@@ -9050,6 +9135,10 @@ msgstr "Wie viele Tags kann ich einer Transaktion hinzufügen?"
 msgid "How much do you value privacy?"
 msgstr "Wie wichtig ist Ihnen Datenschutz?"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "How much history should I pick?"
+msgstr "Wie viel Verlauf sollte ich wählen?"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "How much of the month is left"
 msgstr "Wie viel vom Monat noch übrig ist"
@@ -9115,6 +9204,10 @@ msgstr "So bewerten Sie den Datenschutz einer Budget-App"
 msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "So exportieren Sie Ihre Mint-Daten (bevor es zu spät ist)"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "How to get a Monobank token and connect it to your expense tracker"
+msgstr "So bekommst du einen Monobank-Token und verbindest ihn mit deinem Ausgaben-Tracker"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your Data Stays on Your Device"
 msgstr "Wie Ihre Daten auf Ihrem Gerät bleiben"
@@ -9122,6 +9215,11 @@ msgstr "Wie Ihre Daten auf Ihrem Gerät bleiben"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your PIN Protects Your Data"
 msgstr "Wie Ihre PIN Ihre Daten schützt"
+
+#: src/app/[lang]/blog/monobank-api-token/opengraph-image.tsx
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "how-to"
+msgstr "Anleitung"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "I already had debts before this change — do I need to redo anything?"
@@ -9154,6 +9252,10 @@ msgstr "Wenn beim Export eine PIN festgelegt war, ja — das Backup ist eine Kop
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect."
 msgstr "Sollte eine Bestimmung dieser Bedingungen als nicht durchsetzbar oder ungültig befunden werden, wird diese Bestimmung nur im notwendigen Mindestmaß eingeschränkt oder aufgehoben, sodass die übrigen Bedingungen in vollem Umfang in Kraft bleiben."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "If Monobank keeps rejecting the token, Budgie retries a few times, then marks the account Sync Failed and turns its sync off. Get a fresh token from Monobank, open the account’s settings, tap Change next to API Token, paste the new one and save. Then switch Sync back on."
+msgstr "Lehnt Monobank den Token wiederholt ab, versucht Budgie es noch ein paar Mal, markiert das Konto dann mit „Synchronisation fehlgeschlagen“ und schaltet seine Synchronisation aus. Hol dir einen neuen Token bei Monobank, öffne die Kontoeinstellungen, tippe neben „API-Token“ auf „Ändern“, füge den neuen ein und speichere. Schalte danach „Synchronisation“ wieder ein."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If negotiation fails, binding arbitration in accordance with Austrian law"
@@ -9792,6 +9894,18 @@ msgstr "Der Sprachwechsel erfolgt in der App — keine Neuinstallation nötig. Z
 msgid "languages"
 msgstr "Sprachen"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Last 1 month: about a minute."
+msgstr "„Letzter 1 Monat“: etwa eine Minute."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Last 3 months: about 3 minutes. This is the default."
+msgstr "„Letzte 3 Monate“: etwa 3 Minuten. Das ist die Standardeinstellung."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Last 6 months: about 6 minutes."
+msgstr "„Letzte 6 Monate“: etwa 6 Minuten."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Last Month lands as a chip in the filter row and the count above the list drops from 761 transactions to 73, every row now dated inside August. Clear All puts the whole list back, and the date chip stacks with the type, amount, category, tag and account chips beside it."
 msgstr "„Letzter Monat“ landet als Chip in der Filterzeile und die Zahl über der Liste fällt von 761 Transaktionen auf 73 — jede Zeile liegt jetzt im August. „Alle löschen“ holt die ganze Liste zurück, und der Datums-Chip lässt sich mit den Chips für Typ, Betrag, Kategorien, Tags und Konten daneben kombinieren."
@@ -9801,6 +9915,10 @@ msgstr "„Letzter Monat“ landet als Chip in der Filterzeile und die Zahl übe
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Last Updated: {updatedAtText}"
 msgstr "Zuletzt aktualisiert: {updatedAtText}"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Last year: about 12 minutes."
+msgstr "„Letztes Jahr“: etwa 12 Minuten."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Lastschrifteinzug FITINN GES.M.B.H. MDID:AT41ZZZ00000012345"
@@ -10036,6 +10154,10 @@ msgstr "Ausgaben, Einnahmen und Überweisungen in Sekunden mit einem Bottom-Shee
 #: src/app/[lang]/features/expense-tracking/metadata.ts
 msgid "Log expenses, income, and transfers in seconds. Budgie tracks every transaction on-device, opens each one in a read-only detail view, and shows six months of comparable spending before you edit."
 msgstr "Ausgaben, Einnahmen und Überweisungen in Sekunden erfassen. Budgie erfasst jede Transaktion auf dem Gerät, öffnet jede in einer schreibgeschützten Detailansicht und zeigt sechs Monate vergleichbarer Ausgaben, bevor Sie bearbeiten."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Log in by scanning the QR code on that page with the Monobank app. A QR code is easiest to scan from a second screen, so opening the page on a computer is often quicker."
+msgstr "Melde dich an, indem du den QR-Code auf dieser Seite mit der Monobank-App scannst. Am einfachsten scannst du ihn von einem zweiten Bildschirm, deshalb geht es am Computer oft schneller."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Log into YNAB on the web"
@@ -10587,6 +10709,8 @@ msgstr "Geld, das Sie schulden"
 msgid "Money you owe, money owed to you"
 msgstr "Geld, das Sie schulden, Geld, das Ihnen geschuldet wird"
 
+#: src/app/[lang]/blog/monobank-api-token/opengraph-image.tsx
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
 msgid "monobank"
 msgstr "Monobank"
@@ -10594,6 +10718,15 @@ msgstr "Monobank"
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Monobank and Binance connect with a personal API key for live, automatic sync. Erste and PrivatBank statements import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset."
 msgstr "Monobank und Binance verbinden sich mit einem persönlichen API-Schlüssel für eine automatische Live-Synchronisierung. Erste- und PrivatBank-Auszüge werden direkt aus PDF oder XLSX importiert, und jede andere Bank funktioniert über den flexiblen CSV-Import mit Spaltenzuordnung oder einer integrierten Vorlage."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Monobank API token"
+msgstr "Monobank-API-Token"
+
+#: src/app/[lang]/blog/monobank-api-token/metadata.ts
+#: src/app/[lang]/blog/monobank-api-token/opengraph-image.tsx
+msgid "Monobank API token: connect it in 2 minutes"
+msgstr "Monobank-API-Token: in 2 Minuten verbunden"
 
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Monobank Auto-Sync — Budgie"
@@ -10606,6 +10739,10 @@ msgstr "Monobank-Bank-Synchronisierung"
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
 msgid "Monobank Bank Sync"
 msgstr "Monobank Bank-Sync"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Monobank cards and a jar listed in Budgie with their balances and sync switches"
+msgstr "Monobank-Karten und ein Sparziel in Budgie mit Salden und Synchronisationsschaltern"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Monobank cards and jars arrive through your own token, straight into the database on your phone."
@@ -10625,9 +10762,17 @@ msgstr "Monobank Ausgaben-Tracker – direkte API-Synchronisation, kein Plaid"
 msgid "Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no data broker. Every transaction lands on your phone the moment it arrives."
 msgstr "Monobank stellt eine übersichtliche öffentliche API bereit, sodass Budgie über dein Token direkt von deinem Handy aus mit ihr kommuniziert — kein Plaid, kein Datenhändler. Jede Transaktion landet in dem Moment auf deinem Handy, in dem sie eintrifft."
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Monobank opens this access only to customers aged 16 and over; data for children’s cards is available through the parent’s access."
+msgstr "Monobank bietet diesen Zugang nur Kundinnen und Kunden ab 16 Jahren an; Daten von Kinderkarten sind über den Zugang der Eltern verfügbar."
+
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "Monobank SDK upgraded to 0.7.0 for live client-info payloads."
 msgstr "Monobank-SDK auf 0.7.0 aktualisiert für Live-Kundendaten-Payloads."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Monobank sends about one month of history per minute, for each account you selected, so the choice is a trade-off between depth and waiting time:"
+msgstr "Monobank sendet etwa einen Monat Verlauf pro Minute, für jedes ausgewählte Konto. Du wägst also Tiefe gegen Wartezeit ab:"
 
 #: src/app/[lang]/page.tsx
 msgid "Monobank sync with no aggregator"
@@ -10640,6 +10785,10 @@ msgstr "Monobank heute; wir fügen direkte Integrationen hinzu, wenn Banken stab
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Monobank's API returns a corr_iban field on every transaction that has a counterparty IBAN — outgoing payments, bank transfers, and peer-to-peer moves all carry it. Budgie stores this field per transaction leg, which gives the transfer-pair detector a primary signal: when the debit side and credit side of the same transfer both reference the same IBAN, they collapse into one transfer automatically."
 msgstr "Monobanks API gibt ein Feld corr_iban bei jeder Transaktion zurück, die eine Gegenpartei-IBAN hat – ausgehende Zahlungen, Banküberweisungen und Peer-to-Peer-Transfers enthalten es alle. Budgie speichert dieses Feld pro Transaktionsbein, was dem Überweisungspaar-Detektor ein primäres Signal gibt: Wenn die Soll- und Habenseite derselben Überweisung dieselbe IBAN referenzieren, werden sie automatisch zu einem Überweisungseintrag zusammengefasst."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Monobank’s personal token is meant for reading your own data: your list of cards and jars, their balances and your statement. Monobank’s personal access has no payment functions, so the token cannot send money or change anything in your bank account."
+msgstr "Der persönliche Monobank-Token ist zum Lesen deiner eigenen Daten gedacht: deiner Karten und Sparziele, ihrer Salden und deines Kontoauszugs. Der persönliche Zugang von Monobank hat keine Zahlungsfunktionen, also kann der Token kein Geld senden und nichts an deinem Bankkonto ändern."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Month-grid calendar plots upcoming renewals; tap a day to see what's billing"
@@ -10998,6 +11147,10 @@ msgstr "Neuinstallationen starten mit ausgeschalteter KI-auf-dem-Gerät-Karte; w
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
 msgstr "Neue Transaktionen folgen beim Speichern derselben Regel. Manuelle Einträge, CSV-Importe und Transaktionen der <0>Bank-Synchronisierung</0> speichern ihren Basisbetrag beim Einfügen, sofern die Quelle nicht bereits eine brauchbare Bewertung liefert."
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "New transactions keep arriving in the background, including while you are not using the app, though more slowly than with Budgie open."
+msgstr "Neue Transaktionen kommen im Hintergrund weiter an, auch wenn du die App gerade nicht nutzt, allerdings langsamer als bei geöffnetem Budgie."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Newer app, still building feature parity with established players"
 msgstr "Neuere App, baut noch die Funktionsparität mit etablierten Anbietern auf"
@@ -11343,6 +11496,14 @@ msgstr "Nein. Die Live-Synchronisierung nutzt einen persönlichen API-Schlüssel
 msgid "No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
 msgstr "Nein. Manuelle Ausgabenerfassung, Bank-PDF/CSV-Importe, Mehrwährungsunterstützung, Schuldenverfolgung, Analysen, KI-Funktionen und direkte Banksynchronisierung sind alle kostenlos."
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "No. Monobank’s personal access is for reading your cards, balances and statement; it has no payment functions. Still, keep the token private, because it does reveal your transactions."
+msgstr "Nein. Der persönliche Zugang von Monobank dient nur zum Lesen von Karten, Salden und Kontoauszug; Zahlungsfunktionen hat er nicht. Behalte den Token trotzdem für dich, denn er macht deine Transaktionen sichtbar."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "No. One token covers all your Monobank cards and jars. You choose which of them to bring into Budgie during setup, and each one keeps its own sync switch."
+msgstr "Nein. Ein Token deckt alle deine Monobank-Karten und Sparziele ab. Bei der Einrichtung wählst du aus, welche davon in Budgie landen, und jede behält ihren eigenen Synchronisationsschalter."
+
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "No. PDF parsing happens entirely on-device — your statement never leaves your phone."
 msgstr "Nein. Die PDF-Analyse erfolgt vollständig auf dem Gerät – Ihr Kontoauszug verlässt Ihr Telefon nie."
@@ -11438,6 +11599,10 @@ msgstr "Nein. Obwohl jeder Änderungen am Code vorschlagen kann, kontrollieren S
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "No. Widgets are built to be read closed. They pick up every change you make inside the app and keep themselves current on a schedule in the background."
 msgstr "Nein. Widgets sind dafür gemacht, geschlossen gelesen zu werden. Sie übernehmen jede Änderung, die Sie in der App vornehmen, und halten sich im Hintergrund nach einem Zeitplan aktuell."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "No. You log in to Monobank on Monobank’s own page, and Budgie only ever receives the token you paste. No card number, PIN or password is entered in Budgie."
+msgstr "Nein. Du meldest dich auf der eigenen Seite von Monobank an, und Budgie bekommt nur den Token, den du einfügst. Kartennummer, PIN oder Passwort gibst du in Budgie nie ein."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
@@ -12027,6 +12192,10 @@ msgstr "Ein Gesamtlimit, Kategorielimits und eine Obergrenze für alles Übrige 
 msgid "One per transaction — never ambiguous, always quick to scan"
 msgstr "Einer pro Transaktion – nie mehrdeutig, immer schnell zu scannen"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "One personal token from Monobank is all Budgie needs to bring in your cards, jars and transactions. Getting it and pasting it in takes about two minutes; your history then keeps loading in the background."
+msgstr "Ein persönlicher Token von Monobank ist alles, was Budgie braucht, um deine Karten, Sparziele und Transaktionen zu übernehmen. Ihn zu holen und einzufügen dauert etwa zwei Minuten; dein Verlauf lädt danach im Hintergrund weiter."
+
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "One PIN. Real encryption."
 msgstr "Eine PIN. Echte Verschlüsselung."
@@ -12150,6 +12319,10 @@ msgstr "Ein Tippen exportiert die gesamte Historie — kein Zeitraum zum Auswäh
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "One tap on the mic"
 msgstr "Ein Tipp auf das Mikrofon"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "One token covers every card you have with Monobank. Budgie lists your cards first and your jars in their own section below; tick the ones you want, or use Select all, then tap Continue."
+msgstr "Ein Token deckt alle deine Karten bei Monobank ab. Budgie zeigt zuerst deine Karten und darunter in einem eigenen Abschnitt deine Sparziele; hake die gewünschten an oder nutze „Alle auswählen“ und tippe dann auf „Weiter“."
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "One total, your base currency"
@@ -12358,6 +12531,10 @@ msgstr "Öffne Tags in Analytics und tippe auf Ohne Tag. Transaktionen werden na
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and archives the deposit."
 msgstr "Öffnen Sie das Kontomenü und wählen Sie „Festanlage schließen“. Budgie überträgt den verbleibenden Saldo auf das gewählte Zielkonto und archiviert die Festanlage."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Open the account’s settings and re-sync a window: the last 7, 30 or 90 days, or the whole history. It starts on the next sync. See <0>re-sync window</0>."
+msgstr "Öffne die Kontoeinstellungen und synchronisiere einen Zeitraum neu: die letzten 7, 30 oder 90 Tage oder den gesamten Verlauf. Das startet bei der nächsten Synchronisation. Mehr dazu unter <0>Zeitraum neu synchronisieren</0>."
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Open the category or tag and edit its English form or keywords directly. Your edit is permanent for that category or tag."
@@ -13260,6 +13437,10 @@ msgstr "Öffentlicher Quellcode lebt von Community-Beteiligung. Wenn Sie zu Budg
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Published audit reports from recognized security firms"
 msgstr "Veröffentlichte Auditberichte von anerkannten Sicherheitsfirmen"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Purchases arrive with the merchant category code your bank attaches, and Budgie uses it to put many of them into a category straight away. See <0>automatic categories from merchant codes</0>."
+msgstr "Käufe kommen mit dem Händlerkategoriecode, den deine Bank mitliefert, und Budgie ordnet viele davon damit sofort einer Kategorie zu. Mehr dazu unter <0>automatische Kategorien per Händlercode</0>."
 
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
 msgid "quick add"
@@ -14441,6 +14622,10 @@ msgstr "Einige Anwendungen benötigen tatsächlich Serverfähigkeiten, wie das S
 msgid "Some categorization should be a rule, not a suggestion"
 msgstr "Manche Kategorisierung sollte eine Regel sein, kein Vorschlag"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Some recent transactions look wrong or are missing"
+msgstr "Einige neuere Transaktionen sehen falsch aus oder fehlen"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Some things should not be guessed"
 msgstr "Manches sollte man nicht raten"
@@ -14741,6 +14926,10 @@ msgstr "Schritt 5: Optional – direkte Banksynchronisation aktivieren"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 5: Run Parallel for One Month"
 msgstr "Schritt 5: Führen Sie einen Monat lang parallel"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Step by step"
+msgstr "Schritt für Schritt"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Step three is the one that matters: keep only \"Enable Reading\" on, and never allow trading or withdrawals. Permissions are enforced on Binance's side, and Budgie carries no order or withdrawal call to make — every request it signs goes to a read endpoint."
@@ -15079,6 +15268,10 @@ msgstr "Tippen Sie auf einen markierten Tag, um genau zu sehen, was abgebucht wi
 msgid "Tap any row to open the transactions behind that tag for the active period"
 msgstr "Tippe auf eine Zeile, um die Transaktionen hinter diesem Tag im aktiven Zeitraum zu öffnen"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Tap Get API Token at the top of the screen. It opens Monobank’s API page, api.monobank.ua, right inside Budgie. You can also open that address in any browser."
+msgstr "Tippe oben auf „API-Token abrufen“. Die API-Seite von Monobank, api.monobank.ua, öffnet sich direkt in Budgie. Du kannst die Adresse auch in jedem Browser öffnen."
+
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
 msgstr "Import → Erste PDF tippen. Datei aus Dateien auswählen. Budgie analysiert das Dokument, zeigt eine Vorschau und fügt jede Transaktion in ein neues oder bestehendes Erste-Konto ein."
@@ -15169,9 +15362,17 @@ msgstr "Die 87-€-Supermarktrechnung waren Lebensmittel und ein Telefonladeger�
 msgid "That gives Budgie two strengths at once. You can audit the original bank or CSV data, and <0>spending analytics</0> can still sum categories, tags, and periods without guessing which rate to use."
 msgstr "Damit vereint Budgie zwei Stärken. Sie können die ursprünglichen Bank- oder CSV-Daten prüfen, und die <0>Ausgabenanalyse</0> kann dennoch Kategorien, Tags und Zeiträume summieren, ohne raten zu müssen, welcher Kurs gilt."
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "That is Monobank’s limit, not a fault: its statement can be requested at most once a minute and covers up to 31 days per request. Budgie waits out the pause and carries on by itself, so you do not need to tap anything. Keeping the app open is the fastest way through a long history."
+msgstr "Das ist Monobanks Limit, kein Fehler: Der Kontoauszug lässt sich höchstens einmal pro Minute abrufen und umfasst pro Abruf bis zu 31 Tage. Budgie wartet die Pause ab und macht von selbst weiter, du musst also nichts antippen. Am schnellsten kommt ein langer Verlauf durch, wenn die App geöffnet bleibt."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "That is the point of <0>multi-currency accounts</0>: show today’s portfolio with today’s rates, but show historical expenses with historical rates."
 msgstr "Genau das ist der Sinn von <0>Mehrwährungskonten</0>: das heutige Portfolio mit heutigen Kursen anzeigen, aber historische Ausgaben mit historischen Kursen."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "That is the whole setup. Your cards and jars appear as accounts grouped under Monobank, each with its own switch, and transactions start arriving."
+msgstr "Das war die ganze Einrichtung. Deine Karten und Sparziele erscheinen als Konten, gruppiert unter Monobank, jedes mit eigenem Schalter, und die Transaktionen kommen an."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "That last point is significant. Your data, in aggregate form, may inform products you never agreed to."
@@ -15380,6 +15581,10 @@ msgstr "Der vollständige Quellcode der mobilen Anwendung"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The complete source code for Budgie is available on GitHub. You can:"
 msgstr "Der vollständige Quellcode von Budgie ist auf GitHub verfügbar. Sie können:"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "The Connect Monobank screen: get the token at the top, paste it at the bottom."
+msgstr "Der Bildschirm „Monobank verbinden“: oben den Token holen, unten einfügen."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The connection to your bank happens directly from your phone"
@@ -16053,6 +16258,14 @@ msgstr "Die drei Versagensmodi von Cloud-Finanz-Apps"
 msgid "The Timeline of Mint’s Decline"
 msgstr "Die Chronologie von Mints Verfall:"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "The times are per account: three months for two cards is roughly six minutes. A year or the whole period keeps loading in the background and goes much slower while the app is closed, so leaving Budgie open speeds it up."
+msgstr "Die Zeiten gelten pro Konto: drei Monate für zwei Karten sind etwa sechs Minuten. Ein Jahr oder der gesamte Zeitraum lädt im Hintergrund weiter und läuft bei geschlossener App deutlich langsamer; ein geöffnetes Budgie beschleunigt das also."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "The token is saved in Budgie’s database on your phone, and the app sends it only to Monobank: your phone asks Monobank for your data directly. Budgie has no server of its own that sees your token or your transactions."
+msgstr "Der Token wird in Budgies Datenbank auf deinem Handy gespeichert, und die App schickt ihn nur an Monobank: Dein Handy fragt deine Daten direkt bei Monobank ab. Budgie hat keinen eigenen Server, der deinen Token oder deine Transaktionen sieht."
+
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "The totals are a live query, so the Untagged row shrinks as you label transactions during a review pass. Budgie's on-device suggestions propose tags on the transaction form itself, which is usually quicker than picking each one by hand."
 msgstr "Die Summen sind eine Live-Abfrage, sodass die Zeile „Ohne Tag“ schrumpft, während du bei einem Durchgang Transaktionen beschriftest. Budgies Vorschläge auf dem Gerät bieten Tags direkt im Transaktionsformular an, was meist schneller geht, als jedes einzeln auszuwählen."
@@ -16415,6 +16628,10 @@ msgstr "Drei Abgleicharten — Transaktionstitel, Händlername und eigene Kommen
 msgid "Three kinds of match, not one"
 msgstr "Drei Abgleicharten statt einer"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Three months, the default, loads in a few minutes per account and is enough to see your typical month before you set a budget. Pick a year or the whole period for long-term statistics, if you do not mind it loading in the background."
+msgstr "Drei Monate, die Standardeinstellung, laden in wenigen Minuten pro Konto und reichen, um deinen typischen Monat zu sehen, bevor du ein Budget festlegst. Nimm ein Jahr oder den gesamten Zeitraum für Langzeitstatistiken, wenn es dich nicht stört, dass es im Hintergrund lädt."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Three presets ship with the app — Budgie's own export, SmartBudget and FinEye. Tapping one fills every selector at once and tells you the columns are still yours to adjust."
 msgstr "Drei Vorlagen sind in der App enthalten — Budgies eigener Export, SmartBudget und FinEye. Ein Tipp füllt alle Auswahlfelder auf einmal und weist darauf hin, dass die Spalten weiterhin anpassbar bleiben."
@@ -16717,9 +16934,17 @@ msgstr "Transparente Sicherheitspraktiken"
 msgid "Travel internationally without roaming fears"
 msgstr "Reisen Sie international ohne Roaming-Ängste"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Treat the token like a key to your statement: do not paste it into chats or share it with anyone. If you think it has leaked, create a new one on Monobank’s API page and update it in Budgie as described below."
+msgstr "Behandle den Token wie einen Schlüssel zu deinem Kontoauszug: Füge ihn nicht in Chats ein und gib ihn niemandem weiter. Falls du glaubst, dass er in fremde Hände geraten ist, erstelle auf der API-Seite von Monobank einen neuen und aktualisiere ihn in Budgie wie unten beschrieben."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Treated as expenses"
 msgstr "Als Ausgaben behandelt"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Troubleshooting"
+msgstr "Fehlerbehebung"
 
 #: src/app/[lang]/features/dark-mode/opengraph-image.tsx
 msgid "True black. OLED-friendly. No white flash."
@@ -17463,6 +17688,10 @@ msgstr "Was gesendet wird"
 msgid "What happened to all my Mint data?"
 msgstr "Was ist mit all meinen Mint-Daten passiert?"
 
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "What happens after you connect"
+msgstr "Was nach dem Verbinden passiert"
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "What happens during a cross-currency transfer?"
 msgstr "Was passiert bei einer währungsübergreifenden Überweisung?"
@@ -17703,6 +17932,10 @@ msgstr "Was der Bildschirm danach anbietet, hängt von der Bank ab. Eine Monoban
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "What the switch actually hides"
 msgstr "Was der Schalter tatsächlich verbirgt"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "What the token can and cannot do"
+msgstr "Was der Token kann und was nicht"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "What the transaction list actually shows"
@@ -18092,6 +18325,10 @@ msgstr "Wo die Daten liegen, was offline funktioniert, wie der Banksync ohne dei
 msgid "Where the holding sits in your account list, the buys that built it, and the market screen that prices it."
 msgstr "Wo der Bestand in deiner Kontoliste steht, die Käufe, aus denen er entstand, und der Marktbildschirm, der ihn bewertet."
 
+#: src/app/[lang]/blog/monobank-api-token/metadata.ts
+msgid "Where to get your personal Monobank token, how to paste it into Budgie, how much history to load, and what to do when a sync stops."
+msgstr "Wo du deinen persönlichen Monobank-Token bekommst, wie du ihn in Budgie einfügst, wie viel Verlauf du lädst und was hilft, wenn die Synchronisation stoppt."
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "Where transactions live"
 msgstr "Wo Transaktionen leben"
@@ -18099,6 +18336,10 @@ msgstr "Wo Transaktionen leben"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Where you live and work"
 msgstr "Wo Sie leben und arbeiten"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Where your token is kept"
+msgstr "Wo dein Token gespeichert ist"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Whether data arrives via direct sync or manual import, it is stored in the same local database. Set a PIN and that PIN becomes the key your data is encrypted with; biometric unlock is just a faster way past the lock screen, and your PIN stays the key either way. No transaction data is stored on Budgie servers at any point."
@@ -18195,6 +18436,14 @@ msgstr "Solange Sie im Minus sind, zeigt eine Anzeige die verbleibenden Monate a
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Who has access to it"
 msgstr "Wer darauf Zugriff hat"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Who this guide is for"
+msgstr "Für wen diese Anleitung ist"
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "Whole period: can take hours on an old account."
+msgstr "„Gesamter Zeitraum“: kann bei einem alten Konto Stunden dauern."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Why a backup file beats a vendor backup"
@@ -18590,6 +18839,10 @@ msgstr "Mit Local-First gibt es keinen „Offline-Modus\", der Funktionalität e
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "With offline-first, bank data flows directly to your device. No intermediate servers store your transactions. No aggregators retain your history."
 msgstr "Mit direktem Offline-first-Sync fließen Bankdaten auf dein Gerät, ohne auf Budgie-Servern oder Aggregator-Servern gespeichert zu werden."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "With real spending flowing in, a monthly budget stops being guesswork. See <0>budget planning</0>."
+msgstr "Sobald echte Ausgaben einfließen, ist ein Monatsbudget kein Ratespiel mehr. Mehr dazu unter <0>Budgetplanung</0>."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "With service providers who assist in operating the Service (bound by strict confidentiality agreements)"
@@ -19145,6 +19398,10 @@ msgstr "Sie sind dafür verantwortlich, alle vom Dienst bereitgestellten Finanzi
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting your data using the built-in export features."
 msgstr "SIE SIND ALLEIN FÜR DIE SICHERUNG IHRER DATEN VERANTWORTLICH. Auch wenn der Dienst Daten lokal auf Ihrem Gerät speichert und optionale Cloud-Backup-Funktionen anbieten kann, sind wir nicht für Datenverluste verantwortlich. Wir empfehlen dringend, Ihre Daten regelmäßig mit den integrierten Exportfunktionen zu exportieren."
+
+#: src/app/[lang]/blog/monobank-api-token/page.tsx
+msgid "You bank with Monobank, you want your spending in an expense tracker without typing every coffee by hand, and you would rather not hand your banking login to a third-party service. Budgie connects to Monobank with a personal token instead: you create it yourself on Monobank’s own page and paste it into the app."
+msgstr "Du bist bei Monobank, willst deine Ausgaben in einem Ausgaben-Tracker sehen, ohne jeden Kaffee von Hand einzutippen, und möchtest deinen Bank-Login keinem Drittanbieter geben. Budgie verbindet sich stattdessen mit einem persönlichen Token mit Monobank: Du erstellst ihn selbst auf der Seite von Monobank und fügst ihn in die App ein."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "You become the product, not the customer"
