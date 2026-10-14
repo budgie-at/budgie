@@ -8009,6 +8009,7 @@ msgid "features"
 msgstr "fonctionnalités"
 
 #: src/app/[lang]/features/page.tsx
+#: src/app/[lang]/not-found.tsx
 #: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
 #: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/generic/component/footer/footer.tsx
@@ -13235,10 +13236,6 @@ msgstr "Accessible directement depuis le groupe crypto de l'écran d'accueil"
 #: src/blog/component/related-articles/related-articles.tsx
 msgid "Read article"
 msgstr "Lire l'article"
-
-#: src/app/[lang]/not-found.tsx
-msgid "Read Blog"
-msgstr "Lire le blog"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Read first, edit on purpose"
