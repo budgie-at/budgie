@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Hand, Tag, Zap } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -77,49 +74,47 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why scanning a long list for one tag is hard</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Scanning a long transaction list for one tag is hard. Budgie shows the main tag of each row as a chip, with a count
-                        of the others, so you can scan #vacation or #shared without opening anything.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The first tag you add is the main one automatically. To pick a different one, long-press it in the tag picker; the
-                        choice stays when you edit the transaction.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One tag chip per row on the transaction list — scan without opening rows</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Long-press a tag in the picker to make it the main one</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>The first tag is main automatically, so there is nothing to set up</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Tag} title={<Trans>Scan without opening rows</Trans>}>
+                    <Trans>One tag chip per row on the transaction list — scan without opening rows</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Hand} title={<Trans>Pick the main tag</Trans>}>
+                    <Trans>Long-press a tag in the picker to make it the main one</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Zap} title={<Trans>Nothing to set up</Trans>}>
+                    <Trans>The first tag is main automatically, so there is nothing to set up</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>One per transaction — never ambiguous, always quick to scan</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>A star in the tag picker shows which tag is the main one</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why scanning a long list for one tag is hard</Trans>}>
+                    <p>
+                        <Trans>
+                            Scanning a long transaction list for one tag is hard. Budgie shows the main tag of each row as a chip, with a
+                            count of the others, so you can scan #vacation or #shared without opening anything.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The first tag you add is the main one automatically. To pick a different one, long-press it in the tag picker;
+                            the choice stays when you edit the transaction.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What does &quot;primary&quot; actually do?</Trans>}
                     answer={
                         <Trans>
@@ -128,7 +123,8 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How do I set a primary tag?</Trans>}
                     answer={
                         <Trans>
@@ -137,17 +133,19 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Is the primary tag preserved across edits?</Trans>}
                     answer={
                         <Trans>Yes. Editing a transaction keeps its primary tag unless you pick a different one in the tag picker.</Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can a transaction have several primary tags?</Trans>}
                     answer={<Trans>No. A tagged transaction has exactly one primary tag, the first one by default.</Trans>}
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

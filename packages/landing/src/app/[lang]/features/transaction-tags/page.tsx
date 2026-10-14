@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ChartPie, Star, Tags } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -103,51 +100,49 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why categories alone are not enough</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Categories answer &ldquo;what kind of expense&rdquo;; tags answer &ldquo;for which project, person, or
-                        purpose.&rdquo; Tag a stretch of transactions #vacation-2026 and the analytics tab gives you a per-tag P&amp;L
-                        without rebuilding the category tree.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a highlighted pill on the transaction list so
-                        you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card
-                        there.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Tags are flat, reusable, and combine freely — no rigid hierarchy</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>One tag per transaction can be promoted to &ldquo;primary&rdquo; and stands out as a highlighted pill</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Flat, reusable tags</Trans>}>
+                    <Trans>Tags are flat, reusable, and combine freely — no rigid hierarchy</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Star} title={<Trans>Primary tag stands out</Trans>}>
+                    <Trans>One tag per transaction can be promoted to &ldquo;primary&rdquo; and stands out as a highlighted pill</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ChartPie} title={<Trans>Per-tag totals</Trans>}>
+                    <Trans>Tag-based analytics: per-tag totals plus an &ldquo;Untagged&rdquo; bucket</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Selector stays open across multi-selections; commit with a Done pill</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Merge tags across the database — same mass-reassignment story as categories</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Tag-based analytics: per-tag totals plus an &ldquo;Untagged&rdquo; bucket</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why categories alone are not enough</Trans>}>
+                    <p>
+                        <Trans>
+                            Categories answer &ldquo;what kind of expense&rdquo;; tags answer &ldquo;for which project, person, or
+                            purpose.&rdquo; Tag a stretch of transactions #vacation-2026 and the analytics tab gives you a per-tag P&amp;L
+                            without rebuilding the category tree.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a highlighted pill on the transaction
+                            list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a
+                            different tag card there.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How are tags different from categories?</Trans>}
                     answer={
                         <Trans>
@@ -156,7 +151,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How many tags can I add to a transaction?</Trans>}
                     answer={
                         <Trans>
@@ -165,7 +161,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What does &ldquo;primary tag&rdquo; mean?</Trans>}
                     answer={
                         <Trans>
@@ -174,7 +171,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I rename or merge tags?</Trans>}
                     answer={
                         <Trans>
@@ -183,7 +181,7 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

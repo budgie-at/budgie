@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ShieldCheck, Store, TrendingUp } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -114,75 +111,71 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why on-device AI is the only AI that protects your statements</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Cloud &ldquo;AI&rdquo; budgeting apps send every merchant name to a remote server, which means somebody else&apos;s
-                        computer sees your supermarket habits. Budgie works it out on your own device — same accuracy, nothing to leak.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Budgie recognizes merchants you have categorized before, spots the spending that repeats month after month, and
-                        reads the merchant code your bank sends with each card payment. Every accepted or edited suggestion is taken into
-                        account immediately — accuracy compounds over time.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How a suggestion is made</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0} key="stage-0">
-                        <Trans>
-                            Seen before — Budgie finds the closest match among transactions you have already categorized, which is the fast
-                            path
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1} key="stage-1">
-                        <Trans>
-                            Spending that repeats — rent, the commute, the weekly shop all come back with their usual category and amount
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2} key="stage-2">
-                        <Trans>
-                            Correction loop — every accepted or edited suggestion counts immediately, so the next similar transaction lands
-                            closer without any re-training
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Store} title={<Trans>Remembers your merchants</Trans>}>
+                    <Trans>Merchants you have categorized before are recognized instantly</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={TrendingUp} title={<Trans>Learns from every correction</Trans>}>
+                    <Trans>Every correction counts on the spot — accuracy improves as you use it</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Statements stay on your phone</Trans>}>
+                    <Trans>Statements never leave the device — no cloud AI, no remote processing, ever</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Everything runs on your phone after a one-time download</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Merchants you have categorized before are recognized instantly</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Card payments from an unfamiliar shop still land in the right area, using the code your bank sends</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Every correction counts on the spot — accuracy improves as you use it</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Statements never leave the device — no cloud AI, no remote processing, ever</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why on-device AI is the only AI that protects your statements</Trans>}>
+                    <p>
+                        <Trans>
+                            Cloud &ldquo;AI&rdquo; budgeting apps send every merchant name to a remote server, which means somebody
+                            else&apos;s computer sees your supermarket habits. Budgie works it out on your own device — same accuracy,
+                            nothing to leak.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Budgie recognizes merchants you have categorized before, spots the spending that repeats month after month, and
+                            reads the merchant code your bank sends with each card payment. Every accepted or edited suggestion is taken
+                            into account immediately — accuracy compounds over time.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>How a suggestion is made</Trans>}>
+                    <ul>
+                        <li>
+                            <Trans>
+                                Seen before — Budgie finds the closest match among transactions you have already categorized, which is the
+                                fast path
+                            </Trans>
+                        </li>
+                        <li>
+                            <Trans>
+                                Spending that repeats — rent, the commute, the weekly shop all come back with their usual category and
+                                amount
+                            </Trans>
+                        </li>
+                        <li>
+                            <Trans>
+                                Correction loop — every accepted or edited suggestion counts immediately, so the next similar transaction
+                                lands closer without any re-training
+                            </Trans>
+                        </li>
+                    </ul>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Does the AI work offline?</Trans>}
                     answer={
                         <Trans>
@@ -191,7 +184,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How big is the download?</Trans>}
                     answer={
                         <Trans>
@@ -201,7 +195,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I correct the AI&apos;s suggestions?</Trans>}
                     answer={
                         <Trans>
@@ -210,7 +205,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I turn AI off?</Trans>}
                     answer={
                         <Trans>
@@ -220,7 +216,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Does Budgie send my transactions to a cloud AI?</Trans>}
                     answer={
                         <Trans>
@@ -229,7 +226,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

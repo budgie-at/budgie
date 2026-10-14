@@ -1,17 +1,14 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { CircleQuestionMark, MousePointerClick, Tags } from 'lucide-react';
 import Link from 'next/link';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -88,82 +85,76 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why category analytics alone leaves money unlabeled</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags answer a
-                        different and equally important question: what was it for? A dinner tagged as a #work-lunch, a #vacation flight
-                        charged to the same &ldquo;Travel&rdquo; category as a commute, a shared dinner that needs a #split label — these
-                        distinctions only surface when you have a dedicated tag reporting layer.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The Tags tab in Budgie Analytics puts per-tag totals on the same screen as the category breakdown, reachable with a
-                        single tap on the tab switcher. It lists income by tag and spending by tag separately, each row carrying that
-                        tag&apos;s total for the active period and its share of it. Tapping a row opens the transactions behind it, filtered
-                        to that tag. Whatever in the period carries no tag at all shows up as an Untagged row instead of quietly
-                        disappearing.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>The Untagged row is the gap</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into a
-                        single Untagged row inside the list it belongs to, counted separately for income and for spending, so its total sits
-                        beside the tags you did apply. Tapping it opens those transactions grouped by merchant, with tags suggested from
-                        your history, so you can{' '}
-                        <Link
-                            className="font-semibold underline underline-offset-4"
-                            href={`/${lang}/features/bulk-categorize-transactions`}
-                        >
-                            tag them in bulk
-                        </Link>
-                        . Budgie does not force you to tag everything, but it will not hide the gap either.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The totals are a live query, so the Untagged row shrinks as you label transactions during a review pass.
-                        Budgie&apos;s on-device suggestions propose tags on the transaction form itself, which is usually quicker than
-                        picking each one by hand.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Income by tag and spending by tag, one tap from the Analytics tab bar</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>An Untagged row for whatever in the period carries no label, and the transactions behind it</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Income and spending by tag</Trans>}>
+                    <Trans>Income by tag and spending by tag, one tap from the Analytics tab bar</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={CircleQuestionMark} title={<Trans>See what has no tag</Trans>}>
+                    <Trans>An Untagged row for whatever in the period carries no label, and the transactions behind it</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={MousePointerClick} title={<Trans>Tap through to transactions</Trans>}>
+                    <Trans>Tap any row to open the transactions behind that tag for the active period</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Reads the same period and filters as the Categories tab — This Month, Last Month, This Year, a custom range and
                             the rest
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Tap any row to open the transactions behind that tag for the active period</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why category analytics alone leaves money unlabeled</Trans>}>
+                    <p>
+                        <Trans>
+                            Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags
+                            answer a different and equally important question: what was it for? A dinner tagged as a #work-lunch, a
+                            #vacation flight charged to the same &ldquo;Travel&rdquo; category as a commute, a shared dinner that needs a
+                            #split label — these distinctions only surface when you have a dedicated tag reporting layer.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The Tags tab in Budgie Analytics puts per-tag totals on the same screen as the category breakdown, reachable
+                            with a single tap on the tab switcher. It lists income by tag and spending by tag separately, each row carrying
+                            that tag&apos;s total for the active period and its share of it. Tapping a row opens the transactions behind it,
+                            filtered to that tag. Whatever in the period carries no tag at all shows up as an Untagged row instead of
+                            quietly disappearing.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>The Untagged row is the gap</Trans>}>
+                    <p>
+                        <Trans>
+                            Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into
+                            a single Untagged row inside the list it belongs to, counted separately for income and for spending, so its
+                            total sits beside the tags you did apply. Tapping it opens those transactions grouped by merchant, with tags
+                            suggested from your history, so you can{' '}
+                            <Link
+                                className="font-semibold underline underline-offset-4"
+                                href={`/${lang}/features/bulk-categorize-transactions`}
+                            >
+                                tag them in bulk
+                            </Link>
+                            . Budgie does not force you to tag everything, but it will not hide the gap either.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The totals are a live query, so the Untagged row shrinks as you label transactions during a review pass.
+                            Budgie&apos;s on-device suggestions propose tags on the transaction form itself, which is usually quicker than
+                            picking each one by hand.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How is this different from category analytics?</Trans>}
                     answer={
                         <Trans>
@@ -173,7 +164,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What&apos;s the Untagged bucket?</Trans>}
                     answer={
                         <Trans>
@@ -183,7 +175,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I drill down from a tag?</Trans>}
                     answer={
                         <Trans>
@@ -192,7 +185,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does this work with the date filter?</Trans>}
                     answer={
                         <Trans>
@@ -201,7 +195,7 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

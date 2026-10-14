@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'main tag per transaction',
         'primary tag picker'
     ],
-    relatedFeatureSlugs: ['transaction-tags', 'tag-analytics'],
+    relatedFeatureSlugs: ['transaction-tags', 'tag-analytics', 'categorization-rules', 'spending-analytics'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2026-04-24',
     updatedAt: '2026-05-03',

@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { CalendarDays, Repeat, Search } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -106,55 +103,51 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why subscriptions need their own view</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Subscriptions are the slow leak in every budget. Budgie scans your transaction history for amount + cadence patterns
-                        (Netflix, gym, mortgage, ISA) and surfaces them on a dedicated calendar tab.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date
-                        plus what&apos;s projected for the rest of it, and future months show projections you reach by navigating forward.
-                        Cross-currency recurring shows in your home currency; original amount on tap.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Auto-detection scans transaction history for amount + cadence patterns — no manual setup</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Month-grid calendar plots upcoming renewals; tap a day to see what&apos;s billing</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>
-                            Inferred cadence — monthly, bi-monthly, or quarterly — instead of forcing every bill into a monthly slot
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Search} title={<Trans>Found without setup</Trans>}>
+                    <Trans>Auto-detection scans transaction history for amount + cadence patterns — no manual setup</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={CalendarDays} title={<Trans>See what bills when</Trans>}>
+                    <Trans>Month-grid calendar plots upcoming renewals; tap a day to see what&apos;s billing</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Repeat} title={<Trans>Real billing rhythm</Trans>}>
+                    <Trans>Inferred cadence — monthly, bi-monthly, or quarterly — instead of forcing every bill into a monthly slot</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Cross-currency recurring shows in your home currency; original amount on tap</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Fuzzy merchant matching keeps one series together even when a bank mangles the name</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Scans 24 months of history to detect a pattern, not just the current month</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why subscriptions need their own view</Trans>}>
+                    <p>
+                        <Trans>
+                            Subscriptions are the slow leak in every budget. Budgie scans your transaction history for amount + cadence
+                            patterns (Netflix, gym, mortgage, ISA) and surfaces them on a dedicated calendar tab.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to
+                            date plus what&apos;s projected for the rest of it, and future months show projections you reach by navigating
+                            forward. Cross-currency recurring shows in your home currency; original amount on tap.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How does Budgie know what&apos;s recurring?</Trans>}
                     answer={
                         <Trans>
@@ -163,7 +156,8 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What about cross-currency subscriptions?</Trans>}
                     answer={
                         <Trans>
@@ -172,7 +166,8 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can bi-monthly or quarterly bills show up correctly?</Trans>}
                     answer={
                         <Trans>
@@ -182,7 +177,8 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>How far does the forecast go?</Trans>}
                     answer={
                         <Trans>
@@ -192,7 +188,7 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -1,15 +1,12 @@
 /* eslint-disable max-lines-per-function */
 import { Trans } from '@lingui/react/macro';
+import { Eye, PenLine, ShieldCheck } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -37,88 +34,82 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why duplicates appear at all</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Eye} title={<Trans>See the count first</Trans>}>
                     <Trans>
-                        A bank API can hand back the same transaction twice: a retried request, a resync window that overlaps the last one,
-                        a connection that re-downloads a statement. Neither row is wrong on its own — they simply describe the same event,
-                        and you see it twice.
+                        A dedicated Settings screen scans your imported banking connections and shows a count before it changes anything
                     </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The Sync Data Repairs screen runs several checks in one pass: it finds duplicate imported rows, cleans up a few
-                        rarer transfer-matching duplicates that only affect transfers, and looks for transfers between your own cards that
-                        arrived as a separate income row and expense row instead of one transfer. It checks your imported banking
-                        connections that support this repair today, shows a count before changing anything, and only touches the rows
-                        involved once you confirm.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>When one card pays another</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Sometimes a transfer between your own cards arrives as two separate rows instead of one — an expense on the card
-                        that sent it, an income on the card that received it. The repair finds those pairs and turns the unmatched row into
-                        a proper transfer, rather than deleting anything.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        It only acts when the receiving card is no longer active on your account, when the masked card number on the
-                        transaction matches exactly one of your closed cards, and when a matching entry turns up within about half a day and
-                        within the expected amount. If the receiving card is still active, this repair leaves it alone — that&apos;s by
-                        design, not a bug.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            A dedicated Settings screen scans your imported banking connections and shows a count before it changes anything
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Soft-deletes duplicated imported rows — anything you typed yourself is never a candidate</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={PenLine} title={<Trans>Hand-typed entries stay untouched</Trans>}>
+                    <Trans>Soft-deletes duplicated imported rows — anything you typed yourself is never a candidate</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Nothing runs unconfirmed</Trans>}>
+                    <Trans>No repair runs until you confirm on the repair card — no background cleanup</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>
                             A per-source list, though paired own-card transfers are folded into one connection&apos;s count rather than
                             shown separately
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>No repair runs until you confirm on the repair card — no background cleanup</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>An explicit empty state, “No sync repairs found”, when there is nothing to fix</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Runs against the local database — no upload, no server</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Also pairs unmatched own-card transfer legs into a real transfer — that&apos;s a rewrite, not a deletion, and it
                             can&apos;t be undone with one tap
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why duplicates appear at all</Trans>}>
+                    <p>
+                        <Trans>
+                            A bank API can hand back the same transaction twice: a retried request, a resync window that overlaps the last
+                            one, a connection that re-downloads a statement. Neither row is wrong on its own — they simply describe the same
+                            event, and you see it twice.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The Sync Data Repairs screen runs several checks in one pass: it finds duplicate imported rows, cleans up a few
+                            rarer transfer-matching duplicates that only affect transfers, and looks for transfers between your own cards
+                            that arrived as a separate income row and expense row instead of one transfer. It checks your imported banking
+                            connections that support this repair today, shows a count before changing anything, and only touches the rows
+                            involved once you confirm.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>When one card pays another</Trans>}>
+                    <p>
+                        <Trans>
+                            Sometimes a transfer between your own cards arrives as two separate rows instead of one — an expense on the card
+                            that sent it, an income on the card that received it. The repair finds those pairs and turns the unmatched row
+                            into a proper transfer, rather than deleting anything.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            It only acts when the receiving card is no longer active on your account, when the masked card number on the
+                            transaction matches exactly one of your closed cards, and when a matching entry turns up within about half a day
+                            and within the expected amount. If the receiving card is still active, this repair leaves it alone — that&apos;s
+                            by design, not a bug.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What does a sync data repair actually do?</Trans>}
                     answer={
                         <Trans>
@@ -128,7 +119,8 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Will it touch transactions I entered by hand?</Trans>}
                     answer={
                         <Trans>
@@ -137,19 +129,8 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>Does it run automatically?</Trans>}
-                    answer={
-                        <Trans>
-                            No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>What if there is nothing to repair?</Trans>}
-                    answer={<Trans>The screen says “No sync repairs found” and leaves your data alone.</Trans>}
-                />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What does the own-card transfer fix actually change?</Trans>}
                     answer={
                         <Trans>
@@ -159,7 +140,8 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Why didn&apos;t it find my own-card transfer?</Trans>}
                     answer={
                         <Trans>
@@ -169,7 +151,8 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Why do duplicates appear at all?</Trans>}
                     answer={
                         <Trans>
@@ -178,7 +161,7 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

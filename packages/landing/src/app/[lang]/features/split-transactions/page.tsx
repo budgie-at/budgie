@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Split, ChartPie, Tags } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -87,64 +84,66 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why receipts mix categories</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown.
-                        Budgie&apos;s split modal lets you allocate fractions of the same transaction across as many categories as you like.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The footer button doubles as your running total — it reads &quot;$X left to assign&quot; until the split is fully
-                        allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split entries
-                        underneath.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Unlimited splits per transaction — every category gets its accurate share</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Split} title={<Trans>Unlimited splits per bill</Trans>}>
+                    <Trans>Unlimited splits per transaction — every category gets its accurate share</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Tags and comments per row</Trans>}>
+                    <Trans>Each split row keeps its own tags and comment — fully independent</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ChartPie} title={<Trans>No double-counting in analytics</Trans>}>
+                    <Trans>Analytics counts each split toward its own category — no double-counting</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>The footer button tracks what&apos;s left to allocate, then turns into Confirm Split once it adds up</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Each split row keeps its own tags and comment — fully independent</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Works for both expense and income transactions</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Analytics counts each split toward its own category — no double-counting</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why receipts mix categories</Trans>}>
+                    <p>
+                        <Trans>
+                            Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown.
+                            Budgie&apos;s split modal lets you allocate fractions of the same transaction across as many categories as you
+                            like.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The footer button doubles as your running total — it reads &quot;$X left to assign&quot; until the split is
+                            fully allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split
+                            entries underneath.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How many splits can I make per transaction?</Trans>}
                     answer={
                         <Trans>No limit. Add as many split rows as you need; the total must equal the original transaction amount.</Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Can splits have different tags?</Trans>}
                     answer={<Trans>Yes. Each split row keeps its own tags and comment, fully independent of the others.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Does split mode work for income too?</Trans>}
                     answer={<Trans>Yes. Switch to split inside the income form just like the expense form.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What happens to analytics after splitting?</Trans>}
                     answer={
                         <Trans>
@@ -153,7 +152,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

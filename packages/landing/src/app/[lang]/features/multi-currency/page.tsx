@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ArrowLeftRight, Coins, Globe } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -85,50 +82,48 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a single-currency app can&apos;t model real life</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Single-currency apps can&apos;t model how most people actually save and spend — a UK current account, a Wise USD
-                        pot, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Exchange rates refresh in the background and are stored on your device. Nothing is converted in place: every
-                        account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is
-                        derived on top of it.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Each account holds a fixed native currency — fiat, crypto, or otherwise</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Coins} title={<Trans>Every account in its own currency</Trans>}>
+                    <Trans>Each account holds a fixed native currency — fiat, crypto, or otherwise</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Globe} title={<Trans>One total in your base currency</Trans>}>
+                    <Trans>Home and analytics screens convert to your base currency automatically</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Transfers keep both legs</Trans>}>
+                    <Trans>Cross-currency transfers preserve both legs and the FX rate at transfer time</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>The newest rate for every currency pair is stored on your device</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Home and analytics screens convert to your base currency automatically</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Totals are converted with the most recent rate Budgie fetched</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Cross-currency transfers preserve both legs and the FX rate at transfer time</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a single-currency app can&apos;t model real life</Trans>}>
+                    <p>
+                        <Trans>
+                            Single-currency apps can&apos;t model how most people actually save and spend — a UK current account, a USD
+                            savings account, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Exchange rates refresh in the background and are stored on your device. Nothing is converted in place: every
+                            account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is
+                            derived on top of it.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How often do FX rates refresh?</Trans>}
                     answer={
                         <Trans>
@@ -137,16 +132,18 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Where do the rates come from?</Trans>}
                     answer={
                         <Trans>
-                            Currency rates come from a free public endpoint at exchangerate-api.com, and crypto prices from CoinGecko. There
-                            is no vendor account to create and no API key to paste in.
+                            Currency rates and crypto prices come from free public market data that your phone fetches while it is online.
+                            There is no vendor account to create and no API key to paste in.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I see the original currency?</Trans>}
                     answer={
                         <Trans>
@@ -155,7 +152,8 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What happens during a cross-currency transfer?</Trans>}
                     answer={
                         <Trans>
@@ -164,7 +162,7 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

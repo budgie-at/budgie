@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'private balance app',
         'no-screenshot finance app'
     ],
-    relatedFeatureSlugs: ['pin-app-lock', 'biometric-authentication'],
+    relatedFeatureSlugs: ['pin-app-lock', 'biometric-authentication', 'database-backup', 'expense-tracking'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2025-12-23',
     updatedAt: '2026-05-03',

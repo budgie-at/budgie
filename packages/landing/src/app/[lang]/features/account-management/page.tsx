@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Archive, Palette, Wallet } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -110,81 +107,74 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why real life is multi-account</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Wallet} title={<Trans>Unlimited accounts, any type</Trans>}>
                     <Trans>
-                        Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a Revolut card, a crypto wallet,
-                        a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and
-                        &ldquo;include in net worth&rdquo; toggle.
+                        Unlimited accounts: Checking, Savings (cash), Crypto, Debt, Deposit — plus bank and Binance sync — each with its own
+                        currency and balance
                     </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Archive} title={<Trans>Archive without losing history</Trans>}>
+                    <Trans>Archive without deleting, or mark inactive without archiving — both keep the full history</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Palette} title={<Trans>Readable at a glance</Trans>}>
                     <Trans>
-                        Bank-synced accounts auto-group by provider on the home screen. Self-custodied crypto holdings group by currency
-                        instead — several accounts holding the same coin collapse into one row with a combined balance, an expand toggle,
-                        and a link straight to that coin&rsquo;s market screen. Liability and debt accounts support negative balances.
-                        Archived accounts disappear from the home but stay searchable.
+                        Every account type carries its own color and icon, so a home screen with a dozen accounts still reads at a glance
                     </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Archive is not the same as inactive</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an
-                        archived account leaves the home screen and the totals but keeps every transaction, ready to search and restore.
-                        Mark it inactive when it is still real but should not clutter the home screen — an inactive account stays out of the
-                        daily list without being treated as closed. Both keep the full history.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            Unlimited accounts: Checking, Savings (cash), Crypto, Debt, Deposit — plus bank and Binance sync — each with its
-                            own currency and balance
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Bank-synced accounts auto-group by provider on the home screen</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Self-custodied coins group by currency with one combined balance and a tap through to that coin&rsquo;s market
                             screen; exchange-synced coins stay under their exchange
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Deposit accounts track maturity details; liability and debt accounts support negative balances</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Archive without deleting, or mark inactive without archiving — both keep the full history</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
-                        <Trans>
-                            Every account type carries its own color and icon, so a home screen with a dozen accounts still reads at a
-                            glance
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>&ldquo;Include in net worth&rdquo; toggle per account for partial-truth balance sheets</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why real life is multi-account</Trans>}>
+                    <p>
+                        <Trans>
+                            Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a Revolut card, a crypto
+                            wallet, a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and
+                            &ldquo;include in net worth&rdquo; toggle.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Bank-synced accounts auto-group by provider on the home screen. Self-custodied crypto holdings group by currency
+                            instead — several accounts holding the same coin collapse into one row with a combined balance, an expand
+                            toggle, and a link straight to that coin&rsquo;s market screen. Liability and debt accounts support negative
+                            balances. Archived accounts disappear from the home but stay searchable.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Archive is not the same as inactive</Trans>}>
+                    <p>
+                        <Trans>
+                            Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an
+                            archived account leaves the home screen and the totals but keeps every transaction, ready to search and restore.
+                            Mark it inactive when it is still real but should not clutter the home screen — an inactive account stays out of
+                            the daily list without being treated as closed. Both keep the full history.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Is there a limit on the number of accounts?</Trans>}
                     answer={
                         <Trans>
@@ -192,7 +182,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Can I track an account in a different currency?</Trans>}
                     answer={
                         <Trans>
@@ -201,7 +192,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What happens to transactions when I delete an account?</Trans>}
                     answer={
                         <Trans>
@@ -210,7 +202,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I track fixed-term deposits?</Trans>}
                     answer={
                         <Trans>
@@ -219,7 +212,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I track loans I owe or money owed to me?</Trans>}
                     answer={
                         <Trans>
@@ -228,17 +222,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>What is the difference between archived and inactive?</Trans>}
-                    answer={
-                        <Trans>
-                            Archive means you are done with the account — it leaves the home screen and the totals for good, but every
-                            transaction stays searchable and restorable from Settings. Inactive means the account is still real but should
-                            not clutter the home screen right now — it can be re-activated at any time from the same Settings screen.
-                        </Trans>
-                    }
-                />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

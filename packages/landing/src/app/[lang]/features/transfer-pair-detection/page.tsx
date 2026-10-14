@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ArrowLeftRight, Link2, ShieldCheck } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -109,52 +106,52 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why imported transactions need consolidation</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your
-                        spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier
-                        expense. Budgie consolidates clear refund matches automatically and leaves uncertain cases exactly as they arrived.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Matches without perfect metadata</Trans>}>
+                    <Trans>Amount + time-window matching catches transfers and refunds without perfect bank metadata</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>No silent guesses</Trans>}>
+                    <Trans>Ambiguous matches stay as two untouched rows instead of a silent guess</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Link2} title={<Trans>Originals stay linked</Trans>}>
+                    <Trans>Original entries stay linked under the consolidated transaction for full audit trail</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Counter-IBAN from Monobank as the primary signal; amount and time-window matching for banks that don&apos;t send
                             one
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Amount + time-window matching catches transfers and refunds without perfect bank metadata</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Cross-currency: $1000 → €925 matches when the implied exchange rate is plausible</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Ambiguous matches stay as two untouched rows instead of a silent guess</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Original entries stay linked under the consolidated transaction for full audit trail</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why imported transactions need consolidation</Trans>}>
+                    <p>
+                        <Trans>
+                            Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your
+                            spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides
+                            it.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier
+                            expense. Budgie consolidates clear refund matches automatically and leaves uncertain cases exactly as they
+                            arrived.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What if the algorithm misidentifies a match?</Trans>}
                     answer={
                         <Trans>
@@ -163,7 +160,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Does this work across two different banks?</Trans>}
                     answer={
                         <Trans>
@@ -174,7 +172,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
@@ -184,7 +183,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Will old (already-imported) transactions get re-matched?</Trans>}
                     answer={
                         <Trans>
@@ -193,7 +193,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

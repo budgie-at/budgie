@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { Trans } from '@lingui/react/macro';
+import { Eye, FileText, ScanText } from 'lucide-react';
 import Link from 'next/link';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -38,73 +35,67 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 }
             />
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a dedicated parser beats a generic CSV converter</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a
-                        parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The parser extracts account holder, IBAN, opening/closing balances, and every transaction line including value date,
-                        booking date, and reference text. MCC is inferred from booking-text patterns where present.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Statement lines that still have no category wait in the{' '}
-                        <Link
-                            className="font-semibold underline underline-offset-4"
-                            href={`/${lang}/features/bulk-categorize-transactions`}
-                        >
-                            Categorize inbox
-                        </Link>
-                        , grouped by merchant with suggestions from your past choices.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Both Erste statement layouts supported: classic and the 2026 modern format</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Account holder, IBAN, opening and closing balances all extracted automatically</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={FileText} title={<Trans>Both statement layouts</Trans>}>
+                    <Trans>Both Erste statement layouts supported: classic and the 2026 modern format</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ScanText} title={<Trans>Account details read for you</Trans>}>
+                    <Trans>Account holder, IBAN, opening and closing balances all extracted automatically</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Eye} title={<Trans>Preview before anything is saved</Trans>}>
+                    <Trans>Preview every parsed transaction before write — no surprises</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Booking date and value date both captured per transaction</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>MCC inferred from booking-text patterns where present</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Preview every parsed transaction before write — no surprises</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every
-                        transaction into a new or existing Erste account.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a dedicated parser beats a generic CSV converter</Trans>}>
+                    <p>
+                        <Trans>
+                            Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships
+                            a parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The parser extracts account holder, IBAN, opening/closing balances, and every transaction line including value
+                            date, booking date, and reference text. MCC is inferred from booking-text patterns where present.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Statement lines that still have no category wait in the{' '}
+                            <Link
+                                className="font-semibold underline underline-offset-4"
+                                href={`/${lang}/features/bulk-categorize-transactions`}
+                            >
+                                Categorize inbox
+                            </Link>
+                            , grouped by merchant with suggestions from your past choices.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>How it works</Trans>}>
+                    <p>
+                        <Trans>
+                            Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every
+                            transaction into a new or existing Erste account.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Which Erste statement formats are supported?</Trans>}
                     answer={
                         <Trans>
@@ -113,7 +104,8 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Will the parser get my IBAN right?</Trans>}
                     answer={
                         <Trans>
@@ -122,7 +114,8 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I re-import the same PDF safely?</Trans>}
                     answer={
                         <Trans>
@@ -131,11 +124,12 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does the parser run online?</Trans>}
                     answer={<Trans>No. PDF parsing happens entirely on-device — your statement never leaves your phone.</Trans>}
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { CalendarClock, CopyX, Tags } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -77,50 +74,48 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                 </FeatureStory.Step>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a full re-sync is the wrong fix</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Sometimes a sync drifts — a transaction reconciles late, a refund posts after the fact. The blunt fix is to reset
-                        the account and re-walk its entire history. Budgie&apos;s window picker rewinds only as far as you ask.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Pick the last 7, 30 or 90 days and Budgie moves that account&apos;s sync cursor back to the matching date; the next
-                        sync re-fetches from there. Rows the bank sends again are matched on its own transaction id, so they are updated in
-                        place instead of landing twice.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Four choices: the last 7, 30 or 90 days, or the whole history</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>The category and the tags you set are never part of what a re-sync writes</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Repeat rows are matched on the bank&apos;s transaction id, not inserted again</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={CalendarClock} title={<Trans>Four re-sync windows</Trans>}>
+                    <Trans>Four choices: the last 7, 30 or 90 days, or the whole history</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Categories and tags stay</Trans>}>
+                    <Trans>The category and the tags you set are never part of what a re-sync writes</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={CopyX} title={<Trans>No duplicate rows</Trans>}>
+                    <Trans>Repeat rows are matched on the bank&apos;s transaction id, not inserted again</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>The whole-history option asks for confirmation before it clears the sync state</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Re-sync sits in each account&apos;s own settings, beside its sync switch</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a full re-sync is the wrong fix</Trans>}>
+                    <p>
+                        <Trans>
+                            Sometimes a sync drifts — a transaction reconciles late, a refund posts after the fact. The blunt fix is to
+                            reset the account and re-walk its entire history. Budgie&apos;s window picker rewinds only as far as you ask.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Pick the last 7, 30 or 90 days and Budgie moves that account&apos;s sync cursor back to the matching date; the
+                            next sync re-fetches from there. Rows the bank sends again are matched on its own transaction id, so they are
+                            updated in place instead of landing twice.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Why not just full re-sync?</Trans>}
                     answer={
                         <Trans>
@@ -130,7 +125,8 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What&apos;s the smallest window?</Trans>}
                     answer={
                         <Trans>
@@ -139,7 +135,8 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What happens to edited transactions in the window?</Trans>}
                     answer={
                         <Trans>
@@ -149,7 +146,8 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I re-sync transactions from before bank-sync was enabled?</Trans>}
                     answer={
                         <Trans>
@@ -158,7 +156,7 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

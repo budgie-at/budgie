@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { KeyRound, Link2, ToggleRight } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -117,80 +114,74 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why the credential deserves its own object</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie models
-                        it that way: a connection holds the provider and the credential, and every account you sync from that bank points at
-                        it.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The payoff shows up the day your token expires. Enter the new one once and every account on that connection is back
-                        online together, with their error counters cleared. If the token you paste already belongs to another connection,
-                        the account is moved onto it instead of quietly creating a duplicate.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One connection behind many accounts — cards, jars, and deposits from the same bank</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Change the token once and every account on that connection follows</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>A connection screen listing its accounts with their balances and a per-account sync switch</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Link2} title={<Trans>One connection, many accounts</Trans>}>
+                    <Trans>One connection behind many accounts — cards, jars, and deposits from the same bank</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>Renew a token once</Trans>}>
+                    <Trans>Change the token once and every account on that connection follows</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ToggleRight} title={<Trans>Per-account sync switch</Trans>}>
+                    <Trans>A connection screen listing its accounts with their balances and a per-account sync switch</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Monobank connections can add more accounts later without re-entering the token, with the ones you already have
                             filtered out
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Open a deposit straight from the connection, so it inherits the bank it belongs to</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Statement-based banks get a connection too, so imported accounts group under one roof</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Archiving or deleting one account leaves the rest of the connection syncing untouched</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>One screen per bank</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong to
-                        it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone while its
-                        siblings keep going.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        What the screen offers next depends on the bank. A Monobank connection can pull the bank&apos;s account list and add
-                        whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import action
-                        instead. Both can open a new deposit account that starts out attached to the same bank.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why the credential deserves its own object</Trans>}>
+                    <p>
+                        <Trans>
+                            A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie
+                            models it that way: a connection holds the provider and the credential, and every account you sync from that
+                            bank points at it.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The payoff shows up the day your token expires. Enter the new one once and every account on that connection is
+                            back online together, with their error counters cleared. If the token you paste already belongs to another
+                            connection, the account is moved onto it instead of quietly creating a duplicate.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>One screen per bank</Trans>}>
+                    <p>
+                        <Trans>
+                            Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong
+                            to it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone
+                            while its siblings keep going.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            What the screen offers next depends on the bank. A Monobank connection can pull the bank&apos;s account list and
+                            add whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import
+                            action instead. Both can open a new deposit account that starts out attached to the same bank.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Do I have to re-add every account when my token expires?</Trans>}
                     answer={
                         <Trans>
@@ -199,7 +190,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Can jars and deposits sit on the same connection as my card?</Trans>}
                     answer={
                         <Trans>
@@ -208,7 +200,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What happens if I close one of the accounts?</Trans>}
                     answer={
                         <Trans>
@@ -217,7 +210,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does this work for banks I import statements from?</Trans>}
                     answer={
                         <Trans>
@@ -226,7 +220,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I open a deposit from any connection?</Trans>}
                     answer={
                         <Trans>
@@ -235,7 +230,7 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

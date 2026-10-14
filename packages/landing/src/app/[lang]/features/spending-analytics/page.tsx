@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { CalendarRange, PieChart, Tags } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -100,54 +97,52 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why most expense charts are useless</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen has three tabs — Categories, Tags
-                        and Runway — and the first two carry drill-down: tap a category or tag to see every transaction in it for the
-                        current period.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Date filters cover Today, This and Last Week, This and Last Month, This Year and All Time, plus any custom range.
-                        The &ldquo;Untagged&rdquo; and &ldquo;Uncategorized&rdquo; buckets surface the gaps in your bookkeeping so you can
-                        tighten them up.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Categories tab: per-category totals, with drill-down to every transaction in the row</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Tags tab: per-tag income and expense, plus an &ldquo;Untagged&rdquo; bucket for the gaps</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={PieChart} title={<Trans>See where money goes</Trans>}>
+                    <Trans>Categories tab: per-category totals, with drill-down to every transaction in the row</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Spot the bookkeeping gaps</Trans>}>
+                    <Trans>Tags tab: per-tag income and expense, plus an &ldquo;Untagged&rdquo; bucket for the gaps</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={CalendarRange} title={<Trans>Any period you need</Trans>}>
+                    <Trans>Seven date presets, from Today to All Time, plus any range you pick on the calendar</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Amount, category, tag and account chips narrow the Categories and Tags tabs from the same filter row</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Seven date presets, from Today to All Time, plus any range you pick on the calendar</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Overview tiles: spent and earned across the period, beside your balance over every account</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Fees on transfers count as spending in your fee category</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why most expense charts are useless</Trans>}>
+                    <p>
+                        <Trans>
+                            Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen has three tabs — Categories,
+                            Tags and Runway — and the first two carry drill-down: tap a category or tag to see every transaction in it for
+                            the current period.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Date filters cover Today, This and Last Week, This and Last Month, This Year and All Time, plus any custom
+                            range. The &ldquo;Untagged&rdquo; and &ldquo;Uncategorized&rdquo; buckets surface the gaps in your bookkeeping
+                            so you can tighten them up.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Can I drill down from the breakdown to the transactions?</Trans>}
                     answer={
                         <Trans>
@@ -155,7 +150,8 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What&apos;s an &ldquo;Untagged&rdquo; bucket?</Trans>}
                     answer={
                         <Trans>
@@ -164,7 +160,8 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I switch to another month?</Trans>}
                     answer={
                         <Trans>
@@ -174,17 +171,19 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Are charts rendered offline?</Trans>}
                     answer={<Trans>Yes. Analytics reads straight from your phone — every chart works without internet.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Do transfer fees show up as expenses?</Trans>}
                     answer={
                         <Trans>Yes. A transfer stays a transfer, while its fee counts as spending in the fee category you chose.</Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'database backup expense tracker',
         'budget app data export'
     ],
-    relatedFeatureSlugs: ['database-backup', 'csv-import'],
+    relatedFeatureSlugs: ['database-backup', 'csv-import', 'pin-app-lock'],
     relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
     publishedAt: '2025-12-21',
     updatedAt: '2026-09-06',

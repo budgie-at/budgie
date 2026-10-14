@@ -1,17 +1,14 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Lock, ServerOff, Smartphone } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageCategoryComparison } from '../../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -75,87 +72,67 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why this matters</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with
-                        zero ops — your phone is the server.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ServerOff} title={<Trans>No server to maintain</Trans>}>
+                    <Trans>No server to patch, renew certificates for, or pay for — just a file only you hold.</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Lock} title={<Trans>Your data on your phone</Trans>}>
+                    <Trans>On your phone, encrypted when a PIN is set</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>A real mobile app</Trans>}>
+                    <Trans>Native iOS + Android</Trans>
+                </FeatureBenefits.Benefit>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Budgie vs. the category</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why this matters</Trans>}>
+                    <p>
                         <Trans>
-                            If you enjoy ops work, do that. Most people don&apos;t, and a forgotten server with stale TLS is worse than a
-                            vendor&apos;s cloud. Budgie keeps the data ownership story without the ops cost.
+                            Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership
+                            with zero ops — your phone is the server.
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>
-                            Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when
-                            you made it. Restore it on the second device by picking the file and entering that PIN.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Export your data as CSV anytime. Budgie doesn&apos;t lock you in.</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>
-                            Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control:
-                            NAS, S3, your own server, your own cloud.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Feature comparison</Trans>}>
+                    <FeaturePageCategoryComparison categoryLabel={<Trans>Server-based finance apps</Trans>}>
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>On your phone, encrypted when a PIN is set</Trans>}
+                            competitorValue={<Trans>Your VPS / Docker host</Trans>}
+                            label={<Trans>Where data lives</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>None</Trans>}
+                            competitorValue={<Trans>Yes — updates, certs, backups</Trans>}
+                            label={<Trans>Server to maintain</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Native iOS + Android</Trans>}
+                            competitorValue={<Trans>Web wrapper or none</Trans>}
+                            label={<Trans>Mobile experience</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>To your own iCloud / Google Drive</Trans>}
+                            competitorValue={<Trans>Manual server snapshots</Trans>}
+                            label={<Trans>Backup</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Backup file copied via your cloud</Trans>}
+                            competitorValue={<Trans>Built-in via your server</Trans>}
+                            label={<Trans>Multi-device sync</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Install + open</Trans>}
+                            competitorValue={<Trans>Hours of ops</Trans>}
+                            label={<Trans>Setup time</Trans>}
+                        />
+                    </FeaturePageCategoryComparison>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Feature comparison</Trans>
-                </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={<Trans>Server-based finance apps</Trans>}>
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>On your phone, encrypted when a PIN is set</Trans>}
-                        competitorValue={<Trans>Your VPS / Docker host</Trans>}
-                        label={<Trans>Where data lives</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>None</Trans>}
-                        competitorValue={<Trans>Yes — updates, certs, backups</Trans>}
-                        label={<Trans>Server to maintain</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Native iOS + Android</Trans>}
-                        competitorValue={<Trans>Web wrapper or none</Trans>}
-                        label={<Trans>Mobile experience</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>To your own iCloud / Google Drive</Trans>}
-                        competitorValue={<Trans>Manual server snapshots</Trans>}
-                        label={<Trans>Backup</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Backup file copied via your cloud</Trans>}
-                        competitorValue={<Trans>Built-in via your server</Trans>}
-                        label={<Trans>Multi-device sync</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Install + open</Trans>}
-                        competitorValue={<Trans>Hours of ops</Trans>}
-                        label={<Trans>Setup time</Trans>}
-                    />
-                </FeaturePageCategoryComparison>
-            </FeaturePageSection>
-
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Why not just self-host an existing finance app?</Trans>}
                     answer={
                         <Trans>
@@ -164,7 +141,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How do I sync between phone and tablet?</Trans>}
                     answer={
                         <Trans>
@@ -173,11 +151,13 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What if I want to migrate to a real self-hosted app later?</Trans>}
                     answer={<Trans>Export your data as CSV anytime. Budgie doesn&apos;t lock you in.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I keep my data backed up to my own server?</Trans>}
                     answer={
                         <Trans>
@@ -186,7 +166,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

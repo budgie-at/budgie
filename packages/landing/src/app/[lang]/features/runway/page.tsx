@@ -3,12 +3,9 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -138,39 +135,40 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Built on a typical month, not a lucky one</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Runway looks at your last six complete calendar months and leaves out the month still in progress. It takes the
-                        middle value of your monthly spending and of your monthly income, so one expensive holiday or one unusually large
-                        payment does not swing the answer.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        While you are burning, a meter counts the months left on a one-year scale. While you are growing there is nothing to
-                        count down, so the meter steps aside.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The balance it spends down is money you can actually use: your cash and bank accounts, including synced ones.
-                        Savings, deposits and investments stay out, and so does crypto unless you switch it on.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Want the cautious view? Switch on Include one-offs and the monthly average of irregular costs, like insurance or
-                        holidays, is added to your spending. The verdict and the balance forecast update straight away.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Built on a typical month, not a lucky one</Trans>}>
+                    <p>
+                        <Trans>
+                            Runway looks at your last six complete calendar months and leaves out the month still in progress. It takes the
+                            middle value of your monthly spending and of your monthly income, so one expensive holiday or one unusually
+                            large payment does not swing the answer.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            While you are burning, a meter counts the months left on a one-year scale. While you are growing there is
+                            nothing to count down, so the meter steps aside.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The balance it spends down is money you can actually use: your cash and bank accounts, including synced ones.
+                            Savings, deposits and investments stay out, and so does crypto unless you switch it on.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Want the cautious view? Switch on Include one-offs and the monthly average of irregular costs, like insurance or
+                            holidays, is added to your spending. The verdict and the balance forecast update straight away.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What does &ldquo;months left&rdquo; mean?</Trans>}
                     answer={
                         <Trans>
@@ -179,7 +177,8 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Why does Runway need three complete months?</Trans>}
                     answer={
                         <Trans>
@@ -189,7 +188,8 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What does Include one-offs do?</Trans>}
                     answer={
                         <Trans>
@@ -199,7 +199,8 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does Runway count my crypto and savings?</Trans>}
                     answer={
                         <Trans>
@@ -209,7 +210,8 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>What if I earn more than I spend?</Trans>}
                     answer={
                         <Trans>
@@ -218,24 +220,7 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>Do my analytics filters change the result?</Trans>}
-                    answer={
-                        <Trans>
-                            No. Runway always uses all your transactions from the last complete months, whatever dates or filters you picked
-                            on the other analytics tabs.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Can I hide the runway pill?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes. Turn off Show on home in the Runway section of Settings. The Runway tab stays available in Analytics.
-                        </Trans>
-                    }
-                />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Hand, ListChecks, Smartphone } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -165,51 +162,50 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Actions belong on the list</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Editing a transaction in most expense apps means opening a detail screen, then an edit button, then a form. Common
-                        operations like deleting a duplicate or reclassifying an expense as a transfer should not cost that much. Budgie
-                        puts them behind a single long-press anchored to the transaction card itself.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on every
-                        platform.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Start any action from the list — long-press the row, then pick it</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Context-aware menu — actions adapt to the transaction so you never see an option that does not apply</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Hand} title={<Trans>Act straight from the list</Trans>}>
+                    <Trans>Start any action from the list — long-press the row, then pick it</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Only actions that apply</Trans>}>
+                    <Trans>Context-aware menu — actions adapt to the transaction so you never see an option that does not apply</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>One-handed, no extra screens</Trans>}>
+                    <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>One menu on every platform — no full-screen form to open first</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Actions belong on the list</Trans>}>
+                    <p>
+                        <Trans>
+                            Editing a transaction in most expense apps means opening a detail screen, then an edit button, then a form.
+                            Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost that much.
+                            Budgie puts them behind a single long-press anchored to the transaction card itself.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on
+                            every platform.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How do I open the menu?</Trans>}
                     answer={<Trans>Press and hold any transaction card. Budgie&apos;s own menu appears next to the card.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What actions are available?</Trans>}
                     answer={
                         <Trans>
@@ -219,13 +215,15 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I customize the menu?</Trans>}
                     answer={
                         <Trans>Not yet. The menu surfaces the most common actions; let us know on GitHub if you want a custom slot.</Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does this work on iPad?</Trans>}
                     answer={
                         <Trans>
@@ -233,7 +231,7 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

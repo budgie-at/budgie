@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'dark mode finance app',
         'true black expense app'
     ],
-    relatedFeatureSlugs: ['multi-language-app'],
+    relatedFeatureSlugs: ['multi-language-app', 'expense-tracking', 'custom-categories'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-05-03',

@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { KeyRound, Lock, ScanFace } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -114,49 +111,47 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why most app locks are decoration</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie&apos;s PIN is wired to
-                        the database encryption itself, so the same digits that pass the lock screen are the encryption key.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        App goes to background → lock kicks in. A wrong PIN doesn&apos;t lock you out forever, but there is no reset that
-                        hands the data back (your call: keep the PIN safe).
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>PIN is the database encryption key — not just a screen guard</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>A lock that encrypts</Trans>}>
+                    <Trans>PIN is the database encryption key — not just a screen guard</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ScanFace} title={<Trans>Unlock with your face</Trans>}>
+                    <Trans>Optional Face ID or Touch ID unlock, with the PIN as fallback</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Lock} title={<Trans>Locks when you leave</Trans>}>
+                    <Trans>Re-locks the moment the app goes to background</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>A 4-digit PIN, set from Settings → Security</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Re-locks the moment the app goes to background</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Optional Face ID or Touch ID unlock, with the PIN as fallback</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>No &ldquo;forgot PIN&rdquo; recovery — that&apos;s the privacy guarantee</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why most app locks are decoration</Trans>}>
+                    <p>
+                        <Trans>
+                            Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie&apos;s PIN is wired
+                            to the database encryption itself, so the same digits that pass the lock screen are the encryption key.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            App goes to background → lock kicks in. A wrong PIN doesn&apos;t lock you out forever, but there is no reset
+                            that hands the data back (your call: keep the PIN safe).
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What if I forget my PIN?</Trans>}
                     answer={
                         <Trans>
@@ -165,7 +160,8 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How quickly does the app re-lock?</Trans>}
                     answer={
                         <Trans>
@@ -174,7 +170,8 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Is biometric the same as PIN security?</Trans>}
                     answer={
                         <Trans>
@@ -184,7 +181,8 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does the lock work if my phone is jailbroken?</Trans>}
                     answer={
                         <Trans>
@@ -193,7 +191,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { CalendarClock, ListChecks, RefreshCw } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { InstallmentPreview } from '../../../../feature/component/installment-preview/installment-preview';
@@ -114,71 +111,65 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                 />
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>See the total before you commit</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Any purchase can become a plan</Trans>}>
                     <Trans>
-                        Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie also
-                        shows the month each payment falls in, so you know when you are done.
+                        Any expense can become a plan, from a bank&apos;s pay-in-parts service to a store&apos;s installment offer
                     </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? The sheet
-                        shows how much of that total is the fee.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            Any expense can become a plan, from a bank&apos;s pay-in-parts service to a store&apos;s installment offer
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={RefreshCw} title={<Trans>Parts attach after each sync</Trans>}>
+                    <Trans>Monthly parts are attached after each sync, matched by account, amount and due date</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={CalendarClock} title={<Trans>Next payment on Home</Trans>}>
+                    <Trans>Every open plan appears under You owe on Home, next to your other debts</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Choose from 2 to 24 payments and watch the total and each part update live</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Monthly parts are attached after each sync, matched by account, amount and due date</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>The plan shows how many parts are paid, plus the next amount and its date</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Every open plan appears under You owe on Home, next to your other debts</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Each part stays an ordinary expense in its category, so monthly spending shows what really left your account
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>A refunded purchase closes its plan at what you already paid</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Returned it? The plan closes too</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Sent the phone back? Once the refund is linked to the purchase, Budgie closes the plan at the amount you already
-                        paid. It stops showing a next payment and drops out of what you owe.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>See the total before you commit</Trans>}>
+                    <p>
+                        <Trans>
+                            Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie
+                            also shows the month each payment falls in, so you know when you are done.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            If your bank quoted a different total, type it in and Budgie works out the part from it. Paying a fee? The sheet
+                            shows how much of that total is the fee.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Returned it? The plan closes too</Trans>}>
+                    <p>
+                        <Trans>
+                            Sent the phone back? Once the refund is linked to the purchase, Budgie closes the plan at the amount you already
+                            paid. It stops showing a next payment and drops out of what you owe.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Which purchases can I turn into a plan?</Trans>}
                     answer={
                         <Trans>
@@ -187,7 +178,8 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How does Budgie find the monthly parts?</Trans>}
                     answer={
                         <Trans>
@@ -197,7 +189,8 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What if my bank charges a fee?</Trans>}
                     answer={
                         <Trans>
@@ -206,15 +199,8 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>What if the last payment is a few cents different?</Trans>}
-                    answer={
-                        <Trans>
-                            The last part is simply whatever is left on the plan, so rounding never leaves a plan open by a few cents.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What happens if I return the item?</Trans>}
                     answer={
                         <Trans>
@@ -223,16 +209,8 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>Does a plan change my spending analytics?</Trans>}
-                    answer={
-                        <Trans>
-                            No. Each part stays an ordinary expense in its category on the day it left your account. The plan only keeps
-                            score of what is paid and what is left.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Where do I see what I still owe?</Trans>}
                     answer={
                         <Trans>
@@ -241,7 +219,7 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

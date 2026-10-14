@@ -9,8 +9,8 @@ import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { BankFeeTrackingBenefitsSection } from './bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section';
+import { BankFeeTrackingDetailsSection } from './bank-fee-tracking-details-section/bank-fee-tracking-details-section';
 import { BankFeeTrackingFaqSection } from './bank-fee-tracking-faq-section/bank-fee-tracking-faq-section';
-import { BankFeeTrackingOverviewSection } from './bank-fee-tracking-overview-section/bank-fee-tracking-overview-section';
 import { FEATURE_METADATA } from './metadata';
 
 export const generateMetadata = createFeatureGenerateMetadata(FEATURE_METADATA);
@@ -86,8 +86,10 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <BankFeeTrackingOverviewSection />
             <BankFeeTrackingBenefitsSection />
+
+            <BankFeeTrackingDetailsSection locale={lang} />
+
             <BankFeeTrackingFaqSection locale={lang} />
         </FeaturePageShell>
     );

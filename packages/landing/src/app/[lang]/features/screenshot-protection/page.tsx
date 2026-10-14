@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { EyeOff, ShieldCheck, ToggleRight } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -79,47 +76,47 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a glance at the app switcher is a real privacy leak</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including account
-                        balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie
-                        isn&apos;t the active app.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>Off by default. Turn it on in Settings → Security and it applies immediately, with no per-screen setup.</Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One switch in Settings → Security, right under the PIN-lock card</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Masks account balances and net worth the instant the app stops being active</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Covers every protected amount Budgie renders, not just the home screen</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={EyeOff} title={<Trans>Balances hidden instantly</Trans>}>
+                    <Trans>Masks account balances and net worth the instant the app stops being active</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Every amount covered</Trans>}>
+                    <Trans>Covers every protected amount Budgie renders, not just the home screen</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ToggleRight} title={<Trans>One simple switch</Trans>}>
+                    <Trans>One switch in Settings → Security, right under the PIN-lock card</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Off by default — nothing is hidden until you turn it on</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Pairs with the PIN lock for a fuller privacy seal</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a glance at the app switcher is a real privacy leak</Trans>}>
+                    <p>
+                        <Trans>
+                            Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including
+                            account balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as
+                            Budgie isn&apos;t the active app.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Off by default. Turn it on in Settings → Security and it applies immediately, with no per-screen setup.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What does Screenshot Protection actually hide?</Trans>}
                     answer={
                         <Trans>
@@ -128,7 +125,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Does it block screenshots or screen recordings?</Trans>}
                     answer={
                         <Trans>
@@ -137,7 +135,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Where do I turn it on?</Trans>}
                     answer={
                         <Trans>
@@ -146,7 +145,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does it work alongside the PIN lock?</Trans>}
                     answer={
                         <Trans>
@@ -155,7 +155,7 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

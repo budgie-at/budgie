@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Moon, Rocket, SunMoon } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -72,49 +69,47 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a finance app at midnight matters</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        A finance app you check at midnight should not blast your retinas. Budgie&apos;s dark theme is OLED-friendly black,
-                        not a dimmed gray, and respects the system preference by default.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Manual override is two taps in Settings. The theme switch is non-flickering on cold launch (no white-flash). Charts
-                        and accents recolor for legibility.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>OLED-friendly true black canvas — saves battery on modern phones</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Moon} title={<Trans>True black for OLED</Trans>}>
+                    <Trans>OLED-friendly true black canvas — saves battery on modern phones</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={SunMoon} title={<Trans>Follows your system theme</Trans>}>
+                    <Trans>A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Rocket} title={<Trans>No white flash at launch</Trans>}>
+                    <Trans>No white flash on cold launch — native splash respects the OS theme</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Chart palettes auto-recompute for legibility on dark canvas</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>No white flash on cold launch — native splash respects the OS theme</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Persists across app relaunch and device restarts</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a finance app at midnight matters</Trans>}>
+                    <p>
+                        <Trans>
+                            A finance app you check at midnight should not blast your retinas. Budgie&apos;s dark theme is OLED-friendly
+                            black, not a dimmed gray, and respects the system preference by default.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Manual override is two taps in Settings. The theme switch is non-flickering on cold launch (no white-flash).
+                            Charts and accents recolor for legibility.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Is it true black or just dark gray?</Trans>}
                     answer={
                         <Trans>
@@ -123,11 +118,13 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Does it switch automatically?</Trans>}
                     answer={<Trans>Yes — system theme by default. Override to Light or Dark in Settings if you prefer.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Why no white flash on cold launch?</Trans>}
                     answer={
                         <Trans>
@@ -136,7 +133,8 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Do charts recolor?</Trans>}
                     answer={
                         <Trans>
@@ -144,7 +142,7 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

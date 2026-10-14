@@ -1,17 +1,14 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ListFilter, MousePointerClick, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -114,61 +111,59 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why uncategorized transactions quietly break reports</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        One uncategorized grocery run can make your food budget look better than it is. A few missing categories across
-                        income and expenses can distort category charts, month-end reviews, and spending trends.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a
-                        compact missing-category pill appears above the list with the exact count.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Tapping the pill opens the Categorize inbox, which groups those transactions by merchant so you can{' '}
-                        <Link
-                            className="font-semibold underline underline-offset-4"
-                            href={`/${lang}/features/bulk-categorize-transactions`}
-                        >
-                            categorize them in bulk
-                        </Link>{' '}
-                        with suggestions learned from your own past choices.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Filter-aware count for missing categories under the current account, date, tag, and transaction type</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>One-tap drill-down into only the uncategorized transactions that match your current filters</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ListFilter} title={<Trans>Counts that follow your filters</Trans>}>
+                    <Trans>Filter-aware count for missing categories under the current account, date, tag, and transaction type</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={MousePointerClick} title={<Trans>One tap to the gaps</Trans>}>
+                    <Trans>One-tap drill-down into only the uncategorized transactions that match your current filters</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>Offline and on-device</Trans>}>
+                    <Trans>Works offline and on-device, with no analytics service reading your financial data</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Category cleanup from the same transaction cards you already use for editing</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Stays fast on long transaction histories, entirely on-device</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Works offline and on-device, with no analytics service reading your financial data</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why uncategorized transactions quietly break reports</Trans>}>
+                    <p>
+                        <Trans>
+                            One uncategorized grocery run can make your food budget look better than it is. A few missing categories across
+                            income and expenses can distort category charts, month-end reviews, and spending trends.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions,
+                            a compact missing-category pill appears above the list with the exact count.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Tapping the pill opens the Categorize inbox, which groups those transactions by merchant so you can{' '}
+                            <Link
+                                className="font-semibold underline underline-offset-4"
+                                href={`/${lang}/features/bulk-categorize-transactions`}
+                            >
+                                categorize them in bulk
+                            </Link>{' '}
+                            with suggestions learned from your own past choices.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What are uncategorized transactions?</Trans>}
                     answer={
                         <Trans>
@@ -177,7 +172,8 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Does the count respect my current filters?</Trans>}
                     answer={
                         <Trans>
@@ -186,13 +182,15 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Will this slow down my transaction list?</Trans>}
                     answer={
                         <Trans>No. The count and the drill-down list both run entirely on-device, without a cloud analytics service.</Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Is there a faster way to fix many of them?</Trans>}
                     answer={
                         <Trans>
@@ -202,7 +200,7 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

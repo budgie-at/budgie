@@ -5,8 +5,7 @@ import { WebPageJsonLd } from '../../../generic/component/web-page-json-ld/web-p
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PILLAR_CLASS_NAME } from '../../constant/pillar-class-name.constant';
 import { FeaturePageCta } from '../feature-page-cta/feature-page-cta';
-import { FeaturePageRelatedArticles } from '../feature-page-related-articles/feature-page-related-articles';
-import { FeaturePageRelated } from '../feature-page-related/feature-page-related';
+import { FeatureRelated } from '../feature-related/feature-related';
 
 import type { FeatureRegistryEntryInterface } from '../../interface/feature-registry-entry.interface';
 import type { ReactNode } from 'react';
@@ -38,8 +37,7 @@ export const FeaturePageShell = ({ children, lang, meta }: Props) => {
                 updatedAt={meta.updatedAt}
             />
             {children}
-            <FeaturePageRelated locale={lang} slugs={meta.relatedFeatureSlugs} />
-            <FeaturePageRelatedArticles locale={lang} slugs={meta.relatedArticleSlugs} />
+            <FeatureRelated locale={lang} slugs={meta.relatedFeatureSlugs} />
             <FeaturePageCta locale={lang} />
         </main>
     );

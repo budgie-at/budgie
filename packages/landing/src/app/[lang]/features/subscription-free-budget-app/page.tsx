@@ -1,17 +1,14 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Code, Gift, ServerOff } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageCategoryComparison } from '../../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -80,87 +77,81 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why this matters</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Gift} title={<Trans>Every feature is free</Trans>}>
                     <Trans>
-                        Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no
-                        tier.
+                        Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct
+                        bank-sync integrations are all free.
                     </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Budgie vs. the category</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct
-                            bank-sync integrations are all free.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Code} title={<Trans>Source you can read</Trans>}>
+                    <Trans>
+                        The app source is public. Even if Budgie disappeared, the community could keep building it. That&apos;s not true of
+                        subscription apps with closed servers.
+                    </Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ServerOff} title={<Trans>No servers, no recurring fee</Trans>}>
+                    <Trans>
+                        Most run cloud infrastructure to mirror your transactions. We don&apos;t run servers — your data lives on your phone
+                        — so we don&apos;t need recurring revenue to keep the lights on.
+                    </Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Nothing — there&apos;s nothing to stop. Nothing was ever paid for.</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>
-                            The app source is public. Even if Budgie disappeared, the community could keep building it. That&apos;s not true
-                            of subscription apps with closed servers.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>
-                            Most run cloud infrastructure to mirror your transactions. We don&apos;t run servers — your data lives on your
-                            phone — so we don&apos;t need recurring revenue to keep the lights on.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Feature comparison</Trans>
-                </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={<Trans>Subscription budget apps</Trans>}>
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Free</Trans>}
-                        competitorValue={<Trans>Monthly recurring</Trans>}
-                        label={<Trans>Pricing</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Everything — always</Trans>}
-                        competitorValue={<Trans>Read-only or nothing if you stop paying</Trans>}
-                        label={<Trans>What you keep</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>$0</Trans>}
-                        competitorValue={<Trans>$300+ recurring</Trans>}
-                        label={<Trans>Cost over 5 years</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Direct API or PDF/CSV</Trans>}
-                        competitorValue={<Trans>Aggregator (often paid tier)</Trans>}
-                        label={<Trans>Bank sync</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Full</Trans>}
-                        competitorValue={<Trans>Limited or none</Trans>}
-                        label={<Trans>Offline use</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Yes</Trans>}
-                        competitorValue={<Trans>No</Trans>}
-                        label={<Trans>Public source</Trans>}
-                    />
-                </FeaturePageCategoryComparison>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why this matters</Trans>}>
+                    <p>
+                        <Trans>
+                            Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock,
+                            no tier.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Feature comparison</Trans>}>
+                    <FeaturePageCategoryComparison categoryLabel={<Trans>Subscription budget apps</Trans>}>
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Free</Trans>}
+                            competitorValue={<Trans>Monthly recurring</Trans>}
+                            label={<Trans>Pricing</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Everything — always</Trans>}
+                            competitorValue={<Trans>Read-only or nothing if you stop paying</Trans>}
+                            label={<Trans>What you keep</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>$0</Trans>}
+                            competitorValue={<Trans>$300+ recurring</Trans>}
+                            label={<Trans>Cost over 5 years</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Direct API or PDF/CSV</Trans>}
+                            competitorValue={<Trans>Aggregator (often paid tier)</Trans>}
+                            label={<Trans>Bank sync</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Full</Trans>}
+                            competitorValue={<Trans>Limited or none</Trans>}
+                            label={<Trans>Offline use</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Yes</Trans>}
+                            competitorValue={<Trans>No</Trans>}
+                            label={<Trans>Public source</Trans>}
+                        />
+                    </FeaturePageCategoryComparison>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Is anything in Budgie paid?</Trans>}
                     answer={
                         <Trans>
@@ -169,11 +160,13 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Does Budgie have ads or a paid tier?</Trans>}
                     answer={<Trans>No. There is no paid tier and no ads — every feature ships free in the app you install.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Is &ldquo;subscription-free&rdquo; really durable?</Trans>}
                     answer={
                         <Trans>
@@ -182,7 +175,8 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Why do other apps charge monthly?</Trans>}
                     answer={
                         <Trans>
@@ -191,7 +185,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

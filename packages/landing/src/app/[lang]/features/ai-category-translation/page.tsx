@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Languages, Search, Type } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -83,50 +80,48 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 </FeatureStory.Step>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why foreign category and tag names break expense search</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Categories and tags you create or import in Ukrainian, Greek, or Arabic script are unreadable to search and
-                        suggestions built around Latin text. Budgie writes an English form for each one, adds search keywords, and keeps
-                        both forms. All of it happens on your phone.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The original Cyrillic, Greek, or Arabic name stays exactly as you wrote it; the English form is what your search
-                        queries also match against. No data ever leaves your device.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Original category and tag names stay untouched alongside the English form</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Both forms are searchable — search finds the category or tag whichever one you remember</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Languages} title={<Trans>Works across many scripts</Trans>}>
+                    <Trans>Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Type} title={<Trans>Original names untouched</Trans>}>
+                    <Trans>Original category and tag names stay untouched alongside the English form</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Search} title={<Trans>Search finds either form</Trans>}>
+                    <Trans>Both forms are searchable — search finds the category or tag whichever one you remember</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>On your phone — no category or tag name ever leaves it</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Edit any category or tag if its English form comes back wrong</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why foreign category and tag names break expense search</Trans>}>
+                    <p>
+                        <Trans>
+                            Categories and tags you create or import in Ukrainian, Greek, or Arabic script are unreadable to search and
+                            suggestions built around Latin text. Budgie writes an English form for each one, adds search keywords, and keeps
+                            both forms. All of it happens on your phone.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The original Cyrillic, Greek, or Arabic name stays exactly as you wrote it; the English form is what your search
+                            queries also match against. No data ever leaves your device.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Which scripts are supported?</Trans>}
                     answer={
                         <Trans>
@@ -135,7 +130,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Are my original category and tag names kept?</Trans>}
                     answer={
                         <Trans>
@@ -144,7 +140,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What if a category or tag is translated wrongly?</Trans>}
                     answer={
                         <Trans>
@@ -153,7 +150,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does this run on every category and tag?</Trans>}
                     answer={
                         <Trans>
@@ -162,7 +160,7 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

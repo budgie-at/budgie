@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ListChecks, Mic, Smartphone } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { FeatureHeroFocusEnum } from '../../../../feature/enum/feature-hero-focus.enum';
@@ -101,63 +98,61 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why every voice budgeting app today is a privacy hole</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Mic} title={<Trans>Several expenses, one sentence</Trans>}>
+                    <Trans>Natural speech is split into multiple transactions, each with its own amount and category</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>Audio stays on your phone</Trans>}>
+                    <Trans>Audio never leaves the device — no Siri-style cloud round-trip</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Review before saving</Trans>}>
                     <Trans>
-                        Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a
-                        vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories
-                        are pulled out there too.
+                        A review sheet lists every row before saving — &ldquo;Select all categories&rdquo; and &ldquo;Enter all
+                        amounts&rdquo; fix a whole batch at once
                     </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        One sentence can log several transactions at once — &ldquo;twelve for coffee, forty for the taxi, and eight euros
-                        for parking&rdquo; comes back as three separate rows, not one merged entry. A review sheet shows every extracted row
-                        with its amount, category, and account before anything is written to the database.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Accurate, multilingual transcription that happens on your phone</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Natural speech is split into multiple transactions, each with its own amount and category</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Audio never leaves the device — no Siri-style cloud round-trip</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>
-                            A review sheet lists every row before saving — &ldquo;Select all categories&rdquo; and &ldquo;Enter all
-                            amounts&rdquo; fix a whole batch at once
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up
                             with half a sentence logged
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>The spoken currency picks the matching account automatically</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>The record button shows a progress ring while the one-time download finishes</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why every voice budgeting app today is a privacy hole</Trans>}>
+                    <p>
+                        <Trans>
+                            Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to
+                            a vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and
+                            categories are pulled out there too.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            One sentence can log several transactions at once — &ldquo;twelve for coffee, forty for the taxi, and eight
+                            euros for parking&rdquo; comes back as three separate rows, not one merged entry. A review sheet shows every
+                            extracted row with its amount, category, and account before anything is written to the database.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Which languages does voice entry support?</Trans>}
                     answer={
                         <Trans>
@@ -167,7 +162,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Is my voice recorded anywhere?</Trans>}
                     answer={
                         <Trans>
@@ -176,7 +172,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What if it mishears me?</Trans>}
                     answer={
                         <Trans>
@@ -185,11 +182,12 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does it work offline?</Trans>}
                     answer={<Trans>Yes — after the one-time download, voice entry works without any internet connection.</Trans>}
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

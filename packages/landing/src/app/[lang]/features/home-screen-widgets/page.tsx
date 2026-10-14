@@ -3,12 +3,9 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -103,32 +100,33 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Locked when you are, current when it matters</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is
-                        running low or that net worth moved, just not the figures themselves.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the
-                        numbers stay close to current even while Budgie stays closed.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail
-                        underneath. Quick add is one size, sized for its three tiles.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Locked when you are, current when it matters</Trans>}>
+                    <p>
+                        <Trans>
+                            Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is
+                            running low or that net worth moved, just not the figures themselves.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so
+                            the numbers stay close to current even while Budgie stays closed.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail
+                            underneath. Quick add is one size, sized for its three tiles.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Which widgets does Budgie offer?</Trans>}
                     answer={
                         <Trans>
@@ -137,7 +135,8 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Do the widgets update on their own?</Trans>}
                     answer={
                         <Trans>
@@ -146,7 +145,8 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can anyone read my amounts by looking at my Home Screen?</Trans>}
                     answer={
                         <Trans>
@@ -155,11 +155,13 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What does the budget widget show if I have no active budget?</Trans>}
                     answer={<Trans>A short message instead of numbers, so an empty widget never looks like a zero balance.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Where does tapping a widget take me?</Trans>}
                     answer={
                         <Trans>
@@ -168,16 +170,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>Do I need to keep Budgie open for the numbers to stay right?</Trans>}
-                    answer={
-                        <Trans>
-                            No. Widgets are built to be read closed. They pick up every change you make inside the app and keep themselves
-                            current on a schedule in the background.
-                        </Trans>
-                    }
-                />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

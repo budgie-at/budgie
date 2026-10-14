@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'restore expense data',
         'no-account backup app'
     ],
-    relatedFeatureSlugs: ['data-export', 'pin-app-lock', 'expense-tracking'],
+    relatedFeatureSlugs: ['data-export', 'pin-app-lock', 'expense-tracking', 'screenshot-protection'],
     relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
     publishedAt: '2025-12-21',
     updatedAt: '2026-05-03',

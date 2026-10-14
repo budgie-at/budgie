@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { EyeOff, KeyRound, ScanFace } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -78,50 +75,49 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why biometrics belong on a finance app you check ten times a day</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication
-                        API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the keypad
-                        is what the lock screen renders in the first place. Budgie asks the system not to offer the device passcode as a
-                        fallback, so your Budgie PIN is the only alternative.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Falls back to PIN if biometrics are disabled or unavailable</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ScanFace} title={<Trans>Unlock with Face ID or Touch ID</Trans>}>
+                    <Trans>Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={EyeOff} title={<Trans>Biometric data stays private</Trans>}>
+                    <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>PIN is always your fallback</Trans>}>
+                    <Trans>Falls back to PIN if biometrics are disabled or unavailable</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>The device-passcode fallback is switched off on purpose — your PIN is the only alternative</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>The prompt fires by itself as the lock screen appears — no extra tap at app open</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why biometrics belong on a finance app you check ten times a day</Trans>}>
+                    <p>
+                        <Trans>
+                            Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system
+                            authentication API, so the matching happens in the operating system and Budgie only ever learns whether it
+                            succeeded.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the
+                            keypad is what the lock screen renders in the first place. Budgie asks the system not to offer the device
+                            passcode as a fallback, so your Budgie PIN is the only alternative.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Does Budgie store my biometric data?</Trans>}
                     answer={
                         <Trans>
@@ -130,7 +126,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What if biometrics fail?</Trans>}
                     answer={
                         <Trans>
@@ -139,7 +136,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I disable biometrics?</Trans>}
                     answer={
                         <Trans>
@@ -148,7 +146,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Is Face ID safer than a PIN?</Trans>}
                     answer={
                         <Trans>
@@ -157,7 +156,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

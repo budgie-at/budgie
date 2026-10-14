@@ -1,16 +1,13 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Hourglass, Landmark, ShieldCheck } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -88,52 +85,51 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why deposits need their own account type</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from
-                        normal spending accounts while still appearing in your broader account list.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those
-                        fields to show days remaining and an expected payout estimate, without pretending interest has automatically posted.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Dedicated Deposit account type for fixed-term savings and locked principal</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Landmark} title={<Trans>Savings kept separate</Trans>}>
+                    <Trans>Dedicated Deposit account type for fixed-term savings and locked principal</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Hourglass} title={<Trans>Days left and expected payout</Trans>}>
+                    <Trans>Days remaining and expected payout shown from your balance, rate, and maturity date</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Principal stays protected</Trans>}>
+                    <Trans>Deposit principal is protected from normal expense spending and cannot go negative</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Interest rate and maturity date fields for each deposit account</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Days remaining and expected payout shown from your balance, rate, and maturity date</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Close a deposit into a selected destination account with a transfer, then archive it</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Deposit principal is protected from normal expense spending and cannot go negative</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>&ldquo;Include in net worth&rdquo; stays available when a deposit should or should not count</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why deposits need their own account type</Trans>}>
+                    <p>
+                        <Trans>
+                            A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from
+                            normal spending accounts while still appearing in your broader account list.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those
+                            fields to show days remaining and an expected payout estimate, without pretending interest has automatically
+                            posted.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Can I spend from a deposit account?</Trans>}
                     answer={
                         <Trans>
@@ -142,7 +138,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Does Budgie automatically accrue deposit interest?</Trans>}
                     answer={
                         <Trans>
@@ -151,7 +148,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>How do I close a deposit?</Trans>}
                     answer={
                         <Trans>
@@ -160,7 +158,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can deposits be included in net worth?</Trans>}
                     answer={
                         <Trans>
@@ -169,7 +168,7 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }
