@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'pin-app-lock',
     tier: FeatureTierEnum.CORE,
-    title: msg`PIN App Lock — Nothing Opens Without Your PIN`,
+    title: msg`PIN App Lock — Nothing Opens Without Your PIN or Biometrics`,
     tagline: msg`A 4-digit PIN guards the app, with a growing wait after wrong tries and optional fingerprint or face unlock.`,
     metaTitle: msg`PIN Lock Finance App — Private Expense Tracker — Budgie`,
     metaDescription: msg`A 4-digit PIN opens Budgie, with a growing wait after wrong tries and optional biometric unlock. No cloud account.`,

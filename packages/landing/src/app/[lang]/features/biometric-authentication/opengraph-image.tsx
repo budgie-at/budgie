@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('biometric-authentication', i18n => ({
     title: t(i18n)`Biometric Auth`,
-    tagline: t(i18n)`Face or touch, then the PIN.`,
+    tagline: t(i18n)`Face or touch, or the PIN.`,
     tags: [t(i18n)`biometric`, t(i18n)`face id`, t(i18n)`security`]
 }));

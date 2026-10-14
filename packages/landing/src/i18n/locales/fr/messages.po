@@ -2265,8 +2265,8 @@ msgid "A 4-digit PIN opens Budgie. After a few wrong tries the app makes you wai
 msgstr "Un code PIN à 4 chiffres ouvre Budgie. Après quelques erreurs, l'app vous fait patienter, et le PIN est lié à vos données sur cet appareil : aucune réinitialisation ne vous les rend."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "A 4-digit PIN, set from Settings → Security, with 5 free tries and then a growing wait up to 1 hour"
-msgstr "Un code PIN à 4 chiffres, défini dans Réglages → Sécurité, avec 5 essais libres puis une attente croissante jusqu'à 1 heure"
+msgid "A 4-digit PIN, set from Settings → Security, with a wait that starts at the fifth wrong PIN and grows up to 1 hour"
+msgstr "{'de': 'Eine 4-stellige PIN, festgelegt unter Einstellungen → Sicherheit, mit einer Wartezeit, die beim fünften falschen PIN beginnt und bis zu 1 Stunde wächst', 'es': 'Un PIN de 4 dígitos, definido en Ajustes → Seguridad, con una espera que empieza en el quinto PIN erróneo y crece hasta 1 hora', 'fr': \"Un code PIN à 4 chiffres, défini dans Réglages → Sécurité, avec une attente qui commence au cinquième PIN erroné et grandit jusqu'à 1 heure\", 'uk': \"4-значний PIN, який задається в Налаштуваннях → Безпека: очікування починається з п'ятого хибного PIN і зростає до 1 години\"}"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
@@ -3213,8 +3213,8 @@ msgid "App"
 msgstr "Application"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but each wrong try past the fifth makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
-msgstr "L'app passe en arrière-plan → le verrouillage s'active. Un mauvais PIN ne vous bloque jamais définitivement, mais chaque erreur après la cinquième rallonge l'attente, et aucune réinitialisation ne rend les données (à vous de garder votre PIN en lieu sûr). Un PIN à 4 chiffres est un verrou de confort, pas un coffre-fort."
+msgid "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but the fifth wrong try and every one after it makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
+msgstr "{'de': 'App im Hintergrund → Sperre greift. Falsche PINs sperren dich nie für immer aus, aber ab dem fünften Fehlversuch wird die Wartezeit mit jedem weiteren länger, und es gibt kein Zurücksetzen, das die Daten zurückgibt (deine Verantwortung: bewahre die PIN gut auf). Eine 4-stellige PIN ist eine Komfortsperre, kein Tresor.', 'es': 'La app pasa a segundo plano → se activa el bloqueo. Los PIN erróneos nunca te dejan fuera para siempre, pero desde el quinto fallo la espera crece con cada intento, y no hay restablecimiento que devuelva los datos (cuida bien tu PIN). Un PIN de 4 dígitos es un bloqueo de comodidad, no una caja fuerte.', 'fr': \"L'app passe en arrière-plan → le verrouillage s'active. Les mauvais PIN ne vous bloquent jamais définitivement, mais à partir du cinquième essai raté, l'attente s'allonge à chaque essai, et aucune réinitialisation ne rend les données (gardez bien votre PIN). Un PIN à 4 chiffres est un verrou de confort, pas un coffre-fort.\", 'uk': \"Застосунок іде у фон → вмикається блокування. Хибні PIN ніколи не блокують назавжди, але починаючи з п'ятої помилки очікування зростає з кожною наступною, а скидання, яке поверне дані, не існує (бережи свій PIN). 4-значний PIN — це блокування для зручності, а не сейф.\"}"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "App Lock is opt-in, and the PIN you set does double duty: it becomes the key the whole file is encrypted with. Until you set one, the file is ordinary local storage — private to the app sandbox, but not encrypted."
@@ -3349,6 +3349,16 @@ msgstr "À mesure que la conscience de la confidentialité numérique grandit, d
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
 msgstr "Aussi loin que le mois que vous consultez. Les mois passés affichent ce qui s'est réellement passé, le mois en cours affiche le réel à ce jour plus ce qui est projeté pour le reste du mois, et les mois futurs affichent des projections — naviguez de mois en mois pour voir plus loin."
+
+#: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
+msgid "Ask the phone to block captures. Hide amounts."
+msgstr "{'de': 'Bitte das Handy, Aufnahmen zu blockieren. Beträge verbergen.', 'es': 'Pide al teléfono que bloquee capturas. Oculta importes.', 'fr': 'Demandez au téléphone de bloquer les captures. Masquez les montants.', 'uk': 'Проси телефон блокувати зйомку. Ховай суми.'}"
+
+#: src/app/[lang]/features/screenshot-protection/metadata.ts
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "Ask your phone to block screen capture and hide amounts in the app switcher with one switch in Settings."
+msgstr "{'de': 'Bitte dein Handy, Bildschirmaufnahmen zu blockieren, und verbirg Beträge im App-Umschalter mit einem Schalter in den Einstellungen.', 'es': 'Pide a tu teléfono que bloquee la captura de pantalla y oculta los importes en el selector de apps con un solo interruptor en Ajustes.', 'fr': \"Demandez à votre téléphone de bloquer la capture d'écran et masquez les montants dans le sélecteur d'apps avec un seul interrupteur dans les Réglages.\", 'uk': 'Проси телефон заблокувати зйомку екрана й сховай суми в перемикачі застосунків одним перемикачем у Налаштуваннях.'}"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Asks your phone to block screenshots and screen recordings while it is on"
@@ -3993,16 +4003,6 @@ msgstr "La biométrie ouvre le verrou, le PIN reste le recours"
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "bitcoin"
 msgstr "bitcoin"
-
-#: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
-msgid "Block captures. Hide amounts."
-msgstr "Bloquez les captures. Masquez les montants."
-
-#: src/app/[lang]/features/screenshot-protection/metadata.ts
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "Block screen capture and hide amounts in the app switcher with one switch in Settings."
-msgstr "Bloquez la capture d'écran et masquez les montants dans le sélecteur d'apps avec un seul interrupteur dans les Réglages."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Block, the parent company of Cash App, disclosed that a former employee downloaded internal reports containing customer data for over 8 million users. The breach included full names, brokerage account numbers, portfolio values, and stock trading activity."
@@ -7925,8 +7925,8 @@ msgid "Face ID, Touch ID or Android fingerprint and face unlock on the lock scre
 msgstr "Face ID, Touch ID ou déverrouillage Android par empreinte ou visage sur l'écran de verrouillage, proposé quand l'appareil en a un de configuré"
 
 #: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
-msgid "Face or touch, then the PIN."
-msgstr "Visage ou toucher, puis le PIN."
+msgid "Face or touch, or the PIN."
+msgstr "{'de': 'Gesicht oder Touch – oder die PIN.', 'es': 'Rostro o toque, o el PIN.', 'fr': 'Visage ou toucher, ou le PIN.', 'uk': 'Обличчя чи дотик, або PIN.'}"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -11321,8 +11321,8 @@ msgid "No. The microphone feeds transcription directly on the device, and the au
 msgstr "Non. Le microphone alimente la transcription directement sur l'appareil, et l'audio est supprimé dès qu'il devient du texte. Rien n'est enregistré, envoyé, ni consigné."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — your PIN is what protects your data."
-msgstr "Non. Le système d'exploitation gère la comparaison biométrique et ne transmet à Budgie que le résultat. Il n'y a ni fragment de clé ni donnée biométrique côté Budgie : c'est votre PIN qui protège vos données."
+msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. Budgie keeps no biometric material — your PIN is what protects your data."
+msgstr "{'de': 'Nein. Das Betriebssystem übernimmt den biometrischen Abgleich und gibt Budgie nur das Ergebnis weiter. Budgie speichert kein biometrisches Material – deine PIN schützt deine Daten.', 'es': 'No. El sistema operativo gestiona la comparación biométrica y solo le pasa a Budgie el resultado. Budgie no guarda ningún material biométrico: tu PIN es lo que protege tus datos.', 'fr': \"Non. Le système d'exploitation gère la comparaison biométrique et ne transmet à Budgie que le résultat. Budgie ne conserve aucune donnée biométrique : c'est votre PIN qui protège vos données.\", 'uk': 'Ні. Біометричне порівняння виконує операційна система й передає Budgie лише результат. Budgie не зберігає жодних біометричних даних — твої дані захищає PIN.'}"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. The repair works on imported rows only. Manual transactions are never touched — that is exactly what the confirmation card promises before you press Repair."
@@ -11450,8 +11450,8 @@ msgid "Nothing downloads until you switch On-device AI on in Settings. Categoriz
 msgstr "Rien ne se télécharge tant que vous n'activez pas l'IA embarquée dans les Réglages. La catégorisation et les suggestions représentent environ 1,6 Go ; la saisie vocale ajoute 0,9 Go supplémentaire, soit environ 2,5 Go si vous utilisez tout. Cela n'arrive qu'une fois. Ensuite, cela reste sur l'appareil et l'usage normal ne nécessite plus aucun téléchargement."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait after the fifth try, and a successful scan clears that wait."
-msgstr "Rien de dramatique : le clavier PIN est déjà à l'écran, vous saisissez simplement votre PIN. Budgie désactive le recours au code de l'appareil. Après le cinquième essai raté, l'attente s'allonge, et un scan réussi l'efface."
+msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait from the fifth wrong try on, and a successful scan clears that wait."
+msgstr "{'de': 'Nichts Schlimmes: Das PIN-Tastenfeld ist schon da, du tippst einfach deine PIN. Budgie schaltet den Rückgriff auf den Gerätecode ab. Ab dem fünften Fehlversuch wächst die Wartezeit, und ein erfolgreicher Scan hebt sie auf.', 'es': 'Nada grave: el teclado del PIN ya está en pantalla, así que escribes tu PIN. Budgie desactiva la alternativa del código del dispositivo. Desde el quinto fallo la espera crece, y un escaneo correcto la borra.', 'fr': \"Rien de dramatique : le clavier PIN est déjà à l'écran, vous saisissez simplement votre PIN. Budgie désactive le recours au code de l'appareil. À partir du cinquième essai raté, l'attente s'allonge, et un scan réussi l'efface.\", 'uk': \"Нічого страшного: цифрова клавіатура вже на екрані, тож просто введи PIN. Budgie вимикає запасний варіант із кодом пристрою. Починаючи з п'ятої помилки очікування зростає, а успішне сканування його скидає.\"}"
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Nothing goes out to be processed"
@@ -12029,8 +12029,8 @@ msgid "One sheet on the account's own settings screen: the whole history, or the
 msgstr "Une seule feuille sur l'écran de réglages du compte : tout l'historique, ou les quatre-vingt-dix, trente ou sept derniers jours."
 
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
-msgid "One switch blocks screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
-msgstr "Un seul interrupteur bloque les captures et enregistrements d'écran et masque les montants quand Budgie est en arrière-plan. Désactivé par défaut."
+msgid "One switch asks your phone to block screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
+msgstr "{'de': 'Ein Schalter bittet dein Handy, Screenshots und Bildschirmaufnahmen zu blockieren, und verbirgt Beträge, wenn Budgie im Hintergrund ist. Standardmäßig aus.', 'es': 'Un interruptor pide a tu teléfono que bloquee capturas y grabaciones de pantalla y oculta los importes cuando Budgie está en segundo plano. Desactivado por defecto.', 'fr': \"Un seul interrupteur demande à votre téléphone de bloquer captures et enregistrements d'écran et masque les montants quand Budgie est en arrière-plan. Désactivé par défaut.\", 'uk': 'Один перемикач просить телефон блокувати скриншоти й запис екрана та ховає суми, коли Budgie у фоні. Типово вимкнено.'}"
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "One switch for every AI feature"
@@ -12687,8 +12687,8 @@ msgstr "Verrouillage par PIN"
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
-msgid "PIN App Lock — Nothing Opens Without Your PIN"
-msgstr "Verrouillage de l'app par PIN : rien ne s'ouvre sans votre PIN"
+msgid "PIN App Lock — Nothing Opens Without Your PIN or Biometrics"
+msgstr "{'de': 'PIN-App-Sperre – ohne deine PIN oder Biometrie öffnet sich nichts', 'es': 'Bloqueo de la app con PIN: nada se abre sin tu PIN o tu biometría', 'fr': \"Verrouillage de l'app par PIN : rien ne s'ouvre sans votre PIN ou votre biométrie\", 'uk': 'PIN-блокування застосунку — без PIN чи біометрії нічого не відкривається'}"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "PIN lock budget app"
@@ -15435,8 +15435,8 @@ msgid "The fourth digit submits"
 msgstr "Le quatrième chiffre valide"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "The fourth digit submits on its own — a wrong PIN clears the dots and says so. You get 5 free tries; after that Budgie makes you wait 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
-msgstr "Le quatrième chiffre valide tout seul : un mauvais PIN efface les points et vous le dit. Vous avez 5 essais libres ; ensuite, Budgie vous fait attendre 30 secondes, puis 1 minute, 5 minutes, 15 minutes et enfin 1 heure avant l'essai suivant. L'attente survit à la fermeture de l'app et au redémarrage du téléphone, et un déverrouillage réussi par empreinte ou visage la remet à zéro. Aucune réinitialisation ne rend les données."
+msgid "The fourth digit submits on its own — a wrong PIN clears the dots and says so. The first four wrong tries cost nothing; the fifth wrong PIN starts the first wait, which is 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
+msgstr "{'de': 'Die vierte Ziffer bestätigt sich von selbst – eine falsche PIN leert die Punkte und sagt es dir. Die ersten vier Fehlversuche kosten nichts; der fünfte falsche PIN startet die erste Wartezeit von 30 Sekunden, danach 1 Minute, 5 Minuten, 15 Minuten und schließlich 1 Stunde bis zum nächsten Versuch. Die Wartezeit bleibt auch nach dem Schließen der App und einem Neustart des Handys bestehen, und eine erfolgreiche Entsperrung per Fingerabdruck oder Gesicht setzt sie zurück. Ein Zurücksetzen, das die Daten zurückgibt, gibt es nicht.', 'es': 'El cuarto dígito se envía solo: un PIN erróneo borra los puntos y te lo dice. Los cuatro primeros fallos no cuestan nada; el quinto PIN erróneo inicia la primera espera de 30 segundos, luego 1 minuto, 5 minutos, 15 minutos y por último 1 hora antes del siguiente intento. La espera sobrevive a cerrar la app y a reiniciar el teléfono, y un desbloqueo correcto con huella o rostro la reinicia. No hay restablecimiento que devuelva los datos.', 'fr': \"Le quatrième chiffre valide tout seul : un mauvais PIN efface les points et vous le dit. Les quatre premiers essais ratés ne coûtent rien ; le cinquième mauvais PIN déclenche la première attente de 30 secondes, puis 1 minute, 5 minutes, 15 minutes et enfin 1 heure avant l'essai suivant. L'attente survit à la fermeture de l'app et au redémarrage du téléphone, et un déverrouillage réussi par empreinte ou visage la remet à zéro. Aucune réinitialisation ne rend les données.\", 'uk': \"Четверта цифра підтверджується сама — хибний PIN очищає крапки й повідомляє про це. Перші чотири помилки нічого не коштують; п'ятий хибний PIN запускає перше очікування — 30 секунд, потім 1 хвилину, 5 хвилин, 15 хвилин і, нарешті, 1 годину до наступної спроби. Очікування не зникає ні після закриття застосунку, ні після перезапуску телефона, а успішне розблокування відбитком чи обличчям його скидає. Скидання, яке поверне дані, не існує.\"}"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "The full category list is one tap away"
@@ -16857,7 +16857,7 @@ msgstr "Déverrouillage et restauration, corrigés"
 
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
 msgid "Unlock with Face ID, Touch ID or Android fingerprint or face. The phone matches, Budgie only sees the result. PIN stays the fallback."
-msgstr "Déverrouillez avec Face ID, Touch ID ou empreinte/visage Android. Le téléphone compare, Budgie ne voit que le résultat."
+msgstr "Déverrouillez avec Face ID, Touch ID ou empreinte/visage. Le téléphone compare, Budgie ne voit que le résultat. Le PIN reste la solution de repli."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Unrealized gain over cost basis"

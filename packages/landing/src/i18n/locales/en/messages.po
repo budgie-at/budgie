@@ -2264,8 +2264,8 @@ msgid "A 4-digit PIN opens Budgie. After a few wrong tries the app makes you wai
 msgstr "A 4-digit PIN opens Budgie. After a few wrong tries the app makes you wait, and the PIN is tied to your data on this device — there is no reset that hands it back."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "A 4-digit PIN, set from Settings → Security, with 5 free tries and then a growing wait up to 1 hour"
-msgstr "A 4-digit PIN, set from Settings → Security, with 5 free tries and then a growing wait up to 1 hour"
+msgid "A 4-digit PIN, set from Settings → Security, with a wait that starts at the fifth wrong PIN and grows up to 1 hour"
+msgstr "A 4-digit PIN, set from Settings → Security, with a wait that starts at the fifth wrong PIN and grows up to 1 hour"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
@@ -3212,8 +3212,8 @@ msgid "App"
 msgstr "App"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but each wrong try past the fifth makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
-msgstr "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but each wrong try past the fifth makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
+msgid "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but the fifth wrong try and every one after it makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
+msgstr "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but the fifth wrong try and every one after it makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "App Lock is opt-in, and the PIN you set does double duty: it becomes the key the whole file is encrypted with. Until you set one, the file is ordinary local storage — private to the app sandbox, but not encrypted."
@@ -3348,6 +3348,16 @@ msgstr "As awareness of digital privacy grows, more people are realizing that <0
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
 msgstr "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
+
+#: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
+msgid "Ask the phone to block captures. Hide amounts."
+msgstr "Ask the phone to block captures. Hide amounts."
+
+#: src/app/[lang]/features/screenshot-protection/metadata.ts
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "Ask your phone to block screen capture and hide amounts in the app switcher with one switch in Settings."
+msgstr "Ask your phone to block screen capture and hide amounts in the app switcher with one switch in Settings."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Asks your phone to block screenshots and screen recordings while it is on"
@@ -3992,16 +4002,6 @@ msgstr "Biometrics open the lock, the PIN stays the fallback"
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "bitcoin"
 msgstr "bitcoin"
-
-#: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
-msgid "Block captures. Hide amounts."
-msgstr "Block captures. Hide amounts."
-
-#: src/app/[lang]/features/screenshot-protection/metadata.ts
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "Block screen capture and hide amounts in the app switcher with one switch in Settings."
-msgstr "Block screen capture and hide amounts in the app switcher with one switch in Settings."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Block, the parent company of Cash App, disclosed that a former employee downloaded internal reports containing customer data for over 8 million users. The breach included full names, brokerage account numbers, portfolio values, and stock trading activity."
@@ -7924,8 +7924,8 @@ msgid "Face ID, Touch ID or Android fingerprint and face unlock on the lock scre
 msgstr "Face ID, Touch ID or Android fingerprint and face unlock on the lock screen, offered when the device has one enrolled"
 
 #: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
-msgid "Face or touch, then the PIN."
-msgstr "Face or touch, then the PIN."
+msgid "Face or touch, or the PIN."
+msgstr "Face or touch, or the PIN."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -11320,8 +11320,8 @@ msgid "No. The microphone feeds transcription directly on the device, and the au
 msgstr "No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become text. Nothing is saved, sent, or logged."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — your PIN is what protects your data."
-msgstr "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — your PIN is what protects your data."
+msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. Budgie keeps no biometric material — your PIN is what protects your data."
+msgstr "No. The operating system manages biometric matching and hands Budgie nothing but the result. Budgie keeps no biometric material — your PIN is what protects your data."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. The repair works on imported rows only. Manual transactions are never touched — that is exactly what the confirmation card promises before you press Repair."
@@ -11449,8 +11449,8 @@ msgid "Nothing downloads until you switch On-device AI on in Settings. Categoriz
 msgstr "Nothing downloads until you switch On-device AI on in Settings. Categorization and suggestions come to about 1.6 GB; voice entry adds a further 0.9 GB, for roughly 2.5 GB if you use everything. That happens once. Afterwards it stays on the device and normal use needs no further download."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait after the fifth try, and a successful scan clears that wait."
-msgstr "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait after the fifth try, and a successful scan clears that wait."
+msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait from the fifth wrong try on, and a successful scan clears that wait."
+msgstr "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait from the fifth wrong try on, and a successful scan clears that wait."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Nothing goes out to be processed"
@@ -12028,8 +12028,8 @@ msgid "One sheet on the account's own settings screen: the whole history, or the
 msgstr "One sheet on the account's own settings screen: the whole history, or the last ninety, thirty or seven days."
 
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
-msgid "One switch blocks screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
-msgstr "One switch blocks screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
+msgid "One switch asks your phone to block screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
+msgstr "One switch asks your phone to block screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "One switch for every AI feature"
@@ -12686,8 +12686,8 @@ msgstr "PIN App Lock"
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
-msgid "PIN App Lock — Nothing Opens Without Your PIN"
-msgstr "PIN App Lock — Nothing Opens Without Your PIN"
+msgid "PIN App Lock — Nothing Opens Without Your PIN or Biometrics"
+msgstr "PIN App Lock — Nothing Opens Without Your PIN or Biometrics"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "PIN lock budget app"
@@ -15434,8 +15434,8 @@ msgid "The fourth digit submits"
 msgstr "The fourth digit submits"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "The fourth digit submits on its own — a wrong PIN clears the dots and says so. You get 5 free tries; after that Budgie makes you wait 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
-msgstr "The fourth digit submits on its own — a wrong PIN clears the dots and says so. You get 5 free tries; after that Budgie makes you wait 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
+msgid "The fourth digit submits on its own — a wrong PIN clears the dots and says so. The first four wrong tries cost nothing; the fifth wrong PIN starts the first wait, which is 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
+msgstr "The fourth digit submits on its own — a wrong PIN clears the dots and says so. The first four wrong tries cost nothing; the fifth wrong PIN starts the first wait, which is 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "The full category list is one tap away"

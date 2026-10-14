@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('screenshot-protection', i18n => ({
     title: t(i18n)`Screenshot Protection`,
-    tagline: t(i18n)`Block captures. Hide amounts.`,
+    tagline: t(i18n)`Ask the phone to block captures. Hide amounts.`,
     tags: [t(i18n)`privacy`, t(i18n)`screenshots`, t(i18n)`security`]
 }));

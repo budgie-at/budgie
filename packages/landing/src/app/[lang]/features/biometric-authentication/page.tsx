@@ -133,8 +133,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     question={<Trans>Does Budgie store my biometric data?</Trans>}
                     answer={
                         <Trans>
-                            No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key
-                            fragment and no biometric material on Budgie&apos;s side — your PIN is what protects your data.
+                            No. The operating system manages biometric matching and hands Budgie nothing but the result. Budgie keeps no
+                            biometric material — your PIN is what protects your data.
                         </Trans>
                     }
                 />
@@ -143,8 +143,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     answer={
                         <Trans>
                             Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the
-                            device-passcode fallback off. Wrong PINs add a growing wait after the fifth try, and a successful scan clears
-                            that wait.
+                            device-passcode fallback off. Wrong PINs add a growing wait from the fifth wrong try on, and a successful scan
+                            clears that wait.
                         </Trans>
                     }
                 />

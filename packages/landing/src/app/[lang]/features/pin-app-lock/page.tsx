@@ -30,7 +30,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>PIN App Lock — Nothing Opens Without Your PIN</Trans>}
+                heading={<Trans>PIN App Lock — Nothing Opens Without Your PIN or Biometrics</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
@@ -73,10 +73,10 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Step index={1} title={<Trans>Four digits, and a wait after wrong tries</Trans>}>
                     <Trans>
-                        The fourth digit submits on its own — a wrong PIN clears the dots and says so. You get 5 free tries; after that
-                        Budgie makes you wait 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The
-                        wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There
-                        is no reset that hands the data back.
+                        The fourth digit submits on its own — a wrong PIN clears the dots and says so. The first four wrong tries cost
+                        nothing; the fifth wrong PIN starts the first wait, which is 30 seconds, then 1 minute, 5 minutes, 15 minutes and
+                        finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful
+                        fingerprint or face unlock resets it. There is no reset that hands the data back.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -131,9 +131,9 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        App goes to background → lock kicks in. Wrong PINs never lock you out forever, but each wrong try past the fifth
-                        makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN
-                        is a convenience lock, not a vault.
+                        App goes to background → lock kicks in. Wrong PINs never lock you out forever, but the fifth wrong try and every one
+                        after it makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A
+                        4-digit PIN is a convenience lock, not a vault.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -147,7 +147,10 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         <Trans>The PIN is tied to your data — not just a screen guard</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>A 4-digit PIN, set from Settings → Security, with 5 free tries and then a growing wait up to 1 hour</Trans>
+                        <Trans>
+                            A 4-digit PIN, set from Settings → Security, with a wait that starts at the fifth wrong PIN and grows up to 1
+                            hour
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Re-locks the moment the app goes to background</Trans>
