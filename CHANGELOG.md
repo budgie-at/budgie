@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.8](https://github.com/budgie-at/budgie/compare/v6.103.7...v6.103.8) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** money pages tell the truth ([69b71c0](https://github.com/budgie-at/budgie/commit/69b71c0443cea339aa1b299c0b4d2d6b41cd3f8a))
+
+
+
+
+
 ## [6.103.7](https://github.com/budgie-at/budgie/compare/v6.103.6...v6.103.7) (2026-10-14)
 
 
