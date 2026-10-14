@@ -9,20 +9,20 @@ export const FEATURE_METADATA = {
     slug: 'privatbank-import',
     tier: FeatureTierEnum.CORE,
     title: msg`PrivatBank XLSX Import`,
-    tagline: msg`One-time import, MCC-mapped — long-press an account card to jump to the picker.`,
+    tagline: msg`One-time import from a Privat24 Excel export — long-press an account card to jump to the picker.`,
     metaTitle: msg`PrivatBank XLSX Import — Budgie`,
-    metaDescription: msg`Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works.`,
+    metaDescription: msg`Import accounts and transactions from a Privat24 Excel export. PrivatBank's own category names are matched to Budgie categories automatically.`,
     primaryKeyword: 'PrivatBank transaction import',
     seoKeywords: [
         'PrivatBank transaction import',
         'PrivatBank24 XLSX import',
         'PrivatBank to budget app',
         'Ukrainian bank import',
-        'PrivatBank statement parser'
+        'PrivatBank statement import'
     ],
     relatedFeatureSlugs: ['csv-import', 'erste-bank-pdf-import', 'monobank-sync', 'bank-integration-management', 'mcc-auto-category'],
     relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
     publishedAt: '2026-02-02',
-    updatedAt: '2026-09-16',
+    updatedAt: '2026-10-14',
     ogTags: ['privatbank', 'xlsx', 'import']
 } satisfies FeatureRegistryEntryInterface;
