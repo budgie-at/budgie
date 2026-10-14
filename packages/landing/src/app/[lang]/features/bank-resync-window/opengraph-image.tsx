@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('bank-resync-window', i18n => ({
     title: t(i18n)`Re-sync Window`,
-    tagline: t(i18n)`Re-pull a slice. Keep your edits.`,
+    tagline: t(i18n)`Re-pull a slice. Keep your category and comments. No full reset.`,
     tags: [t(i18n)`bank sync`, t(i18n)`re-sync`, t(i18n)`edits`]
 }));

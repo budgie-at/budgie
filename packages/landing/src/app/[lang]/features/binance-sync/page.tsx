@@ -79,8 +79,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 <FeatureStory.Step index={1} title={<Trans>Only the reading permission</Trans>}>
                     <Trans>
                         Step three is the one that matters: keep only &quot;Enable Reading&quot; on, and never allow trading or withdrawals.
-                        Permissions are enforced on Binance&apos;s side, and Budgie carries no order or withdrawal call to make — every
-                        request it signs goes to a read endpoint.
+                        Permissions are enforced on Binance&apos;s side, and Budgie has no way to place an order or withdraw — it only
+                        reads.
                     </Trans>
                 </FeatureStory.Step>
 
@@ -99,9 +99,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Budgie asks for an API key and secret, and the setup screen tells you exactly how to create it: keep only
-                        &quot;Enable Reading&quot; switched on, never trading, never withdrawals. Every request is signed on your device
-                        with HMAC-SHA256 over the query string, and the app only ever calls read endpoints — there is no order or withdrawal
-                        code in it to call.
+                        &quot;Enable Reading&quot; switched on, never trading, never withdrawals. Budgie only ever reads your balances and
+                        history — there is no order or withdrawal feature in the app to use.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -139,9 +138,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
-                        <Trans>
-                            Each source type is written to your database as it finishes, and Binance ids keep re-runs duplicate-free
-                        </Trans>
+                        <Trans>Each source type is saved to your device as it finishes, and re-runs never create duplicates</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={7}>
                         <Trans>
@@ -163,12 +160,12 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Budgie matches the two legs automatically. It prefers the fiat figures Binance itself quotes on the order, accepting
-                        a bank amount within a small tolerance, and falls back to comparing the implied rate against the exchange rates on
-                        your device — triangulating through your base currency, so a hryvnia payment for USDT resolves without a direct
-                        currency pair. Both legs must sit within an hour of each other, and up to three bank payments can add up to a single
-                        P2P purchase. When two candidates are equally plausible, nothing is merged: an ambiguous guess is worse than a
-                        manual fix.
+                        Budgie matches the two sides automatically. It prefers the fiat figures Binance itself quotes on the order (a bank
+                        amount within about 2% of them), and otherwise compares the implied rate against the exchange rates on your device,
+                        accepting up to a 10% difference — triangulating through your base currency, so a hryvnia payment for USDT resolves
+                        without a direct currency pair. Both sides must sit within an hour of each other, and up to three bank payments can
+                        add up to a single P2P purchase. When two candidates are equally plausible, nothing is merged: an ambiguous guess is
+                        worse than a manual fix.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -178,7 +175,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>Can Budgie trade or withdraw with my key?</Trans>}
                     answer={
                         <Trans>
-                            No. The app only calls Binance read endpoints, and the setup instructions ask you to create a key with reading
+                            No. Budgie only reads data from Binance, and the setup instructions ask you to create a key with reading
                             permission only. Permissions are set on Binance&apos;s side, so a key without trading or withdrawal rights
                             simply cannot be used for either.
                         </Trans>
@@ -198,7 +195,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six
-                            months, because that is as far back as Binance&apos;s own endpoint will serve.
+                            months, because that is as far back as Binance itself will serve.
                         </Trans>
                     }
                 />
@@ -207,7 +204,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The
-                            next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated.
+                            next run asks Binance for those windows again, but rows already saved are recognised, so nothing is duplicated.
                         </Trans>
                     }
                 />
