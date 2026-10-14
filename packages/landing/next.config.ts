@@ -30,11 +30,19 @@ const nextConfig: NextConfig = {
             ['no-bank-login-budget-app', '/privacy'],
             ['convert-to-transfer', '/features/transaction-long-press-menu'],
             ['convert-to-refund', '/features/transaction-long-press-menu']
-        ].map(([retiredSlug, destination]) => ({
-            source: `/:lang(${SUPPORTED_LOCALES.join('|')})/features/${retiredSlug}`,
-            destination: `/:lang${destination}`,
-            permanent: true
-        }));
+        ]
+            .map(([retiredSlug, destination]) => ({
+                source: `/:lang(${SUPPORTED_LOCALES.join('|')})/features/${retiredSlug}`,
+                destination: `/:lang${destination}`,
+                permanent: true
+            }))
+            .concat(
+                ['whats-new-august-september-2026', 'whats-new-september-2026'].map(retiredSlug => ({
+                    source: `/:lang(${SUPPORTED_LOCALES.join('|')})/blog/${retiredSlug}`,
+                    destination: '/:lang/changelog',
+                    permanent: true
+                }))
+            );
     },
     async headers() {
         return [

@@ -159,6 +159,11 @@ export const Footer = async ({ lang }: Props) => {
                                 </Link>
                             </li>
                             <li>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/changelog`}>
+                                    <Trans>Changelog</Trans>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
                                     href="https://github.com/budgie-at/budgie"

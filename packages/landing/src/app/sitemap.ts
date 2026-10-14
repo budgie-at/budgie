@@ -8,7 +8,7 @@ import { FEATURE_METADATA_LIST } from './[lang]/features/metadata';
 
 import type { MetadataRoute } from 'next';
 
-const staticPages = ['', '/blog', '/features'];
+const staticPages = ['', '/blog', '/features', '/changelog'];
 
 const buildSitemapLanguages = (path: string) => ({
     ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}${path}`])),
@@ -18,7 +18,8 @@ const buildSitemapLanguages = (path: string) => ({
 const STATIC_PAGE_PRIORITY: Record<string, number> = {
     '': 1,
     '/features': 0.9,
-    '/blog': 0.8
+    '/blog': 0.8,
+    '/changelog': 0.6
 };
 
 const FEATURE_TIER_PRIORITY: Record<string, number> = {
