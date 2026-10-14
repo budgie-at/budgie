@@ -2,6 +2,7 @@ import {
     AccountEntityTable,
     DebtEventEntityTable,
     InstallmentPlanRepository,
+    InstrumentEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
@@ -13,7 +14,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 import type { InstallmentPlanScheduleInterface } from '@budgie/contracts';
 
 const installmentPlanScheduleAtom = databaseQueryFamily(
-    [AccountEntityTable, DebtEventEntityTable, TransactionEntityTable, TransactionEntryEntityTable],
+    [AccountEntityTable, InstrumentEntityTable, DebtEventEntityTable, TransactionEntityTable, TransactionEntryEntityTable],
     InstallmentPlanRepository,
     (installmentPlanRepository, accountId: number) => installmentPlanRepository.getSchedule(accountId)
 );
