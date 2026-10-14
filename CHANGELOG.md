@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
+
+
+### Bug Fixes
+
+* **app:** refresh the installment schedule when instruments change ([6c66540](https://github.com/budgie-at/budgie/commit/6c66540e7185d505bf4438634cbc768d97dadbc6))
+
+
+
+
+
 ## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
 
 
