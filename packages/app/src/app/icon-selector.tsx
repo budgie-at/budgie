@@ -1,9 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { isEmojiIcon, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 
-import { emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
@@ -16,6 +16,7 @@ import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-di
 import { IconSearchEntryInterface } from '../@generic/interface/icon-search-entry.interface';
 import { iconSearchService } from '../@generic/service/icon-search.service';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
+import { resolveReiconIcon } from '../@generic/utils/resolve-reicon-icon.util';
 
 import { IconSelectorModalSelector } from './icon-selector-modal.selector';
 
@@ -37,8 +38,10 @@ export default function IconSelectorModal() {
     const matchedEntries = hasSearch ? iconSearchService.rank(entries, [search]) : entries;
     const data = padFlatListData([...matchedEntries], NUM_COLUMNS);
 
-    const renderItem = ({ item }: { item: FlatListDataItem<IconSearchEntryInterface> }) =>
-        item.isEmpty ? (
+    const renderItem = ({ item }: { item: FlatListDataItem<IconSearchEntryInterface> }) => {
+        const selectedCatalogIcon = isDefined(selectedIcon) && !isEmojiIcon(selectedIcon) ? resolveReiconIcon(selectedIcon) : selectedIcon;
+
+        return item.isEmpty ? (
             <IconSelectorCard
                 className="opacity-0"
                 isSelected={false}
@@ -49,13 +52,14 @@ export default function IconSelectorModal() {
             />
         ) : (
             <IconSelectorCard
-                isSelected={item.icon === selectedIcon}
+                isSelected={item.icon === selectedCatalogIcon}
                 onSelect={resolveIconSelector}
                 label={item.label}
                 variant={variant}
                 icon={item.icon}
             />
         );
+    };
 
     const listHeader = hasSearch ? null : (
         <View className="gap-y-xl">

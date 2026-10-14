@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ReiconIconNameEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Atom from 'effect/reactivity/Atom';
 import ChartBar from 'reicon-react-native/icons/ChartBar';
@@ -9,19 +9,22 @@ import { withUniwind } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { resolveReiconIcon } from '../utils/resolve-reicon-icon.util';
+
 import { ICON_IMPORTS } from './icons.constant';
 
 import type { ReiconModuleInterface } from '../interface/reicon-module.interface';
+import type { UserIconNameEnum } from '@budgie/contracts';
 import type { IconComponent } from 'reicon-react-native';
 
-const PRELOADED_ICONS: Partial<Record<UserIconNameEnum, IconComponent>> = {
-    [UserIconNameEnum.Home]: Home,
-    [UserIconNameEnum.Receipt]: Receipt,
-    [UserIconNameEnum.ChartNoAxesColumn]: ChartBar,
-    [UserIconNameEnum.Settings]: Settings
+const PRELOADED_ICONS: Partial<Record<ReiconIconNameEnum, IconComponent>> = {
+    [ReiconIconNameEnum.HOME]: Home,
+    [ReiconIconNameEnum.RECEIPT]: Receipt,
+    [ReiconIconNameEnum.CHART_BAR]: ChartBar,
+    [ReiconIconNameEnum.SETTINGS]: Settings
 };
 
-export const styledIconAtom = Atom.family((icon: UserIconNameEnum) => {
+const reiconStyledIconAtom = Atom.family((icon: ReiconIconNameEnum) => {
     const preloadedIcon = PRELOADED_ICONS[icon];
     const iconComponent = isDefined(preloadedIcon)
         ? Effect.succeed(preloadedIcon)
@@ -32,3 +35,5 @@ export const styledIconAtom = Atom.family((icon: UserIconNameEnum) => {
 
     return Atom.make(Effect.map(iconComponent, component => withUniwind(component))).pipe(Atom.keepAlive);
 });
+
+export const styledIconAtom = (icon: UserIconNameEnum | ReiconIconNameEnum) => reiconStyledIconAtom(resolveReiconIcon(icon));
