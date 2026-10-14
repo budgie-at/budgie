@@ -34,8 +34,9 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 locale={lang}
                 tagline={
                     <Trans>
-                        After selecting a category, the on-device model proposes up to three tags as tappable pill chips — with a lighter
-                        fallback that answers while that model is still loading.
+                        After selecting a category, Budgie proposes the tags you usually use for similar transactions as tappable pill
+                        chips. For new entries they come straight from your history; the on-device model adds suggestions when you edit or
+                        dictate.
                     </Trans>
                 }
             />
@@ -46,7 +47,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 </FeatureStory.Intro>
 
                 <FeatureStory.Point index={0}>
-                    <Trans>Choose a category and up to three tag pills appear above the tag button.</Trans>
+                    <Trans>Choose a category and tag pills appear above the tag button.</Trans>
                 </FeatureStory.Point>
 
                 <FeatureStory.Shot
@@ -68,10 +69,13 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 </FeatureStory.Shot>
 
                 <FeatureStory.Point index={1}>
-                    <Trans>The on-device model answers first, and a lighter lookup covers it while it loads.</Trans>
+                    <Trans>On a new entry the pills come from tags you gave similar transactions before.</Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
-                    <Trans>Tap a pill to add the tag instead of typing it.</Trans>
+                    <Trans>
+                        Tap a pill to add the tag instead of typing it. Editing a transaction or dictating one also uses the on-device
+                        model, if you turned it on.
+                    </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
 
@@ -90,29 +94,29 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 <FeaturePageProse>
                     <Trans>
                         Automatic tag suggestions eliminate the friction without removing control. After you pick a category, Budgie looks
-                        at the merchant name, the category, and how you have tagged similar transactions before, then proposes the three
-                        most relevant tags as pill-shaped chips. A single tap adds the tag. You can still type new ones — the suggestions
-                        are additive, not a replacement for the text field.
+                        at how you have tagged similar transactions before and proposes the most relevant tags as pill-shaped chips. A
+                        single tap adds the tag. You can still type new ones — the suggestions are additive, not a replacement for the text
+                        field.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Two paths to a suggestion, so you rarely wait</Trans>
+                    <Trans>History for new entries, the on-device model for edits and voice</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        The main path ranks candidates from the tags you already use by how well they fit the transaction in front of you —
-                        catching phrasing variations that a simple text lookup would miss. It is prepared on demand, so the very first
-                        suggestion after a pause waits a moment. While it is still warming up or busy with another request, a faster lookup
-                        over your past tagged transactions takes over and answers without waiting.
+                        When you add a new expense by hand, the pills come from your own tagged history and appear straight away — no setup
+                        needed. When you edit a transaction or add one by voice, the on-device model ranks the tags you already use by how
+                        well they fit the transaction in front of you, catching phrasing variations a simple text lookup would miss. It is
+                        optional: turn on On-device AI in Settings and let it download once.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Both paths run entirely on your device. No network call, no vendor profiling. Nothing about your tags is ever
-                        uploaded — every suggestion comes from the tags you already use in Budgie.
+                        Everything runs on your device. No network call, no vendor profiling. Nothing about your tags is ever uploaded —
+                        every suggestion comes from the tags you already use in Budgie.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -123,16 +127,18 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Up to three tag suggestions as tappable pills after category selection — zero typing required</Trans>
+                        <Trans>Tag suggestions as tappable pills after category selection — zero typing required</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>A second, lighter path answers whenever the main model is still loading or busy</Trans>
+                        <Trans>New manual entries get suggestions from your history instantly, with nothing to download</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Additive interface — suggestions sit alongside the text field, never replacing it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Fully offline — both paths run on your phone with no cloud dependency</Trans>
+                        <Trans>
+                            Fully offline — it runs on your phone with no cloud dependency; the optional model needs a one-time download
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -142,17 +148,17 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     question={<Trans>How are tags chosen?</Trans>}
                     answer={
                         <Trans>
-                            Budgie ranks candidates by how closely they match the way you tagged similar transactions before. The top three
-                            become tappable pills.
+                            Budgie ranks candidates by how closely they match the way you tagged similar transactions before. The best
+                            matches become tappable pills.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if my phone is slow?</Trans>}
+                    question={<Trans>Do I need to download anything?</Trans>}
                     answer={
                         <Trans>
-                            A lighter fallback proposes tags from a lookup over your own tagged history, so suggestions appear instantly
-                            even while the larger model is still warming up.
+                            Not for new manual entries — those use your own tagged history. The on-device model, used when you edit a
+                            transaction or add one by voice, is optional: turn on On-device AI in Settings and it downloads once.
                         </Trans>
                     }
                 />
@@ -162,7 +168,11 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work offline?</Trans>}
-                    answer={<Trans>Yes. Both paths run on your phone.</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Suggestions are made on your phone; the optional model works offline after its one-time download.
+                        </Trans>
+                    }
                 />
             </FeaturePageFaqSection>
         </FeaturePageShell>
