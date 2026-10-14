@@ -2249,13 +2249,23 @@ msgstr "95% of the limit used"
 msgid "A \"matching rules\" pill on a transaction shows which rules apply to it"
 msgstr "A \"matching rules\" pill on a transaction shows which rules apply to it"
 
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable — even with full filesystem access."
-msgstr "A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable — even with full filesystem access."
+#: src/app/[lang]/features/pin-app-lock/metadata.ts
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "A 4-digit PIN guards the app, with a growing wait after wrong tries and optional fingerprint or face unlock."
+msgstr "A 4-digit PIN guards the app, with a growing wait after wrong tries and optional fingerprint or face unlock."
+
+#: src/app/[lang]/features/pin-app-lock/metadata.ts
+msgid "A 4-digit PIN opens Budgie, with a growing wait after wrong tries and optional biometric unlock. No cloud account."
+msgstr "A 4-digit PIN opens Budgie, with a growing wait after wrong tries and optional biometric unlock. No cloud account."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "A 4-digit PIN, set from Settings → Security"
-msgstr "A 4-digit PIN, set from Settings → Security"
+msgid "A 4-digit PIN opens Budgie. After a few wrong tries the app makes you wait, and the PIN is tied to your data on this device — there is no reset that hands it back."
+msgstr "A 4-digit PIN opens Budgie. After a few wrong tries the app makes you wait, and the PIN is tied to your data on this device — there is no reset that hands it back."
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "A 4-digit PIN, set from Settings → Security, with 5 free tries and then a growing wait up to 1 hour"
+msgstr "A 4-digit PIN, set from Settings → Security, with 5 free tries and then a growing wait up to 1 hour"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
@@ -2392,6 +2402,10 @@ msgstr "A financial data aggregator that services millions of users holds creden
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "A fixed term, tracked like an account"
 msgstr "A fixed term, tracked like an account"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "A jailbroken or rooted device with active malware can capture the PIN as you type it, and a 4-digit PIN has only 10,000 combinations. Don't unlock Budgie on a compromised device."
+msgstr "A jailbroken or rooted device with active malware can capture the PIN as you type it, and a 4-digit PIN has only 10,000 combinations. Don't unlock Budgie on a compromised device."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A key that can only read"
@@ -2585,27 +2599,9 @@ msgstr "Accept everything that is certain"
 msgid "Access token held by aggregator"
 msgstr "Access token held by aggregator"
 
-#: src/app/[lang]/features/screenshot-protection/metadata.ts
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "Accidental shares stay private — balances blur in screenshots and the app switcher."
-msgstr "Accidental shares stay private — balances blur in screenshots and the app switcher."
-
-#: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
-msgid "Accidental shares stay private."
-msgstr "Accidental shares stay private."
-
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Account balances and banking information (if bank sync is enabled)"
 msgstr "Account balances and banking information (if bank sync is enabled)"
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in Settings → Security."
-msgstr "Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in Settings → Security."
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Account balances and net worth switch to a placeholder wherever Budgie renders them, for as long as the app isn't the active app — most visible when you open the app switcher."
-msgstr "Account balances and net worth switch to a placeholder wherever Budgie renders them, for as long as the app isn't the active app — most visible when you open the app switcher."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Account holder, IBAN, opening and closing balances all extracted automatically"
@@ -3024,6 +3020,10 @@ msgstr "Amount, category, tag and account chips narrow the Categories and Tags t
 msgid "Amounts aligned right"
 msgstr "Amounts aligned right"
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Amounts, such as account balances and net worth, switch to a placeholder for as long as Budgie isn't the active app — most visible when you open the app switcher."
+msgstr "Amounts, such as account balances and net worth, switch to a placeholder for as long as Budgie isn't the active app — most visible when you open the app switcher."
+
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "An active amount-range filter now carries over into the Missing categories screen."
 msgstr "An active amount-range filter now carries over into the Missing categories screen."
@@ -3208,16 +3208,16 @@ msgid "App"
 msgstr "App"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App goes to background → lock kicks in. A wrong PIN doesn't lock you out forever, but there is no reset that hands the data back (your call: keep the PIN safe)."
-msgstr "App goes to background → lock kicks in. A wrong PIN doesn't lock you out forever, but there is no reset that hands the data back (your call: keep the PIN safe)."
+msgid "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but each wrong try past the fifth makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
+msgstr "App goes to background → lock kicks in. Wrong PINs never lock you out forever, but each wrong try past the fifth makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN safe). A 4-digit PIN is a convenience lock, not a vault."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "App Lock is opt-in, and the PIN you set does double duty: it becomes the key the whole file is encrypted with. Until you set one, the file is ordinary local storage — private to the app sandbox, but not encrypted."
 msgstr "App Lock is opt-in, and the PIN you set does double duty: it becomes the key the whole file is encrypted with. Until you set one, the file is ordinary local storage — private to the app sandbox, but not encrypted."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID or Touch ID enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
-msgstr "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID or Touch ID enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
+msgid "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID, Touch ID or Android fingerprint or face unlock enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
+msgstr "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID, Touch ID or Android fingerprint or face unlock enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "App Lock, off by default"
@@ -3225,8 +3225,8 @@ msgstr "App Lock, off by default"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App Lock: PIN and Face ID or Touch ID"
-msgstr "App Lock: PIN and Face ID or Touch ID"
+msgid "App Lock: PIN and biometric unlock"
+msgstr "App Lock: PIN and biometric unlock"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "App requests connection to your bank"
@@ -3344,6 +3344,10 @@ msgstr "As awareness of digital privacy grows, more people are realizing that <0
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
 msgstr "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Asks your phone to block screenshots and screen recordings while it is on"
+msgstr "Asks your phone to block screenshots and screen recordings while it is on"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Asset coverage"
@@ -3966,24 +3970,38 @@ msgstr "Biometric lock + on-device encryption with your PIN"
 
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
-msgid "Biometric unlock hands Budgie only a yes or no — your PIN stays the key."
-msgstr "Biometric unlock hands Budgie only a yes or no — your PIN stays the key."
+msgid "Biometric unlock hands Budgie only a yes or no — your PIN stays the fallback."
+msgstr "Biometric unlock hands Budgie only a yes or no — your PIN stays the fallback."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
-msgstr "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
+msgid "Biometric unlock is a shortcut past Budgie's lock screen. Face ID, Touch ID and Android fingerprint or face unlock all work this way. Underneath, the four-digit PIN is still what protects your data."
+msgstr "Biometric unlock is a shortcut past Budgie's lock screen. Face ID, Touch ID and Android fingerprint or face unlock all work this way. Underneath, the four-digit PIN is still what protects your data."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Biometric unlock is the platform's Face ID / Touch ID check standing in for typing the PIN. The PIN itself stays in the device keychain, marked this-device-only, and remains the database key — biometrics are a faster path to the same lock, not a second one."
-msgstr "Biometric unlock is the platform's Face ID / Touch ID check standing in for typing the PIN. The PIN itself stays in the device keychain, marked this-device-only, and remains the database key — biometrics are a faster path to the same lock, not a second one."
+msgid "Biometric unlock is your phone's Face ID, Touch ID or Android fingerprint or face check standing in for typing the PIN. The PIN stays on the device and remains what protects your data — biometrics are a faster path to the same lock, not a second one. A successful scan also clears any wait caused by wrong PINs."
+msgstr "Biometric unlock is your phone's Face ID, Touch ID or Android fingerprint or face check standing in for typing the PIN. The PIN stays on the device and remains what protects your data — biometrics are a faster path to the same lock, not a second one. A successful scan also clears any wait caused by wrong PINs."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded."
 msgstr "Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded."
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Biometrics open the lock, the PIN stays the fallback"
+msgstr "Biometrics open the lock, the PIN stays the fallback"
+
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "bitcoin"
 msgstr "bitcoin"
+
+#: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
+msgid "Block captures. Hide amounts."
+msgstr "Block captures. Hide amounts."
+
+#: src/app/[lang]/features/screenshot-protection/metadata.ts
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "Block screen capture and hide amounts in the app switcher with one switch in Settings."
+msgstr "Block screen capture and hide amounts in the app switcher with one switch in Settings."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Block, the parent company of Cash App, disclosed that a former employee downloaded internal reports containing customer data for over 8 million users. The breach included full names, brokerage account numbers, portfolio values, and stock trading activity."
@@ -5094,10 +5112,6 @@ msgstr "Budgie's local model suggests up to three tags per transaction so heavy 
 #: src/app/[lang]/security/page.tsx
 msgid "Budgie's PIN and biometric lock gate every app launch. Even if the device is unlocked, no financial data is visible until the correct PIN or biometric challenge is passed."
 msgstr "Budgie's PIN and biometric lock gate every app launch. Even if the device is unlocked, no financial data is visible until the correct PIN or biometric challenge is passed."
-
-#: src/app/[lang]/features/pin-app-lock/metadata.ts
-msgid "Budgie's PIN doesn't just gate the screen — it is the encryption key for your data. Without the PIN, the database file is unreadable, even with full filesystem access."
-msgstr "Budgie's PIN doesn't just gate the screen — it is the encryption key for your data. Without the PIN, the database file is unreadable, even with full filesystem access."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie’s Public Source Commitment"
@@ -6365,10 +6379,6 @@ msgstr "Counting a merchant refund as earnings inflates every income report you 
 msgid "Counts down a one-year scale"
 msgstr "Counts down a one-year scale"
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Covers every protected amount Budgie renders, not just the home screen"
-msgstr "Covers every protected amount Budgie renders, not just the home screen"
-
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "CRDTs"
@@ -7219,8 +7229,8 @@ msgid "Does importing add to what I already have?"
 msgstr "Does importing add to what I already have?"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Does it block screenshots or screen recordings?"
-msgstr "Does it block screenshots or screen recordings?"
+msgid "Does it block screenshots and screen recordings?"
+msgstr "Does it block screenshots and screen recordings?"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Does it require a relaunch?"
@@ -7519,7 +7529,6 @@ msgstr "encrypted finance app"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
-#: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "encryption"
 msgstr "encryption"
 
@@ -7530,10 +7539,6 @@ msgstr "Encryption implementation details"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Encryption that doesn’t rely on hidden algorithms"
 msgstr "Encryption that doesn’t rely on hidden algorithms"
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Encryption with a strong PIN protects against filesystem-level access, but a jailbroken device with active malware can capture the PIN at entry time. Don't unlock Budgie on a compromised device."
-msgstr "Encryption with a strong PIN protects against filesystem-level access, but a jailbroken device with active malware can capture the PIN at entry time. Don't unlock Budgie on a compromised device."
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Encryption, PIN lock and screenshot blur"
@@ -7956,32 +7961,24 @@ msgstr "External input is welcomed on security architecture"
 msgid "face id"
 msgstr "face id"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "Face ID / Touch ID Authentication"
-msgstr "Face ID / Touch ID Authentication"
-
 #: src/app/[lang]/security/page.tsx
 msgid "Face ID and fingerprint authentication on every supported device"
 msgstr "Face ID and fingerprint authentication on every supported device"
 
-#: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
-msgid "Face ID drives the encryption key."
-msgstr "Face ID drives the encryption key."
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID or Touch ID opens the lock, the PIN owns the key"
-msgstr "Face ID or Touch ID opens the lock, the PIN owns the key"
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled"
-msgstr "Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled"
-
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "Face ID or Touch ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real encryption key, no device-passcode fallback."
-msgstr "Face ID or Touch ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real encryption key, no device-passcode fallback."
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "Face ID, Touch ID and Fingerprint Unlock"
+msgstr "Face ID, Touch ID and Fingerprint Unlock"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Face ID, Touch ID or Android fingerprint and face unlock on the lock screen, offered when the device has one enrolled"
+msgstr "Face ID, Touch ID or Android fingerprint and face unlock on the lock screen, offered when the device has one enrolled"
+
+#: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
+msgid "Face or touch, then the PIN."
+msgstr "Face or touch, then the PIN."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -8411,6 +8408,10 @@ msgid "Four choices: the last 7, 30 or 90 days, or the whole history"
 msgstr "Four choices: the last 7, 30 or 90 days, or the whole history"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Four digits, and a wait after wrong tries"
+msgstr "Four digits, and a wait after wrong tries"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Four slots, nothing typed"
 msgstr "Four slots, nothing typed"
 
@@ -8784,6 +8785,10 @@ msgstr "Home Screen Widgets — Budgie"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Home-screen widget with the period dates, an overall progress bar, and your closest-to-the-limit categories"
 msgstr "Home-screen widget with the period dates, an overall progress bar, and your closest-to-the-limit categories"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Home-screen widgets also hide amounts while the PIN lock is on"
+msgstr "Home-screen widgets also hide amounts while the PIN lock is on"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Hope they comply"
@@ -9525,6 +9530,10 @@ msgstr "Is anything in Budgie paid?"
 msgid "Is biometric the same as PIN security?"
 msgstr "Is biometric the same as PIN security?"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Is biometric unlock safer than a PIN?"
+msgstr "Is biometric unlock safer than a PIN?"
+
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Is Budgie open source?"
 msgstr "Is Budgie open source?"
@@ -9544,10 +9553,6 @@ msgstr "Is CSV import really secure enough for ongoing use?"
 #: src/app/[lang]/privacy/page.tsx
 msgid "Is direct API more secure than OAuth?"
 msgstr "Is direct API more secure than OAuth?"
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Is Face ID safer than a PIN?"
-msgstr "Is Face ID safer than a PIN?"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Is illegal, fraudulent, or promotes illegal activity"
@@ -9665,10 +9670,6 @@ msgstr "It builds on it. The pill still counts uncategorized transactions under 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "It doesn't delete anything. It rewrites a synced income or expense row into a transfer, pointing it at the closed card that received or sent it. That's a bigger change than a duplicate soft-delete, and unlike the soft-delete it has no one-tap undo."
 msgstr "It doesn't delete anything. It rewrites a synced income or expense row into a transfer, pointing it at the closed card that received or sent it. That's a bigger change than a duplicate soft-delete, and unlike the soft-delete it has no one-tap undo."
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "It doesn't intercept the screenshot itself — the masking is a rendering change, so it covers every protected amount, not only the home screen."
-msgstr "It doesn't intercept the screenshot itself — the masking is a rendering change, so it covers every protected amount, not only the home screen."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "It files itself"
@@ -10024,6 +10025,10 @@ msgstr "Local-first systems choose availability. You can always work, even offli
 msgid "local-llm"
 msgstr "local-llm"
 
+#: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
+msgid "lock"
+msgstr "lock"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Locked when you are, current when it matters"
 msgstr "Locked when you are, current when it matters"
@@ -10215,6 +10220,10 @@ msgstr "Manual server snapshots"
 msgid "Many accounts, one balance sheet"
 msgstr "Many accounts, one balance sheet"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Many app locks are only a screen laid over your data. Budgie's PIN is built into how the app opens your data, so the lock is not just a cover — and it adds a growing wait to slow down anyone guessing."
+msgstr "Many app locks are only a screen laid over your data. Budgie's PIN is built into how the app opens your data, so the lock is not just a cover — and it adds a growing wait to slow down anyone guessing."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Many apps collect far more data than users realize. Analytics platforms, crash reporting services, advertising SDKs, and third-party integrations often run silently in the background. Each of these systems may be collecting and transmitting data about your usage patterns, device information, and potentially even your financial activities."
 msgstr "Many apps collect far more data than users realize. Analytics platforms, crash reporting services, advertising SDKs, and third-party integrations often run silently in the background. Each of these systems may be collecting and transmitting data about your usage patterns, device information, and potentially even your financial activities."
@@ -10270,10 +10279,6 @@ msgstr "Market history without a live ticker"
 #: src/app/[lang]/open-source/page.tsx
 msgid "Marketing copy only"
 msgstr "Marketing copy only"
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Masks account balances and net worth the instant the app stops being active"
-msgstr "Masks account balances and net worth the instant the app stops being active"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Match all or match any, with contains, equals, comparison, list, and regular-expression operators"
@@ -10700,10 +10705,6 @@ msgstr "Most alternative apps can import at least the transaction register. Cate
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Most alternatives support some form of YNAB import. Actual Budget has a built-in YNAB importer. Budgie supports CSV import for transactions. Firefly III offers CSV import with mapping tools. The main challenge is category structure—most imports bring transactions but require recreating your budget categories. Some users view this as an opportunity to simplify and restructure."
 msgstr "Most alternatives support some form of YNAB import. Actual Budget has a built-in YNAB importer. Budgie supports CSV import for transactions. Firefly III offers CSV import with mapping tools. The main challenge is category structure—most imports bring transactions but require recreating your budget categories. Some users view this as an opportunity to simplify and restructure."
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie's PIN is wired to the database encryption itself, so the same digits that pass the lock screen are the encryption key."
-msgstr "Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie's PIN is wired to the database encryption itself, so the same digits that pass the lock screen are the encryption key."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen has three tabs — Categories, Tags and Runway — and the first two carry drill-down: tap a category or tag to see every transaction in it for the current period."
@@ -11387,8 +11388,8 @@ msgid "No. The microphone feeds transcription directly on the device, and the au
 msgstr "No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become text. Nothing is saved, sent, or logged."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — the encryption key is your PIN."
-msgstr "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — the encryption key is your PIN."
+msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — your PIN is what protects your data."
+msgstr "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — your PIN is what protects your data."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. The repair works on imported rows only. Manual transactions are never touched — that is exactly what the confirmation card promises before you press Repair."
@@ -11397,10 +11398,6 @@ msgstr "No. The repair works on imported rows only. Manual transactions are neve
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "No. The suggestion engine only proposes values from transactions you have already logged or imported."
 msgstr "No. The suggestion engine only proposes values from transactions you have already logged or imported."
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "No. The switch changes what Budgie renders while it isn't active; it doesn't intercept a screenshot or recording taken of the device."
-msgstr "No. The switch changes what Budgie renders while it isn't active; it doesn't intercept a screenshot or recording taken of the device."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
@@ -11520,8 +11517,8 @@ msgid "Nothing downloads until you switch On-device AI on in Settings. Categoriz
 msgstr "Nothing downloads until you switch On-device AI on in Settings. Categorization and suggestions come to about 1.6 GB; voice entry adds a further 0.9 GB, for roughly 2.5 GB if you use everything. That happens once. Afterwards it stays on the device and normal use needs no further download."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off, and there is no attempt counter that locks you out of your own database."
-msgstr "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off, and there is no attempt counter that locks you out of your own database."
+msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait after the fifth try, and a successful scan clears that wait."
+msgstr "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off. Wrong PINs add a growing wait after the fifth try, and a successful scan clears that wait."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Nothing goes out to be processed"
@@ -11618,8 +11615,8 @@ msgid "Off by default — nothing is hidden until you turn it on"
 msgstr "Off by default — nothing is hidden until you turn it on"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Off by default. Turn it on in Settings → Security and it applies immediately, with no per-screen setup."
-msgstr "Off by default. Turn it on in Settings → Security and it applies immediately, with no per-screen setup."
+msgid "Off by default. Turn it on in Settings → Security and it applies immediately to the whole app. It is one global switch, not a per-screen setting."
+msgstr "Off by default. Turn it on in Settings → Security and it applies immediately to the whole app. It is one global switch, not a per-screen setting."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Offer comprehensive export functionality (CSV, JSON, or a full database file)"
@@ -11973,13 +11970,13 @@ msgstr "One file. Encrypted when you set a PIN. No account."
 msgid "One file. No account. Restore by picking it — encrypted if your PIN was set."
 msgstr "One file. No account. Restore by picking it — encrypted if your PIN was set."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
-msgstr "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
-
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "One glance unlocks the screen — your four-digit PIN stays the encryption key underneath."
-msgstr "One glance unlocks the screen — your four-digit PIN stays the encryption key underneath."
+msgid "One glance or touch unlocks the screen — your four-digit PIN stays behind it."
+msgstr "One glance or touch unlocks the screen — your four-digit PIN stays behind it."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "One glance past Budgie's lock screen. The four digits you chose stay the fallback and the lock behind it."
+msgstr "One glance past Budgie's lock screen. The four digits you chose stay the fallback and the lock behind it."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "One inbox for every uncategorized transaction, grouped by merchant"
@@ -12027,8 +12024,8 @@ msgid "One per transaction — never ambiguous, always quick to scan"
 msgstr "One per transaction — never ambiguous, always quick to scan"
 
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
-msgid "One PIN. Real encryption."
-msgstr "One PIN. Real encryption."
+msgid "One PIN. A growing wait."
+msgstr "One PIN. A growing wait."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "One popover menu on every platform — no modal, no full-screen form to open first"
@@ -12102,6 +12099,10 @@ msgstr "One settings screen, and the two rows that stand in for everything a hos
 msgid "One sheet on the account's own settings screen: the whole history, or the last ninety, thirty or seven days."
 msgstr "One sheet on the account's own settings screen: the whole history, or the last ninety, thirty or seven days."
 
+#: src/app/[lang]/features/screenshot-protection/metadata.ts
+msgid "One switch blocks screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
+msgstr "One switch blocks screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default."
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "One switch for every AI feature"
 msgstr "One switch for every AI feature"
@@ -12109,6 +12110,10 @@ msgstr "One switch for every AI feature"
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "One switch for the on-device AI"
 msgstr "One switch for the on-device AI"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "One switch in Settings → Security asks your phone to block screenshots and screen recordings, and hides amounts whenever Budgie is not the active app."
+msgstr "One switch in Settings → Security asks your phone to block screenshots and screen recordings, and hides amounts whenever Budgie is not the active app."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch in Settings → Security, right under the PIN-lock card"
@@ -12456,8 +12461,8 @@ msgid "Optional contact name — track inter-personal loans without spreadsheets
 msgstr "Optional contact name — track inter-personal loans without spreadsheets"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Optional Face ID or Touch ID unlock, with the PIN as fallback"
-msgstr "Optional Face ID or Touch ID unlock, with the PIN as fallback"
+msgid "Optional Face ID, Touch ID or Android fingerprint or face unlock, with the PIN as fallback"
+msgstr "Optional Face ID, Touch ID or Android fingerprint or face unlock, with the PIN as fallback"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Optional MCC, comment and External ID columns carry the bank's own detail into each transaction"
@@ -12583,10 +12588,6 @@ msgstr "Paid for a new phone in three parts? Turn the purchase into a plan in a 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
 msgstr "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Pairs with the PIN lock for a fuller privacy seal"
-msgstr "Pairs with the PIN lock for a fuller privacy seal"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Partial and full refunds — Budgie compares the refund amount with the original expense"
@@ -12773,12 +12774,8 @@ msgstr "PIN App Lock"
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
-msgid "PIN App Lock — Locks With the Encryption Key"
-msgstr "PIN App Lock — Locks With the Encryption Key"
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "PIN is the database encryption key — not just a screen guard"
-msgstr "PIN is the database encryption key — not just a screen guard"
+msgid "PIN App Lock — Nothing Opens Without Your PIN"
+msgstr "PIN App Lock — Nothing Opens Without Your PIN"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "PIN lock budget app"
@@ -13587,6 +13584,10 @@ msgstr "Repayments rarely arrive labelled. A friend sends money back and it land
 msgid "Repeat rows are matched on the bank's transaction id, not inserted again"
 msgstr "Repeat rows are matched on the bank's transaction id, not inserted again"
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Replaces amounts with a placeholder the instant the app stops being active"
+msgstr "Replaces amounts with a placeholder the instant the app stops being active"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Replay demo"
 msgstr "Replay demo"
@@ -13935,8 +13936,8 @@ msgid "Screenshot Protection — Hide Bank Balance from Previews"
 msgstr "Screenshot Protection — Hide Bank Balance from Previews"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Screenshot Protection lives in Settings → Security, right under the PIN-lock card. It doesn't stop the device from taking a screenshot — it changes what Budgie renders while the app isn't active."
-msgstr "Screenshot Protection lives in Settings → Security, right under the PIN-lock card. It doesn't stop the device from taking a screenshot — it changes what Budgie renders while the app isn't active."
+msgid "Screenshot Protection lives in Settings → Security, right under the PIN-lock card. Turned on, it does two things: your phone is asked to block screen capture, and amounts are replaced with a placeholder while Budgie is not the active app."
+msgstr "Screenshot Protection lives in Settings → Security, right under the PIN-lock card. Turned on, it does two things: your phone is asked to block screen capture, and amounts are replaced with a placeholder while Budgie is not the active app."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Screenshot Protection switch"
@@ -14153,10 +14154,6 @@ msgstr "Self-improving — accepted or corrected suggestions sharpen the next on
 msgid "Send important updates about the Service (security notices, policy changes)"
 msgstr "Send important updates about the Service (security notices, policy changes)"
 
-#: src/app/[lang]/features/screenshot-protection/metadata.ts
-msgid "Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen."
-msgstr "Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen."
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Sensitivity of Financial Data"
 msgstr "Sensitivity of Financial Data"
@@ -14242,8 +14239,8 @@ msgid "Settings → Recalculate Balances clears the cached balance for every acc
 msgstr "Settings → Recalculate Balances clears the cached balance for every account and rebuilds it from the transactions themselves — useful after an import or a run of edits when a cached figure has drifted."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Settings → Security, directly below the PIN-lock card. It's a single switch, off by default, with no per-screen configuration."
-msgstr "Settings → Security, directly below the PIN-lock card. It's a single switch, off by default, with no per-screen configuration."
+msgid "Settings → Security, directly below the PIN-lock card. It's a single switch for the whole app, off by default, with no per-screen configuration."
+msgstr "Settings → Security, directly below the PIN-lock card. It's a single switch for the whole app, off by default, with no per-screen configuration."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date. Suggestions come from your own history on this device."
@@ -14873,8 +14870,8 @@ msgid "Support for 150+ currencies"
 msgstr "Support for 150+ currencies"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including account balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie isn't the active app."
-msgstr "Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including account balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie isn't the active app."
+msgid "Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including balances and amounts. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie isn't the active app, and asks your phone to block captures while it's on."
+msgstr "Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including balances and amounts. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie isn't the active app, and asks your phone to block captures while it's on."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Switch apps without losing history"
@@ -15513,12 +15510,12 @@ msgid "The footer button tracks what's left to allocate, then turns into Confirm
 msgstr "The footer button tracks what's left to allocate, then turns into Confirm Split once it adds up"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "The four digits are the key"
-msgstr "The four digits are the key"
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The fourth digit submits"
 msgstr "The fourth digit submits"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "The fourth digit submits on its own — a wrong PIN clears the dots and says so. You get 5 free tries; after that Budgie makes you wait 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
+msgstr "The fourth digit submits on its own — a wrong PIN clears the dots and says so. You get 5 free tries; after that Budgie makes you wait 30 seconds, then 1 minute, 5 minutes, 15 minutes and finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful fingerprint or face unlock resets it. There is no reset that hands the data back."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "The full category list is one tap away"
@@ -15650,6 +15647,10 @@ msgstr "The merchant and its category land on the entry before you finish typing
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 msgstr "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "The moment Budgie stops being the active app, amounts swap to a placeholder — most visible in the app switcher. It applies everywhere amounts appear, with no per-screen setup."
+msgstr "The moment Budgie stops being the active app, amounts swap to a placeholder — most visible in the app switcher. It applies everywhere amounts appear, with no per-screen setup."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The moment the app goes to the background. There is no grace period and no inactivity setting to get wrong — the next time you come back, the keypad is there."
 msgstr "The moment the app goes to the background. There is no grace period and no inactivity setting to get wrong — the next time you come back, the keypad is there."
@@ -15771,18 +15772,8 @@ msgid "The pills on the expense form, and the On-device AI section in Settings t
 msgstr "The pills on the expense form, and the On-device AI section in Settings that powers them."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
-msgstr "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "The PIN is what the app opens the database with. Budgie keeps it in the device keychain, marked this-device-only, and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one. The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the data back."
-msgstr "The PIN is what the app opens the database with. Budgie keeps it in the device keychain, marked this-device-only, and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one. The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the data back."
-
-#: src/app/[lang]/features/pin-app-lock/metadata.ts
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "The PIN unlocks the app and unlocks your data — no PIN, no readable database."
-msgstr "The PIN unlocks the app and unlocks your data — no PIN, no readable database."
+msgid "The PIN is tied to your data — not just a screen guard"
+msgstr "The PIN is tied to your data — not just a screen guard"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Plaid Problem: Third-Party Data Aggregation Risks"
@@ -16219,8 +16210,8 @@ msgid "They store your credentials on their servers"
 msgstr "They store your credentials on their servers"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "They're complementary. Biometrics are convenient and prevent shoulder-surfing; the PIN is the actual encryption key. Both raise the bar."
-msgstr "They're complementary. Biometrics are convenient and prevent shoulder-surfing; the PIN is the actual encryption key. Both raise the bar."
+msgid "They're complementary. Biometrics are convenient and prevent shoulder-surfing; the PIN is what actually protects your data. Both raise the bar."
+msgstr "They're complementary. Biometrics are convenient and prevent shoulder-surfing; the PIN is what actually protects your data. Both raise the bar."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Think through scenarios like: What if a user makes conflicting changes on two devices before syncing? What if sync fails partway through? What if a device is offline for an extended period?"
@@ -16399,8 +16390,8 @@ msgid "Three first-class transaction types: expense, income, transfer — never 
 msgstr "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Three frames: the keypad the app opens on, the four digits that open the encrypted database, and the Settings group where you switch the lock on."
-msgstr "Three frames: the keypad the app opens on, the four digits that open the encrypted database, and the Settings group where you switch the lock on."
+msgid "Three frames: the keypad the app opens on, the four digits that open it, and the Settings group where you switch the lock on."
+msgstr "Three frames: the keypad the app opens on, the four digits that open it, and the Settings group where you switch the lock on."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Three jobs, all done on your device: understanding what you write or say, matching a new transaction against the ones you have already categorized, and turning speech into text. Every one of them runs on your phone with no external call."
@@ -16758,8 +16749,8 @@ msgid "Turn a purchase paid in parts into a plan. Each synced monthly part attac
 msgstr "Turn a purchase paid in parts into a plan. Each synced monthly part attaches itself."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Turn it on and account balances and net worth swap to a placeholder the moment Budgie stops being the active app — most visible in the app switcher."
-msgstr "Turn it on and account balances and net worth swap to a placeholder the moment Budgie stops being the active app — most visible in the app switcher."
+msgid "Turn it on and Budgie asks the system to block screenshots and screen recordings of the app. Whether a capture is blocked or comes out blank is up to your phone."
+msgstr "Turn it on and Budgie asks the system to block screenshots and screen recordings of the app. Whether a capture is blocked or comes out blank is up to your phone."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Turn the radio off, nothing changes"
@@ -16958,6 +16949,10 @@ msgstr "Unlimited splits per transaction — every category gets its accurate sh
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Unlock and restore, fixed"
 msgstr "Unlock and restore, fixed"
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "Unlock with Face ID, Touch ID or Android fingerprint or face. The phone matches, Budgie only sees the result. PIN stays the fallback."
+msgstr "Unlock with Face ID, Touch ID or Android fingerprint or face. The phone matches, Budgie only sees the result. PIN stays the fallback."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Unrealized gain over cost basis"
@@ -17700,8 +17695,8 @@ msgid "What the screen offers next depends on the bank. A Monobank connection ca
 msgstr "What the screen offers next depends on the bank. A Monobank connection can pull the bank's account list and add whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import action instead. Both can open a new deposit account that starts out attached to the same bank."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "What the switch actually hides"
-msgstr "What the switch actually hides"
+msgid "What the switch does"
+msgstr "What the switch does"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "What the transaction list actually shows"
@@ -18761,8 +18756,8 @@ msgid "Yes — see Smart Transfer Consolidation. Bank-synced debits and credits 
 msgstr "Yes — see Smart Transfer Consolidation. Bank-synced debits and credits matching by amount, time window, and counter-IBAN auto-merge into a single transfer."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Yes — Settings → Security → App Lock, then the Face ID / Touch ID row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
-msgstr "Yes — Settings → Security → App Lock, then the Face ID / Touch ID row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
+msgid "Yes — Settings → Security → App Lock, then the biometric row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
+msgstr "Yes — Settings → Security → App Lock, then the biometric row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Yes — system theme by default. Override to Light or Dark in Settings if you prefer."
@@ -18797,8 +18792,8 @@ msgid "Yes — the Tags tab reads whatever period is active: This Month, Last Mo
 msgstr "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time. There is no custom range."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
-msgstr "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
+msgid "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what others can capture or glimpse from it."
+msgstr "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what others can capture or glimpse from it."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Yes — typing a new tag still works in parallel; the suggestions are additive, not exclusive."
@@ -18827,6 +18822,10 @@ msgstr "Yes, fully. Every core feature — logging expenses, viewing analytics, 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Yes, once you save a rule. After you categorize a single group, tap the rule button in the bar at the bottom: the rule editor opens pre-filled and, once saved, categorizes matching transactions on every future bank sync and import. Even without a rule, your choices make the next suggestions more accurate."
 msgstr "Yes, once you save a rule. After you categorize a single group, tap the rule button in the bar at the bottom: the rule editor opens pre-filled and, once saved, categorizes matching transactions on every future bank sync and import. Even without a rule, your choices make the next suggestions more accurate."
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Yes, while the switch is on Budgie asks your phone to block screen capture. Exactly how a blocked capture looks, blank or refused, depends on your phone."
+msgstr "Yes, while the switch is on Budgie asks your phone to block screen capture. Exactly how a blocked capture looks, blank or refused, depends on your phone."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Yes, with consent. When you agree to terms of service and privacy policies, you typically grant broad data collection and sharing rights. The legal framework in most jurisdictions allows extensive data use if disclosed in policies most users never read. GDPR in Europe provides stronger protections, including data minimization requirements, but enforcement varies. In the US, financial data protection is fragmented across state laws with no comprehensive federal standard."
@@ -19412,6 +19411,10 @@ msgstr "Your data exists only on your device. If you lose your phone without hav
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your data in a local file you can open and query yourself"
 msgstr "Your data in a local file you can open and query yourself"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Your data is tied to the PIN — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
+msgstr "Your data is tied to the PIN — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."

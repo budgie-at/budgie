@@ -30,20 +30,20 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Face ID / Touch ID Authentication</Trans>}
+                heading={<Trans>Face ID, Touch ID and Fingerprint Unlock</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        One glance past Budgie&apos;s lock screen. The four digits you chose stay the key your database is encrypted with.
+                        One glance past Budgie&apos;s lock screen. The four digits you chose stay the fallback and the lock behind it.
                     </Trans>
                 }
             />
 
             <FeatureStory>
-                <FeatureStory.Intro heading={<Trans>Face ID or Touch ID opens the lock, the PIN owns the key</Trans>}>
+                <FeatureStory.Intro heading={<Trans>Biometrics open the lock, the PIN stays the fallback</Trans>}>
                     <Trans>
-                        Biometric unlock is a shortcut past Budgie&apos;s lock screen. What encrypts the database underneath is still the
-                        four-digit PIN.
+                        Biometric unlock is a shortcut past Budgie&apos;s lock screen. Face ID, Touch ID and Android fingerprint or face
+                        unlock all work this way. Underneath, the four-digit PIN is still what protects your data.
                     </Trans>
                 </FeatureStory.Intro>
 
@@ -65,7 +65,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     slug="screenshot-protection"
                 >
                     <FeatureStory.Callout y={0.42}>
-                        <Trans>App Lock: PIN and Face ID or Touch ID</Trans>
+                        <Trans>App Lock: PIN and biometric unlock</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
@@ -108,7 +108,10 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled</Trans>
+                        <Trans>
+                            Face ID, Touch ID or Android fingerprint and face unlock on the lock screen, offered when the device has one
+                            enrolled
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
@@ -131,7 +134,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     answer={
                         <Trans>
                             No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key
-                            fragment and no biometric material on Budgie&apos;s side — the encryption key is your PIN.
+                            fragment and no biometric material on Budgie&apos;s side — your PIN is what protects your data.
                         </Trans>
                     }
                 />
@@ -140,7 +143,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     answer={
                         <Trans>
                             Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the
-                            device-passcode fallback off, and there is no attempt counter that locks you out of your own database.
+                            device-passcode fallback off. Wrong PINs add a growing wait after the fifth try, and a successful scan clears
+                            that wait.
                         </Trans>
                     }
                 />
@@ -148,17 +152,17 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     question={<Trans>Can I disable biometrics?</Trans>}
                     answer={
                         <Trans>
-                            Yes — Settings → Security → App Lock, then the Face ID / Touch ID row inside the card. The PIN stays active.
-                            Turning App Lock off switches biometrics off with it.
+                            Yes — Settings → Security → App Lock, then the biometric row inside the card. The PIN stays active. Turning App
+                            Lock off switches biometrics off with it.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Is Face ID safer than a PIN?</Trans>}
+                    question={<Trans>Is biometric unlock safer than a PIN?</Trans>}
                     answer={
                         <Trans>
-                            They&apos;re complementary. Biometrics are convenient and prevent shoulder-surfing; the PIN is the actual
-                            encryption key. Both raise the bar.
+                            They&apos;re complementary. Biometrics are convenient and prevent shoulder-surfing; the PIN is what actually
+                            protects your data. Both raise the bar.
                         </Trans>
                     }
                 />

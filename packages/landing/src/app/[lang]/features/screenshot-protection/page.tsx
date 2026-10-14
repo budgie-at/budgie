@@ -34,17 +34,18 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 locale={lang}
                 tagline={
                     <Trans>
-                        Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in
-                        Settings → Security.
+                        One switch in Settings → Security asks your phone to block screenshots and screen recordings, and hides amounts
+                        whenever Budgie is not the active app.
                     </Trans>
                 }
             />
 
             <FeatureStory>
-                <FeatureStory.Intro heading={<Trans>What the switch actually hides</Trans>}>
+                <FeatureStory.Intro heading={<Trans>What the switch does</Trans>}>
                     <Trans>
-                        Screenshot Protection lives in Settings → Security, right under the PIN-lock card. It doesn&apos;t stop the device
-                        from taking a screenshot — it changes what Budgie renders while the app isn&apos;t active.
+                        Screenshot Protection lives in Settings → Security, right under the PIN-lock card. Turned on, it does two things:
+                        your phone is asked to block screen capture, and amounts are replaced with a placeholder while Budgie is not the
+                        active app.
                     </Trans>
                 </FeatureStory.Intro>
 
@@ -72,14 +73,14 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
 
                 <FeatureStory.Point index={1}>
                     <Trans>
-                        Turn it on and account balances and net worth swap to a placeholder the moment Budgie stops being the active app —
-                        most visible in the app switcher.
+                        Turn it on and Budgie asks the system to block screenshots and screen recordings of the app. Whether a capture is
+                        blocked or comes out blank is up to your phone.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
                     <Trans>
-                        It doesn&apos;t intercept the screenshot itself — the masking is a rendering change, so it covers every protected
-                        amount, not only the home screen.
+                        The moment Budgie stops being the active app, amounts swap to a placeholder — most visible in the app switcher. It
+                        applies everywhere amounts appear, with no per-screen setup.
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
@@ -90,13 +91,16 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including account
-                        balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie
-                        isn&apos;t the active app.
+                        Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including balances
+                        and amounts. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie isn&apos;t the
+                        active app, and asks your phone to block captures while it&apos;s on.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
-                    <Trans>Off by default. Turn it on in Settings → Security and it applies immediately, with no per-screen setup.</Trans>
+                    <Trans>
+                        Off by default. Turn it on in Settings → Security and it applies immediately to the whole app. It is one global
+                        switch, not a per-screen setting.
+                    </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
@@ -109,16 +113,16 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                         <Trans>One switch in Settings → Security, right under the PIN-lock card</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Masks account balances and net worth the instant the app stops being active</Trans>
+                        <Trans>Asks your phone to block screenshots and screen recordings while it is on</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Covers every protected amount Budgie renders, not just the home screen</Trans>
+                        <Trans>Replaces amounts with a placeholder the instant the app stops being active</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Off by default — nothing is hidden until you turn it on</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Pairs with the PIN lock for a fuller privacy seal</Trans>
+                        <Trans>Home-screen widgets also hide amounts while the PIN lock is on</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -128,17 +132,17 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     question={<Trans>What does Screenshot Protection actually hide?</Trans>}
                     answer={
                         <Trans>
-                            Account balances and net worth switch to a placeholder wherever Budgie renders them, for as long as the app
-                            isn&apos;t the active app — most visible when you open the app switcher.
+                            Amounts, such as account balances and net worth, switch to a placeholder for as long as Budgie isn&apos;t the
+                            active app — most visible when you open the app switcher.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Does it block screenshots or screen recordings?</Trans>}
+                    question={<Trans>Does it block screenshots and screen recordings?</Trans>}
                     answer={
                         <Trans>
-                            No. The switch changes what Budgie renders while it isn&apos;t active; it doesn&apos;t intercept a screenshot or
-                            recording taken of the device.
+                            Yes, while the switch is on Budgie asks your phone to block screen capture. Exactly how a blocked capture looks,
+                            blank or refused, depends on your phone.
                         </Trans>
                     }
                 />
@@ -146,8 +150,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     question={<Trans>Where do I turn it on?</Trans>}
                     answer={
                         <Trans>
-                            Settings → Security, directly below the PIN-lock card. It&apos;s a single switch, off by default, with no
-                            per-screen configuration.
+                            Settings → Security, directly below the PIN-lock card. It&apos;s a single switch for the whole app, off by
+                            default, with no per-screen configuration.
                         </Trans>
                     }
                 />
@@ -156,7 +160,7 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     answer={
                         <Trans>
                             Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls
-                            what balances show while it&apos;s in the background.
+                            what others can capture or glimpse from it.
                         </Trans>
                     }
                 />
