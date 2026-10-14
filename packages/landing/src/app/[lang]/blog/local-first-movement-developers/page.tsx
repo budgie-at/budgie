@@ -813,21 +813,21 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Open Source Transparency</Trans>
+                        <Trans>Source-Available Transparency</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can
-                            inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the
+                            Budgie’s codebase is source-available, allowing security researchers and curious users to verify our claims. You
+                            can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the
                             application yourself.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Open source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code
-                            remains available. Communities can maintain and extend it indefinitely.
+                            Public source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code
+                            remains available, and its license lets you keep using and modifying it for your own needs.
                         </Trans>
                     </BlogArticleProse>
 

@@ -27,20 +27,20 @@ export default async function LicensePage(props: PageLangParam) {
     return (
         <>
             <h1>
-                <Trans>Open Source License</Trans>
+                <Trans>Source-Available License</Trans>
             </h1>
             <div className="text-muted-foreground mb-8">
                 <Trans>Last Updated: {updatedAtText}</Trans>
             </div>
             <h2>
-                <Trans>1. Commitment to Open Source</Trans>
+                <Trans>1. Commitment to Transparency</Trans>
             </h2>
             <p>
                 <Trans>
-                    Budgie is committed to transparency, security, and community collaboration. We believe that open source software is
-                    essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By
-                    making our source code publicly available, we enable security audits, community contributions, and user verification of
-                    our privacy claims.
+                    Budgie is committed to transparency, security, and community collaboration. We believe that publicly available source
+                    code is essential for building trust, especially when it comes to financial applications that handle sensitive personal
+                    data. By making our source code publicly available, we enable security audits, community contributions, and user
+                    verification of our privacy claims.
                 </Trans>
             </p>
             <h2>
@@ -413,8 +413,8 @@ export default async function LicensePage(props: PageLangParam) {
             </h2>
             <p>
                 <Trans>
-                    If you have questions about our open source license, commercial licensing options, or anything else related to
-                    Budgie&apos;s licensing:
+                    If you have questions about our license, commercial licensing options, or anything else related to Budgie&apos;s
+                    licensing:
                 </Trans>
             </p>
             <p>
@@ -429,8 +429,8 @@ export default async function LicensePage(props: PageLangParam) {
             </h3>
             <p>
                 <Trans>
-                    We believe in transparent, ethical software development. By keeping Budgie open source, we ensure that our privacy and
-                    security claims can be independently verified. We are committed to maintaining Budgie as an open source project and
+                    We believe in transparent, ethical software development. By keeping Budgie’s source code public, we ensure that our
+                    privacy and security claims can be independently verified. We are committed to keeping Budgie’s source available and
                     fostering a welcoming community for contributors and users alike.
                 </Trans>
             </p>

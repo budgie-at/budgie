@@ -664,7 +664,7 @@ Data Storage Location: Local-first/Offline-first (data stored exclusively on you
 
 ## Comparison Table
 
-Budgie: Device only storage, optional bank sync, yes open source, free, iOS and Android, best for privacy maximalists who want modern UX.
+Budgie: Device only storage, optional bank sync, source-available, free, iOS and Android, best for privacy maximalists who want modern UX.
 
 Actual Budget: Local/Self-hosted storage, optional plugin bank sync, yes open source, free (self-hosted), Web and Desktop, best for technical users wanting full control.
 

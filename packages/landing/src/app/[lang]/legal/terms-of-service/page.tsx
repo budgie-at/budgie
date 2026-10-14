@@ -259,9 +259,10 @@ export default async function TermsOfServicePage(props: PageLangParam) {
             </p>
             <p>
                 <Trans>
-                    Subject to the open source license under which the software is distributed (see our Open Source License page), you may
-                    not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer
-                    or attempt to extract the source code of that software, except as permitted by law or with our written permission.
+                    Subject to the source-available license under which the software is distributed (see our Source-Available License page),
+                    you may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse
+                    engineer or attempt to extract the source code of that software, except as permitted by law or with our written
+                    permission.
                 </Trans>
             </p>
             <h2>

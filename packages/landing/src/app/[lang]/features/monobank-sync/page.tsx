@@ -239,10 +239,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     question={<Trans>What if Monobank&apos;s API changes?</Trans>}
                     answer={
-                        <Trans>
-                            Budgie is open source. The Monobank integration lives in packages/sync/src/monobank/ and the project&apos;s
-                            release cadence keeps it current.
-                        </Trans>
+                        <Trans>Budgie&apos;s source code is public on GitHub, and regular releases keep the Monobank sync current.</Trans>
                     }
                 />
             </FeaturePageFaqSection>

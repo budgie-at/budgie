@@ -647,8 +647,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source transparency.</strong> The codebase is public, allowing security researchers and privacy
-                                advocates to verify claims.
+                                <strong>Source-available transparency.</strong> The codebase is public, allowing security researchers and
+                                privacy advocates to verify claims.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1422,12 +1422,13 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Open Source Verification</Trans>
+                        <Trans>Source-Available Verification</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is open source, meaning:
+                            Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is source-available,
+                            meaning:
                         </Trans>
                     </BlogArticleProse>
 
