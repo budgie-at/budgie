@@ -34,8 +34,8 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Promote one tag per transaction to &quot;primary&quot;; it pins as a corner-star badge on the list so you can scan
-                        #vacation or #shared without opening anything.
+                        The first tag you add becomes the one the list shows. Long-press another tag in the picker to make it the main one
+                        instead.
                     </Trans>
                 }
             />
@@ -71,7 +71,8 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Point index={1}>
                     <Trans>
-                        Open the tag picker and long-press any tag to make it the one the list shows — no separate settings screen.
+                        The first tag you pick is the one the list shows. To change it, open the tag picker and long-press another tag — a
+                        star marks the main tag there.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -87,14 +88,14 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Scanning a long transaction list for one tag is hard. Budgie&apos;s primary-tag concept solves it visually — the
-                        most important tag for that row gets a corner-star badge.
+                        Scanning a long transaction list for one tag is hard. Budgie shows the main tag of each row as a chip, with a count
+                        of the others, so you can scan #vacation or #shared without opening anything.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Long-press a tag chip on the card to rotate which one is primary. The choice persists across edits, and the badge
-                        stays through bank-sync re-imports.
+                        The first tag you add is the main one automatically. To pick a different one, long-press it in the tag picker; the
+                        choice stays when you edit the transaction.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -105,19 +106,19 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Corner-star badge on the transaction list — scan without opening rows</Trans>
+                        <Trans>One tag chip per row on the transaction list — scan without opening rows</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Long-press to rotate which tag is primary — single gesture</Trans>
+                        <Trans>Long-press a tag in the picker to make it the main one</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Persists across edits and bank-sync re-imports</Trans>
+                        <Trans>The first tag is main automatically, so there is nothing to set up</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>One per transaction — never ambiguous, always quick to scan</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Optional — transactions without a primary tag stay clean and badge-free</Trans>
+                        <Trans>A star in the tag picker shows which tag is the main one</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -127,8 +128,8 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     question={<Trans>What does &quot;primary&quot; actually do?</Trans>}
                     answer={
                         <Trans>
-                            Visual emphasis. The primary tag renders as a corner-star badge on the transaction list so you can scan a long
-                            list for #vacation or #shared without opening any row.
+                            It decides which tag the list shows when a transaction has several. The row shows that tag as a chip with a
+                            count of the others, so you can scan a long list for #vacation or #shared without opening any row.
                         </Trans>
                     }
                 />
@@ -136,19 +137,20 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     question={<Trans>How do I set a primary tag?</Trans>}
                     answer={
                         <Trans>
-                            Long-press a tag chip on the transaction card. The tap rotates which of that transaction&apos;s tags is primary.
+                            You don&apos;t have to: the first tag you add is primary automatically. To change it, open the tag picker and
+                            long-press the tag you want; a star marks it there.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Is the primary tag preserved across edits?</Trans>}
                     answer={
-                        <Trans>Yes. Editing a transaction keeps its primary-tag designation; bank-sync re-imports also preserve it.</Trans>
+                        <Trans>Yes. Editing a transaction keeps its primary tag unless you pick a different one in the tag picker.</Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can a transaction have no primary tag?</Trans>}
-                    answer={<Trans>Yes — by default, none is primary. The badge appears only when you explicitly promote one.</Trans>}
+                    question={<Trans>Can a transaction have several primary tags?</Trans>}
+                    answer={<Trans>No. A tagged transaction has exactly one primary tag, the first one by default.</Trans>}
                 />
             </FeaturePageFaqSection>
         </FeaturePageShell>
