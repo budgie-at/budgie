@@ -5352,6 +5352,10 @@ msgstr "Kann ich den Reichweite-Chip ausblenden?"
 msgid "Can I import a pre-built category tree?"
 msgstr "Kann ich einen vorgefertigten Kategoriebaum importieren?"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Can I import an Erste Bank Austria statement?"
+msgstr "Kann ich einen Kontoauszug der Erste Bank Austria importieren?"
+
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Can I import bank statements without Wi-Fi?"
 msgstr "Kann ich Kontoauszüge ohne WLAN importieren?"
@@ -6390,6 +6394,10 @@ msgstr "CRDTs lösen das Konfliktlösungsproblem, lassen aber die Frage offen, w
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Create a feature branch for your changes"
 msgstr "Einen Feature-Branch für Ihre Änderungen erstellen"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Create a read-only API key in Binance with only reading enabled, never trading or withdrawals, and enter it in Budgie. Your balances and history come in, and P2P purchases are matched with the bank payments you made for them."
+msgstr "Erstelle in Binance einen API-Schlüssel nur mit Leserechten – ohne Handel und ohne Abhebungen – und gib ihn in Budgie ein. Deine Guthaben und dein Verlauf werden importiert, und P2P-Käufe werden den Bankzahlungen zugeordnet, mit denen du sie bezahlt hast."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Create an account in Budgie for each bank account or credit card you track. Set the correct currency for each account. You do not need to connect anything to your bank at this stage — the accounts are just containers for imported transactions."
@@ -7898,6 +7906,10 @@ msgstr "Entdecken Sie die Local-First-Softwarebewegung, von CRDTs bis zu Sync-En
 msgid "export"
 msgstr "Export"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Export a statement from Privat24 as an Excel file and pick it in Budgie. Each export is a one-time import with no connection to your bank. If you import a newer export later, anything already in Budgie is skipped, so nothing is duplicated."
+msgstr "Exportiere einen Kontoauszug aus Privat24 als Excel-Datei und wähle ihn in Budgie aus. Jeder Export ist ein einmaliger Import ohne Verbindung zu deiner Bank. Wenn du später einen neueren Export importierst, wird alles übersprungen, was schon in Budgie ist – es entstehen keine Duplikate."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Export and Portability"
 msgstr "Export und Portabilität"
@@ -8892,6 +8904,10 @@ msgstr "Wie exportiere ich aus Privat24?"
 msgid "How do I export my data if I stop using Budgie?"
 msgstr "Wie exportiere ich meine Daten, wenn ich Budgie nicht mehr nutze?"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "How do I import PrivatBank transactions?"
+msgstr "Wie importiere ich PrivatBank-Transaktionen?"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "How do I know the app I download matches the public source code?"
 msgstr "Woher weiß ich, dass die heruntergeladene App zum öffentlichen Quellcode passt?"
@@ -8931,6 +8947,10 @@ msgstr "Wie verbessert sich die KI im Laufe der Zeit?"
 #: src/app/[lang]/privacy/page.tsx
 msgid "How does bank sync work without an aggregator?"
 msgstr "Wie funktioniert die Banksynchronisation ohne Aggregator?"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "How does Binance sync work?"
+msgstr "Wie funktioniert die Binance-Synchronisation?"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "How does Budgie find the monthly parts?"
@@ -9948,6 +9968,10 @@ msgstr "Verknüpfe sie mit dem, was sie zurücknimmt"
 msgid "Link to the Repository"
 msgstr "Link zum Repository"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Live sync works only with Monobank and Binance, and statement import only with PrivatBank and Erste Bank Austria. Any other bank can still be added: export a CSV file from its app or website and map the columns once, or start from a built-in preset."
+msgstr "Die Live-Synchronisation funktioniert nur mit Monobank und Binance, der Kontoauszug-Import nur mit PrivatBank und Erste Bank Austria. Jede andere Bank lässt sich trotzdem hinzufügen: Exportiere eine CSV-Datei aus ihrer App oder Website und ordne die Spalten einmal zu, oder starte mit einer integrierten Vorlage."
+
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
 msgid "loans"
 msgstr "Kredite"
@@ -10689,6 +10713,26 @@ msgstr "Verbleibende Monate im aktuellen Tempo oder Ihr monatliches Plus. Direkt
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Months left, and the month it ends"
 msgstr "Verbleibende Monate und der letzte Monat"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "More about Binance sync"
+msgstr "Mehr zur Binance-Synchronisation"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "More about CSV import"
+msgstr "Mehr zum CSV-Import"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "More about Erste PDF import"
+msgstr "Mehr zum Erste-PDF-Import"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "More about Monobank sync"
+msgstr "Mehr zur Monobank-Synchronisation"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "More about PrivatBank import"
+msgstr "Mehr zum PrivatBank-Import"
 
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "More Features"
@@ -17383,6 +17427,10 @@ msgstr "Welche Daten diese Dienste sammeln"
 msgid "What Developers Actually Need in a Budget App"
 msgstr "Was Entwickler wirklich von einer Budget-App brauchen"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "What do I need to connect Monobank?"
+msgstr "Was brauche ich, um Monobank zu verbinden?"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "What do the monthly bars on a transaction mean?"
 msgstr "Was bedeuten die Monatsbalken bei einer Transaktion?"
@@ -17582,6 +17630,10 @@ msgstr "Was passiert, wenn sich die API von Monobank ändert?"
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "What if my bank charges a fee?"
 msgstr "Was, wenn meine Bank eine Gebühr verlangt?"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "What if my bank is not on the list?"
+msgstr "Was, wenn meine Bank nicht in der Liste steht?"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "What if my bank requires an aggregator for the app I currently use?"
@@ -18901,6 +18953,10 @@ msgstr "Ja. Schulden ist ein dedizierter Kontotyp mit expliziter Richtung „Ich
 msgid "Yes. Deposit is a dedicated account type with interest rate, maturity date, days remaining, expected payout, and a Close Deposit action that transfers the balance to a selected destination account."
 msgstr "Ja. Festgeld ist ein eigener Kontotyp mit Zinssatz, Fälligkeitsdatum, verbleibenden Tagen, erwarteter Auszahlung und einer Aktion „Festgeld schließen“, die den Saldo auf ein ausgewähltes Zielkonto überträgt."
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Yes. Download the PDF account statement from George, Erste's online banking, and pick it in Budgie. Euro accounts are supported, and a later statement skips transactions you have already imported."
+msgstr "Ja. Lade den Kontoauszug als PDF aus George, dem Online-Banking der Erste, herunter und wähle ihn in Budgie aus. Euro-Konten werden unterstützt, und ein späterer Auszug überspringt bereits importierte Transaktionen."
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Yes. Each account has a fixed currency. Daily exchange-rate snapshots convert everything to your base currency for net worth."
 msgstr "Ja. Jedes Konto hat eine feste Währung. Tägliche Wechselkurs-Schnappschüsse rechnen alles in Ihre Basiswährung für das Nettovermögen um."
@@ -19249,6 +19305,10 @@ msgstr "Sie müssen mindestens 18 Jahre alt sein, um diesen Dienst zu nutzen. Mi
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You Need A Budget (YNAB) has been a household name in personal finance software for over a decade. Its zero-based budgeting methodology has helped millions take control of their finances. But in recent years, a growing number of users have started looking for alternatives—and privacy is often the driving factor."
 msgstr "You Need A Budget (YNAB) ist seit über einem Jahrzehnt eine der bekanntesten Apps für persönliche Finanzen. Die Zero-based-Budgeting-Methode hat Millionen Menschen geholfen, ihr Geld zu planen. Doch inzwischen suchen mehr Nutzer nach Alternativen, und Privatsphäre ist oft der Grund."
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "You need a personal token from Monobank, which you generate yourself and which only lets Budgie read your data. Budgie imports your accounts and transactions, and refreshes them when you open the app and in the background at the pace your phone allows, with no fixed interval. When you connect, you choose how far back to load: 1, 3 or 6 months, a year, the whole period, or only new transactions."
+msgstr "Du brauchst einen persönlichen Token von Monobank, den du selbst erzeugst und der Budgie nur das Lesen deiner Daten erlaubt. Budgie importiert deine Konten und Transaktionen und aktualisiert sie, wenn du die App öffnest, sowie im Hintergrund in dem Takt, den dein Handy zulässt – ohne festes Intervall. Beim Verbinden wählst du, wie weit der Verlauf zurückreichen soll: 1, 3 oder 6 Monate, ein Jahr, der gesamte Zeitraum oder nur neue Transaktionen."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You need advanced reporting"
