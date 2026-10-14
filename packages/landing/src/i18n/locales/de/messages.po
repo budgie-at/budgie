@@ -10015,7 +10015,7 @@ msgstr "Halte in der Tag-Auswahl einen Tag gedrückt, um ihn zum Haupt-Tag zu ma
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press a transaction in Budgie for a menu: edit, convert to refund or transfer, attach a debt, delete, or revert — no edit form."
-msgstr "Halte in Budgie eine Transaktion gedrückt für ein Menü: bearbeiten, in Erstattung oder Überweisung umwandeln, Schuld zuordnen, löschen."
+msgstr "Halte in Budgie eine Transaktion gedrückt: bearbeiten, in Erstattung oder Überweisung umwandeln, Schuld zuordnen, löschen, zurücksetzen – ohne Formular."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Long-press any row for actions such as edit, delete, convert to transfer or refund, and attach a debt"

@@ -3055,7 +3055,7 @@ msgstr "Une dépense est appariée à un revenu lorsque l'IBAN de contrepartie c
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet starts with your account and the current date, and suggests a category you can accept with one tap."
-msgstr "Un suivi de dépenses vit ou meurt selon l'effort de saisie. La feuille de saisie rapide de Budgie démarre avec ton compte et la date du jour, et te suggère une catégorie que tu acceptes d'un geste."
+msgstr "Un suivi de dépenses vit ou meurt selon l'effort de saisie. La feuille de saisie rapide de Budgie démarre avec votre compte et la date du jour, et vous suggère une catégorie que vous acceptez d'un geste."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "An explicit empty state, “No sync repairs found”, when there is nothing to fix"
@@ -5641,7 +5641,7 @@ msgstr "Traduction des catégories et tags, sur l'appareil — Budgie"
 
 #: src/app/[lang]/features/spending-analytics/metadata.ts
 msgid "Category and tag breakdowns for any period — drill into any row."
-msgstr "Répartition par catégorie et par étiquette pour n'importe quelle période : touche une ligne pour voir le détail."
+msgstr "Répartition par catégorie et par étiquette pour n'importe quelle période : touchez une ligne pour voir le détail."
 
 #: src/app/[lang]/page.tsx
 msgid "Category and tag breakdowns for any period, each one drilling into its transactions."
@@ -5649,7 +5649,7 @@ msgstr "Répartitions par catégorie et par étiquette sur n’importe quelle p�
 
 #: src/app/[lang]/features/spending-analytics/metadata.ts
 msgid "Category and tag breakdowns for any period, with drill-down from any row to its transactions. Analytics that find your gaps."
-msgstr "Répartition par catégorie et étiquette sur toute période, avec accès de chaque ligne à ses transactions. Des analyses qui repèrent tes lacunes."
+msgstr "Répartition par catégorie et étiquette sur toute période, avec accès de chaque ligne à ses transactions. Des analyses qui repèrent vos lacunes."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
@@ -6211,7 +6211,7 @@ msgstr "Contient du code malveillant ou des composants nuisibles"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Context-aware menu — actions adapt to the transaction so you never see an option that does not apply"
-msgstr "Menu contextuel : les actions s'adaptent à la transaction, tu ne vois donc jamais une option qui ne s'applique pas"
+msgstr "Menu contextuel : les actions s'adaptent à la transaction, vous ne voyez donc jamais une option qui ne s'applique pas"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Continue using YNAB for one month"
@@ -7638,7 +7638,7 @@ msgstr "Chaque dependance dans Budgie est evaluee pour ses implications en matie
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Every entry is amount + account + category + tags + comment + date. Split an entry across categories right in the quick-entry form. Long-press any transaction in the list for a menu to edit, delete, convert to a transfer, or link income back to a refunded expense without leaving the screen."
-msgstr "Chaque saisie, c'est montant + compte + catégorie + étiquettes + commentaire + date. Répartis une saisie entre plusieurs catégories directement dans le formulaire de saisie rapide. Maintiens une transaction de la liste pour la modifier, la supprimer, la convertir en virement ou rattacher un revenu à une dépense remboursée sans quitter l'écran."
+msgstr "Chaque saisie, c'est montant + compte + catégorie + étiquettes + commentaire + date. Répartissez une saisie entre plusieurs catégories directement dans le formulaire de saisie rapide. Maintenez une transaction de la liste pour la modifier, la supprimer, la convertir en virement ou rattacher un revenu à une dépense remboursée sans quitter l'écran."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to replace the whole batch and try again."
@@ -8008,7 +8008,7 @@ msgstr "frais"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Fees on transfers count as spending in your fee category"
-msgstr "Les frais sur les virements comptent comme une dépense dans ta catégorie de frais"
+msgstr "Les frais sur les virements comptent comme une dépense dans votre catégorie de frais"
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Fees work on expenses, income, and transfers — not only card purchases"
@@ -9983,7 +9983,7 @@ msgstr "Verrouillé quand vous l'êtes, à jour quand ça compte"
 #: src/app/[lang]/features/expense-tracking/metadata.ts
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Log Every Expense in Seconds"
-msgstr "Saisis chaque dépense en quelques secondes"
+msgstr "Saisissez chaque dépense en quelques secondes"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
@@ -9991,7 +9991,7 @@ msgstr "Enregistrez des dépenses, revenus et virements en quelques secondes ave
 
 #: src/app/[lang]/features/expense-tracking/metadata.ts
 msgid "Log expenses, income, and transfers in seconds. Each transaction opens read-only with six months of comparable spending before you edit."
-msgstr "Saisis dépenses, revenus et virements en secondes. Chaque transaction s'ouvre en lecture seule, avec six mois de dépenses comparables."
+msgstr "Saisissez dépenses, revenus et virements en quelques secondes. Chaque transaction s'ouvre en lecture seule, avec six mois de dépenses comparables."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Log into YNAB on the web"
@@ -10011,19 +10011,19 @@ msgstr "Appuyez longuement sur une carte de compte PrivatBank sur l'écran d'acc
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Long-press a tag in the picker to make it the main one"
-msgstr "Maintiens une étiquette dans le sélecteur pour en faire l'étiquette principale"
+msgstr "Maintenez une étiquette dans le sélecteur pour en faire l'étiquette principale"
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press a transaction in Budgie for a menu: edit, convert to refund or transfer, attach a debt, delete, or revert — no edit form."
-msgstr "Maintiens une transaction dans Budgie pour un menu : modifier, convertir en remboursement ou virement, rattacher une dette, supprimer."
+msgstr "Maintenez une transaction dans Budgie : modifier, convertir en remboursement ou virement, rattacher une dette, supprimer, annuler, sans formulaire."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Long-press any row for actions such as edit, delete, convert to transfer or refund, and attach a debt"
-msgstr "Maintiens n'importe quelle ligne pour des actions comme modifier, supprimer, convertir en virement ou en remboursement, et rattacher une dette"
+msgstr "Maintenez n'importe quelle ligne pour des actions comme modifier, supprimer, convertir en virement ou en remboursement, et rattacher une dette"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Long-press any transaction card for a menu — edit, delete, convert to a transfer, convert income to a refund, attach a debt and more, without opening the full edit form."
-msgstr "Maintiens n'importe quelle carte de transaction pour ouvrir un menu : modifier, supprimer, convertir en virement, convertir un revenu en remboursement, rattacher une dette et plus, sans ouvrir le formulaire de modification complet."
+msgstr "Maintenez n'importe quelle carte de transaction pour ouvrir un menu : modifier, supprimer, convertir en virement, convertir un revenu en remboursement, rattacher une dette et plus, sans ouvrir le formulaire de modification complet."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required."
@@ -12061,7 +12061,7 @@ msgstr "Un interrupteur, désactivé par défaut, juste sous la carte de verroui
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "One tag chip per row on the transaction list — scan without opening rows"
-msgstr "Une pastille d'étiquette par ligne dans la liste des transactions : parcours sans ouvrir de lignes"
+msgstr "Une pastille d'étiquette par ligne dans la liste des transactions : parcourez sans ouvrir de lignes"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -12073,7 +12073,7 @@ msgstr "Un seul tag n'a pas besoin de bordure"
 
 #: src/app/[lang]/features/primary-tag/metadata.ts
 msgid "One tag per row. Scan a long list at a glance."
-msgstr "Une étiquette par ligne. Parcours une longue liste d'un coup d'œil."
+msgstr "Une étiquette par ligne. Parcourez une longue liste d'un coup d'œil."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
@@ -12314,7 +12314,7 @@ msgstr "La liste derrière l’écran"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Open the sheet, type the amount, tap save. The form starts with your account and today's date, and suggests a category you can accept with one tap."
-msgstr "Ouvre la feuille, saisis le montant, touche enregistrer. Le formulaire démarre avec ton compte et la date du jour, et te suggère une catégorie que tu acceptes d'un geste."
+msgstr "Ouvrez la feuille, saisissez le montant, touchez enregistrer. Le formulaire démarre avec votre compte et la date du jour, et vous suggère une catégorie que vous acceptez d'un geste."
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Open the transfer and add a fee. It is filed under Bank Fees & Charges and saved alongside the transfer, so the $900 you moved stays $900."
@@ -12859,7 +12859,7 @@ msgstr "Appuyez longuement sur une ligne"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Press and hold any transaction card. Budgie's own menu appears next to the card."
-msgstr "Maintiens n'importe quelle carte de transaction. Le menu propre à Budgie apparaît à côté de la carte."
+msgstr "Maintenez n'importe quelle carte de transaction. Le menu propre à Budgie apparaît à côté de la carte."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Preview every parsed transaction before write — no surprises"
@@ -13786,7 +13786,7 @@ msgstr "scan"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Scanning a long transaction list for one tag is hard. Budgie shows the main tag of each row as a chip, with a count of the others, so you can scan #vacation or #shared without opening anything."
-msgstr "Parcourir une longue liste de transactions à la recherche d'une étiquette est pénible. Budgie affiche l'étiquette principale de chaque ligne sous forme de pastille, avec le nombre des autres, pour que tu repères #vacances ou #partagé sans rien ouvrir."
+msgstr "Parcourir une longue liste de transactions à la recherche d'une étiquette est pénible. Budgie affiche l'étiquette principale de chaque ligne sous forme de pastille, avec le nombre des autres, pour que vous repériez #vacances ou #partagé sans rien ouvrir."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Scans 24 months of history to detect a pattern, not just the current month"
@@ -14494,7 +14494,7 @@ msgstr "Diviser une transaction en plusieurs catégories"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Split one entry across several categories right in the quick-entry form"
-msgstr "Répartis une saisie entre plusieurs catégories directement dans le formulaire de saisie rapide"
+msgstr "Répartissez une saisie entre plusieurs catégories directement dans le formulaire de saisie rapide"
 
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "Split Transactions"
@@ -14548,7 +14548,7 @@ msgstr "Démarrer une transaction depuis votre écran d'accueil"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Start any action from the list — long-press the row, then pick it"
-msgstr "Lance n'importe quelle action depuis la liste : maintiens la ligne, puis choisis"
+msgstr "Lancez n'importe quelle action depuis la liste : maintenez la ligne, puis choisissez"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
@@ -15403,19 +15403,19 @@ msgstr "La première étiquette est principale automatiquement, rien à configur
 
 #: src/app/[lang]/features/primary-tag/metadata.ts
 msgid "The first tag on a transaction is its primary tag, shown on the list. Long-press another tag in the picker to change it."
-msgstr "La première étiquette d'une transaction est la principale, affichée dans la liste. Maintiens-en une autre dans le sélecteur pour changer."
+msgstr "La première étiquette d'une transaction est la principale, affichée dans la liste. Maintenez-en une autre dans le sélecteur pour changer."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "The first tag you add becomes the one the list shows. Long-press another tag in the picker to make it the main one instead."
-msgstr "La première étiquette que tu ajoutes est celle que la liste affiche. Maintiens une autre étiquette dans le sélecteur d'étiquettes pour en faire l'étiquette principale."
+msgstr "La première étiquette que vous ajoutez est celle que la liste affiche. Maintenez une autre étiquette dans le sélecteur d'étiquettes pour en faire l'étiquette principale."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "The first tag you add is the main one automatically. To pick a different one, long-press it in the tag picker; the choice stays when you edit the transaction."
-msgstr "La première étiquette que tu ajoutes est automatiquement la principale. Pour en choisir une autre, maintiens-la dans le sélecteur d'étiquettes ; le choix reste quand tu modifies la transaction."
+msgstr "La première étiquette que vous ajoutez est automatiquement la principale. Pour en choisir une autre, maintenez-la dans le sélecteur d'étiquettes ; le choix reste quand vous modifiez la transaction."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "The first tag you pick is the one the list shows. To change it, open the tag picker and long-press another tag — a star marks the main tag there."
-msgstr "La première étiquette que tu choisis est celle que la liste affiche. Pour la changer, ouvre le sélecteur d'étiquettes et maintiens une autre étiquette : une étoile y marque la principale."
+msgstr "La première étiquette que vous choisissez est celle que la liste affiche. Pour la changer, ouvrez le sélecteur d'étiquettes et maintenez une autre étiquette : une étoile y marque la principale."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
@@ -15561,7 +15561,7 @@ msgstr "Le menu s'ouvre ancré à la carte que vous avez pressée, et le reste d
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on every platform."
-msgstr "Le menu s'ouvre à côté de la carte que tu as maintenue, sans formulaire plein écran à ouvrir d'abord. Le même menu s'ouvre sur toutes les plateformes."
+msgstr "Le menu s'ouvre à côté de la carte que vous avez maintenue, sans formulaire plein écran à ouvrir d'abord. Le même menu s'ouvre sur toutes les plateformes."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The menu opens right there"
@@ -18671,7 +18671,7 @@ msgstr "Oui — le même menu contextuel s'ouvre sur iPad, iPhone et Android ; i
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time — or a custom range you pick on the calendar."
-msgstr "Oui : l'onglet Étiquettes lit la période active : Ce mois-ci, Mois dernier, Cette semaine, Semaine dernière, Aujourd'hui, Cette année ou Tout, ou une plage personnalisée que tu choisis dans le calendrier."
+msgstr "Oui : l'onglet Étiquettes lit la période active : Ce mois-ci, Mois dernier, Cette semaine, Semaine dernière, Aujourd'hui, Cette année ou Tout, ou une plage personnalisée que vous choisissez dans le calendrier."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
@@ -18719,7 +18719,7 @@ msgstr "Oui. Une règle contient plusieurs actions, si bien que la même corresp
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. A transfer stays a transfer, while its fee counts as spending in the fee category you chose."
-msgstr "Oui. Un virement reste un virement, tandis que ses frais comptent comme une dépense dans la catégorie de frais que tu as choisie."
+msgstr "Oui. Un virement reste un virement, tandis que ses frais comptent comme une dépense dans la catégorie de frais que vous avez choisie."
 
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Yes. Adding transactions, budgets, tags, analytics and every screen that reads your history run entirely from the local database, so the app behaves the same in aeroplane mode. Only bank sync and exchange-rate refreshes need a connection, and they catch up when you are back online."
@@ -18799,7 +18799,7 @@ msgstr "Oui. Chaque ligne de ventilation conserve ses propres étiquettes et com
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Yes. Editing a transaction keeps its primary tag unless you pick a different one in the tag picker."
-msgstr "Oui. Modifier une transaction conserve son étiquette principale, sauf si tu en choisis une autre dans le sélecteur d'étiquettes."
+msgstr "Oui. Modifier une transaction conserve son étiquette principale, sauf si vous en choisissez une autre dans le sélecteur d'étiquettes."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Yes. English, Ukrainian, German, French, and Spanish are the primary languages, with dozens more covered. Budgie follows your phone's language, so there is nothing to configure."
@@ -18867,7 +18867,7 @@ msgstr "Oui. Les Réglages disposent d'une section IA avec un seul interrupteur 
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose. One period shows at a time, there is no side-by-side month view."
-msgstr "Oui. Passe le filtre de dates entre des réglages comme Ce mois-ci, Mois dernier et Cette année, ou trace une plage personnalisée dans le calendrier : les totaux et chaque ligne de catégorie se recalculent pour la période choisie. Une seule période s'affiche à la fois, il n'y a pas de vue de mois côte à côte."
+msgstr "Oui. Passez le filtre de dates entre des réglages comme Ce mois-ci, Mois dernier et Cette année, ou tracez une plage personnalisée dans le calendrier : les totaux et chaque ligne de catégorie se recalculent pour la période choisie. Une seule période s'affiche à la fois, il n'y a pas de vue de mois côte à côte."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Yes. Switch to split inside the income form just like the expense form."
@@ -19060,7 +19060,7 @@ msgstr "Vous n’êtes pas obligé de nous croire sur parole"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "You don't have to: the first tag you add is primary automatically. To change it, open the tag picker and long-press the tag you want; a star marks it there."
-msgstr "Pas besoin : la première étiquette que tu ajoutes est automatiquement la principale. Pour la changer, ouvre le sélecteur d'étiquettes et maintiens celle que tu veux ; une étoile la marque."
+msgstr "Pas besoin : la première étiquette que vous ajoutez est automatiquement la principale. Pour la changer, ouvrez le sélecteur d'étiquettes et maintenez celle que vous voulez ; une étoile la marque."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You don’t mind bank sync"

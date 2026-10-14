@@ -10015,7 +10015,7 @@ msgstr "Mantén pulsada una etiqueta en el selector para hacerla la principal"
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press a transaction in Budgie for a menu: edit, convert to refund or transfer, attach a debt, delete, or revert — no edit form."
-msgstr "Mantén pulsada una transacción en Budgie para abrir un menú: editar, convertir en reembolso o transferencia, vincular deuda, eliminar o revertir."
+msgstr "Mantén pulsada una transacción en Budgie: editar, convertir en reembolso o transferencia, vincular deuda, eliminar o revertir, sin formulario de edición."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Long-press any row for actions such as edit, delete, convert to transfer or refund, and attach a debt"
