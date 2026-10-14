@@ -45,8 +45,9 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
 
                 <FeatureStory.Step index={0} title={<Trans>Total balance, before you unlock</Trans>}>
                     <Trans>
-                        The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and
-                        whether you are growing or burning. Tap it and Budgie opens straight to Home.
+                        The net worth widget mirrors the total at the top of Home along with whether you are growing or burning, and the
+                        larger size adds how much it moved this month and the total per account type. Tap it and Budgie opens straight to
+                        Home.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -67,8 +68,9 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
 
                 <FeatureStory.Step index={1} title={<Trans>How much of the month is left</Trans>}>
                     <Trans>
-                        The budget widget carries the same spent, left and percentage as the budget screen, and the larger size adds your
-                        top categories. Tap it and Budgie opens the budget screen for the active period.
+                        The budget widget shows what is left, the daily amount you can spend and the days remaining, with a ring for the
+                        percentage used. The larger size shows spent against your limit and adds your top categories. Tap it and Budgie
+                        opens the budget screen for the active period.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -126,8 +128,8 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail
-                        underneath. Quick add is one size, sized for its three tiles.
+                        Net worth and budget come in a small size for the headline number, or a larger size that adds the detail underneath.
+                        Quick add is one size, sized for its three tiles.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>

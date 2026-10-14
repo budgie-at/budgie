@@ -70,9 +70,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
 
                 <FeatureStory.Step index={1} title={<Trans>Transcribed on the phone, never uploaded</Trans>}>
                     <Trans>
-                        Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this
-                        device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a
-                        server.
+                        Voice entry runs on the On-device AI switch in Settings, which is off until you turn it on. Turning it on starts a
+                        one-time download of about 2.5 GB, best on Wi-Fi. After that, your audio becomes text on the phone and is never sent
+                        to a server.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -95,20 +95,19 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why every voice budgeting app today is a privacy hole</Trans>
+                    <Trans>Voice entry without sending your audio anywhere</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a
-                        vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories
-                        are pulled out there too.
+                        Voice is the fastest input mode for an expense. Budgie keeps the audio entirely on the device: it becomes text
+                        there, and the amounts and categories are pulled out there too.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
                         One sentence can log several transactions at once — &ldquo;twelve for coffee, forty for the taxi, and eight euros
                         for parking&rdquo; comes back as three separate rows, not one merged entry. A review sheet shows every extracted row
-                        with its amount, category, and account before anything is written to the database.
+                        with its amount, category, and account before anything is saved.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -119,28 +118,25 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Accurate, multilingual transcription that happens on your phone</Trans>
+                        <Trans>Transcription that happens on your phone, in your phone&apos;s language</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Natural speech is split into multiple transactions, each with its own amount and category</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Audio never leaves the device — no Siri-style cloud round-trip</Trans>
+                        <Trans>Audio never leaves the device</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>
-                            A review sheet lists every row before saving — &ldquo;Select all categories&rdquo; and &ldquo;Enter all
-                            amounts&rdquo; fix a whole batch at once
+                            A review sheet lists every row before saving — the Save button reads &ldquo;Select all categories&rdquo; or
+                            &ldquo;Enter all amounts&rdquo; until nothing is missing
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>
-                            Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up
-                            with half a sentence logged
-                        </Trans>
+                        <Trans>Nothing is saved until you tap Save, and Save stays off until every row has an amount and a category</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>The spoken currency picks the matching account automatically</Trans>
+                        <Trans>Say hryvnia, dollars or euros and the row lands on your account in that currency</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>The record button shows a progress ring while the one-time download finishes</Trans>
@@ -153,9 +149,10 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Which languages does voice entry support?</Trans>}
                     answer={
                         <Trans>
-                            Voice entry downloads what it needs once and keeps it on the device — only after you switch On-device AI on in
-                            Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as
-                            primary languages, plus dozens more, and follows your phone&apos;s language automatically.
+                            Voice entry downloads what it needs once (about 2.5 GB) and keeps it on the device — only after you switch
+                            On-device AI on in Settings. Transcription follows your phone&apos;s language when it is supported and detects
+                            the language otherwise. Picking out amounts and currencies is tuned for English and Ukrainian, including mixed
+                            sentences.
                         </Trans>
                     }
                 />
@@ -163,8 +160,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Is my voice recorded anywhere?</Trans>}
                     answer={
                         <Trans>
-                            No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become
-                            text. Nothing is saved, sent, or logged.
+                            No. The microphone feeds transcription directly on the device, and your audio is never sent to a server.
                         </Trans>
                     }
                 />

@@ -32,11 +32,7 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>True Dark Mode (Not Just Dimmed)</Trans>}
                 locale={lang}
-                tagline={
-                    <Trans>
-                        System-adaptive dark theme that respects OLED displays and switches with your device — or lock to dark or light.
-                    </Trans>
-                }
+                tagline={<Trans>A black dark theme that follows your device until you flip the Dark Mode switch in Settings.</Trans>}
             />
 
             <FeatureStory>
@@ -72,7 +68,8 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
                     <Trans>
-                        Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff.
+                        Switching is one tap on the Dark Mode switch in Settings. It is a single on/off switch: once you use it, Budgie
+                        stays on the theme you chose.
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
@@ -83,14 +80,14 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        A finance app you check at midnight should not blast your retinas. Budgie&apos;s dark theme is OLED-friendly black,
-                        not a dimmed gray, and respects the system preference by default.
+                        A finance app you check at midnight should not blast your retinas. Budgie&apos;s dark theme uses a black background,
+                        not a dimmed gray, and follows your device&apos;s setting until you switch it yourself.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Manual override is two taps in Settings. The theme switch is non-flickering on cold launch (no white-flash). Charts
-                        and accents recolor for legibility.
+                        Your choice is remembered the next time you open Budgie. The launch screen is black in dark mode, and green and red
+                        amounts turn brighter so they stay easy to read.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -101,19 +98,19 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>OLED-friendly true black canvas — saves battery on modern phones</Trans>
+                        <Trans>A true black background instead of a dimmed gray panel</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime</Trans>
+                        <Trans>One Dark Mode switch in Settings — follows your device&apos;s theme until you switch it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Chart palettes auto-recompute for legibility on dark canvas</Trans>
+                        <Trans>Brighter green and red amounts for legibility on black</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>No white flash on cold launch — native splash respects the OS theme</Trans>
+                        <Trans>A black launch screen in dark mode</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Persists across app relaunch and device restarts</Trans>
+                        <Trans>Your choice is remembered after you close and reopen Budgie</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -121,31 +118,26 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>Is it true black or just dark gray?</Trans>}
-                    answer={
-                        <Trans>
-                            OLED-friendly black for the background. Cards and surfaces are dark gray for hierarchy, but the canvas pixels
-                            are off — saves battery on OLED screens.
-                        </Trans>
-                    }
+                    answer={<Trans>Black for the background. Cards and surfaces are dark gray for hierarchy.</Trans>}
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does it switch automatically?</Trans>}
-                    answer={<Trans>Yes — system theme by default. Override to Light or Dark in Settings if you prefer.</Trans>}
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Why no white flash on cold launch?</Trans>}
                     answer={
                         <Trans>
-                            The native splash screen reads the OS theme directly so the transition into the app stays in dark mode without
-                            an intermediate light state.
+                            Yes, until you touch the switch. Budgie follows your device&apos;s theme by default. Once you flip the Dark Mode
+                            switch in Settings, it stays on the theme you picked and does not go back to following the device.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Do charts recolor?</Trans>}
+                    question={<Trans>What does the launch screen look like?</Trans>}
+                    answer={<Trans>The launch screen is black when your device is in dark mode and white when it is in light mode.</Trans>}
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Do the colors change?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Chart palettes recompute for legibility — emerald accents shift slightly for contrast on a dark canvas.
+                            Yes. Green income and red expense amounts turn brighter in dark mode so they stay easy to read on black.
                         </Trans>
                     }
                 />
