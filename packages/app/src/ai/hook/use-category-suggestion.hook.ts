@@ -8,11 +8,10 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
-import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 
-import { useAiFeatureEnabled } from './use-ai-feature-enabled.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
@@ -26,7 +25,7 @@ interface UseCategorySuggestionParams {
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const isSuggestionsEnabled = useAiFeatureEnabled(AiFeatureIdEnum.TRANSACTION_SUGGESTIONS);
+    const isSuggestionsEnabled = useSetting('isAiSuggestionsEnabled');
     const embeddingStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { categories, isLoading: isCategoriesLoading } = useNonSystemCategoriesQuery();

@@ -16,9 +16,8 @@ import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { AiFeatureIdEnum } from '../../../ai/enum/ai-feature-id.enum';
-import { useAiFeatureEnabled } from '../../../ai/hook/use-ai-feature-enabled.hook';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
@@ -48,7 +47,7 @@ export const TagForm = (props: Props) => {
     const { t } = useLingui();
     const [openTagsSelector] = useTagsSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
-    const isTranslationsEnabled = useAiFeatureEnabled(AiFeatureIdEnum.CATEGORY_TAG_TRANSLATIONS);
+    const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
     const { isChatReady, modelStatus } = useChatModelStatus(isTranslationsEnabled);
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));

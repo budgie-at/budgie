@@ -219,7 +219,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
 
                         return yield* stopAndWaitUnlocked().pipe(
                             Effect.andThen(effect),
-                            Effect.ensuring((shouldRestart ? startUnlocked() : Effect.void).pipe(Effect.ignore))
+                            Effect.onExit(() => (shouldRestart ? startUnlocked() : Effect.void))
                         );
                     })
                 );

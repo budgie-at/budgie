@@ -4,11 +4,10 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
-import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 
-import { useAiFeatureEnabled } from './use-ai-feature-enabled.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCommentSuggestionParams {
@@ -23,7 +22,7 @@ interface UseCommentSuggestionParams {
 export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSuggestionReturnInterface<string> => {
     const { transactionTitle: title, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const isCommentSuggestionEnabled = useAiFeatureEnabled(AiFeatureIdEnum.TRANSACTION_SUGGESTIONS);
+    const isCommentSuggestionEnabled = useSetting('isAiSuggestionsEnabled');
     const modelStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const isModelReady = modelStatus === AiSubsystemStatusEnum.READY;
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);

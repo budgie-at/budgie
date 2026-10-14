@@ -1,25 +1,22 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { describe, expect, it } from '@effect/vitest';
 import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { testDb, TestLayer } from '../../harness';
 
 const MIGRATIONS_FOLDER = resolve(process.cwd(), '../../packages/app/drizzle');
-const applyMigration = (migrationName: string) =>
+const applyMigration = () =>
     Effect.forEach(
-        readFileSync(resolve(MIGRATIONS_FOLDER, migrationName, 'migration.sql'), 'utf8').split('--> statement-breakpoint'),
+        readFileSync(resolve(MIGRATIONS_FOLDER, '20261011120000_ai_feature_settings', 'migration.sql'), 'utf8').split(
+            '--> statement-breakpoint'
+        ),
         statement => testDb.$client.unsafe(statement).raw,
         { discard: true }
     );
 
-const AI_FEATURE_SETTINGS_COLUMNS = ['is_ai_voice_input_enabled', 'is_ai_suggestions_enabled', 'is_ai_translations_enabled'];
-const AI_FEATURE_SETTINGS_SCHEMA_PATTERN = /ALTER\s+TABLE\s+`settings`\s+ADD/iu;
-const AI_FEATURE_SETTINGS_BACKFILL_PATTERN = /UPDATE\s+`settings`/iu;
 const LEGACY_SETTINGS_TABLE_SQL = `
 CREATE TABLE settings (
     id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -45,29 +42,6 @@ CREATE TABLE settings (
     is_runway_crypto_included integer DEFAULT false NOT NULL
 )`;
 
-const migrationNames = readdirSync(MIGRATIONS_FOLDER, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(entry => entry.name)
-    .sort();
-
-const readMigrationSql = (migrationName: string): string =>
-    readFileSync(resolve(MIGRATIONS_FOLDER, migrationName, 'migration.sql'), 'utf8');
-
-const isAiFeatureSettingsMigration = (migrationSql: string): boolean =>
-    AI_FEATURE_SETTINGS_COLUMNS.every(columnName => migrationSql.includes(columnName));
-
-const aiFeatureSettingsSchemaMigrationName = migrationNames.find(migrationName => {
-    const migrationSql = readMigrationSql(migrationName);
-
-    return isAiFeatureSettingsMigration(migrationSql) && AI_FEATURE_SETTINGS_SCHEMA_PATTERN.test(migrationSql);
-});
-
-const aiFeatureSettingsBackfillMigrationName = migrationNames.find(migrationName => {
-    const migrationSql = readMigrationSql(migrationName);
-
-    return isAiFeatureSettingsMigration(migrationSql) && AI_FEATURE_SETTINGS_BACKFILL_PATTERN.test(migrationSql);
-});
-
 const resetLegacySettingsTable = Effect.fnUntraced(function* (isAiEnabled: boolean) {
     yield* testDb.$client.unsafe('DROP TABLE settings').raw;
     yield* testDb.$client.unsafe(LEGACY_SETTINGS_TABLE_SQL).raw;
@@ -79,21 +53,6 @@ const resetLegacySettingsTable = Effect.fnUntraced(function* (isAiEnabled: boole
             ) VALUES ('en', 'SYSTEM', ?)`,
         [isAiEnabled ? 1 : 0]
     ).raw;
-});
-
-const applyAiFeatureSettingsMigrations = Effect.fnUntraced(function* () {
-    expect(aiFeatureSettingsSchemaMigrationName).toBeDefined();
-    expect(aiFeatureSettingsBackfillMigrationName).toBeDefined();
-
-    if (isDefined(aiFeatureSettingsSchemaMigrationName)) {
-        yield* applyMigration(aiFeatureSettingsSchemaMigrationName);
-    }
-    if (
-        isDefined(aiFeatureSettingsBackfillMigrationName) &&
-        aiFeatureSettingsBackfillMigrationName !== aiFeatureSettingsSchemaMigrationName
-    ) {
-        yield* applyMigration(aiFeatureSettingsBackfillMigrationName);
-    }
 });
 
 const readAiFeatureSettings = () =>
@@ -109,17 +68,10 @@ const readAiFeatureSettings = () =>
     );
 
 describe('settings/ai-feature-settings-migration', () => {
-    it.effect('includes a migration for AI feature settings', () =>
-        Effect.sync(() => {
-            expect(aiFeatureSettingsSchemaMigrationName).toBeDefined();
-            expect(aiFeatureSettingsBackfillMigrationName).toBeDefined();
-        }).pipe(Effect.provide(TestLayer))
-    );
-
     it.effect('backfills every AI feature when legacy AI consent was enabled', () =>
         Effect.gen(function* () {
             yield* resetLegacySettingsTable(true);
-            yield* applyAiFeatureSettingsMigrations();
+            yield* applyMigration();
 
             expect(yield* readAiFeatureSettings()).toEqual([
                 { isAiSuggestionsEnabled: 1, isAiTranslationsEnabled: 1, isAiVoiceInputEnabled: 1 }
@@ -130,7 +82,7 @@ describe('settings/ai-feature-settings-migration', () => {
     it.effect('keeps every AI feature disabled when legacy AI consent was disabled', () =>
         Effect.gen(function* () {
             yield* resetLegacySettingsTable(false);
-            yield* applyAiFeatureSettingsMigrations();
+            yield* applyMigration();
 
             expect(yield* readAiFeatureSettings()).toEqual([
                 { isAiSuggestionsEnabled: 0, isAiTranslationsEnabled: 0, isAiVoiceInputEnabled: 0 }

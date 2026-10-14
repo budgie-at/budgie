@@ -13,7 +13,6 @@ import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.const
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { AI_FEATURE_MODEL_STORAGE_IDS } from '../constant/ai-feature-model-storage-ids.constant';
-import { AI_FEATURE_SETTING_KEY } from '../constant/ai-feature-setting-key.constant';
 import { AI_MODEL_STORAGE_FILES } from '../constant/ai-model-storage-files.constant';
 import { AI_MODEL_STORAGE_REACTIVITY_KEYS } from '../constant/ai-model-storage-reactivity-keys.constant';
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
@@ -35,6 +34,11 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
         const settingsRepository = yield* SettingsRepository;
         const reactivity = yield* Reactivity.Reactivity;
         const storageLock = yield* Semaphore.make(1);
+        const featureSettingKey = {
+            [AiFeatureIdEnum.VOICE_INPUT]: 'isAiVoiceInputEnabled',
+            [AiFeatureIdEnum.TRANSACTION_SUGGESTIONS]: 'isAiSuggestionsEnabled',
+            [AiFeatureIdEnum.CATEGORY_TAG_TRANSLATIONS]: 'isAiTranslationsEnabled'
+        } as const satisfies Record<AiFeatureIdEnum, keyof AiFeatureSettingsInterface>;
 
         const statusBySubsystem: Record<AiSubsystemNameEnum, () => AiSubsystemStatusEnum> = {
             [AiSubsystemNameEnum.CHAT]: () => appAtomRegistry.get(chatModelSnapshotAtom).status,
@@ -70,10 +74,10 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
             settings: AiFeatureSettingsInterface,
             featureId: AiFeatureIdEnum,
             isEnabled: boolean
-        ): AiFeatureSettingsInterface => ({ ...settings, [AI_FEATURE_SETTING_KEY[featureId]]: isEnabled });
+        ): AiFeatureSettingsInterface => ({ ...settings, [featureSettingKey[featureId]]: isEnabled });
 
         const getEnabledFeatures = (settings: AiFeatureSettingsInterface): readonly AiFeatureIdEnum[] =>
-            Object.values(AiFeatureIdEnum).filter(featureId => settings[AI_FEATURE_SETTING_KEY[featureId]]);
+            Object.values(AiFeatureIdEnum).filter(featureId => settings[featureSettingKey[featureId]]);
 
         const readFeatureSettings = Effect.fnUntraced(function* () {
             const settings = yield* settingsRepository.getSettings();

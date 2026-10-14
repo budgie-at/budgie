@@ -1,7 +1,6 @@
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { AiFeatureIdEnum } from '../../../ai/enum/ai-feature-id.enum';
-import { useAiFeatureEnabled } from '../../../ai/hook/use-ai-feature-enabled.hook';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { CommentSuggestionRow } from '../comment-suggestion-row/comment-suggestion-row';
@@ -12,7 +11,7 @@ const hasEmbeddingContext = (transactionTitle: string, mccCategoryId: number | n
     isNotEmptyString(transactionTitle) || isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
 
 export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProps) => {
-    const isSuggestionsEnabled = useAiFeatureEnabled(AiFeatureIdEnum.TRANSACTION_SUGGESTIONS);
+    const isSuggestionsEnabled = useSetting('isAiSuggestionsEnabled');
     const {
         isSplitActive,
         transactionTitle,
