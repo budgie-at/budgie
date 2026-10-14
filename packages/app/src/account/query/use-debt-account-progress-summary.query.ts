@@ -18,7 +18,7 @@ const EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY: DebtAccountProgressSummaryInterface =
     totalAmount: 0
 };
 
-const debtAccountProgressAtom = databaseQueryFamily(
+export const debtAccountProgressAtom = databaseQueryFamily(
     [AccountEntityTable, DebtEventEntityTable],
     AccountBalanceRepository,
     (accountBalanceRepository, accountId: number) => accountBalanceRepository.getDebtAccountProgressByAccountId(accountId)

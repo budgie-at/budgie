@@ -6,8 +6,10 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-const mccCategoryByIdAtom = databaseQueryFamily([MccCategoryEntityTable], MccCategoryRepository, (mccCategoryRepository, id: number) =>
-    mccCategoryRepository.findById(id)
+export const mccCategoryByIdAtom = databaseQueryFamily(
+    [MccCategoryEntityTable],
+    MccCategoryRepository,
+    (mccCategoryRepository, id: number) => mccCategoryRepository.findById(id)
 );
 
 export const useGetMccCategoryByIdQuery = (id: number | null) => {

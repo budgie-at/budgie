@@ -12,7 +12,7 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 
 import type { LanguageEnum } from '@budgie/contracts';
 
-const searchCategoriesAtom = databaseQueryFamily(
+export const searchCategoriesAtom = databaseQueryFamily(
     [CategoryEntityTable, DefaultCategoryTranslationEntityTable, TransactionEntryEntityTable],
     CategoryRepository,
     (categoryRepository, [search, includeDefault, language]: readonly [string, boolean, LanguageEnum]) =>

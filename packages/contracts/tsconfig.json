@@ -10,5 +10,5 @@
         "noEmit": false
     },
     "include": ["src"],
-    "exclude": ["node_modules", "babel.config.js", "dist"]
+    "exclude": ["node_modules", "babel.config.js", "dist", "test"]
 }

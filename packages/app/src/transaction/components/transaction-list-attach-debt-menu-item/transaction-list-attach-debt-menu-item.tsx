@@ -6,7 +6,7 @@ import {
     isIncomeTransaction,
     convertFromMicroUnits
 } from '@budgie/contracts';
-import { TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
+import { AccountDebtOpeningService, TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import Toast from 'react-native-toast-message';
@@ -16,7 +16,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
-import { AccountDebtOpeningService } from '../../../account/service/account-debt-opening.service';
+import { getDebtOpeningMessages } from '../../../account/utils/get-debt-opening-messages.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
@@ -60,7 +60,8 @@ export const TransactionListAttachDebtMenuItem = () => {
                         contactId: null,
                         deadline: null
                     },
-                    transaction.id
+                    transaction.id,
+                    getDebtOpeningMessages()
                 )
             )
         );

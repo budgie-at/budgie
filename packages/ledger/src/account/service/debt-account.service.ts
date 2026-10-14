@@ -9,7 +9,6 @@ import {
     getDebtClosedAmount,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -17,21 +16,30 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
+import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
+
 import type { DebtAccountUpdateInputInterface } from '../interface/debt-account-update-input.interface';
 import type { AccountEntityInterface, DebtAccountCreateInputInterface, DebtEventEntityInterface } from '@budgie/contracts';
 
-export class DebtAccountService extends Context.Service<DebtAccountService>()('@budgie/app/DebtAccountService', {
+export class DebtAccountService extends Context.Service<DebtAccountService>()('@budgie/ledger/DebtAccountService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const debtEventRepository = yield* DebtEventRepository;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
 
-        const getDebtNature = (debtType: AccountDebtTypeEnum): AccountNatureEnum =>
-            debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
-
         const shouldSyncManualDebtEvents = (input: DebtAccountUpdateInputInterface): boolean =>
             isNumber(input.currentBalance) || isNumber(input.targetBalance) || isNumber(input.instrumentId);
+
+        const createDebtRecord = Effect.fn('DebtAccountService.createDebtRecord')(function* (
+            input: DebtAccountCreateInputInterface,
+            targetBalance: number
+        ) {
+            const [{ count }] = yield* accountRepository.count();
+            const nature = input.debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
+
+            return yield* accountRepository.create({ ...input, targetBalance, order: count + 1, nature });
+        });
 
         const getManualDebtBaseAmount = (account: AccountEntityInterface, amount: number): number | null => {
             if (!isDefined(account.targetBaseExchangeRate)) {
@@ -158,15 +166,8 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
         return {
             createDebt: Effect.fn('DebtAccountService.createDebt')(
                 function* (input: DebtAccountCreateInputInterface) {
-                    const [{ count }] = yield* accountRepository.count();
                     const operatedAt = new Date();
-                    const targetBalance = convertToMicroUnits(input.targetBalance);
-                    const createdAccount = yield* accountRepository.create({
-                        ...input,
-                        targetBalance,
-                        order: count + 1,
-                        nature: getDebtNature(input.debtType)
-                    });
+                    const createdAccount = yield* createDebtRecord(input, convertToMicroUnits(input.targetBalance));
                     const valuedAccount = yield* updateDebtTargetBaseValuation(createdAccount, operatedAt);
                     const returnedAmount = convertToMicroUnits(input.currentBalance);
 
@@ -198,6 +199,7 @@ export class DebtAccountService extends Context.Service<DebtAccountService>()('@
                 },
                 effect => Db.transaction(effect)
             ),
+            createDebtRecord,
             syncManualDebtEvents,
             updateDebtTargetBaseValuation
         };

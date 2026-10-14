@@ -6,7 +6,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 
 import type { InstrumentTypeEnum } from '@budgie/contracts';
 
-const instrumentsByTypeAtom = databaseQueryFamily(
+export const instrumentsByTypeAtom = databaseQueryFamily(
     [InstrumentEntityTable],
     InstrumentRepository,
     (instrumentRepository, type: InstrumentTypeEnum) => instrumentRepository.findByType(type)

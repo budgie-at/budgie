@@ -1,3 +1,4 @@
+import { AtmCashMoveService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
@@ -6,7 +7,6 @@ import { useState } from 'react';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
-import { CategorizeInboxCashService } from '../service/categorize-inbox-cash.service';
 
 import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-inbox-last-write.interface';
 import type { CategorizeInboxMoveToCashInterface } from '../interface/categorize-inbox-move-to-cash.interface';
@@ -26,8 +26,8 @@ export const useCategorizeInboxMoveToCash = (
         visibility.hideTransactions(transactionIds);
         enqueueWrite(
             Effect.gen(function* () {
-                const categorizeInboxService = yield* CategorizeInboxCashService;
-                const movedTransactionIds = yield* categorizeInboxService.moveToCash(transactionIds);
+                const atmCashMoveService = yield* AtmCashMoveService;
+                const movedTransactionIds = yield* atmCashMoveService.moveToCash(transactionIds);
 
                 if (isNotEmptyArray(movedTransactionIds)) {
                     setLastWrite(null);
@@ -44,7 +44,7 @@ export const useCategorizeInboxMoveToCash = (
         setMovedToCashTransactionIds([]);
         visibility.showTransactions(transactionIds);
         enqueueWrite(
-            Effect.flatMap(CategorizeInboxCashService, categorizeInboxService => categorizeInboxService.undoMoveToCash(transactionIds)),
+            Effect.flatMap(AtmCashMoveService, atmCashMoveService => atmCashMoveService.undoMoveToCash(transactionIds)),
             () => void setMovedToCashTransactionIds(previous => (isNotEmptyArray(previous) ? previous : transactionIds)),
             t`Could not undo the move to cash`
         );

@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('binance-sync', i18n => ({
     title: t(i18n)`Binance Sync — Read-Only Keys, Real Balances`,
-    tagline: t(i18n)`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key.`,
+    tagline: t(i18n)`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — using a read-only API key.`,
     tags: [t(i18n)`binance`, t(i18n)`crypto`, t(i18n)`sync`]
 }));

@@ -19,7 +19,7 @@ const buildTransactionFilter = (filters: StatisticsFilterInterface): Transaction
     types: isDefined(filters.type) ? [filters.type] : null
 });
 
-const statisticsTransactionsAtom = databaseQueryFamily(
+export const statisticsTransactionsAtom = databaseQueryFamily(
     STATISTICS_TABLES,
     StatisticsRepository,
     (statisticsRepository, [filters, language, limit]: readonly [StatisticsFilterInterface, LanguageEnum, number]) =>

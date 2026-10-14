@@ -1,17 +1,21 @@
+import { MoneyDataUpgradeService } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useEffect, useState } from 'react';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Stream from 'effect/Stream';
+import { useEffect } from 'react';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-progress-state.enum';
-import { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';
-import { MoneyDataUpgradeService } from '../service/money-data-upgrade.service';
 import { buildMoneyDataUpgradeStatusText } from '../utils/build-money-data-upgrade-status-text.util';
+
+import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '@budgie/ledger';
 
 const EMPTY_RUNTIME_SNAPSHOT: MoneyDataUpgradeRuntimeSnapshotInterface = {
     isRunning: false,
@@ -21,6 +25,10 @@ const EMPTY_RUNTIME_SNAPSHOT: MoneyDataUpgradeRuntimeSnapshotInterface = {
     totalEntryCount: 0,
     lastError: null
 };
+
+const moneyDataUpgradeProgressAtom = appAtomRuntime.atom(
+    Stream.unwrap(Effect.map(MoneyDataUpgradeService, moneyDataUpgradeService => moneyDataUpgradeService.changes))
+);
 
 const calculatePercent = (processed: number, total: number): number => {
     if (total === 0) {
@@ -46,12 +54,15 @@ const getState = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): MoneyData
 
 export const useMoneyDataUpgradeStatus = () => {
     const { t } = useLingui();
-    const [runtimeSnapshot, setRuntimeSnapshot] = useState<MoneyDataUpgradeRuntimeSnapshotInterface>(EMPTY_RUNTIME_SNAPSHOT);
+    const runtimeSnapshot = AsyncResult.getOrElse(useAtomValue(moneyDataUpgradeProgressAtom), () => EMPTY_RUNTIME_SNAPSHOT);
 
     useEffect(() => {
         void appRuntime
-            .runPromise(Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService => moneyDataUpgradeService.getSnapshot()))
-            .then(setRuntimeSnapshot)
+            .runPromise(
+                Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService =>
+                    moneyDataUpgradeService.refreshSnapshot(t`Base instrument not found`)
+                )
+            )
             .catch((error: unknown) => {
                 showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
             });
@@ -77,9 +88,9 @@ export const useMoneyDataUpgradeStatus = () => {
         }
 
         try {
-            setRuntimeSnapshot(
-                await appRuntime.runPromise(
-                    Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService => moneyDataUpgradeService.run(setRuntimeSnapshot))
+            await appRuntime.runPromise(
+                Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService =>
+                    moneyDataUpgradeService.run(t`Base instrument not found`)
                 )
             );
         } catch (error: unknown) {

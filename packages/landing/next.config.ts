@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     },
     experimental: {
         inlineCss: true,
+        memoryBasedWorkersCount: true,
+        preloadEntriesOnStart: false,
         swcPlugins: [['@lingui/swc-plugin', {}]],
         useTypeScriptCli: false
     },

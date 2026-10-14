@@ -17,11 +17,14 @@ import { PIN_KEY } from '../constant/pin-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.constant';
 import { BiometricTypesInterface } from '../interface/biometric-types.interface';
 
+import { PinAttemptService } from './pin-attempt.service';
+
 export class AuthService extends Context.Service<AuthService>()('@budgie/app/AuthService', {
     make: Effect.gen(function* () {
         const databaseLifecycleService = yield* DatabaseLifecycleService;
         const databaseRekeyService = yield* DatabaseRekeyService;
         const widgetSnapshotService = yield* WidgetSnapshotService;
+        const pinAttemptService = yield* PinAttemptService;
 
         const unavailableBiometricTypes: BiometricTypesInterface = {
             isTouchIdAvailable: false,
@@ -98,6 +101,10 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                         })
                     );
 
+                    if (result.success) {
+                        yield* pinAttemptService.reset();
+                    }
+
                     return result.success;
                 },
                 Effect.catchDefect(() => Effect.succeed(false))
@@ -121,11 +128,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
             changePin: Effect.fn('AuthService.changePin')(function* (pin: string) {
                 yield* rekeyDatabase({ nextKey: pin });
             }),
-            verifyPin: Effect.fn('AuthService.verifyPin')(function* (pin: string) {
-                const savedPin = yield* getPin();
-
-                return savedPin === pin;
-            }),
+            verifyPin: (pin: string) => pinAttemptService.verify(Effect.map(getPin(), savedPin => savedPin === pin)),
             deletePin: Effect.fn('AuthService.deletePin')(function* () {
                 yield* rekeyDatabase({
                     nextKey: null,
@@ -141,6 +144,6 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
     })
 }) {
     static readonly layer = Layer.effect(AuthService, AuthService.make).pipe(
-        Layer.provide([DatabaseLifecycleService.layer, DatabaseRekeyService.layer, WidgetSnapshotService.layer])
+        Layer.provide([DatabaseLifecycleService.layer, DatabaseRekeyService.layer, PinAttemptService.layer, WidgetSnapshotService.layer])
     );
 }

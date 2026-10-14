@@ -362,12 +362,9 @@ msgid "Account {0} not found"
 msgstr "Account {0} not found"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Account {accountId} not found"
 msgstr "Account {accountId} not found"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Account {id} not found"
-msgstr "Account {id} not found"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
@@ -735,7 +732,7 @@ msgstr "Bank sync reset"
 msgid "Base currency"
 msgstr "Base currency"
 
-#: src/money-data/service/money-data-upgrade.service.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
 msgstr "Base instrument not found"
 
@@ -782,7 +779,7 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Borrowed debt account expected"
 msgstr "Borrowed debt account expected"
 
@@ -1881,7 +1878,7 @@ msgstr "English Translation"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Enter a {PIN_LENGTH}-digit PIN"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Enter all amounts"
@@ -2366,8 +2363,7 @@ msgid "Income by Tag"
 msgstr "Income by Tag"
 
 #: src/app/import-backup-pin.tsx
-#: src/auth/hook/use-pin-authentication.hook.ts
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-error.hook.ts
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
@@ -3033,7 +3029,7 @@ msgid "Only expense transactions can be converted"
 msgstr "Only expense transactions can be converted"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only income transactions can be converted"
 msgstr "Only income transactions can be converted"
 
@@ -3042,7 +3038,7 @@ msgid "Only single-entry expenses can be converted"
 msgstr "Only single-entry expenses can be converted"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Only single-entry incomes can be converted"
 
@@ -4291,6 +4287,10 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
+#: src/auth/hook/use-pin-error.hook.ts
+msgid "Too many attempts. Try again in {time}"
+msgstr "Too many attempts. Try again in {time}"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -4342,7 +4342,7 @@ msgstr "Transaction must have exactly one primary entry"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Transaction not found"
 msgstr "Transaction not found"
 

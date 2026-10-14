@@ -16,7 +16,7 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 
 import type { LanguageEnum } from '@budgie/contracts';
 
-const allRulesAtom = databaseQueryFamily(
+export const allRulesAtom = databaseQueryFamily(
     [
         RuleEntityTable,
         RuleConditionEntityTable,

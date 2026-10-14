@@ -1,4 +1,3 @@
-import { Workload } from '@app/@generic/service/workload.service';
 import { AppDataSyncService } from '@app/sync/service/app-data-sync.service';
 import {
     AccountRepository,
@@ -29,7 +28,8 @@ import {
     setupBackwardSweepFixture,
     subtractMonths,
     testDb,
-    TestClockLayer
+    TestClockLayer,
+    Workload
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 import { testRuntime } from '../../harness/scenario/test-runtime';

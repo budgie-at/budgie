@@ -1,13 +1,9 @@
-import { LanguageEnum, RuleActionTypeEnum } from '@budgie/contracts';
-import { RuleRepository, RuleService } from '@budgie/rules';
+import { RuleService } from '@budgie/rules';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
@@ -19,55 +15,20 @@ interface Props {
     readonly onDismiss: () => void;
 }
 
-const updateRule = async (updateRuleData: UpdateRuleDataInterface, language: LanguageEnum): Promise<void> => {
-    const allRules = await appRuntime.runPromise(
-        Effect.flatMap(RuleRepository, ruleRepository => ruleRepository.findAllWithActionsAndCategories(language))
-    );
-    const existingRule = allRules.find(rule => rule.id === updateRuleData.ruleId);
-
-    if (!isDefined(existingRule)) {
-        // oxlint-disable-next-line lingui/no-unlocalized-strings
-        throw new Error('Rule not found');
-    }
-
-    const preservedActions = existingRule.actions
-        .filter(action => action.type !== RuleActionTypeEnum.SET_CATEGORY && action.type !== RuleActionTypeEnum.ADD_TAG)
-        .map(action => ({
-            type: action.type,
-            categoryId: action.categoryId ?? null,
-            tagId: action.tagId ?? null,
-            accountId: action.accountId ?? null
-        }));
-
-    const categoryAction = isDefined(updateRuleData.categoryId)
-        ? [{ type: RuleActionTypeEnum.SET_CATEGORY as const, categoryId: updateRuleData.categoryId, tagId: null, accountId: null }]
-        : [];
-
-    const tagActions = updateRuleData.tagIds.map(tagId => ({
-        type: RuleActionTypeEnum.ADD_TAG as const,
-        categoryId: null,
-        tagId,
-        accountId: null
-    }));
-
-    const mergedActions = [...preservedActions, ...categoryAction, ...tagActions];
-
-    await appRuntime.runPromise(
-        Effect.flatMap(RuleService, ruleService => ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions }))
-    );
-
-    appRuntime.runFork(
-        Effect.flatMap(RuleApplicationDrainerService, ruleApplicationDrainerService =>
-            ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast)
-        )
-    );
-};
-
 export const RuleUpdateCard = (props: Props) => {
     const { updateRuleData, onRuleUpdated, onDismiss } = props;
-    const language = useSetting('language');
 
-    const handleYes = async (): Promise<void> => updateRule(updateRuleData, language);
+    const updateRule = Effect.gen(function* () {
+        const ruleService = yield* RuleService;
+        const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+
+        yield* ruleService.applySuggestedActions(updateRuleData.ruleId, updateRuleData.categoryId, updateRuleData.tagIds);
+        yield* Effect.forkDetach(ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast));
+
+        return true;
+    });
+
+    const handleYes = (): Promise<boolean> => appRuntime.runPromise(updateRule);
 
     return (
         <SwipeableRuleCard

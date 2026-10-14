@@ -10,7 +10,7 @@ import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.con
 
 import type { LanguageEnum } from '@budgie/contracts';
 
-const transactionByIdAtom = databaseQueryFamily(
+export const transactionByIdAtom = databaseQueryFamily(
     TRANSACTION_LIST_TABLES,
     TransactionViewRepository,
     (transactionViewRepository, [transactionId, language]: readonly [number, LanguageEnum]) =>

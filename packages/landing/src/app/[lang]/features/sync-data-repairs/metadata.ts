@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'sync-data-repairs',
     tier: FeatureTierEnum.POWER,
     title: msg`Sync Data Repairs`,
-    tagline: msg`Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows — manual entries are never touched.`,
+    tagline: msg`Finds duplicate imports and fixes transfers that were split or mismatched — manual entries are never touched.`,
     metaTitle: msg`Sync Data Repairs — Budgie`,
-    metaDescription: msg`A dedicated Settings screen scans your imported banking connections for duplicate transactions and unmatched own-card transfers, showing a count before you confirm. It soft-deletes duplicate copies and pairs matched transfer legs. Manual transactions stay untouched.`,
+    metaDescription: msg`A Settings screen scans your PrivatBank and Erste imports for duplicates and mismatched transfers, shows a count, and repairs only after you confirm.`,
     primaryKeyword: 'duplicate bank transaction fixer',
     seoKeywords: [
         'duplicate bank transaction fixer',
@@ -23,6 +23,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['bank-integration-management', 'monobank-sync', 'bank-resync-window', 'transfer-pair-detection'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
     publishedAt: '2026-09-11',
-    updatedAt: '2026-09-16',
+    updatedAt: '2026-10-14',
     ogTags: ['sync', 'repair', 'duplicates']
 } satisfies FeatureRegistryEntryInterface;

@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('bank-integration-management', i18n => ({
     title: t(i18n)`Bank Connections — One Credential, Many Accounts`,
-    tagline: t(i18n)`Cards, jars, and deposits share a single connection, so a token change is a one-time job.`,
+    tagline: t(i18n)`Monobank cards, jars, and your deposits share one connection, so a token change is a one-time job.`,
     tags: [t(i18n)`bank sync`, t(i18n)`accounts`, t(i18n)`credentials`]
 }));

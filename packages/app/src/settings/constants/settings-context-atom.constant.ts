@@ -11,7 +11,7 @@ import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-plac
 import { DEFAULT_INSTRUMENT } from './default-instrument.constant';
 import { DEFAULT_SETTINGS } from './default-settings.constant';
 
-const settingsAtom = databaseQueryAtom(
+export const settingsAtom = databaseQueryAtom(
     [SettingsEntityTable, InstrumentEntityTable, AccountEntityTable],
     Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.findSettings())
 );

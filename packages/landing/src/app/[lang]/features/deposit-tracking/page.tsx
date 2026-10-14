@@ -105,8 +105,9 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those
-                        fields to show days remaining and an expected payout estimate, without pretending interest has automatically posted.
+                        Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those to
+                        show days remaining and an expected payout estimate — simple interest on the current balance for the days left —
+                        without pretending interest has automatically posted.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -120,19 +121,27 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         <Trans>Dedicated Deposit account type for fixed-term savings and locked principal</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Interest rate and maturity date fields for each deposit account</Trans>
+                        <Trans>An interest rate and a maturity date for each deposit account</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Days remaining and expected payout shown from your balance, rate, and maturity date</Trans>
+                        <Trans>Days remaining and a simple-interest payout estimate from your balance, rate, and maturity date</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Close a deposit into a selected destination account with a transfer, then archive it</Trans>
+                        <Trans>
+                            Close a deposit into a selected destination account with a transfer — it is archived and can be restored
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Deposit principal is protected from normal expense spending and cannot go negative</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
                         <Trans>&ldquo;Include in net worth&rdquo; stays available when a deposit should or should not count</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
+                        <Trans>Start a deposit from a synced bank expense, keeping the currency the payment was made in</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
+                        <Trans>Add a deposit straight from a bank connection, next to its synced accounts</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -151,8 +160,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>Does Budgie automatically accrue deposit interest?</Trans>}
                     answer={
                         <Trans>
-                            No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the
-                            current balance and days remaining. It does not automatically create interest transactions.
+                            No. Budgie stores the interest rate and maturity date, then estimates the payout as simple interest on the
+                            current balance for the days remaining. It does not automatically create interest transactions.
                         </Trans>
                     }
                 />
@@ -161,7 +170,7 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Use the Close Deposit action, select the destination account, and confirm. Budgie transfers the remaining
-                            deposit balance to that account and archives the deposit.
+                            deposit balance to that account and archives the deposit. An archived deposit can be restored from Settings.
                         </Trans>
                     }
                 />
@@ -171,6 +180,15 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         <Trans>
                             Yes. Like other accounts, deposits have an &ldquo;include in net worth&rdquo; setting, so you can decide whether
                             a locked deposit belongs in your net worth view.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I start a deposit from a payment I already made?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Open the menu of an expense, such as a synced bank payment, and choose Start Deposit. Budgie creates the
+                            deposit in the currency the payment was made in and turns the expense into the transfer that funds it.
                         </Trans>
                     }
                 />

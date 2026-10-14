@@ -1,4 +1,4 @@
-import { CategorizeInboxLabelKindEnum, TransactionCategorizeInboxRepository, categorizeInboxEngineService } from '@budgie/categorization';
+import { CategorizeInboxLabelKindEnum, CategorizeInboxService } from '@budgie/categorization';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -43,19 +43,12 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
         onPicked: (tagIds: number[] | null) => void
     ): void => {
         void appRuntime.runPromise(
-            Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence()).pipe(
-                Effect.map(tagEvidence =>
-                    categorizeInboxEngineService.buildContext(tagEvidence, defaultInstrument.id, CategorizeInboxLabelKindEnum.TAG)
-                ),
-                Effect.flatMap(tagContext =>
+            Effect.flatMap(CategorizeInboxService, categorizeInboxService =>
+                categorizeInboxService.suggestFollowUpTagIds(assignment.rows, defaultInstrument.id)
+            ).pipe(
+                Effect.flatMap(suggestedTagIds =>
                     Effect.sync(() => {
-                        openTagsSelector(
-                            {
-                                suggestedTagIds: categorizeInboxEngineService.suggestLabelIds(assignment.rows, tagContext),
-                                description: assignment.displayTitle
-                            },
-                            onPicked
-                        );
+                        openTagsSelector({ suggestedTagIds, description: assignment.displayTitle }, onPicked);
                     })
                 )
             )

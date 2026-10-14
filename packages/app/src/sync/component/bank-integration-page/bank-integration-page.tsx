@@ -1,4 +1,5 @@
 import { BankIntegrationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -10,7 +11,6 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
-import { SYNC_PROVIDER_CAPABILITIES } from '../../constant/sync-provider-capabilities.constant';
 import { BankIntegrationContext } from '../../context/bank-integration.context';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
 

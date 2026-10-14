@@ -8,10 +8,10 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'expense-tracking',
     tier: FeatureTierEnum.CORE,
-    title: msg`Expense Tracking, Reimagined`,
+    title: msg`Log Every Expense in Seconds`,
     tagline: msg`Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use.`,
-    metaTitle: msg`Expense Tracking, Reimagined — Budgie`,
-    metaDescription: msg`Log expenses, income, and transfers in seconds. Budgie tracks every transaction on-device, opens each one in a read-only detail view, and shows six months of comparable spending before you edit.`,
+    metaTitle: msg`Expense Tracking App, Log in Seconds — Budgie`,
+    metaDescription: msg`Log expenses, income, and transfers in seconds. Each transaction opens read-only with six months of comparable spending before you edit.`,
     primaryKeyword: 'personal expense tracker',
     seoKeywords: [
         'personal expense tracker',

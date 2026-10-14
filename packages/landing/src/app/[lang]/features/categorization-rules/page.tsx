@@ -101,10 +101,9 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
 
                 <FeatureStory.Step index={2} title={<Trans>Rules run before the AI does</Trans>}>
                     <Trans>
-                        Rules are evaluated on Monobank sync, on bank file sync and on file import, so most rows land already categorized —
-                        and a category a rule assigned is never second-guessed by a suggestion. What no rule covered is counted in the
-                        missing-categories pill above the list; open one of those rows and the on-device suggestion offers a category for
-                        it.
+                        Rules are evaluated on Monobank sync, on bank file sync and on file import, so most rows land already categorized.
+                        What no rule covered is counted in the missing-categories pill above the list; open one of those rows and a
+                        suggestion offers a category for it.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -161,7 +160,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         <Trans>Rules run automatically on Monobank sync, bank file sync, and CSV import</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Saving a rule applies it retroactively to matching transactions you already have</Trans>
+                        <Trans>Saving a rule asks whether to apply it to the matching transactions you already have</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
                         <Trans>A dedicated Rules screen with search across conditions, actions, categories, tags, and accounts</Trans>
@@ -184,7 +183,8 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         When exactly one of your existing rules already matches the transaction, the pill turns into &ldquo;Update
                         rule?&rdquo; and rewrites that rule&apos;s category and tag instead of creating a near-duplicate. When the
                         conditions it would write already exist word for word, Budgie says so and lets you open the existing rule or create
-                        the new one anyway. Either way the rule is applied to your existing transactions as soon as it is saved.
+                        the new one anyway. A rule made from the pill is applied to your existing transactions as soon as it is saved, and
+                        that replaces the category on every matching transaction — including ones you set yourself.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -209,7 +209,9 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     answer={
                         <Trans>
                             Automatic evaluation runs on Monobank sync, bank file sync, and CSV import. For everything else, saving or
-                            editing a rule re-applies it across your existing transactions, which covers manual entries too.
+                            editing a rule asks &ldquo;Apply to existing transactions?&rdquo; and shows how many match; choose Apply and it
+                            covers manual entries too. Applying replaces the category on matching transactions, including ones you set
+                            yourself, so check the count first.
                         </Trans>
                     }
                 />

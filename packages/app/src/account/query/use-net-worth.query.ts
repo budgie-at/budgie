@@ -8,7 +8,7 @@ import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-ta
 
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
-const netWorthAtom = databaseQueryFamily(
+export const netWorthAtom = databaseQueryFamily(
     ACCOUNT_CONVERTED_BALANCE_TABLES,
     AccountBalanceRepository,
     (accountBalanceRepository, defaultInstrumentId: number) => accountBalanceRepository.getNetWorth(defaultInstrumentId)

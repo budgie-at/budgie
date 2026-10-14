@@ -10,13 +10,13 @@ import type { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 
 type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithInstrumentEntityInterface[]>>;
 
-const searchAccountsAtom = databaseQueryFamily(
+export const searchAccountsAtom = databaseQueryFamily(
     [AccountEntityTable, InstrumentEntityTable],
     AccountRepository,
     (accountRepository, search: string) => accountRepository.findBySearchQuery(search)
 );
 
-const accountCountAtom = databaseQueryAtom(
+export const accountCountAtom = databaseQueryAtom(
     [AccountEntityTable],
     Effect.flatMap(AccountRepository, accountRepository => accountRepository.count())
 );

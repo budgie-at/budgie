@@ -30,11 +30,11 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Export Every Transaction You&apos;ve Logged</Trans>}
+                heading={<Trans>Export Your Transactions, Plus a Full Backup</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one —
+                        One-tap CSV export of your transactions, plus a compressed full backup file — locked with your PIN if you set one —
                         you can save to iCloud, Drive, or anywhere.
                     </Trans>
                 }
@@ -49,7 +49,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Point index={0}>
                     <Trans>
-                        Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later.
+                        Export CSV takes your transactions in a single tap. There is no range to pick. Deleted transactions and the
+                        originals behind a merged transaction are left out.
                     </Trans>
                 </FeatureStory.Point>
 
@@ -62,7 +63,7 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     slug="database-backup"
                 >
                     <FeatureStory.Callout index={0} y={0.365}>
-                        <Trans>Every transaction, one file</Trans>
+                        <Trans>Your transactions, one file</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout index={1} y={0.538}>
                         <Trans>A backup of everything</Trans>
@@ -71,8 +72,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Point index={1}>
                     <Trans>
-                        Export Database writes the whole database to one file. The Import Database row directly above it restores from that
-                        same file on any device.
+                        Export Database writes the whole database to one compressed file. The Import Database row directly above it restores
+                        from that same file on another device.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -89,15 +90,16 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a copy of the database file itself
+                        Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a compressed copy of your database
                         for a full restore. Both are user-initiated and saved through the OS share sheet.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies,
-                        category, MCC, date, comment, and the bank&apos;s own transaction id. The database backup is a byte-for-byte copy of
-                        the database file, so it is encrypted only if a PIN was set when you exported it.
+                        CSV columns map cleanly to most spreadsheet pivots: title, both accounts with their amounts and currencies,
+                        category, MCC, date, comment, and the bank&apos;s own transaction id. There is no tags column, and built-in system
+                        categories export blank. The database backup is a compressed copy of your data, so it is locked with your PIN only
+                        if a PIN was set when you exported it.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -109,15 +111,15 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            CSV export with title, both account legs and amounts, currencies, category, MCC, date, comment, and the
-                            bank&apos;s transaction id
+                            CSV export with title, both accounts and amounts, currencies, category, MCC, date, comment, and the bank&apos;s
+                            transaction id
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Full database backup file for a complete restore — encrypted if a PIN was set at export time</Trans>
+                        <Trans>Compressed full backup file for a complete restore — PIN-locked if a PIN was set at export time</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>One tap exports the whole history — no range to pick, no partial file to reconcile later</Trans>
+                        <Trans>One tap exports your whole history — no range to pick, and deleted or merged-away rows stay out</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Save through the OS share sheet — Files, iCloud, Drive, anything</Trans>
@@ -133,8 +135,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     question={<Trans>Why two export formats?</Trans>}
                     answer={
                         <Trans>
-                            CSV is for spreadsheets, tax software, and other apps that want flat data. The database backup preserves every
-                            relationship and account state for full restore on a new device.
+                            CSV is for spreadsheets, tax software, and other apps that want flat data. The backup preserves all your data,
+                            including what the CSV leaves out, for a full restore on a new device.
                         </Trans>
                     }
                 />
@@ -142,9 +144,9 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     question={<Trans>Is the backup encrypted?</Trans>}
                     answer={
                         <Trans>
-                            Only if a PIN was set when you exported it. The backup is a copy of the database file, so it carries whatever
-                            state your data was in: encrypted with your PIN if you had one set, and unencrypted if you never did. Restoring
-                            an encrypted backup asks for the PIN that backup was made with, and that PIN becomes the app PIN.
+                            Only if a PIN was set when you exported it: the backup is locked with your PIN if you had one set, and not
+                            locked if you never did. Restoring a PIN-locked backup asks for the PIN that backup was made with, and that PIN
+                            becomes the app PIN.
                         </Trans>
                     }
                 />

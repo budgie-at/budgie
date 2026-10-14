@@ -361,12 +361,9 @@ msgid "Account {0} not found"
 msgstr "Рахунок {0} не знайдено"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Account {accountId} not found"
 msgstr "Рахунок {accountId} не знайдено"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Account {id} not found"
-msgstr "Рахунок {id} не знайдено"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
@@ -734,7 +731,7 @@ msgstr "Синхронізацію з банком скинуто"
 msgid "Base currency"
 msgstr "Базова валюта"
 
-#: src/money-data/service/money-data-upgrade.service.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
 msgstr "Базову валюту не знайдено"
 
@@ -781,7 +778,7 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Borrowed debt account expected"
 msgstr "Очікувався рахунок позиченого боргу"
 
@@ -1880,7 +1877,7 @@ msgstr "Англійський переклад"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Введіть {PIN_LENGTH}-значний PIN-код"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Введіть усі суми"
@@ -2365,8 +2362,7 @@ msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
 #: src/app/import-backup-pin.tsx
-#: src/auth/hook/use-pin-authentication.hook.ts
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-error.hook.ts
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
@@ -3032,7 +3028,7 @@ msgid "Only expense transactions can be converted"
 msgstr "Можна конвертувати лише витратні транзакції"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only income transactions can be converted"
 msgstr "Можна конвертувати лише дохідні транзакції"
 
@@ -3041,7 +3037,7 @@ msgid "Only single-entry expenses can be converted"
 msgstr "Можна конвертувати лише витрати з одним записом"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Можна конвертувати лише доходи з одним записом"
 
@@ -4290,6 +4286,10 @@ msgstr "Сьогодні"
 msgid "Token required"
 msgstr "Потрібен токен"
 
+#: src/auth/hook/use-pin-error.hook.ts
+msgid "Too many attempts. Try again in {time}"
+msgstr "Забагато спроб. Спробуйте ще раз через {time}"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -4341,7 +4341,7 @@ msgstr "Транзакція повинна мати рівно один осн�
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
