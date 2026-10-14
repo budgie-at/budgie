@@ -1908,6 +1908,10 @@ msgstr "1. Einleitung"
 msgid "1. Local-First Architecture"
 msgstr "Local-First-Architektur"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "1. Transactions arrive by themselves"
+msgstr "1. Transaktionen kommen von selbst"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "1. Your Data is Always at Risk"
 msgstr "Ihre Daten sind immer gefährdet"
@@ -2001,6 +2005,10 @@ msgstr "2 Transaktionen"
 msgid "2. API Access"
 msgstr "API-Zugang"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "2. Categories from merchant codes"
+msgstr "2. Kategorien aus Händlercodes"
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "2. Data We Collect"
 msgstr "2. Daten, die wir erheben"
@@ -2077,6 +2085,10 @@ msgstr "Datenschutzrichtlinien können sich über Nacht ändern"
 msgid "3. User Accounts and Eligibility"
 msgstr "3. Benutzerkonten und Teilnahmeberechtigung"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "3. Your rules have the last word"
+msgstr "3. Deine Regeln haben das letzte Wort"
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "3.1 Eligibility"
 msgstr "3.1 Teilnahmeberechtigung"
@@ -2104,6 +2116,10 @@ msgstr "4. Eingeschränkte Nutzungen"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "4. Technical Reliability"
 msgstr "Technische Zuverlässigkeit"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "4. Transfers between your cards and jars are merged"
+msgstr "4. Überweisungen zwischen deinen Karten und Töpfen werden zusammengeführt"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "4.1 Limited License"
@@ -2133,6 +2149,10 @@ msgstr "5 Sprachen"
 msgid "5. Data Sharing and Disclosure"
 msgstr "5. Weitergabe und Offenlegung von Daten"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "5. Fees get their own line"
+msgstr "5. Gebühren bekommen eine eigene Zeile"
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "5. Financial Information and Disclaimers"
 msgstr "5. Finanzinformationen und Haftungsausschlüsse"
@@ -2156,6 +2176,10 @@ msgstr "5.2 Datengenauigkeit"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "5.3 Third-Party Services"
 msgstr "5.3 Dienste Dritter"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "6. A budget that fills in as you pay"
+msgstr "6. Ein Budget, das sich beim Bezahlen füllt"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "6. Contributing to Budgie"
@@ -2188,6 +2212,10 @@ msgstr "7. Datenschutz bei Kindern"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "7. Intellectual Property Rights"
 msgstr "7. Rechte des geistigen Eigentums"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "7. See where the money goes"
+msgstr "7. Sieh, wohin dein Geld geht"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "7. Source Code Access"
@@ -2390,6 +2418,10 @@ msgstr "Eine Finanz-App, die du um Mitternacht öffnest, sollte angenehm für di
 msgid "A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. From an attacker perspective, this is a far more attractive target than any individual bank, because:"
 msgstr "Ein Finanzdaten-Aggregator, der Millionen von Nutzern bedient, hält Zugangsdaten oder Zugriffstoken für Millionen von Bankkonten in einem System. Aus Angreifersicht ist dies ein weitaus attraktiveres Ziel als jede einzelne Bank, weil:"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "A five-minute weekly routine"
+msgstr "Eine Fünf-Minuten-Routine pro Woche"
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "A fixed term, tracked like an account"
 msgstr "Eine Festanlage, geführt wie ein Konto"
@@ -2418,9 +2450,17 @@ msgstr "Ein Marktbildschirm pro Instrument mit Preiskarte, Sparkline und Kennzah
 msgid "A merged transfer keeps a Consolidation row. \"View source transactions\" opens both originals with their amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer."
 msgstr "Eine zusammengeführte Überweisung behält eine Zeile „Konsolidierung“. „Quelltransaktionen anzeigen“ öffnet beide Originale mit ihren Beträgen, Daten und Konten. „Rückgängig machen“ stellt sie wieder her und entfernt die zusammengeführte Überweisung."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "A merged transfer keeps its originals: open it and tap View source transactions to see both, or Revert to split them again. When a pair is not clear enough, Budgie leaves both transactions as they arrived instead of guessing. More in <0>transfer pair detection</0>."
+msgstr "Eine zusammengeführte Überweisung behält ihre Originale: Öffne sie und tippe auf „Quelltransaktionen anzeigen“, um beide zu sehen, oder auf „Rückgängig machen“, um sie wieder zu trennen. Ist ein Paar nicht eindeutig, lässt Budgie beide Transaktionen so, wie sie angekommen sind, statt zu raten. Mehr dazu unter <0>Erkennung von Überweisungspaaren</0>."
+
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "A month grid of what bills"
 msgstr "Ein Monatsraster dessen, was abgebucht wird"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "A month of spending by category, with your own transfers left out."
+msgstr "Ein Monat Ausgaben nach Kategorie, ohne Überweisungen zwischen deinen eigenen Konten."
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A new Settings → Runway section controls it: “Show on home” toggles the pill (on by default), and “Include crypto” folds your crypto holdings into the calculation at today’s market value (off by default, since crypto swings can otherwise dominate a cash-flow read)."
@@ -2818,6 +2858,10 @@ msgstr "Nach der Auswahl einer Kategorie schlägt das Modell auf dem Gerät bis 
 msgid "After selecting a category, the on-device model proposes up to three tags as tappable pill chips — with a lighter fallback that answers while that model is still loading."
 msgstr "Nach der Auswahl einer Kategorie schlägt das Modell auf dem Gerät bis zu drei Tags als antippbare Pill-Chips vor — mit einem leichteren Ausweichverfahren, das antwortet, während dieses Modell noch lädt."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "After that, every card and jar you picked is its own account in Budgie, grouped under Monobank, with a switch to pause any of them. Everything below happens without another tap."
+msgstr "Danach ist jede ausgewählte Karte und jeder Topf ein eigenes Konto in Budgie, gruppiert unter Monobank, mit einem Schalter zum Pausieren. Alles Weitere passiert ohne einen zusätzlichen Tipp."
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "After you categorize a single group, the bar at the bottom of the screen offers to create a rule. The rule editor opens already filled in with the words the group has in common and the category you just picked."
 msgstr "Nachdem Sie eine einzelne Gruppe kategorisiert haben, bietet die Leiste am unteren Bildschirmrand an, eine Regel zu erstellen. Der Regeleditor öffnet sich bereits ausgefüllt – mit den Wörtern, die alle Umsätze der Gruppe gemeinsam haben, und der Kategorie, die Sie gerade gewählt haben."
@@ -3094,6 +3138,10 @@ msgstr "Analysen"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Analytics and crash reporting SDKs that collect user behavior data"
 msgstr "Analytik- und Absturzbericht-SDKs, die Nutzerverhaltensdaten sammeln"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Analytics breaks your spending down by category and by tag for the period you pick. Transfers between your own accounts stay out and bank fees stay in, so the totals match what actually left your pocket. See <0>spending analytics</0>."
+msgstr "Die Analyse schlüsselt deine Ausgaben nach Kategorie und nach Tag für den gewählten Zeitraum auf. Überweisungen zwischen deinen eigenen Konten bleiben draußen, Bankgebühren zählen mit, sodass die Summen dem entsprechen, was wirklich aus deiner Tasche ging. Siehe <0>Ausgabenanalyse</0>."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Analytics carries a Tags tab beside Categories: income and spending per tag, each with its share of the period."
@@ -3996,6 +4044,7 @@ msgstr "Block, die Muttergesellschaft von Cash App, gab bekannt, dass ein ehemal
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
@@ -4134,11 +4183,17 @@ msgstr "Budgetplanung — ein Limit, nach Kategorien aufgeteilt"
 msgid "Budget settings and categories"
 msgstr "Budgeteinstellungen und Kategorien"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/opengraph-image.tsx
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/opengraph-image.tsx
 msgid "budgeting"
-msgstr "Actual Budget"
+msgstr "Budgetierung"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Budgets in Budgie are monthly: one overall limit plus limits for the categories you care about. Every categorized Monobank purchase counts toward them as soon as it arrives, so the budget shows what is spent and what is left without you typing anything."
+msgstr "Budgets in Budgie sind monatlich: ein Gesamtlimit plus Limits für die Kategorien, die dir wichtig sind. Jeder kategorisierte Monobank-Kauf zählt sofort nach dem Eintreffen dazu, sodass das Budget zeigt, was ausgegeben und was übrig ist, ohne dass du etwas eintippst."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -4170,6 +4225,10 @@ msgstr "Budgie-Bildschirm Kontoeinstellungen für eine Monobank-Karte mit geöff
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Budgie adds an English translation and a list of search keywords next to the original name. Both are saved with the category, so search and suggestions can find it whichever form you remember."
 msgstr "Budgie ergänzt neben dem Originalnamen eine englische Übersetzung und eine Liste von Suchbegriffen. Beides wird mit der Kategorie gespeichert, sodass Suche und Vorschläge sie unabhängig davon finden, an welche Form Sie sich erinnern."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Budgie analytics for this month with spent, income and balance totals and spending broken down by category"
+msgstr "Budgie-Analyse für diesen Monat mit Ausgaben, Einnahmen und Saldo sowie Ausgaben nach Kategorie"
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
@@ -4226,6 +4285,10 @@ msgstr "Budgie-Bildschirm „Budget-Details“: 95 % des Monatsbudgets verbrauch
 #: src/app/[lang]/page.tsx
 msgid "Budgie budget details screen with a monthly budget bar and per-category limits"
 msgstr "Budgie-Bildschirm mit Budgetdetails, Monatsbalken und Grenzen je Kategorie"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Budgie budget details with the monthly budget 95% spent and limits for housing, groceries, transport and car"
+msgstr "Budgie-Budgetdetails: Monatsbudget zu 95 % ausgeschöpft, Limits für Wohnen, Lebensmittel, Verkehr und Auto"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Budgie budget screen header showing spent, left and percentage that the budget widget mirrors"
@@ -4375,6 +4438,14 @@ msgstr "Budgie-Ausgabenformular für eine Silpo-Transaktion über 78,4 $ mit dem
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category"
 msgstr "Budgie-Ausgabenformular für eine Silpo-Transaktion über 78,4 $ mit einem Schnellregel-Hinweis über dem Betrag und der Kategorie „Restaurants“"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Budgie expense screen for a Silpo payment from a Monobank card, with the Grocery merchant code under the name and Groceries as the category"
+msgstr "Budgie-Ausgabenbildschirm für eine Zahlung bei Silpo mit einer Monobank-Karte, mit dem Händlercode Grocery unter dem Namen und Lebensmittel als Kategorie"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Budgie fetches new Monobank transactions every time you open the app or come back to it, and it also checks in the background from time to time. How often those background checks run is up to your phone’s system, so opening the app is the quickest way to see a purchase you have just made."
+msgstr "Budgie holt neue Monobank-Transaktionen jedes Mal, wenn du die App öffnest oder zu ihr zurückkehrst, und schaut zwischendurch auch im Hintergrund nach. Wie oft diese Hintergrundprüfungen laufen, entscheidet das System deines Handys. Am schnellsten siehst du einen gerade getätigten Kauf also, wenn du die App öffnest."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 msgid "Budgie fills in category, tags, comment, and amount from your own spending history — faster than typing, fully offline."
@@ -4656,6 +4727,10 @@ msgstr "Budgie-Monobank-Bildschirm mit zwei Karten und einer Auto-Sparbüchse sa
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 msgstr "Budgie-Monobank-Bildschirm mit zwei Karten und einem Auto-Topf, jeweils mit Saldo und Schalter"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Budgie Monobank screen listing two cards and a jar, each with its balance and a sync switch"
+msgstr "Budgie-Monobank-Bildschirm mit zwei Karten und einem Topf, jeweils mit Saldo und Sync-Schalter"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie never sends the audio anywhere. The recording becomes text on the device and is then discarded. No audio file, no upload, no third party involved."
@@ -5465,6 +5540,10 @@ msgstr "Kann ich eine Regel vorübergehend deaktivieren?"
 msgid "Can I turn AI off?"
 msgstr "Kann ich die KI ausschalten?"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Can I turn off automatic categories?"
+msgstr "Kann ich die automatischen Kategorien ausschalten?"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Can I undo a bulk categorization?"
 msgstr "Kann ich eine Sammel-Kategorisierung rückgängig machen?"
@@ -6169,9 +6248,17 @@ msgstr "Verbinden Sie eine unterstützte Bank für automatische Synchronisierung
 msgid "Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment."
 msgstr "Verbinden Sie Binance mit einem Nur-Lese-API-Schlüssel. Spot-, Funding- und Simple-Earn-Salden, P2P-Orders, Trades, Convert und Earn-Prämien synchronisieren sich auf Ihr Gerät, und P2P-Käufe werden mit der passenden Bankzahlung zusammengeführt."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/metadata.ts
+msgid "Connect Monobank once and Budgie does the rest: purchases arrive on their own, get categories from merchant codes, transfers merge, budgets fill in."
+msgstr "Verbinde Monobank einmal, den Rest erledigt Budgie: Käufe kommen von selbst, erhalten Kategorien aus Händlercodes, Überweisungen werden zusammengeführt."
+
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Connect Monobank once and new transactions, jars, and FX rates arrive on their own"
 msgstr "Verbinden Sie Monobank einmal, und neue Transaktionen, Jars und Wechselkurse kommen von selbst an"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Connect once"
+msgstr "Einmal verbinden"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Connect the bank once"
@@ -7098,6 +7185,10 @@ msgstr "Muss Budgie geöffnet bleiben, damit die Zahlen stimmen?"
 msgid "Do I need to turn on On-device AI?"
 msgstr "Muss ich „On-Device-KI“ einschalten?"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Do I still need to enter anything by hand?"
+msgstr "Muss ich noch etwas von Hand eingeben?"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Do jars sync as well?"
 msgstr "Werden Töpfe ebenfalls synchronisiert?"
@@ -7178,6 +7269,10 @@ msgstr "Hat Budgie Werbung oder eine kostenpflichtige Stufe?"
 msgid "Does Budgie have any server-side security risks?"
 msgstr "Hat Budgie serverseitige Sicherheitsrisiken?"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Does Budgie see my transactions on its servers?"
+msgstr "Sieht Budgie meine Transaktionen auf seinen Servern?"
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "Does Budgie send any financial data to a server?"
 msgstr "Sendet Budgie Finanzdaten an einen Server?"
@@ -7243,6 +7338,10 @@ msgstr "Funktioniert das zusammen mit der PIN-Sperre?"
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Does it work offline?"
 msgstr "Funktioniert es offline?"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Does it work while the app is closed?"
+msgstr "Funktioniert das auch, wenn die App geschlossen ist?"
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Does on-device AI drain battery?"
@@ -7332,6 +7431,10 @@ msgstr "Funktioniert das auf dem iPad?"
 msgid "Does this work with the date filter presets?"
 msgstr "Funktioniert das mit den Datumsfilter-Voreinstellungen?"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Does topping up a jar count as spending?"
+msgstr "Zählt das Aufladen eines Topfs als Ausgabe?"
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Does voice entry send audio to a server?"
 msgstr "Sendet die Spracheingabe Audio an einen Server?"
@@ -7420,6 +7523,10 @@ msgstr "Jede Aufteilungszeile behält ihre eigenen Tags und Kommentare – völl
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Each split, its own category"
 msgstr "Jede Aufteilung, ihre eigene Kategorie"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Each transaction comes in with the merchant name and the amount, plus the comment if you left one in Monobank. Transactions that are already in Budgie are recognised, so a new sync never adds them twice."
+msgstr "Jede Transaktion kommt mit Händlername und Betrag an, dazu mit deinem Kommentar, falls du in Monobank einen hinterlassen hast. Transaktionen, die schon in Budgie sind, werden erkannt, sodass eine neue Synchronisierung sie nie doppelt anlegt."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Each type brings its own form"
@@ -7651,6 +7758,10 @@ msgstr "Jeder Kauf behält seinen Preis"
 #: src/app/[lang]/features/page.tsx
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 msgstr "Alle Funktionen des Budgie Offline-First-Ausgabentrackers – vom Bank-Sync bis zur KI-Kategorisierung auf dem Gerät – an einem Ort."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Every card payment carries a merchant category code, a four-digit number that tells what kind of business took the money: a supermarket, a pharmacy, a taxi. Budgie knows a default category for about 1,050 of these codes, so a payment at Silpo is already in Groceries before you ever open it. See <0>automatic categories from merchant codes</0>."
+msgstr "Jede Kartenzahlung trägt einen Händlerkategoriecode (MCC), eine vierstellige Zahl, die angibt, was für ein Geschäft das Geld bekommen hat: Supermarkt, Apotheke, Taxi. Budgie kennt für rund 1.050 dieser Codes eine Standardkategorie, sodass eine Zahlung bei Silpo schon unter Lebensmittel steht, bevor du sie überhaupt öffnest. Siehe <0>automatische Kategorien aus Händlercodes</0>."
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Every card transaction carries a merchant category code. Silpo arrives on the expense form with its Grocery code shown under the merchant name."
@@ -8433,6 +8544,7 @@ msgstr "Kostenlos, kein Konto, kein Abonnement"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
@@ -8739,6 +8851,7 @@ msgstr "Positionen fließen zusammen mit Fiat-Konten in das Nettovermögen ein"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
@@ -9115,6 +9228,10 @@ msgstr "So bewerten Sie den Datenschutz einer Budget-App"
 msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "So exportieren Sie Ihre Mint-Daten (bevor es zu spät ist)"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "How to track your Monobank spending automatically"
+msgstr "So erfasst du deine Monobank-Ausgaben automatisch"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your Data Stays on Your Device"
 msgstr "Wie Ihre Daten auf Ihrem Gerät bleiben"
@@ -9122,6 +9239,11 @@ msgstr "Wie Ihre Daten auf Ihrem Gerät bleiben"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your PIN Protects Your Data"
 msgstr "Wie Ihre PIN Ihre Daten schützt"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/opengraph-image.tsx
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "how-to"
+msgstr "Anleitung"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "I already had debts before this change — do I need to redo anything?"
@@ -9219,6 +9341,10 @@ msgstr "Wenn du eine PIN festgelegt hast, ja: Die Datei ist mit dieser PIN versc
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "If you haven’t exported your Mint data yet, here’s what you need to know:"
 msgstr "Falls Sie Ihre Mint-Daten noch nicht exportiert haben, hier ist, was Sie wissen müssen:"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "If you loaded a few months of history when you connected, creating a budget offers a Suggested option built from your recent spending, so your first limits come from real numbers. Turn on Budget alerts in Settings to get a notification at 80% and at 100% of a limit. See <0>budget planning</0>."
+msgstr "Hast du beim Verbinden ein paar Monate Verlauf geladen, bietet dir das Anlegen eines Budgets die Option „Vorgeschlagen“, die auf deinen letzten Ausgaben basiert. So stammen deine ersten Limits aus echten Zahlen. Schalte in den Einstellungen „Budget-Benachrichtigungen“ ein, um bei 80 % und bei 100 % eines Limits benachrichtigt zu werden. Siehe <0>Budgetplanung</0>."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "If you must use a cloud-based financial app, here is a technical checklist for evaluation."
@@ -10106,6 +10232,10 @@ msgstr "Langfristige Datenanforderungen"
 msgid "Long-time users have also expressed frustration with feature changes and removals. The transition from YNAB 4 (a desktop application with local storage) to nYNAB (the current web-based version) was particularly contentious. Many users preferred the offline, one-time-purchase model of the previous version."
 msgstr "Langjährige Nutzer haben zudem ihren Frust über Funktionsänderungen und -entfernungen geäußert. Der Übergang von YNAB 4 (einer Desktop-Anwendung mit lokaler Speicherung) zu nYNAB (der aktuellen webbasierten Version) war besonders umstritten. Viele Nutzer bevorzugten das Offline-Modell mit Einmalkauf der vorherigen Version."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Look at the budget: the categories close to their limit are the ones to watch this week."
+msgstr "Wirf einen Blick aufs Budget: Die Kategorien nahe am Limit sind die, auf die du diese Woche achten solltest."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Look for Security Audits"
 msgstr "Suchen Sie nach Sicherheitsaudits"
@@ -10345,6 +10475,10 @@ msgstr "Mentale Modelle sind wichtig. In einer Local-First-Anwendung können ver
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Merchant Category Code — the universal 4-digit code your bank attaches to every card transaction. 5814 is \"fast food\", 4111 is \"transit\", 5411 is \"supermarket\", and so on."
 msgstr "Merchant Category Code – der universelle 4-stellige Code, den Ihre Bank jeder Kartentransaktion beifügt. 5814 ist „Fast Food\", 4111 ist „Nahverkehr\", 5411 ist „Supermarkt\" und so weiter."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Merchant codes are broad: a supermarket code does not know you bought a gift there. When you want a merchant handled your way every time, use a rule. A rule can look at the merchant name, the comment, the amount, the account, the merchant code or the transaction type, and it sets a category, adds tags, or both."
+msgstr "Händlercodes sind grob: Ein Supermarktcode weiß nicht, dass du dort ein Geschenk gekauft hast. Wenn ein Händler jedes Mal auf deine Art behandelt werden soll, nutze eine Regel. Eine Regel kann Händlername, Kommentar, Betrag, Konto, Händlercode oder Transaktionstyp prüfen und setzt eine Kategorie, fügt Tags hinzu oder beides."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Merchant recognised locally"
@@ -10587,6 +10721,8 @@ msgstr "Geld, das Sie schulden"
 msgid "Money you owe, money owed to you"
 msgstr "Geld, das Sie schulden, Geld, das Ihnen geschuldet wird"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/opengraph-image.tsx
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
 msgid "monobank"
 msgstr "Monobank"
@@ -10620,6 +10756,10 @@ msgstr "Monobank-Verbindungen können später weitere Konten hinzufügen, ohne d
 #: src/app/[lang]/privacy/page.tsx
 msgid "Monobank Expense Tracker — Direct API Sync, No Plaid"
 msgstr "Monobank Ausgaben-Tracker – direkte API-Synchronisation, kein Plaid"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Monobank expense tracking"
+msgstr "Monobank-Ausgaben erfassen"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no data broker. Every transaction lands on your phone the moment it arrives."
@@ -11271,6 +11411,10 @@ msgstr "Kein weißer Blitz beim Kaltstart – nativer Splash respektiert das OS-
 msgid "no-server"
 msgstr "ohne Server"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "No. A top-up from your card to a jar is merged into one transfer between your own accounts, and budgets and analytics leave transfers out."
+msgstr "Nein. Das Aufladen eines Topfs von deiner Karte wird zu einer Überweisung zwischen deinen eigenen Konten zusammengeführt, und Budgets und Analyse lassen Überweisungen außen vor."
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable."
 msgstr "Nein. Fügen Sie so viele hinzu, wie Sie benötigen – der Startbildschirm organisiert sie nach Typ und Anbieter, sodass die Liste übersichtlich bleibt."
@@ -11443,6 +11587,10 @@ msgstr "Nein. Widgets sind dafür gemacht, geschlossen gelesen zu werden. Sie ü
 msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
 msgstr "Nein. Sie öffnen den Bildschirm, prüfen die Anzahlen und bestätigen auf der Reparaturkarte. Vorher ändert sich nichts."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "No. Your phone requests your data from Monobank directly and keeps it on the device. Budgie has no server of its own that receives your transactions."
+msgstr "Nein. Dein Handy fragt deine Daten direkt bei Monobank ab und speichert sie auf dem Gerät. Budgie hat keinen eigenen Server, der deine Transaktionen empfängt."
+
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 msgid "None"
@@ -11483,6 +11631,10 @@ msgstr "Nicht jede Bank bietet ein API-Programm an, und nicht jede Bank wird von
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Not for this job. Sorting your own expenses is a narrow task: the vocabulary is small, and your own history is a far stronger signal than anything a general model could add. A cloud service would be guessing from other people's data; Budgie is matching against yours."
 msgstr "Für diese Aufgabe nicht. Die eigenen Ausgaben zu sortieren ist eng umrissen: Der Wortschatz ist klein, und der eigene Verlauf ist ein deutlich stärkeres Signal als alles, was ein allgemeines Modell beitragen könnte. Ein Cloud-Dienst würde anhand fremder Daten raten; Budgie gleicht mit dem eigenen Verlauf ab."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Not for your Monobank cards and jars. Cash, and accounts at banks Budgie does not sync, still need to be added by hand or imported from a file."
+msgstr "Für deine Monobank-Karten und -Töpfe nicht. Bargeld und Konten bei Banken, die Budgie nicht synchronisiert, trägst du weiterhin von Hand ein oder importierst sie aus einer Datei."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Not if you have a PIN set. Every amount on every widget is replaced with dots the moment a PIN is on, with no separate switch to remember."
@@ -11899,6 +12051,10 @@ msgstr "Ausgaben-Tracker auf dem Gerät"
 msgid "on-device-ai"
 msgstr "KI auf dem Gerät"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Once Monobank is connected to Budgie, most of the bookkeeping does itself: purchases arrive on their own and land in categories, transfers between your own cards stop looking like spending, and your monthly budget fills in as you pay. Here is what happens at each step, and where you still have the last word."
+msgstr "Sobald Monobank mit Budgie verbunden ist, erledigt sich die Buchführung größtenteils von selbst: Käufe kommen automatisch an und landen in Kategorien, Überweisungen zwischen deinen eigenen Karten sehen nicht mehr wie Ausgaben aus, und dein Monatsbudget füllt sich, während du bezahlst. Hier siehst du, was bei jedem Schritt passiert und wo du weiterhin das letzte Wort hast."
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Once the refund is linked to the purchase in Budgie, the plan closes at the amount you already paid and no longer shows a next payment."
 msgstr "Sobald die Erstattung in Budgie mit dem Kauf verknüpft ist, schließt der Plan beim bereits gezahlten Betrag und zeigt keine nächste Zahlung mehr."
@@ -12295,6 +12451,10 @@ msgstr "Open-Banking-Regulierungen in der EU und Großbritannien sowie freiwilli
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Open Budgie and go to Settings, then Import Data"
 msgstr "Öffnen Sie Budgie und gehen Sie zu Einstellungen > Daten importieren"
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Open Budgie so the latest Monobank transactions come in."
+msgstr "Öffne Budgie, damit die neuesten Monobank-Transaktionen hereinkommen."
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that covers your full history, then export it as Excel — PDF and CSV files can't be imported. If Privat24 emails you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie's file picker."
@@ -13789,6 +13949,10 @@ msgstr "Regeln laufen automatisch bei Monobank-Synchronisierung, Bankdatei-Synch
 msgid "Rules run before the AI does"
 msgstr "Regeln laufen vor der KI"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Rules run on every new Monobank transaction, and a rule’s category wins over the merchant-code default. You rarely have to write one from scratch: change the category or the tags of a transaction and a Quick rule pill appears above the amount. Tap it, and the rule is saved for that merchant. See <0>categorization rules</0>."
+msgstr "Regeln laufen bei jeder neuen Monobank-Transaktion, und die Kategorie einer Regel hat Vorrang vor der Standardkategorie des Händlercodes. Von Grund auf schreiben musst du selten eine: Ändere Kategorie oder Tags einer Transaktion, und über dem Betrag erscheint die Schaltfläche „Schnellregel“. Tippe darauf, und die Regel für diesen Händler ist gespeichert. Siehe <0>Kategorisierungsregeln</0>."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Running a cloud-first application requires servers, databases, and ongoing operational costs that scale with users. Local-first applications offload computation and storage to user devices. The marginal cost of an additional user approaches zero."
 msgstr "Der Betrieb einer Cloud-First-Anwendung erfordert Server, Datenbanken und laufende Betriebskosten, die mit den Nutzern skalieren. Local-First-Anwendungen verlagern Berechnung und Speicherung auf die Geräte der Nutzer. Die Grenzkosten eines zusätzlichen Nutzers tendieren gegen null."
@@ -14591,6 +14755,10 @@ msgstr "Ausgaben und Einnahmen bleiben sauber"
 msgid "Spent, left and limit"
 msgstr "Ausgegeben, übrig und Limit"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Spent, left and over budget for each category, updated as transactions arrive."
+msgstr "Ausgegeben, übrig und überzogen für jede Kategorie, aktualisiert mit jeder neuen Transaktion."
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "split"
 msgstr "Aufteilen"
@@ -15098,6 +15266,10 @@ msgstr "Mikrofon antippen und sprechen"
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap the missing categories pill above your transaction list, or Uncategorized in Analytics. The Categorize inbox groups every uncategorized transaction by merchant, so one tap on a suggestion categorizes the whole group, and a single button accepts every confident suggestion in one go."
 msgstr "Tippen Sie auf den Hinweis zu fehlenden Kategorien über Ihrer Umsatzliste oder in der Analyse auf „Nicht kategorisiert“. Der Kategorisieren-Bildschirm gruppiert alle nicht kategorisierten Umsätze nach Händler, sodass ein Tippen auf einen Vorschlag die ganze Gruppe kategorisiert und eine einzige Schaltfläche alle sicheren Vorschläge auf einmal übernimmt."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Tap the Missing categories pill and sort whatever is left."
+msgstr "Tippe auf „Fehlende Kategorien“ und sortiere, was übrig ist."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap to open the inbox"
@@ -15647,6 +15819,10 @@ msgstr "Das Menü öffnet sich direkt dort"
 msgid "The merchant and its category land on the entry before you finish typing, decided by a model running on your phone."
 msgstr "Händler und Kategorie stehen auf dem Eintrag, bevor du fertig getippt hast, entschieden von einem Modell auf deinem Telefon."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "The merchant code under the name, and the category Budgie picked from it."
+msgstr "Der Händlercode unter dem Namen und die Kategorie, die Budgie daraus gewählt hat."
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 msgstr "Die Transaktionen der zusammengeführten Kategorie werden der Zielkategorie neu zugewiesen, und die leere Kategorie wird gelöscht. Nur durch manuelles Neukategorisieren reversibel."
@@ -16025,6 +16201,10 @@ msgstr "Die Fußzeile „übrig zum Zuweisen“ auf dem Split-Bildschirm konnte 
 msgid "The spoken currency picks the matching account automatically"
 msgstr "Die gesprochene Währung wählt automatisch das passende Konto aus"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "The switch lives in Settings, under General: Auto-assign categories from MCC. It is on by default. Turn it off if you would rather choose every category yourself; the change applies to transactions that arrive after it."
+msgstr "Der Schalter sitzt in den Einstellungen unter „Allgemein“: „Kategorien automatisch per MCC zuweisen“. Er ist standardmäßig an. Schalte ihn aus, wenn du jede Kategorie lieber selbst wählst; die Änderung gilt für Transaktionen, die danach eintreffen."
+
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
 msgstr "Der Schalter sitzt in der App-Sperre-Karte in den Einstellungen unter Sicherheit. Er erscheint erst, wenn Sie eine PIN gesetzt haben und auf dem Gerät eine Biometrie eingerichtet ist — einen reinen Biometrie-Modus gibt es nicht."
@@ -16270,6 +16450,10 @@ msgstr "Dieser Leitfaden ist keine generische App-Liste. Es ist ein Argument fü
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "This guide is written by developers, for developers. We’ve tested every major Mint alternative and evaluated them based on what actually matters to technical users: data ownership, API access, export capabilities, privacy practices, and the ability to self-host or run offline."
 msgstr "Dieser Leitfaden wurde von Entwicklern für Entwickler geschrieben. Wir haben jede wichtige Mint-Alternative getestet und nach den Kriterien bewertet, die für technische Nutzer wirklich zählen: Datenhoheit, API-Zugang, Exportmöglichkeiten, Datenschutzpraktiken und die Möglichkeit zum Self-Hosting oder Offline-Betrieb."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "This guide starts where setup ends. If Monobank is not connected yet, follow <0>how to get a Monobank token and connect it</0> first: it takes about two minutes and helps you choose how much history to load."
+msgstr "Diese Anleitung beginnt dort, wo die Einrichtung endet. Ist Monobank noch nicht verbunden, lies zuerst, <0>wie du einen Monobank-Token bekommst und ihn verbindest</0>: Das dauert etwa zwei Minuten und hilft dir zu entscheiden, wie viel Verlauf du laden willst."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a common concern, but security research consistently shows that obscurity provides weak protection. Determined attackers can reverse-engineer closed-source applications, find vulnerabilities through fuzzing and probing, or exploit the same bugs that internal developers missed. Meanwhile, legitimate security researchers are blocked from helping. Open source assumes adversaries will study the code and designs security that works anyway. This produces more robust systems than hoping attackers won’t look too closely."
@@ -16535,6 +16719,10 @@ msgstr "Token-Kontrolle"
 msgid "Tools like GitHub’s dependency graph and security advisories make this information visible even to non-technical users. A project with dozens of outdated dependencies and unaddressed security warnings should raise concerns."
 msgstr "Tools wie GitHubs Abhängigkeitsgraph und Sicherheitshinweise machen diese Informationen auch für nicht-technische Nutzer sichtbar. Ein Projekt mit Dutzenden veralteter Abhängigkeiten und unbehandelten Sicherheitswarnungen sollte Bedenken aufwerfen."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Topping up a jar from your card shows up twice: once as money leaving the card and once as money arriving in the jar. Counted as is, that looks like a purchase you never made. Budgie finds such pairs between your own accounts and merges each one into a single transfer, which counts as neither spending nor income."
+msgstr "Wenn du einen Topf von deiner Karte auflädst, taucht das zweimal auf: einmal als Geld, das die Karte verlässt, und einmal als Geld, das im Topf ankommt. So gezählt sieht das aus wie ein Kauf, den du nie getätigt hast. Budgie findet solche Paare zwischen deinen eigenen Konten und führt jedes zu einer einzigen Überweisung zusammen, die weder als Ausgabe noch als Einnahme zählt."
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Total — no provider exists"
 msgstr "Gesamt – kein Anbieter existiert"
@@ -16608,6 +16796,11 @@ msgstr "In jeder Währung verfolgen. In Ihrer summieren. Die tägliche Wechselku
 #: src/app/[lang]/features/debt-tracking/metadata.ts
 msgid "Track money lent or borrowed as first-class debt accounts. Lending and repayments book real income or expense, so they count in your monthly analytics."
 msgstr "Verfolge verliehenes oder geliehenes Geld als vollwertige Schuldkonten. Verleihen und Rückzahlungen verbuchen echte Einnahmen oder Ausgaben und zählen so in deiner monatlichen Auswertung."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/metadata.ts
+#: src/app/[lang]/blog/monobank-expense-tracking/opengraph-image.tsx
+msgid "Track Monobank spending automatically"
+msgstr "Monobank-Ausgaben automatisch erfassen"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, and debt — grouped, colored, archived, and renamed however you want."
@@ -17463,6 +17656,10 @@ msgstr "Was gesendet wird"
 msgid "What happened to all my Mint data?"
 msgstr "Was ist mit all meinen Mint-Daten passiert?"
 
+#: src/app/[lang]/blog/monobank-expense-tracking/metadata.ts
+msgid "What happens after you connect Monobank: purchases arrive by themselves, get categories, transfers between your own cards merge and your budget fills in."
+msgstr "Nach dem Verbinden von Monobank: Käufe kommen von selbst, erhalten Kategorien, Überweisungen zwischen deinen Karten verschmelzen, das Budget füllt sich."
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "What happens during a cross-currency transfer?"
 msgstr "Was passiert bei einer währungsübergreifenden Überweisung?"
@@ -17860,6 +18057,10 @@ msgstr "Was ist Ihr Budget?"
 msgid "Whatever in the period has no tag at all. It appears as an Untagged row — one in the income list, one in the spending list — and tapping it opens those transactions grouped by merchant, with suggested tags, so you can label them in bulk."
 msgstr "Alles im Zeitraum, das gar keinen Tag hat. Es erscheint als Zeile „Ohne Tag“ – eine in der Einnahmenliste, eine in der Ausgabenliste – und ein Tippen öffnet diese Umsätze nach Händler gruppiert, mit Tag-Vorschlägen, damit Sie sie gesammelt taggen können."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Whatever still has no category is counted in the Missing categories pill above your transaction list, and the Categorize screen lets you sort those transactions in bulk."
+msgstr "Was danach noch keine Kategorie hat, zählt die Markierung „Fehlende Kategorien“ über deiner Transaktionsliste, und im Bildschirm „Kategorisieren“ sortierst du diese Transaktionen in einem Rutsch."
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds it and fixes it — duplicates get soft-deleted, unmatched transfer legs get paired into one."
 msgstr "Wenn eine Banksynchronisierung eine Transaktion erneut liefert oder eine deiner eigenen Überweisungen als zwei getrennte Zeilen liefert, findet Budgie das und korrigiert es — Duplikate werden logisch gelöscht, nicht zugeordnete Überweisungsteile werden zu einer verknüpft."
@@ -17903,6 +18104,10 @@ msgstr "Wenn genau eine deiner vorhandenen Regeln bereits auf die Transaktion pa
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
 msgstr "Als Intuit Mint am 23. März 2024 abgeschaltet wurde, ließ es Millionen von Nutzern auf der Suche nach einem Ersatz zurück. Viele fanden schnell einen – aber die meisten landeten bei Apps, die dieselbe grundlegende Architektur wie Mint teilen: Ihre Finanzdaten leben auf den Servern von jemand anderem, verwaltet von einem Unternehmen, dessen Prioritäten sich ohne Vorwarnung verschieben können."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "When Monobank charges a commission on a transaction, Budgie splits it off into a separate line in Bank Fees & Charges. The payment keeps its real amount, the fee still counts as spending, and it stays in place even when the payment is merged into a transfer. Over a month you see exactly how much went to the bank."
+msgstr "Berechnet Monobank für eine Transaktion eine Provision, trennt Budgie sie als eigene Zeile in Bankgebühren & Kosten ab. Die Zahlung behält ihren echten Betrag, die Gebühr zählt trotzdem als Ausgabe und bleibt erhalten, auch wenn die Zahlung zu einer Überweisung zusammengeführt wird. So siehst du über den Monat genau, wie viel an die Bank ging."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "When one card pays another"
@@ -17959,6 +18164,10 @@ msgstr "Wenn Sie eine Transaktion in Budgie erstellen, passiert auf technischer 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "When you do have connectivity, Budgie can optionally sync with your bank for automatic transaction import. But this is additive, enhancing the local-first core rather than requiring it."
 msgstr "Wenn Sie eine Verbindung haben, kann Budgie optional mit Ihrer Bank synchronisieren, um Transaktionen automatisch zu importieren. Aber das ist eine Ergänzung, die den Local-First-Kern bereichert, anstatt ihn vorauszusetzen."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "When you fix the same merchant a second time, accept the Quick rule so it never comes back."
+msgstr "Wenn du denselben Händler zum zweiten Mal korrigierst, nimm die Schnellregel an, damit das nicht wieder vorkommt."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When you hand over your financial data to an app, you’re trusting it with some of the most sensitive information about your life. Your spending patterns reveal where you live, where you work, what you eat, your health conditions, your relationships, and countless other intimate details. Yet most people have no idea what happens to this data once it enters their budget app."
@@ -18873,6 +19082,10 @@ msgstr "Ja. Beide Exportabläufe erzeugen Dateien lokal; Sie benötigen nur Inte
 msgid "Yes. Both paths run on your phone."
 msgstr "Ja. Beide Wege laufen auf dem Gerät."
 
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Yes. Budgie checks for new transactions in the background, at a pace your phone’s system decides. Open the app to fetch the latest ones right away."
+msgstr "Ja. Budgie sucht im Hintergrund nach neuen Transaktionen, in einem Takt, den das System deines Handys bestimmt. Öffne die App, um die neuesten sofort zu holen."
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and amount. If your Mint export was a single file covering multiple years, you can import it in one step."
 msgstr "Ja. Budgies CSV-Importer verarbeitet große Dateien und dedupliziert nach Transaktionsdatum, Beschreibung und Betrag. Wenn Ihr Mint-Export eine einzelne Datei war, die mehrere Jahre abdeckt, können Sie sie in einem Schritt importieren."
@@ -18996,6 +19209,10 @@ msgstr "Ja. Die Einstellungen enthalten einen KI-Bereich mit einem einzigen „O
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."
 msgstr "Ja. Die Einstellungen haben einen KI-Bereich mit einem einzigen On-Device-KI-Schalter. Ausgeschaltet lädt nichts herunter, nichts lädt, und kein Vorschlag läuft — die Kategorisierung greift dann auf eigene Regeln und die Händlercodes der Bank zurück. Neuinstallationen starten mit ausgeschaltetem Schalter; wer die KI schon vor Einführung des Schalters genutzt hat, behält sie eingeschaltet."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Yes. Switch off Auto-assign categories from MCC in Settings, under General. Your rules keep working either way."
+msgstr "Ja. Schalte in den Einstellungen unter „Allgemein“ die Option „Kategorien automatisch per MCC zuweisen“ aus. Deine Regeln funktionieren in beiden Fällen."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."
@@ -19501,6 +19718,10 @@ msgstr "Ihr Geld. Ihre Daten. Ihre Kontrolle."
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Your money. Your phone. Nobody else's server."
 msgstr "Ihr Geld. Ihr Telefon. Kein fremder Server."
+
+#: src/app/[lang]/blog/monobank-expense-tracking/page.tsx
+msgid "Your Monobank cards and jars, each with its balance and its own switch."
+msgstr "Deine Monobank-Karten und -Töpfe, jeweils mit Saldo und eigenem Schalter."
 
 #: src/app/[lang]/page.tsx
 msgid "Your own token calls the bank API directly. No Plaid, no data broker."
