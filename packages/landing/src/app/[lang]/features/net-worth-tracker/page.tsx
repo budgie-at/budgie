@@ -26,20 +26,22 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie home screen with the total balance header above every account section`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Your net worth, one number</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with
                         multi-currency conversion baked in.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Watch the number add up</Trans>}>
@@ -49,14 +51,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 <FeatureStory.Step index={0} title={<Trans>One number, everything in it</Trans>}>
                     <Trans>Bank, cash, crypto and debt are already inside the figure at the top of Home.</Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie home screen with the total balance header above every account section`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="net-worth-tracker-1"
-                    slug="net-worth-tracker"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
                     <FeatureStory.Callout y={0.175}>
                         <Trans>Total in your base currency</Trans>
                     </FeatureStory.Callout>

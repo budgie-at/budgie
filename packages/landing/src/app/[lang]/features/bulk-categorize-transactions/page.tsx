@@ -35,7 +35,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Categorize a whole merchant at once</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Budgie gathers every uncategorized transaction into one inbox, groups it by merchant and suggests a category from

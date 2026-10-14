@@ -25,20 +25,22 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie settings screen showing the data management section with Export CSV and Export Database rows`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Your data, yours to take</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         One-tap CSV export of all transactions, plus a full database backup file you can save to iCloud, Drive, or anywhere,
                         encrypted with your PIN if you set one.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="database-backup-1" slug="database-backup" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Two ways out, one screen</Trans>}>
@@ -53,14 +55,7 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie settings screen showing the data management section with Export CSV and Export Database rows`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="database-backup-1"
-                    slug="database-backup"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout index={0} y={0.365}>
                         <Trans>Every transaction, one file</Trans>
                     </FeatureStory.Callout>

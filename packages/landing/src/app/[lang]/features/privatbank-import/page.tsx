@@ -30,7 +30,6 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Bring in your PrivatBank history</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Import accounts and transactions from a PrivatBank24 XLSX export, with PrivatBank&apos;s own MCC categories mapped

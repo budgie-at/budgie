@@ -29,7 +29,6 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Fix a balance, keep history honest</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Type the balance your bank shows and Budgie books the difference as a dated Adjustment transaction, not a silent

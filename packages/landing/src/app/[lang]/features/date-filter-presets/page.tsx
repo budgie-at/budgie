@@ -25,20 +25,22 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie date filter sheet with an August calendar above the row of preset range chips`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Any period, two taps away</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Today, This Week, Last Week, This Month, Last Month, This Year, All Time. Every screen with a list gets two taps to
                         the right window.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="date-filter-presets-1" slug="date-filter-presets" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Two taps to the window you want</Trans>}>
@@ -55,14 +57,7 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         the calendar instead and tap Show selected range.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie date filter sheet with an August calendar above the row of preset range chips`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="date-filter-presets-1"
-                    slug="date-filter-presets"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="date-filter-presets-1" slug="date-filter-presets">
                     <FeatureStory.Callout y={0.498}>
                         <Trans>Pick any range by hand</Trans>
                     </FeatureStory.Callout>

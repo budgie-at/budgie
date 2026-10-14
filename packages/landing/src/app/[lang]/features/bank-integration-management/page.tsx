@@ -25,20 +25,24 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Connect Binance screen with the Get API Key row, a four-step setup list, and the API key and secret fields`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>One connection, all your accounts</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Your card, your jars, and the deposit you opened last month all hang off one connection, so renewing a token is a
                         single edit, not a rebuild.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="binance-sync-1" slug="binance-sync" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One key per bank, not per account</Trans>}>
@@ -55,16 +59,7 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         whatever that key can see.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Connect Binance screen with the Get API Key row, a four-step setup list, and the API key and secret fields`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="binance-sync-1"
-                    slug="binance-sync"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="binance-sync-1" slug="binance-sync">
                     <FeatureStory.Callout y={0.22}>
                         <Trans>Generate it in Binance</Trans>
                     </FeatureStory.Callout>

@@ -25,20 +25,24 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Your Binance balances, on your phone</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone, then merges
                         your P2P buys with the bank payment that funded them.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="binance-sync-1" slug="binance-sync" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Setup is one screen</Trans>}>
@@ -55,16 +59,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         Binance login.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="binance-sync-1"
-                    slug="binance-sync"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="binance-sync-1" slug="binance-sync">
                     <FeatureStory.Callout index={0} y={0.22}>
                         <Trans>Opens Binance API management</Trans>
                     </FeatureStory.Callout>

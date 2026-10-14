@@ -25,19 +25,23 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Account Settings for a bank-synced account with the re-sync sheet open on four options: re-sync entire history, last 90 days, last 30 days and last 7 days`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Re-pull a slice, keep your edits</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Re-pull the last 7, 30 or 90 days from your bank instead of resetting the account and re-walking its whole history.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="bank-resync-window-1" slug="bank-resync-window" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Rewind a week, not a year</Trans>}>
@@ -52,16 +56,7 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                         you chose, so the next sync starts from there instead of walking the whole history again.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Account Settings for a bank-synced account with the re-sync sheet open on four options: re-sync entire history, last 90 days, last 30 days and last 7 days`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="bank-resync-window-1"
-                    slug="bank-resync-window"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="bank-resync-window-1" slug="bank-resync-window">
                     <FeatureStory.Callout index={0} y={0.64}>
                         <Trans>The whole-history reset</Trans>
                     </FeatureStory.Callout>

@@ -25,20 +25,24 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie home screen with a total balance above the Bank and Cash account groups, each group carrying its own subtotal and each account card its own currency`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Any currency, one total</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Hold accounts in any currency. Budgie refreshes exchange rates in the background so your dashboards always show in
                         your home currency.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="multi-currency-1" slug="multi-currency" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Many currencies, one number</Trans>}>
@@ -54,16 +58,7 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                         different base and the same accounts produce a different number.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie home screen with a total balance above the Bank and Cash account groups, each group carrying its own subtotal and each account card its own currency`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="multi-currency-1"
-                    slug="multi-currency"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="multi-currency-1" slug="multi-currency">
                     <FeatureStory.Callout index={0} y={0.189}>
                         <Trans>Every account, added up once</Trans>
                     </FeatureStory.Callout>

@@ -25,20 +25,24 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Split one bill across categories</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         That €87 supermarket bill was groceries and a phone charger. Split into multiple categories with a remaining-budget
                         indicator.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="split-transactions-1" slug="split-transactions" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Receipts rarely fit one category</Trans>}>
@@ -53,16 +57,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                         Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="split-transactions-1"
-                    slug="split-transactions"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="split-transactions-1" slug="split-transactions">
                     <FeatureStory.Callout y={0.721}>
                         <Trans>Each split, its own category</Trans>
                     </FeatureStory.Callout>

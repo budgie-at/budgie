@@ -26,20 +26,27 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie settings screen showing the full option set with no paywall and no subscription prompt`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Budgeting without another subscription</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Recurring monthly fees turn budgeting into another bill. Budgie is completely free: every feature, no unlock, no
                         tier.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="subscription-free-budget-app-1"
+                    slug="subscription-free-budget-app"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>What is not on this screen</Trans>}>
@@ -51,10 +58,9 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 </FeatureStory.Point>
 
                 <FeatureStory.Shot
-                    alt={t(i18n)`Budgie settings screen showing the full option set with no paywall and no subscription prompt`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="subscription-free-budget-app-1"
                     slug="subscription-free-budget-app"
                 >

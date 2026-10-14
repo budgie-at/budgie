@@ -25,20 +25,24 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Edit Category screen for a category named Сільпо, with an AI-generated metadata block showing the English translation silpo supermarket and the search keywords groceries, supermarket, food, market, store, silpo`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Foreign category names, made readable</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Category and tag names in Cyrillic, Greek, or Arabic get an English form on your device, without sending anything to
                         a server.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="ai-category-translation-1" slug="ai-category-translation" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One category, translated on your phone</Trans>}>
@@ -54,12 +58,9 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Edit Category screen for a category named Сільпо, with an AI-generated metadata block showing the English translation silpo supermarket and the search keywords groceries, supermarket, food, market, store, silpo`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="ai-category-translation-1"
                     slug="ai-category-translation"
                 >

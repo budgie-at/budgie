@@ -25,20 +25,24 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie New Transfer screen with 250 entered above a row naming Main Checking as the source and Cash Wallet as the destination`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Move money, not expenses</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency
                         transfers.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="account-transfers-1" slug="account-transfers" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Money moved, not money spent</Trans>}>
@@ -54,16 +58,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                         and credits the other — not an expense here and an income there that you have to remember to cancel out.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie New Transfer screen with 250 entered above a row naming Main Checking as the source and Cash Wallet as the destination`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="account-transfers-1"
-                    slug="account-transfers"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="account-transfers-1" slug="account-transfers">
                     <FeatureStory.Callout y={0.292}>
                         <Trans>One amount, entered once</Trans>
                     </FeatureStory.Callout>

@@ -25,20 +25,24 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie transaction list where multi-tag rows show a bordered tag chip with a sibling count and single-tag rows show a plain chip`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Scan long lists at a glance</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         The first tag you add becomes the one the list shows. Long-press another tag in the picker to make it the main one
                         instead.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="primary-tag-1" slug="primary-tag" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Which tag chip the list shows</Trans>}>
@@ -51,16 +55,7 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     <Trans>Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie transaction list where multi-tag rows show a bordered tag chip with a sibling count and single-tag rows show a plain chip`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="primary-tag-1"
-                    slug="primary-tag"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="primary-tag-1" slug="primary-tag">
                     <FeatureStory.Callout index={0} y={0.344}>
                         <Trans>Bordered chip, plus a count</Trans>
                     </FeatureStory.Callout>

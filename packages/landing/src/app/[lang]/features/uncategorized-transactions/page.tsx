@@ -26,20 +26,27 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie transaction list with a missing categories pill between the filter chips and the rows`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Find uncategorized transactions fast</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Budgie surfaces missing categories directly inside your filtered transaction list, then opens a focused cleanup view
                         with the same account, date, tag, and type filters.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="uncategorized-transactions-1"
+                    slug="uncategorized-transactions"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Three screens to a clean report</Trans>}>
@@ -53,10 +60,9 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(i18n)`Budgie transaction list with a missing categories pill between the filter chips and the rows`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="uncategorized-transactions-1"
                     slug="uncategorized-transactions"
                 >

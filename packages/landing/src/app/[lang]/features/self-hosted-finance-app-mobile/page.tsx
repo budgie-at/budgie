@@ -26,20 +26,22 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie data management settings showing Import Database and Export Database rows`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Self-hosted privacy, no server</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with
                         zero ops. Your phone is the server.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="database-backup-1" slug="database-backup" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Where the backup file replaces the server</Trans>}>
@@ -53,14 +55,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie data management settings showing Import Database and Export Database rows`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="database-backup-1"
-                    slug="database-backup"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout index={0} y={0.458}>
                         <Trans>Restore from a backup file</Trans>
                     </FeatureStory.Callout>

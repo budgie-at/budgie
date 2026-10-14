@@ -25,19 +25,23 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Unlock with a glance</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         One glance past Budgie&apos;s lock screen. The four digits you chose stay the key your database is encrypted with.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Face ID or Touch ID opens the lock, the PIN owns the key</Trans>}>
@@ -54,16 +58,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="screenshot-protection-1"
-                    slug="screenshot-protection"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection">
                     <FeatureStory.Callout y={0.42}>
                         <Trans>App Lock: PIN and Face ID or Touch ID</Trans>
                     </FeatureStory.Callout>

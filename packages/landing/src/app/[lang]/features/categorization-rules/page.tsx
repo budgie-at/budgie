@@ -25,20 +25,24 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Set a rule, skip the sorting</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Write the rule once and every future import obeys it: match on what the transaction actually says, then set the
                         category, add a tag, or turn it into a transfer.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="categorization-rules-1" slug="categorization-rules" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>From a rule you wrote to what is left for the AI</Trans>}>
@@ -56,16 +60,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         never means deleting it.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="categorization-rules-1"
-                    slug="categorization-rules"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="categorization-rules-1" slug="categorization-rules">
                     <FeatureStory.Callout y={0.252}>
                         <Trans>Conditions you wrote yourself</Trans>
                     </FeatureStory.Callout>

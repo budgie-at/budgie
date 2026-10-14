@@ -25,20 +25,24 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Keep balances out of screenshots</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground. One switch in
                         Settings → Security.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>What the switch actually hides</Trans>}>
@@ -52,16 +56,7 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     <Trans>One switch, off by default, sitting directly under the PIN-lock card in the Security section.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="screenshot-protection-1"
-                    slug="screenshot-protection"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection">
                     <FeatureStory.Callout index={0} y={0.382}>
                         <Trans>PIN lock, right above</Trans>
                     </FeatureStory.Callout>

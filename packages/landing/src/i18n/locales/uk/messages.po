@@ -50,7 +50,7 @@ msgstr "«Ми серйозно ставимося до безпеки» (як �
 msgid "“Your data is secure” (against what threat models? tested by whom?)"
 msgstr "«Ваші дані в безпеці» (від яких загроз? хто тестував?)"
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx
+#: src/generic/component/waitlist-form/waitlist-count.tsx
 msgid "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
 msgstr "{initialCount, plural, one {#+ людина вже очікує} few {#+ людини вже очікують} many {#+ людей вже очікують} other {#+ людини вже очікують}}"
 
@@ -2935,7 +2935,6 @@ msgstr "Усі функції Budgie — офлайн-трекер витрат"
 msgid "All charts, category breakdowns, tag analytics, and net-worth calculations run against the local database. They work identically whether you are connected or not."
 msgstr "Усі графіки, розбивки по категоріях, аналітика тегів і розрахунки чистих активів виконуються з локальної бази даних. Вони працюють однаково незалежно від наявності підключення."
 
-#: src/feature/component/feature-page-hero/feature-page-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 msgid "All Features"
@@ -8426,6 +8425,10 @@ msgstr "Безкоштовно"
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
 msgstr "Вільне використання, копіювання, зміна та поширення в особистих і комерційних цілях"
 
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
+msgid "Free, no account"
+msgstr "Безкоштовно, без облікового запису"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Free, no account, no subscription"
 msgstr "Безкоштовно, без облікового запису, без підписки"
@@ -8565,6 +8568,10 @@ msgstr "Керування жестами — однією рукою, без п
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "gestures"
 msgstr "жести"
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "Get the app when it opens"
+msgstr "Отримайте застосунок, щойно він відкриється"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
@@ -8756,7 +8763,6 @@ msgstr "Позиції об'єднуються в чисті активи раз
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/features/page.tsx
 #: src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx
-#: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
 #: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx
 #: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx
@@ -9744,7 +9750,6 @@ msgstr "Приєднайтеся до листа очікування — буд
 
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
-#: src/feature/component/feature-page-hero/feature-page-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
@@ -14525,6 +14530,10 @@ msgstr "Вихідний код є загальнодоступним — чит
 msgid "source-available"
 msgstr "доступний код"
 
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
+msgid "Source-available"
+msgstr "Вихідний код доступний"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/metadata.ts
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
@@ -18686,6 +18695,7 @@ msgstr "Працює в режимі польоту, в тунелях і сіл
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
 msgid "Works offline"
 msgstr "Працює офлайн"
 

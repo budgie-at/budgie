@@ -25,20 +25,22 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie new expense form with the tag sheet open on a searchable grid of tag chips`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Layer tags on top of categories</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Layer tags on top of categories. One transaction can be both Groceries (category) and #vacation, #shared, and
                         #reimbursable (tags).
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="transaction-tags-1" slug="transaction-tags" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One transaction, two ways to file it</Trans>}>
@@ -53,14 +55,7 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         your own flat list.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie new expense form with the tag sheet open on a searchable grid of tag chips`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="transaction-tags-1"
-                    slug="transaction-tags"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="transaction-tags-1" slug="transaction-tags">
                     <FeatureStory.Callout y={0.49}>
                         <Trans>Tags sit next to Category</Trans>
                     </FeatureStory.Callout>

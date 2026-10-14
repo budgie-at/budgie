@@ -6,16 +6,29 @@ import { CheckCircle2, Sparkles } from 'lucide-react';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
+
 interface Props {
-    variant: 'hero' | 'cta';
-    position?: number;
+    readonly variant: WaitlistVariantEnum;
+    readonly position?: number;
 }
+
+const containerVariants = cva('flex flex-col gap-4 animate-in fade-in duration-500', {
+    variants: {
+        variant: {
+            [WaitlistVariantEnum.HERO]: 'items-center',
+            [WaitlistVariantEnum.CTA]: 'items-center',
+            [WaitlistVariantEnum.FEATURE]: 'items-start'
+        }
+    }
+});
 
 const positionTextVariants = cva('', {
     variants: {
         variant: {
-            hero: 'text-muted-foreground',
-            cta: 'text-white/80'
+            [WaitlistVariantEnum.HERO]: 'text-muted-foreground',
+            [WaitlistVariantEnum.CTA]: 'text-white/80',
+            [WaitlistVariantEnum.FEATURE]: 'text-muted-foreground'
         }
     }
 });
@@ -23,8 +36,9 @@ const positionTextVariants = cva('', {
 const discountTextVariants = cva('text-sm', {
     variants: {
         variant: {
-            hero: 'text-muted-foreground',
-            cta: 'text-white/70'
+            [WaitlistVariantEnum.HERO]: 'text-muted-foreground',
+            [WaitlistVariantEnum.CTA]: 'text-white/70',
+            [WaitlistVariantEnum.FEATURE]: 'text-muted-foreground'
         }
     }
 });
@@ -35,7 +49,7 @@ export const WaitlistSuccess = ({ variant, position }: Props) => {
     const displayPosition = WAITLIST_BASE_POSITION + (position ?? 0);
 
     return (
-        <div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
+        <div className={containerVariants({ variant })}>
             <div className="flex items-center gap-2 text-green-500">
                 <CheckCircle2 className="size-6" />
 

@@ -25,20 +25,24 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Know who owes whom</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         That €200 you lent your sister, the €1500 you owe a friend. Both are first-class accounts with target balances,
                         return dates, and contact assignment.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="debt-tracking-1" slug="debt-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Loans between people are accounts too</Trans>}>
@@ -54,16 +58,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         has been settled.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="debt-tracking-1"
-                    slug="debt-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="debt-tracking-1" slug="debt-tracking">
                     <FeatureStory.Callout y={0.321}>
                         <Trans>Money you owe</Trans>
                     </FeatureStory.Callout>

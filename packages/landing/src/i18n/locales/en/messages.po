@@ -49,7 +49,7 @@ msgstr "“We take security seriously” (how? show us the evidence)"
 msgid "“Your data is secure” (against what threat models? tested by whom?)"
 msgstr "“Your data is secure” (against what threat models? tested by whom?)"
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx
+#: src/generic/component/waitlist-form/waitlist-count.tsx
 msgid "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
 msgstr "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
 
@@ -2934,7 +2934,6 @@ msgstr "All Budgie Features — Offline-First Expense Tracker"
 msgid "All charts, category breakdowns, tag analytics, and net-worth calculations run against the local database. They work identically whether you are connected or not."
 msgstr "All charts, category breakdowns, tag analytics, and net-worth calculations run against the local database. They work identically whether you are connected or not."
 
-#: src/feature/component/feature-page-hero/feature-page-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 msgid "All Features"
@@ -8425,6 +8424,10 @@ msgstr "Free"
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
 msgstr "Free use, copying, modification, and sharing for personal and business purposes"
 
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
+msgid "Free, no account"
+msgstr "Free, no account"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Free, no account, no subscription"
 msgstr "Free, no account, no subscription"
@@ -8564,6 +8567,10 @@ msgstr "Gesture-driven flow — one-handed, no toolbar hunting, no extra navigat
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "gestures"
 msgstr "gestures"
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "Get the app when it opens"
+msgstr "Get the app when it opens"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
@@ -8755,7 +8762,6 @@ msgstr "Holdings roll up into net worth alongside fiat accounts"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/features/page.tsx
 #: src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx
-#: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
 #: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx
 #: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx
@@ -9743,7 +9749,6 @@ msgstr "Join the waitlist — be first to try the offline-first expense tracker.
 
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
-#: src/feature/component/feature-page-hero/feature-page-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
@@ -14524,6 +14529,10 @@ msgstr "Source code is publicly available — read every line that touches your 
 msgid "source-available"
 msgstr "source-available"
 
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
+msgid "Source-available"
+msgstr "Source-available"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/metadata.ts
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
@@ -18685,6 +18694,7 @@ msgstr "Works in airplane mode, tunnels, and rural areas — logging expenses, v
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
 msgid "Works offline"
 msgstr "Works offline"
 

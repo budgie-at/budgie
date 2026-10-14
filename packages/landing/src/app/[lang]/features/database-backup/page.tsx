@@ -34,14 +34,15 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Back up everything in one file</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Capture the whole Budgie database as one file, encrypted with your PIN when you set one, and put it back on another
                         device. No account, no upload.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={storyAlt} locale={lang} scene="database-backup-1" slug="database-backup" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Where a server would be, there is a file</Trans>}>
@@ -58,7 +59,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         encrypted with.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="database-backup-1" slug="database-backup">
+                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout y={0.54}>
                         <Trans>Writes the whole database</Trans>
                     </FeatureStory.Callout>

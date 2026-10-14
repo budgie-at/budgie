@@ -25,20 +25,24 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie transaction list where a matched transfer pair appears as one incoming transfer row naming the destination account`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Transfers and refunds, matched for you</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Budgie consolidates obvious transfers and merchant refunds automatically, and leaves anything ambiguous exactly as
                         it imported it.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="transfer-pair-detection-1" slug="transfer-pair-detection" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Two rows, one movement</Trans>}>
@@ -55,12 +59,9 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie transaction list where a matched transfer pair appears as one incoming transfer row naming the destination account`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="transfer-pair-detection-1"
                     slug="transfer-pair-detection"
                 >

@@ -25,20 +25,29 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie new expense screen with an amount of zero and Transportation and Groceries suggestion pills above the action buttons`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Tap a suggestion, done</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Open the expense form and Budgie offers pill-shaped suggestions from your own history: category first, then tags,
                         then a comment, with the usual amount filled in once you have chosen.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="ai-transaction-suggestions-1"
+                    slug="ai-transaction-suggestions"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Suggestions before you type</Trans>}>
@@ -52,12 +61,9 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie new expense screen with an amount of zero and Transportation and Groceries suggestion pills above the action buttons`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="ai-transaction-suggestions-1"
                     slug="ai-transaction-suggestions"
                 >

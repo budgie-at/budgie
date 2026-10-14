@@ -25,19 +25,21 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie transaction list in dark mode with a solid black background and bright red and green amounts`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Truly dark, easy on the eyes</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         System-adaptive dark theme that respects OLED displays and switches with your device, or lock to dark or light.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="expense-tracking-2" slug="expense-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>What the transaction list actually shows</Trans>}>
@@ -48,14 +50,7 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                     <Trans>The background is solid black, not a dimmed grey panel layered over a light design.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie transaction list in dark mode with a solid black background and bright red and green amounts`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="expense-tracking-2"
-                    slug="expense-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="expense-tracking-2" slug="expense-tracking">
                     <FeatureStory.Callout index={0} y={0.09}>
                         <Trans>Solid black surface</Trans>
                     </FeatureStory.Callout>

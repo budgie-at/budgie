@@ -30,7 +30,6 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Your Erste statement, imported</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Import your full Erste Bank account statement straight from the PDF, including the new modern layout introduced in

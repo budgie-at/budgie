@@ -25,19 +25,23 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Log every expense in seconds</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="expense-tracking-1" slug="expense-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>From an empty sheet to a list you can read</Trans>}>
@@ -50,16 +54,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                         away.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="expense-tracking-1"
-                    slug="expense-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="expense-tracking-1" slug="expense-tracking">
                     <FeatureStory.Callout y={0.335}>
                         <Trans>Type the amount</Trans>
                     </FeatureStory.Callout>

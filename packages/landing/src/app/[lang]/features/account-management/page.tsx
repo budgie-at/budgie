@@ -25,20 +25,24 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Every account, one home screen</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Track unlimited bank accounts, cash wallets, deposits, crypto, and debt. Group, color, archive, and rename them
                         however you want.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="account-management-1" slug="account-management" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Many accounts, one balance sheet</Trans>}>
@@ -54,16 +58,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         carries the subtotal for the accounts under it.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="account-management-1"
-                    slug="account-management"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="account-management-1" slug="account-management">
                     <FeatureStory.Callout y={0.177}>
                         <Trans>Total balance up top</Trans>
                     </FeatureStory.Callout>

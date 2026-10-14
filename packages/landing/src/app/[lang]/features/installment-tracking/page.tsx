@@ -32,7 +32,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Track what you still owe</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Paid for a new phone in three parts? Turn the purchase into a plan in a few taps. Budgie attaches every monthly part

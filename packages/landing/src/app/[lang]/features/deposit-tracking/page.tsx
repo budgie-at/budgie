@@ -25,20 +25,24 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Savings deposits, kept separate</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Track fixed-term savings as deposit accounts kept separate from everyday spending, with interest rate, maturity
                         date, days remaining, and expected payout.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="deposit-tracking-1" slug="deposit-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>A fixed term, tracked like an account</Trans>}>
@@ -53,16 +57,7 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         calculated expected payout.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="deposit-tracking-1"
-                    slug="deposit-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="deposit-tracking-1" slug="deposit-tracking">
                     <FeatureStory.Callout y={0.339}>
                         <Trans>Maturity date and days left</Trans>
                     </FeatureStory.Callout>

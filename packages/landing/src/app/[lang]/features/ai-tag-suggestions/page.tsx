@@ -25,13 +25,15 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Tap your tags, skip typing</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         After selecting a category, Budgie proposes the tags you usually use for similar transactions as tappable pill
@@ -39,7 +41,9 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                         dictate.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="ai-tag-suggestions-1" slug="ai-tag-suggestions" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Tags suggested as you save</Trans>}>
@@ -50,16 +54,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     <Trans>Choose a category and tag pills appear above the tag button.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="ai-tag-suggestions-1"
-                    slug="ai-tag-suggestions"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="ai-tag-suggestions-1" slug="ai-tag-suggestions">
                     <FeatureStory.Callout index={0} y={0.447}>
                         <Trans>Suggested tag pills</Trans>
                     </FeatureStory.Callout>

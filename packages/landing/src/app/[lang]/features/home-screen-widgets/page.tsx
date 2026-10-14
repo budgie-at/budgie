@@ -23,20 +23,22 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie home screen with the total balance header that the net worth widget mirrors`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Your money, on the Home Screen</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Net worth, budget, and a quick way to add a transaction, right on your iPhone Home Screen. No need to open Budgie to
                         check where you stand.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Three widgets, one glance</Trans>}>
@@ -49,14 +51,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         whether you are growing or burning. Tap it and Budgie opens straight to Home.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie home screen with the total balance header that the net worth widget mirrors`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="net-worth-tracker-1"
-                    slug="net-worth-tracker"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
                     <FeatureStory.Callout y={0.175}>
                         <Trans>Total in your base currency</Trans>
                     </FeatureStory.Callout>

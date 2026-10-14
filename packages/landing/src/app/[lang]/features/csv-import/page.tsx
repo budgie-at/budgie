@@ -35,14 +35,15 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Import a CSV from any bank</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Point Budgie at any CSV and map its columns onto Budgie&apos;s fields on one screen, or start from a built-in preset
                         and adjust.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={storyAlt} locale={lang} scene="csv-import-1" slug="csv-import" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One screen does the whole import</Trans>}>
@@ -59,7 +60,7 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                         Budgie found.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="csv-import-1" slug="csv-import">
+                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} scene="csv-import-1" slug="csv-import">
                     <FeatureStory.Callout y={0.356}>
                         <Trans>One column per field</Trans>
                     </FeatureStory.Callout>

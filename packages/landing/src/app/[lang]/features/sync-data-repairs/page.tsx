@@ -29,7 +29,6 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Duplicates and split transfers, fixed</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds

@@ -50,7 +50,7 @@ msgstr "„Wir nehmen Sicherheit ernst\" (wie genau? Zeigen Sie uns die Belege)"
 msgid "“Your data is secure” (against what threat models? tested by whom?)"
 msgstr "„Ihre Daten sind sicher\" (gegen welche Bedrohungsmodelle? Von wem getestet?)"
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx
+#: src/generic/component/waitlist-form/waitlist-count.tsx
 msgid "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
 msgstr "{initialCount, plural, one {#+ Person wartet bereits} other {#+ Personen warten bereits}}"
 
@@ -2935,7 +2935,6 @@ msgstr "Alle Budgie-Funktionen — Offline-First-Ausgabentracker"
 msgid "All charts, category breakdowns, tag analytics, and net-worth calculations run against the local database. They work identically whether you are connected or not."
 msgstr "Alle Diagramme, Kategorienaufschlüsselungen, Tag-Analysen und Nettovermögensberechnungen laufen gegen die lokale Datenbank. Sie funktionieren identisch, ob Sie verbunden sind oder nicht."
 
-#: src/feature/component/feature-page-hero/feature-page-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 msgid "All Features"
@@ -8426,6 +8425,10 @@ msgstr "Kostenlos"
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
 msgstr "Freie Nutzung, Vervielfältigung, Änderung und Weitergabe für private und geschäftliche Zwecke"
 
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
+msgid "Free, no account"
+msgstr "Kostenlos, kein Konto"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Free, no account, no subscription"
 msgstr "Kostenlos, kein Konto, kein Abonnement"
@@ -8565,6 +8568,10 @@ msgstr "Gestengesteuerter Ablauf – einhändig, kein Suchen in Werkzeugleisten,
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "gestures"
 msgstr "Gesten"
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "Get the app when it opens"
+msgstr "Hol dir die App, sobald sie startet"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
@@ -8756,7 +8763,6 @@ msgstr "Positionen fließen zusammen mit Fiat-Konten in das Nettovermögen ein"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/features/page.tsx
 #: src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx
-#: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
 #: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx
 #: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx
@@ -9744,7 +9750,6 @@ msgstr "Auf die Warteliste setzen – als Erster den Offline-First-Ausgabentrack
 
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
-#: src/feature/component/feature-page-hero/feature-page-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
@@ -14525,6 +14530,10 @@ msgstr "Quellcode ist öffentlich verfügbar – lesen Sie jede Zeile, die Ihre 
 msgid "source-available"
 msgstr "source-available"
 
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
+msgid "Source-available"
+msgstr "Quellcode einsehbar"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/metadata.ts
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
@@ -18686,6 +18695,7 @@ msgstr "Funktioniert im Flugmodus, in Tunneln und ländlichen Gebieten — Ausga
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
+#: src/feature/component/feature-trust-strip/feature-trust-strip.tsx
 msgid "Works offline"
 msgstr "Funktioniert offline"
 

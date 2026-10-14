@@ -25,20 +25,24 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Bank codes sort your spending</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically, first
                         import, no setup.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="mcc-auto-category-1" slug="mcc-auto-category" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Categories before you type</Trans>}>
@@ -53,16 +57,7 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                         shown under the merchant name.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="mcc-auto-category-1"
-                    slug="mcc-auto-category"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="mcc-auto-category-1" slug="mcc-auto-category">
                     <FeatureStory.Callout y={0.411}>
                         <Trans>The bank&apos;s category code</Trans>
                     </FeatureStory.Callout>

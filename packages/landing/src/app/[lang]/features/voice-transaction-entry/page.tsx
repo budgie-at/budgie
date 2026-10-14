@@ -13,6 +13,7 @@ import { FeaturePageProse } from '../../../../feature/component/feature-page-pro
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureHeroFocusEnum } from '../../../../feature/enum/feature-hero-focus.enum';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -25,20 +26,30 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie home screen dimmed behind the quick-entry sheet, with a ringed microphone button in the centre of the bottom bar and a close button on the right`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Say it, Budgie logs it</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Say &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo; and Budgie logs all three.
                         Transcription and parsing both happen on your phone. The audio never leaves it.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    focus={FeatureHeroFocusEnum.BOTTOM}
+                    locale={lang}
+                    scene="voice-transaction-entry-1"
+                    slug="voice-transaction-entry"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Speak it, review it, save it</Trans>}>
@@ -54,12 +65,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie home screen dimmed behind the quick-entry sheet, with a ringed microphone button in the centre of the bottom bar and a close button on the right`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="voice-transaction-entry-1"
                     slug="voice-transaction-entry"
                 >

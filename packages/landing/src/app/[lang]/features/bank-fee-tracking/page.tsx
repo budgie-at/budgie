@@ -20,20 +20,24 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Edit Transfer screen for a $900 transfer from Main Checking to Emergency Savings with a Bank Fees & Charges fee sheet showing $4.50 and a Save fee button`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>See what your bank charges</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Keep ATM fees, transfer fees, and card commissions visible in analytics without turning every transfer into an
                         expense.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="bank-fee-tracking-1" slug="bank-fee-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>A transfer can carry a cost</Trans>}>
@@ -49,16 +53,7 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
                         $900 you moved stays $900.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Edit Transfer screen for a $900 transfer from Main Checking to Emergency Savings with a Bank Fees & Charges fee sheet showing $4.50 and a Save fee button`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="bank-fee-tracking-1"
-                    slug="bank-fee-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="bank-fee-tracking-1" slug="bank-fee-tracking">
                     <FeatureStory.Callout y={0.812}>
                         <Trans>Attached to the transfer</Trans>
                     </FeatureStory.Callout>

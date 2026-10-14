@@ -25,17 +25,21 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Categories analytics tab with the date and amount filter chips, the Spent, Income and Balance tiles, and per-category spending bars`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>See where your money goes</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it.</Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="spending-analytics-1" slug="spending-analytics" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>From the month&apos;s total to one receipt</Trans>}>
@@ -52,16 +56,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                         and Tags tabs both read the same filter — Runway keeps its own six-month window instead.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Categories analytics tab with the date and amount filter chips, the Spent, Income and Balance tiles, and per-category spending bars`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="spending-analytics-1"
-                    slug="spending-analytics"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="spending-analytics-1" slug="spending-analytics">
                     <FeatureStory.Callout x={0.43} y={0.167}>
                         <Trans>Seven presets, or your own range</Trans>
                     </FeatureStory.Callout>

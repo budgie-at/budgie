@@ -25,20 +25,29 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Long-press for quick actions</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Long-press any transaction card for a menu: edit, delete, convert to a transfer, convert income to a refund, attach
                         a debt and more, without opening the full edit form.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="transaction-long-press-menu-1"
+                    slug="transaction-long-press-menu"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Every change starts on the list</Trans>}>
@@ -52,12 +61,9 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     <Trans>The menu opens anchored to the card you pressed, and the rest of the list dims behind it.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="transaction-long-press-menu-1"
                     slug="transaction-long-press-menu"
                 >

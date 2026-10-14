@@ -25,19 +25,28 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Spot subscriptions before they bill</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Budgie spots subscription patterns and renewals, plots them on a month calendar, and forecasts what&apos;s coming.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="recurring-payments-calendar-1"
+                    slug="recurring-payments-calendar"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>The slow leak in every budget</Trans>}>
@@ -53,12 +62,9 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="recurring-payments-calendar-1"
                     slug="recurring-payments-calendar"
                 >

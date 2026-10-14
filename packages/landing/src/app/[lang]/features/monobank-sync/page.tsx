@@ -26,20 +26,22 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie Connect Monobank screen with the Get API Token row and the token field`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Your Monobank, on your phone</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Connect your Monobank account, pull a full transaction history straight to your device, and keep working offline. No
                         third-party aggregator in between.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="no-bank-login-budget-app-1" slug="no-bank-login-budget-app" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>From one token to your home screen</Trans>}>
@@ -50,10 +52,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     <Trans>Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(i18n)`Budgie Connect Monobank screen with the Get API Token row and the token field`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="no-bank-login-budget-app-1"
                     slug="no-bank-login-budget-app"
                 >

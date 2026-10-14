@@ -25,19 +25,28 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Crypto next to your cash</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Track Bitcoin, Ethereum, and two hundred crypto assets alongside your bank accounts in a single net-worth view.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="crypto-investment-tracking-1"
+                    slug="crypto-investment-tracking"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One coin, three screens</Trans>}>
@@ -54,12 +63,9 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="crypto-investment-tracking-1"
                     slug="crypto-investment-tracking"
                 >

@@ -26,20 +26,24 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Analytics Tags tab with an overview of spent, income and balance above an income-by-tag list and a spending-by-tag list, each row showing a total and its share of the period`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>See spending tag by tag</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Switch to the Tags tab in Analytics for income and spending totalled tag by tag, each with its share of the period
                         and the transactions behind it.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="statistics-tags-tab-1" slug="statistics-tags-tab" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>The question a category cannot answer</Trans>}>
@@ -56,16 +60,7 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                         chips.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Analytics Tags tab with an overview of spent, income and balance above an income-by-tag list and a spending-by-tag list, each row showing a total and its share of the period`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="statistics-tags-tab-1"
-                    slug="statistics-tags-tab"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="statistics-tags-tab-1" slug="statistics-tags-tab">
                     <FeatureStory.Callout index={0} y={0.123}>
                         <Trans>Tags, beside Categories</Trans>
                     </FeatureStory.Callout>

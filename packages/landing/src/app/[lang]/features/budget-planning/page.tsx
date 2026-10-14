@@ -35,14 +35,15 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>One monthly limit, split by category</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Set one overall monthly limit, add per-category limits, cap everything else, and watch the cycle fill up from your
                         home screen. Every number is computed on your device.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={storyAlt} locale={lang} scene="budget-planning-2" slug="budget-planning" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>The whole month on one screen</Trans>}>
@@ -59,7 +60,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                         budget&apos;s currency before any of it is counted.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="budget-planning-2" slug="budget-planning">
+                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} scene="budget-planning-2" slug="budget-planning">
                     <FeatureStory.Callout y={0.224}>
                         <Trans>95% of the limit used</Trans>
                     </FeatureStory.Callout>

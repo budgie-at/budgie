@@ -23,13 +23,15 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Runway tab with a burning verdict, a run-out month, a meter and the monthly expenses, income and net`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>How long your money lasts</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Budgie compares what you earn and spend in a typical month with the money in your cash and bank accounts. If you
@@ -37,7 +39,9 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         how much you add each month.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="runway-1" slug="runway" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One question, answered on Home</Trans>}>
@@ -60,16 +64,7 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         When you spend more than you earn, Runway divides your balance by the gap and names the month it runs out.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Runway tab with a burning verdict, a run-out month, a meter and the monthly expenses, income and net`}
-                    index={1}
-                    locale={lang}
-                    priority
-                    scene="runway-1"
-                    slug="runway"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={1} locale={lang} scene="runway-1" slug="runway">
                     <FeatureStory.Callout y={0.234}>
                         <Trans>Months left at this pace</Trans>
                     </FeatureStory.Callout>

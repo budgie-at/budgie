@@ -25,20 +25,24 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
     const i18n = initLingui(lang);
 
     const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie new expense screen with Transportation and Groceries category pills above the Split, Date, Note, Tags and Category buttons`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Expenses sort themselves, privately</Trans>}
-                locale={lang}
                 tagline={
                     <Trans>
                         Category, tag, and merchant suggestions that run entirely on your phone and learn from your corrections. Your
                         statements never leave the device.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="ai-auto-categorization-1" slug="ai-auto-categorization" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Categories proposed on your phone</Trans>}>
@@ -52,12 +56,9 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie new expense screen with Transportation and Groceries category pills above the Split, Date, Note, Tags and Category buttons`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="ai-auto-categorization-1"
                     slug="ai-auto-categorization"
                 >
