@@ -7,7 +7,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 
 const MARKET_DATA_HISTORY_LIMIT = 90;
 
-const recentMarketPricesAtom = databaseQueryFamily(
+export const recentMarketPricesAtom = databaseQueryFamily(
     [InstrumentDailyMarketPriceEntityTable],
     InstrumentDailyMarketPriceRepository,
     (instrumentDailyMarketPriceRepository, [instrumentId, quoteInstrumentId]: readonly [number, number]) =>

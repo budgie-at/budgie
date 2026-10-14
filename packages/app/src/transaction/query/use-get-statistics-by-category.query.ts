@@ -10,7 +10,7 @@ import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 
 import type { LanguageEnum, TransactionFilterInterface } from '@budgie/contracts';
 
-const statisticsByCategoryAtom = databaseQueryFamily(
+export const statisticsByCategoryAtom = databaseQueryFamily(
     STATISTICS_TABLES,
     StatisticsRepository,
     (statisticsRepository, [filters, defaultInstrumentId, language]: readonly [TransactionFilterInterface, number, LanguageEnum]) =>

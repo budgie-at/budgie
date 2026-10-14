@@ -6,7 +6,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
-const debtAccountManualSettledAmountAtom = databaseQueryFamily(
+export const debtAccountManualSettledAmountAtom = databaseQueryFamily(
     [DebtEventEntityTable],
     DebtEventRepository,
     (debtEventRepository, accountId: number) => debtEventRepository.getManualSettledAmountByAccountId(accountId)

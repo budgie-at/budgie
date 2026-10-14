@@ -8,7 +8,7 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
-const accountCountAtom = databaseQueryAtom(
+export const accountCountAtom = databaseQueryAtom(
     [AccountEntityTable],
     Effect.flatMap(AccountRepository, accountRepository => accountRepository.count())
 );

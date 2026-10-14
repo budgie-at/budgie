@@ -6,7 +6,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 
 import type { AccountFilterInterface } from '@budgie/contracts';
 
-const searchAccountsSortedAtom = databaseQueryFamily(
+export const searchAccountsSortedAtom = databaseQueryFamily(
     [AccountEntityTable, InstrumentEntityTable, AccountBalanceEntityTable],
     AccountRepository,
     (accountRepository, [search, filter]: readonly [string, AccountFilterInterface]) =>

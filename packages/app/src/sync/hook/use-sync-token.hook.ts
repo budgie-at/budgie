@@ -14,7 +14,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
-const syncTokenAtom = Atom.family((accountId: number) =>
+export const syncTokenAtom = Atom.family((accountId: number) =>
     databaseQueryAtom(
         [AccountEntityTable, InstrumentEntityTable, BankIntegrationEntityTable],
         Effect.gen(function* () {

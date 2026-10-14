@@ -13,7 +13,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 
 import type { InstallmentPlanScheduleInterface } from '@budgie/contracts';
 
-const installmentPlanScheduleAtom = databaseQueryFamily(
+export const installmentPlanScheduleAtom = databaseQueryFamily(
     [AccountEntityTable, InstrumentEntityTable, DebtEventEntityTable, TransactionEntityTable, TransactionEntryEntityTable],
     InstallmentPlanRepository,
     (installmentPlanRepository, accountId: number) => installmentPlanRepository.getSchedule(accountId)

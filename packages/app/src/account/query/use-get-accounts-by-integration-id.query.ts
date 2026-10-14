@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-const accountsByIntegrationIdAtom = databaseQueryFamily(
+export const accountsByIntegrationIdAtom = databaseQueryFamily(
     [AccountEntityTable, InstrumentEntityTable],
     AccountRepository,
     (accountRepository, integrationId: number) => accountRepository.findByIntegrationId(integrationId)

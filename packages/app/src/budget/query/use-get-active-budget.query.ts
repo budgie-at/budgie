@@ -15,7 +15,7 @@ interface UseGetActiveBudgetResult {
     readonly isLoading: boolean;
 }
 
-const activeBudgetAtom = databaseQueryAtom(
+export const activeBudgetAtom = databaseQueryAtom(
     [BudgetEntityTable],
     Effect.flatMap(BudgetRepository, budgetRepository => budgetRepository.findActive())
 );

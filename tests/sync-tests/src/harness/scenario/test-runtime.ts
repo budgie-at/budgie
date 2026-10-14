@@ -1,10 +1,16 @@
+import { DatabaseChangeService } from '@app/@generic/drizzle/service/database-change.service';
 import { appServicesLayer, appServicesWithoutDrainerLayer } from '@app/@generic/runtime/app-services.layer';
-import { makeTestPlatformLayer } from '@budgie-at/test-kit';
+import { makeTestDatabase, makeTestPlatformLayer } from '@budgie-at/test-kit';
+import { Db } from '@budgie/contracts';
 import { BINANCE_RATE_LIMIT_MS, MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
+import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Layer from 'effect/Layer';
+import * as Logger from 'effect/Logger';
+import * as Atom from 'effect/reactivity/Atom';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 import { vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -48,6 +54,27 @@ const servicesLayer = appServicesWithoutDrainerLayer.pipe(
 const realDrainerServicesLayer = appServicesLayer.pipe(Layer.provideMerge(platformLayer));
 
 export type Services = Layer.Success<typeof servicesLayer>;
+
+export const liveStatements: string[] = [];
+
+const livePlatformLayer = Layer.mergeAll(
+    Layer.effect(
+        Db,
+        Effect.flatMap(DatabaseChangeService, databaseChangeService =>
+            makeTestDatabase(testDb.$client, queryText => liveStatements.push(queryText), databaseChangeService.record)
+        )
+    ),
+    Layer.effect(
+        Db.TransactionBoundary,
+        Effect.map(DatabaseChangeService, databaseChangeService => databaseChangeService.transactionBoundary)
+    ),
+    FetchHttpClient.layer,
+    Logger.layer([])
+).pipe(Layer.provideMerge(DatabaseChangeService.layer), Layer.provideMerge(Reactivity.layer));
+
+export const testAtomRuntime = Atom.context({ memoMap: Layer.makeMemoMapUnsafe() })(
+    appServicesWithoutDrainerLayer.pipe(Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, livePlatformLayer)))
+);
 
 let testContext: Context.Context<Services> | null = null;
 

@@ -5,7 +5,7 @@ import { ACCOUNT_BALANCE_TABLES } from '../constant/account-balance-tables.const
 
 import { useCachedBalanceQuery } from './use-cached-balance.query';
 
-const cryptoInstrumentBalanceAtom = databaseQueryFamily(
+export const cryptoInstrumentBalanceAtom = databaseQueryFamily(
     ACCOUNT_BALANCE_TABLES,
     AccountBalanceRepository,
     (accountBalanceRepository, instrumentId: number) => accountBalanceRepository.getTotalByCryptoInstrument(instrumentId)

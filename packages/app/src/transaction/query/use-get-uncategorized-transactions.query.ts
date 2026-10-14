@@ -8,7 +8,7 @@ import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.q
 
 import type { LanguageEnum, TransactionFilterInterface } from '@budgie/contracts';
 
-const uncategorizedTransactionsAtom = databaseQueryFamily(
+export const uncategorizedTransactionsAtom = databaseQueryFamily(
     TRANSACTION_LIST_TABLES,
     TransactionViewRepository,
     (transactionViewRepository, [filters, language, limit]: readonly [TransactionFilterInterface, LanguageEnum, number]) =>

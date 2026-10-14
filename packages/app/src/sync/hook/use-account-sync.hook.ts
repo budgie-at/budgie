@@ -4,7 +4,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-const accountSyncAtom = databaseQueryFamily([SyncEntityTable], SyncRepository, (syncRepository, accountId: number) =>
+export const accountSyncAtom = databaseQueryFamily([SyncEntityTable], SyncRepository, (syncRepository, accountId: number) =>
     syncRepository.getByAccountId(accountId)
 );
 

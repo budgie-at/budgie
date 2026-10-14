@@ -10,7 +10,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-const cryptoPositionEntriesAtom = databaseQueryFamily(
+export const cryptoPositionEntriesAtom = databaseQueryFamily(
     [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable],
     TransactionEntryPositionRepository,
     (transactionEntryPositionRepository, [instrumentId, baseInstrumentId]: readonly [number, number]) =>
