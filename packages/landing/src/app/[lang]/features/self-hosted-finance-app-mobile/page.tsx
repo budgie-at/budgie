@@ -71,8 +71,9 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
 
                 <FeatureStory.Point index={1}>
                     <Trans>
-                        Export Database writes one file with everything, encrypted if you have a PIN set. Import Database restores it on a
-                        new phone after you pick the file and enter that PIN if the backup was encrypted.
+                        Export Database writes one compressed file with everything, PIN-locked if you have a PIN set. Import Database
+                        restores it on a new phone after you pick the file and enter that PIN if the backup was PIN-locked. A restore
+                        replaces the data on that phone; it is not sync.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -105,8 +106,10 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>
-                            Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when
-                            you made it. Restore it on the second device by picking the file and entering that PIN.
+                            Budgie does not sync between devices. You can move your data by copying the backup file through your own iCloud
+                            Drive, Google Drive, or Dropbox and restoring it on the second device — but a restore replaces everything on
+                            that device, and later changes stay on the device where you made them. If the backup was PIN-locked, enter that
+                            PIN when you restore.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
@@ -115,7 +118,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>
                             Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control:
-                            NAS, S3, your own server, your own cloud.
+                            NAS, your own server, your own cloud.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -138,7 +141,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     />
                     <FeaturePageCategoryComparison.Row
                         budgieValue={<Trans>Native iOS + Android</Trans>}
-                        competitorValue={<Trans>Web wrapper or none</Trans>}
+                        competitorValue={<Trans>Often a web app, or none</Trans>}
                         label={<Trans>Mobile experience</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
@@ -147,8 +150,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                         label={<Trans>Backup</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Backup file copied via your cloud</Trans>}
-                        competitorValue={<Trans>Built-in via your server</Trans>}
+                        budgieValue={<Trans>None — a restore replaces the other device&apos;s data</Trans>}
+                        competitorValue={<Trans>Usually via your server</Trans>}
                         label={<Trans>Multi-device sync</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
@@ -170,11 +173,13 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>How do I sync between phone and tablet?</Trans>}
+                    question={<Trans>Can I use Budgie on a phone and a tablet at once?</Trans>}
                     answer={
                         <Trans>
-                            Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when
-                            you made it. Restore it on the second device by picking the file and entering that PIN.
+                            Budgie does not sync between devices. You can move your data by copying the backup file through your own iCloud
+                            Drive, Google Drive, or Dropbox and restoring it on the second device — but a restore replaces everything on
+                            that device, and later changes stay on the device where you made them. If the backup was PIN-locked, enter that
+                            PIN when you restore.
                         </Trans>
                     }
                 />
@@ -187,7 +192,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     answer={
                         <Trans>
                             Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control:
-                            NAS, S3, your own server, your own cloud.
+                            NAS, your own server, your own cloud.
                         </Trans>
                     }
                 />

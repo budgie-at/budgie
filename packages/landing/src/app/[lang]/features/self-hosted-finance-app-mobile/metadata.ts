@@ -13,7 +13,7 @@ export const FEATURE_METADATA = {
     title: msg`Self-Hosted Finance App on Mobile — Without Running a Server`,
     tagline: msg`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server.`,
     metaTitle: msg`Self-Hosted Budget App Mobile — No Server Needed — Budgie`,
-    metaDescription: msg`Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership.`,
+    metaDescription: msg`Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; you keep the backup file wherever you like. Zero ops, full ownership.`,
     primaryKeyword: 'self-hosted budget mobile app',
     seoKeywords: [
         'self-hosted budget mobile app',

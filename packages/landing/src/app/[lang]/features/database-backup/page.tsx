@@ -37,8 +37,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Capture the whole Budgie database as one file — encrypted with your PIN when you set one — and put it back on
-                        another device. No account, no upload.
+                        Capture the whole Budgie database as one compressed file — locked with your PIN when you set one — and put it back
+                        on another device. No account, no upload.
                     </Trans>
                 }
             />
@@ -54,8 +54,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 <FeatureStory.Step index={0} title={<Trans>One file holds the database</Trans>}>
                     <Trans>
                         Export Database copies the whole file behind the app — every transaction, account, category, tag and setting — then
-                        hands it to the system share sheet as a dated budgie-backup file. Set a PIN and that same PIN is what the file is
-                        encrypted with.
+                        hands it to the system share sheet as a compressed, dated backup file. Set a PIN and that same PIN is what the file
+                        is encrypted with.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="database-backup-1" slug="database-backup">
@@ -67,8 +67,9 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 <FeatureStory.Step index={1} title={<Trans>Restore replaces what is there</Trans>}>
                     <Trans>
                         Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and
-                        cannot be undone; confirm and it swaps everything in and restarts. A backup encrypted with a PIN asks for that PIN
-                        first, and it becomes the app PIN on the restored data.
+                        cannot be undone; confirm and it swaps everything in and restarts. A PIN-locked backup asks for the PIN it was made
+                        with first, and it becomes the app PIN on the restored data. A backup made by an older version of Budgie cannot be
+                        restored.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="database-backup-1" slug="database-backup">
@@ -109,10 +110,10 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One file holds every transaction, account, category, tag and setting on your phone</Trans>
+                        <Trans>One compressed file holds every transaction, account, category, tag and setting on your phone</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Set a PIN and the file is encrypted with it — no vendor format, no conversion step</Trans>
+                        <Trans>Set a PIN and the backup is locked with it — no vendor format, no conversion step</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
@@ -136,8 +137,9 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and
-                            confirm the warning. If the backup was encrypted with a PIN, Budgie asks for that PIN and keeps it as the lock
-                            on the restored database; an unencrypted backup restores with no PIN set.
+                            confirm the warning. If the backup is PIN-locked, Budgie asks for the PIN it was made with and keeps it as the
+                            lock on the restored data; a backup made without a PIN restores with no PIN set. Backups made by an older
+                            version of Budgie cannot be restored.
                         </Trans>
                     }
                 />
@@ -145,8 +147,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     question={<Trans>Is the backup file safe to upload to a cloud?</Trans>}
                     answer={
                         <Trans>
-                            If you have set a PIN, yes: the file is encrypted with that PIN, so a provider sees encrypted bytes rather than
-                            your transactions. Without a PIN nothing is encrypted, so set one before the file leaves your device.
+                            If you have set a PIN, yes: the backup is locked with that PIN, so a provider sees unreadable data rather than
+                            your transactions. Without a PIN nothing is locked, so set one before the file leaves your device.
                         </Trans>
                     }
                 />

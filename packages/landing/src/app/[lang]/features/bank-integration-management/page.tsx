@@ -34,8 +34,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Your card, your jars, and the deposit you opened last month all hang off one connection — so renewing a token is a
-                        single edit, not a rebuild.
+                        Your Monobank card, your jars, and the deposit you opened last month all hang off one connection — so renewing a
+                        token is a single edit, not a rebuild.
                     </Trans>
                 }
             />
@@ -129,8 +129,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 <FeaturePageProse>
                     <Trans>
                         A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie models
-                        it that way: a connection holds the provider and the credential, and every account you sync from that bank points at
-                        it.
+                        it that way: a connection holds the credential, and every account you sync from that bank points at it. Banks you
+                        import statements from, such as PrivatBank and Erste, have no token at all.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -148,7 +148,9 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One connection behind many accounts — cards, jars, and deposits from the same bank</Trans>
+                        <Trans>
+                            One connection behind many accounts — Monobank cards and jars, plus deposits you open under the same bank
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Change the token once and every account on that connection follows</Trans>
@@ -166,7 +168,10 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         <Trans>Open a deposit straight from the connection, so it inherits the bank it belongs to</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>Statement-based banks get a connection too, so imported accounts group under one roof</Trans>
+                        <Trans>
+                            Statement banks (PrivatBank, Erste) get a connection too, without a token, so imported accounts group under one
+                            roof
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>Archiving or deleting one account leaves the rest of the connection syncing untouched</Trans>
@@ -189,7 +194,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     <Trans>
                         What the screen offers next depends on the bank. A Monobank connection can pull the bank&apos;s account list and add
                         whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import action
-                        instead. Both can open a new deposit account that starts out attached to the same bank.
+                        instead. Monobank, PrivatBank and Erste connections can all open a new deposit account that starts out attached to
+                        the same bank.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -208,8 +214,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     question={<Trans>Can jars and deposits sit on the same connection as my card?</Trans>}
                     answer={
                         <Trans>
-                            Yes — cards, jars, and deposit accounts from the same bank all attach to one connection and appear together on
-                            its screen.
+                            Jars are a Monobank feature, and they sit next to your cards on its connection. Deposit accounts you open
+                            yourself attach to a Monobank, PrivatBank or Erste connection and appear together with the rest on its screen.
                         </Trans>
                     }
                 />
@@ -226,8 +232,8 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     question={<Trans>Does this work for banks I import statements from?</Trans>}
                     answer={
                         <Trans>
-                            Yes. File-based banks get their own connection as well, which is where the import action lives and what keeps
-                            their accounts grouped together.
+                            Yes. PrivatBank and Erste get their own connection as well, with no token: it is where the import action lives
+                            and what keeps their accounts grouped together.
                         </Trans>
                     }
                 />
