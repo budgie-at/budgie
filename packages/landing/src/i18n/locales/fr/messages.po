@@ -78,6 +78,10 @@ msgstr "<0>2020-2022</0> : Stagnation des fonctionnalités. Alors que les concur
 msgid "<0>2022</0>: Increasing sync issues. Bank connections became unreliable, with users reporting days of failed syncs."
 msgstr "<0>2022</0> : Problèmes de synchronisation croissants. Les connexions bancaires sont devenues peu fiables, avec des utilisateurs signalant des jours entiers de synchronisations échouées."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>A statement from another bank.</0> Use <1>CSV import</1>, where you match the file's columns to Budgie fields yourself."
+msgstr "<0>Un relevé d'une autre banque.</0> Utilisez l'<1>import CSV</1>, où vous associez vous-même les colonnes du fichier aux champs de Budgie."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Access</0>: Your data is always accessible within the app"
 msgstr "<0>Accès</0> : vos données sont toujours accessibles dans l'application"
@@ -113,6 +117,10 @@ msgstr "<0>Violation d'un agrégateur</0> — Toute application de budget cloud 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Aggregator persistence</0>: Even with direct APIs, apps often use aggregators that add another data holder"
 msgstr "<0>Persistance de l'agregateur</0> : Meme avec des API directes, les applications utilisent souvent des agregateurs qui ajoutent un detenteur de donnees supplementaire"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>Amount</0>, recorded as an expense or as income depending on its sign."
+msgstr "<0>Montant</0>, enregistré comme dépense ou comme revenu selon son signe."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Analytics and tracking</0>: Search for any analytics SDK initialization. You will not find Firebase, Amplitude, Mixpanel, or any similar integration."
@@ -181,6 +189,10 @@ msgstr "<0>Automerge</0> est une implémentation JSON CRDT qui facilite le trava
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Backup exposure</0>: If your device backup is compromised, a backup you made with a PIN remains protected inside it."
 msgstr "<0>Exposition d'une sauvegarde</0> : si la sauvegarde de votre appareil est compromise, une sauvegarde créée avec un code PIN reste protégée à l'intérieur."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>Bank fees</0>: when the card was charged more than the purchase itself in the same currency, the difference is recorded as a separate bank fee."
+msgstr "<0>Frais bancaires</0> : lorsque la carte a été débitée de plus que l'achat lui-même dans la même devise, la différence est enregistrée comme frais bancaires distincts."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Bank sync included.</0> Automatic imports via Plaid."
@@ -391,6 +403,14 @@ msgstr "<0>Dérive du modèle économique</0> — Les offres gratuites disparais
 msgid "<0>Can privacy policy change without notice?</0> Red flag: Changes effective immediately. Green flag: Notice period, opt-out for material changes"
 msgstr "<0>La politique de confidentialite peut-elle changer sans preavis ?</0> Red flag: Changements effectifs immediatement. Green flag: Delai de preavis, option de retrait pour les changements importants"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>Card</0>: operations are grouped by card, so each card becomes its own account."
+msgstr "<0>Carte</0> : les opérations sont regroupées par carte, chaque carte devient donc un compte à part."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>Category</0>: Privat24's category is matched to a Budgie category. Operations whose category has no match stay uncategorized, ready for you to sort."
+msgstr "<0>Catégorie</0> : la catégorie de Privat24 est associée à une catégorie Budgie. Les opérations sans correspondance restent sans catégorie, prêtes à être classées par vos soins."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Change detection:</0> Identifying what has been modified since the last sync."
 msgstr "<0>La détection des modifications :</0> Identifier ce qui a été modifié depuis la dernière synchronisation."
@@ -479,6 +499,10 @@ msgstr "<0>Import/export CSV.</0> Bonne portabilité des données."
 msgid "<0>Currency and localization</0>: Full multi-currency support with customizable locales."
 msgstr "<0>Devises et localisation</0> : Support multi-devises complet avec paramètres régionaux personnalisables."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>Currency</0>: the account takes the card's currency, and a purchase in another currency keeps the rate between the original and the charged amount."
+msgstr "<0>Devise</0> : le compte prend la devise de la carte, et un achat dans une autre devise conserve le taux entre le montant d'origine et le montant débité."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Data exposure</0>: Your financial data exists on servers that could be breached, subpoenaed, or accessed by employees with administrative privileges."
 msgstr "<0>Exposition des donnees</0> : Vos donnees financieres existent sur des serveurs qui pourraient etre pirates, faire l'objet d'une assignation ou etre accedes par des employes disposant de privileges administratifs."
@@ -549,6 +573,10 @@ msgstr "<0>Stockage des données</0>: À votre choix"
 msgid "<0>Database layer</0>: Examine the schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
 msgstr "<0>Couche de base de données</0> : examinez les schémas et les classes de dépôt. Vous pouvez retracer exactement comment les données circulent de la saisie utilisateur jusqu'au stockage en base de données, entièrement en local."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>Date and time</0> of every operation."
+msgstr "<0>Date et heure</0> de chaque opération."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Delete old accounts</0>: After migration, fully delete cloud-based app accounts and revoke aggregator access"
 msgstr "<0>Supprimez les anciens comptes</0> : Apres la migration, supprimez completement les comptes des applications cloud et revoquez l'acces des agregateurs"
@@ -560,6 +588,10 @@ msgstr "<0>Suppression</0> : vous pouvez supprimer vos données en désinstallan
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Delta computation:</0> Determining the minimal set of changes to transmit."
 msgstr "<0>Le calcul des deltas :</0> Déterminer l'ensemble minimal de modifications à transmettre."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>Description</0>, which becomes the transaction title."
+msgstr "<0>Description</0>, qui devient le titre de la transaction."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Developer community</0>: Active Discord with direct access to the developer."
@@ -1644,6 +1676,10 @@ msgstr "<0>Les services backend</0> — Tout le code côté serveur pour les fon
 msgid "<0>The Bad News:</0> As of March 23, 2024, Mint is fully shut down. If you didn’t export before then, your historical data may be gone."
 msgstr "<0>La mauvaise nouvelle :</0> Depuis le 23 mars 2024, Mint est complètement fermé. Si vous n'avez pas exporté avant cette date, vos données historiques sont peut-être perdues."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>The balance differs from the bank.</0> The statement most likely starts after the card's first operation. Import the earlier period as well; operations you already have are skipped."
+msgstr "<0>Le solde diffère de celui de la banque.</0> Le relevé commence sans doute après la première opération de la carte. Importez aussi la période antérieure ; les opérations déjà présentes sont ignorées."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The build infrastructure</0> - Our CI/CD pipelines and deployment configurations"
 msgstr "<0>L'infrastructure de build</0> — Nos pipelines CI/CD et configurations de déploiement"
@@ -1651,6 +1687,10 @@ msgstr "<0>L'infrastructure de build</0> — Nos pipelines CI/CD et configuratio
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The documentation</0> - All guides, API docs, and technical specifications"
 msgstr "<0>La documentation</0> — Tous les guides, la documentation API et les spécifications techniques"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>The file cannot be selected.</0> Make sure you saved the Excel version of the statement, not the PDF or CSV one."
+msgstr "<0>Le fichier ne peut pas être sélectionné.</0> Vérifiez que vous avez enregistré la version Excel du relevé, et non la version PDF ou CSV."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The landing page</0> - Even our marketing website has public source"
@@ -1663,6 +1703,10 @@ msgstr "<0>L'index appris vit avec vos données</0> — Ce que Budgie apprend de
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>The Long Now.</0> Your data should outlive any particular application, service, or company. Data longevity is a core design principle."
 msgstr "<0>La vision à long terme.</0> Vos données doivent survivre à toute application, service ou entreprise en particulier. La pérennité des données est un principe de conception fondamental."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "<0>The long-press reports no matching accounts.</0> The file belongs to a card you have not added yet. Add it once through Step 2."
+msgstr "<0>L'appui long indique « Aucun compte correspondant ».</0> Le fichier concerne une carte que vous n'avez pas encore ajoutée. Ajoutez-la une fois via l'étape 2."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The mobile application</0> - The complete mobile app source for iOS and Android"
@@ -2759,6 +2803,10 @@ msgstr "Ajoutez-les à votre écran d'accueil et vos chiffres y sont déjà avan
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Added in a typical month"
 msgstr "Ajouté sur un mois typique"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Adding new operations later"
+msgstr "Ajouter de nouvelles opérations plus tard"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Additive interface — suggestions sit alongside the text field, never replacing it"
@@ -4001,6 +4049,7 @@ msgstr "Block, la societe mere de Cash App, a revele qu'un ancien employe avait 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -4605,6 +4654,10 @@ msgstr "Budgie apprend séparément vos dépenses récurrentes et vos dépenses 
 msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
 msgstr "Budgie laisse la valeur de base vide tant qu'aucun taux adapté n'existe. C'est plus sûr que d'inventer une valeur, car les analyses peuvent repérer les lignes non valorisées au lieu de mélanger discrètement des totaux estimés et des totaux réels."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Budgie lists the cards it found in the file. Switch on the ones you want, or tap Select all."
+msgstr "Budgie liste les cartes trouvées dans le fichier. Activez celles que vous voulez ou touchez « Tout sélectionner »."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie lock screen on launch, showing Enter your PIN above four empty dots and a number keypad"
 msgstr "Écran de verrouillage de Budgie au lancement, avec Saisissez votre code PIN au-dessus de quatre points vides et d'un clavier numérique"
@@ -4712,6 +4765,10 @@ msgstr "Écran Nouveau virement de Budgie avec 250 saisis au-dessus d’une lign
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie offers full offline functionality. Actual Budget works offline when self-hosted locally. Firefly III works offline on your local network. All cloud-based options (Lunch Money, YNAB, Monarch, Copilot) require internet connectivity for full functionality."
 msgstr "Budgie offre une fonctionnalité hors ligne complète. Actual Budget fonctionne hors ligne lorsqu'il est auto-hébergé localement. Firefly III fonctionne hors ligne sur votre réseau local. Toutes les options cloud (Lunch Money, YNAB, Monarch, Copilot) nécessitent une connexion internet pour une fonctionnalité complète."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Budgie on your phone. You do not need a Budgie account, and Budgie never asks for your Privat24 login."
+msgstr "Budgie sur votre téléphone. Aucun compte Budgie n'est nécessaire, et Budgie ne vous demande jamais vos identifiants Privat24."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Budgie on-device AI suggests categories as you review imported transactions. You can also define custom categories and set up recurring transaction templates for bills and subscriptions so future entries are categorized automatically."
@@ -5256,6 +5313,10 @@ msgstr "Peut être déroutant pour les utilisateurs occasionnels"
 msgid "Can bi-monthly or quarterly bills show up correctly?"
 msgstr "Les factures bimestrielles ou trimestrielles s'affichent-elles correctement ?"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Can Budgie import a PDF statement from Privat24?"
+msgstr "Budgie peut-il importer un relevé Privat24 en PDF ?"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Can Budgie trade or withdraw with my key?"
 msgstr "Budgie peut-il trader ou retirer des fonds avec ma clé ?"
@@ -5359,6 +5420,10 @@ msgstr "Puis-je importer des relevés bancaires sans Wi-Fi ?"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Can I import my YNAB data into a privacy-focused app?"
 msgstr "Puis-je importer mes données YNAB dans une application axée sur la confidentialité ?"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Can I import several PrivatBank cards?"
+msgstr "Puis-je importer plusieurs cartes PrivatBank ?"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Can I import the CSV back into Budgie?"
@@ -5792,6 +5857,10 @@ msgstr "Choisissez Budgie si :"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Copilot if:"
 msgstr "Choisissez Copilot si :"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Choose Excel as the format. Budgie accepts only the Excel statement from PrivatBank; the PDF and CSV versions will not import."
+msgstr "Choisissez le format Excel. Pour PrivatBank, Budgie n'accepte que le relevé Excel ; les versions PDF et CSV ne s'importent pas."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Firefly III if:"
@@ -7190,6 +7259,10 @@ msgstr "Budgie envoie-t-il mes transactions à une IA cloud ?"
 msgid "Does Budgie store my biometric data?"
 msgstr "Budgie stocke-t-il mes données biométriques ?"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Does Budgie sync with PrivatBank automatically?"
+msgstr "Budgie se synchronise-t-il automatiquement avec PrivatBank ?"
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "Does Budgie use any analytics or crash-reporting SDKs?"
 msgstr "Budgie utilise-t-il des SDK d'analyse ou de rapport de plantage ?"
@@ -7812,6 +7885,11 @@ msgstr "Excalidraw"
 msgid "Excalidraw is an open-source virtual whiteboard that works entirely offline. It stores drawings in your browser’s local storage and can export to files. Live collaboration is available but optional. The core drawing experience requires no server at all."
 msgstr "Excalidraw est un tableau blanc virtuel open source qui fonctionne entièrement hors ligne. Il stocke les dessins dans le stockage local de votre navigateur et peut exporter sous forme de fichiers. La collaboration en direct est disponible mais optionnelle. L'expérience de dessin de base ne nécessite aucun serveur."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/opengraph-image.tsx
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "excel"
+msgstr "excel"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Excellent API for custom integrations"
 msgstr "Excellent API pour les intégrations personnalisées"
@@ -7897,6 +7975,10 @@ msgstr "Explorez le mouvement du logiciel local-first, des CRDTs aux moteurs de 
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
 msgid "export"
 msgstr "export"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/metadata.ts
+msgid "Export a Privat24 card statement to Excel and import it into Budgie. Categories, amounts and currencies carry over, and repeats are skipped."
+msgstr "Exportez un relevé de carte Privat24 en Excel et importez-le dans Budgie. Catégories, montants et devises sont repris, les doublons ignorés."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Export and Portability"
@@ -8436,6 +8518,7 @@ msgstr "Gratuit, sans compte, sans abonnement"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -8744,6 +8827,7 @@ msgstr "Les positions se consolident dans le patrimoine net aux côtés des comp
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -9111,6 +9195,11 @@ msgstr "Comment créer la clé, où la coller et le bouton qui récupère vos so
 msgid "How to Evaluate a Budgeting App’s Privacy"
 msgstr "Comment evaluer la confidentialite d'une application de budget"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/metadata.ts
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "How to export a Privat24 card statement to Excel and import it into Budgie: the steps in Privat24, what carries over, and how to add new operations later."
+msgstr "Comment exporter un relevé de carte Privat24 en Excel et l'importer dans Budgie : les étapes dans Privat24, ce qui est repris et comment ajouter de nouvelles opérations ensuite."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "Comment exporter vos données Mint (avant qu'il ne soit trop tard)"
@@ -9122,6 +9211,10 @@ msgstr "Comment vos données restent sur votre appareil"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your PIN Protects Your Data"
 msgstr "Comment votre code PIN protège vos données"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "how-to"
+msgstr "guide"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "I already had debts before this change — do I need to redo anything?"
@@ -9166,6 +9259,10 @@ msgstr "Si la confidentialité compte pour vous, nous avons créé Budgie exacte
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "If the code is public, can’t hackers use it to find vulnerabilities?"
 msgstr "Si le code est public, les pirates ne peuvent-ils pas l'utiliser pour trouver des vulnérabilités ?"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "If the import does not work"
+msgstr "Si l'import ne fonctionne pas"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:"
@@ -9280,6 +9377,8 @@ msgstr "Nous informer immédiatement de toute utilisation non autorisée de votr
 msgid "Implement features from the roadmap"
 msgstr "Implémentez des fonctionnalités de la feuille de route"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/opengraph-image.tsx
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
@@ -9365,6 +9464,10 @@ msgstr "À une époque où les violations de données et les atteintes à la vie
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "In an offline-first application:"
 msgstr "Dans une application Offline-First :"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "In Budgie, tap the + button in the tab bar and choose Account."
+msgstr "Dans Budgie, touchez le bouton + de la barre d'onglets et choisissez « Compte »."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "In connection with a merger, acquisition, or sale of assets (users will be notified)"
@@ -9569,6 +9672,10 @@ msgstr "Le développement local-first coûte-t-il plus cher ?"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Is Monarch Money better than YNAB?"
 msgstr "Monarch Money est-il meilleur que YNAB ?"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Is my statement sent to a server?"
+msgstr "Mon relevé est-il envoyé à un serveur ?"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Is my voice recorded anywhere?"
@@ -11299,6 +11406,14 @@ msgstr "Non. La synchronisation bancaire Budgie se connecte directement de votre
 msgid "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
 msgstr "Non. Budgie est entièrement gratuite, sans mur payant ni offre payante. Le suivi des dépenses, la synchronisation bancaire et l'IA sur l'appareil n'expirent jamais et ne vous facturent jamais rien."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "No. Budgie reads the file on your phone and keeps the operations there. The statement is never uploaded."
+msgstr "Non. Budgie lit le fichier sur votre téléphone et y conserve les opérations. Le relevé n'est jamais envoyé en ligne."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "No. Budgie recognizes operations it has already imported and skips them, so overlapping periods are safe."
+msgstr "Non. Budgie reconnaît les opérations déjà importées et les ignore : des périodes qui se chevauchent ne posent donc aucun problème."
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
 msgstr "Non. Budgie stocke le taux d’intérêt et la date d’échéance, puis calcule une estimation du montant attendu à partir du solde actuel et des jours restants. Il ne crée pas automatiquement de transactions d’intérêts."
@@ -11335,6 +11450,10 @@ msgstr "Non. Les dettes existantes migrent automatiquement dès la première ouv
 msgid "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
 msgstr "Non. Les exports sont uniquement manuels : Budgie n'écrit jamais de fichier de sauvegarde de lui-même, et il n'existe ni planificateur ni rappel à activer. Rien n'est écrit tant que vous ne touchez pas « Exporter la base de données »."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "No. For PrivatBank, Budgie accepts only the Excel statement, so choose Excel as the format when you export it."
+msgstr "Non. Pour PrivatBank, Budgie n'accepte que le relevé Excel : choisissez donc ce format lors de l'export."
+
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "No. Live sync uses a personal API key you generate yourself, scoped to reading your data, never your account password. Statement imports need no credentials at all — you just pick the exported file."
 msgstr "Non. La synchronisation en direct utilise une clé API personnelle que vous générez vous-même, limitée à la lecture de vos données, jamais le mot de passe de votre compte. Les imports de relevés ne nécessitent aucun identifiant : vous choisissez simplement le fichier exporté."
@@ -11346,6 +11465,10 @@ msgstr "Non. La saisie manuelle des dépenses, les imports PDF/CSV bancaires, le
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "No. PDF parsing happens entirely on-device — your statement never leaves your phone."
 msgstr "Non. L’analyse du PDF se fait entièrement sur l’appareil — votre relevé ne quitte jamais votre téléphone."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "No. PrivatBank import works from a statement file. To add new operations, export a fresh statement and long-press the account card in Budgie."
+msgstr "Non. L'import PrivatBank fonctionne à partir d'un fichier de relevé. Pour ajouter de nouvelles opérations, exportez un relevé récent et faites un appui long sur la carte du compte dans Budgie."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "No. Rules are explicit conditions you wrote and can read back. AI categorization is a separate on-device suggestion engine for merchants no rule covers yet."
@@ -11899,6 +12022,10 @@ msgstr "suivi de dépenses sur l'appareil"
 msgid "on-device-ai"
 msgstr "IA sur l'appareil"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Once the card is in Budgie, you do not need to repeat the setup. Export a fresh statement from Privat24, then long-press the PrivatBank account card on Budgie's home screen. The file picker opens straight away: pick the new file and Budgie imports it in the background."
+msgstr "Une fois la carte dans Budgie, inutile de tout reconfigurer. Exportez un relevé récent depuis Privat24, puis faites un appui long sur la carte du compte PrivatBank sur l'écran d'accueil de Budgie. Le sélecteur de fichiers s'ouvre aussitôt : choisissez le nouveau fichier et Budgie l'importe en arrière-plan."
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Once the refund is linked to the purchase in Budgie, the plan closes at the amount you already paid and no longer shows a next payment."
 msgstr "Dès que le remboursement est lié à l’achat dans Budgie, le plan se clôt au montant déjà payé et n’affiche plus de prochain paiement."
@@ -12103,6 +12230,10 @@ msgstr "Un écran de paramètres, et les deux lignes qui remplacent tout ce qu'u
 msgid "One sheet on the account's own settings screen: the whole history, or the last ninety, thirty or seven days."
 msgstr "Une seule feuille sur l'écran de réglages du compte : tout l'historique, ou les quatre-vingt-dix, trente ou sept derniers jours."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "One statement covers one card. If you have several PrivatBank cards, export a statement for each and import them one after another. If Privat24 will not give you the whole period in one file, export consecutive periods: overlapping dates are fine, because Budgie skips operations it already has."
+msgstr "Un relevé couvre une carte. Si vous avez plusieurs cartes PrivatBank, exportez un relevé pour chacune et importez-les l'une après l'autre. Si Privat24 ne vous donne pas toute la période en un seul fichier, exportez des périodes consécutives : les chevauchements ne posent pas de problème, car Budgie ignore les opérations qu'il possède déjà."
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "One switch for every AI feature"
 msgstr "Un interrupteur pour toute l’IA"
@@ -12295,6 +12426,14 @@ msgstr "Les reglementations Open Banking dans l'UE et au Royaume-Uni, ainsi que 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Open Budgie and go to Settings, then Import Data"
 msgstr "Ouvrez Budgie et allez dans Paramètres > Importer des données"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Open its statement. PrivatBank's own help places it under My accounts, then Card statements."
+msgstr "Ouvrez son relevé. L'aide de PrivatBank le situe dans « Mes comptes », puis « Relevés de carte »."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Open Privat24 and choose the card or account you want to bring into Budgie."
+msgstr "Ouvrez Privat24 et choisissez la carte ou le compte à transférer dans Budgie."
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that covers your full history, then export it as Excel — PDF and CSV files can't be imported. If Privat24 emails you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie's file picker."
@@ -13117,6 +13256,21 @@ msgstr "Des organisations et groupes de défense de la vie privée"
 msgid "Privacy, Security, General and every group under them open in full, with no upgrade row in between."
 msgstr "Confidentialité, Sécurité, Général et chaque groupe en dessous s’ouvrent entièrement, sans aucune ligne de mise à niveau entre eux."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/opengraph-image.tsx
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "privat24"
+msgstr "privat24"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Privat24 does not pass your transactions to budgeting apps on its own, but it lets you save a card statement as an Excel file. Budgie reads that file on your phone and turns it into an account with every operation, its date, category and amount. Below is the whole route: exporting the statement from Privat24, importing it into Budgie, and topping it up later."
+msgstr "Privat24 ne transmet pas de lui-même vos transactions aux applications de budget, mais il vous permet d'enregistrer un relevé de carte au format Excel. Budgie lit ce fichier directement sur votre téléphone et en fait un compte avec chaque opération, sa date, sa catégorie et son montant. Voici tout le parcours : exporter le relevé depuis Privat24, l'importer dans Budgie, puis le compléter plus tard."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/metadata.ts
+#: src/app/[lang]/blog/privat24-statement-excel-import/opengraph-image.tsx
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Privat24 Statement in Excel: Export and Import"
+msgstr "Relevé Privat24 en Excel : export et import"
+
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "privatbank"
 msgstr "privatbank"
@@ -13848,6 +14002,10 @@ msgstr "Même sélecteur dans les écrans d'analytiques, transactions et récurr
 msgid "Save it and the <0>categorization rule</0> runs on every future bank sync and import. Budgie also offers to apply it to matching transactions you already have."
 msgstr "Enregistrez-la et la <0>règle de catégorisation</0> s’appliquera à chaque synchronisation bancaire et à chaque import. Budgie propose aussi de l’appliquer aux transactions correspondantes que vous avez déjà."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Save the file to your phone. If Privat24 sends the statement to your email instead, open the email and save the attachment to your files."
+msgstr "Enregistrez le fichier sur votre téléphone. Si Privat24 vous envoie plutôt le relevé par e-mail, ouvrez le message et enregistrez la pièce jointe dans vos fichiers."
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Save through the OS share sheet — Files, iCloud, Drive, anything"
 msgstr "Enregistrez via la feuille de partage du système — Fichiers, iCloud, Drive, n'importe où"
@@ -14225,6 +14383,10 @@ msgstr "Indiquez le solde affiché par votre banque et Budgie enregistre la diff
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Set the period, read the totals"
 msgstr "Choisissez la période, lisez les totaux"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Set the period. For the first import, start from the card's earliest operation: Budgie builds the account balance from the operations it imports, so a shorter period leaves a balance that does not match the bank."
+msgstr "Définissez la période. Pour le premier import, partez de la toute première opération de la carte : Budgie calcule le solde du compte à partir des opérations importées, une période plus courte donne donc un solde différent de celui de la banque."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Set up accounts to match your banks"
@@ -14710,6 +14872,10 @@ msgstr "Étape 1 : Exportez votre historique de transactions"
 msgid "Step 1: Export Your YNAB Data"
 msgstr "Étape 1 : Exportez vos données YNAB"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Step 1. Export the statement from Privat24 to Excel"
+msgstr "Étape 1. Exporter le relevé Privat24 en Excel"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 2: Set Up Your Accounts in Budgie"
 msgstr "Étape 2 : Configurez vos comptes dans Budgie"
@@ -14717,6 +14883,10 @@ msgstr "Étape 2 : Configurez vos comptes dans Budgie"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 2: Understand What You’re Moving"
 msgstr "Étape 2 : Comprenez ce que vous déplacez"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Step 2. Import the file into Budgie"
+msgstr "Étape 2. Importer le fichier dans Budgie"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 3: Choose Your Migration Path"
@@ -15083,9 +15253,17 @@ msgstr "Touchez une ligne pour ouvrir les transactions derrière cette étiquett
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
 msgstr "Touchez Importer → PDF Erste. Choisissez le fichier depuis Fichiers. Budgie analyse le document, affiche un aperçu et insère chaque transaction dans un compte Erste nouveau ou existant."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Tap Import. Budgie creates an account named after the bank and the last four digits of the card, fills it with the operations and takes you back to the home screen."
+msgstr "Touchez « Importer ». Budgie crée un compte portant le nom de la banque et les quatre derniers chiffres de la carte, le remplit avec les opérations et vous ramène à l'écran d'accueil."
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Tap it, the rule exists"
 msgstr "Touche-la, la règle existe"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Tap Select File and pick the Excel statement you saved."
+msgstr "Touchez « Sélectionner un fichier » et choisissez le relevé Excel enregistré."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Tap the mic and say what you spent. Your speech becomes text on the phone, and the audio is never sent anywhere. One sentence can produce several transactions — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, each with its own amount and category."
@@ -15485,6 +15663,10 @@ msgstr "L'export sort par le menu de partage du système — Fichiers, iCloud Dr
 msgid "The figure at the top adds every account together and reports it in the base currency you set in Settings. Pick a different base and the same accounts produce a different number."
 msgstr "Le chiffre en haut additionne tous les comptes et l'exprime dans la devise de base définie dans les Réglages. Changez de devise de base et les mêmes comptes donnent un autre nombre."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "The file is read on your phone. The statement is not uploaded anywhere, and the operations are stored only on your device."
+msgstr "Le fichier est lu sur votre téléphone. Le relevé n'est envoyé nulle part, et les opérations restent uniquement sur votre appareil."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The chip shows the range you picked, and clearing it is one tap."
 msgstr "La ligne de filtres ne se limite pas au temps. À côté des puces de date, de type et de catégorie, il y a une plage de montant : définissez une valeur De pour traquer les gros achats, une valeur À pour ratisser les petits, ou les deux pour observer une fourchette. La puce affiche la plage choisie, et l'effacer prend un seul appui."
@@ -15821,6 +16003,10 @@ msgstr "Les problemes de confidentialite decrits ci-dessus partagent une cause c
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs, on your device."
 msgstr "Le suivi de dépenses respectueux de la vie privée qui garde vos données financières là où elles doivent être : sur votre appareil."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "The Privat24 app or website, signed in to your account."
+msgstr "L'application ou le site Privat24, avec votre compte connecté."
+
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "The PrivatBank import instructions were rewritten to match the real Privat24 flow: export the statement as Excel (PDF and CSV are rejected), grab the file from your email if Privat24 sends it there instead of downloading it directly, and know upfront that this is a one-time import, not a live sync. The button is labeled “Import” to match."
 msgstr "Les instructions d'import PrivatBank ont été réécrites pour correspondre au véritable parcours Privat24 : exportez le relevé au format Excel (les PDF et CSV sont rejetés), récupérez le fichier dans votre e-mail si Privat24 l'envoie ainsi plutôt que de le télécharger directement, et sachez d'emblée qu'il s'agit d'un import ponctuel, pas d'une synchronisation en direct. Le bouton est intitulé « Importer » en conséquence."
@@ -15997,6 +16183,10 @@ msgstr "Le Service, y compris son contenu original, ses caractéristiques et ses
 msgid "The share sheet is the last step Budgie takes part in. Send the file to Files, iCloud Drive, a Drive folder or a USB stick, and keep as many dated copies as you want — the name carries the date and time, so exports never collide."
 msgstr "Le menu de partage est la dernière étape à laquelle Budgie participe. Envoyez le fichier vers Fichiers, iCloud Drive, un dossier Drive ou une clé USB, et gardez autant de copies datées que vous voulez — le nom porte la date et l'heure, les exports ne se chevauchent donc jamais."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "The shortcut only adds operations to cards you have already set up. A statement for a new card goes through Step 2 once."
+msgstr "Ce raccourci n'ajoute des opérations qu'aux cartes déjà configurées. Le relevé d'une nouvelle carte passe une fois par l'étape 2."
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "The shutdown was not a surprise to anyone paying attention. It was the predictable end of an ad-supported, cloud-hosted service that was never designed around user ownership of data."
 msgstr "La fermeture n'a pas été une surprise pour ceux qui suivaient l'actualité. C'était la fin prévisible d'un service financé par la publicité et hébergé dans le cloud qui n'a jamais été conçu autour de la propriété des données par l'utilisateur."
@@ -16024,6 +16214,10 @@ msgstr "Le pied de page « restant à affecter » de l'écran de répartition po
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "The spoken currency picks the matching account automatically"
 msgstr "La devise prononcée sélectionne automatiquement le compte correspondant"
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "The statement carries no counterparty details, so Budgie knows who you paid only from the description. Your own categorization rules also run on the new operations. If you hold PrivatBank cards in different currencies, each becomes a separate account, and <0>multi-currency tracking</0> brings them together in your main currency."
+msgstr "Le relevé ne contient aucune information sur le bénéficiaire : Budgie ne sait qui vous avez payé que par la description. Vos propres règles de catégorisation s'appliquent aussi aux nouvelles opérations. Si vous avez des cartes PrivatBank dans plusieurs devises, chacune devient un compte distinct, et le <0>suivi multidevise</0> les réunit dans votre devise principale."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
@@ -16278,6 +16472,10 @@ msgstr "C’est une inquiétude légitime, mais la recherche en sécurité montr
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "This is a development build — it expects a running Metro bundler or the development EAS Update channel."
 msgstr "Il s'agit d'une version de développement — elle nécessite un bundler Metro actif ou le canal de mise à jour de développement EAS."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "This is a one-off import, not a live connection to the bank. When you want newer operations, export a fresh statement and import it the same way: anything already in Budgie is skipped. The feature itself is described on the <0>PrivatBank import</0> page."
+msgstr "Il s'agit d'un import ponctuel, pas d'une connexion permanente à la banque. Pour obtenir des opérations plus récentes, exportez un relevé récent et importez-le de la même façon : tout ce qui est déjà dans Budgie est ignoré. La fonctionnalité elle-même est présentée sur la page <0>Import PrivatBank</0>."
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card or account, so a multi-card wallet needs one import per card."
@@ -16924,6 +17122,10 @@ msgstr "Recherche de transactions non catégorisées"
 msgid "Uncategorized transactions grouped by merchant, with suggestions from your own history. No AI download needed."
 msgstr "Les transactions non catégorisées regroupées par commerçant, avec des suggestions tirées de votre historique. Aucun téléchargement d’IA nécessaire."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Under Account Sync, choose Privatbank. Budgie shows the same export steps as a short reminder."
+msgstr "Sous « Synchronisation des comptes », choisissez « Privatbank ». Budgie rappelle brièvement les mêmes étapes d'export."
+
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Under each total is that tag's share — of the period's income, or of its expenses. The shares can add up past 100%, because a transaction can carry several tags and counts in full under each of them. Tapping a row opens the transactions behind it."
 msgstr "Sous chaque total figure la part de cette étiquette — sur les revenus de la période, ou sur ses dépenses. Les parts peuvent dépasser 100 % au total, car une transaction peut porter plusieurs étiquettes et compte en entier sous chacune d'elles. Toucher une ligne ouvre les transactions derrière."
@@ -17367,6 +17569,10 @@ msgstr "Ce que les bêta-testeurs ont changé après une semaine"
 msgid "What Budgie guarantees"
 msgstr "Ce que Budgie garantit"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "What Budgie takes from the statement"
+msgstr "Ce que Budgie reprend du relevé"
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "What Changes Architecturally"
 msgstr "Ce qui change architecturalement"
@@ -17786,6 +17992,10 @@ msgstr "Ce que vous avez prêté s'ajoute"
 msgid "What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment."
 msgstr "Ce que vous avez prêté augmente votre patrimoine. Ce que vous devez le réduit, jusqu'au dernier remboursement."
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "What you need"
+msgstr "Ce qu'il vous faut"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "What you owe subtracts"
 msgstr "Ce que vous devez se soustrait"
@@ -17903,6 +18113,10 @@ msgstr "Quand exactement une de tes règles existantes correspond déjà à la t
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
 msgstr "Quand Intuit Mint a fermé le 23 mars 2024, cela a laissé des millions d'utilisateurs à la recherche d'un remplaçant. Beaucoup en ont trouvé un rapidement — mais la plupart ont atterri sur des applications qui partagent la même architecture fondamentale que Mint : vos données financières vivent sur les serveurs d'une autre entreprise, gérée par une société dont les priorités peuvent changer sans avertissement."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "When it finishes, Budgie shows how many operations were new, how many were already imported and how many it checked. Nothing is doubled, so the new statement can safely overlap the previous one."
+msgstr "À la fin, Budgie indique combien d'opérations étaient nouvelles, combien avaient déjà été importées et combien ont été vérifiées. Rien n'est dupliqué : le nouveau relevé peut donc chevaucher le précédent."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "When one card pays another"
@@ -18513,6 +18727,10 @@ msgstr "Budgie deviendra-t-il payant un jour ?"
 msgid "Will consolidation re-process my existing transactions?"
 msgstr "La consolidation va-t-elle retraiter mes transactions existantes ?"
 
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Will importing the same statement twice create duplicates?"
+msgstr "Importer deux fois le même relevé crée-t-il des doublons ?"
+
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Will it suggest things I never bought?"
 msgstr "Va-t-il suggérer des choses que je n'ai jamais achetées ?"
@@ -18932,6 +19150,10 @@ msgstr "Oui. L'anglais, l'ukrainien, l'allemand, le français et l'espagnol sont
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Yes. Everything it needs lives on your device after the one-time download. Categorization runs whether you're online or not."
 msgstr "Oui. Tout ce dont elle a besoin réside sur votre appareil après le téléchargement unique. La catégorisation fonctionne que vous soyez en ligne ou non."
+
+#: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
+msgid "Yes. Export a statement for each card and import them one after another. Each card becomes its own account in Budgie."
+msgstr "Oui. Exportez un relevé pour chaque carte et importez-les l'une après l'autre. Chaque carte devient un compte distinct dans Budgie."
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
 msgid "Yes. Fee entries count toward their selected category, including bank fees attached to transfers."
