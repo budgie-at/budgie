@@ -1,11 +1,11 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import {
     SyncAccountBalanceStateEnum,
     SyncAccountTypeEnum,
     SyncProviderEnum,
     SyncTransactionTypeEnum,
-    TransferConsolidationService
+    TransferConsolidationService,
+    TransferConsolidationDrainerService
 } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';

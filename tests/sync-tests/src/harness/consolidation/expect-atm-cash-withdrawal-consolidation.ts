@@ -1,6 +1,5 @@
-import { CategorizeInboxCashService } from '@app/categorize-inbox/service/categorize-inbox-cash.service';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { AtmCashMoveService, TransferConsolidationService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
@@ -12,12 +11,12 @@ export const expectAtmCashWithdrawalConsolidation = Effect.fnUntraced(function* 
     sourceTransactionId: number
 ) {
     const transferConsolidationService = yield* TransferConsolidationService;
-    const categorizeInboxService = yield* CategorizeInboxCashService;
+    const atmCashMoveService = yield* AtmCashMoveService;
 
     yield* transferConsolidationService.consolidate(null);
 
     expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-    expect(yield* categorizeInboxService.moveToCash([sourceTransactionId])).toEqual([sourceTransactionId]);
+    expect(yield* atmCashMoveService.moveToCash([sourceTransactionId])).toEqual([sourceTransactionId]);
 
     const canonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
     expect(canonicals).toHaveLength(1);

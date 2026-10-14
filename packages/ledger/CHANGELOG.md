@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **ledger:** read historical rate dates as local days ([4f278ea](https://github.com/budgie-at/budgie/commit/4f278ea417861a292f7929272708c661addfbdba))
+
+
+
+
+
+## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
 
 

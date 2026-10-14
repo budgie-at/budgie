@@ -9,7 +9,10 @@ import { TransactionEmbeddingRepository } from '../../embedding/repository/trans
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 import { TransactionCategorizeInboxRepository } from '../repository/transaction-categorize-inbox.repository';
 
+import { categorizeInboxEngineService } from './categorize-inbox-engine.service';
+
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
+import type { CategorizeInboxRowInterface } from '../interface/categorize-inbox-row.interface';
 import type { DbError } from '@budgie/contracts';
 
 export class CategorizeInboxService extends Context.Service<CategorizeInboxService>()('@budgie/categorization/CategorizeInboxService', {
@@ -121,7 +124,21 @@ export class CategorizeInboxService extends Context.Service<CategorizeInboxServi
             effect => Db.transaction(effect)
         );
 
-        return { assign, undo };
+        const suggestFollowUpTagIds = Effect.fn('CategorizeInboxService.suggestFollowUpTagIds')(function* (
+            rows: CategorizeInboxRowInterface[],
+            defaultInstrumentId: number
+        ) {
+            const tagEvidence = yield* transactionCategorizeInboxRepository.findTagEvidence();
+            const tagContext = categorizeInboxEngineService.buildContext(
+                tagEvidence,
+                defaultInstrumentId,
+                CategorizeInboxLabelKindEnum.TAG
+            );
+
+            return categorizeInboxEngineService.suggestLabelIds(rows, tagContext);
+        });
+
+        return { assign, undo, suggestFollowUpTagIds };
     })
 }) {
     static readonly layer = Layer.effect(CategorizeInboxService, CategorizeInboxService.make).pipe(

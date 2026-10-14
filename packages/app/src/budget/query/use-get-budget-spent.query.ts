@@ -20,7 +20,7 @@ interface UseGetBudgetSpentResult {
 
 const EMPTY_SPENT: BudgetSpentInterface = { spentOverall: 0, spentByCategory: [] };
 
-const budgetSpentAtom = Atom.family(
+export const budgetSpentAtom = Atom.family(
     (key: Pick<BudgetEntityInterface, 'periodStartDay' | 'useLastDayOfMonth' | 'instrumentId'> & { readonly dayStart: number }) =>
         databaseQueryAtom(
             [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable, ExchangeRateEntityTable],

@@ -14,11 +14,14 @@ import { median } from '../utils/median.util';
 import type { UseRunwayQueryParams } from '../interface/use-runway-query-params.interface';
 import type { LanguageEnum } from '@budgie/contracts';
 
-const runwaySeriesAtom = databaseQueryFamily(STATISTICS_TABLES, StatisticsRepository, (statisticsRepository, defaultInstrumentId: number) =>
-    statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, defaultInstrumentId, RUNWAY_WINDOW_MONTHS)
+export const runwaySeriesAtom = databaseQueryFamily(
+    STATISTICS_TABLES,
+    StatisticsRepository,
+    (statisticsRepository, defaultInstrumentId: number) =>
+        statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, defaultInstrumentId, RUNWAY_WINDOW_MONTHS)
 );
 
-const runwayDriverSeriesAtom = databaseQueryFamily(
+export const runwayDriverSeriesAtom = databaseQueryFamily(
     STATISTICS_TABLES,
     StatisticsRepository,
     (statisticsRepository, [defaultInstrumentId, dimension, language]: readonly [number, RunwayDriverDimensionEnum, LanguageEnum]) =>

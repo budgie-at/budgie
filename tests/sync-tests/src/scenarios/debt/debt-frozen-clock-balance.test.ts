@@ -1,9 +1,9 @@
-import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { AccountBalanceRepository, AccountDebtTypeEnum, AccountTypeEnum, PRECISION, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtOpeningService } from '@budgie/ledger';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { seed, TestLayer } from '../../harness';
+import { seed, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
 const PRINCIPAL = 500;
 
@@ -34,7 +34,8 @@ describe('opening a funded debt under a frozen clock', () => {
                         contactId: null,
                         deadline: null
                     },
-                    fundingAccount.id
+                    fundingAccount.id,
+                    DEBT_OPENING_MESSAGES
                 );
 
                 expect((yield* accountBalanceRepository.getByAccountId(fundingAccount.id)).at(0)?.balance).toBe(

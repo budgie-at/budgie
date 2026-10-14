@@ -50,7 +50,10 @@ import {
     TransactionService,
     TransactionTransferService,
     TransferCreationService,
-    LedgerWorkload
+    LedgerWorkload,
+    AccountDebtOpeningService,
+    DebtAccountService,
+    MoneyDataUpgradeService
 } from '@budgie/ledger';
 import {
     EntryBaseValuationService,
@@ -63,6 +66,7 @@ import {
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
 import {
+    AtmCashMoveService,
     BinanceSyncService,
     ErsteSyncService,
     MonobankSyncService,
@@ -78,8 +82,6 @@ import {
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { AccountDebtOpeningService } from '../../account/service/account-debt-opening.service';
-import { DebtAccountService } from '../../account/service/debt-account.service';
 import { AiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
@@ -96,21 +98,20 @@ import { WhisperModelService } from '../../ai/service/whisper-model.service';
 import { EmbeddingProgressStore } from '../../ai/store/embedding-progress.store';
 import { TranslationProgressStore } from '../../ai/store/translation-progress.store';
 import { AuthService } from '../../auth/service/auth.service';
+import { PinAttemptService } from '../../auth/service/pin-attempt.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
-import { CategorizeInboxCashService } from '../../categorize-inbox/service/categorize-inbox-cash.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
-import { MoneyDataUpgradeService } from '../../money-data/service/money-data-upgrade.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
 import { syncWorkloadLayer } from '../../sync/layer/sync-workload.layer';
+import { transferConsolidationDrainerLayer } from '../../sync/layer/transfer-consolidation-drainer.layer';
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
 import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
-import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
@@ -127,7 +128,9 @@ const ledgerWorkloadLayer = Layer.effect(
     Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
 ).pipe(Layer.provide(Workload.layer));
 
-export const appServicesLayer = Layer.mergeAll(
+const ledgerPortsLayer = Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer);
+
+export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AccountRepository.layer,
     AccountBalanceRepository.layer,
     DebtEventRepository.layer,
@@ -170,7 +173,7 @@ export const appServicesLayer = Layer.mergeAll(
     RuleApplicationDrainerService.layer,
     TransactionCategorizeInboxRepository.layer,
     CategorizeInboxService.layer,
-    CategorizeInboxCashService.layer,
+    AtmCashMoveService.layer,
     ChatService.layer,
     LocalEmbeddingService.layer,
     WhisperModelService.layer,
@@ -202,7 +205,6 @@ export const appServicesLayer = Layer.mergeAll(
     ExchangeRateBackgroundService.layer,
     HistoricalMarketDataDrainerService.layer,
     TransferConsolidationService.layer,
-    TransferConsolidationDrainerService.layer,
     UnpairedOwnCardTransferRepairService.layer,
     SyncRepairService.layer,
     SyncOperationMetadataService.layer,
@@ -215,6 +217,7 @@ export const appServicesLayer = Layer.mergeAll(
     ResyncService.layer,
     AppDataSyncService.layer,
     BackgroundSyncSessionService.layer,
+    PinAttemptService.layer,
     AuthService.layer,
     BudgetAlertMonitorService.layer,
     OnboardingService.layer,
@@ -243,7 +246,8 @@ export const appServicesLayer = Layer.mergeAll(
     TransactionTransferService.layer,
     TransferCreationService.layer,
     TransactionService.layer
-).pipe(
-    Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)),
-    Layer.provide(Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer))
+).pipe(Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)), Layer.provide(ledgerPortsLayer));
+
+export const appServicesLayer = appServicesWithoutDrainerLayer.pipe(
+    Layer.provideMerge(transferConsolidationDrainerLayer.pipe(Layer.provide(ledgerPortsLayer)))
 );

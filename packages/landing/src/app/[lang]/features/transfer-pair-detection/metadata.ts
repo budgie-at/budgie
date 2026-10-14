@@ -11,7 +11,7 @@ export const FEATURE_METADATA = {
     title: msg`Smart Transfer and Refund Consolidation`,
     tagline: msg`Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.`,
     metaTitle: msg`Smart Transfer and Refund Consolidation — Budgie`,
-    metaDescription: msg`Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device.`,
+    metaDescription: msg`Budgie merges obvious transfer pairs, merchant refunds and duplicates of manual expenses so bank imports do not inflate spending or income.`,
     primaryKeyword: 'duplicate transaction merger',
     seoKeywords: [
         'duplicate transaction merger',

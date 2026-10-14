@@ -1,4 +1,3 @@
-import { Workload } from '@app/@generic/service/workload.service';
 import { ExternalSourceEnum, SyncRepository, SyncStatusEnum } from '@budgie/contracts';
 import { MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
@@ -16,7 +15,8 @@ import {
     inWorkload,
     MonobankSyncService,
     TestClockLayer,
-    TestLayer
+    TestLayer,
+    Workload
 } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';

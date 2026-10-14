@@ -1,4 +1,3 @@
-import { Workload } from '@app/@generic/service/workload.service';
 import { MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
@@ -7,7 +6,16 @@ import * as FiberSet from 'effect/FiberSet';
 import * as TestClock from 'effect/testing/TestClock';
 import { HttpResponse, http } from 'msw';
 
-import { Clock, Fiber, fetchSyncById, inWorkload, MonobankSyncService, setupBackwardSweepFixture, TestClockLayer } from '../../harness';
+import {
+    Clock,
+    Fiber,
+    fetchSyncById,
+    inWorkload,
+    MonobankSyncService,
+    setupBackwardSweepFixture,
+    TestClockLayer,
+    Workload
+} from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 import { testRuntime } from '../../harness/scenario/test-runtime';
 

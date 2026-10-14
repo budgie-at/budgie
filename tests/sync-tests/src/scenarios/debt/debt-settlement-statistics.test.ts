@@ -1,5 +1,3 @@
-import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
-import { DebtAccountService } from '@app/account/service/debt-account.service';
 import {
     AccountBalanceRepository,
     AccountEntityTable,
@@ -29,6 +27,7 @@ import {
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
+import { AccountDebtOpeningService, DebtAccountService } from '@budgie/ledger';
 import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
@@ -37,7 +36,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchAccountBalance, requireInstrument, TestLayer } from '../../harness';
+import { fetchAccountBalance, requireInstrument, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -632,7 +631,8 @@ describe('debt settlement statistics', () => {
                     contactId: null,
                     deadline: null
                 },
-                openingIncome.id
+                openingIncome.id,
+                DEBT_OPENING_MESSAGES
             );
             const additionalIncome = yield* createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
@@ -738,7 +738,8 @@ const createFundedLentDebt = Effect.fnUntraced(function* () {
             contactId: null,
             deadline: null
         },
-        cashAccount.id
+        cashAccount.id,
+        DEBT_OPENING_MESSAGES
     );
 });
 
@@ -1302,7 +1303,8 @@ const openFundedDebt = Effect.fnUntraced(function* (
             contactId: null,
             deadline: null
         },
-        fundingAccount.id
+        fundingAccount.id,
+        DEBT_OPENING_MESSAGES
     );
 });
 

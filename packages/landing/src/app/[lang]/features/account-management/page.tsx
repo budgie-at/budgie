@@ -121,7 +121,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a Revolut card, a crypto wallet,
+                        Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a travel card, a crypto wallet,
                         a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and
                         &ldquo;include in net worth&rdquo; toggle.
                     </Trans>
@@ -201,8 +201,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     question={<Trans>Can I track an account in a different currency?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Each account has a fixed currency. Daily exchange-rate snapshots convert everything to your base currency
-                            for net worth.
+                            Yes. Each account has a fixed currency. Exchange rates, refreshed in the background, convert everything to your
+                            base currency for net worth.
                         </Trans>
                     }
                 />
@@ -210,8 +210,10 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     question={<Trans>What happens to transactions when I delete an account?</Trans>}
                     answer={
                         <Trans>
-                            Budgie prompts you to migrate them to another account or wipe them. Archiving is the safer alternative — it
-                            hides the account from the home but keeps the data.
+                            Deleting is permanent and only available for archived accounts: the account and its transactions are gone for
+                            good, and there is no option to move them elsewhere first. Transfers with other accounts stay there as
+                            &ldquo;Transfer (account deleted)&rdquo;. Archiving is the safer choice — it hides the account from the home but
+                            keeps the data.
                         </Trans>
                     }
                 />
@@ -220,7 +222,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     answer={
                         <Trans>
                             Yes. Deposit is a dedicated account type with interest rate, maturity date, days remaining, expected payout, and
-                            a Close Deposit action that transfers the balance to a selected destination account.
+                            a Close Deposit action that moves the balance to an account you pick and archives the deposit.
                         </Trans>
                     }
                 />
@@ -237,9 +239,9 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     question={<Trans>What is the difference between archived and inactive?</Trans>}
                     answer={
                         <Trans>
-                            Archive means you are done with the account — it leaves the home screen and the totals for good, but every
-                            transaction stays searchable and restorable from Settings. Inactive means the account is still real but should
-                            not clutter the home screen right now — it can be re-activated at any time from the same Settings screen.
+                            Archive means you are done with the account — it leaves the home screen and the totals, but every transaction
+                            stays searchable and restorable from Settings. Inactive means the account is still real but should not clutter
+                            the home screen right now — it can be re-activated at any time from the same Settings screen.
                         </Trans>
                     }
                 />

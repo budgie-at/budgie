@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": ["esnext"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "noEmit": true,
+        "types": ["node"]
+    },
+    "include": ["src", "test", "vitest.config.ts"],
+    "exclude": ["node_modules", "dist"]
+}

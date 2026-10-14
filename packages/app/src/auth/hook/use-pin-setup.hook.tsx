@@ -1,4 +1,4 @@
-import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
@@ -10,7 +10,7 @@ import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
 import { BiometricAuthenticationFailedError } from '../error/biometric-authentication-failed.error';
 import { AuthService } from '../service/auth.service';
 
-import type { MessageDescriptor } from '@lingui/core';
+import { usePinError } from './use-pin-error.hook';
 
 interface Params {
     readonly mode: PinSetupModeEnum;
@@ -18,16 +18,19 @@ interface Params {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple state fields and handlers
 export const usePinSetup = ({ mode }: Params) => {
+    const { t } = useLingui();
     const { isSomeAvailable } = useAuthContext();
+    const { clearError, error: pinError, isLockedOut, reportIncorrectPin } = usePinError();
 
     const [step, setStep] = useState(mode === PinSetupModeEnum.CREATE ? PinSetupStepEnum.CREATE : PinSetupStepEnum.VERIFY_OLD);
     const [input, setInput] = useState('');
-    const [error, setError] = useState<MessageDescriptor | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [tempNewPin, setTempNewPin] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const deleteDigit = () => {
         setError(null);
+        clearError();
         setInput(input.slice(0, -1));
     };
 
@@ -50,7 +53,7 @@ export const usePinSetup = ({ mode }: Params) => {
         );
 
         if (!isCorrect) {
-            setError(msg`Incorrect PIN`);
+            reportIncorrectPin();
             setInput('');
 
             return false;
@@ -97,7 +100,7 @@ export const usePinSetup = ({ mode }: Params) => {
                     ? authService.changePin(tempNewPin)
                     : authService.createPin(tempNewPin, isBiometricEnabled);
             }).pipe(
-                Effect.catchCause(() => Effect.sync(() => void setError(msg`Failed to save PIN. Please try again.`))),
+                Effect.catchCause(() => Effect.sync(() => void setError(t`Failed to save PIN. Please try again.`))),
                 Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
             )
         );
@@ -105,7 +108,7 @@ export const usePinSetup = ({ mode }: Params) => {
 
     const handleConfirmStep = async (pin: string) => {
         if (pin !== tempNewPin) {
-            setError(msg`PINs do not match`);
+            setError(t`PINs do not match`);
             reset();
 
             return;
@@ -141,12 +144,13 @@ export const usePinSetup = ({ mode }: Params) => {
     };
 
     const addDigit = (digit: string) => {
-        if (input.length >= PIN_LENGTH) {
+        if (isLockedOut || input.length >= PIN_LENGTH) {
             return;
         }
 
         const nextInput = input + digit;
         setError(null);
+        clearError();
         setInput(nextInput);
 
         if (nextInput.length === PIN_LENGTH && !isLoading && step !== PinSetupStepEnum.BIOMETRIC) {
@@ -155,7 +159,7 @@ export const usePinSetup = ({ mode }: Params) => {
     };
 
     return {
-        state: { mode, step, input, error, isLoading },
+        state: { mode, step, input, error: pinError ?? error, isLoading, isInputDisabled: isLoading || isLockedOut },
         addDigit,
         deleteDigit,
         saveAndContinue:

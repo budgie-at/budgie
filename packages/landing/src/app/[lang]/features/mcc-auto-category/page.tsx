@@ -114,14 +114,16 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        MCC is the universal merchant taxonomy banks already attach to every card transaction. Budgie ships an MCC →
-                        category lookup so a coffee shop (MCC 5814) lands in your &quot;Food &amp; Drink&quot; without a single tap.
+                        MCC is the universal merchant taxonomy banks already attach to every card transaction. Budgie ships a lookup for
+                        about 1,050 codes, so a cafe (MCC 5814) lands in &quot;Restaurants &amp; Cafes&quot;, a fuel stop (5541, 5542) in
+                        &quot;Car &amp; Fuel&quot; and transit (4111) in &quot;Transportation&quot; without a single tap.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Per-MCC overrides let you bend the default mapping — point all 4111 (transit) into your &quot;Commute&quot; category
-                        instead of &quot;Travel&quot; once and never touch it again.
+                        Want a different category? Change it once and tap the Quick rule pill to remember it for that merchant, or write a
+                        rule on the merchant code yourself. Prefer to categorize everything by hand? Turn off &quot;Auto-assign categories
+                        from MCC&quot; in Settings — it is on by default.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -132,19 +134,19 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Universal MCC → category lookup ships with sensible defaults</Trans>
+                        <Trans>Default categories for about 1,050 merchant category codes, on by default</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Per-MCC overrides for personal preferences — set once, applies forever</Trans>
+                        <Trans>Override a category once and a Quick rule remembers it for that merchant</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>MCC short and full description visible in the transaction edit form</Trans>
+                        <Trans>The merchant category shows under the merchant name on the transaction form</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>AI category suggestion fills the gap for non-MCC transactions</Trans>
+                        <Trans>Suggestions from your own history fill the gap for transactions without a code</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>PrivatBank&apos;s proprietary categories also map through the same MCC system</Trans>
+                        <Trans>PrivatBank&apos;s own categories are translated to merchant codes too</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -155,7 +157,7 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Merchant Category Code — the universal 4-digit code your bank attaches to every card transaction. 5814 is
-                            &quot;fast food&quot;, 4111 is &quot;transit&quot;, 5411 is &quot;supermarket&quot;, and so on.
+                            &quot;fast food&quot;, 4111 is &quot;transit&quot;, 5411 is &quot;grocery stores&quot;, and so on.
                         </Trans>
                     }
                 />
@@ -163,8 +165,9 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     question={<Trans>What if I want my own category mapping?</Trans>}
                     answer={
                         <Trans>
-                            Override per-MCC: point all 4111 (transit) into your &quot;Commute&quot; instead of the default
-                            &quot;Travel&quot;. Override once, applies forever.
+                            Change the category on a transaction and tap the Quick rule pill: Budgie remembers your choice for that
+                            merchant. To change a whole code at once, write a rule with the merchant code as the condition and pick your
+                            category.
                         </Trans>
                     }
                 />
@@ -172,15 +175,17 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     question={<Trans>What if the transaction has no MCC?</Trans>}
                     answer={
                         <Trans>
-                            Manual entries don&apos;t have MCC; some bank-sync flows drop it. AI category suggestions handle those — see
-                            On-Device AI Auto-Categorization.
+                            Manual entries don&apos;t have MCC; some bank-sync flows drop it. Suggestions from your own history help there,
+                            and so do rules you write.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I see the MCC on a transaction?</Trans>}
                     answer={
-                        <Trans>Yes — the MCC short and full description appear in the transaction edit form for any bank-synced row.</Trans>
+                        <Trans>
+                            Yes — the merchant category appears under the merchant name on the transaction form for any bank-synced row.
+                        </Trans>
                     }
                 />
             </FeaturePageFaqSection>

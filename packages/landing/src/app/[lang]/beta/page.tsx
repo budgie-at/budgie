@@ -3,6 +3,7 @@ import { Trans } from '@lingui/react/macro';
 import { Suspense } from 'react';
 
 import { BetaReleaseSection } from '../../../beta/component/beta-release-section/beta-release-section';
+import { buildAlternates } from '../../../generic/utils/build-alternates.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 import { Card } from '../../../ui/card/card';
@@ -16,6 +17,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const i18n = getI18nInstance(lang);
 
     return {
+        alternates: buildAlternates(lang, '/beta'),
         title: i18n._(msg`Budgie iOS Beta Install`),
         // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'noindex, follow'

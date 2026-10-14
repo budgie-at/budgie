@@ -89,7 +89,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         href={`/${lang}/features/data-export`}
                         index={4}
                         tagline={<Trans>CSV for spreadsheets. A full database backup for restore. Both yours, never ours.</Trans>}
-                        title={<Trans>Export Every Transaction You&apos;ve Logged</Trans>}
+                        title={<Trans>Export Your Transactions, Plus a Full Backup</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/database-backup`}

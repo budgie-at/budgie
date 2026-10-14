@@ -1,4 +1,3 @@
-import { MoneyDataUpgradeService } from '@app/money-data/service/money-data-upgrade.service';
 import {
     AccountTypeEnum,
     CurrencyEnum,
@@ -8,12 +7,13 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
+import * as Stream from 'effect/Stream';
 
 import { requireInstrument, seed, testDb, TestLayer } from '../../harness';
-
-import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '@app/money-data/interface/money-data-upgrade-runtime-snapshot.interface';
 
 const PENDING_DAY_COUNT = 60;
 const ENTRIES_PER_DAY = 2;
@@ -68,13 +68,23 @@ describe('money data upgrade progress', () => {
             const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
             const account = yield* seed.account({ type: AccountTypeEnum.BANK, instrumentId: hryvnia.id });
             const totalEntryCount = yield* seedPendingEntries(account.id);
-            const snapshots: MoneyDataUpgradeRuntimeSnapshotInterface[] = [];
 
             yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
-            const result = yield* moneyDataUpgradeService.run(snapshot => {
-                snapshots.push(snapshot);
-            });
+            const collector = yield* Effect.forkChild(
+                Stream.runCollect(
+                    Stream.takeUntil(
+                        moneyDataUpgradeService.changes,
+                        snapshot => !snapshot.isRunning && snapshot.processedEntryCount === totalEntryCount
+                    )
+                ),
+                { startImmediately: true }
+            );
+
+            yield* Effect.yieldNow;
+
+            const result = yield* moneyDataUpgradeService.run('Base instrument not found');
+            const snapshots = yield* Fiber.join(collector);
             const valuingCounts = snapshots
                 .filter(snapshot => snapshot.isRunning && !snapshot.isUpdatingBalances && snapshot.totalEntryCount === totalEntryCount)
                 .map(snapshot => snapshot.processedEntryCount);
@@ -83,7 +93,7 @@ describe('money data upgrade progress', () => {
                 Array.from({ length: PENDING_DAY_COUNT + 1 }, (_, bucketIndex) => bucketIndex * ENTRIES_PER_DAY)
             );
             expect(result).toMatchObject({ isRunning: false, processedEntryCount: totalEntryCount, pendingEntryCount: 0 });
-            expect(yield* moneyDataUpgradeService.getSnapshot()).toMatchObject({ pendingEntryCount: 0 });
+            expect(yield* moneyDataUpgradeService.refreshSnapshot('Base instrument not found')).toMatchObject({ pendingEntryCount: 0 });
         }).pipe(Effect.provide(TestLayer))
     );
 });
