@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'primary tag picker'
     ],
     relatedFeatureSlugs: ['transaction-tags', 'tag-analytics'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-04-24',
     updatedAt: '2026-05-03',
     ogTags: ['tags', 'ui', 'scanning']

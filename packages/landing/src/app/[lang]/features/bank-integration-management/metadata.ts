@@ -29,7 +29,7 @@ export const FEATURE_METADATA = {
         'binance-sync',
         'account-management'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-bank-data-safety'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-09-02',
     updatedAt: '2026-09-02',
     ogTags: ['bank sync', 'accounts', 'credentials']

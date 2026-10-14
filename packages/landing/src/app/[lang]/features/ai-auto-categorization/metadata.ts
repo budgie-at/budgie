@@ -30,7 +30,7 @@ export const FEATURE_METADATA = {
         'bulk-categorize-transactions',
         'recurring-payments-calendar'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app', 'on-device-ai-budget-app-explainer'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'on-device-ai-budget-app-explainer'],
     publishedAt: '2026-02-06',
     updatedAt: '2026-09-16',
     ogTags: ['ai', 'on-device', 'privacy']

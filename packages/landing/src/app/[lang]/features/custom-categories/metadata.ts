@@ -28,7 +28,7 @@ export const FEATURE_METADATA = {
         'spending-analytics',
         'split-transactions'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-19',
     updatedAt: '2026-05-03',
     ogTags: ['categories', 'custom', 'organization']

@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'FX transfer tracking'
     ],
     relatedFeatureSlugs: ['transfer-pair-detection', 'transaction-long-press-menu', 'multi-currency', 'bank-resync-window'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2025-12-19',
     updatedAt: '2026-05-03',
     ogTags: ['transfers', 'multi-currency', 'accounts']

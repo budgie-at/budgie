@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'bank statement importer'
     ],
     relatedFeatureSlugs: ['erste-bank-pdf-import', 'privatbank-import', 'monobank-sync', 'data-export', 'bank-resync-window'],
-    relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data', 'historical-exchange-rates-budget-analytics'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-21',
     updatedAt: '2026-05-03',
     ogTags: ['csv', 'import', 'bank statement']

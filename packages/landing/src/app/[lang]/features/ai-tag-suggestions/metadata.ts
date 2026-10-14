@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'offline tag suggestions'
     ],
     relatedFeatureSlugs: ['transaction-tags', 'tag-analytics', 'ai-auto-categorization', 'ai-transaction-suggestions', 'primary-tag'],
-    relatedArticleSlugs: ['budgie-offline-financial-data'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-09-16',
     ogTags: ['ai', 'tags', 'suggestions']

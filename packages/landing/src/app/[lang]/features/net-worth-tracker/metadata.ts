@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'mobile net worth app'
     ],
     relatedFeatureSlugs: ['balance-adjustment', 'account-management', 'multi-currency', 'debt-tracking', 'crypto-investment-tracking'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-01-03',
     updatedAt: '2026-09-06',
     ogTags: ['net worth', 'multi-currency', 'dashboard']

@@ -20,7 +20,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'deposit tracking app update'
     ],
     seoDescription: msg`See what shipped in Budgie between August and September 2026: bank integration settings, Binance sync, deposit and debt account types, amount-range filtering, consolidation accuracy fixes, and startup performance work.`,
-    relatedArticleSlugs: ['on-device-ai-budget-app-explainer', 'offline-first-bank-data-safety'],
+    relatedArticleSlugs: ['on-device-ai-budget-app-explainer', 'cloud-budgeting-privacy-risks'],
     relatedFeatureSlugs: ['bank-integration-management', 'binance-sync', 'deposit-tracking', 'debt-tracking']
 };
 

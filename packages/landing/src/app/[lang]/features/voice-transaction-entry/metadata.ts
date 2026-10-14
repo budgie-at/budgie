@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'multi-transaction voice entry'
     ],
     relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'ai-category-translation'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-01-22',
     updatedAt: '2026-09-16',
     ogTags: ['voice', 'on-device', 'ai']

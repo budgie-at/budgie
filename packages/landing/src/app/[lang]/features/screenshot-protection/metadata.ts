@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'no-screenshot finance app'
     ],
     relatedFeatureSlugs: ['pin-app-lock', 'biometric-authentication'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'cloud-budgeting-privacy-risks'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2025-12-23',
     updatedAt: '2026-05-03',
     ogTags: ['privacy', 'screenshots', 'security']

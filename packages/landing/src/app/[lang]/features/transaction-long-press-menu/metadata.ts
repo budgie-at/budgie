@@ -32,7 +32,7 @@ export const FEATURE_METADATA = {
         'transaction-tags',
         'ai-transaction-suggestions'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-09-26',
     ogTags: ['ux', 'gestures', 'productivity']

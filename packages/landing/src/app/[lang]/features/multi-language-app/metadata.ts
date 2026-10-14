@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'language switcher expense app'
     ],
     relatedFeatureSlugs: ['ai-category-translation', 'dark-mode'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-05-03',
     ogTags: ['i18n', 'languages', 'multilingual']

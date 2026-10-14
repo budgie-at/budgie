@@ -31,7 +31,7 @@ export const FEATURE_METADATA = {
         'mcc-auto-category',
         'ai-auto-categorization'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'ynab-alternatives-privacy'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-25',
     updatedAt: '2026-09-27',
     ogTags: ['categorize', 'tags', 'bulk']

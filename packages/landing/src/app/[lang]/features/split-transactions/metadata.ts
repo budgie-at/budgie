@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'split bill app'
     ],
     relatedFeatureSlugs: ['expense-tracking', 'custom-categories', 'transaction-tags'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-02-01',
     updatedAt: '2026-09-16',
     ogTags: ['split', 'categories', 'transactions']

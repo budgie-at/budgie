@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'private expense tracker biometrics'
     ],
     relatedFeatureSlugs: ['pin-app-lock', 'screenshot-protection', 'expense-tracking'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2025-12-18',
     updatedAt: '2026-09-16',
     ogTags: ['biometric', 'face id', 'touch id', 'security']

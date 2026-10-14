@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'cross-currency transfer detection'
     ],
     relatedFeatureSlugs: ['sync-data-repairs', 'account-transfers', 'transaction-long-press-menu', 'bank-resync-window'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-01',
     updatedAt: '2026-09-16',
     ogTags: ['transfers', 'deduplication', 'smart']

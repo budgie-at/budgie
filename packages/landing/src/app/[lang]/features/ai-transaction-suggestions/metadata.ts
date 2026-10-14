@@ -28,7 +28,7 @@ export const FEATURE_METADATA = {
         'transaction-tags',
         'ai-category-translation'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-09-07',
     ogTags: ['ai', 'suggestions', 'expense-tracking']

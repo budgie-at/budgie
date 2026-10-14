@@ -177,7 +177,7 @@ export const Footer = async ({ lang }: Props) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/blog/mint-alternatives-developers`}
+                                    href={`/${lang}/blog/mint-shutdown-private-alternative`}
                                 >
                                     <Trans>Mint Alternatives</Trans>
                                 </Link>

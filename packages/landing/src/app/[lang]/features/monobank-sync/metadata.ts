@@ -27,7 +27,7 @@ export const FEATURE_METADATA = {
         'erste-bank-pdf-import',
         'privatbank-import'
     ],
-    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data', 'offline-first-bank-data-safety'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2025-12-25',
     updatedAt: '2026-10-14',
     ogTags: ['monobank', 'bank sync', 'privacy']

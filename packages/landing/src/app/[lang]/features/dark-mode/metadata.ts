@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'true black expense app'
     ],
     relatedFeatureSlugs: ['multi-language-app'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-05-03',
     ogTags: ['dark mode', 'ui', 'theme']

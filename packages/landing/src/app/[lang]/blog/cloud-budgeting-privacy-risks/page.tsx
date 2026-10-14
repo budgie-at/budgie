@@ -885,6 +885,50 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
+                        <Trans>Statement Import: The Fallback That Always Works</Trans>
+                    </BlogArticleSubheading>
+
+                    <BlogArticleProse>
+                        <Trans>
+                            Not every bank offers a direct connection, and a direct connection is not the only private option. Download a
+                            statement from your bank’s own website, import it, and you get the same history with nothing handed to a third
+                            party.
+                        </Trans>
+                    </BlogArticleProse>
+
+                    <BlogArticleList>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>Works with any bank</strong>: if your bank lets you download a CSV statement, you can import it
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>No stored logins</strong>: you sign in to your bank yourself, the way you always do, and Budgie
+                                never sees that login
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>You pick the period</strong>: nothing arrives in the background, only what you choose to import
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>Read on your phone</strong>: the file is processed on your device and never uploaded
+                            </Trans>
+                        </BlogArticleListItem>
+                    </BlogArticleList>
+
+                    <BlogArticleProse>
+                        <Trans>
+                            Where Budgie offers a direct connection, you add an access key issued by the provider itself and your phone
+                            talks to the provider without a middleman. Today that covers Monobank and Binance. Every other bank uses
+                            statement import.
+                        </Trans>
+                    </BlogArticleProse>
+
+                    <BlogArticleSubheading>
                         <Trans>What You Give Up</Trans>
                     </BlogArticleSubheading>
 
@@ -1113,6 +1157,14 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                                 entirely. Credentials are stored locally on your device with hardware-backed encryption, not on any server.
                                 Transaction data flows directly from your bank to your device without intermediate storage. In regions where
                                 direct API access is not available, manual import from bank exports provides a fully private alternative.
+                            </Trans>
+                        </BlogFaqItem>
+
+                        <BlogFaqItem question={<Trans>Is statement import secure enough for everyday use?</Trans>}>
+                            <Trans>
+                                For most people, yes. Reviewing your accounts weekly or monthly fits a manual import well, and there are no
+                                stored logins, no standing connection and no third party in the middle. You decide exactly which period to
+                                import.
                             </Trans>
                         </BlogFaqItem>
 

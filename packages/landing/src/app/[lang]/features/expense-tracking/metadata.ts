@@ -28,7 +28,7 @@ export const FEATURE_METADATA = {
         'budget-planning',
         'recurring-payments-calendar'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-12-14',
     updatedAt: '2026-09-02',
     ogTags: ['expense tracking', 'transactions', 'mobile']

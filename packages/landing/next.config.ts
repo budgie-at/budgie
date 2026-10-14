@@ -30,11 +30,24 @@ const nextConfig: NextConfig = {
             ['no-bank-login-budget-app', '/privacy'],
             ['convert-to-transfer', '/features/transaction-long-press-menu'],
             ['convert-to-refund', '/features/transaction-long-press-menu']
-        ].map(([retiredSlug, destination]) => ({
-            source: `/:lang(${SUPPORTED_LOCALES.join('|')})/features/${retiredSlug}`,
-            destination: `/:lang${destination}`,
-            permanent: true
-        }));
+        ]
+            .map(([retiredSlug, destination]) => ({
+                source: `/:lang(${SUPPORTED_LOCALES.join('|')})/features/${retiredSlug}`,
+                destination: `/:lang${destination}`,
+                permanent: true
+            }))
+            .concat(
+                [
+                    ['mint-alternatives-developers', '/blog/mint-shutdown-private-alternative'],
+                    ['offline-first-privacy-financial-app', '/blog/cloud-budgeting-privacy-risks'],
+                    ['offline-first-bank-data-safety', '/blog/cloud-budgeting-privacy-risks'],
+                    ['budgie-offline-financial-data', '/privacy']
+                ].map(([retiredSlug, destination]) => ({
+                    source: `/:lang(${SUPPORTED_LOCALES.join('|')})/blog/${retiredSlug}`,
+                    destination: `/:lang${destination}`,
+                    permanent: true
+                }))
+            );
     },
     async headers() {
         return [

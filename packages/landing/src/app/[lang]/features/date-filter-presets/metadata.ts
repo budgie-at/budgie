@@ -27,7 +27,7 @@ export const FEATURE_METADATA = {
         'tag-analytics',
         'mcc-auto-category'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-05-02',
     updatedAt: '2026-09-02',
     ogTags: ['filters', 'dates', 'presets']

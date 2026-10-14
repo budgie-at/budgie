@@ -14,7 +14,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     tags: ['privacy', 'security', 'cloud-security', 'data-breaches', 'plaid', 'financial-privacy', 'fintech'],
     seoKeywords: ['cloud budget app privacy', 'Plaid data risks', 'financial app data breaches'],
     seoDescription: msg`Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security.`,
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['local-first-movement-developers', 'ynab-alternatives-privacy'],
     relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'screenshot-protection']
 };
 

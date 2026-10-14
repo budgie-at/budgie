@@ -27,7 +27,7 @@ export const FEATURE_METADATA = {
         'account-transfers',
         'crypto-investment-tracking'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'historical-exchange-rates-budget-analytics'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-19',
     updatedAt: '2026-05-03',
     ogTags: ['multi-currency', 'fx', 'accounts']

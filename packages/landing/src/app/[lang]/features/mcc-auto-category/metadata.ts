@@ -29,7 +29,7 @@ export const FEATURE_METADATA = {
         'erste-bank-pdf-import',
         'date-filter-presets'
     ],
-    relatedArticleSlugs: ['mint-alternatives-developers', 'ynab-alternatives-privacy'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'ynab-alternatives-privacy'],
     publishedAt: '2026-01-02',
     updatedAt: '2026-05-03',
     ogTags: ['mcc', 'categorization', 'bank sync']

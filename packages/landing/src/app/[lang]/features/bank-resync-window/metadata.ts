@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'bank statement diff'
     ],
     relatedFeatureSlugs: ['sync-data-repairs', 'monobank-sync', 'csv-import', 'account-transfers', 'transfer-pair-detection'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-02',
     updatedAt: '2026-10-14',
     ogTags: ['bank sync', 're-sync', 'edits']

@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'sync data repair'
     ],
     relatedFeatureSlugs: ['bank-integration-management', 'monobank-sync', 'bank-resync-window', 'transfer-pair-detection'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-11',
     updatedAt: '2026-10-14',
     ogTags: ['sync', 'repair', 'duplicates']
