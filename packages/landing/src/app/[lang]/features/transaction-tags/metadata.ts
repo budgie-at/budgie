@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'transaction-tags',
     tier: FeatureTierEnum.CORE,
-    title: msg`Transaction Tags for Multi-Dimensional Tracking`,
-    tagline: msg`Layer tags on top of categories — one transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags).`,
+    name: msg`Transaction Tags`,
+    tagline: msg`Layer tags on top of categories. One transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags).`,
     metaTitle: msg`Custom Transaction Tags for Expense Tracking — Budgie`,
     metaDescription: msg`Tags answer "for which project, person, or purpose" — separate from categories. Multi-select fast, promote a primary tag for at-a-glance scanning, and slice analytics per tag.`,
     primaryKeyword: 'transaction labels app',

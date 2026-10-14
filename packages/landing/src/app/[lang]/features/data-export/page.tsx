@@ -24,18 +24,18 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Export Every Transaction You&apos;ve Logged</Trans>}
+                heading={<Trans>Your data, yours to take</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one —
-                        you can save to iCloud, Drive, or anywhere.
+                        One-tap CSV export of all transactions, plus a full database backup file you can save to iCloud, Drive, or anywhere,
+                        encrypted with your PIN if you set one.
                     </Trans>
                 }
             />

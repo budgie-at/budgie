@@ -6,7 +6,7 @@ export interface FeatureRegistryEntryInterface {
     readonly slug: string;
     readonly tier: FeatureTierEnum;
     readonly category?: FeatureCategoryEnum;
-    readonly title: MessageDescriptor;
+    readonly name: MessageDescriptor;
     readonly tagline: MessageDescriptor;
     readonly metaTitle: MessageDescriptor;
     readonly metaDescription: MessageDescriptor;

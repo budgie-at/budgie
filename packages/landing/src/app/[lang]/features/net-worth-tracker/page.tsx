@@ -25,13 +25,13 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Net Worth Tracker for Mobile</Trans>}
+                heading={<Trans>Your net worth, one number</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'debt-tracking',
     tier: FeatureTierEnum.POWER,
-    title: msg`Debt & Loan Tracking`,
-    tagline: msg`Money out, money in — first-class accounts with target balances, return dates, and contact assignment.`,
+    name: msg`Debt & Loan Tracking`,
+    tagline: msg`Money out, money in. First-class accounts with target balances, return dates, and contact assignment.`,
     metaTitle: msg`Debt & Loan Tracking — Budgie`,
     metaDescription: msg`Track money lent or borrowed as first-class debt accounts. Lending and repayments book real income or expense, so they count in your monthly analytics.`,
     primaryKeyword: 'personal debt tracker app',

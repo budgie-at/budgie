@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-tag-suggestions',
     tier: FeatureTierEnum.POWER,
-    title: msg`Automatic Tag Suggestions — Tap, Don't Type`,
-    tagline: msg`After picking a category, Budgie proposes the tags you usually use as tappable pills — from your own history, on your phone.`,
+    name: msg`Tag Suggestions`,
+    tagline: msg`After picking a category, Budgie proposes the tags you usually use as tappable pills, from your own history, on your phone.`,
     metaTitle: msg`Automatic Expense Tags — On-Device — Budgie`,
     metaDescription: msg`Budgie suggests the tags you usually use for a merchant as tappable pills, so heavy taggers stop typing. Private and offline.`,
     primaryKeyword: 'automatic expense tags',

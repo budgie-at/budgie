@@ -25,13 +25,13 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Find Uncategorized Transactions Before They Skew Your Budget</Trans>}
+                heading={<Trans>Find uncategorized transactions fast</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

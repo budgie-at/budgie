@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'screenshot-protection',
     tier: FeatureTierEnum.NICHE,
-    title: msg`Screenshot Protection — Hide Bank Balance from Previews`,
-    tagline: msg`Accidental shares stay private — balances blur in screenshots and the app switcher.`,
+    name: msg`Screenshot Protection`,
+    tagline: msg`Accidental shares stay private: balances blur in screenshots and the app switcher.`,
     metaTitle: msg`Screenshot Protection — Budgie`,
     metaDescription: msg`Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen.`,
     primaryKeyword: 'hide bank balance screenshot',

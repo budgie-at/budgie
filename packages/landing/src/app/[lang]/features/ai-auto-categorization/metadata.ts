@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-auto-categorization',
     tier: FeatureTierEnum.HERO,
-    title: msg`On-Device AI Auto-Categorization`,
+    name: msg`AI Auto-Categorization`,
     tagline: msg`Category, tag, and merchant suggestions that run entirely on your phone and learn from your corrections.`,
     metaTitle: msg`On-Device AI Auto-Categorization — Budgie`,
     metaDescription: msg`Category, tag, and merchant suggestions that run entirely on your phone, learn from your corrections, and never reach a server.`,

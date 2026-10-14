@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'database-backup',
     tier: FeatureTierEnum.CORE,
-    title: msg`Database Backup & Restore`,
+    name: msg`Backup & Restore`,
     tagline: msg`One backup file, encrypted once you set a PIN. No account, restore by picking the file.`,
     metaTitle: msg`Encrypted Database Backup to Your Cloud — Budgie`,
     metaDescription: msg`Capture your entire Budgie database in one file, encrypted once you set a PIN. Save to iCloud or Drive on your terms; restore on a new device by picking the file — no account needed.`,

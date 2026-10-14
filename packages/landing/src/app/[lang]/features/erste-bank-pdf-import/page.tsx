@@ -23,17 +23,17 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Erste Bank PDF Import</Trans>}
+                heading={<Trans>Your Erste statement, imported</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Import your full Erste Bank account statement straight from the PDF — including the new modern layout introduced in
+                        Import your full Erste Bank account statement straight from the PDF, including the new modern layout introduced in
                         2026.
                     </Trans>
                 }

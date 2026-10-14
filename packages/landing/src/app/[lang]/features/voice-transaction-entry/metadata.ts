@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'voice-transaction-entry',
     tier: FeatureTierEnum.HERO,
-    title: msg`Voice Transaction Entry`,
-    tagline: msg`Speak it. Budgie logs it. Speech is transcribed on your phone — the audio never leaves it.`,
+    name: msg`Voice Transaction Entry`,
+    tagline: msg`Speak it. Budgie logs it. Speech is transcribed on your phone. The audio never leaves it.`,
     metaTitle: msg`Voice-to-Expense, On-Device — Budgie`,
     metaDescription: msg`Say "twelve for coffee, forty for the taxi, and eight euros for parking" and Budgie logs all three as a reviewable batch. The audio never leaves your phone.`,
     primaryKeyword: 'voice expense tracker',

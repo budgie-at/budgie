@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-category-translation',
     tier: FeatureTierEnum.POWER,
-    title: msg`AI Category & Tag Translation`,
-    tagline: msg`Cyrillic, Greek, and Arabic category and tag names become readable and searchable — on your phone.`,
+    name: msg`Category & Tag Translation`,
+    tagline: msg`Cyrillic, Greek, and Arabic category and tag names become readable and searchable, on your phone.`,
     metaTitle: msg`Category & Tag Translation, On-Device — Budgie`,
     metaDescription: msg`Cyrillic, Greek, or Arabic category and tag names get an English form so search and suggestions match either script. Runs on-device.`,
     primaryKeyword: 'category translation budget app',

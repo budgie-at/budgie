@@ -24,17 +24,17 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
+                heading={<Trans>Long-press for quick actions</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Long-press any transaction card for a menu — edit, delete, convert to a transfer, convert income to a refund, attach
+                        Long-press any transaction card for a menu: edit, delete, convert to a transfer, convert income to a refund, attach
                         a debt and more, without opening the full edit form.
                     </Trans>
                 }

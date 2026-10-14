@@ -24,7 +24,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
     const storyAlt = t(
         i18n
     )`Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows`;
@@ -33,12 +33,12 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Database Backup &amp; Restore</Trans>}
+                heading={<Trans>Back up everything in one file</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Capture the whole Budgie database as one file — encrypted with your PIN when you set one — and put it back on
-                        another device. No account, no upload.
+                        Capture the whole Budgie database as one file, encrypted with your PIN when you set one, and put it back on another
+                        device. No account, no upload.
                     </Trans>
                 }
             />

@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'privatbank-import',
     tier: FeatureTierEnum.CORE,
-    title: msg`PrivatBank XLSX Import`,
-    tagline: msg`One-time import, MCC-mapped — long-press an account card to jump to the picker.`,
+    name: msg`PrivatBank Import`,
+    tagline: msg`One-time import, MCC-mapped. Long-press an account card to jump to the picker.`,
     metaTitle: msg`PrivatBank XLSX Import — Budgie`,
     metaDescription: msg`Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works.`,
     primaryKeyword: 'PrivatBank transaction import',

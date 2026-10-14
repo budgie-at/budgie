@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'erste-bank-pdf-import',
     tier: FeatureTierEnum.CORE,
-    title: msg`Erste Bank PDF Import`,
-    tagline: msg`Classic and modern PDF formats — full statement import in seconds.`,
+    name: msg`Erste Bank PDF Import`,
+    tagline: msg`Classic and modern PDF formats. Full statement import in seconds.`,
     metaTitle: msg`Erste Bank PDF Import — Budgie`,
     metaDescription: msg`Import your full Erste Bank statement straight from PDF — both classic and the new 2026 modern format. Account holder, IBAN, balances, and every transaction line parsed.`,
     primaryKeyword: 'Erste Bank statement import',

@@ -24,18 +24,18 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
+                heading={<Trans>Say it, Budgie logs it</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
                         Say &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo; and Budgie logs all three.
-                        Transcription and parsing both happen on your phone — the audio never leaves it.
+                        Transcription and parsing both happen on your phone. The audio never leaves it.
                     </Trans>
                 }
             />

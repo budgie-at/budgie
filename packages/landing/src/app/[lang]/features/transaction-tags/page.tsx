@@ -24,17 +24,17 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Transaction Tags for Multi-Dimensional Tracking</Trans>}
+                heading={<Trans>Layer tags on top of categories</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Layer tags on top of categories — one transaction can be both Groceries (category) and #vacation, #shared, and
+                        Layer tags on top of categories. One transaction can be both Groceries (category) and #vacation, #shared, and
                         #reimbursable (tags).
                     </Trans>
                 }

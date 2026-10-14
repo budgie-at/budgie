@@ -25,7 +25,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
     const storyAlt = t(
         i18n
     )`Budgie Budget details screen with 95% of the monthly limit spent and the remainder below it, above category limit cards for Housing & Utilities, Groceries over budget, Transportation and Car & Fuel`;
@@ -34,7 +34,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Budget Planning — One Limit, Split By Category</Trans>}
+                heading={<Trans>One monthly limit, split by category</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

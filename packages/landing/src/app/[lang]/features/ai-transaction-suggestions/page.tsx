@@ -24,17 +24,17 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
+                heading={<Trans>Tap a suggestion, done</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Open the expense form and Budgie offers pill-shaped suggestions from your own history — category first, then tags,
+                        Open the expense form and Budgie offers pill-shaped suggestions from your own history: category first, then tags,
                         then a comment, with the usual amount filled in once you have chosen.
                     </Trans>
                 }

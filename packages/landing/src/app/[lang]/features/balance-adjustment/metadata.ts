@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'balance-adjustment',
     tier: FeatureTierEnum.CORE,
-    title: msg`Balance Adjustment`,
+    name: msg`Balance Adjustment`,
     tagline: msg`Correct an account balance without pretending it was income or an expense.`,
     metaTitle: msg`Balance Adjustment — Budgie`,
     metaDescription: msg`Set the balance your bank shows and Budgie books the difference as a dated Adjustment transaction, not a silent edit. First-class, editable, and excluded from your rules.`,

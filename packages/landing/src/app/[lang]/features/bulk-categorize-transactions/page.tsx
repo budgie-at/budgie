@@ -27,14 +27,14 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
     const linkClassName = 'font-semibold underline underline-offset-4';
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Categorize and Tag Bank Transactions in Bulk</Trans>}
+                heading={<Trans>Categorize a whole merchant at once</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

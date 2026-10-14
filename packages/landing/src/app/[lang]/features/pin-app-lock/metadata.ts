@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'pin-app-lock',
     tier: FeatureTierEnum.CORE,
-    title: msg`PIN App Lock — Locks With the Encryption Key`,
-    tagline: msg`The PIN unlocks the app and unlocks your data — no PIN, no readable database.`,
+    name: msg`PIN App Lock`,
+    tagline: msg`The PIN unlocks the app and unlocks your data. No PIN, no readable database.`,
     metaTitle: msg`PIN Lock Finance App — Private Expense Tracker — Budgie`,
     metaDescription: msg`Budgie's PIN doesn't just gate the screen — it is the encryption key for your data. Without the PIN, the database file is unreadable, even with full filesystem access.`,
     primaryKeyword: 'PIN lock finance app',

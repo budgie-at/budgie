@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'biometric-authentication',
     tier: FeatureTierEnum.CORE,
-    title: msg`Face ID / Touch ID Authentication`,
-    tagline: msg`One glance unlocks the screen — your four-digit PIN stays the encryption key underneath.`,
+    name: msg`Face ID & Touch ID`,
+    tagline: msg`One glance unlocks the screen. Your four-digit PIN stays the encryption key underneath.`,
     metaTitle: msg`Biometric Authentication — Budgie`,
     metaDescription: msg`Face ID or Touch ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real encryption key, no device-passcode fallback.`,
     primaryKeyword: 'Face ID and Touch ID expense app',

@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'transfer-pair-detection',
     tier: FeatureTierEnum.POWER,
-    title: msg`Smart Transfer and Refund Consolidation`,
+    name: msg`Transfer and Refund Consolidation`,
     tagline: msg`Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.`,
     metaTitle: msg`Smart Transfer and Refund Consolidation — Budgie`,
     metaDescription: msg`Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device.`,

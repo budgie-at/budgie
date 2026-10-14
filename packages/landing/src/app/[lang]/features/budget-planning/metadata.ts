@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'budget-planning',
     tier: FeatureTierEnum.HERO,
-    title: msg`Budget Planning — One Limit, Split By Category`,
-    tagline: msg`One overall limit, per-category limits, and a cap for everything else — with a home-screen widget and on-device alerts.`,
+    name: msg`Budget Planning`,
+    tagline: msg`One overall limit, per-category limits, and a cap for everything else, with a home-screen widget and on-device alerts.`,
     metaTitle: msg`Monthly Budget Planning — Budgie`,
     metaDescription: msg`Set an overall monthly limit plus per-category limits, track the current cycle from the home-screen widget, and get on-device alerts at 80% and 100% of your limit. No server involved.`,
     primaryKeyword: 'monthly budget app',

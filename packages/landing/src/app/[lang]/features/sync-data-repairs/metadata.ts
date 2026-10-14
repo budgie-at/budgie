@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'sync-data-repairs',
     tier: FeatureTierEnum.POWER,
-    title: msg`Sync Data Repairs`,
-    tagline: msg`Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows — manual entries are never touched.`,
+    name: msg`Sync Data Repairs`,
+    tagline: msg`Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows. Manual entries are never touched.`,
     metaTitle: msg`Sync Data Repairs — Budgie`,
     metaDescription: msg`A dedicated Settings screen scans your imported banking connections for duplicate transactions and unmatched own-card transfers, showing a count before you confirm. It soft-deletes duplicate copies and pairs matched transfer legs. Manual transactions stay untouched.`,
     primaryKeyword: 'duplicate bank transaction fixer',

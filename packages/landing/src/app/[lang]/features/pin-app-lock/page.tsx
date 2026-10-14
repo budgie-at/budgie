@@ -24,17 +24,17 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>PIN App Lock — Locks With the Encryption Key</Trans>}
+                heading={<Trans>Lock the app and your data</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable — even with
+                        A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable, even with
                         full filesystem access.
                     </Trans>
                 }

@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'uncategorized-transactions',
     tier: FeatureTierEnum.CORE,
-    title: msg`Uncategorized Transaction Finder`,
+    name: msg`Uncategorized Transactions`,
     tagline: msg`A filter-aware missing-category pill surfaces uncategorized transactions before they distort your budget analytics.`,
     metaTitle: msg`Uncategorized Transactions Finder`,
     metaDescription: msg`Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device.`,

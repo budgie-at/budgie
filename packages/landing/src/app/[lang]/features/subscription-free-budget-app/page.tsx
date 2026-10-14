@@ -25,17 +25,17 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Subscription-Free Budget App — Completely Free</Trans>}
+                heading={<Trans>Budgeting without another subscription</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no
+                        Recurring monthly fees turn budgeting into another bill. Budgie is completely free: every feature, no unlock, no
                         tier.
                     </Trans>
                 }

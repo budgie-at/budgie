@@ -2251,8 +2251,8 @@ msgid "A \"matching rules\" pill on a transaction shows which rules apply to it"
 msgstr "Eine „passende Regeln“-Kennzeichnung an einer Transaktion zeigt, welche Regeln für sie gelten"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable — even with full filesystem access."
-msgstr "Eine 4-stellige PIN entsperrt die App und entsperrt Ihre Daten. Ohne die PIN ist die Datenbankdatei unlesbar — selbst mit vollständigem Dateisystemzugriff."
+msgid "A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable, even with full filesystem access."
+msgstr "Eine vierstellige PIN entsperrt die App und deine Daten. Ohne PIN ist die Datenbankdatei unlesbar, selbst mit vollem Dateisystemzugriff."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "A 4-digit PIN, set from Settings → Security"
@@ -2582,11 +2582,14 @@ msgstr "Alles Eindeutige auf einmal übernehmen"
 msgid "Access token held by aggregator"
 msgstr "Zugriffstoken beim Aggregator gespeichert"
 
-#: src/app/[lang]/features/screenshot-protection/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "Accidental shares stay private — balances blur in screenshots and the app switcher."
 msgstr "Versehentliche Freigaben bleiben privat – Kontostände werden in Screenshots und im App-Wechsler unscharf dargestellt."
+
+#: src/app/[lang]/features/screenshot-protection/metadata.ts
+msgid "Accidental shares stay private: balances blur in screenshots and the app switcher."
+msgstr "Versehentlich geteilt bleibt privat: Kontostände werden in Screenshots und im App-Wechsler unscharf."
 
 #: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
 msgid "Accidental shares stay private."
@@ -2597,8 +2600,8 @@ msgid "Account balances and banking information (if bank sync is enabled)"
 msgstr "Kontostände und Bankinformationen (wenn die Bank-Synchronisierung aktiviert ist)"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in Settings → Security."
-msgstr "Kontostände und Gesamtvermögen wechseln zu einem Platzhalter, sobald Budgie in den Hintergrund geht — ein Schalter in Einstellungen → Sicherheit."
+msgid "Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground. One switch in Settings → Security."
+msgstr "Kontostände und Vermögen werden durch einen Platzhalter ersetzt, sobald Budgie in den Hintergrund wechselt. Ein Schalter unter Einstellungen → Sicherheit."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Account balances and net worth switch to a placeholder wherever Budgie renders them, for as long as the app isn't the active app — most visible when you open the app switcher."
@@ -2625,6 +2628,7 @@ msgstr "Konto ist schon gewählt"
 msgid "Account required"
 msgstr "Konto erforderlich"
 
+#: src/app/[lang]/features/account-transfers/metadata.ts
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
 msgid "Account Transfers"
 msgstr "Kontoüberweisungen"
@@ -2632,11 +2636,6 @@ msgstr "Kontoüberweisungen"
 #: src/app/[lang]/features/account-transfers/metadata.ts
 msgid "Account Transfers — Budgie"
 msgstr "Kontoüberweisungen — Budgie"
-
-#: src/app/[lang]/features/account-transfers/metadata.ts
-#: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Account Transfers — Done Right"
-msgstr "Kontoüberweisungen — richtig gemacht"
 
 #: src/app/[lang]/features/account-management/opengraph-image.tsx
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
@@ -2803,8 +2802,8 @@ msgid "After Mint’s shutdown, developers need a finance app that respects data
 msgstr "Nach der Einstellung von Mint brauchen Entwickler eine Finanz-App, die Dateneigentum und Privatsphäre respektiert. Vergleichen Sie Budgie, Actual Budget, Firefly III und mehr."
 
 #: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
-msgid "After picking a category, Budgie proposes the tags you usually use as tappable pills — from your own history, on your phone."
-msgstr "Nach der Kategorie schlägt Budgie dir die Tags vor, die du sonst verwendest – als antippbare Pillen, aus deinem eigenen Verlauf, direkt auf deinem Handy."
+msgid "After picking a category, Budgie proposes the tags you usually use as tappable pills, from your own history, on your phone."
+msgstr "Nach der Kategorieauswahl schlägt Budgie dir die Tags vor, die du meistens nutzt, als antippbare Pills, aus deinem eigenen Verlauf, direkt auf deinem Handy."
 
 #: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 msgid "After picking a category, Budgie proposes up to three tags as tappable pills — instantly, and entirely on your phone."
@@ -2863,6 +2862,10 @@ msgstr "Aggregatoren sitzen zwischen Ihnen und Ihrer Bank und spiegeln Transakti
 msgid "ai"
 msgstr "KI"
 
+#: src/app/[lang]/features/ai-auto-categorization/metadata.ts
+msgid "AI Auto-Categorization"
+msgstr "KI-Autokategorisierung"
+
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "AI auto-categorization app"
 msgstr "App mit KI-Autokategorisierung"
@@ -2876,7 +2879,6 @@ msgid "AI Categorization"
 msgstr "KI-Kategorisierung"
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-category-translation/metadata.ts
 msgid "AI Category & Tag Translation"
 msgstr "KI-Kategorie- und Tag-Übersetzung"
 
@@ -3132,7 +3134,6 @@ msgid "Another subscription to manage"
 msgstr "Ein weiteres Abonnement"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/csv-import/metadata.ts
 msgid "Any bank, any column order — map it on one screen or start from a built-in preset."
 msgstr "Jede Bank, jede Spaltenreihenfolge — auf einem Bildschirm zuordnen oder mit einer integrierten Voreinstellung starten."
 
@@ -3143,6 +3144,10 @@ msgstr "Jede Bank, jede Spaltenreihenfolge — zuordnen oder eine integrierte Vo
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Any bank, any column order — set it up once per source, then it's two taps from there."
 msgstr "Jede Bank, jede Spaltenreihenfolge – einmal pro Quelle einrichten, danach sind es zwei Tipp-Aktionen."
+
+#: src/app/[lang]/features/csv-import/metadata.ts
+msgid "Any bank, any column order. Map it on one screen or start from a built-in preset."
+msgstr "Jede Bank, jede Spaltenreihenfolge. Ordne sie auf einem Bildschirm zu oder starte mit einer integrierten Vorlage."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Any change affecting data handling is flagged for review"
@@ -3159,6 +3164,10 @@ msgstr "Jegliches Verhalten oder jegliche Inhalte Dritter im Dienst"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any content obtained from the Service"
 msgstr "Jegliche aus dem Dienst bezogenen Inhalte"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Any currency, one total"
+msgstr "Jede Währung, eine Summe"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any disputes arising from or relating to these Terms or the Service shall be resolved through:"
@@ -3183,6 +3192,10 @@ msgstr "Jede zukünftige Lösung hält an unserem Kernprinzip fest: Deine Finanz
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Any group turned into a rule for future imports"
 msgstr "Jede Gruppe lässt sich in eine Regel für künftige Importe verwandeln"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Any period, two taps away"
+msgstr "Jeder Zeitraum, zwei Taps entfernt"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any SDK that requires network connectivity for basic functionality"
@@ -3439,7 +3452,6 @@ msgid "Automatic screenshot blur hides balances in the iOS and Android app switc
 msgstr "Automatische Screenshot-Unschärfe verbirgt Salden im iOS- und Android-App-Wechsler"
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
 #: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 msgid "Automatic Tag Suggestions — Tap, Don't Type"
 msgstr "Automatische Tag-Vorschläge – Tippen, nicht Eintippen"
@@ -3456,6 +3468,10 @@ msgstr "Automatische Überweisungskonsolidierung – beide Seiten einer bankübe
 msgid "automation"
 msgstr "Automatisierung"
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Back up everything in one file"
+msgstr "Alles in einer Datei sichern"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Background FX-rate refresh converts every account to your base currency"
 msgstr "Hintergrund-Wechselkursaktualisierung wandelt jedes Konto in Ihre Basiswährung um"
@@ -3469,6 +3485,7 @@ msgstr "Backup"
 msgid "Backup"
 msgstr "Backup"
 
+#: src/app/[lang]/features/database-backup/metadata.ts
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
 msgid "Backup & Restore"
 msgstr "Backup & Wiederherstellung"
@@ -3550,6 +3567,10 @@ msgstr "Bank-APIs können eine Transaktion nach einem erneuten Versuch oder eine
 msgid "Bank breach impact"
 msgstr "Auswirkung einer Bank-Datenpanne"
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Bank codes sort your spending"
+msgstr "Bankcodes sortieren deine Ausgaben"
+
 #: src/app/[lang]/features/bank-integration-management/metadata.ts
 msgid "Bank Connection Management — Budgie"
 msgstr "Bankverbindungsverwaltung — Budgie"
@@ -3558,14 +3579,13 @@ msgstr "Bankverbindungsverwaltung — Budgie"
 msgid "Bank Connection Requirements"
 msgstr "Anforderungen an die Bankverbindung"
 
+#: src/app/[lang]/features/bank-integration-management/metadata.ts
 #: src/app/[lang]/security/page.tsx
 msgid "Bank Connections"
 msgstr "Bankverbindungen"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/bank-integration-management/metadata.ts
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
-#: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Bank Connections — One Credential, Many Accounts"
 msgstr "Bankverbindungen — ein Zugang, viele Konten"
 
@@ -3611,6 +3631,10 @@ msgstr "Bank-Login"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Bank only"
 msgstr "Nur Bank"
+
+#: src/app/[lang]/features/bank-resync-window/metadata.ts
+msgid "Bank Re-sync Window"
+msgstr "Zeitfenster für Bank-Neusynchronisierung"
 
 #: src/app/[lang]/features/bank-resync-window/metadata.ts
 msgid "Bank Re-Sync Window — Backfill Missing Transactions — Budgie"
@@ -3711,13 +3735,13 @@ msgstr "Banktransaktionen tragen Händlerkategorie-Codes; Budgie ordnet rund 1.0
 msgid "bank-data-safety"
 msgstr "Sicherheit von Bankdaten"
 
-#: src/app/[lang]/features/mcc-auto-category/metadata.ts
-msgid "Bank-issued codes do the work — cafes land in Restaurants & Cafes, fuel stops in Car & Fuel."
-msgstr "Die Codes der Bank erledigen die Arbeit – Cafés landen in Restaurants & Cafes, Tankstopps in Car & Fuel."
-
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Bank-issued codes do the work — coffee shops land in Food & Drink, gas stations in Transport."
 msgstr "Von der Bank vergebene Codes erledigen die Arbeit – Cafés landen unter Essen & Trinken, Tankstellen unter Verkehr."
+
+#: src/app/[lang]/features/mcc-auto-category/metadata.ts
+msgid "Bank-issued codes do the work: cafes land in Restaurants & Cafes, fuel stops in Car & Fuel."
+msgstr "Von der Bank vergebene Codes erledigen die Arbeit: Cafés landen in Restaurants & Cafés, Tankstopps in Auto & Kraftstoff."
 
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx
 msgid "Bank-issued codes do the work."
@@ -3745,8 +3769,8 @@ msgid "Bank-synced accounts auto-group by provider on the home screen. Self-cust
 msgstr "Bankgebundene Konten gruppieren sich auf dem Startbildschirm automatisch nach Anbieter. Selbstverwahrte Krypto-Bestände gruppieren sich stattdessen nach Währung – mehrere Konten mit derselben Münze verschmelzen zu einer Zeile mit kombiniertem Saldo, einem Aufklapp-Schalter und einem direkten Link zum Marktbildschirm dieser Münze. Verbindlichkeits- und Schuldkonten unterstützen negative Salden. Archivierte Konten verschwinden vom Startbildschirm, bleiben aber durchsuchbar."
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
-msgid "Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically — first import, no setup."
-msgstr "Banksynchronisierte Transaktionen tragen Merchant Category Codes; Budgie ordnet sie automatisch Ihrem Kategoriebaum zu – beim ersten Import, ohne Einrichtung."
+msgid "Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically, first import, no setup."
+msgstr "Per Bank synchronisierte Transaktionen enthalten Merchant Category Codes. Budgie ordnet sie automatisch deinem Kategorienbaum zu, ab dem ersten Import, ohne Einrichtung."
 
 #: src/app/[lang]/features/account-management/opengraph-image.tsx
 msgid "Bank, cash, crypto — all on one screen."
@@ -3764,13 +3788,13 @@ msgstr "Bank, Bargeld, Krypto, Festgeld und Schulden erhalten jeweils einen eige
 msgid "Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in."
 msgstr "Bank-, Bargeld-, Einlagen-, Krypto- und Schuldenkonten fließen alle in eine einzige Nettovermögenszahl auf Ihrem Startbildschirm ein, inklusive Mehrwährungsumrechnung."
 
-#: src/app/[lang]/features/account-management/metadata.ts
-msgid "Bank, cash, deposit, crypto, debt — all on one home screen, each with its own color."
-msgstr "Bank, Bargeld, Termineinlage, Krypto, Schulden – alles auf einem Startbildschirm, jedes mit eigener Farbe."
-
 #: src/app/[lang]/features/net-worth-tracker/metadata.ts
-msgid "Bank, cash, deposit, crypto, debt — one number on your home screen."
-msgstr "Bank, Bargeld, Einlagen, Krypto, Schulden — eine Zahl auf Ihrem Startbildschirm."
+msgid "Bank, cash, deposit, crypto, and debt in one number on your home screen."
+msgstr "Bank, Bargeld, Einlagen, Krypto und Schulden in einer Zahl auf deinem Startbildschirm."
+
+#: src/app/[lang]/features/account-management/metadata.ts
+msgid "Bank, cash, deposit, crypto, and debt, all on one home screen, each with its own color."
+msgstr "Bank, Bargeld, Einlagen, Krypto und Schulden, alles auf einem Startbildschirm, jedes mit eigener Farbe."
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Banks charge for moving your own money. Budgie keeps that charge attached to the transfer instead of inventing a second expense."
@@ -3913,14 +3937,13 @@ msgstr "Binance-Konten synchronisieren sich direkt, einschließlich P2P-Trades, 
 msgid "binance sync"
 msgstr "binance-synchronisierung"
 
+#: src/app/[lang]/features/binance-sync/metadata.ts
 #: src/app/[lang]/security/page.tsx
 msgid "Binance Sync"
 msgstr "Binance Sync"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/binance-sync/metadata.ts
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
-#: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Binance Sync — Read-Only Keys, Real Balances"
 msgstr "Binance-Sync — Nur-Lese-Schlüssel, echte Salden"
 
@@ -4062,6 +4085,10 @@ msgstr "Grundlegende Sicherheitsänderungen werden klar kommuniziert"
 msgid "Brighter red and green"
 msgstr "Kräftigeres Rot und Grün"
 
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "Bring in your PrivatBank history"
+msgstr "Hol deinen PrivatBank-Verlauf rein"
+
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
 msgid "Browse All Features"
 msgstr "Alle Funktionen durchsuchen"
@@ -4106,13 +4133,12 @@ msgstr "Die Budget-Details zeigen oben das Gesamtlimit und darunter jedes Katego
 msgid "Budget limits that match your payday"
 msgstr "Budgetgrenzen passend zum Zahltag"
 
+#: src/app/[lang]/features/budget-planning/metadata.ts
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Budget Planning"
 msgstr "Budgetplanung"
 
-#: src/app/[lang]/features/budget-planning/metadata.ts
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
-#: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budget Planning — One Limit, Split By Category"
 msgstr "Budgetplanung — ein Limit, nach Kategorien aufgeteilt"
 
@@ -4126,6 +4152,10 @@ msgstr "Budgeteinstellungen und Kategorien"
 #: src/app/[lang]/blog/opengraph-image.tsx
 msgid "budgeting"
 msgstr "Actual Budget"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Budgeting without another subscription"
+msgstr "Budgetplanung ohne noch ein Abo"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -4446,11 +4476,6 @@ msgstr "Budgie-Startbildschirm mit dem Gesamtsaldo, aufgeteilt in einen Bargeld-
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Budgie implements offline-first architecture with no compromises:"
 msgstr "Budgie implementiert die Offline-First-Architektur ohne Kompromisse:"
-
-#: src/app/[lang]/features/multi-language-app/metadata.ts
-#: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Budgie in Five Languages"
-msgstr "Budgie in fünf Sprachen"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie includes zero analytics SDKs. We do not use Firebase Analytics, Mixpanel, Amplitude, or any similar service. We do not collect crash reports through third-party services. We do not record which features you use, how often you open the app, or what categories you spend money in."
@@ -4854,6 +4879,10 @@ msgstr "Budgie wird ohne Drittanbieter-Analyse- oder Werbe-SDKs ausgeliefert. Ab
 msgid "Budgie showing a total balance, a monthly budget bar and bank, cash and savings accounts on one screen"
 msgstr "Budgie zeigt Gesamtsaldo, monatliches Budget sowie Bank-, Bargeld- und Sparkonten auf einem Bildschirm"
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Budgie speaks your language"
+msgstr "Budgie spricht deine Sprache"
+
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label"
 msgstr "Budgie-Aufteilungsblatt mit den Zeilen Hauswartung und Elektronik & Gadgets, einer Schaltfläche „Eintrag hinzufügen“ und dem Hinweis 62,50 $ noch zuzuordnen"
@@ -5152,8 +5181,8 @@ msgid "bulk"
 msgstr "gesammelt"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
-msgid "Bulk Categorize and Tag Transactions"
-msgstr "Umsätze gesammelt kategorisieren und taggen"
+msgid "Bulk Categorize and Tag"
+msgstr "Massenkategorisierung und Tagging"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
 msgid "Bulk Categorize and Tag Transactions — Budgie"
@@ -5489,8 +5518,8 @@ msgid "Cancel or fail and nothing is lost: the keypad was already there. Budgie 
 msgstr "Abbrechen oder Fehlschlagen kostet nichts: Das Tastenfeld war ohnehin schon da. Budgie schaltet den Geräte-Code als Rückfallebene bewusst ab — Ihre PIN ist der einzige andere Weg hinein."
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Capture the whole Budgie database as one file — encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
-msgstr "Erfasse die gesamte Budgie-Datenbank als eine Datei — verschlüsselt mit deiner PIN, sobald du eine festlegst — und spiele sie auf einem anderen Gerät wieder ein. Kein Konto, kein Upload."
+msgid "Capture the whole Budgie database as one file, encrypted with your PIN when you set one, and put it back on another device. No account, no upload."
+msgstr "Sichere die gesamte Budgie-Datenbank als eine Datei, mit deiner PIN verschlüsselt, falls du eine festgelegt hast, und spiele sie auf einem anderen Gerät wieder ein. Kein Konto, kein Upload."
 
 #: src/app/[lang]/features/database-backup/metadata.ts
 msgid "Capture your entire Budgie database in one file, encrypted once you set a PIN. Save to iCloud or Drive on your terms; restore on a new device by picking the file — no account needed."
@@ -5559,6 +5588,10 @@ msgstr "Auf Ihrem Telefon vorgeschlagene Kategorien"
 msgid "Categories tab: per-category totals, with drill-down to every transaction in the row"
 msgstr "Tab „Kategorien“: Summen je Kategorie, mit Absprung zu jeder Transaktion der Zeile"
 
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Categories that fit your life"
+msgstr "Kategorien, die zu deinem Leben passen"
+
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx
 msgid "categorization"
@@ -5573,8 +5606,10 @@ msgid "Categorization and suggestions work in any language because they are driv
 msgstr "Kategorisierung und Vorschläge funktionieren in jeder Sprache, weil sie auf dem eigenen Verlauf basieren. Die Spracheingabe unterstützt Englisch, Ukrainisch, Deutsch, Französisch und Spanisch als Hauptsprachen, mit breiterer Abdeckung für Dutzende weitere."
 
 #: src/app/[lang]/features/categorization-rules/metadata.ts
+msgid "Categorization Rules"
+msgstr "Kategorisierungsregeln"
+
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
-#: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Categorization Rules — Deterministic, Not Guesswork"
 msgstr "Kategorisierungsregeln — deterministisch, kein Rätselraten"
 
@@ -5591,8 +5626,8 @@ msgid "Categorize a merchant once, never again"
 msgstr "Einen Händler einmal kategorisieren – und nie wieder"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Categorize and Tag Bank Transactions in Bulk"
-msgstr "Kontoumsätze gesammelt kategorisieren und taggen"
+msgid "Categorize a whole merchant at once"
+msgstr "Einen ganzen Händler auf einmal kategorisieren"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
 msgid "Categorize and tag bank transactions in bulk. Budgie groups them by merchant, suggests from your own history and accepts the confident ones in one tap."
@@ -5610,6 +5645,7 @@ msgstr "5 Transaktionen kategorisiert"
 msgid "Category"
 msgstr "Category"
 
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
 #: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
 msgid "Category & Tag Translation"
 msgstr "Kategorie- und Tag-Übersetzung"
@@ -5617,10 +5653,6 @@ msgstr "Kategorie- und Tag-Übersetzung"
 #: src/app/[lang]/features/ai-category-translation/metadata.ts
 msgid "Category & Tag Translation, On-Device — Budgie"
 msgstr "Kategorie- und Tag-Übersetzung, auf dem Gerät — Budgie"
-
-#: src/app/[lang]/features/spending-analytics/metadata.ts
-msgid "Category and tag breakdowns for any period — drill into any row."
-msgstr "Kategorie- und Tag-Aufschlüsselung für jeden Zeitraum – tippe auf eine Zeile für die Details."
 
 #: src/app/[lang]/page.tsx
 msgid "Category and tag breakdowns for any period, each one drilling into its transactions."
@@ -5634,9 +5666,13 @@ msgstr "Kategorie- und Tag-Aufschlüsselung für jeden Zeitraum, mit Drilldown v
 msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
 msgstr "Aufschlüsselungen nach Kategorie und Tag für jeden Zeitraum, mit Absprung von jeder Zeile zu den Transaktionen dahinter."
 
+#: src/app/[lang]/features/spending-analytics/metadata.ts
+msgid "Category and tag breakdowns for any period. Drill into any row."
+msgstr "Aufschlüsselung nach Kategorien und Tags für jeden Zeitraum. Tippe auf eine Zeile für Details."
+
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Category and tag names in Cyrillic, Greek, or Arabic get an English form — on your device, without sending anything to a server."
-msgstr "Kategorie- und Tag-Namen in Kyrillisch, Griechisch oder Arabisch erhalten eine englische Form — auf deinem Gerät, ohne dass etwas an einen Server gesendet wird."
+msgid "Category and tag names in Cyrillic, Greek, or Arabic get an English form on your device, without sending anything to a server."
+msgstr "Kategorie- und Tag-Namen in Kyrillisch, Griechisch oder Arabisch erhalten auf deinem Gerät eine englische Form, ohne dass etwas an einen Server gesendet wird."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category and tag translation for Cyrillic, Greek, and Arabic names"
@@ -5789,7 +5825,6 @@ msgid "Choosing a Mint replacement isn’t just about features. It’s about val
 msgstr "Die Wahl eines Mint-Ersatzes ist nicht nur eine Frage der Funktionen. Es ist eine Frage der Werte. Fragen Sie sich:"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Classic and modern PDF formats — full statement import in seconds."
 msgstr "Klassische und moderne PDF-Formate – vollständiger Kontoauszugsimport in Sekunden."
@@ -5797,6 +5832,10 @@ msgstr "Klassische und moderne PDF-Formate – vollständiger Kontoauszugsimport
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "Classic and modern PDF formats supported."
 msgstr "Klassische und moderne PDF-Formate werden unterstützt."
+
+#: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
+msgid "Classic and modern PDF formats. Full statement import in seconds."
+msgstr "Klassische und moderne PDF-Formate. Kompletter Kontoauszug in Sekunden importiert."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Clean, focused interface"
@@ -6394,13 +6433,13 @@ msgstr "Währungsübergreifende Transaktionen bewahren den ursprünglichen Wechs
 msgid "Cross-currency transfers preserve both legs and the FX rate at transfer time"
 msgstr "Währungsübergreifende Überweisungen bewahren beide Buchungsseiten und den Wechselkurs zum Überweisungszeitpunkt"
 
-#: src/app/[lang]/features/account-transfers/metadata.ts
-msgid "Cross-currency, dual-amount, exact — money between your own accounts is never an expense."
-msgstr "Währungsübergreifend, doppelter Betrag, exakt – Geld zwischen Ihren eigenen Konten ist nie eine Ausgabe."
-
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
 msgid "Cross-currency, dual-amount, exact."
 msgstr "Währungsübergreifend, doppelter Betrag, exakt."
+
+#: src/app/[lang]/features/account-transfers/metadata.ts
+msgid "Cross-currency, dual-amount, exact. Money between your own accounts is never an expense."
+msgstr "Währungsübergreifend, mit zwei Beträgen, exakt. Geld zwischen deinen eigenen Konten ist nie eine Ausgabe."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Cross-currency: $1000 → €925 matches when the implied exchange rate is plausible"
@@ -6416,9 +6455,8 @@ msgid "Crypto and fiat deposits and withdrawals, P2P buy and sell orders, and Si
 msgstr "Krypto- und Fiat-Einzahlungen und -Auszahlungen, P2P-Kauf- und Verkaufsorders sowie Simple-Earn-Prämien"
 
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Crypto Holdings Alongside Your Cash"
-msgstr "Krypto-Bestände neben Ihrem Bargeld"
+msgid "Crypto Holdings"
+msgstr "Krypto-Bestände"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto holdings are first-class instruments: symbol, quantity, and a daily price"
@@ -6439,6 +6477,10 @@ msgstr "Krypto ist kein eigener Tab. Bestände werden nach Instrument unter eine
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Crypto is opt-in"
 msgstr "Krypto nur auf Wunsch"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Crypto next to your cash"
+msgstr "Krypto neben deinem Bargeld"
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "Crypto Portfolio"
@@ -6491,8 +6533,6 @@ msgid "CSV bank import"
 msgstr "CSV-Bankimport"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/csv-import/metadata.ts
-#: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
 msgid "CSV Bank Statement Import"
 msgstr "CSV-Kontoauszugsimport"
@@ -6539,6 +6579,10 @@ msgstr "CSV-Import/Export"
 msgid "CSV is for spreadsheets, tax software, and other apps that want flat data. The database backup preserves every relationship and account state for full restore on a new device."
 msgstr "CSV ist für Tabellen, Steuersoftware und andere Apps, die flache Daten benötigen. Das Datenbank-Backup bewahrt jede Beziehung und jeden Kontozustand für eine vollständige Wiederherstellung auf einem neuen Gerät."
 
+#: src/app/[lang]/features/csv-import/metadata.ts
+msgid "CSV Statement Import"
+msgstr "CSV-Kontoauszug importieren"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Currency is fixed per account"
 msgstr "Währung ist pro Konto fest"
@@ -6567,6 +6611,7 @@ msgstr "Aktuell dient es nur zur Information – es wird auf der Schulden-Konto-
 msgid "custom"
 msgstr "Benutzerdefiniert"
 
+#: src/app/[lang]/features/custom-categories/metadata.ts
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx
 msgid "Custom Categories"
 msgstr "Benutzerdefinierte Kategorien"
@@ -6591,11 +6636,6 @@ msgstr "Individuelle Berichte und Analyseskripte"
 msgid "Custom Spending Categories — Budgie"
 msgstr "Benutzerdefinierte Ausgabenkategorien — Budgie"
 
-#: src/app/[lang]/features/custom-categories/metadata.ts
-#: src/app/[lang]/features/custom-categories/page.tsx
-msgid "Custom Spending Categories That Bend To You"
-msgstr "Benutzerdefinierte Ausgabenkategorien, die zu deinem Budgetstil passen"
-
 #: src/app/[lang]/features/transaction-tags/metadata.ts
 msgid "Custom Transaction Tags for Expense Tracking — Budgie"
 msgstr "Benutzerdefinierte Transaktions-Tags für Ausgaben-Tracking – Budgie"
@@ -6613,9 +6653,12 @@ msgid "Cyrillic to English. On-device."
 msgstr "Kyrillisch ins Englische. Auf dem Gerät."
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-category-translation/metadata.ts
 msgid "Cyrillic, Greek, and Arabic category and tag names become readable and searchable — on your phone."
 msgstr "Kyrillische, griechische und arabische Kategorie- und Tag-Namen werden lesbar und durchsuchbar — auf deinem Telefon."
+
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Cyrillic, Greek, and Arabic category and tag names become readable and searchable, on your phone."
+msgstr "Kategorie- und Tag-Namen in Kyrillisch, Griechisch und Arabisch werden lesbar und durchsuchbar, direkt auf deinem Handy."
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more"
@@ -6633,6 +6676,7 @@ msgstr "Tageskurse werden nur für die Kryptokonten nachgeladen, die du tatsäch
 msgid "dark mode"
 msgstr "Dunkelmodus"
 
+#: src/app/[lang]/features/dark-mode/metadata.ts
 #: src/app/[lang]/features/dark-mode/opengraph-image.tsx
 msgid "Dark Mode"
 msgstr "Dunkelmodus"
@@ -6649,6 +6693,7 @@ msgstr "Dashboard"
 msgid "Data Collection Assessment"
 msgstr "Bewertung der Datenerfassung"
 
+#: src/app/[lang]/features/data-export/metadata.ts
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
 msgid "Data Export"
 msgstr "Datenexport"
@@ -6698,8 +6743,6 @@ msgstr "Speicherort der Daten"
 msgid "Data stored locally on your device will remain accessible"
 msgstr "Auf Ihrem Gerät lokal gespeicherte Daten bleiben weiterhin zugänglich"
 
-#: src/app/[lang]/features/database-backup/metadata.ts
-#: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
 #: src/app/[lang]/open-source/page.tsx
 #: src/app/[lang]/privacy/page.tsx
@@ -6719,6 +6762,7 @@ msgstr "Datenbankschemas und Migrationsdateien"
 msgid "Date"
 msgstr "Date"
 
+#: src/app/[lang]/features/date-filter-presets/metadata.ts
 #: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
 msgid "Date Filter Presets"
 msgstr "Datumsfilter-Voreinstellungen"
@@ -6726,11 +6770,6 @@ msgstr "Datumsfilter-Voreinstellungen"
 #: src/app/[lang]/features/date-filter-presets/metadata.ts
 msgid "Date Filter Presets — Budgie"
 msgstr "Datumsfilter-Voreinstellungen — Budgie"
-
-#: src/app/[lang]/features/date-filter-presets/metadata.ts
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Date Filter Presets — Past Periods, One Tap"
-msgstr "Datumsfilter-Voreinstellungen — vergangene Zeiträume, eine Tipp-Aktion"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Date filters cover Today, This and Last Week, This and Last Month, This Year and All Time, plus any custom range. The “Untagged” and “Uncategorized” buckets surface the gaps in your bookkeeping so you can tighten them up."
@@ -6751,7 +6790,6 @@ msgid "debt"
 msgstr "Schulden"
 
 #: src/app/[lang]/features/debt-tracking/metadata.ts
-#: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Debt & Loan Tracking"
 msgstr "Schulden- & Kreditverfolgung"
 
@@ -6837,7 +6875,6 @@ msgstr "Das Festgeldkapital ist vor normalen Ausgaben geschützt und kann nicht 
 
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
-#: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Deposit Tracking"
 msgstr "Festgeld-Tracking"
 
@@ -7304,6 +7341,10 @@ msgstr "Bereinigung doppelter Transaktionen"
 msgid "duplicates"
 msgstr "Duplikate"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Duplicates and split transfers, fixed"
+msgstr "Duplikate und geteilte Überweisungen, repariert"
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Each account holds a fixed native currency — fiat, crypto, or otherwise"
 msgstr "Jedes Konto hält eine feste native Währung – Fiat, Krypto oder andere"
@@ -7504,8 +7545,8 @@ msgid "English, Ukrainian, French, German and Spanish."
 msgstr "Englisch, Ukrainisch, Französisch, Deutsch und Spanisch."
 
 #: src/app/[lang]/features/multi-language-app/metadata.ts
-msgid "English, Ukrainian, French, German, Spanish — full UI, locale-aware formatting."
-msgstr "Englisch, Ukrainisch, Französisch, Deutsch, Spanisch – vollständige Benutzeroberfläche, gebietsschemabewusste Formatierung."
+msgid "English, Ukrainian, French, German, Spanish. Full UI, locale-aware formatting."
+msgstr "Englisch, Ukrainisch, Französisch, Deutsch, Spanisch. Komplette Oberfläche, regionale Formatierung."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Enhance documentation"
@@ -7538,7 +7579,6 @@ msgstr "Erste Bank bietet keine öffentliche API für Privatkonten. PDF-Kontoaus
 #: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
-#: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Erste Bank PDF Import"
 msgstr "Erste Bank PDF-Import"
@@ -7570,6 +7610,10 @@ msgstr "Jeder Kontotyp hat jetzt seine eigene Farbe, nicht nur sein eigenes Symb
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Every account, added up once"
 msgstr "Alle Konten, einmal summiert"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Every account, one home screen"
+msgstr "Jedes Konto, ein Startbildschirm"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Every action on a long-press"
@@ -7804,6 +7848,7 @@ msgstr "Ausgaben-Tracker, Budget-App, Banksynchronisation, Krypto-Tracking, Date
 msgid "expense tracking"
 msgstr "Ausgabenverfolgung"
 
+#: src/app/[lang]/features/expense-tracking/metadata.ts
 #: src/app/[lang]/features/expense-tracking/opengraph-image.tsx
 msgid "Expense Tracking"
 msgstr "Ausgabenverfolgung"
@@ -7815,6 +7860,10 @@ msgstr "Ausgaben-Tracker-App, in Sekunden erfasst – Budgie"
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "expense-tracking"
 msgstr "Ausgabenverfolgung"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Expenses sort themselves, privately"
+msgstr "Ausgaben sortieren sich selbst, privat"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Expensive at $14/month"
@@ -7868,8 +7917,6 @@ msgstr "„Datenbank exportieren“ schreibt die gesamte Datenbank in eine Datei
 msgid "Export Database writes the whole database to one file. The Import Database row directly above it restores from that same file on any device."
 msgstr "„Datenbank exportieren“ schreibt die gesamte Datenbank in eine Datei. Die Zeile „Datenbank importieren“ direkt darüber stellt sie aus derselben Datei auf jedem Gerät wieder her."
 
-#: src/app/[lang]/features/data-export/metadata.ts
-#: src/app/[lang]/features/data-export/page.tsx
 #: src/app/[lang]/open-source/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 msgid "Export Every Transaction You've Logged"
@@ -7899,12 +7946,14 @@ msgstr "Externer Input zur Sicherheitsarchitektur ist willkommen"
 msgid "face id"
 msgstr "Face ID"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
-#: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "Face ID / Touch ID Authentication"
 msgstr "Face ID / Touch ID-Authentifizierung"
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "Face ID & Touch ID"
+msgstr "Face ID & Touch ID"
 
 #: src/app/[lang]/security/page.tsx
 msgid "Face ID and fingerprint authentication on every supported device"
@@ -8092,16 +8141,16 @@ msgid "Find missing categories before charts lie."
 msgstr "Finden Sie fehlende Kategorien, bevor Diagramme lügen."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Find Uncategorized Transactions Before They Skew Your Budget"
-msgstr "Finden Sie nicht kategorisierte Transaktionen, bevor sie Ihr Budget verzerren"
-
-#: src/app/[lang]/features/sync-data-repairs/metadata.ts
-msgid "Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows — manual entries are never touched."
-msgstr "Findet doppelte Importe und verknüpft Überweisungen zwischen deinen eigenen Karten, die als zwei getrennte Zeilen ankamen — manuell erfasste Einträge werden nie angerührt."
+msgid "Find uncategorized transactions fast"
+msgstr "Unkategorisierte Transaktionen schnell finden"
 
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows."
 msgstr "Findet doppelte Importe und ordnet Überweisungen zwischen Ihren eigenen Karten zu, die als zwei separate Zeilen ankamen."
+
+#: src/app/[lang]/features/sync-data-repairs/metadata.ts
+msgid "Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows. Manual entries are never touched."
+msgstr "Findet doppelte Importe und führt Überweisungen zwischen deinen eigenen Karten zusammen, die als zwei getrennte Zeilen ankamen. Manuelle Einträge bleiben unangetastet."
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Finishing bank-sync setup returns you to onboarding instead of leaving you stranded on the sync screen."
@@ -8157,6 +8206,10 @@ msgstr "FITINN"
 msgid "Fitness"
 msgstr "Fitness"
 
+#: src/app/[lang]/features/multi-language-app/metadata.ts
+msgid "Five Languages"
+msgstr "Fünf Sprachen"
+
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Five languages, all first-class"
 msgstr "Fünf Sprachen, alle gleichwertig"
@@ -8176,6 +8229,10 @@ msgstr "Fünf Bildschirme: das Drücken, das das Menü öffnet, die Aktionen dah
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
 msgstr "Fünf Jahre für Ein- und Auszahlungen, Trades, Convert und Earn-Prämien. Der P2P-Auftragsverlauf ist auf sechs Monate begrenzt, denn weiter zurück liefert Binances eigener Endpunkt nichts."
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Fix a balance, keep history honest"
+msgstr "Kontostand korrigieren, Verlauf ehrlich halten"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Fix bugs and submit pull requests"
@@ -8337,6 +8394,10 @@ msgstr "Für Nutzer:"
 msgid "forecast"
 msgstr "Prognose"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Foreign category names, made readable"
+msgstr "Fremde Kategorienamen, lesbar gemacht"
+
 #: src/app/[lang]/open-source/page.tsx
 msgid "Fork it if we disappear. The database format and the app are both yours to keep."
 msgstr "Forken Sie es, wenn wir verschwinden. Das Datenbankformat und die App gehören beide Ihnen."
@@ -8437,13 +8498,13 @@ msgstr "Vollständiges Ausgaben-Tracking ohne jegliche Internetabhängigkeit"
 msgid "Full historical sync on first connect, then incremental every 30 minutes"
 msgstr "Vollständige historische Synchronisierung beim ersten Verbinden, dann inkrementell alle 30 Minuten"
 
-#: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Full UI in English, Ukrainian, French, German, and Spanish — auto-detected from device locale, switchable in-app."
-msgstr "Vollständige Benutzeroberfläche auf Englisch, Ukrainisch, Französisch, Deutsch und Spanisch – automatisch aus dem Gerätestandard erkannt, in der App umschaltbar."
-
 #: src/app/[lang]/features/multi-language-app/metadata.ts
 msgid "Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app — no reinstall, no relaunch."
 msgstr "Vollständige Benutzeroberfläche auf Englisch, Ukrainisch, Französisch, Deutsch und Spanisch. Automatisch aus dem Gerätestandard erkannt, in der App umschaltbar – kein Neuinstallieren, kein Neustart."
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app."
+msgstr "Komplette Oberfläche auf Englisch, Ukrainisch, Französisch, Deutsch und Spanisch. Automatisch anhand der Geräteeinstellung erkannt, in der App umschaltbar."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Fully offline — it runs on your phone with no cloud dependency; the optional model needs a one-time download"
@@ -8720,7 +8781,6 @@ msgstr "Startbildschirm"
 
 #: src/app/[lang]/features/home-screen-widgets/metadata.ts
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
-#: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Home Screen Widgets"
 msgstr "Startbildschirm-Widgets"
 
@@ -8980,6 +9040,10 @@ msgstr "Wie groß ist der einmalige Download?"
 msgid "How long it’s retained"
 msgstr "Wie lange sie gespeichert werden"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "How long your money lasts"
+msgstr "Wie lange dein Geld reicht"
+
 #: src/app/[lang]/features/runway/opengraph-image.tsx
 msgid "How long your money lasts at today's pace."
 msgstr "Wie lange Ihr Geld im aktuellen Tempo reicht."
@@ -9232,9 +9296,13 @@ msgstr "Implementieren Sie Funktionen aus der Roadmap"
 msgid "import"
 msgstr "Import"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Import a CSV from any bank"
+msgstr "CSV von jeder Bank importieren"
+
 #: src/app/[lang]/features/privatbank-import/page.tsx
-msgid "Import accounts and transactions from a PrivatBank24 XLSX export — with PrivatBank's own MCC categories mapped automatically."
-msgstr "Konten und Transaktionen aus einem PrivatBank24-XLSX-Export importieren – mit automatisch zugeordneten MCC-Kategorien von PrivatBank."
+msgid "Import accounts and transactions from a PrivatBank24 XLSX export, with PrivatBank's own MCC categories mapped automatically."
+msgstr "Importiere Konten und Transaktionen aus einem PrivatBank24-XLSX-Export, wobei die MCC-Kategorien von PrivatBank automatisch zugeordnet werden."
 
 #: src/app/[lang]/features/privatbank-import/metadata.ts
 msgid "Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works."
@@ -9261,8 +9329,8 @@ msgid "Import transactions via CSV"
 msgstr "Importieren Sie Transaktionen über CSV"
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-msgid "Import your full Erste Bank account statement straight from the PDF — including the new modern layout introduced in 2026."
-msgstr "Ihren vollständigen Erste Bank-Kontoauszug direkt aus der PDF-Datei importieren – einschließlich des 2026 eingeführten neuen modernen Layouts."
+msgid "Import your full Erste Bank account statement straight from the PDF, including the new modern layout introduced in 2026."
+msgstr "Importiere deinen kompletten Erste-Bank-Kontoauszug direkt aus dem PDF, einschließlich des neuen modernen Layouts von 2026."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
 msgid "Import your full Erste Bank statement straight from PDF — both classic and the new 2026 modern format. Account holder, IBAN, balances, and every transaction line parsed."
@@ -9407,6 +9475,10 @@ msgstr "Installieren Sie den neuesten Entwicklungs-Build kabellos (OTA) auf eine
 #: src/app/[lang]/features/installment-tracking/metadata.ts
 msgid "Installment Tracker for Pay in Parts Purchases"
 msgstr "Ratenkauf-Tracker für Käufe in Raten"
+
+#: src/app/[lang]/features/installment-tracking/metadata.ts
+msgid "Installment Tracking"
+msgstr "Ratenverfolgung"
 
 #: src/app/[lang]/features/installment-tracking/opengraph-image.tsx
 msgid "installments"
@@ -9702,6 +9774,10 @@ msgstr "Halten Sie ATM-Gebühren, Transfergebühren und Kartenprovisionen in den
 msgid "Keep ATM fees, transfer fees, and card commissions visible without polluting transfers."
 msgstr "Halten Sie ATM-Gebühren, Transfergebühren und Kartenprovisionen sichtbar, ohne Transfers zu verfälschen."
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Keep balances out of screenshots"
+msgstr "Kontostände aus Screenshots heraushalten"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Kept in your local database"
 msgstr "Bleibt in Ihrer lokalen Datenbank"
@@ -9718,13 +9794,13 @@ msgstr "Suchbegriffe für die Auswahl"
 msgid "Keywords you can search by"
 msgstr "Suchbegriffe zum Finden"
 
-#: src/app/[lang]/features/installment-tracking/page.tsx
-msgid "Know exactly what you still owe on things you bought in parts"
-msgstr "Wissen Sie genau, was Sie für Ratenkäufe noch schulden"
-
 #: src/app/[lang]/features/installment-tracking/metadata.ts
 msgid "Know what you still owe on things you bought in parts. Turn the purchase into a plan, and Budgie attaches each monthly part and shows the next payment."
 msgstr "Wissen Sie, was Sie für Ratenkäufe noch schulden. Wandeln Sie den Kauf in einen Plan um, und Budgie ordnet jede Monatsrate zu und zeigt die nächste Zahlung."
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Know who owes whom"
+msgstr "Wissen, wer wem etwas schuldet"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Labels"
@@ -9773,12 +9849,16 @@ msgid "Latest from Our Blog"
 msgstr "Neuestes aus unserem Blog"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Layer tags on top of categories — one transaction can be both Groceries (category) and #vacation, #shared, and #reimbursable (tags)."
-msgstr "Tags auf Kategorien aufschichten – eine Transaktion kann sowohl Lebensmittel (Kategorie) als auch #vacation, #shared und #reimbursable (Tags) sein."
+msgid "Layer tags on top of categories"
+msgstr "Tags zusätzlich zu Kategorien"
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Layer tags on top of categories. One transaction can be both Groceries (category) and #vacation, #shared, and #reimbursable (tags)."
+msgstr "Tags zusätzlich zu Kategorien. Eine Transaktion kann sowohl Lebensmittel (Kategorie) als auch #urlaub, #geteilt und #erstattungsfähig (Tags) sein."
 
 #: src/app/[lang]/features/transaction-tags/metadata.ts
-msgid "Layer tags on top of categories — one transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags)."
-msgstr "Tags auf Kategorien aufschichten – eine Transaktion kann Lebensmittel (Kategorie) und #vacation, #shared, #reimbursable (Tags) sein."
+msgid "Layer tags on top of categories. One transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags)."
+msgstr "Tags zusätzlich zu Kategorien. Eine Transaktion kann Lebensmittel (Kategorie) sowie #urlaub, #geteilt, #erstattungsfähig (Tags) sein."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Learn exactly how budgeting works"
@@ -9979,13 +10059,16 @@ msgstr "Local-First-Systeme wählen Verfügbarkeit. Sie können immer arbeiten, 
 msgid "local-llm"
 msgstr "lokales LLM"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Lock the app and your data"
+msgstr "Sperre die App und deine Daten"
+
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Locked when you are, current when it matters"
 msgstr "Gesperrt, wenn Sie es sind, aktuell, wenn es zählt"
 
-#: src/app/[lang]/features/expense-tracking/metadata.ts
 #: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Log Every Expense in Seconds"
+msgid "Log every expense in seconds"
 msgstr "Jede Ausgabe in Sekunden erfassen"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
@@ -10025,12 +10108,12 @@ msgid "Long-press any row for actions such as edit, delete, convert to transfer 
 msgstr "Halte eine Zeile gedrückt für Aktionen wie Bearbeiten, Löschen, In Überweisung oder Erstattung umwandeln und Schuld zuordnen"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Long-press any transaction card for a menu — edit, delete, convert to a transfer, convert income to a refund, attach a debt and more, without opening the full edit form."
-msgstr "Halte eine Transaktionskarte gedrückt für ein Menü – bearbeiten, löschen, in eine Überweisung umwandeln, Einnahmen in eine Erstattung umwandeln, eine Schuld zuordnen und mehr, ohne das volle Bearbeitungsformular zu öffnen."
+msgid "Long-press any transaction card for a menu: edit, delete, convert to a transfer, convert income to a refund, attach a debt and more, without opening the full edit form."
+msgstr "Halte eine Transaktionskarte gedrückt für ein Menü: bearbeiten, löschen, in eine Überweisung umwandeln, Einnahme in eine Erstattung umwandeln, eine Schuld zuordnen und mehr, ohne das ganze Bearbeitungsformular zu öffnen."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
-msgid "Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required."
-msgstr "Halten Sie eine beliebige Transaktionskarte gedrückt, um zu bearbeiten, in Rückerstattung oder Überweisung umzuwandeln, eine Schuld anzuhängen, zu löschen oder rückgängig zu machen – kein vollständiges Bearbeitungsformular nötig."
+msgid "Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert. No full edit form required."
+msgstr "Halte eine Transaktionskarte gedrückt, um sie zu bearbeiten, in eine Erstattung oder Überweisung umzuwandeln, eine Schuld zuzuordnen, zu löschen oder zurückzusetzen. Kein vollständiges Bearbeitungsformular nötig."
 
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
@@ -10040,7 +10123,14 @@ msgstr "Drücke eine Transaktionskarte lange, um zu bearbeiten, zu löschen, auf
 msgid "Long-press for every action"
 msgstr "Lang drücken für alle Aktionen"
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Long-press for quick actions"
+msgstr "Gedrückt halten für Schnellaktionen"
+
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
+msgid "Long-Press Quick Actions"
+msgstr "Schnellaktionen per Langdruck"
+
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-Press Quick Actions on Every Transaction"
 msgstr "Langes Drücken für schnelle Aktionen bei jeder Transaktion"
@@ -10253,7 +10343,6 @@ msgstr "MCC"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/metadata.ts
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "MCC Auto-Categorization"
 msgstr "MCC-Auto-Kategorisierung"
 
@@ -10503,8 +10592,8 @@ msgid "Money out, money in — first class."
 msgstr "Geld raus, Geld rein – erstklassig."
 
 #: src/app/[lang]/features/debt-tracking/metadata.ts
-msgid "Money out, money in — first-class accounts with target balances, return dates, and contact assignment."
-msgstr "Geld raus, Geld rein – erstklassige Konten mit Zielsalden, Rückgabedaten und Kontaktzuweisung."
+msgid "Money out, money in. First-class accounts with target balances, return dates, and contact assignment."
+msgstr "Geld raus, Geld rein. Vollwertige Konten mit Zielbeträgen, Rückgabedaten und Kontaktzuordnung."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Money owed to you"
@@ -10547,7 +10636,6 @@ msgid "Monobank connections can add more accounts later without re-entering the 
 msgstr "Monobank-Verbindungen können später weitere Konten hinzufügen, ohne den Token erneut einzugeben — bereits vorhandene Konten werden herausgefiltert"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/monobank-sync/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 msgid "Monobank Expense Tracker — Direct API Sync, No Plaid"
 msgstr "Monobank Ausgaben-Tracker – direkte API-Synchronisation, kein Plaid"
@@ -10559,6 +10647,10 @@ msgstr "Monobank stellt eine übersichtliche öffentliche API bereit, sodass Bud
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "Monobank SDK upgraded to 0.7.0 for live client-info payloads."
 msgstr "Monobank-SDK auf 0.7.0 aktualisiert für Live-Kundendaten-Payloads."
+
+#: src/app/[lang]/features/monobank-sync/metadata.ts
+msgid "Monobank Sync"
+msgstr "Monobank-Synchronisierung"
 
 #: src/app/[lang]/page.tsx
 msgid "Monobank sync with no aggregator"
@@ -10705,6 +10797,10 @@ msgstr "Die meisten Nutzer führen Schritt 3 oder 4 nie durch."
 msgid "Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency transfers."
 msgstr "Geld zwischen Ihren eigenen Konten mit automatischer Wechselkursumrechnung und Doppelbetragsanzeige für währungsübergreifende Überweisungen transferieren."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Move money, not expenses"
+msgstr "Geld verschieben, keine Ausgaben"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Move to a new phone by exporting on the old one and importing on the new one — no account on either side"
 msgstr "Wechsle das Handy, indem du auf dem alten exportierst und auf dem neuen importierst — auf keiner Seite ein Konto"
@@ -10717,14 +10813,10 @@ msgstr "Der Wechsel von Mint zu einem anderen Cloud-Dienst löst das Problem nic
 msgid "multi-account"
 msgstr "Multi-Konto"
 
+#: src/app/[lang]/features/account-management/metadata.ts
 #: src/app/[lang]/features/account-management/opengraph-image.tsx
 msgid "Multi-Account Management"
 msgstr "Multi-Konto-Verwaltung"
-
-#: src/app/[lang]/features/account-management/metadata.ts
-#: src/app/[lang]/features/account-management/page.tsx
-msgid "Multi-Account Money Management"
-msgstr "Multi-Konto-Geldverwaltung"
 
 #: src/app/[lang]/features/account-management/metadata.ts
 msgid "Multi-Account Money Management — Budgie"
@@ -10747,11 +10839,13 @@ msgid "Multi-Currency"
 msgstr "Multi-Währung"
 
 #: src/app/[lang]/features/multi-currency/metadata.ts
+msgid "Multi-Currency Accounts"
+msgstr "Mehrwährungskonten"
+
+#: src/app/[lang]/features/multi-currency/metadata.ts
 msgid "Multi-Currency Accounts — Budgie"
 msgstr "Mehrwährungs-Konten — Budgie"
 
-#: src/app/[lang]/features/multi-currency/metadata.ts
-#: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Multi-Currency Accounts With Live Rates"
 msgstr "Mehrwährungs-Konten mit Live-Kursen"
@@ -10872,6 +10966,7 @@ msgstr "Das Nettovermögen berücksichtigt die Schuldrichtung: Verbindlichkeiten
 msgid "Net worth tracker"
 msgstr "Vermögens-Tracker"
 
+#: src/app/[lang]/features/net-worth-tracker/metadata.ts
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
 msgid "Net Worth Tracker"
 msgstr "Nettovermögens-Tracker"
@@ -10879,11 +10974,6 @@ msgstr "Nettovermögens-Tracker"
 #: src/app/[lang]/page.tsx
 msgid "Net worth tracker for mobile"
 msgstr "Vermögensübersicht fürs Handy"
-
-#: src/app/[lang]/features/net-worth-tracker/metadata.ts
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Net Worth Tracker for Mobile"
-msgstr "Nettovermögens-Tracker für Mobilgeräte"
 
 #: src/app/[lang]/features/net-worth-tracker/metadata.ts
 msgid "Net Worth Tracker for Mobile — Budgie"
@@ -10897,13 +10987,13 @@ msgstr "Nettovermögens-Trendlinie daneben"
 msgid "Net worth, budget, and a quick way to add a transaction, right on your iPhone Home Screen. No need to open Budgie to check where you stand."
 msgstr "Nettovermögen, Budget und ein schneller Weg, eine Transaktion hinzuzufügen – direkt auf Ihrem iPhone-Startbildschirm. Sie müssen Budgie nicht öffnen, um zu sehen, wo Sie stehen."
 
-#: src/app/[lang]/features/home-screen-widgets/metadata.ts
-msgid "Net worth, budget, and quick add — right on your iPhone Home Screen, no need to open the app."
-msgstr "Nettovermögen, Budget und Schnelleingabe — direkt auf Ihrem iPhone-Startbildschirm, ohne die App zu öffnen."
-
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
 msgid "Net worth, budget, and quick add on your iPhone Home Screen."
 msgstr "Nettovermögen, Budget und Schnelleingabe auf Ihrem iPhone-Startbildschirm."
+
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+msgid "Net worth, budget, and quick add, right on your iPhone Home Screen. No need to open the app."
+msgstr "Vermögen, Budget und Schnelleingabe, direkt auf dem Home-Bildschirm deines iPhones. Ohne die App zu öffnen."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Never lock you into a proprietary format"
@@ -11781,7 +11871,6 @@ msgid "On-device AI auto-categorization"
 msgstr "KI-Autokategorisierung auf dem Gerät"
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-auto-categorization/metadata.ts
 msgid "On-Device AI Auto-Categorization"
 msgstr "Auf-Gerät-KI-Auto-Kategorisierung"
 
@@ -11890,6 +11979,10 @@ msgstr "Eine Spalte pro Feld"
 msgid "One connection behind many accounts — cards, jars, and deposits from the same bank"
 msgstr "Eine Verbindung für viele Konten — Karten, Töpfe und Festgelder derselben Bank"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "One connection, all your accounts"
+msgstr "Eine Verbindung, alle deine Konten"
+
 #: src/app/[lang]/security/page.tsx
 msgid "One credential per bank, shared by every account on it — so rotating a token is one edit."
 msgstr "Ein Zugang pro Bank, geteilt von jedem Konto darauf — ein Token-Wechsel ist damit nur eine einzige Änderung."
@@ -11922,8 +12015,8 @@ msgid "One glance past Budgie's lock screen. The four digits you chose stay the 
 msgstr "Ein Blick genügt, um Budgies Sperrbildschirm zu überspringen. Die vier Ziffern, die Sie gewählt haben, bleiben der Schlüssel, mit dem Ihre Datenbank verschlüsselt ist."
 
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "One glance unlocks the screen — your four-digit PIN stays the encryption key underneath."
-msgstr "Ein Blick entsperrt den Bildschirm – Ihre vierstellige PIN bleibt der Verschlüsselungscode dahinter."
+msgid "One glance unlocks the screen. Your four-digit PIN stays the encryption key underneath."
+msgstr "Ein Blick entsperrt den Bildschirm. Deine vierstellige PIN bleibt darunter der Verschlüsselungsschlüssel."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "One inbox for every uncategorized transaction, grouped by merchant"
@@ -11945,6 +12038,10 @@ msgstr "Ein Limit, aufgeteilt so, wie du wirklich ausgibst"
 msgid "One menu on every platform — no full-screen form to open first"
 msgstr "Ein Menü auf jeder Plattform – kein Vollbildformular, das du erst öffnen musst"
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "One monthly limit, split by category"
+msgstr "Ein Monatslimit, nach Kategorien aufgeteilt"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One number, everything in it"
 msgstr "Eine Zahl, alles darin"
@@ -11965,10 +12062,13 @@ msgstr "Eine der häufigsten Fragen zu Offline-First-Apps lautet: Wie bekomme ic
 msgid "One of the most powerful aspects of open-source software is the ability to verify privacy claims against actual implementation. While you may not be able to read code yourself, you can look for:"
 msgstr "Einer der besten Aspekte von Open-Source-Software ist, dass sich Datenschutzversprechen an der echten Implementierung prüfen lassen. Auch wenn du selbst keinen Code liest, kannst du achten auf:"
 
-#: src/app/[lang]/features/budget-planning/metadata.ts
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
 msgid "One overall limit, per-category limits, and a cap for everything else — with a home-screen widget and on-device alerts."
 msgstr "Ein Gesamtlimit, Kategorielimits und eine Obergrenze für alles Übrige — mit Home-Widget und Benachrichtigungen direkt auf dem Gerät."
+
+#: src/app/[lang]/features/budget-planning/metadata.ts
+msgid "One overall limit, per-category limits, and a cap for everything else, with a home-screen widget and on-device alerts."
+msgstr "Ein Gesamtlimit, Limits pro Kategorie und eine Obergrenze für alles andere, mit Startbildschirm-Widget und Benachrichtigungen auf dem Gerät."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "One per transaction — never ambiguous, always quick to scan"
@@ -12131,8 +12231,8 @@ msgid "One-tap CSV export of all transactions, plus a full database backup file 
 msgstr "CSV-Export aller Transaktionen mit einem Tipp, plus eine vollständige Datenbank-Backup-Datei — verschlüsselt mit Ihrer PIN, falls Sie eine festgelegt haben —, die Sie in iCloud, Drive oder überall sonst speichern können. Ihre Daten, Ihre Entscheidung."
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — you can save to iCloud, Drive, or anywhere."
-msgstr "CSV-Export aller Transaktionen mit einem Tipp, plus eine vollständige Datenbank-Backup-Datei — verschlüsselt mit Ihrer PIN, falls Sie eine festgelegt haben —, die Sie in iCloud, Drive oder überall sonst speichern können."
+msgid "One-tap CSV export of all transactions, plus a full database backup file you can save to iCloud, Drive, or anywhere, encrypted with your PIN if you set one."
+msgstr "CSV-Export aller Transaktionen mit einem Tap, dazu eine vollständige Datenbank-Sicherungsdatei, die du in iCloud, Drive oder überall speichern kannst, mit deiner PIN verschlüsselt, falls du eine festgelegt hast."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "One-tap drill-down into only the uncategorized transactions that match your current filters"
@@ -12143,9 +12243,12 @@ msgid "One-time import per card or account — not a live sync, so re-run it whe
 msgstr "Einmaliger Import pro Karte oder Konto — kein Live-Abgleich, führen Sie ihn also erneut aus, wann immer Sie aktuelle Daten möchten"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/privatbank-import/metadata.ts
 msgid "One-time import, MCC-mapped — long-press an account card to jump to the picker."
 msgstr "Einmaliger Import, MCC-zugeordnet — Kontokarte gedrückt halten, um zur Dateiauswahl zu springen."
+
+#: src/app/[lang]/features/privatbank-import/metadata.ts
+msgid "One-time import, MCC-mapped. Long-press an account card to jump to the picker."
+msgstr "Einmaliger Import, MCC-zugeordnet. Halte eine Kontokarte gedrückt, um zur Auswahl zu springen."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Ongoing Practices"
@@ -12302,10 +12405,6 @@ msgstr "Öffnen Sie das Kontomenü und wählen Sie „Festanlage schließen“. 
 msgid "Open the category or tag and edit its English form or keywords directly. Your edit is permanent for that category or tag."
 msgstr "Öffne die Kategorie oder den Tag und bearbeite die englische Form oder die Suchbegriffe direkt. Deine Änderung ist für diese Kategorie oder diesen Tag dauerhaft."
 
-#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category first, then tags, then a comment, with the usual amount filled in once you have chosen."
-msgstr "Öffne das Ausgabenformular, und Budgie bietet dir Vorschläge aus deinem eigenen Verlauf als Pillen an – zuerst die Kategorie, dann Tags, dann ein Kommentar; der übliche Betrag wird eingetragen, sobald du gewählt hast."
-
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled."
 msgstr "Öffnen Sie das Ausgabenformular und Budgie bietet pillenförmige Vorschläge aus Ihrer eigenen Historie – Kategorie, Tags, Kommentar, Betrag, Konto, alles vorausgefüllt."
@@ -12314,9 +12413,13 @@ msgstr "Öffnen Sie das Ausgabenformular und Budgie bietet pillenförmige Vorsch
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, and amount, all filled in."
 msgstr "Beim Öffnen des Ausgabenformulars bietet Budgie pillenförmige Vorschläge aus dem eigenen Verlauf — Kategorie, Tags, Kommentar und Betrag, alles ausgefüllt."
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history: category first, then tags, then a comment, with the usual amount filled in once you have chosen."
+msgstr "Öffne das Ausgabenformular und Budgie bietet dir Vorschläge als Pills aus deinem eigenen Verlauf an: zuerst die Kategorie, dann Tags, dann ein Kommentar, mit dem üblichen Betrag, sobald du gewählt hast."
+
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
-msgid "Open the expense form and Budgie offers tappable suggestions from your own history — category, then tags, then a comment."
-msgstr "Öffne das Ausgabenformular, und Budgie bietet antippbare Vorschläge aus deinem Verlauf an – Kategorie, dann Tags, dann ein Kommentar."
+msgid "Open the expense form and Budgie offers tappable suggestions from your own history: category, then tags, then a comment."
+msgstr "Öffne das Ausgabenformular und Budgie bietet dir antippbare Vorschläge aus deinem eigenen Verlauf an: Kategorie, dann Tags, dann ein Kommentar."
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Open the expense, choose Pay in parts and pick the number of payments. The total updates as you tap."
@@ -12528,8 +12631,8 @@ msgid "Past that one download, no AI feature opens a connection. There is no pro
 msgstr "Nach diesem einen Download öffnet keine KI-Funktion eine Verbindung. Es gibt keinen Anbieter, dem Sie vertrauen müssten."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
-msgstr "Fügen Sie einen Nur-Lese-API-Schlüssel ein, und Budgie holt Ihre Binance-Salden und -Historie direkt auf Ihr Smartphone — und führt anschließend Ihre P2P-Käufe mit der Bankzahlung zusammen, die sie finanziert hat."
+msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone, then merges your P2P buys with the bank payment that funded them."
+msgstr "Füge einen schreibgeschützten API-Schlüssel ein und Budgie holt deine Binance-Kontostände und deinen Verlauf direkt auf dein Handy und verbindet deine P2P-Käufe mit der Banküberweisung, die sie finanziert hat."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Paste one personal token"
@@ -12552,7 +12655,6 @@ msgid "Pay in Parts"
 msgstr "In Raten zahlen"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/installment-tracking/metadata.ts
 msgid "Pay in Parts: Installment Tracking"
 msgstr "In Raten zahlen: Ratenkäufe im Blick"
 
@@ -12684,12 +12786,11 @@ msgstr "PIN"
 msgid "PIN and biometric lock"
 msgstr "PIN- und biometrische Sperre"
 
+#: src/app/[lang]/features/pin-app-lock/metadata.ts
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "PIN App Lock"
 msgstr "PIN-App-Sperre"
 
-#: src/app/[lang]/features/pin-app-lock/metadata.ts
-#: src/app/[lang]/features/pin-app-lock/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "PIN App Lock — Locks With the Encryption Key"
@@ -12816,8 +12917,8 @@ msgid "Plus, amount, save. The account and today's date are already filled in, a
 msgstr "Plus, Betrag, Speichern. Konto und heutiges Datum sind schon ausgefüllt, und eine vorgeschlagene Kategorie ist einen Tipp entfernt."
 
 #: src/app/[lang]/features/csv-import/page.tsx
-msgid "Point Budgie at any CSV and map its columns onto Budgie's fields on one screen — or start from a built-in preset and adjust."
-msgstr "Zeig Budgie eine beliebige CSV-Datei und ordne ihre Spalten auf einem Bildschirm den Feldern von Budgie zu — oder starte mit einer mitgelieferten Vorlage und passe sie an."
+msgid "Point Budgie at any CSV and map its columns onto Budgie's fields on one screen, or start from a built-in preset and adjust."
+msgstr "Wähle eine beliebige CSV und ordne ihre Spalten auf einem Bildschirm den Feldern von Budgie zu, oder starte mit einer integrierten Vorlage und passe sie an."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "PostgreSQL or MySQL backend (your choice)"
@@ -12883,13 +12984,10 @@ msgstr "Preise"
 msgid "Pricing"
 msgstr "Preisgestaltung"
 
+#: src/app/[lang]/features/primary-tag/metadata.ts
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "Primary Tag"
 msgstr "Primärer Tag"
-
-#: src/app/[lang]/features/primary-tag/metadata.ts
-msgid "Primary Tag — Label Transactions for Quick Scanning"
-msgstr "Primär-Tag – Transaktionen für schnelles Durchscannen beschriften"
 
 #: src/app/[lang]/features/primary-tag/metadata.ts
 msgid "Primary Tag — Quick-Scan Transaction Labeling — Budgie"
@@ -13043,13 +13141,12 @@ msgstr "PrivatBank"
 msgid "PrivatBank exports XLSX with a fixed schema and proprietary MCC labels. Budgie parses both, mapping each PrivatBank category to the equivalent ISO MCC code so AI categorization downstream still works."
 msgstr "PrivatBank exportiert XLSX mit einem festen Schema und proprietären MCC-Beschriftungen. Budgie analysiert beides und ordnet jede PrivatBank-Kategorie dem entsprechenden ISO-MCC-Code zu, sodass die nachgelagerte KI-Kategorisierung weiterhin funktioniert."
 
+#: src/app/[lang]/features/privatbank-import/metadata.ts
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "PrivatBank Import"
 msgstr "PrivatBank-Import"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/privatbank-import/metadata.ts
-#: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "PrivatBank XLSX Import"
 msgstr "PrivatBank-XLSX-Import"
 
@@ -13194,6 +13291,10 @@ msgstr "Selten sichtbar"
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Re-locks the moment the app goes to background"
 msgstr "Sperrt erneut, sobald die App in den Hintergrund geht"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Re-pull a slice, keep your edits"
+msgstr "Einen Ausschnitt neu laden, Änderungen behalten"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Re-pull a slice, not everything"
@@ -13400,11 +13501,15 @@ msgstr "Wiederholungskalender"
 msgid "Recurring entries show in your home currency on the calendar; tap any entry to see the original amount and currency."
 msgstr "Wiederkehrende Einträge werden auf dem Kalender in Ihrer Heimwährung angezeigt; tippen Sie auf einen Eintrag, um den Originalbetrag und die Währung zu sehen."
 
-#: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no tier."
 msgstr "Wiederkehrende monatliche Gebühren machen Budgetierung zu einer weiteren Rechnung. Budgie ist komplett kostenlos – jede Funktion, keine Freischaltung, keine Stufe."
+
+#: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Recurring monthly fees turn budgeting into another bill. Budgie is completely free: every feature, no unlock, no tier."
+msgstr "Monatliche Gebühren machen Budgetplanung zu einer weiteren Rechnung. Budgie ist komplett kostenlos: alle Funktionen, ohne Freischaltung, ohne Stufen."
 
 #: src/app/[lang]/page.tsx
 msgid "Recurring payments calendar"
@@ -13721,6 +13826,7 @@ msgstr "Läuft auf dem Gerät, nicht in der Cloud — kein API-Schlüssel, kein 
 msgid "runway"
 msgstr "runway"
 
+#: src/app/[lang]/features/runway/metadata.ts
 #: src/app/[lang]/features/runway/opengraph-image.tsx
 msgid "Runway"
 msgstr "Reichweite"
@@ -13732,11 +13838,6 @@ msgstr "Die Reichweite betrachtet Ihre letzten sechs vollständigen Kalendermona
 #: src/app/[lang]/features/runway/metadata.ts
 msgid "Runway: How Long Will My Money Last?"
 msgstr "Reichweite: Wie lange reicht mein Geld?"
-
-#: src/app/[lang]/features/runway/metadata.ts
-#: src/app/[lang]/features/runway/page.tsx
-msgid "Runway: How Long Your Money Lasts"
-msgstr "Reichweite: Wie lange Ihr Geld reicht"
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Runway: one verdict instead of a dashboard"
@@ -13770,6 +13871,10 @@ msgstr "Beim Speichern einer Regel fragt Budgie, ob sie auf passende bestehende 
 msgid "Saving is instant"
 msgstr "Speichern ist sofort"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Savings deposits, kept separate"
+msgstr "Spareinlagen, getrennt verwaltet"
+
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Savings, deposits and investments are never counted, because they are not money you spend from day to day. Crypto is left out by default. Turn on Include crypto in Settings and Runway counts it at today's market value, with a note on the verdict so you know it is included."
 msgstr "Ersparnisse, Festgelder und Investments zählen nie mit, weil Sie davon nicht im Alltag ausgeben. Krypto bleibt standardmäßig außen vor. Aktivieren Sie in den Einstellungen Krypto einbeziehen, dann zählt die Reichweite es zum heutigen Marktwert und vermerkt das beim Urteil."
@@ -13779,12 +13884,20 @@ msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\
 msgstr "Einfach sagen: \"zwölf für Kaffee, vierzig für das Taxi und acht Euro fürs Parken\" — und Budgie erfasst alle drei als prüfbaren Stapel. Das Audio verlässt das Gerät nie."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. Transcription and parsing both happen on your phone — the audio never leaves it."
-msgstr "Einfach sagen: „zwölf für Kaffee, vierzig für das Taxi und acht Euro fürs Parken“ — und Budgie erfasst alle drei. Transkription und Auswertung geschehen beide auf dem Gerät — das Audio verlässt es nie."
+msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. Transcription and parsing both happen on your phone. The audio never leaves it."
+msgstr "Sag „zwölf für Kaffee, vierzig fürs Taxi und acht Euro fürs Parken“ und Budgie erfasst alle drei. Transkription und Auswertung passieren auf deinem Handy. Das Audio verlässt es nie."
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Say it, Budgie logs it"
+msgstr "Sag es, Budgie erfasst es"
 
 #: src/app/[lang]/page.tsx
 msgid "Say what you spent and Budgie logs it. The audio never leaves the device."
 msgstr "Sagen Sie, was Sie ausgegeben haben, und Budgie bucht es. Das Audio verlässt nie das Gerät."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Scan long lists at a glance"
+msgstr "Lange Listen auf einen Blick erfassen"
 
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "scanning"
@@ -13827,6 +13940,7 @@ msgstr "Screenshot-Unschärfe auf Saldenfeldern und App-Wechsler-Vorschauen"
 msgid "Screenshot protection"
 msgstr "Screenshot-Schutz"
 
+#: src/app/[lang]/features/screenshot-protection/metadata.ts
 #: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
 msgid "Screenshot Protection"
 msgstr "Screenshot-Schutz"
@@ -13835,7 +13949,6 @@ msgstr "Screenshot-Schutz"
 msgid "Screenshot Protection — Budgie"
 msgstr "Screenshot-Schutz — Budgie"
 
-#: src/app/[lang]/features/screenshot-protection/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "Screenshot Protection — Hide Bank Balance from Previews"
@@ -13964,6 +14077,10 @@ msgstr "Sehen Sie, wie viele Monate Ihr Bargeld- und Bankguthaben im aktuellen T
 msgid "See income and spending per tag in a dedicated Analytics tab, each with its share of the period. The Untagged row finds every transaction missing a label."
 msgstr "Einnahmen und Ausgaben pro Tag in einem eigenen Analyse-Tab, jeweils mit ihrem Anteil am Zeitraum. Die Zeile „Ohne Tag“ findet jede Transaktion ohne Label."
 
+#: src/app/[lang]/features/tag-analytics/page.tsx
+msgid "See spending tag by tag"
+msgstr "Ausgaben Tag für Tag nach Tags sehen"
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "See the total before you commit"
 msgstr "Die Gesamtsumme sehen, bevor Sie zusagen"
@@ -13980,9 +14097,17 @@ msgstr "Sieh, was zwischen August und September 2026 in Budgie erschienen ist: B
 msgid "See what shipped in Budgie in September 2026: the Runway verdict and its Settings section, lighter on-device AI with a real off switch, fingerprint unlock, encrypted backup restore, own-card transfer repair, and smaller fixes."
 msgstr "Erfahren Sie, was im September 2026 in Budgie erschienen ist: das Runway-Urteil und sein Einstellungsbereich, leichtere On-Device-KI mit einem echten Ausschalter, Fingerabdruck-Entsperrung, verschlüsselte Backup-Wiederherstellung, Reparatur von Überweisungen zwischen eigenen Karten und kleinere Korrekturen."
 
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "See what your bank charges"
+msgstr "Sieh, was deine Bank berechnet"
+
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "See where it actually goes"
 msgstr "Sieh, wohin es wirklich geht"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "See where your money goes"
+msgstr "Sieh, wohin dein Geld fließt"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Seen before — Budgie finds the closest match among transactions you have already categorized, which is the fast path"
@@ -14016,13 +14141,19 @@ msgstr "selbst gehostet"
 msgid "Self-Hosted Budget App Mobile — No Server Needed — Budgie"
 msgstr "Selbst gehostete mobile Haushaltsbuch-App – kein Server nötig – Budgie"
 
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
 #: src/app/[lang]/open-source/page.tsx
 msgid "Self-Hosted Finance App on Mobile — Without Running a Server"
 msgstr "Selbst gehostete Finanz-App auf Mobilgeräten – ohne Server zu betreiben"
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
+msgid "Self-Hosted Finance on Mobile"
+msgstr "Selbst gehostete Finanzen auf dem Handy"
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Self-hosted privacy, no server"
+msgstr "Self-Hosted-Privatsphäre, ohne Server"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Self-hosting and internal use without restrictions"
@@ -14040,13 +14171,17 @@ msgstr "Selbst-Hosting in Ihrer Komfortzone liegt"
 msgid "Self-hosting means you’re responsible for backups and security"
 msgstr "Self-Hosting bedeutet, dass Sie für Backups und Sicherheit verantwortlich sind"
 
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
 #: src/app/[lang]/open-source/page.tsx
 msgid "Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server."
 msgstr "Self-Hosting verspricht Datenschutz, liefert aber einen Server, den Sie pflegen müssen. Budgie gibt Ihnen dieselbe Dateneigenverantwortung ohne Betrieb – Ihr Smartphone ist der Server."
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops. Your phone is the server."
+msgstr "Self-Hosting verspricht Privatsphäre, liefert aber einen Server, den du betreuen musst. Budgie gibt dir dieselbe Datenhoheit ohne Wartungsaufwand. Dein Handy ist der Server."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Self-hosting requires maintenance"
@@ -14111,6 +14246,10 @@ msgstr "Lege eine PIN fest, und die Datei wird damit verschlüsselt — kein Anb
 #: src/app/[lang]/security/page.tsx
 msgid "Set a PIN and your data is encrypted on the device — unreadable without those digits"
 msgstr "Legen Sie eine PIN fest, und Ihre Daten werden auf dem Gerät verschlüsselt — unlesbar ohne diese Ziffern"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Set a rule, skip the sorting"
+msgstr "Regel festlegen, Sortieren sparen"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Set a target balance on any account and Budgie writes the difference as an Adjustment"
@@ -14297,13 +14436,11 @@ msgid "Smart Expense Suggestions for Mobile — Budgie"
 msgstr "Intelligente Ausgaben-Vorschläge für Mobilgeräte – Budgie"
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "Smart Transaction Suggestions — Tap and Done"
 msgstr "Intelligente Transaktionsvorschläge – tippen und fertig"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/transfer-pair-detection/metadata.ts
 msgid "Smart Transfer and Refund Consolidation"
 msgstr "Intelligente Überweisungs- und Rückerstattungskonsolidierung"
 
@@ -14432,9 +14569,16 @@ msgid "Speak it. Budgie logs it. Audio never leaves your phone."
 msgstr "Sprechen Sie es aus. Budgie protokolliert es. Audio verlässt Ihr Telefon nie."
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Speak it. Budgie logs it. Speech is transcribed on your phone — the audio never leaves it."
 msgstr "Aussprechen. Budgie erfasst es. Die Sprache wird auf dem Gerät transkribiert — das Audio verlässt es nie."
+
+#: src/app/[lang]/features/voice-transaction-entry/metadata.ts
+msgid "Speak it. Budgie logs it. Speech is transcribed on your phone. The audio never leaves it."
+msgstr "Sprich es aus. Budgie erfasst es. Sprache wird auf deinem Handy transkribiert. Das Audio verlässt es nie."
+
+#: src/app/[lang]/features/spending-analytics/metadata.ts
+msgid "Spending Analytics"
+msgstr "Ausgabenanalyse"
 
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Spending Analytics & Charts"
@@ -14450,11 +14594,6 @@ msgstr "Ausgabenanalyse nach Tag – aufklappbare Berichte – Budgie"
 
 #: src/app/[lang]/page.tsx
 msgid "Spending analytics that actually help"
-msgstr "Ausgabenanalysen, die wirklich helfen"
-
-#: src/app/[lang]/features/spending-analytics/metadata.ts
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Spending Analytics That Actually Help"
 msgstr "Ausgabenanalysen, die wirklich helfen"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
@@ -14493,15 +14632,15 @@ msgstr "Ausgegeben, übrig und Limit"
 msgid "split"
 msgstr "Aufteilen"
 
-#: src/app/[lang]/features/split-transactions/metadata.ts
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Split a Transaction Across Categories"
-msgstr "Eine Transaktion auf Kategorien aufteilen"
+msgid "Split one bill across categories"
+msgstr "Eine Rechnung auf Kategorien aufteilen"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Split one entry across several categories right in the quick-entry form"
 msgstr "Teile einen Eintrag direkt im Schnelleingabe-Formular auf mehrere Kategorien auf"
 
+#: src/app/[lang]/features/split-transactions/metadata.ts
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "Split Transactions"
 msgstr "Transaktionen aufteilen"
@@ -14514,23 +14653,30 @@ msgstr "Transaktionen aufteilen — Budgie"
 msgid "Spot and Funding, as one account per wallet and asset. Flexible and Locked Simple Earn positions are added into the Spot balance for the same asset, so a coin you have staked still shows its full quantity."
 msgstr "Spot und Funding, als je ein Konto pro Wallet und Asset. Flexible und gebundene Simple-Earn-Positionen werden dem Spot-Saldo desselben Assets zugerechnet, sodass ein Coin im Staking weiterhin seine volle Menge zeigt."
 
-#: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
-msgid "Spot the slow leak before it bills — subscription patterns plotted on a month calendar with forecasted upcoming."
-msgstr "Erkenne wiederkehrende Abbuchungen, bevor sie zuschlagen: Budgie zeichnet Abomuster und anstehende Zahlungen in einem Monatskalender ein."
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Spot subscriptions before they bill"
+msgstr "Abos erkennen, bevor sie abbuchen"
 
 #: src/app/[lang]/features/recurring-payments-calendar/opengraph-image.tsx
 msgid "Spot the slow leak before it bills."
 msgstr "Das langsame Leck erkennen, bevor es abgerechnet wird."
+
+#: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
+msgid "Spot the slow leak before it bills. Subscription patterns plotted on a month calendar with forecasted upcoming."
+msgstr "Erkenne das schleichende Leck, bevor es abbucht. Abo-Muster im Monatskalender dargestellt, samt Prognose der nächsten Abbuchungen."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Spot trades and Convert land as transfers between two of your asset accounts, not as fake income"
 msgstr "Spot-Trades und Convert landen als Überweisungen zwischen zwei Ihrer Vermögenskonten, nicht als vorgetäuschte Einnahme"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/binance-sync/metadata.ts
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 msgid "Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key."
 msgstr "Spot-, Funding- und Simple-Earn-Salden sowie P2P, Trades und Prämien — signiert mit einem Nur-Lese-API-Schlüssel."
+
+#: src/app/[lang]/features/binance-sync/metadata.ts
+msgid "Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards, signed with a read-only API key."
+msgstr "Spot-, Funding- und Simple-Earn-Guthaben sowie P2P, Trades und Belohnungen, signiert mit einem schreibgeschützten API-Schlüssel."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Spread the word about privacy-respecting alternatives"
@@ -14728,11 +14874,13 @@ msgstr "abofrei"
 msgid "Subscription-Free Budget App"
 msgstr "Budget-App ohne Abo"
 
-#: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Subscription-Free Budget App — Completely Free"
 msgstr "Haushaltsbuch App ohne Abo – komplett kostenlos"
+
+#: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
+msgid "Subscription-Free Budgeting"
+msgstr "Budgetplanung ohne Abo"
 
 #: src/app/[lang]/features/recurring-payments-calendar/opengraph-image.tsx
 msgid "subscriptions"
@@ -14863,8 +15011,8 @@ msgid "Sync the account the money left and the account it landed in, and each on
 msgstr "Synchronisiere das Konto, von dem das Geld abging, und das Konto, auf dem es ankam: jedes importiert seine eigene Seite — eine Ausgabe auf der einen, eine Einnahme auf der anderen. Ohne Zutun landet eine Bewegung zweimal in deinem Kontobuch."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
-msgid "System-adaptive dark theme that respects OLED displays and switches with your device — or lock to dark or light."
-msgstr "Systemadaptives dunkles Thema, das OLED-Displays respektiert und mit Ihrem Gerät wechselt – oder auf Dunkel oder Hell sperren."
+msgid "System-adaptive dark theme that respects OLED displays and switches with your device, or lock to dark or light."
+msgstr "Dunkles Design, das sich dem System anpasst, OLED-Displays berücksichtigt und mit deinem Gerät umschaltet, oder fest auf Dunkel oder Hell gestellt."
 
 #: src/app/[lang]/features/dark-mode/metadata.ts
 msgid "System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility."
@@ -14874,9 +15022,14 @@ msgstr "Systemadaptives dunkles Thema, das OLED-Displays respektiert. Mit Ihrem 
 msgid "Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest."
 msgstr "Versehen Sie eine Transaktion mit mehr als einem Tag, und die Liste zeigt weiterhin einen Chip – umrandet, mit einer Anzahl für den Rest."
 
+#: src/app/[lang]/features/tag-analytics/metadata.ts
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx
 msgid "Tag Analytics"
 msgstr "Tag-Analysen"
+
+#: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
+msgid "Tag Suggestions"
+msgstr "Tag-Vorschläge"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Tag suggestions as tappable pills after category selection — zero typing required"
@@ -14889,10 +15042,6 @@ msgstr "Umsätze auch gesammelt taggen"
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Tag-based analytics: per-tag totals plus an “Untagged” bucket"
 msgstr "Tag-basierte Analysen: Pro-Tag-Gesamtsummen plus ein „Ohne Tag“-Bereich"
-
-#: src/app/[lang]/features/tag-analytics/metadata.ts
-msgid "Tag-Based Spending Analytics"
-msgstr "Tag-basierte Ausgabenanalysen"
 
 #: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
@@ -14985,6 +15134,10 @@ msgstr "Zeile antippen und kategorisieren"
 msgid "Tap a row, get the transactions"
 msgstr "Zeile antippen, Transaktionen sehen"
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Tap a suggestion, done"
+msgstr "Vorschlag antippen, fertig"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Tippen Sie auf eine Kategoriezeile, um genau die Transaktionen hinter dieser Zahl für diesen Zeitraum zu öffnen"
@@ -15020,6 +15173,10 @@ msgstr "Tippen Sie auf den Hinweis zu fehlenden Kategorien über Ihrer Umsatzlis
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap to open the inbox"
 msgstr "Antippen zum Öffnen"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tap your tags, skip typing"
+msgstr "Tags antippen, Tippen sparen"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Tappable suggestion pills"
@@ -15076,16 +15233,16 @@ msgid "That “secure” app you trusted? Its privacy policy can change with a s
 msgstr "Diese \"sichere\" App, der Sie vertraut haben? Ihre Datenschutzrichtlinie kann sich mit einem einfachen Update ändern. Was heute privat ist, könnte morgen an Werbetreibende verkauft werden."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "That €200 you lent your sister, the €1500 you owe a friend — first-class accounts with target balances, return dates, and contact assignment."
-msgstr "Die 200 €, die Sie Ihrer Schwester geliehen haben, die 1.500 €, die Sie einem Freund schulden – erstklassige Konten mit Zielsalden, Rückgabedaten und Kontaktzuweisung."
-
-#: src/app/[lang]/features/split-transactions/metadata.ts
-msgid "That €87 supermarket bill was groceries and a phone charger — split it."
-msgstr "Die 87-€-Supermarktrechnung waren Lebensmittel und ein Telefonladegerät – teilen Sie es auf."
+msgid "That €200 you lent your sister, the €1500 you owe a friend. Both are first-class accounts with target balances, return dates, and contact assignment."
+msgstr "Die 200 €, die du deiner Schwester geliehen hast, die 1500 €, die du einem Freund schuldest. Beides sind vollwertige Konten mit Zielbeträgen, Rückgabedaten und Kontaktzuordnung."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "That €87 supermarket bill was groceries and a phone charger. Split into multiple categories with a remaining-budget indicator."
 msgstr "Die 87-€-Supermarktrechnung waren Lebensmittel und ein Telefonladegerät. Auf mehrere Kategorien mit einem Restbudget-Indikator aufteilen."
+
+#: src/app/[lang]/features/split-transactions/metadata.ts
+msgid "That €87 supermarket bill was groceries and a phone charger. Split it."
+msgstr "Die Supermarktrechnung über 87 € waren Lebensmittel und ein Handyladegerät. Teile sie auf."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "That gives Budgie two strengths at once. You can audit the original bank or CSV data, and <0>spending analytics</0> can still sum categories, tags, and periods without guessing which rate to use."
@@ -15717,11 +15874,14 @@ msgstr "Die PIN ist der Verschlüsselungsschlüssel – es gibt keinen Wiederher
 msgid "The PIN is what the app opens the database with. Budgie keeps it in the device keychain, marked this-device-only, and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one. The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the data back."
 msgstr "Mit der PIN öffnet die App die Datenbank. Budgie bewahrt sie im Schlüsselbund des Geräts auf, als „nur dieses Gerät\" markiert, und übergibt sie der Datenbank als Verschlüsselungsschlüssel; das Ändern der PIN verschlüsselt die gesamte Datei neu unter der neuen PIN. Die vierte Ziffer wird automatisch übermittelt — eine falsche PIN löscht die Punkte und zeigt dies an, und es gibt kein Zurücksetzen, das Ihnen die Daten zurückgibt."
 
-#: src/app/[lang]/features/pin-app-lock/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "The PIN unlocks the app and unlocks your data — no PIN, no readable database."
 msgstr "Die PIN entsperrt die App und entsperrt Ihre Daten — keine PIN, keine lesbare Datenbank."
+
+#: src/app/[lang]/features/pin-app-lock/metadata.ts
+msgid "The PIN unlocks the app and unlocks your data. No PIN, no readable database."
+msgstr "Die PIN entsperrt die App und deine Daten. Keine PIN, keine lesbare Datenbank."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Plaid Problem: Third-Party Data Aggregation Risks"
@@ -16429,13 +16589,13 @@ msgstr "SOWEIT GESETZLICH ZULÄSSIG, HAFTEN BUDGIE, SEINE DIREKTOREN, MITARBEITE
 msgid "To your own iCloud / Google Drive"
 msgstr "In Ihr eigenes iCloud / Google Drive"
 
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window."
-msgstr "Heute, Diese Woche, Letzte Woche, Dieser Monat, Letzter Monat, Dieses Jahr, Gesamter Zeitraum – auf jedem Bildschirm mit einer Liste sind es zwei Fingertipps bis zum richtigen Zeitfenster."
-
 #: src/app/[lang]/features/date-filter-presets/metadata.ts
 msgid "Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row."
 msgstr "Heute, Diese Woche, Letzte Woche, Dieser Monat, Letzter Monat, Dieses Jahr, Gesamter Zeitraum – auf jedem Bildschirm mit einer Liste sind es zwei Fingertipps bis zum richtigen Zeitfenster. Dazu ein Von/Bis-Betragsbereich in derselben Filterzeile."
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Today, This Week, Last Week, This Month, Last Month, This Year, All Time. Every screen with a list gets two taps to the right window."
+msgstr "Heute, Diese Woche, Letzte Woche, Dieser Monat, Letzter Monat, Dieses Jahr, Gesamte Zeit. Jeder Bildschirm mit einer Liste erreicht das richtige Zeitfenster in zwei Taps."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Toggle “include in net worth” per account. A background task keeps exchange rates fresh so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
@@ -16532,8 +16692,12 @@ msgid "Track money lent or borrowed as first-class debt accounts. Lending and re
 msgstr "Verfolge verliehenes oder geliehenes Geld als vollwertige Schuldkonten. Verleihen und Rückzahlungen verbuchen echte Einnahmen oder Ausgaben und zählen so in deiner monatlichen Auswertung."
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, and debt — grouped, colored, archived, and renamed however you want."
-msgstr "Verfolge unbegrenzt viele Bankkonten, Bargeld-Wallets, Termineinlagen, Krypto und Schulden – gruppiert, eingefärbt, archiviert und umbenannt, wie du willst."
+msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, and debt. Group, color, archive, and rename them however you want."
+msgstr "Verfolge unbegrenzt viele Bankkonten, Bargeldbörsen, Einlagen, Krypto und Schulden. Gruppiere, färbe, archiviere und benenne sie um, wie du willst."
+
+#: src/app/[lang]/features/installment-tracking/page.tsx
+msgid "Track what you still owe"
+msgstr "Behalte im Blick, was du noch schuldest"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Tracked as fee entries"
@@ -16551,14 +16715,14 @@ msgstr "Transaktions-Kategorisierungsregeln — Budgie"
 msgid "Transaction data flows from your bank to your device—never through our servers"
 msgstr "Transaktionsdaten fließen von Ihrer Bank zu Ihrem Gerät — niemals über unsere Server"
 
+#: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
+msgid "Transaction Suggestions"
+msgstr "Transaktionsvorschläge"
+
+#: src/app/[lang]/features/transaction-tags/metadata.ts
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx
 msgid "Transaction Tags"
 msgstr "Transaktions-Tags"
-
-#: src/app/[lang]/features/transaction-tags/metadata.ts
-#: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Transaction Tags for Multi-Dimensional Tracking"
-msgstr "Transaktions-Tags für mehrdimensionale Verfolgung"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Transaction Type"
@@ -16577,6 +16741,10 @@ msgstr "Transaktionen: Betragsbereich-Filterung und eine schreibgeschützte Deta
 msgid "Transcribed on the phone, never uploaded"
 msgstr "Auf dem Telefon transkribiert, nie hochgeladen"
 
+#: src/app/[lang]/features/transfer-pair-detection/metadata.ts
+msgid "Transfer and Refund Consolidation"
+msgstr "Überweisungen und Erstattungen zusammenführen"
+
 #: src/app/[lang]/features/account-transfers/metadata.ts
 msgid "Transfer between your own accounts as a first-class transaction type with automatic FX conversion and dual-amount display. Spending stats stay clean; balance reconciliation stays exact."
 msgstr "Zwischen Ihren eigenen Konten als erstklassigen Transaktionstyp mit automatischer Wechselkursumrechnung und Doppelbetragsanzeige überweisen. Ausgabenstatistiken bleiben sauber; Saldoabgleich bleibt exakt."
@@ -16593,6 +16761,10 @@ msgstr "Beim Überweisen von Geld zu oder von einem Schuldenkonto bleibt die Kat
 #: src/app/[lang]/features/transfer-pair-detection/opengraph-image.tsx
 msgid "transfers"
 msgstr "Überweisungen"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Transfers and refunds, matched for you"
+msgstr "Überweisungen und Erstattungen, für dich zugeordnet"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Transfers between your accounts are not income or expenses — and an app that treats them as such will mis-state your spending. Budgie has a first-class Transfer transaction type with explicit source and destination accounts."
@@ -16647,11 +16819,6 @@ msgstr "Als Ausgaben behandelt"
 msgid "True black. OLED-friendly. No white flash."
 msgstr "Echtes Schwarz. OLED-freundlich. Kein weißer Blitz."
 
-#: src/app/[lang]/features/dark-mode/metadata.ts
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "True Dark Mode (Not Just Dimmed)"
-msgstr "Echter Dunkelmodus (nicht nur abgedunkelt)"
-
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "True end-to-end encryption would prevent the provider from accessing your data, but most cloud budgeting apps claiming encryption use encryption in transit and at rest, not end-to-end. They can still access your data because they hold the keys. Apps with true end-to-end encryption lose functionality (server-side categorization, web access, shared budgets) that most cloud apps offer, which suggests their encryption claims may not cover all data."
 msgstr "Echte Ende-zu-Ende-Verschlüsselung würde den Anbieter daran hindern, auf Ihre Daten zuzugreifen, aber die meisten Cloud-Budget-Apps, die Verschlüsselung beanspruchen, verwenden Verschlüsselung während der Uebertragung und im Ruhezustand, nicht Ende-zu-Ende. Sie können weiterhin auf Ihre Daten zugreifen, weil sie die Schlüssel besitzen. Apps mit echter Ende-zu-Ende-Verschlüsselung verlieren Funktionalität (serverseitige Kategorisierung, Webzugriff, gemeinsame Budgets), die die meisten Cloud-Apps anbieten, was darauf hindeutet, dass ihre Verschlüsselungsaussagen möglicherweise nicht alle Daten abdecken."
@@ -16663,6 +16830,10 @@ msgstr "Echter Offline-Betrieb"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "True Privacy by Design"
 msgstr "Echte Privacy by Design"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Truly dark, easy on the eyes"
+msgstr "Richtig dunkel, schonend für die Augen"
 
 #: src/blog/component/blog-browser/blog-browser.tsx
 msgid "Try adjusting your search query or browse all articles."
@@ -16752,13 +16923,13 @@ msgstr "Zwei Screens: das Sheet, in dem ein Monatskalender und die Voreinstellun
 msgid "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it."
 msgstr "Zwei synchronisierte Banken sehen dieselbe Überweisung zweimal – einmal als Abbuchung, einmal als Gutschrift. Ohne Konsolidierung verdoppeln sich Ihre Ausgaben. Budgie gleicht das Paar anhand von Betrag, einem Zeitfenster und Counter-IBAN ab, sofern die Bank sie liefert."
 
-#: src/app/[lang]/features/expense-tracking/metadata.ts
-msgid "Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use."
-msgstr "Zwei Tipp-Aktionen vom Öffnen bis zum Speichern – ein Bottom-Sheet-Schnelleingabeformular für die einhändige Bedienung."
-
 #: src/app/[lang]/features/expense-tracking/opengraph-image.tsx
 msgid "Two taps from open to saved."
 msgstr "Zwei Tipp-Aktionen vom Öffnen bis zum Speichern."
+
+#: src/app/[lang]/features/expense-tracking/metadata.ts
+msgid "Two taps from open to saved. A bottom-sheet quick-entry form designed for one-handed use."
+msgstr "Zwei Taps vom Öffnen bis zum Speichern. Ein Schnelleingabeformular als Bottom Sheet, für die Bedienung mit einer Hand gemacht."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Two taps to saved"
@@ -16782,8 +16953,8 @@ msgid "Type the amount"
 msgstr "Betrag eingeben"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
-msgid "Type the balance your bank shows and Budgie books the difference as a dated Adjustment transaction — not a silent edit to your history."
-msgstr "Geben Sie den Saldo ein, den Ihre Bank zeigt, und Budgie bucht die Differenz als datierte Anpassungstransaktion — keine stille Änderung Ihrer Historie."
+msgid "Type the balance your bank shows and Budgie books the difference as a dated Adjustment transaction, not a silent edit to your history."
+msgstr "Gib den Kontostand ein, den deine Bank anzeigt, und Budgie bucht die Differenz als datierte Korrekturbuchung, nicht als stille Änderung deines Verlaufs."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "TypeScript codebase, easy to contribute to"
@@ -16815,9 +16986,6 @@ msgid "Uncategorized or untagged bank transactions grouped by merchant, with sug
 msgstr "Nicht kategorisierte oder ungetaggte Kontoumsätze nach Händler gruppiert, mit Vorschlägen aus Ihren eigenen Entscheidungen. Ein Tippen pro Gruppe."
 
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
-msgid "Uncategorized Transaction Finder"
-msgstr "Finder für nicht kategorisierte Transaktionen"
-
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "Uncategorized Transactions"
 msgstr "Nicht kategorisierte Transaktionen"
@@ -16857,6 +17025,10 @@ msgstr "Unbegrenzte Aufteilungen pro Transaktion – jede Kategorie erhält ihre
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Unlock and restore, fixed"
 msgstr "Entsperren und Wiederherstellen, repariert"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Unlock with a glance"
+msgstr "Mit einem Blick entsperren"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Unrealized gain over cost basis"
@@ -17751,8 +17923,8 @@ msgid "Whatever in the period has no tag at all. It appears as an Untagged row �
 msgstr "Alles im Zeitraum, das gar keinen Tag hat. Es erscheint als Zeile „Ohne Tag“ – eine in der Einnahmenliste, eine in der Ausgabenliste – und ein Tippen öffnet diese Umsätze nach Händler gruppiert, mit Tag-Vorschlägen, damit Sie sie gesammelt taggen können."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds it and fixes it — duplicates get soft-deleted, unmatched transfer legs get paired into one."
-msgstr "Wenn eine Banksynchronisierung eine Transaktion erneut liefert oder eine deiner eigenen Überweisungen als zwei getrennte Zeilen liefert, findet Budgie das und korrigiert es — Duplikate werden logisch gelöscht, nicht zugeordnete Überweisungsteile werden zu einer verknüpft."
+msgid "When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds it and fixes it: duplicates get soft-deleted, unmatched transfer legs get paired into one."
+msgstr "Liefert eine Bank-Synchronisierung eine Transaktion erneut oder eine deiner eigenen Überweisungen als zwei getrennte Zeilen, findet Budgie das und repariert es: Duplikate werden weich gelöscht, unzugeordnete Überweisungshälften zu einer zusammengeführt."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "When a company shuts down, the data does not necessarily disappear. It often becomes an asset sold to the acquiring company or retained in archives with unclear access policies."
@@ -18432,8 +18604,6 @@ msgid "Will this slow down my transaction list?"
 msgstr "Verlangsamt das meine Transaktionsliste?"
 
 #: src/app/[lang]/bank-sync/page.tsx
-#: src/app/[lang]/features/bank-resync-window/metadata.ts
-#: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Windowed Bank Re-sync"
 msgstr "Fenster-Bank-Neusynchronisierung"
 
@@ -19248,13 +19418,17 @@ msgstr "Deine Bank, ohne jemanden dazwischen"
 msgid "Your banking credentials are encrypted and stored locally on your device"
 msgstr "Ihre Bankzugangsdaten werden verschlüsselt und lokal auf Ihrem Gerät gespeichert"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Your Binance balances, on your phone"
+msgstr "Deine Binance-Guthaben, auf deinem Handy"
+
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Your call in Settings"
 msgstr "Sie entscheiden in den Einstellungen"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "Your card, your jars, and the deposit you opened last month all hang off one connection — so renewing a token is a single edit, not a rebuild."
-msgstr "Ihre Karte, Ihre Töpfe und das Festgeld, das Sie letzten Monat eröffnet haben, hängen alle an einer Verbindung — ein Token zu erneuern ist damit eine einzige Änderung, kein Neuaufbau."
+msgid "Your card, your jars, and the deposit you opened last month all hang off one connection, so renewing a token is a single edit, not a rebuild."
+msgstr "Deine Karte, deine Jars und die Einlage, die du letzten Monat eröffnet hast, hängen alle an einer Verbindung. Ein Token lässt sich so mit einer Änderung erneuern, ohne alles neu aufzubauen."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Your contribution does not violate any third-party rights"
@@ -19296,6 +19470,10 @@ msgstr "Ihre Daten nicht an Dritte verkauft werden"
 msgid "Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a copy of the database file itself for a full restore. Both are user-initiated and saved through the OS share sheet."
 msgstr "Ihre Daten, Ihre Entscheidung. Budgie bietet zwei Exporte: ein einfaches CSV für Tabellenkalkulationen und eine Kopie der Datenbankdatei selbst für eine vollständige Wiederherstellung. Beide werden von Ihnen ausgelöst und über das Share-Sheet des Betriebssystems gespeichert."
 
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Your data, yours to take"
+msgstr "Deine Daten, zum Mitnehmen"
+
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Your database is encrypted on the device once you set a PIN — that PIN is the key"
 msgstr "Ihre Datenbank wird auf dem Gerät verschlüsselt, sobald Sie eine PIN festlegen — diese PIN ist der Schlüssel"
@@ -19311,6 +19489,10 @@ msgstr "Nur Ihr Gerät"
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Your device UDID must already be registered in the ad-hoc provisioning profile."
 msgstr "Der UDID Ihres Geräts muss bereits im Ad-hoc-Provisioning-Profil registriert sein."
+
+#: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
+msgid "Your Erste statement, imported"
+msgstr "Dein Erste-Kontoauszug, importiert"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Your file, your storage"
@@ -19360,6 +19542,10 @@ msgstr "Ihr Schlüssel und Ihr Secret bleiben auf Ihrem Gerät. Nichts wird übe
 msgid "Your landlord's transfer, your gym membership, the corner shop you visit twice a week — you already know where those belong. A rule states that once, in plain conditions, and the app stops asking."
 msgstr "Die Überweisung an Ihren Vermieter, Ihre Fitnessstudio-Mitgliedschaft, der Laden um die Ecke, den Sie zweimal die Woche besuchen — Sie wissen bereits, wohin das gehört. Eine Regel legt das einmal in klaren Bedingungen fest, und die App hört auf zu fragen."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Your money, on the Home Screen"
+msgstr "Dein Geld, auf dem Home-Bildschirm"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your money, your data, your control. That’s the Budgie promise."
 msgstr "Ihr Geld, Ihre Daten, Ihre Kontrolle. Das ist das Budgie-Versprechen."
@@ -19371,6 +19557,14 @@ msgstr "Ihr Geld. Ihre Daten. Ihre Kontrolle."
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Your money. Your phone. Nobody else's server."
 msgstr "Ihr Geld. Ihr Telefon. Kein fremder Server."
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Your Monobank, on your phone"
+msgstr "Deine Monobank, auf deinem Handy"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Your net worth, one number"
+msgstr "Dein Vermögen, eine Zahl"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Your own data: the weekly and monthly patterns Budgie spots in your transactions and, for edits and voice entries, the closest matches to the title in your own history. No cloud calls."

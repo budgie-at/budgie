@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'spending-analytics',
     tier: FeatureTierEnum.CORE,
-    title: msg`Spending Analytics That Actually Help`,
-    tagline: msg`Category and tag breakdowns for any period — drill into any row.`,
+    name: msg`Spending Analytics`,
+    tagline: msg`Category and tag breakdowns for any period. Drill into any row.`,
     metaTitle: msg`Spending Analytics & Charts — Budgie`,
     metaDescription: msg`Category and tag breakdowns for any period, with drill-down from any row to its transactions. Analytics that find your gaps.`,
     primaryKeyword: 'spending tracker with charts',

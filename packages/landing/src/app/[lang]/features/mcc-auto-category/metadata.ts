@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'mcc-auto-category',
     tier: FeatureTierEnum.POWER,
-    title: msg`MCC Auto-Categorization`,
-    tagline: msg`Bank-issued codes do the work — cafes land in Restaurants & Cafes, fuel stops in Car & Fuel.`,
+    name: msg`MCC Auto-Categorization`,
+    tagline: msg`Bank-issued codes do the work: cafes land in Restaurants & Cafes, fuel stops in Car & Fuel.`,
     metaTitle: msg`MCC Auto-Categorization for Bank Transactions — Budgie`,
     metaDescription: msg`Bank transactions carry Merchant Category Codes; Budgie maps about 1,050 of them to default categories automatically. Switch it off in Settings.`,
     primaryKeyword: 'automatic transaction categories',

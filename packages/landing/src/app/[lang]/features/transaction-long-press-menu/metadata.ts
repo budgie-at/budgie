@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'transaction-long-press-menu',
     tier: FeatureTierEnum.CORE,
-    title: msg`Long-Press Quick Actions on Every Transaction`,
-    tagline: msg`Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required.`,
+    name: msg`Long-Press Quick Actions`,
+    tagline: msg`Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert. No full edit form required.`,
     metaTitle: msg`Quick Edit Transaction App — Long-Press Menu — Budgie`,
     metaDescription: msg`Long-press a transaction in Budgie for a menu: edit, convert to refund or transfer, attach a debt, delete, or revert — no edit form.`,
     primaryKeyword: 'quick edit transaction app',

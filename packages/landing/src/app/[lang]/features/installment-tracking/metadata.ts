@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'installment-tracking',
     tier: FeatureTierEnum.POWER,
-    title: msg`Pay in Parts: Installment Tracking`,
+    name: msg`Installment Tracking`,
     tagline: msg`Turn a purchase paid in parts into a plan. Budgie attaches each monthly part and shows the next payment on Home.`,
     metaTitle: msg`Installment Tracker for Pay in Parts Purchases`,
     metaDescription: msg`Know what you still owe on things you bought in parts. Turn the purchase into a plan, and Budgie attaches each monthly part and shows the next payment.`,

@@ -23,17 +23,17 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>PrivatBank XLSX Import</Trans>}
+                heading={<Trans>Bring in your PrivatBank history</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Import accounts and transactions from a PrivatBank24 XLSX export — with PrivatBank&apos;s own MCC categories mapped
+                        Import accounts and transactions from a PrivatBank24 XLSX export, with PrivatBank&apos;s own MCC categories mapped
                         automatically.
                     </Trans>
                 }

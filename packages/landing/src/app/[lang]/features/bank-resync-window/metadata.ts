@@ -8,7 +8,7 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'bank-resync-window',
     tier: FeatureTierEnum.POWER,
-    title: msg`Windowed Bank Re-sync`,
+    name: msg`Bank Re-sync Window`,
     tagline: msg`Re-pull a slice. Keep your edits. No nuke-from-orbit.`,
     metaTitle: msg`Bank Re-Sync Window — Backfill Missing Transactions — Budgie`,
     metaDescription: msg`Re-pull just the last N days of bank history without nuking your manual edits or category overrides. Conflict picker for edited rows.`,

@@ -8,8 +8,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'binance-sync',
     tier: FeatureTierEnum.POWER,
-    title: msg`Binance Sync — Read-Only Keys, Real Balances`,
-    tagline: msg`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key.`,
+    name: msg`Binance Sync`,
+    tagline: msg`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards, signed with a read-only API key.`,
     metaTitle: msg`Binance Account Sync — Budgie`,
     metaDescription: msg`Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment.`,
     primaryKeyword: 'binance portfolio sync app',

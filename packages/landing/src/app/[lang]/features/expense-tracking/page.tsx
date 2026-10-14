@@ -24,13 +24,13 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Log Every Expense in Seconds</Trans>}
+                heading={<Trans>Log every expense in seconds</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
