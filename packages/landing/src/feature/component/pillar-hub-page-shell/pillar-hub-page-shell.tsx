@@ -15,7 +15,7 @@ interface Props {
 
 export const PillarHubPageShell = ({ lang, meta, children }: Props) => {
     const i18n = getI18nInstance(lang);
-    const title = i18n._(meta.metaTitle);
+    const title = i18n._(meta.title);
 
     return (
         <main className="flex-1">

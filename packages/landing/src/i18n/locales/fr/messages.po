@@ -2924,6 +2924,10 @@ msgstr "alertes"
 msgid "Alerts that never leave your phone"
 msgstr "Des alertes qui ne quittent jamais votre téléphone"
 
+#: src/blog/component/blog-browser/blog-browser.tsx
+msgid "All articles"
+msgstr "Tous les articles"
+
 #: src/app/[lang]/features/opengraph-image.tsx
 #: src/app/[lang]/features/page.tsx
 msgid "All Budgie Features"
@@ -6937,6 +6941,10 @@ msgstr "Détecté, pas ajouté"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Detected, not declared"
 msgstr "Détecté, pas déclaré"
+
+#: src/app/[lang]/layout.tsx
+msgid "Developer of Budgie, a privacy-first offline expense tracker for iOS and Android."
+msgstr "Développeur de Budgie, un suivi de dépenses hors ligne axé sur la confidentialité pour iOS et Android."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
