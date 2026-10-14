@@ -24,17 +24,17 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Multi-Account Money Management</Trans>}
+                heading={<Trans>Every account, one home screen</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Track unlimited bank accounts, cash wallets, deposits, crypto, and debt — grouped, colored, archived, and renamed
+                        Track unlimited bank accounts, cash wallets, deposits, crypto, and debt. Group, color, archive, and rename them
                         however you want.
                     </Trans>
                 }

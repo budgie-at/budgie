@@ -25,18 +25,18 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Self-Hosted Finance App on Mobile — Without Running a Server</Trans>}
+                heading={<Trans>Self-hosted privacy, no server</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
                         Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with
-                        zero ops — your phone is the server.
+                        zero ops. Your phone is the server.
                     </Trans>
                 }
             />

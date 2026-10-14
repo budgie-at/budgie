@@ -8,7 +8,7 @@ export interface FeatureRegistryEntryInterface {
     readonly tier: FeatureTierEnum;
     readonly pillar: PillarEnum;
     readonly category?: FeatureCategoryEnum;
-    readonly title: MessageDescriptor;
+    readonly name: MessageDescriptor;
     readonly tagline: MessageDescriptor;
     readonly metaTitle: MessageDescriptor;
     readonly metaDescription: MessageDescriptor;

@@ -24,13 +24,13 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
+                heading={<Trans>Transfers and refunds, matched for you</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

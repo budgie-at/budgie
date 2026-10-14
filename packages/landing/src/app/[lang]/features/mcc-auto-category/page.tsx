@@ -24,17 +24,17 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>MCC Auto-Categorization</Trans>}
+                heading={<Trans>Bank codes sort your spending</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically — first
+                        Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically, first
                         import, no setup.
                     </Trans>
                 }

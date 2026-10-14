@@ -24,18 +24,18 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Date Filter Presets — Past Periods, One Tap</Trans>}
+                heading={<Trans>Any period, two taps away</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the
-                        right window.
+                        Today, This Week, Last Week, This Month, Last Month, This Year, All Time. Every screen with a list gets two taps to
+                        the right window.
                     </Trans>
                 }
             />

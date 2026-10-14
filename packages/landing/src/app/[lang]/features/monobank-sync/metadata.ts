@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'monobank-sync',
     tier: FeatureTierEnum.HERO,
     pillar: PillarEnum.BANK,
-    title: msg`Monobank Expense Tracker — Direct API Sync, No Plaid`,
+    name: msg`Monobank Sync`,
     tagline: msg`Direct API. No aggregator. Full transaction history to your device.`,
     metaTitle: msg`Monobank Auto-Sync — Budgie`,
     metaDescription: msg`Connect your Monobank account with a personal API token. Cards and jars, full transaction history, FX rates, and counter-IBANs sync straight to your device — no Plaid.`,

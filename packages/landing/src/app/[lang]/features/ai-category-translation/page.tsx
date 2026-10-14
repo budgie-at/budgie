@@ -24,18 +24,18 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
+                heading={<Trans>Foreign category names, made readable</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Category and tag names in Cyrillic, Greek, or Arabic get an English form — on your device, without sending anything
-                        to a server.
+                        Category and tag names in Cyrillic, Greek, or Arabic get an English form on your device, without sending anything to
+                        a server.
                     </Trans>
                 }
             />

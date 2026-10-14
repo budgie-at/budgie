@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'deposit-tracking',
     tier: FeatureTierEnum.POWER,
     pillar: PillarEnum.PLANNING,
-    title: msg`Deposit Tracking`,
+    name: msg`Deposit Tracking`,
     tagline: msg`Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math.`,
     metaTitle: msg`Deposit Tracking — Budgie`,
     metaDescription: msg`Track fixed-term deposits as a dedicated account type with interest rate, maturity date, days remaining, expected payout, close-to-account transfers, and net worth control.`,

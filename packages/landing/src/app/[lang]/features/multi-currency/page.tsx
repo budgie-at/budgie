@@ -24,13 +24,13 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Multi-Currency Accounts With Live Rates</Trans>}
+                heading={<Trans>Any currency, one total</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

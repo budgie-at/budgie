@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'categorization-rules',
     tier: FeatureTierEnum.CORE,
     pillar: PillarEnum.AI,
-    title: msg`Categorization Rules — Deterministic, Not Guesswork`,
+    name: msg`Categorization Rules`,
     tagline: msg`If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer.`,
     metaTitle: msg`Transaction Categorization Rules — Budgie`,
     metaDescription: msg`Build rules that match on title, comment, amount, MCC, account, type, or import source and automatically set a category, add a tag, or convert to a transfer — on every bank sync and import.`,

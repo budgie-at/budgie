@@ -24,17 +24,17 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>True Dark Mode (Not Just Dimmed)</Trans>}
+                heading={<Trans>Truly dark, easy on the eyes</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        System-adaptive dark theme that respects OLED displays and switches with your device — or lock to dark or light.
+                        System-adaptive dark theme that respects OLED displays and switches with your device, or lock to dark or light.
                     </Trans>
                 }
             />

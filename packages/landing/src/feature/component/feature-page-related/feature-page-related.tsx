@@ -31,7 +31,7 @@ export const FeaturePageRelated = ({ locale, slugs }: Props) => {
                             className={`${PILLAR_CLASS_NAME[feature.pillar]} block rounded-lg border border-border/60 bg-card p-4 transition-colors hover:border-pillar hover:bg-card/80`}
                             href={`/${locale}/features/${feature.slug}`}
                         >
-                            <h3 className="font-semibold">{i18n._(feature.title)}</h3>
+                            <h3 className="font-semibold">{i18n._(feature.name)}</h3>
                             <p className="mt-1 text-sm text-muted-foreground">{i18n._(feature.tagline)}</p>
                         </Link>
                     </Motion>

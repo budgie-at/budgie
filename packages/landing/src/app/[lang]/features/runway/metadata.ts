@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'runway',
     tier: FeatureTierEnum.POWER,
     pillar: PillarEnum.PLANNING,
-    title: msg`Runway: How Long Your Money Lasts`,
+    name: msg`Runway`,
     tagline: msg`Months left at your current pace, or how much you add each month. Right next to your balance.`,
     metaTitle: msg`Runway: How Long Will My Money Last?`,
     metaDescription: msg`See how many months your cash and bank balance lasts at your current pace, when it runs out, and what drives your spending. Worked out on your phone.`,

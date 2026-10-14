@@ -24,17 +24,17 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
+                heading={<Trans>Keep balances out of screenshots</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in
+                        Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground. One switch in
                         Settings → Security.
                     </Trans>
                 }

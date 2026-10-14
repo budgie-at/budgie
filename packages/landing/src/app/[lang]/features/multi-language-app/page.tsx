@@ -24,17 +24,17 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Budgie in Five Languages</Trans>}
+                heading={<Trans>Budgie speaks your language</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Full UI in English, Ukrainian, French, German, and Spanish — auto-detected from device locale, switchable in-app.
+                        Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app.
                     </Trans>
                 }
             />

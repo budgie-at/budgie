@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'data-export',
     tier: FeatureTierEnum.CORE,
     pillar: PillarEnum.PRIVACY,
-    title: msg`Export Every Transaction You've Logged`,
+    name: msg`Data Export`,
     tagline: msg`CSV for spreadsheets. A full database backup for restore. Both yours, never ours.`,
     metaTitle: msg`Data Export — Own Your Expense History — Budgie`,
     metaDescription: msg`One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — that you can save to iCloud, Drive, or anywhere. Your data, your call.`,

@@ -24,18 +24,18 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Debt & Loan Tracking</Trans>}
+                heading={<Trans>Know who owes whom</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        That €200 you lent your sister, the €1500 you owe a friend — first-class accounts with target balances, return
-                        dates, and contact assignment.
+                        That €200 you lent your sister, the €1500 you owe a friend. Both are first-class accounts with target balances,
+                        return dates, and contact assignment.
                     </Trans>
                 }
             />

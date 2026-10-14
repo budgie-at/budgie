@@ -31,7 +31,7 @@ export const FeaturesHubTierSection = ({ locale, features, children }: Props) =>
                         pillar={feature.pillar}
                         slug={feature.slug}
                         tagline={i18n._(feature.tagline)}
-                        title={i18n._(feature.title)}
+                        title={i18n._(feature.name)}
                     />
                 ))}
             </div>

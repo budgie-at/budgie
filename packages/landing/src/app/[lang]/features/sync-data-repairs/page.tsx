@@ -22,18 +22,18 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
+                heading={<Trans>Duplicates and split transfers, fixed</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
                         When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds
-                        it and fixes it — duplicates get soft-deleted, unmatched transfer legs get paired into one.
+                        it and fixes it: duplicates get soft-deleted, unmatched transfer legs get paired into one.
                     </Trans>
                 }
             />

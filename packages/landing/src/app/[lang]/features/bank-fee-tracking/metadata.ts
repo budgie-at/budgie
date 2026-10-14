@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'bank-fee-tracking',
     tier: FeatureTierEnum.POWER,
     pillar: PillarEnum.BANK,
-    title: msg`Bank Fee Tracking`,
+    name: msg`Bank Fee Tracking`,
     tagline: msg`Keep ATM fees, transfer fees, and card commissions visible without polluting transfers.`,
     metaTitle: msg`Bank Fee Tracking — Budgie`,
     metaDescription: msg`Track bank fees as first-class transaction entries. ATM fees, transfer fees, and card commissions stay visible in analytics even when the main movement is a transfer.`,

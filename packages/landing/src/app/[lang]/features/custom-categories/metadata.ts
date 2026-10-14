@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'custom-categories',
     tier: FeatureTierEnum.CORE,
     pillar: PillarEnum.PLANNING,
-    title: msg`Custom Spending Categories That Bend To You`,
+    name: msg`Custom Categories`,
     tagline: msg`Create, merge, reassign, and reorder until the tree matches how you actually think about money.`,
     metaTitle: msg`Custom Spending Categories — Budgie`,
     metaDescription: msg`Build, merge, and reassign your own spending categories with mass-migration. Popularity-sorted selectors and MCC pre-fill keep the right category one tap away.`,

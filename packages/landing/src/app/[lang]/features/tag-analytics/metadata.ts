@@ -10,7 +10,7 @@ export const FEATURE_METADATA = {
     slug: 'tag-analytics',
     tier: FeatureTierEnum.POWER,
     pillar: PillarEnum.PLANNING,
-    title: msg`Tag-Based Spending Analytics`,
+    name: msg`Tag Analytics`,
     tagline: msg`A Tags tab in Analytics with income and spending totalled tag by tag, each with its share of the period, plus an Untagged row for every gap in your labeling.`,
     metaTitle: msg`Spending Analytics by Tag — Drillable Reports — Budgie`,
     metaDescription: msg`See income and spending per tag in a dedicated Analytics tab, each with its share of the period. The Untagged row finds every transaction missing a label.`,

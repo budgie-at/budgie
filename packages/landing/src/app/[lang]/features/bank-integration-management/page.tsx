@@ -24,17 +24,17 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Bank Connections — One Credential, Many Accounts</Trans>}
+                heading={<Trans>One connection, all your accounts</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Your card, your jars, and the deposit you opened last month all hang off one connection — so renewing a token is a
+                        Your card, your jars, and the deposit you opened last month all hang off one connection, so renewing a token is a
                         single edit, not a rebuild.
                     </Trans>
                 }

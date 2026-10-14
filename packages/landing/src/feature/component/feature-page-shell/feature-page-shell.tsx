@@ -19,7 +19,7 @@ interface Props {
 
 export const FeaturePageShell = ({ children, lang, meta }: Props) => {
     const i18n = getI18nInstance(lang);
-    const featureName = i18n._(meta.title);
+    const featureName = i18n._(meta.name);
 
     return (
         <main className={`flex-1 ${PILLAR_CLASS_NAME[meta.pillar]}`}>

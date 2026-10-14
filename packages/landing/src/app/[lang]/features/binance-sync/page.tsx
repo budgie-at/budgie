@@ -24,17 +24,17 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Binance Sync — Read-Only Keys, Real Balances</Trans>}
+                heading={<Trans>Your Binance balances, on your phone</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges
+                        Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone, then merges
                         your P2P buys with the bank payment that funded them.
                     </Trans>
                 }

@@ -25,7 +25,7 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
     const storyAlt = t(
         i18n
     )`Budgie Map CSV Columns screen with the Budgie, SmartBudget and FinEye import presets above the To Account, Category, Date, Amount, To Currency and External ID column selectors`;
@@ -34,12 +34,12 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>CSV Bank Statement Import</Trans>}
+                heading={<Trans>Import a CSV from any bank</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Point Budgie at any CSV and map its columns onto Budgie&apos;s fields on one screen — or start from a built-in
-                        preset and adjust.
+                        Point Budgie at any CSV and map its columns onto Budgie&apos;s fields on one screen, or start from a built-in preset
+                        and adjust.
                     </Trans>
                 }
             />

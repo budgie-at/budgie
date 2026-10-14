@@ -25,13 +25,13 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Know exactly what you still owe on things you bought in parts</Trans>}
+                heading={<Trans>Track what you still owe</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

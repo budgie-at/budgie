@@ -24,13 +24,13 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Categorization Rules — Deterministic, Not Guesswork</Trans>}
+                heading={<Trans>Set a rule, skip the sorting</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>

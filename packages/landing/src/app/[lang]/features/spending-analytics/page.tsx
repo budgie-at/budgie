@@ -24,13 +24,13 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Spending Analytics That Actually Help</Trans>}
+                heading={<Trans>See where your money goes</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it.</Trans>

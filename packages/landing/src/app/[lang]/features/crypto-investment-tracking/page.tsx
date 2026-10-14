@@ -24,13 +24,13 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Crypto Holdings Alongside Your Cash</Trans>}
+                heading={<Trans>Crypto next to your cash</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
