@@ -4486,7 +4486,7 @@ msgstr "Budgie integra posiciones de inversión en la misma vista de patrimonio 
 
 #: src/app/[lang]/beta/page.tsx
 msgid "Budgie iOS Beta"
-msgstr "Budgie iOS Beta"
+msgstr "Beta de Budgie para iOS"
 
 #: src/app/[lang]/beta/page.tsx
 msgid "Budgie iOS Beta Install"
