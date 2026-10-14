@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.7](https://github.com/budgie-at/budgie/compare/v6.103.6...v6.103.7) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** categorization pages tell the truth ([5652e58](https://github.com/budgie-at/budgie/commit/5652e58bc010c00c0a4b0459e45195ed0c1d5d8c))
+* **landing:** use formal French on the corrected pages ([af8c6ab](https://github.com/budgie-at/budgie/commit/af8c6ab39ee5ffeae39d7f788837fd6233da98b4))
+
+
+
+
+
 ## [6.103.6](https://github.com/budgie-at/budgie/compare/v6.103.5...v6.103.6) (2026-10-14)
 
 
