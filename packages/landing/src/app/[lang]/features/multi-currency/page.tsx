@@ -30,7 +30,7 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Multi-Currency Accounts With Live Rates</Trans>}
+                heading={<Trans>Multi-Currency Accounts, One Total</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
@@ -96,15 +96,15 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Single-currency apps can&apos;t model how most people actually save and spend — a UK current account, a Wise USD
+                        Single-currency apps can&apos;t model how most people actually save and spend — a UK current account, a USD savings
                         pot, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
                         Exchange rates refresh in the background and are stored on your device. Nothing is converted in place: every
-                        account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is
-                        derived on top of it.
+                        account, transaction, and transfer keeps its original currency and amount, and the base-currency figure is derived
+                        on top of it.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -127,7 +127,7 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                         <Trans>Totals are converted with the most recent rate Budgie fetched</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Cross-currency transfers preserve both legs and the FX rate at transfer time</Trans>
+                        <Trans>Cross-currency transfers keep both amounts and the exchange rate at transfer time</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -137,8 +137,9 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     question={<Trans>How often do FX rates refresh?</Trans>}
                     answer={
                         <Trans>
-                            In a background task while the app is closed, and again when you open it, with a short cooldown between
-                            refreshes. The newest rate for each currency pair replaces the one held on your device.
+                            In the background, at intervals your phone&apos;s operating system chooses, and again whenever the app syncs —
+                            but never more than once every five minutes. The newest rate for each currency pair replaces the one held on
+                            your device.
                         </Trans>
                     }
                 />
@@ -146,8 +147,8 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     question={<Trans>Where do the rates come from?</Trans>}
                     answer={
                         <Trans>
-                            Currency rates come from a free public endpoint at exchangerate-api.com, and crypto prices from CoinGecko. There
-                            is no vendor account to create and no API key to paste in.
+                            Budgie fetches currency rates and crypto prices automatically over the internet. There is no account to create
+                            and no key to paste in.
                         </Trans>
                     }
                 />
@@ -155,8 +156,8 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     question={<Trans>Can I see the original currency?</Trans>}
                     answer={
                         <Trans>
-                            Yes — each account, transaction, and transfer leg keeps its original currency and amount, and that is what you
-                            see on the account and transaction screens. Only the aggregated totals are shown in your base currency.
+                            Yes — each account, transaction, and transfer keeps its original currency and amount, and that is what you see
+                            on the account and transaction screens. Only the aggregated totals are shown in your base currency.
                         </Trans>
                     }
                 />
@@ -164,8 +165,8 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     question={<Trans>What happens during a cross-currency transfer?</Trans>}
                     answer={
                         <Trans>
-                            Both legs are preserved (e.g. $1000 → €925) along with the FX rate at transfer time. See Account Transfers for
-                            details.
+                            Both amounts are kept (e.g. $1000 → €925) along with the exchange rate at transfer time. See Account Transfers
+                            for details.
                         </Trans>
                     }
                 />

@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'database-backup',
     tier: FeatureTierEnum.CORE,
     title: msg`Database Backup & Restore`,
-    tagline: msg`One backup file, encrypted once you set a PIN. No account, restore by picking the file.`,
-    metaTitle: msg`Encrypted Database Backup to Your Cloud — Budgie`,
-    metaDescription: msg`Capture your entire Budgie database in one file, encrypted once you set a PIN. Save to iCloud or Drive on your terms; restore on a new device by picking the file — no account needed.`,
+    tagline: msg`One compressed backup file, PIN-locked once you set a PIN. No account, restore by picking the file.`,
+    metaTitle: msg`PIN-Locked Database Backup — Budgie`,
+    metaDescription: msg`Back up your entire Budgie database as one compressed file, PIN-locked if you set a PIN. Save it anywhere and restore by picking the file.`,
     primaryKeyword: 'expense tracker backup restore',
     seoKeywords: [
         'expense tracker backup restore',

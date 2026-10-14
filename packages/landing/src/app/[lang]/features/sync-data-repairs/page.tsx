@@ -32,8 +32,9 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds
-                        it and fixes it — duplicates get soft-deleted, unmatched transfer legs get paired into one.
+                        When a PrivatBank or Erste import brings in the same transaction twice, or splits or mismatches one of your own
+                        transfers, Budgie finds it and fixes it — duplicates are removed, mismatched transfers are put right, and missing
+                        transfer fees are restored.
                     </Trans>
                 }
             />
@@ -44,31 +45,30 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        A bank API can hand back the same transaction twice: a retried request, a resync window that overlaps the last one,
-                        a connection that re-downloads a statement. Neither row is wrong on its own — they simply describe the same event,
-                        and you see it twice.
+                        An import can bring in the same transaction twice: overlapping statement exports, a file imported again, a download
+                        that was retried. Neither row is wrong on its own — they simply describe the same event, and you see it twice.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The Sync Data Repairs screen runs several checks in one pass: it finds duplicate imported rows, cleans up a few
-                        rarer transfer-matching duplicates that only affect transfers, and looks for transfers between your own cards that
-                        arrived as a separate income row and expense row instead of one transfer. It checks your imported banking
-                        connections that support this repair today, shows a count before changing anything, and only touches the rows
-                        involved once you confirm.
+                        The Sync Data Repairs screen runs several checks in one pass: it finds duplicate imported rows, turns transfers that
+                        were matched wrongly or twice back into plain income and expense, restores transfer fees that went missing, and
+                        looks for PrivatBank transfers between your own cards that arrived as a separate income row and expense row instead
+                        of one transfer. It covers your PrivatBank and Erste file imports; Monobank and Binance are not part of it. It shows
+                        a count before changing anything, and only touches the rows involved once you confirm.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>When one card pays another</Trans>
+                    <Trans>When one of your cards pays another (PrivatBank)</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
                         Sometimes a transfer between your own cards arrives as two separate rows instead of one — an expense on the card
-                        that sent it, an income on the card that received it. The repair finds those pairs and turns the unmatched row into
-                        a proper transfer, rather than deleting anything.
+                        that sent it, an income on the card that received it. For PrivatBank, the repair finds those pairs and turns the
+                        unmatched row into a proper transfer, rather than deleting anything.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -88,11 +88,11 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            A dedicated Settings screen scans your imported banking connections and shows a count before it changes anything
+                            A dedicated Settings screen scans your PrivatBank and Erste imports and shows a count before it changes anything
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Soft-deletes duplicated imported rows — anything you typed yourself is never a candidate</Trans>
+                        <Trans>Removes duplicated imported rows — anything you typed yourself is never a candidate</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
@@ -111,9 +111,12 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>
-                            Also pairs unmatched own-card transfer legs into a real transfer — that&apos;s a rewrite, not a deletion, and it
-                            can&apos;t be undone with one tap
+                            For PrivatBank, also pairs unmatched own-card transfers into a real transfer — that&apos;s a rewrite, not a
+                            deletion, and it can&apos;t be undone with one tap
                         </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
+                        <Trans>Restores transfer fees that went missing, and turns stale transfers back into income and expense</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -123,9 +126,10 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     question={<Trans>What does a sync data repair actually do?</Trans>}
                     answer={
                         <Trans>
-                            It runs several fixes on your imported banking connections: it soft-deletes duplicate imported rows, cleans up a
-                            couple of rarer transfer-matching duplicates, and pairs transfers between your own cards that arrived as two
-                            separate rows into one. The screen shows a count before you confirm anything.
+                            It runs several fixes on your PrivatBank and Erste imports: it removes duplicate imported rows, turns stale
+                            transfers back into income and expense, restores transfer fees that went missing, and — for PrivatBank — pairs
+                            transfers between your own cards that arrived as two separate rows into one. The screen shows a count before you
+                            confirm anything.
                         </Trans>
                     }
                 />
@@ -154,9 +158,9 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     question={<Trans>What does the own-card transfer fix actually change?</Trans>}
                     answer={
                         <Trans>
-                            It doesn&apos;t delete anything. It rewrites a synced income or expense row into a transfer, pointing it at the
-                            closed card that received or sent it. That&apos;s a bigger change than a duplicate soft-delete, and unlike the
-                            soft-delete it has no one-tap undo.
+                            It only applies to PrivatBank, and it doesn&apos;t delete anything. It rewrites an imported income or expense
+                            row into a transfer, pointing it at the closed card that received or sent it. That&apos;s a bigger change than
+                            removing a duplicate, and it has no one-tap undo.
                         </Trans>
                     }
                 />
@@ -174,8 +178,8 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     question={<Trans>Why do duplicates appear at all?</Trans>}
                     answer={
                         <Trans>
-                            Bank APIs can re-deliver a transaction after a retry or an overlapping resync window. The repair finds those
-                            repeated imported rows and removes the copies, not the original event.
+                            Overlapping exports or a file imported again can bring in a transaction twice. The repair finds those repeated
+                            imported rows and removes the copies, not the original event.
                         </Trans>
                     }
                 />

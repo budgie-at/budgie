@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'spending-analytics',
     tier: FeatureTierEnum.CORE,
     title: msg`Spending Analytics That Actually Help`,
-    tagline: msg`Category breakdown, tag breakdown, monthly trends — drill into any chart slice.`,
+    tagline: msg`Category and tag breakdowns for any period — drill into any row.`,
     metaTitle: msg`Spending Analytics & Charts — Budgie`,
-    metaDescription: msg`Category and tag breakdown charts, monthly trends, and balance timelines — with drill-down from any chart slice to the underlying transactions. Analytics that find your gaps.`,
+    metaDescription: msg`Category and tag breakdowns for any period, with drill-down from any row to its transactions. Analytics that find your gaps.`,
     primaryKeyword: 'spending tracker with charts',
     seoKeywords: [
         'spending tracker with charts',

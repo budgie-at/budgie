@@ -157,7 +157,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
-                            Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest
+                            Reads the same period and filters as the Categories tab — This Month, Last Month, This Year, a custom range and
+                            the rest
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
@@ -197,11 +198,11 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Does this work with the date filter presets?</Trans>}
+                    question={<Trans>Does this work with the date filter?</Trans>}
                     answer={
                         <Trans>
                             Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This
-                            Year or All Time. There is no custom range.
+                            Year or All Time — or a custom range you pick on the calendar.
                         </Trans>
                     }
                 />

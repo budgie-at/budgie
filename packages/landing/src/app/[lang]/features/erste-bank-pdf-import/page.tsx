@@ -33,26 +33,27 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 locale={lang}
                 tagline={
                     <Trans>
-                        Import your full Erste Bank account statement straight from the PDF — including the new modern layout introduced in
-                        2026.
+                        Import your Erste Bank account statement straight from the PDF you download in George — EUR accounts at Erste Bank
+                        Austria.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why a dedicated parser beats a generic CSV converter</Trans>
+                    <Trans>Why a dedicated importer beats a generic CSV converter</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a
-                        parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format.
+                        Budgie imports Erste Bank statements from the PDF you download in George, the Erste online banking. It is built
+                        around the Erste Bank Austria statement layout and handles EUR accounts.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The parser extracts account holder, IBAN, opening/closing balances, and every transaction line including value date,
-                        booking date, and reference text. MCC is inferred from booking-text patterns where present.
+                        From each statement Budgie reads the account&apos;s IBAN and closing balance, and every transaction line with its
+                        date, amount and reference text. Card payments keep their city and country, and ATM withdrawals are recognised as
+                        cash withdrawals.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -75,19 +76,19 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Both Erste statement layouts supported: classic and the 2026 modern format</Trans>
+                        <Trans>Reads the statement PDF as downloaded from George — no manual column mapping</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Account holder, IBAN, opening and closing balances all extracted automatically</Trans>
+                        <Trans>IBAN and closing balance read automatically</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Booking date and value date both captured per transaction</Trans>
+                        <Trans>One date per transaction line, taken straight from the statement</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>MCC inferred from booking-text patterns where present</Trans>
+                        <Trans>ATM withdrawals recognised as cash withdrawals; city and country of card payments kept</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Preview every parsed transaction before write — no surprises</Trans>
+                        <Trans>See the accounts found in the statement and choose which to import before anything is written</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -98,43 +99,42 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every
-                        transaction into a new or existing Erste account.
+                        Start a new account and choose Erste Bank. In George, open Account → Statements and download the statement as a PDF,
+                        then pick that file in Budgie. Budgie lists the accounts it finds in the statement, you switch on the ones you want,
+                        and their transactions are imported.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>Which Erste statement formats are supported?</Trans>}
+                    question={<Trans>Which Erste statements are supported?</Trans>}
                     answer={
                         <Trans>
-                            Both the classic layout and the modern format introduced in 2026 are parsed natively. If Erste rolls out another
-                            redesign, the parser updates with the next release.
+                            PDF statements for EUR accounts at Erste Bank Austria, downloaded from George under Account → Statements.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Will the parser get my IBAN right?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic
-                            transfer-pair detection between Erste and other accounts you own.
-                        </Trans>
-                    }
+                    question={<Trans>Will Budgie get my IBAN right?</Trans>}
+                    answer={<Trans>Yes — the IBAN is read from the statement header and stored on the account.</Trans>}
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I re-import the same PDF safely?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Transactions deduplicate by their booking reference, so re-importing skips known rows and inserts only new
-                            ones.
+                            Yes. Transactions you already imported are recognised, so re-importing skips known rows and adds only new ones.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Does the parser run online?</Trans>}
-                    answer={<Trans>No. PDF parsing happens entirely on-device — your statement never leaves your phone.</Trans>}
+                    question={<Trans>Does it need an internet connection?</Trans>}
+                    answer={
+                        <Trans>
+                            Only to download the PDF from George. Reading the statement happens entirely on your device — it never leaves
+                            your phone.
+                        </Trans>
+                    }
                 />
             </FeaturePageFaqSection>
         </FeaturePageShell>
