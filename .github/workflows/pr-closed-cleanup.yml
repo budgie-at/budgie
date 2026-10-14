@@ -22,33 +22,31 @@ jobs:
         permissions:
             contents: write
             actions: read
-        env:
-            GH_TOKEN: ${{ github.token }}
-            PR_NUMBER: ${{ github.event.pull_request.number }}
-            HEAD_REF: ${{ github.event.pull_request.head.ref }}
         steps:
-            - name: Wait for the PR's workflow runs to stop
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  for attempt in $(seq 1 20); do
-                    active="$(gh run list --repo "$GITHUB_REPOSITORY" --branch "$HEAD_REF" --limit 100 --json status --jq '[.[] | select(.status == "queued" or .status == "in_progress")] | length')"
-                    if [ "$active" -eq 0 ]; then
-                      echo "No queued or in-progress runs for '$HEAD_REF'."
-                      break
-                    fi
-                    echo "Waiting for $active active run(s) on '$HEAD_REF' (attempt $attempt)."
-                    sleep 15
-                  done
-
-            - name: Delete preview releases
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  gh api --paginate --jq '.[].tag_name' "repos/$GITHUB_REPOSITORY/releases" > "$RUNNER_TEMP/tags.txt"
-                  while IFS= read -r tag; do
-                    [ -n "$tag" ] || continue
-                    case "$tag" in
-                      ota-*-pr-${PR_NUMBER}-*) gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag ;;
-                    esac
-                  done < "$RUNNER_TEMP/tags.txt"
+            - name: Wait for the PR's workflow runs to stop and delete its preview releases
+              uses: actions/github-script@v9
+              with:
+                  script: |
+                      const { owner, repo } = context.repo;
+                      const prNumber = context.payload.pull_request.number;
+                      const branch = context.payload.pull_request.head.ref;
+                      const countActiveRuns = async () => {
+                          const runs = await github.paginate(github.rest.actions.listWorkflowRunsForRepo, { owner, repo, branch, per_page: 100 });
+                          return runs.filter(run => run.status === 'queued' || run.status === 'in_progress').length;
+                      };
+                      for (let attempt = 1; attempt <= 20; attempt += 1) {
+                          const active = await countActiveRuns();
+                          if (active === 0) {
+                              core.info(`No queued or in-progress runs for '${branch}'.`);
+                              break;
+                          }
+                          core.info(`Waiting for ${active} active run(s) on '${branch}' (attempt ${attempt}).`);
+                          await new Promise(resolve => setTimeout(resolve, 15_000));
+                      }
+                      const previewTag = new RegExp(`^ota-.*-pr-${prNumber}-`);
+                      const releases = await github.paginate(github.rest.repos.listReleases, { owner, repo, per_page: 100 });
+                      for (const release of releases.filter(candidate => previewTag.test(candidate.tag_name))) {
+                          await github.rest.repos.deleteRelease({ owner, repo, release_id: release.id });
+                          await github.rest.git.deleteRef({ owner, repo, ref: `tags/${release.tag_name}` });
+                          core.info(`Deleted ${release.tag_name}.`);
+                      }
