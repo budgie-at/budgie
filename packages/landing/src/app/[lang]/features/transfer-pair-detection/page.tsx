@@ -50,7 +50,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
 
                 <FeatureStory.Step index={0} title={<Trans>Both accounts report the same move</Trans>}>
                     <Trans>
-                        Sync the account the money left and the account it landed in, and each one imports its own leg — an expense on one
+                        Sync the account the money left and the account it landed in, and each one imports its own half — an expense on one
                         side, an income on the other. Left alone, one movement lands in your ledger twice.
                     </Trans>
                 </FeatureStory.Step>
@@ -74,10 +74,10 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
 
                 <FeatureStory.Step index={1} title={<Trans>The obvious pairs merge on import</Trans>}>
                     <Trans>
-                        An expense pairs with an income when the counter-IBAN lines up, or when the amounts match — same currency, or an
-                        implied exchange rate inside a tolerance band — and both legs fall within twelve hours of each other. The match
-                        becomes one transfer carrying a debit and a credit entry, so it stops counting as spending. Pairs Budgie is not sure
-                        about are left alone as two rows rather than guessed at.
+                        An expense pairs with an income when the other account&apos;s IBAN lines up, or when the amounts match — same
+                        currency, or an implied exchange rate inside a tolerance band — and both halves fall within twelve hours of each
+                        other. The match becomes one transfer, so it stops counting as spending. Pairs Budgie is not sure about are left
+                        alone as two rows rather than guessed at.
                     </Trans>
                 </FeatureStory.Step>
 
@@ -90,7 +90,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 <FeatureStory.Shot
                     alt={t(
                         i18n
-                    )`Budgie merged transfer screen with the consolidation source sheet listing both original legs above Done and Revert`}
+                    )`Budgie merged transfer screen with the consolidation source sheet listing both original transactions above Done and Revert`}
                     index={2}
                     locale={lang}
                     scene="transfer-pair-detection-2"
@@ -100,7 +100,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         <Trans>Every merge keeps its sources</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.816}>
-                        <Trans>The other leg, still there</Trans>
+                        <Trans>The other half, still there</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.878}>
                         <Trans>Revert restores both originals</Trans>
@@ -114,14 +114,17 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your
-                        spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it.
+                        Two synced banks see the same transfer twice — once going out, once coming in. Without consolidation, your spending
+                        doubles. Budgie matches the pair using amount, a time window, and the other account&apos;s IBAN when the bank
+                        provides it.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
                         Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier
-                        expense. Budgie consolidates clear refund matches automatically and leaves uncertain cases exactly as they arrived.
+                        expense. Budgie consolidates clear refund matches automatically — including refunds in another currency that come
+                        back slightly larger than the original expense after conversion — and leaves uncertain cases exactly as they
+                        arrived.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -133,8 +136,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            Counter-IBAN from Monobank as the primary signal; amount and time-window matching for banks that don&apos;t send
-                            one
+                            The other account&apos;s IBAN as the primary signal where the bank sends it; amount and time-window matching for
+                            banks that don&apos;t
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
@@ -147,7 +150,9 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         <Trans>Ambiguous matches stay as two untouched rows instead of a silent guess</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Original entries stay linked under the consolidated transaction for full audit trail</Trans>
+                        <Trans>
+                            Originals stay linked under the consolidated transaction, so every merge can be inspected and reverted
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -166,10 +171,9 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>Does this work across two different banks?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste
-                            don&apos;t expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window
-                            instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ
-                            due to FX conversion.
+                            Yes. Where a bank tells Budgie the other account&apos;s IBAN, Budgie links those pairs directly. Otherwise it
+                            falls back to matching on amount and a time window. For cross-currency pairs, an exchange-rate tolerance band
+                            confirms the match when the amounts differ due to conversion.
                         </Trans>
                     }
                 />
@@ -177,9 +181,9 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
-                            Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within
-                            the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on
-                            each leg.
+                            Pairs match if the implied FX rate falls within a plausible tolerance band. Both halves still need to land
+                            within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are
+                            preserved.
                         </Trans>
                     }
                 />
@@ -189,6 +193,24 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         <Trans>
                             Yes. Each consolidation run rescans recent entries against existing ones, so transfers and refunds can match
                             retroactively when enough matching info arrives.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What if I logged an expense by hand and my bank syncs it later?</Trans>}
+                    answer={
+                        <Trans>
+                            Budgie recognizes the same payment arriving from your bank and merges it with the expense you entered, so it is
+                            counted once. The merge keeps both originals and can be reverted like any other consolidation.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Do refunds in another currency match?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. A refund in another currency can come back slightly larger than the original expense once converted; Budgie
+                            still matches it when it is clearly the same purchase.
                         </Trans>
                     }
                 />

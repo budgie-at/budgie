@@ -374,6 +374,15 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     answer={<Trans>No. The Categorize inbox works with On-device AI switched off and needs no extra download.</Trans>}
                 />
                 <FeaturePageFaqItem
+                    question={<Trans>What about ATM withdrawals?</Trans>}
+                    answer={
+                        <Trans>
+                            They get their own Cash withdrawals section in the inbox. Instead of picking a category you can move them to
+                            cash, and Undo reverses that too.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
                     question={<Trans>Can I undo a bulk categorization?</Trans>}
                     answer={
                         <Trans>

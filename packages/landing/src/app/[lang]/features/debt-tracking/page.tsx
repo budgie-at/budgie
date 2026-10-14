@@ -133,7 +133,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the
                         debt account itself. Lending money books an expense; a repayment books an income — both on the account the money
                         actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against
-                        repaid, until you archive it.
+                        repaid, until the debt is paid off.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -159,7 +159,10 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Archive when settled — debt drops off the home screen but stays in history</Trans>
+                        <Trans>
+                            Paid off shows a clear done state and the debt leaves the home screen; repay too much and the overpaid amount is
+                            shown
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
                         <Trans>Attach an existing income or expense to a debt as a repayment, without inventing a second transaction</Trans>
@@ -208,7 +211,8 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Record or attach the repayment as a normal income or expense — Budgie categorizes it Lending or Borrowing and
-                            moves the remaining balance. No transfer ever touches the debt account itself; archive it once it&apos;s repaid.
+                            moves the remaining balance. No transfer ever touches the debt account itself. Once it&apos;s fully repaid the
+                            debt shows a paid-off state and leaves the home screen; archive it from there to keep it in your history.
                         </Trans>
                     }
                 />
