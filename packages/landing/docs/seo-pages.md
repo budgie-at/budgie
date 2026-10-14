@@ -154,7 +154,7 @@ App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`. Never
 
 A feature page carries at most one `FeatureStory`, with **2–5 steps** (steps variant) or **one shot plus 2–4 points** (basic variant). Step titles, value copy, and callout labels are inline `<Trans>` in the route page; `alt` uses `t(i18n)`. Passing steps as `steps={[…]}`, as a registry field, or as any array of copy is prohibited — it is the same violation as §2 and §6.
 
-Prefer staged stills over motion: build a step out of `FeatureStory.Shot` scenes the scroll swaps whenever the manifest carries stills for the scene, and reach for `FeatureStory.Clip` only when the interaction cannot be told in framed screenshots. Stills carry the device frame baked in by `compose-web-media.sh`; clip media is screen-only and the site draws the same frame around it at render time through `.device-frame`, so `compose-web-clips.sh` must never bake a frame into clip media — MP4 has no alpha channel to carry the frame's transparent surround.
+Build a step out of `FeatureStory.Shot` scenes the scroll swaps. Stills carry the device frame baked in by `compose-web-media.sh`. The site ships no video or looping clips.
 
 Scene ids, `slug`, `locale`, and callout coordinates are page-local literals. They never enter `metadata.ts` or the feature registry; the allowed registry field list is unchanged.
 
@@ -466,7 +466,6 @@ Check this list before authoring a new SEO component.
 | Story heading + lede        | `FeatureStory.Intro heading` + children                                 |
 | Narration step              | `FeatureStory.Step index title` + children                              |
 | Sticky screenshot           | `FeatureStory.Shot index slug scene locale alt priority` + callouts     |
-| Sticky motion clip          | `FeatureStory.Clip index slug scene locale alt` + callouts              |
 | Screenshot highlight        | `FeatureStory.Callout y x index` + children                             |
 | Basic-variant bullet        | `FeatureStory.Point index` + children                                   |
 

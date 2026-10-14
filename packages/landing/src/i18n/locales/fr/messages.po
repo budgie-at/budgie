@@ -2486,10 +2486,6 @@ msgstr "Un seul mois en dit peu sur vos habitudes. L'autonomie ne compte que les
 msgid "A single Runway verdict replaces the old cash-flow widget, on-device AI comes back for existing installs with a real off switch and loads only while it's needed, and a batch of import and transfer fixes lands. Here is everything from the September 2026 cycle."
 msgstr "Un seul verdict Runway remplace l'ancien widget de flux de trésorerie, l'IA embarquée revient pour les installations existantes avec un vrai interrupteur pour la désactiver et ne se charge qu'en cas de besoin, et un lot de correctifs d'import et de virement arrive. Voici tout ce qui vient du cycle de septembre 2026."
 
-#: src/app/[lang]/features/runway/page.tsx
-msgid "A small pill on Home shows the months left or what you add a month. Tap it for the full picture."
-msgstr "Une petite pastille sur l'accueil affiche les mois restants ou ce que vous ajoutez par mois. Touchez-la pour tout voir."
-
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A source of crashes around backup restore, PIN changes, and resetting the app is gone: those operations now run strictly one at a time instead of racing each other."
 msgstr "Une source de plantages liée à la restauration de sauvegarde, aux changements de code PIN et à la réinitialisation de l'application a disparu : ces opérations s'exécutent désormais strictement l'une après l'autre au lieu de se chevaucher."
@@ -4159,6 +4155,7 @@ msgid "Budgie adds an English translation and a list of search keywords next to 
 msgstr "Budgie ajoute à côté du nom d’origine une traduction anglaise et une liste de mots-clés de recherche. Les deux sont enregistrés avec la catégorie, si bien que la recherche et les suggestions la retrouvent quelle que soit la forme dont vous vous souvenez."
 
 #: src/app/[lang]/page.tsx
+#: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
 msgstr "Écran d’analyse de Budgie détaillant les dépenses par catégorie avec montants et pourcentages"
 
@@ -4629,6 +4626,7 @@ msgid "Budgie Monobank screen listing two cards and a car jar with their balance
 msgstr "Écran Monobank de Budgie listant deux cartes et une cagnotte voiture avec leurs soldes"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
+#: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 msgstr "Écran Monobank de Budgie listant deux cartes et une cagnotte voiture, chacune avec un solde et un interrupteur"
 
@@ -8593,10 +8591,6 @@ msgstr "Sous-total du groupe, déjà converti"
 msgid "Grouped by month"
 msgstr "Regroupé par mois"
 
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Grouped under the bank"
-msgstr "Regroupés sous la banque"
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Groups convert as they sum"
 msgstr "Les groupes convertissent en additionnant"
@@ -8709,10 +8703,6 @@ msgstr "Les écrans d'accueil et d'analytiques convertissent automatiquement dan
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt has been settled."
 msgstr "Home regroupe les dettes par sens : « Vous devez » et « On vous doit », chacune avec son sous-total et une barre de remboursement."
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
-msgstr "L’écran d’accueil garde toute la connexion dans un seul groupe Monobank, et la roue dentée à côté rouvre les comptes."
 
 #: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
 msgid "home screen"
@@ -13639,10 +13629,6 @@ msgstr "Revoquer l'acces via les parametres des applications connectees de votre
 msgid "Rewind a week, not a year"
 msgstr "Rembobiner d'une semaine, pas d'un an"
 
-#: src/app/[lang]/features/runway/page.tsx
-msgid "Right under your balance"
-msgstr "Juste sous votre solde"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Roadmap Transparency"
 msgstr "Transparence de la feuille de route"
@@ -13801,19 +13787,6 @@ msgstr "Analyse 24 mois d'historique pour détecter un motif, pas seulement le m
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scheduled transactions"
 msgstr "Les transactions planifiées"
-
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "Screen recording of Budgie analytics filtering spending by category and drilling into a period"
-msgstr "Capture vidéo des analyses Budgie filtrant les dépenses par catégorie et explorant une période"
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
-msgstr "Capture vidéo du groupe Monobank sur l’écran d’accueil de Budgie ouvrant ses comptes synchronisés"
-
-#: src/app/[lang]/features/runway/page.tsx
-msgid "Screen recording of the runway pill under the Budgie home balance opening the Runway tab"
-msgstr "Enregistrement d'écran de la pastille d'autonomie sous le solde de l'accueil Budgie qui ouvre l'onglet Autonomie"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Screen scraping means a third party can do anything you can do in your bank account. They choose not to, but the technical capability exists."

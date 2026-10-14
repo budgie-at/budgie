@@ -4,7 +4,7 @@ Companion to `docs/seo-pages.md` §12 (component contract) and `docs/lingui-rsc.
 
 ## 1. Authoring contract
 
-- `FeatureStory.Intro` heading/lede, `.Step` title/body, `.Point` body, and `.Callout` label are all `<Trans>` **inline in the route `page.tsx`**. `.Shot`/`.Clip` `alt` is `t(i18n)` (a string prop, not a JSX child).
+- `FeatureStory.Intro` heading/lede, `.Step` title/body, `.Point` body, and `.Callout` label are all `<Trans>` **inline in the route `page.tsx`**. `.Shot` `alt` is `t(i18n)` (a string prop, not a JSX child).
 - No `msg` descriptors in story copy — `msg` is reserved for `metadata.ts` sidecars (resolved later via `getI18nInstance`/`i18n._`). A story's copy lives and dies with the page that renders it.
 - No arrays of copy and no shared step/callout constants (`STEPS = [...]`, a `feature-story-copy.constant.ts`, etc.). This is the same violation class as `seo-pages.md` §2/§6: registries and constants are enumeration/metadata sources, never content sources. Every merged story PR keeps the diff to one `page.tsx` plus the five locale catalogs — no new `/constant` or `/interface` file.
 - Scene ids, `slug`, `locale`, and callout `y`/`x` are page-local numeric/string literals passed as JSX props, never `metadata.ts` or `FEATURE_REGISTRY` fields.

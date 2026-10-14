@@ -250,7 +250,10 @@
 
 .hero-frame {
     position: relative;
-    filter: drop-shadow(0 1.5rem 3rem color-mix(in srgb, hsl(var(--foreground)) 30%, transparent));
+}
+
+.hero-frame {
+    --phone-shadow: 0 1.5rem 3rem color-mix(in srgb, hsl(var(--foreground)) 24%, transparent);
 }
 
 .hero-bloom {
@@ -306,30 +309,6 @@
     }
 }
 
-@supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-        .hero-grid {
-            view-timeline-name: --hero-scroll;
-        }
-
-        .hero-frame {
-            animation: hero-parallax linear both;
-            animation-timeline: --hero-scroll;
-            animation-range: exit 0% exit 100%;
-            will-change: translate;
-        }
-    }
-}
-
-@keyframes hero-parallax {
-    from {
-        translate: 0 0;
-    }
-    to {
-        translate: 0 -20px;
-    }
-}
-
 @media (min-width: 768px) {
     .hero-section {
         --hero-frame-width: min(38vw, calc(52svh / 2.1722));
@@ -368,31 +347,6 @@
         order: 2;
         justify-self: end;
     }
-}
-
-.device-frame {
-    --device-frame-inset: 5.102%;
-    --device-frame-radius: 12.556cqw;
-
-    position: relative;
-    container-type: inline-size;
-    aspect-ratio: 900 / 1955;
-}
-
-.device-frame::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url('/images/device-frame.webp');
-    background-size: 100% 100%;
-    pointer-events: none;
-}
-
-.device-frame-screen {
-    position: absolute;
-    inset: var(--device-frame-inset);
-    overflow: hidden;
-    border-radius: var(--device-frame-radius);
 }
 
 .story-grid {
@@ -496,7 +450,7 @@
     translate: 0 10px;
     transition:
         opacity var(--dur-base) var(--ease-out),
-        translate var(--dur-slow) var(--ease-out);
+        translate var(--dur-base) var(--ease-out);
 }
 
 .story-step[data-active] .story-step-inner,
@@ -515,7 +469,7 @@
     letter-spacing: 0.2em;
     font-variant-numeric: tabular-nums;
     color: color-mix(in srgb, var(--story-accent) 55%, hsl(var(--foreground)));
-    transition: color var(--dur-slow) var(--ease-out);
+    transition: color var(--dur-base) var(--ease-out);
 }
 
 .story-step-rule {
@@ -599,8 +553,8 @@
     counter-reset: story-callout;
 }
 
-.story-frame > :not(.story-callout) {
-    filter: drop-shadow(0 0.75rem 1.75rem color-mix(in srgb, var(--story-ink) 20%, transparent));
+.story-frame {
+    --phone-shadow: 0 0.75rem 1.75rem color-mix(in srgb, var(--story-ink) 22%, transparent);
 }
 
 .story-callout {
@@ -766,14 +720,14 @@
         font-size: 2.25rem;
         line-height: 1.1;
         color: hsl(var(--muted-foreground));
-        transition: color var(--dur-slow) var(--ease-out);
+        transition: color var(--dur-base) var(--ease-out);
     }
 
     .story-step-body {
         margin-top: 1rem;
         font-size: 1.125rem;
         line-height: 1.6;
-        transition: color var(--dur-slow) var(--ease-out);
+        transition: color var(--dur-base) var(--ease-out);
     }
 
     .story-step[data-active] .story-step-title,
@@ -846,8 +800,8 @@
         margin-inline: 0;
     }
 
-    .story-frame > :not(.story-callout) {
-        filter: drop-shadow(0 1.25rem 2.25rem color-mix(in srgb, var(--story-ink) 20%, transparent));
+    .story-frame {
+        --phone-shadow: 0 1.25rem 2.25rem color-mix(in srgb, var(--story-ink) 22%, transparent);
     }
 
     .story-callout {
@@ -949,24 +903,10 @@
             view-timeline-name: --story-scroll;
         }
 
-        .story-frame {
-            animation: story-parallax linear both;
-            animation-timeline: --story-scroll;
-            animation-range: contain 0% contain 100%;
-            will-change: translate;
-        }
-
-        .story-bloom {
-            animation: story-bloom-drift linear both;
-            animation-timeline: --story-scroll;
-            animation-range: contain 0% contain 100%;
-        }
-
         .story-rail-progress {
             animation: story-rail-x linear both;
             animation-timeline: --story-scroll;
             animation-range: contain 0% contain 100%;
-            will-change: transform;
         }
     }
 
@@ -974,46 +914,6 @@
         .story-rail-progress {
             animation-name: story-rail-y;
         }
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .story-grid[data-story-motion='fallback'] .story-frame {
-        translate: 0 calc(10px - var(--story-progress, 0.5) * 20px);
-        will-change: translate;
-    }
-
-    .story-grid[data-story-motion='fallback'] .story-bloom {
-        translate: -50% calc(-16px + var(--story-progress, 0.5) * 32px);
-    }
-
-    .story-grid[data-story-motion='fallback'] .story-rail-progress {
-        scale: var(--story-progress, 0) 1;
-        will-change: transform;
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
-    .story-grid[data-story-motion='fallback'] .story-rail-progress {
-        scale: 1 var(--story-progress, 0);
-    }
-}
-
-@keyframes story-parallax {
-    from {
-        translate: 0 10px;
-    }
-    to {
-        translate: 0 -10px;
-    }
-}
-
-@keyframes story-bloom-drift {
-    from {
-        translate: -50% -16px;
-    }
-    to {
-        translate: -50% 16px;
     }
 }
 
@@ -1070,14 +970,6 @@
     .story-callout-leader {
         scale: 1 1;
         transition: none;
-    }
-
-    .story-frame {
-        translate: 0 0;
-    }
-
-    .story-bloom {
-        translate: -50% 0;
     }
 
     .story-step-title,
@@ -1155,7 +1047,30 @@
 .bento-shot-inner {
     position: relative;
     margin-inline: auto;
-    filter: drop-shadow(0 0.75rem 1.75rem color-mix(in srgb, hsl(var(--foreground)) 26%, transparent));
+}
+
+.bento-shot-inner {
+    --phone-shadow: 0 0.75rem 1.75rem color-mix(in srgb, hsl(var(--foreground)) 22%, transparent);
+}
+
+:is(.hero-frame, .story-frame, .bento-shot-inner) picture {
+    position: relative;
+    display: block;
+    isolation: isolate;
+}
+
+:is(.hero-frame, .story-frame, .bento-shot-inner) picture::before {
+    content: '';
+    position: absolute;
+    inset: 3.8% 2.2%;
+    z-index: -1;
+    border-radius: 12.2% / 5.6%;
+    box-shadow: var(--phone-shadow);
+}
+
+:root:not(.dark) :is(.hero-frame, .story-frame, .bento-shot-inner) picture:has(> img.hidden)::before,
+.dark :is(.hero-frame, .story-frame, .bento-shot-inner) picture:has(> img.block)::before {
+    display: none;
 }
 
 .bento-shot-small {
@@ -1900,7 +1815,6 @@ section[data-density='COMPACT'] .story-intro {
             animation: ipv-depth linear both;
             animation-timeline: --ipv-scroll;
             animation-range: exit 0% exit 100%;
-            will-change: transform;
         }
 
         .ipv-glow {
