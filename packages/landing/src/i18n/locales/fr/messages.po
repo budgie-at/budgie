@@ -2394,6 +2394,10 @@ msgstr "Un agrégateur de données financières qui dessert des millions d'utili
 msgid "A fixed term, tracked like an account"
 msgstr "Un dépôt à terme, suivi comme un compte"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/metadata.ts
+msgid "A guide for Ukrainians living in the EU: keep your Monobank card, your EU bank account and cash in both currencies in one budget, with one net worth in the currency you choose."
+msgstr "Un guide pour les Ukrainiens installés dans l’UE : votre carte Monobank, votre compte dans une banque européenne et vos espèces dans les deux devises réunis dans un seul budget, avec un patrimoine net dans la devise de votre choix."
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A key that can only read"
 msgstr "Une clé qui ne peut que lire"
@@ -2422,6 +2426,10 @@ msgstr "Un virement fusionné conserve une ligne « Consolidation ». « Voir le
 msgid "A month grid of what bills"
 msgstr "Une grille mensuelle des prélèvements"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "A monthly budget has one currency, and spending from every account counts towards it, converted automatically. Pay for groceries with your euro card and for a subscription with your hryvnia card, and both land in the same category limit."
+msgstr "Un budget mensuel a une seule devise, et les dépenses de tous vos comptes y sont comptées, converties automatiquement. Vous payez les courses avec votre carte en euros et un abonnement avec votre carte en hryvnias : les deux tombent dans la même limite de catégorie."
+
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A new Settings → Runway section controls it: “Show on home” toggles the pill (on by default), and “Include crypto” folds your crypto holdings into the calculation at today’s market value (off by default, since crypto swings can otherwise dominate a cash-flow read)."
 msgstr "Une nouvelle section Réglages → Runway la contrôle : « Afficher sur l'accueil » active ou désactive la pastille (activée par défaut), et « Inclure les cryptos » intègre vos avoirs en cryptomonnaies au calcul à leur valeur de marché du jour (désactivé par défaut, car les fluctuations des cryptomonnaies pourraient sinon dominer une lecture de flux de trésorerie)."
@@ -2449,6 +2457,10 @@ msgstr "Une alternative privée pour votre budget"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
 msgstr "Un projet qui ignore les problèmes de sécurité ou rejette les préoccupations des utilisateurs envoie des signaux clairs sur ses priorités. À l'inverse, un projet offrant des réponses réfléchies et rapides aux préoccupations démontre un engagement authentique envers ses utilisateurs."
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "A quick setup checklist"
+msgstr "Liste de contrôle rapide"
 
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "A re-sync window backfills recent history without touching your manual edits"
@@ -2658,6 +2670,10 @@ msgstr "Les comptes et les catégories sont créés à partir des valeurs du fic
 msgid "Accounts group themselves by type"
 msgstr "Les comptes se regroupent par type"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Accounts in several currencies on the Budgie home screen"
+msgstr "Comptes en plusieurs devises sur l’écran d’accueil de Budgie"
+
 #: src/app/[lang]/page.tsx
 msgid "Accounts, budgets, analytics and bank imports, all running from the same local database."
 msgstr "Comptes, budgets, analyses et imports bancaires fonctionnent tous depuis la même base de données locale."
@@ -2739,6 +2755,10 @@ msgstr "Actual est un outil de budget axé sur la confidentialité avec une fort
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Ajouter une autre ligne de catégorie"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Add cash accounts in euros and in hryvnia."
+msgstr "Ajoutez des comptes d’espèces en euros et en hryvnias."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Add it in three taps"
@@ -4001,6 +4021,7 @@ msgstr "Block, la societe mere de Cash App, a revele qu'un ancien employe avait 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -4447,6 +4468,10 @@ msgstr "Écran d'accueil de Budgie avec les comptes groupés dans les sections B
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Budgie home screen with an installment plan card under You owe showing the next payment and the amount left"
 msgstr "Écran d’accueil de Budgie avec une carte de paiement échelonné sous Vous devez, affichant le prochain paiement et le montant restant"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Budgie home screen with one total balance across accounts in different currencies"
+msgstr "Écran d’accueil de Budgie avec un solde total pour des comptes en différentes devises"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with the total balance header above every account section"
@@ -5555,6 +5580,10 @@ msgstr "Espèces et crypto, séparées"
 msgid "Cash App (Block) - 2022"
 msgstr "Cash App (Block) - 2022"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Cash in both currencies"
+msgstr "Des espèces dans les deux devises"
+
 #: src/app/[lang]/page.tsx
 msgid "Cash, bank, savings, crypto and debt in one number, converted daily."
 msgstr "Espèces, banque, épargne, crypto et dettes en un seul chiffre, converti chaque jour."
@@ -5808,6 +5837,10 @@ msgstr "Choisissez Monarch Money si :"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose spreadsheets if:"
 msgstr "Choisissez les tableurs si :"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Choose your main currency in Settings."
+msgstr "Choisissez votre devise principale dans les Paramètres."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Choose Your Stack"
@@ -6169,9 +6202,17 @@ msgstr "Connectez une banque compatible pour une synchronisation automatique, ou
 msgid "Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment."
 msgstr "Connectez Binance avec une clé API en lecture seule. Les soldes Spot, Funding et Simple Earn, les ordres P2P, les trades, Convert et les récompenses Earn se synchronisent sur votre appareil, et les achats P2P fusionnent avec le paiement bancaire correspondant."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Connect Monobank and choose the cards and jars to follow."
+msgstr "Connectez Monobank et choisissez les cartes et cagnottes à suivre."
+
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Connect Monobank once and new transactions, jars, and FX rates arrive on their own"
 msgstr "Connectez Monobank une fois, et les nouvelles transactions, jars et taux de change arrivent tout seuls"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Connect Monobank with your personal token, choose the cards and jars you want to follow, and Budgie keeps pulling new transactions on its own. Each card keeps its own currency, so a hryvnia card stays in hryvnia. Details are on the <0>Monobank sync</0> page."
+msgstr "Connectez Monobank avec votre jeton personnel, choisissez les cartes et cagnottes à suivre, et Budgie récupère ensuite les nouvelles transactions tout seul. Chaque carte garde sa devise : une carte en hryvnias reste en hryvnias. Plus de détails sur la page <0>synchronisation Monobank</0>."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Connect the bank once"
@@ -6386,6 +6427,10 @@ msgstr "Les CRDTs gèrent cela automatiquement pour la fusion des données. Mais
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "CRDTs solve the conflict resolution problem but leave open questions about how changes propagate between devices. Sync engines handle this layer, managing:"
 msgstr "Les CRDTs résolvent le problème de résolution des conflits mais laissent en suspens la question de la propagation des modifications entre appareils. Les moteurs de synchronisation gèrent cette couche, en prenant en charge :"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Create a cash account for euros and another one for hryvnia. Every account has its own currency, so you record spending in the money you actually paid with and nothing gets converted behind your back."
+msgstr "Créez un compte d’espèces pour les euros et un autre pour les hryvnias. Chaque compte a sa propre devise : vous enregistrez la dépense dans la monnaie réellement utilisée, et rien n’est converti à votre insu."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Create a feature branch for your changes"
@@ -7069,6 +7114,10 @@ msgstr "Les frais apparaissent-ils dans les analyses ?"
 msgid "Do I have to build the whole budget by hand?"
 msgstr "Dois-je construire tout le budget à la main ?"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Do I have to convert hryvnia to euro by hand?"
+msgstr "Dois-je convertir moi-même les hryvnias en euros ?"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Do I have to re-add every account when my token expires?"
 msgstr "Dois-je réajouter chaque compte quand mon jeton expire ?"
@@ -7145,6 +7194,10 @@ msgstr "Voulez-vous vraiment que tout cela soit sur le serveur de quelqu'un d'au
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Docker deployment with compose files provided"
 msgstr "Déploiement Docker avec fichiers compose fournis"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Does a change in the exchange rate change my past spending?"
+msgstr "Une variation du taux de change modifie-t-elle mes dépenses passées ?"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Does a plan change my spending analytics?"
@@ -7588,6 +7641,10 @@ msgstr "Envestnet Yodlee, un autre grand agregateur de donnees, a fait face a un
 msgid "erste"
 msgstr "erste"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Erste Bank"
+msgstr "Erste Bank"
+
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format."
 msgstr "Erste Bank n'expose pas d'API publique pour les comptes personnels. Les relevés PDF sont le seul export. Budgie intègre un parseur adapté au format exact des relevés Erste Bank — à la fois le format classique et le nouveau format moderne 2026."
@@ -7821,6 +7878,7 @@ msgid "Excellent user experience"
 msgstr "Excellente expérience utilisateur"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 msgid "exchange rates"
 msgstr "taux de change"
 
@@ -8436,6 +8494,7 @@ msgstr "Gratuit, sans compte, sans abonnement"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -8744,6 +8803,7 @@ msgstr "Les positions se consolident dans le patrimoine net aux côtés des comp
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -9151,6 +9211,10 @@ msgstr "Identifier et corriger les bugs et les problèmes techniques"
 msgid "If a PIN was set when you exported, yes — the backup is a copy of your already-encrypted data, so anyone with your cloud account sees an unreadable file. Export with no PIN set and the copy is unencrypted. Budgie never uploads anything itself; you choose where the file goes through the share sheet."
 msgstr "Si un PIN était défini au moment de l'exportation, oui — la sauvegarde est une copie de vos données déjà chiffrées, de sorte que quiconque a accès à votre compte cloud ne voit qu'un fichier illisible. Exportez sans PIN défini et la copie n'est pas chiffrée. Budgie ne téléverse jamais rien lui-même ; vous choisissez où va le fichier via la feuille de partage."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "If a synced or imported payment turns out to be such a move, convert it to a transfer from the transaction itself and pick the other account. Learn more about <0>multi-currency accounts</0>."
+msgstr "Si un paiement synchronisé ou importé était en fait un tel mouvement, convertissez-le en virement depuis la transaction et choisissez l’autre compte. En savoir plus sur les <0>comptes multi-devises</0>."
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect."
 msgstr "Si une disposition des présentes Conditions est jugée inapplicable ou invalide, cette disposition sera limitée ou supprimée dans la mesure minimale nécessaire afin que les autres dispositions des Conditions demeurent pleinement en vigueur."
@@ -9175,6 +9239,10 @@ msgstr "Si le Service exige la création d'un compte, vous êtes responsable de 
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer."
 msgstr "Si le titre contient ceci et que le MCC est cela, définissez la catégorie, ajoutez l'étiquette, ou transformez-la en transfert."
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "If you bank with Erste Bank, import the PDF statement straight from your phone with <0>Erste Bank PDF import</0>: you see a preview of every transaction before anything is saved. For other banks, export a CSV statement and match its columns once with <1>CSV import</1>, including the currency of each row."
+msgstr "Si vous êtes client d’Erste Bank, importez le relevé PDF directement depuis votre téléphone avec l’<0>import PDF Erste Bank</0> : vous voyez un aperçu de chaque transaction avant tout enregistrement. Pour les autres banques, exportez un relevé CSV et associez ses colonnes une seule fois avec l’<1>import CSV</1>, y compris la devise de chaque ligne."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "If you currently use cloud-based financial apps, here are concrete steps to reduce your exposure."
@@ -9314,6 +9382,10 @@ msgstr "Importez le fichier dans Budgie"
 msgid "Import transactions via CSV"
 msgstr "Importez les transactions via CSV"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Import your EU bank statement: an Erste Bank PDF or a CSV from another bank."
+msgstr "Importez le relevé de votre banque européenne : un PDF Erste Bank ou un CSV d’une autre banque."
+
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Import your full Erste Bank account statement straight from the PDF — including the new modern layout introduced in 2026."
 msgstr "Importez votre relevé complet Erste Bank directement depuis le PDF — y compris la nouvelle mise en page moderne introduite en 2026."
@@ -9377,6 +9449,10 @@ msgstr "En decembre 2023, Intuit a annonce la fermeture de Mint apres 17 ans. Le
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "In practice, for most personal applications, this is rarely visible to users. Sync is fast enough that inconsistency windows are short. But your code should not assume instant consistency."
 msgstr "En pratique, pour la plupart des applications personnelles, cela est rarement visible par les utilisateurs. La synchronisation est suffisamment rapide pour que les fenêtres d'incohérence soient courtes. Mais votre code ne doit pas présumer d'une cohérence instantanée."
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "In Settings, choose your main currency. Most people living in the EU pick the euro, but you can keep the hryvnia if that is how you think about money. Your total balance, net worth and spending reports are shown in that currency, and you can switch it at any time."
+msgstr "Dans les Paramètres, choisissez votre devise principale. La plupart des personnes vivant dans l’UE choisissent l’euro, mais vous pouvez garder la hryvnia si c’est ainsi que vous pensez votre argent. Le solde total, le patrimoine net et les rapports de dépenses s’affichent dans cette devise, et vous pouvez en changer à tout moment."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "In the Categorize inbox, + Tags appears right after you categorize a single group, with the tags you usually give that merchant already selected, so the category and the <0>tags</0> are done in one pass."
@@ -10232,6 +10308,10 @@ msgstr "De nombreuses banques proposent désormais des programmes API officiels 
 msgid "Many currencies, one number"
 msgstr "Plusieurs devises, un seul chiffre"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Many Ukrainians who moved to the EU live in two currencies at once. Rent, groceries and the salary are in euros at a local bank. The Monobank card stays active for family transfers, subscriptions and payments back home. And there is always some cash: euros in the wallet, hryvnia in a drawer."
+msgstr "Beaucoup d’Ukrainiens installés dans l’UE vivent avec deux devises à la fois. Le loyer, les courses et le salaire passent en euros par une banque locale. La carte Monobank reste active pour les virements à la famille, les abonnements et les paiements en Ukraine. Et il y a toujours un peu d’espèces : des euros dans le portefeuille, des hryvnias dans un tiroir."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Map both account legs and the row imports as one transfer rather than two unrelated entries"
 msgstr "Associez les deux comptes et la ligne s'importe comme un seul virement plutôt que deux écritures sans lien"
@@ -10591,6 +10671,11 @@ msgstr "Argent que vous devez, argent qu'on vous doit"
 msgid "monobank"
 msgstr "monobank"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/opengraph-image.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Monobank"
+msgstr "Monobank"
+
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Monobank and Binance connect with a personal API key for live, automatic sync. Erste and PrivatBank statements import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset."
 msgstr "Monobank et Binance se connectent avec une clé API personnelle pour une synchronisation automatique en direct. Les relevés Erste et PrivatBank s'importent directement depuis un PDF ou un XLSX, et toute autre banque fonctionne via l'import CSV flexible avec mappage de colonnes ou un modèle intégré."
@@ -10610,6 +10695,10 @@ msgstr "Synchronisation bancaire Monobank"
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Monobank cards and jars arrive through your own token, straight into the database on your phone."
 msgstr "Les cartes et cagnottes Monobank arrivent via votre propre jeton, directement dans la base de données de votre téléphone."
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Monobank cards and jars selected for sync in Budgie"
+msgstr "Cartes et cagnottes Monobank sélectionnées pour la synchronisation dans Budgie"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Monobank connections can add more accounts later without re-entering the token, with the ones you already have filtered out"
@@ -10636,6 +10725,10 @@ msgstr "Synchronisation Monobank sans agrégateur"
 #: src/app/[lang]/privacy/page.tsx
 msgid "Monobank today; we add direct integrations as banks publish stable APIs. For everything else, statement import (PDF, CSV, Excel) covers the gap."
 msgstr "Monobank aujourd'hui ; nous ajoutons des intégrations directes au fur et à mesure que les banques publient des API stables. Pour tout le reste, l'import de relevés (PDF, CSV, Excel) comble le manque."
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Monobank: automatic sync"
+msgstr "Monobank : synchronisation automatique"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Monobank's API returns a corr_iban field on every transaction that has a counterparty IBAN — outgoing payments, bank transfers, and peer-to-peer moves all carry it. Budgie stores this field per transaction leg, which gives the transfer-pair detector a primary signal: when the debit side and credit side of the same transfer both reference the same IBAN, they collapse into one transfer automatically."
@@ -10801,6 +10894,8 @@ msgstr "Gestion financière multi-comptes — Budgie"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/opengraph-image.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
@@ -10872,6 +10967,10 @@ msgstr "Nombreuses intégrations tierces disponibles"
 msgid "MUSEUMSQUARTIER"
 msgstr "MUSEE D ORSAY"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "My EU bank is not Erste Bank. Can I still use Budgie?"
+msgstr "Ma banque européenne n’est pas Erste Bank. Puis-je quand même utiliser Budgie ?"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "My friend repaid me by bank transfer — do I have to re-enter it?"
 msgstr "Un ami m'a remboursé par virement bancaire — dois-je le ressaisir ?"
@@ -10916,6 +11015,8 @@ msgstr "Aucune des deux lignes n’est verrouillée. Pas d’offre de mise à ni
 msgid "Neither side counts as spending"
 msgstr "Aucun des deux côtés ne compte comme dépense"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/opengraph-image.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
 msgid "net worth"
@@ -11311,6 +11412,10 @@ msgstr "Non. L'import CSV reconstruit le registre à partir du fichier : les com
 msgid "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
 msgstr "Non. Les comptes de dépôt sont exclus de la sélection normale des sources de dépense, et Budgie empêche leurs soldes de devenir négatifs."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "No. Each account stays in its own currency, and Budgie converts totals, budgets and reports into your main currency for you."
+msgstr "Non. Chaque compte reste dans sa devise, et Budgie convertit pour vous les totaux, les budgets et les rapports dans votre devise principale."
+
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "No. Each part stays an ordinary expense in its category on the day it left your account. The plan only keeps score of what is paid and what is left."
 msgstr "Non. Chaque échéance reste une dépense ordinaire dans sa catégorie, le jour où l’argent a quitté votre compte. Le plan ne fait que compter ce qui est payé et ce qui reste."
@@ -11442,6 +11547,10 @@ msgstr "Non. Les widgets sont conçus pour être lus fermés. Ils prennent en co
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
 msgstr "Non. Vous ouvrez l'écran, vérifiez les nombres et confirmez sur la carte de réparation. Rien ne change avant cela."
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "No. Your original amounts stay as they were. Past spending keeps the value of the day it happened, and only your current balances follow today’s rates."
+msgstr "Non. Vos montants d’origine restent inchangés. Les dépenses passées gardent la valeur du jour où elles ont eu lieu, et seuls vos soldes actuels suivent les taux du jour."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 #: src/app/[lang]/privacy/page.tsx
@@ -13466,6 +13575,10 @@ msgstr "réconcilier"
 msgid "Reconcile without fake income."
 msgstr "Réconcilier sans faux revenus."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Record moves between your own accounts as transfers."
+msgstr "Enregistrez les mouvements entre vos propres comptes comme des virements."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Record or attach the repayment as a normal income or expense — Budgie categorizes it Lending or Borrowing and moves the remaining balance. No transfer ever touches the debt account itself; archive it once it's repaid."
 msgstr "Enregistrez ou rattachez le remboursement comme un revenu ou une dépense normale — Budgie le classe sous Prêt ou Emprunt et met à jour le solde restant. Aucun virement ne touche jamais le compte de dette lui-même ; archivez-le une fois remboursé."
@@ -14182,6 +14295,10 @@ msgstr "Des notifications push côté serveur liées à un compte"
 msgid "Service outages leave you without access"
 msgstr "Les pannes de service vous laissent sans accès"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Set a monthly budget in the currency you live in."
+msgstr "Définissez un budget mensuel dans la devise de votre quotidien."
+
 #: src/app/[lang]/page.tsx
 msgid "Set a monthly ceiling and per-category limits that reset when you get paid."
 msgstr "Fixez un plafond mensuel et des limites par catégorie qui se réinitialisent le jour de la paie."
@@ -14571,6 +14688,10 @@ msgstr "Les dépenses sur des comptes dans d'autres devises sont converties dans
 msgid "Spending only"
 msgstr "Dépenses uniquement"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Spending reports by category and tag are shown in your main currency too, so you finally see what life costs you per month, whichever card you used."
+msgstr "Les rapports de dépenses par catégorie et par tag s’affichent aussi dans votre devise principale : vous voyez enfin ce que vous coûte la vie chaque mois, quelle que soit la carte utilisée."
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Spending that repeats"
 msgstr "Les dépenses qui se répètent"
@@ -14710,6 +14831,10 @@ msgstr "Étape 1 : Exportez votre historique de transactions"
 msgid "Step 1: Export Your YNAB Data"
 msgstr "Étape 1 : Exportez vos données YNAB"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Step 1. Bring in every account"
+msgstr "Étape 1. Réunissez tous vos comptes"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 2: Set Up Your Accounts in Budgie"
 msgstr "Étape 2 : Configurez vos comptes dans Budgie"
@@ -14717,6 +14842,10 @@ msgstr "Étape 2 : Configurez vos comptes dans Budgie"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 2: Understand What You’re Moving"
 msgstr "Étape 2 : Comprenez ce que vous déplacez"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Step 2. Pick the currency for your totals"
+msgstr "Étape 2. Choisissez la devise de vos totaux"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 3: Choose Your Migration Path"
@@ -14726,6 +14855,10 @@ msgstr "Étape 3 : Choisissez votre chemin de migration"
 msgid "Step 3: Import Your Transactions"
 msgstr "Étape 3 : Importez vos transactions"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Step 3. Past spending at past exchange rates"
+msgstr "Étape 3. Les dépenses passées aux taux passés"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 4: Set Up Categories and Recurring Transactions"
 msgstr "Étape 4 : Configurez les catégories et les transactions récurrentes"
@@ -14734,6 +14867,10 @@ msgstr "Étape 4 : Configurez les catégories et les transactions récurrentes"
 msgid "Step 4: The Fresh Start Option"
 msgstr "Étape 4 : L'option du nouveau départ"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Step 4. Transfers between hryvnia and euro"
+msgstr "Étape 4. Les virements entre hryvnia et euro"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Step 5: Optional — Enable Direct Bank Sync"
 msgstr "Étape 5 : Optionnel — Activez la synchronisation bancaire directe"
@@ -14741,6 +14878,10 @@ msgstr "Étape 5 : Optionnel — Activez la synchronisation bancaire directe"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 5: Run Parallel for One Month"
 msgstr "Étape 5 : Fonctionnez en parallèle pendant un mois"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Step 5. Budgets and reports in one currency"
+msgstr "Étape 5. Budgets et rapports dans une seule devise"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Step three is the one that matters: keep only \"Enable Reading\" on, and never allow trading or withdrawals. Permissions are enforced on Binance's side, and Budgie carries no order or withdrawal call to make — every request it signs goes to a read endpoint."
@@ -15185,6 +15326,10 @@ msgstr "Cette vue répond aussi à la question qu'un simple chiffre ne peut jama
 msgid "That’s a lot of copies of your financial data floating around."
 msgstr "Cela fait beaucoup de copies de vos données financières qui circulent."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "The <0>net worth tracker</0> adds up every account you include, converted at current exchange rates, while each account card still shows its balance in its own currency."
+msgstr "Le <0>suivi du patrimoine net</0> additionne chaque compte que vous incluez, converti aux taux de change actuels, tandis que chaque carte de compte affiche toujours son solde dans sa propre devise."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The absence of professional audits isn’t necessarily disqualifying, especially for smaller projects. But for apps handling sensitive financial data, some form of external security validation is reassuring."
 msgstr "L'absence d'audits professionnels n'est pas nécessairement disqualifiante, surtout pour les petits projets. Mais pour les applications manipulant des données financières sensibles, une forme de validation externe de la sécurité est rassurante."
@@ -15557,6 +15702,10 @@ msgstr "Les dangers cachés des applications financières basées sur le cloud"
 msgid "The home screen now shows a Runway pill next to your total balance — a short read like “+$420/mo” or “≈4 mo” that tells you whether you are growing or burning through savings, without opening a report. Tapping it opens the Runway tab, which leads with a single verdict card: growing or burning, months of cover left or net per month, and a run-out date when you are burning."
 msgstr "L'écran d'accueil affiche désormais une pastille Runway à côté de votre solde total — une lecture rapide comme « +420 $/mois » ou « ≈4 mois » qui vous indique si vous épargnez ou puisez dans vos économies, sans ouvrir de rapport. Appuyer dessus ouvre l'onglet Runway, qui commence par une seule carte de verdict : en hausse ou en baisse, mois de couverture restants ou net mensuel, et une date d'épuisement lorsque vous puisez dans vos économies."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "The hryvnia-to-euro rate has moved a lot over the years. If last year’s spending were converted at today’s rate, your reports would quietly rewrite your history. Budgie ships with years of daily exchange rates, so transactions you import from past years are valued at the rate of the day they happened."
+msgstr "Le taux de la hryvnia face à l’euro a beaucoup varié au fil des ans. Si les dépenses de l’an dernier étaient converties au taux du jour, vos rapports réécriraient discrètement votre histoire. Budgie intègre des années de taux de change quotidiens : les transactions que vous importez des années passées sont évaluées au taux du jour où elles ont eu lieu."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "The importer builds the ledger out of the file: accounts and categories are created from the values it finds, MCC codes resolve to categories, and rows with both account legs become transfers. Dates are read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts use a dot as the decimal separator."
 msgstr "L'importateur construit le registre à partir du fichier : les comptes et catégories sont créés depuis les valeurs qu'il trouve, les codes MCC se résolvent en catégories, et les lignes comportant les deux comptes deviennent des virements. Les dates sont lues en MM/DD/YYYY HH:MM:SS ou YYYY-MM-DD, et les montants utilisent le point comme séparateur décimal."
@@ -15703,6 +15852,10 @@ msgstr "Les paires évidentes fusionnent à l'import"
 msgid "The on-device model answers first, and a lighter lookup covers it while it loads."
 msgstr "Le modèle sur l'appareil répond d'abord, et une recherche plus légère prend le relais pendant son chargement."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "The one you earn and spend most in. For most Ukrainians in the EU that is the euro. You can change it later in Settings, and the totals follow."
+msgstr "Celle dans laquelle vous gagnez et dépensez le plus. Pour la plupart des Ukrainiens dans l’UE, c’est l’euro. Vous pouvez la changer plus tard dans les Paramètres, et les totaux suivent."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"
 msgstr "La communauté de sécurité open source comprend :"
@@ -15710,6 +15863,10 @@ msgstr "La communauté de sécurité open source comprend :"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The operating system does the matching — Budgie never sees biometric data, only the result"
 msgstr "La comparaison est faite par le système d’exploitation — Budgie ne voit aucune donnée biométrique, seulement le résultat"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "The original amount in the account currency never changes. The value in your main currency is kept next to it for reports. Why this matters is explained in <0>historical exchange rates in budget analytics</0>."
+msgstr "Le montant d’origine dans la devise du compte ne change jamais. La valeur dans votre devise principale est conservée à côté pour les rapports. Pourquoi c’est important : lisez notre article sur les <0>taux de change historiques dans l’analyse budgétaire</0>."
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "The original Cyrillic, Greek, or Arabic name stays exactly as you wrote it; the English form is what your search queries also match against. No data ever leaves your device."
@@ -16596,6 +16753,10 @@ msgstr "Suivez les dépôts à terme comme un type de compte dédié, avec taux 
 msgid "Track fixed-term savings as deposit accounts kept separate from everyday spending, with interest rate, maturity date, days remaining, and expected payout."
 msgstr "Suivez l’épargne à terme sous forme de comptes de dépôt séparés des dépenses du quotidien, avec taux d’intérêt, date d’échéance, jours restants et montant attendu."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/metadata.ts
+msgid "Track hryvnia and euro in one budget: Monobank syncs, EU bank statements import, cash in both currencies, one net worth in the currency you pick."
+msgstr "Hryvnia et euro dans un seul budget : Monobank synchronisé, relevés européens importés, espèces dans les deux devises, un patrimoine net dans votre devise."
+
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "Track in any currency. Sum in yours."
 msgstr "Suivez dans n'importe quelle devise. Totalisez dans la vôtre."
@@ -16778,6 +16939,10 @@ msgstr "Twitter"
 msgid "Two amounts, one rate"
 msgstr "Deux montants, un seul taux"
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Two banking apps and a spreadsheet cannot answer the simple questions: how much do I have in total, and how much did I spend this month? Budgie puts every account in one app, keeps each one in its own currency, and shows totals in the currency you choose."
+msgstr "Deux applis bancaires et un tableur ne répondent pas aux questions simples : combien ai-je au total, et combien ai-je dépensé ce mois-ci ? Budgie réunit tous vos comptes dans une seule appli, garde chacun dans sa devise et affiche les totaux dans la devise de votre choix."
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Two categories that mean the same thing become one: pick the category to keep and every transaction moves across before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the spot."
 msgstr "Deux catégories qui veulent dire la même chose n'en font plus qu'une : choisissez celle à conserver et chaque transaction bascule avant que l'autre ne disparaisse. Le sélecteur propose l'arborescence intégrée à côté des vôtres, ou une nouvelle catégorie créée sur-le-champ."
@@ -16886,6 +17051,16 @@ msgstr "Saisissez le solde affiché par votre banque et Budgie enregistre la dif
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "TypeScript codebase, easy to contribute to"
 msgstr "Base de code TypeScript, facile pour contribuer"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/metadata.ts
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/opengraph-image.tsx
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "UAH and EUR Accounts in One Budget App"
+msgstr "Comptes en UAH et en EUR dans une appli budget"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "UAH and EUR Accounts in One Budget App: A Guide for Ukrainians in the EU"
+msgstr "Comptes en UAH et en EUR dans une seule appli budget : le guide des Ukrainiens dans l’UE"
 
 #: src/app/[lang]/features/dark-mode/opengraph-image.tsx
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
@@ -17964,6 +18139,10 @@ msgstr "Lorsque vous disposez d'une connectivité, Budgie peut optionnellement s
 msgid "When you hand over your financial data to an app, you’re trusting it with some of the most sensitive information about your life. Your spending patterns reveal where you live, where you work, what you eat, your health conditions, your relationships, and countless other intimate details. Yet most people have no idea what happens to this data once it enters their budget app."
 msgstr "Lorsque vous confiez vos données financières à une application, vous lui transmettez certaines des informations les plus sensibles sur votre vie. Vos habitudes de dépenses révèlent où vous vivez, où vous travaillez, ce que vous mangez, votre état de santé, vos relations et d'innombrables autres détails intimes. Pourtant, la plupart des gens n'ont aucune idée de ce qu'il advient de ces données une fois saisies dans leur application de budget."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "When you move money from your euro account to your Monobank card, record it as a transfer, not as an expense. Budgie suggests the current exchange rate, and you can type the amount that actually arrived. The transfer keeps both amounts and the rate, so both balances stay correct and the move does not inflate your spending."
+msgstr "Lorsque vous envoyez de l’argent de votre compte en euros vers votre carte Monobank, enregistrez-le comme un virement, pas comme une dépense. Budgie propose le taux de change actuel, et vous pouvez saisir le montant réellement reçu. Le virement conserve les deux montants et le taux : les deux soldes restent justes et vos dépenses ne sont pas gonflées."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "When you open most expense tracking apps, something happens in the background that you might not notice: your transaction data, account balances, and spending habits are uploaded to servers you do not control. These servers might be located anywhere in the world, managed by teams you have never met, and protected by security practices you cannot verify."
 msgstr "Lorsque vous ouvrez la plupart des applications de suivi de depenses, quelque chose se passe en arriere-plan que vous ne remarquez peut-etre pas : vos donnees de transactions, vos soldes de comptes et vos habitudes de depenses sont envoyes vers des serveurs que vous ne controlez pas. Ces serveurs peuvent se trouver n'importe ou dans le monde, geres par des equipes que vous n'avez jamais rencontrees, et proteges par des pratiques de securite que vous ne pouvez pas verifier."
@@ -18151,6 +18330,10 @@ msgstr "Quelles langues sont prises en charge ?"
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Which languages does voice entry support?"
 msgstr "Quelles langues la saisie vocale prend-elle en charge ?"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Which main currency should I choose?"
+msgstr "Quelle devise principale choisir ?"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Which purchases can I turn into a plan?"
@@ -18941,6 +19124,10 @@ msgstr "Oui. Les entrées de frais comptent dans leur catégorie choisie, y comp
 msgid "Yes. File-based banks get their own connection as well, which is where the import action lives and what keeps their accounts grouped together."
 msgstr "Oui. Les banques basées sur des fichiers obtiennent elles aussi leur propre connexion, où se trouve l'action d'importation et ce qui garde leurs comptes regroupés."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Yes. If your bank lets you export a CSV statement, map its columns once in CSV import. You can also add transactions by hand."
+msgstr "Oui. Si votre banque permet d’exporter un relevé CSV, associez ses colonnes une seule fois dans l’import CSV. Vous pouvez aussi ajouter des transactions à la main."
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Yes. In Analytics, open the Tags tab and tap Untagged. The tag inbox groups untagged transactions by merchant, suggests tags from your own tagging history and accepts every confident group in one tap, with Undo."
 msgstr "Oui. Dans les analyses, ouvrez l’onglet Étiquettes et touchez Sans étiquette. L’écran d’étiquetage regroupe les transactions sans étiquette par commerçant, suggère des étiquettes d’après votre propre historique et accepte tous les groupes fiables d’un geste, avec Annuler."
@@ -19446,6 +19633,10 @@ msgstr "Votre appareil uniquement"
 msgid "Your device UDID must already be registered in the ad-hoc provisioning profile."
 msgstr "L'UDID de votre appareil doit déjà être enregistré dans le profil de provisionnement ad hoc."
 
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Your EU bank: statement import"
+msgstr "Votre banque européenne : import du relevé"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Your file, your storage"
 msgstr "Votre fichier, votre stockage"
@@ -19529,6 +19720,10 @@ msgstr "Vos relations et connexions sociales"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your right to use the Service will immediately cease"
 msgstr "Votre droit d'utiliser le Service prendra fin immédiatement"
+
+#: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
+msgid "Your salary arrives in euros, your Monobank card still pays in hryvnia, and there is cash in both currencies in your wallet. Here is how to keep all of it in one budget and see one honest total."
+msgstr "Votre salaire arrive en euros, votre carte Monobank paie toujours en hryvnias, et votre portefeuille contient des espèces dans les deux devises. Voici comment tout réunir dans un seul budget et voir un total juste."
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Your setting is unchanged. What changed is timing: models now load only while a feature is actually running instead of every time you open the app."
