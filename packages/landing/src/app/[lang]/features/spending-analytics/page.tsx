@@ -146,7 +146,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                         <Trans>Overview tiles: spent and earned across the period, beside your balance over every account</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>Bank-fee entries are included in category analytics even when attached to transfers</Trans>
+                        <Trans>Fees on transfers count as spending in your fee category</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -170,11 +170,12 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I compare months?</Trans>}
+                    question={<Trans>Can I switch to another month?</Trans>}
                     answer={
                         <Trans>
                             Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on
-                            the calendar — the totals and every category row redraw for the period you chose.
+                            the calendar — the totals and every category row redraw for the period you chose. One period shows at a time,
+                            there is no side-by-side month view.
                         </Trans>
                     }
                 />
@@ -185,9 +186,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 <FeaturePageFaqItem
                     question={<Trans>Do transfer fees show up as expenses?</Trans>}
                     answer={
-                        <Trans>
-                            Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics.
-                        </Trans>
+                        <Trans>Yes. A transfer stays a transfer, while its fee counts as spending in the fee category you chose.</Trans>
                     }
                 />
             </FeaturePageFaqSection>
