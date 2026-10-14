@@ -187,12 +187,12 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can AI categorize the missing transactions?</Trans>}
+                    question={<Trans>Is there a faster way to fix many of them?</Trans>}
                     answer={
                         <Trans>
-                            Yes. The pill opens the Categorize inbox, which suggests a category for each merchant group from your own
-                            history and can accept every confident suggestion at once. On-device AI suggestions, MCC mapping and manual
-                            categories keep working alongside it.
+                            Yes. The pill opens the Categorize inbox, which works without AI: it suggests a category for each merchant group
+                            from your own history and can accept every confident suggestion at once. ATM withdrawals get their own Cash
+                            withdrawals section, where you can move them to cash instead of categorizing them.
                         </Trans>
                     }
                 />
