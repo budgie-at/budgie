@@ -164,10 +164,12 @@ Run `pnpm i18n:compile 2>&1 | tail -5` periodically to validate `.po` syntax aft
 
 Each locale is idiomatic, not literally translated English:
 
-- **de** — Sie-form for UI copy; imperatives for CTAs.
-- **fr** — vouvoiement.
-- **es** — usted-form.
-- **uk** — Ви-form.
+- **de** — informal `du`; imperatives for CTAs.
+- **es** — informal `tú`.
+- **fr** — formal `vous` (vouvoiement).
+- **uk** — natural and idiomatic, never a literal rendering of the English.
+
+Product claims and banned terms apply to every locale: see `AGENTS.md` "Claims".
 
 Do not translate brand names: "Budgie", app store names, crypto/bank names. Preserve placeholders (`{0}`, `{appName}`) and ICU plural syntax exactly.
 
