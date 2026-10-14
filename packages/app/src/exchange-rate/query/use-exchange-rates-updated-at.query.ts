@@ -6,7 +6,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
-const exchangeRatesUpdatedAtAtom = databaseQueryAtom(
+export const exchangeRatesUpdatedAtAtom = databaseQueryAtom(
     [ExchangeRateEntityTable],
     Effect.flatMap(ExchangeRateRepository, exchangeRateRepository => exchangeRateRepository.getLatestUpdatedAt())
 );

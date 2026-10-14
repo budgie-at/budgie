@@ -52,9 +52,9 @@ const testDbHandle = await buildTestDb(backupDatabasePath);
 export const testDb = testDbHandle.database;
 
 vi.mock('@app/@generic/runtime/app.runtime', async () => {
-    const { testRuntime } = await import('./test-runtime');
+    const { testAtomRuntime, testRuntime } = await import('./test-runtime');
 
-    return { appRuntime: testRuntime };
+    return { appAtomRuntime: testAtomRuntime, appRuntime: testRuntime };
 });
 
 import { mockServer } from './mock-server';

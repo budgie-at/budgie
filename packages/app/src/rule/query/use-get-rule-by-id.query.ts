@@ -5,7 +5,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-const ruleByIdAtom = databaseQueryFamily(
+export const ruleByIdAtom = databaseQueryFamily(
     [RuleEntityTable, RuleConditionEntityTable, RuleActionEntityTable],
     RuleRepository,
     (ruleRepository, id: number) => ruleRepository.findByIdWithRelations(id)

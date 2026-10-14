@@ -4,7 +4,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-const bankIntegrationByIdAtom = databaseQueryFamily(
+export const bankIntegrationByIdAtom = databaseQueryFamily(
     [BankIntegrationEntityTable],
     BankIntegrationRepository,
     (bankIntegrationRepository, id: number) => bankIntegrationRepository.findById(id)

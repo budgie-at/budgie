@@ -4,7 +4,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 
 import { useCachedBalanceQuery } from './use-cached-balance.query';
 
-const archivedAccountBalanceAtom = databaseQueryFamily(
+export const archivedAccountBalanceAtom = databaseQueryFamily(
     [AccountEntityTable, TransactionEntryEntityTable, TransactionEntityTable],
     AccountBalanceRepository,
     (accountBalanceRepository, accountId: number) => accountBalanceRepository.getArchivedAccountBalance(accountId)

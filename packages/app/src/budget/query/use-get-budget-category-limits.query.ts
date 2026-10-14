@@ -16,7 +16,7 @@ interface UseGetBudgetCategoryLimitsResult {
 
 const EMPTY_LIMITS: readonly BudgetCategoryLimitEntityInterface[] = [];
 
-const budgetCategoryLimitsAtom = databaseQueryFamily(
+export const budgetCategoryLimitsAtom = databaseQueryFamily(
     [BudgetCategoryLimitEntityTable],
     BudgetCategoryLimitRepository,
     (budgetCategoryLimitRepository, budgetId: number) => budgetCategoryLimitRepository.getByBudget(budgetId)

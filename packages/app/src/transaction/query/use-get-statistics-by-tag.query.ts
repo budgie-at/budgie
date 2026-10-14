@@ -9,7 +9,7 @@ import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
-const statisticsByTagAtom = databaseQueryFamily(
+export const statisticsByTagAtom = databaseQueryFamily(
     STATISTICS_TABLES,
     StatisticsRepository,
     (statisticsRepository, [filters, defaultInstrumentId]: readonly [TransactionFilterInterface, number]) =>

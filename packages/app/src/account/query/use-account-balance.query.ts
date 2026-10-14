@@ -5,7 +5,7 @@ import { ACCOUNT_BALANCE_TABLES } from '../constant/account-balance-tables.const
 
 import { useCachedBalanceQuery } from './use-cached-balance.query';
 
-const accountBalanceAtom = databaseQueryFamily(
+export const accountBalanceAtom = databaseQueryFamily(
     ACCOUNT_BALANCE_TABLES,
     AccountBalanceRepository,
     (accountBalanceRepository, accountId: number) => accountBalanceRepository.getByAccountId(accountId)

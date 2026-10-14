@@ -6,7 +6,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 
-const totalIncomeAndExpensesAtom = databaseQueryFamily(
+export const totalIncomeAndExpensesAtom = databaseQueryFamily(
     STATISTICS_TABLES,
     StatisticsRepository,
     (statisticsRepository, [filters, defaultInstrumentId]: readonly [TransactionFilterInterface, number]) =>

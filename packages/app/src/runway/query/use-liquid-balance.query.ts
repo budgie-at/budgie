@@ -6,7 +6,7 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../../account/constant/account-balance-tables.constant';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
-const liquidBalanceAtom = databaseQueryFamily(
+export const liquidBalanceAtom = databaseQueryFamily(
     ACCOUNT_CONVERTED_BALANCE_TABLES,
     AccountBalanceRepository,
     (accountBalanceRepository, [defaultInstrumentId, isRunwayCryptoIncluded]: readonly [number, boolean]) =>

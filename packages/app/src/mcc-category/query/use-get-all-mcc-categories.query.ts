@@ -9,7 +9,7 @@ import type { MccCategoryEntityInterface } from '@budgie/contracts';
 
 const EMPTY_MCC_CATEGORIES: MccCategoryEntityInterface[] = [];
 
-const allMccCategoriesAtom = databaseQueryAtom(
+export const allMccCategoriesAtom = databaseQueryAtom(
     [MccCategoryEntityTable],
     Effect.flatMap(MccCategoryRepository, mccCategoryRepository => mccCategoryRepository.findAll())
 );

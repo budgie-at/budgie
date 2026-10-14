@@ -9,7 +9,7 @@ import type { CategoryEntityInterface, LanguageEnum } from '@budgie/contracts';
 
 const EMPTY_CATEGORIES: CategoryEntityInterface[] = [];
 
-const nonSystemCategoriesAtom = databaseQueryFamily(
+export const nonSystemCategoriesAtom = databaseQueryFamily(
     [CategoryEntityTable, DefaultCategoryTranslationEntityTable],
     CategoryRepository,
     (categoryRepository, language: LanguageEnum) => categoryRepository.findAllNonSystemLocalized(language)

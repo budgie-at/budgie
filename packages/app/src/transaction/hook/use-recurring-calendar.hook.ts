@@ -11,7 +11,7 @@ import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 
 import type { RecurringCalendarDataInterface } from '@budgie/recurring';
 
-const recurringCalendarAtom = databaseQueryFamily(
+export const recurringCalendarAtom = databaseQueryFamily(
     [...STATISTICS_TABLES, SettingsEntityTable, RecurringSeriesEntityTable],
     RecurringService,
     (recurringService, [year, month, nowTime]: readonly [number, number, number]) =>

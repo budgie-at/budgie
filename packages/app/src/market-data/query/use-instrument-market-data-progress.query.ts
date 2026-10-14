@@ -15,14 +15,14 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 
 const FULL_PERCENT = 100;
 
-const latestMarketDataJobAtom = databaseQueryFamily(
+export const latestMarketDataJobAtom = databaseQueryFamily(
     [InstrumentMarketDataJobEntityTable],
     InstrumentMarketDataJobRepository,
     (instrumentMarketDataJobRepository, [instrumentId, quoteInstrumentId]: readonly [number, number]) =>
         instrumentMarketDataJobRepository.findLatestByInstrumentAndQuote(instrumentId, quoteInstrumentId)
 );
 
-const marketPriceCountAtom = databaseQueryFamily(
+export const marketPriceCountAtom = databaseQueryFamily(
     [InstrumentDailyMarketPriceEntityTable],
     InstrumentDailyMarketPriceRepository,
     (instrumentDailyMarketPriceRepository, [instrumentId, quoteInstrumentId]: readonly [number, number]) =>
