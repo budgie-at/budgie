@@ -21,6 +21,7 @@ export const BlogArticlePageShell = ({ article, children, lang }: Props) => {
             <BlogPostingJsonLd
                 author={article.author}
                 date={article.date}
+                dateModified={article.dateModified}
                 description={i18n._(article.description)}
                 image={`/${lang}/blog/${article.slug}/opengraph-image`}
                 keywords={article.seoKeywords.join(', ')}

@@ -178,6 +178,10 @@ msgstr "<0>Contrôle de la piste d'audit</0> — Vous décidez exactement quelle
 msgid "<0>Automerge</0> is a JSON CRDT implementation that makes it easy to work with complex document structures. It is particularly strong for applications that need to sync arbitrary JSON data."
 msgstr "<0>Automerge</0> est une implémentation JSON CRDT qui facilite le travail avec des structures de documents complexes. Elle est particulièrement performante pour les applications qui doivent synchroniser des données JSON arbitraires."
 
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Availability</0>: Private beta, join the waitlist"
+msgstr "<0>Disponibilité</0> : bêta privée, rejoignez la liste d’attente"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Backup exposure</0>: If your device backup is compromised, a backup you made with a PIN remains protected inside it."
 msgstr "<0>Exposition d'une sauvegarde</0> : si la sauvegarde de votre appareil est compromise, une sauvegarde créée avec un code PIN reste protégée à l'intérieur."
@@ -954,8 +958,8 @@ msgid "<0>Multi-currency native.</0> Designed for international users."
 msgstr "<0>Multi-devises natif.</0> Conçu pour les utilisateurs internationaux."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "<0>Multi-currency support.</0> Track accounts in 150+ currencies, plus cryptocurrency, without compromising privacy."
-msgstr "<0>Support multi-devises.</0> Suivez vos comptes dans plus de 150 devises, y compris les cryptomonnaies, sans compromettre votre vie privée."
+msgid "<0>Multi-currency support.</0> Track accounts in more than 100 currencies, plus cryptocurrency, without compromising privacy."
+msgstr "<0>Prise en charge multidevise.</0> Suivez vos comptes dans plus de 100 devises, ainsi qu’en cryptomonnaies, sans sacrifier votre confidentialité."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Multi-currency support</0> — Track accounts in different currencies and view balances in a single base currency with exchange rates fetched anonymously."
@@ -1164,10 +1168,6 @@ msgstr "<0>Achat unique :</0> Pas de relation continue ni de motivation à moné
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Open source codebase</0> — If the developer stops maintaining the app, the community can fork it. The code is auditable. You can verify that the privacy claims are real."
 msgstr "<0>Code source ouvert</0> — Si le développeur cesse de maintenir l'application, la communauté peut en faire un fork. Le code est auditable. Vous pouvez vérifier que les affirmations sur la confidentialité sont réelles."
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "<0>Open source transparency.</0> The codebase is public, allowing security researchers and privacy advocates to verify claims."
-msgstr "<0>Transparence open source.</0> La base de code est publique, permettant aux chercheurs en sécurité et aux défenseurs de la vie privée de vérifier nos déclarations."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Open source transparency</0>: The entire codebase is available for inspection. Security researchers can verify privacy claims. You can even build the app yourself if you want complete assurance."
@@ -1603,6 +1603,14 @@ msgstr "Moyennement technique : Budgie, Lunch Money"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Source review for critical paths</0>: Dependencies that touch encryption, database operations, or any sensitive data paths are manually reviewed."
 msgstr "<0>Revue du code source pour les chemins critiques</0> : Les dependances qui touchent au chiffrement, aux operations de base de donnees ou a tout chemin de donnees sensible sont revisees manuellement."
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source-available transparency.</0> The code is public, allowing security researchers and privacy advocates to verify claims."
+msgstr "<0>Transparence grâce au code consultable.</0> Le code est public : chercheurs en sécurité et défenseurs de la vie privée peuvent vérifier nos affirmations."
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source</0>: Source-available"
+msgstr "<0>Code source</0> : consultable (source-available)"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
@@ -2993,8 +3001,8 @@ msgid "Ambiguous matches stay as two untouched rows instead of a silent guess"
 msgstr "Les correspondances ambiguës restent deux lignes intactes plutôt qu'une supposition silencieuse"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Among privacy-focused options, Budgie offers the best mobile experience as it was built mobile-first. Copilot has an excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives (Actual, Firefly III) have web interfaces that work on mobile but aren’t native apps, which can feel less polished on a phone."
-msgstr "Parmi les options axées sur la vie privée, Budgie est la plus native sur téléphone, car elle a été pensée mobile-first. Copilot a une excellente app iOS, mais suppose l’écosystème Apple et la synchronisation bancaire. La plupart des alternatives open source, dont Actual et Firefly III, fonctionnent sur mobile via le web, ce qui peut sembler moins soigné sur un téléphone."
+msgid "Among privacy-focused options, Budgie is built mobile-first and is currently in private beta. Copilot has an excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives (Actual, Firefly III) have web interfaces that work on mobile but aren’t native apps, which can feel less polished on a phone."
+msgstr "Parmi les options respectueuses de la vie privée, Budgie est conçue dès le départ pour le mobile et se trouve actuellement en bêta privée. Copilot propose une excellente application iOS, mais exige l’écosystème Apple et la synchronisation bancaire. La plupart des alternatives open source (Actual, Firefly III) ont des interfaces web utilisables sur mobile, mais ce ne sont pas des applications natives, ce qui peut être moins agréable sur un téléphone."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Amount"
@@ -3850,16 +3858,19 @@ msgstr "Être honnête sur les limites fait partie de la démarche. L'IA de Budg
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/metadata.ts
 msgid "Best YNAB Alternatives for Privacy-Conscious Users"
-msgstr "Les meilleures alternatives à YNAB pour les utilisateurs soucieux de leur vie privée"
+msgstr "Alternatives à YNAB pour protéger votre vie privée"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Best YNAB Alternatives for Privacy-Conscious Users (2025)"
 msgstr "Les meilleures alternatives à YNAB pour les utilisateurs soucieux de leur vie privée (2025)"
 
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "Best YNAB Alternatives for Privacy-Conscious Users (2026)"
+msgstr "Les meilleures alternatives à YNAB pour les utilisateurs soucieux de leur vie privée (2026)"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/metadata.ts
-msgid "Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide."
-msgstr "Les meilleures alternatives à YNAB pour les utilisateurs soucieux de leur vie privée. Comparaison détaillée des applications de budget offline-first et open source avec guide de migration YNAB."
+msgid "Best YNAB alternatives for privacy-conscious users in 2026. Compare offline-first and open-source budget apps, with a YNAB migration guide."
+msgstr "Meilleures alternatives à YNAB pour protéger votre vie privée en 2026. Comparatif d’applis hors ligne et open source, avec guide de migration."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Beta tester, Kyiv"
@@ -4544,6 +4555,7 @@ msgstr "Budgie est conçu comme une application mobile hors ligne. Il n'y a pas 
 msgid "Budgie is free to use with optional premium features for users who want additional capabilities. Our business model relies on users who find enough value in the product to support its development, not on monetizing user data. The public-source model actually supports this because users can trust their data isn’t being sold, making them more willing to pay for premium features. Transparency and sustainable business can coexist."
 msgstr "Budgie est gratuit, avec des fonctionnalités premium optionnelles pour les utilisateurs qui veulent des capacités supplémentaires. Notre modèle économique repose sur les utilisateurs qui trouvent assez de valeur dans le produit pour soutenir son développement, pas sur la monétisation des données utilisateur. Le modèle à source publique soutient cela, car les utilisateurs peuvent faire confiance au fait que leurs données ne sont pas vendues, ce qui les rend plus enclins à payer pour des fonctionnalités premium. Transparence et activité durable peuvent coexister."
 
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/generic/component/cta-section/cta-section.tsx
 msgid "Budgie is in private beta. Join the waitlist and we will write to you when your build is ready."
 msgstr "Budgie est en bêta privée. Inscrivez-vous à la liste d’attente et nous vous écrirons dès que votre version sera prête."
@@ -6045,8 +6057,8 @@ msgid "Companies can change their privacy policies anytime"
 msgstr "Les entreprises peuvent modifier leurs politiques de confidentialité à tout moment"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Compare the best YNAB alternatives for privacy-conscious users in 2025. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private."
-msgstr "Comparez les meilleures alternatives à YNAB pour les utilisateurs soucieux de leur vie privée en 2025. Découvrez des applications de budget offline-first, open source et auto-hébergées qui protègent vos données financières."
+msgid "Compare the best YNAB alternatives for privacy-conscious users in 2026. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private."
+msgstr "Comparez les meilleures alternatives à YNAB pour les utilisateurs soucieux de leur vie privée en 2026. Découvrez des applications de budget hors ligne, open source ou auto-hébergées qui gardent vos données financières privées."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Compare the experience and accuracy"
@@ -7866,8 +7878,8 @@ msgid "Export and Portability"
 msgstr "Export et portabilité"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Export anytime in CSV or JSON"
-msgstr "Exportez à tout moment en CSV ou JSON"
+msgid "Export anytime as CSV or as a full database backup"
+msgstr "Exportez à tout moment en CSV ou sous forme de sauvegarde complète de la base de données"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Export CSV takes your transactions in a single tap. There is no range to pick. Deleted transactions and the originals behind a merged transaction are left out."
@@ -9387,8 +9399,8 @@ msgid "In this article, we will walk through exactly how Budgie keeps your finan
 msgstr "Dans cet article, nous verrons précisément comment Budgie garde vos données financières hors du cloud. Nous aborderons l’architecture de la base de données, l’implémentation du chiffrement, le fonctionnement de la sauvegarde et de la restauration, ainsi que les pratiques de sécurité qui rendent cela possible. Si vous évaluez Budgie et souhaitez comprendre ce à quoi vous faites confiance, ce guide vous donnera le tableau technique complet."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
-msgstr "Ce guide explique pourquoi des utilisateurs quittent YNAB, ce qu’il faut attendre d’une alternative axée sur la vie privée et comment les meilleures options se comparent en 2025. Si le stockage cloud, la lassitude des abonnements ou le contrôle de vos données sont le problème, commencez ici."
+msgid "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2026. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
+msgstr "Dans ce guide complet, nous verrons pourquoi les gens quittent YNAB, ce qu’il faut chercher dans une alternative respectueuse de la vie privée, et nous passerons honnêtement en revue les meilleures options de 2026. Que le stockage de vos données dans le cloud vous inquiète, que vous soyez lassé des abonnements ou que vous souhaitiez simplement mieux maîtriser vos informations financières, vous trouverez votre réponse ici."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "In-app switcher — no reinstall, no relaunch"
@@ -12297,7 +12309,6 @@ msgid "Open Privat24, select the card or account you want to import, and open it
 msgstr "Dans Privat24, sélectionnez la carte ou le compte que vous souhaitez importer, puis ouvrez son relevé. Choisissez une plage de dates couvrant tout votre historique, puis exportez-le au format Excel — les fichiers PDF et CSV ne peuvent pas être importés. Si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception, puis sélectionnez-le dans le sélecteur de fichiers de Budgie."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "open source"
 msgstr "Un code open source pour vérification"
 
@@ -12338,10 +12349,6 @@ msgstr "Les logiciels open source dependent d'une chaine de dependances, et tout
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Open Source Transparency"
 msgstr "Transparence open source"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Open Source Verification"
-msgstr "Vérification par l'open source"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Open Source: Verify Our Claims Yourself"
@@ -12988,8 +12995,8 @@ msgid "Privacy claims"
 msgstr "Affirmations de confidentialité"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is open source, meaning:"
-msgstr "Les déclarations de confidentialité sont faciles à faire et difficiles à vérifier — sauf si vous pouvez lire le code. Budgie est open source, ce qui signifie :"
+msgid "Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is source-available, meaning:"
+msgstr "Les promesses de confidentialité sont faciles à faire et difficiles à vérifier, sauf si l’on peut lire le code. Budgie est source-available, ce qui signifie :"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Privacy claims are verifiable, not just promised"
@@ -14446,6 +14453,7 @@ msgstr "Le code source est publiquement disponible — lisez chaque ligne qui to
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "source-available"
 msgstr "source disponible"
 
@@ -14483,6 +14491,10 @@ msgstr "Finances personnelles à source disponible — Transparente par concepti
 #: src/app/[lang]/open-source/metadata.ts
 msgid "Source-Available Personal Finance App — Budgie"
 msgstr "Application de finances personnelles à source disponible — Budgie"
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "Source-Available Verification"
+msgstr "Une vérification possible grâce au code consultable"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Speak it, review it, save it"
@@ -14723,6 +14735,10 @@ msgstr "Étape 5 : Fonctionnez en parallèle pendant un mois"
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Step three is the one that matters: keep only \"Enable Reading\" on, and never allow trading or withdrawals. Permissions are enforced on Binance's side, and Budgie has no way to place an order or withdraw — it only reads."
 msgstr "La troisième étape est la plus importante : ne laissez activé que « Enable Reading », et n'autorisez jamais le trading ni les retraits. Les permissions sont appliquées côté Binance, et Budgie n'a aucun moyen de passer un ordre ou de retirer des fonds : il ne fait que lire."
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "Still in private beta, so access is by waitlist"
+msgstr "Encore en bêta privée, l’accès se fait par liste d’attente"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Still to receive"
@@ -19304,6 +19320,10 @@ msgstr "Votre compte peut être verrouillé ou supprimé"
 msgid "Your account will be charged for renewal within 24 hours prior to the end of the current period"
 msgstr "Votre compte sera débité pour le renouvellement dans les 24 heures précédant la fin de la période en cours"
 
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "Your bank access details are stored only on your device, in a database that is encrypted once you set a PIN"
+msgstr "Vos informations d’accès à la banque sont stockées uniquement sur votre appareil, dans une base de données chiffrée dès que vous définissez un code PIN"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Your bank account balances and account numbers"
 msgstr "Vos soldes bancaires et numéros de compte"
@@ -19315,10 +19335,6 @@ msgstr "Vos identifiants bancaires sont cryptés sur votre appareil"
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Your bank, with nobody in between"
 msgstr "Votre banque, sans intermédiaire"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Your banking credentials are encrypted and stored locally on your device"
-msgstr "Vos identifiants bancaires sont chiffrés et stockés localement sur votre appareil"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Your call in Settings"
