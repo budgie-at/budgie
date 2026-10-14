@@ -11,7 +11,7 @@ export const FEATURE_METADATA = {
     title: msg`Deposit Tracking`,
     tagline: msg`Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math.`,
     metaTitle: msg`Deposit Tracking — Budgie`,
-    metaDescription: msg`Track fixed-term deposits as a dedicated account type with interest rate, maturity date, days remaining, expected payout, close-to-account transfers, and net worth control.`,
+    metaDescription: msg`Track fixed-term deposits with interest rate, maturity date, expected payout, and start one straight from a bank expense. Close it into any account.`,
     primaryKeyword: 'deposit tracker app',
     seoKeywords: [
         'deposit tracker app',

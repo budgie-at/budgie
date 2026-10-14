@@ -2736,6 +2736,10 @@ msgstr "Actual Budget : Le rêve de l'auto-hébergeur"
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual est un outil de budget axé sur la confidentialité avec une forte approche local-first. Il propose la méthode des enveloppes budgétaires, des capacités de synchronisation bancaire, et des options auto-hébergées et cloud. Si vous préférez le budget par enveloppes et souhaitez une expérience orientée bureau, Actual mérite d'être considéré."
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Add a deposit straight from a bank connection, next to its synced accounts"
+msgstr "Ajoutez un dépôt directement depuis une connexion bancaire, à côté de ses comptes synchronisés"
+
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Ajouter une autre ligne de catégorie"
@@ -3046,8 +3050,8 @@ msgid "An English form and search keywords"
 msgstr "Une forme anglaise et des mots-clés de recherche"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "An expense pairs with an income when the counter-IBAN lines up, or when the amounts match — same currency, or an implied exchange rate inside a tolerance band — and both legs fall within twelve hours of each other. The match becomes one transfer carrying a debit and a credit entry, so it stops counting as spending. Pairs Budgie is not sure about are left alone as two rows rather than guessed at."
-msgstr "Une dépense est appariée à un revenu lorsque l'IBAN de contrepartie correspond, ou lorsque les montants concordent — même devise, ou un taux de change implicite dans une bande de tolérance — et que les deux volets tombent à moins de douze heures d'écart. La correspondance devient un seul virement portant une écriture au débit et une au crédit, et cesse donc de compter comme une dépense. Les paires dont Budgie n'est pas sûr restent deux lignes plutôt que d'être devinées."
+msgid "An expense pairs with an income when the other account's IBAN lines up, or when the amounts match — same currency, or an implied exchange rate inside a tolerance band — and both halves fall within twelve hours of each other. The match becomes one transfer, so it stops counting as spending. Pairs Budgie is not sure about are left alone as two rows rather than guessed at."
+msgstr "Une dépense est associée à un revenu lorsque l'IBAN de l'autre compte correspond, ou lorsque les montants concordent — même devise, ou taux de change implicite dans une marge de tolérance — et que les deux moitiés tombent à moins de douze heures l'une de l'autre. La correspondance devient un seul virement et cesse de compter comme une dépense. Les paires dont Budgie n'est pas sûr restent deux lignes distinctes plutôt que devinées."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet picks the right account, the most-likely category, and the current date by default — typically two taps to a saved transaction."
@@ -3056,6 +3060,10 @@ msgstr "Un gestionnaire de dépenses se distingue par la facilité de saisie. La
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "An explicit empty state, “No sync repairs found”, when there is nothing to fix"
 msgstr "Un état vide explicite, « Aucune réparation de synchronisation trouvée », quand il n'y a rien à corriger"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "An interest rate and a maturity date for each deposit account"
+msgstr "Un taux d'intérêt et une date d'échéance pour chaque compte de dépôt"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "An Offline-First Answer: Budgie"
@@ -3271,12 +3279,8 @@ msgid "Archive is not the same as inactive"
 msgstr "Archiver n’est pas la même chose qu’inactif"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Archive means you are done with the account — it leaves the home screen and the totals for good, but every transaction stays searchable and restorable from Settings. Inactive means the account is still real but should not clutter the home screen right now — it can be re-activated at any time from the same Settings screen."
-msgstr "Archiver signifie que vous en avez fini avec le compte — il quitte définitivement l’écran d’accueil et les totaux, mais chaque transaction reste consultable et restaurable depuis les réglages. Inactif signifie que le compte est toujours réel mais ne devrait pas encombrer l’écran d’accueil pour l’instant — il peut être réactivé à tout moment depuis le même écran de réglages."
-
-#: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Archive when settled — debt drops off the home screen but stays in history"
-msgstr "Archivez une fois réglé — la dette disparaît de l'écran d'accueil mais reste dans l'historique"
+msgid "Archive means you are done with the account — it leaves the home screen and the totals, but every transaction stays searchable and restorable from Settings. Inactive means the account is still real but should not clutter the home screen right now — it can be re-activated at any time from the same Settings screen."
+msgstr "Archiver signifie que vous en avez fini avec le compte : il quitte l'écran d'accueil et les totaux, mais chaque transaction reste consultable et restaurable depuis les Réglages. Inactif signifie que le compte existe toujours mais ne doit pas encombrer l'écran d'accueil pour le moment — vous pouvez le réactiver à tout moment depuis le même écran des Réglages."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Archive without deleting, or mark inactive without archiving — both keep the full history"
@@ -3464,6 +3468,10 @@ msgstr "Consolidation automatique des virements — les deux côtés d'un vireme
 msgid "automation"
 msgstr "automatisation"
 
+#: src/app/[lang]/features/database-backup/metadata.ts
+msgid "Back up your entire Budgie database as one compressed file, PIN-locked if you set a PIN. Save it anywhere and restore by picking the file."
+msgstr "Toute votre base Budgie dans un fichier compressé, verrouillé par PIN si vous en avez un. Enregistrez-le où vous voulez et restaurez-le en le choisissant."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Background FX-rate refresh converts every account to your base currency"
 msgstr "L'actualisation des taux de change en arrière-plan convertit chaque compte dans votre devise de base"
@@ -3484,10 +3492,6 @@ msgstr "Sauvegarde et restauration"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Backup and restore implementation"
 msgstr "Implémentation de la sauvegarde et de la restauration"
-
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Backup file copied via your cloud"
-msgstr "Fichier de sauvegarde copié via votre cloud"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Backup, Encrypted With Your PIN"
@@ -3879,8 +3883,8 @@ msgid "Beyond privacy concerns, Credit Karma simply lacks features that technica
 msgstr "Au-delà des préoccupations de confidentialité, Credit Karma manque tout simplement de fonctionnalités que les utilisateurs techniques attendent :"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Beyond that seed, history is filled in from CoinGecko's public market data — but only for crypto accounts you actually hold, one day at a time, in a background queue that fetches just the days you are missing and stops. There is no ticker connection, no streaming feed, and no account: the chart you look at is read from your own database, so it renders offline once the days are there."
-msgstr "Au-delà de cette base, l'historique est complété à partir des données de marché publiques de CoinGecko — mais uniquement pour les comptes crypto que vous détenez réellement, un jour à la fois, via une file d'attente en arrière-plan qui récupère seulement les jours manquants puis s'arrête. Il n'y a ni connexion à un ticker, ni flux en continu, ni compte : le graphique que vous consultez est lu depuis votre propre base de données, il s'affiche donc hors ligne une fois les jours récupérés."
+msgid "Beyond that, Budgie fills in the days since the built-in history up to today — but only for crypto accounts you actually hold, in the background, fetching just the days you are missing and then stopping. There is no live ticker and no account: the chart you look at is read from your own database, so it renders offline once the days are there."
+msgstr "Ensuite, Budgie complète les jours écoulés depuis l'historique intégré jusqu'à aujourd'hui — mais seulement pour les comptes crypto que vous détenez réellement, en arrière-plan, en ne récupérant que les jours manquants avant de s'arrêter. Pas de cours en direct ni de compte : le graphique que vous consultez est lu depuis votre propre base, donc il s'affiche même hors ligne une fois les jours récupérés."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Beyond the 2022 settlement, Plaid has faced ongoing scrutiny:"
@@ -4027,6 +4031,10 @@ msgstr "Les deux comptes sur une même ligne"
 msgid "Both accounts report the same move"
 msgstr "Les deux comptes déclarent le même mouvement"
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Both amounts are kept (e.g. $1000 → €925) along with the exchange rate at transfer time. See Account Transfers for details."
+msgstr "Les deux montants sont conservés (p. ex. 1000 $ → 925 €) avec le taux de change au moment du virement. Voir Virements entre comptes pour plus de détails."
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Both amounts are shown together (e.g. $1000 → €925). Pin either side; the exchange rate is saved on the transfer so reconciliation across currencies stays exact."
 msgstr "Les deux montants sont affichés ensemble (p. ex. 1000 $ → 925 €). Épinglez le côté de votre choix ; le taux de change est enregistré sur le virement, donc le rapprochement entre devises reste exact."
@@ -4046,10 +4054,6 @@ msgstr "Les deux formes sont consultables — la recherche trouve la catégorie 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Both inboxes open from Analytics for the period you are looking at"
 msgstr "Les deux écrans s’ouvrent depuis les analyses, pour la période que vous consultez"
-
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Both legs are preserved (e.g. $1000 → €925) along with the FX rate at transfer time. See Account Transfers for details."
-msgstr "Les deux legs sont préservés (ex. 1 000 $ → 925 €) ainsi que le taux de change au moment du virement. Voir Virements entre comptes pour plus de détails."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Both paths run entirely on your device. No network call, no vendor profiling. Nothing about your tags is ever uploaded — every suggestion comes from the tags you already use in Budgie."
@@ -4320,6 +4324,10 @@ msgstr "Écran du compte de dépôt Budgie avec un solde de 15 408,40 $, un taux
 msgid "Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions"
 msgstr "Écran du compte de dépôt Budgie avec le menu du compte ouvert montrant les actions Modifier et Clôturer le dépôt"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Budgie does not sync between devices. You can move your data by copying the backup file through your own iCloud Drive, Google Drive, or Dropbox and restoring it on the second device — but a restore replaces everything on that device, and later changes stay on the device where you made them. If the backup was PIN-locked, enter that PIN when you restore."
+msgstr "Budgie ne se synchronise pas entre appareils. Vous pouvez déplacer vos données en copiant le fichier de sauvegarde via votre propre iCloud Drive, Google Drive ou Dropbox et en le restaurant sur le second appareil — mais une restauration remplace tout sur cet appareil, et les modifications ultérieures restent sur l'appareil où vous les avez faites. Si la sauvegarde est verrouillée par PIN, saisissez ce PIN lors de la restauration."
+
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Budgie does the opposite. You type the true balance; Budgie compares it with the current one and books the difference as a dated Adjustment transaction. The correction is visible, dated, and editable like any other row."
 msgstr "Budgie fait l'inverse. Vous saisissez le solde réel ; Budgie le compare au solde actuel et enregistre la différence comme une transaction d'ajustement datée. La correction est visible, datée et modifiable comme n'importe quelle ligne."
@@ -4375,6 +4383,10 @@ msgstr "Formulaire de dépense Budgie pour une transaction Silpo de 78,4 $ avec 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category"
 msgstr "Formulaire de dépense Budgie pour une transaction Silpo de 78,4 $ avec une pastille Quick rule au-dessus du montant et la catégorie Restaurants"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Budgie fetches currency rates and crypto prices automatically over the internet. There is no account to create and no key to paste in."
+msgstr "Budgie récupère automatiquement les taux de change et les cours des cryptomonnaies via Internet. Aucun compte à créer, aucune clé à coller."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 msgid "Budgie fills in category, tags, comment, and amount from your own spending history — faster than typing, fully offline."
@@ -4634,12 +4646,12 @@ msgid "Budgie matches your history in three separate ways, each returning up to 
 msgstr "Budgie compare votre historique de trois façons distinctes, chacune renvoyant jusqu'à trois candidats. Les intitulés de transactions sont comparés à vos entrées passées pour suggérer une catégorie et des tags. Les noms de commerces sont comparés à travers leurs variantes orthographiques, si bien que la même enseigne est reconnue de façon cohérente même quand deux banques l'écrivent différemment — c'est le résultat visible derrière le nettoyage des noms de commerçants. Et vos propres notes en texte libre sont comparées aussi, si bien qu'un commentaire écrit une fois pour un café revient en suggestion la prochaine fois que vous y retournez."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Budgie merged transfer screen with the consolidation source sheet listing both original legs above Done and Revert"
-msgstr "Écran de virement fusionné de Budgie avec la feuille des transactions source listant les deux volets originaux au-dessus de Terminé et Annuler"
+msgid "Budgie merged transfer screen with the consolidation source sheet listing both original transactions above Done and Revert"
+msgstr "Écran de virement fusionné de Budgie avec la feuille des sources de consolidation listant les deux transactions d'origine au-dessus de Terminé et Annuler la fusion"
 
 #: src/app/[lang]/features/transfer-pair-detection/metadata.ts
-msgid "Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device."
-msgstr "Budgie fusionne les paires de virements et remboursements marchands évidents afin que les imports bancaires ne gonflent ni les dépenses ni les revenus. La correspondance par contre-IBAN, montant, date et titre s’exécute sur l’appareil."
+msgid "Budgie merges obvious transfer pairs, merchant refunds and duplicates of manual expenses so bank imports do not inflate spending or income."
+msgstr "Budgie fusionne virements évidents, remboursements et doublons de dépenses manuelles pour que les imports ne gonflent ni dépenses ni revenus."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie Missing categories screen listing income and expense rows that still have no category"
@@ -4737,10 +4749,6 @@ msgstr "Feuille Payer en plusieurs fois de Budgie pour un achat d’électroniqu
 msgid "Budgie Privacy Policy - Learn how we protect your financial data with our offline-first, privacy-focused approach"
 msgstr "Politique de confidentialité de Budgie - Découvrez comment nous protégeons vos données financières grâce à notre approche hors ligne d'abord, axée sur la confidentialité"
 
-#: src/app/[lang]/features/account-management/page.tsx
-msgid "Budgie prompts you to migrate them to another account or wipe them. Archiving is the safer alternative — it hides the account from the home but keeps the data."
-msgstr "Budgie vous invite à les migrer vers un autre compte ou à les effacer. L’archivage est l’alternative plus sûre — il masque le compte de l’accueil mais conserve les données."
-
 #: src/app/[lang]/security/metadata.ts
 msgid "Budgie protects your finances with on-device encryption once you set a PIN, biometric and PIN lock, screenshot blur, and backup files you keep yourself. No server ever sees your data."
 msgstr "Budgie protège vos finances avec un chiffrement sur l'appareil dès que vous définissez un PIN, un verrouillage biométrique et par PIN, un floutage des captures d'écran, et des fichiers de sauvegarde que vous conservez vous-même. Aucun serveur ne voit jamais vos données."
@@ -4756,6 +4764,10 @@ msgstr "Budgie classe les candidats selon leur proximité avec la façon dont vo
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Budgie recognizes merchants you have categorized before, spots the spending that repeats month after month, and reads the merchant code your bank sends with each card payment. Every accepted or edited suggestion is taken into account immediately — accuracy compounds over time."
 msgstr "Budgie reconnaît les commerçants que vous avez déjà catégorisés, repère les dépenses qui se répètent mois après mois, et lit le code commerçant que votre banque envoie avec chaque paiement par carte. Chaque suggestion acceptée ou modifiée est prise en compte immédiatement — la précision s'améliore avec le temps."
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Budgie recognizes the same payment arriving from your bank and merges it with the expense you entered, so it is counted once. The merge keeps both originals and can be reverted like any other consolidation."
+msgstr "Budgie reconnaît le même paiement arrivant de votre banque et le fusionne avec la dépense que vous avez saisie, afin qu'il ne soit compté qu'une fois. La fusion conserve les deux originaux et peut être annulée comme toute autre consolidation."
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie recurring payments calendar showing upcoming subscriptions on a monthly grid"
@@ -5160,10 +5172,6 @@ msgstr "Calculé sur un mois typique, pas sur un mois chanceux"
 msgid "Built-in presets for Budgie's own export, SmartBudget and FinEye fill every selector in one tap"
 msgstr "Les préréglages intégrés pour l'export de Budgie, SmartBudget et FinEye remplissent tous les sélecteurs en une touche"
 
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Built-in via your server"
-msgstr "Intégré via votre serveur"
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Built-in YNAB import tool available"
 msgstr "Outil d'import YNAB intégré disponible"
@@ -5287,6 +5295,10 @@ msgstr "Puis-je lier automatiquement les virements de ma banque ?"
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Can I compare months?"
 msgstr "Puis-je comparer des mois ?"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Can I connect Binance?"
+msgstr "Puis-je connecter Binance ?"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Can I contribute to Budgie?"
@@ -5436,6 +5448,10 @@ msgstr "Peut-on auto-héberger Budgie ?"
 msgid "Can I spend from a deposit account?"
 msgstr "Puis-je dépenser depuis un compte de dépôt ?"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Can I start a deposit from a payment I already made?"
+msgstr "Puis-je ouvrir un dépôt à partir d'un paiement déjà effectué ?"
+
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Can I sync my bank without giving Budgie my bank login?"
 msgstr "Puis-je synchroniser ma banque sans donner mes identifiants bancaires à Budgie ?"
@@ -5485,6 +5501,10 @@ msgstr "Puis-je annuler la conversion ?"
 msgid "Can I use bank sync and CSV import together?"
 msgstr "Puis-je utiliser la synchronisation bancaire et l'import CSV ensemble ?"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Can I use Budgie on a phone and a tablet at once?"
+msgstr "Puis-je utiliser Budgie sur un téléphone et une tablette à la fois ?"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Can I use multiple Monobank accounts?"
 msgstr "Puis-je utiliser plusieurs comptes Monobank ?"
@@ -5526,12 +5546,8 @@ msgid "Cancel or fail and nothing is lost: the keypad was already there. Budgie 
 msgstr "En cas d’annulation ou d’échec, rien n’est perdu : le clavier était déjà là. Budgie désactive volontairement le repli sur le code de l’appareil — votre code PIN est le seul autre moyen d’accès."
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Capture the whole Budgie database as one file — encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
-msgstr "Capturez toute la base de données Budgie en un seul fichier — chiffré avec votre code PIN une fois que vous en définissez un — et remettez-le en place sur un autre appareil. Pas de compte, pas de téléversement."
-
-#: src/app/[lang]/features/database-backup/metadata.ts
-msgid "Capture your entire Budgie database in one file, encrypted once you set a PIN. Save to iCloud or Drive on your terms; restore on a new device by picking the file — no account needed."
-msgstr "Capturez toute votre base de données Budgie dans un fichier, chiffré dès que vous définissez un code PIN. Enregistrez-le sur iCloud ou Drive comme vous le souhaitez ; restaurez-le sur un nouvel appareil en choisissant le fichier — aucun compte nécessaire."
+msgid "Capture the whole Budgie database as one compressed file — locked with your PIN when you set one — and put it back on another device. No account, no upload."
+msgstr "Capturez toute la base Budgie dans un seul fichier compressé — verrouillé par votre PIN si vous en avez défini un — et remettez-la sur un autre appareil. Pas de compte, pas d'envoi."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Card payments from an unfamiliar shop still land in the right area, using the code your bank sends"
@@ -5852,8 +5868,8 @@ msgid "Clone the repository for local development"
 msgstr "Cloner le dépôt pour le développement local"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Close a deposit into a selected destination account with a transfer, then archive it"
-msgstr "Clôturez un dépôt vers un compte de destination choisi avec un virement, puis archivez-le"
+msgid "Close a deposit into a selected destination account with a transfer — it is archived and can be restored"
+msgstr "Clôturez un dépôt vers le compte de votre choix par un virement — il est archivé et peut être restauré"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close and move the balance"
@@ -6121,6 +6137,10 @@ msgstr "Guide complet pour les développeurs sur les alternatives à Mint : comp
 msgid "Comprehensive expense tracking"
 msgstr "Suivi complet des dépenses"
 
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Compressed full backup file for a complete restore — PIN-locked if a PIN was set at export time"
+msgstr "Fichier de sauvegarde complet compressé pour une restauration totale — verrouillé par PIN si un PIN était défini à l'export"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Computed on-device from your local database"
 msgstr "Calculé sur l'appareil à partir de votre base de données locale"
@@ -6306,10 +6326,6 @@ msgstr "Copilot : la confidentialité dans l'écosystème Apple"
 msgid "Copilot: The Apple Ecosystem Choice"
 msgstr "Copilot : Le choix de l'écosystème Apple"
 
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when you made it. Restore it on the second device by picking the file and entering that PIN."
-msgstr "Copiez le fichier de sauvegarde via votre propre iCloud Drive, Google Drive ou Dropbox — il est chiffré si vous avez défini un code PIN au moment de la création. Restaurez-le sur le second appareil en choisissant le fichier et en saisissant ce code PIN."
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Copyright © 2024-2026, Budgie"
 msgstr "Copyright © 2024-2026, Budgie"
@@ -6345,10 +6361,6 @@ msgstr "Comptés comme dépense"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Counter-IBAN enrichment and transfer consolidation"
 msgstr "Enrichissement contre-IBAN et consolidation des virements"
-
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Counter-IBAN from Monobank as the primary signal; amount and time-window matching for banks that don't send one"
-msgstr "IBAN de contrepartie de Monobank comme signal principal ; correspondance par montant et fenêtre temporelle pour les banques qui n'en fournissent pas"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Counter-IBAN stored"
@@ -6452,8 +6464,8 @@ msgid "Cross-currency transactions preserve original FX rate per leg"
 msgstr "Les transactions multi-devises préservent le taux de change d’origine par leg"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Cross-currency transfers preserve both legs and the FX rate at transfer time"
-msgstr "Les virements multi-devises préservent les deux legs et le taux de change au moment du virement"
+msgid "Cross-currency transfers keep both amounts and the exchange rate at transfer time"
+msgstr "Les virements multidevises conservent les deux montants et le taux de change au moment du virement"
 
 #: src/app/[lang]/features/account-transfers/metadata.ts
 msgid "Cross-currency, dual-amount, exact — money between your own accounts is never an expense."
@@ -6481,10 +6493,6 @@ msgstr "Les dépôts et retraits en crypto et en fiat, les ordres d'achat et de 
 msgid "Crypto Holdings Alongside Your Cash"
 msgstr "Vos avoirs crypto à côté de vos liquidités"
 
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Crypto holdings are first-class instruments: symbol, quantity, and a daily price"
-msgstr "Les avoirs crypto sont des instruments à part entière : symbole, quantité et un prix quotidien"
-
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings are valued from the market history Budgie stores on device and refreshes in the background, so pricing stays available without a live rate broker."
 msgstr "Les avoirs en cryptomonnaies sont évalués à partir de l'historique de marché que Budgie stocke sur l'appareil et actualise en arrière-plan, afin que les prix restent disponibles sans courtier de cours en direct."
@@ -6492,6 +6500,10 @@ msgstr "Les avoirs en cryptomonnaies sont évalués à partir de l'historique de
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
 msgstr "Les avoirs crypto côtoient vos comptes fiat avec la même expérience"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Crypto holdings sit next to your cash: symbol, quantity, and a daily price"
+msgstr "Les avoirs crypto côtoient votre argent : symbole, quantité et prix quotidien"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto is not a separate tab. Holdings group by instrument under their own heading, after the bank and cash accounts, on the screen you already open. The total at the top counts them like everything else, and the two chips underneath split it into what you hold in cash and what you hold in coin."
@@ -6518,8 +6530,8 @@ msgid "Crypto right below them"
 msgstr "La crypto juste en dessous"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price). Stocks, ETFs, and commodities are not supported yet."
-msgstr "La crypto pour l'instant : deux cents actifs sont fournis avec l'application, et chaque position est une ligne (instrument, quantité, prix). Les actions, les ETF et les matières premières ne sont pas encore pris en charge."
+msgid "Crypto today — two hundred assets ship with the app, each with a quantity and a daily price. Stocks, ETFs, and commodities are not supported yet."
+msgstr "Aujourd'hui, la crypto — deux cents actifs sont fournis avec l'app, chacun avec une quantité et un prix quotidien. Les actions, ETF et matières premières ne sont pas encore pris en charge."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/generic/component/comparison-section/comparison-table-body.tsx
@@ -6559,12 +6571,12 @@ msgid "CSV Bank Statement Import"
 msgstr "Importation de relevé bancaire CSV"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies, category, MCC, date, comment, and the bank's own transaction id. The database backup is a byte-for-byte copy of the database file, so it is encrypted only if a PIN was set when you exported it."
-msgstr "Les colonnes CSV s'alignent proprement sur la plupart des tableaux croisés dynamiques : titre, les deux jambes du compte avec leurs montants et devises, catégorie, MCC, date, commentaire, et l'identifiant de transaction propre à la banque. La sauvegarde de base de données est une copie octet pour octet du fichier de base de données, elle n'est donc chiffrée que si un code PIN était défini au moment de l'export."
+msgid "CSV columns map cleanly to most spreadsheet pivots: title, both accounts with their amounts and currencies, category, MCC, date, comment, and the bank's own transaction id. There is no tags column, and built-in system categories export blank. The database backup is a compressed copy of your data, so it is locked with your PIN only if a PIN was set when you exported it."
+msgstr "Les colonnes du CSV se prêtent bien aux tableaux croisés dynamiques : titre, les deux comptes avec leurs montants et devises, catégorie, MCC, date, commentaire et identifiant de transaction propre à la banque. Il n'y a pas de colonne d'étiquettes, et les catégories système intégrées sont exportées vides. La sauvegarde de la base est une copie compressée de vos données ; elle n'est donc verrouillée par PIN que si un PIN était défini lors de l'export."
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "CSV export with title, both account legs and amounts, currencies, category, MCC, date, comment, and the bank's transaction id"
-msgstr "Export CSV avec l'intitulé, les deux volets de compte et leurs montants, les devises, la catégorie, le MCC, la date, le commentaire et l'identifiant de transaction de la banque"
+msgid "CSV export with title, both accounts and amounts, currencies, category, MCC, date, comment, and the bank's transaction id"
+msgstr "Export CSV avec titre, les deux comptes et montants, devises, catégorie, MCC, date, commentaire et identifiant de transaction de la banque"
 
 #: src/app/[lang]/features/data-export/metadata.ts
 #: src/app/[lang]/open-source/page.tsx
@@ -6597,16 +6609,12 @@ msgid "CSV import/export"
 msgstr "Import/export CSV"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "CSV is for spreadsheets, tax software, and other apps that want flat data. The database backup preserves every relationship and account state for full restore on a new device."
-msgstr "Le CSV est destiné aux tableurs, aux logiciels fiscaux et aux autres applications voulant des données plates. La sauvegarde de base de données préserve chaque relation et état de compte pour une restauration complète sur un nouvel appareil."
+msgid "CSV is for spreadsheets, tax software, and other apps that want flat data. The backup preserves all your data, including what the CSV leaves out, for a full restore on a new device."
+msgstr "Le CSV sert aux tableurs, aux logiciels fiscaux et aux autres apps qui veulent des données à plat. La sauvegarde conserve toutes vos données, y compris ce que le CSV laisse de côté, pour une restauration complète sur un nouvel appareil."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Currency is fixed per account"
 msgstr "La devise est fixée par compte"
-
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Currency rates come from a free public endpoint at exchangerate-api.com, and crypto prices from CoinGecko. There is no vendor account to create and no API key to paste in."
-msgstr "Les taux de change proviennent d'un point d'accès public gratuit sur exchangerate-api.com, et les cours des cryptomonnaies de CoinGecko. Aucun compte fournisseur à créer, aucune clé d'API à coller."
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Currency read from the file"
@@ -6802,8 +6810,12 @@ msgid "dates"
 msgstr "dates"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Days remaining and expected payout shown from your balance, rate, and maturity date"
-msgstr "Jours restants et montant attendu à l’échéance affichés à partir de votre solde, du taux et de la date d’échéance"
+msgid "Days remaining and a simple-interest payout estimate from your balance, rate, and maturity date"
+msgstr "Jours restants et estimation du versement à intérêts simples d'après votre solde, votre taux et la date d'échéance"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Days since the built-in history fill in up to today, with a visible progress indicator"
+msgstr "Les jours écoulés depuis l'historique intégré se complètent jusqu'à aujourd'hui, avec un indicateur de progression visible"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
@@ -6872,6 +6884,10 @@ msgstr "Les titres de catégorie par défaut dans les sélecteurs de rembourseme
 msgid "Delete your account in the budgeting app"
 msgstr "Supprimer votre compte dans l'application de budget"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Deleting is permanent and only available for archived accounts: the account and its transactions are gone for good, and there is no option to move them elsewhere first. Transfers with other accounts stay there as “Transfer (account deleted)”. Archiving is the safer choice — it hides the account from the home but keeps the data."
+msgstr "La suppression est définitive et n'est possible que pour les comptes archivés : le compte et ses transactions disparaissent pour de bon, et il n'est pas possible de les déplacer ailleurs avant. Les virements avec d'autres comptes restent affichés comme « Virement (compte supprimé) ». Archiver est le choix le plus sûr : le compte quitte l'écran d'accueil mais les données sont conservées."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Dependency Auditing"
 msgstr "Audit des dependances"
@@ -6881,8 +6897,8 @@ msgid "deposit"
 msgstr "dépôt"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those fields to show days remaining and an expected payout estimate, without pretending interest has automatically posted."
-msgstr "Les comptes de dépôt stockent un taux d’intérêt annuel facultatif et une date d’échéance. L’écran de détail du compte utilise ces champs pour afficher les jours restants et une estimation du montant attendu à l’échéance, sans prétendre que les intérêts ont été comptabilisés automatiquement."
+msgid "Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those to show days remaining and an expected payout estimate — simple interest on the current balance for the days left — without pretending interest has automatically posted."
+msgstr "Les comptes de dépôt enregistrent un taux d'intérêt annuel facultatif et une date d'échéance. L'écran de détails du compte s'en sert pour afficher les jours restants et une estimation du versement — intérêts simples sur le solde actuel pour les jours restants — sans prétendre que les intérêts ont été versés automatiquement."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Deposit accounts track maturity details; liability and debt accounts support negative balances"
@@ -7117,6 +7133,10 @@ msgstr "Ne pas divulguer publiquement la vulnérabilité avant que nous l'ayons 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Do privacy-focused community members discuss the implementation?"
 msgstr "Les membres de la communauté soucieux de la confidentialité discutent-ils de l'implémentation ?"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Do refunds in another currency match?"
+msgstr "Les remboursements dans une autre devise sont-ils associés ?"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Do rules apply to transactions I type in myself?"
@@ -7510,10 +7530,6 @@ msgstr "Application de budget chiffrée — Verrou biométrique — Budgie"
 msgid "Encrypted Budget App — Lock Down Your Financial Data"
 msgstr "Application de budget chiffrée — Verrouillez vos données financières"
 
-#: src/app/[lang]/features/database-backup/metadata.ts
-msgid "Encrypted Database Backup to Your Cloud — Budgie"
-msgstr "Sauvegarde de base de données chiffrée vers votre cloud — Budgie"
-
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted finance app"
 msgstr "application de finances chiffrée"
@@ -7780,10 +7796,6 @@ msgstr "Chaque transaction, chaque compte et chaque catégorie se trouve dans un
 msgid "Every transaction, budget and chart is computed on your phone. There is no account to create, so there is nothing to sign into, nothing to sync and nothing to leak. Turn the radio off and the app behaves exactly the same."
 msgstr "Chaque transaction, budget et graphique est calculé sur votre téléphone. Il n'y a aucun compte à créer, donc rien où se connecter, rien à synchroniser et rien à divulguer. Coupez la connexion et l'application se comporte exactement de la même façon."
 
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "Every transaction, one file"
-msgstr "Chaque transaction, un fichier"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Every well-maintained open-source project has an issue tracker where bugs, feature requests, and concerns are discussed. This is a goldmine of information about how the project operates:"
 msgstr "Tout projet open source bien maintenu dispose d'un système de suivi des problèmes où les bugs, les demandes de fonctionnalités et les préoccupations sont discutés. C'est une mine d'informations sur le fonctionnement du projet :"
@@ -7833,8 +7845,8 @@ msgid "Exchange rates are fetched anonymously"
 msgstr "Les taux de change sont récupérés anonymement"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Exchange rates refresh in the background and are stored on your device. Nothing is converted in place: every account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is derived on top of it."
-msgstr "Les taux de change sont actualisés en arrière-plan et conservés sur votre appareil. Rien n'est converti sur place : chaque compte, chaque transaction et chaque volet d'un virement garde sa devise et son montant d'origine, et le montant en devise de base en est dérivé."
+msgid "Exchange rates refresh in the background and are stored on your device. Nothing is converted in place: every account, transaction, and transfer keeps its original currency and amount, and the base-currency figure is derived on top of it."
+msgstr "Les taux de change se mettent à jour en arrière-plan et sont stockés sur votre appareil. Rien n'est converti sur place : chaque compte, transaction et virement garde sa devise et son montant d'origine, et le chiffre en devise de base est calculé par-dessus."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 msgid "exchange-rates"
@@ -7907,31 +7919,24 @@ msgid "Export anytime in CSV or JSON"
 msgstr "Exportez à tout moment en CSV ou JSON"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later."
-msgstr "Exporter CSV prend tout le registre en un seul appui. Aucune plage à choisir et aucun fichier partiel à rapprocher plus tard."
+msgid "Export CSV takes your transactions in a single tap. There is no range to pick. Deleted transactions and the originals behind a merged transaction are left out."
+msgstr "Exporter en CSV reprend vos transactions en un seul geste. Aucune plage à choisir. Les transactions supprimées et les originaux derrière une transaction fusionnée sont exclus."
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Export Database copies the whole file behind the app — every transaction, account, category, tag and setting — then hands it to the system share sheet as a dated budgie-backup file. Set a PIN and that same PIN is what the file is encrypted with."
-msgstr "Exporter la base de données copie l'intégralité du fichier derrière l'application — chaque transaction, compte, catégorie, étiquette et paramètre — puis le remet à la feuille de partage du système sous forme de fichier budgie-backup daté. Définissez un code PIN et c'est ce même code PIN qui chiffre le fichier."
+msgid "Export Database copies the whole file behind the app — every transaction, account, category, tag and setting — then hands it to the system share sheet as a compressed, dated backup file. Set a PIN and that same PIN is what the file is encrypted with."
+msgstr "Exporter la base copie tout le fichier derrière l'app — chaque transaction, compte, catégorie, étiquette et réglage — puis le transmet à la feuille de partage du système sous forme de fichier de sauvegarde compressé et daté. Définissez un PIN et ce même PIN protège le fichier."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Export Database writes one file with everything, encrypted if you have a PIN set. Import Database restores it on a new phone after you pick the file and enter that PIN if the backup was encrypted."
-msgstr "Export Database écrit un fichier avec tout, chiffré si vous avez défini un code PIN. Import Database le restaure sur un nouveau téléphone après avoir choisi le fichier et saisi ce code PIN si la sauvegarde était chiffrée."
+msgid "Export Database writes one compressed file with everything, PIN-locked if you have a PIN set. Import Database restores it on a new phone after you pick the file and enter that PIN if the backup was PIN-locked. A restore replaces the data on that phone; it is not sync."
+msgstr "Exporter la base écrit un seul fichier compressé avec tout, verrouillé par PIN si vous en avez défini un. Importer la base le restaure sur un nouveau téléphone après avoir choisi le fichier et saisi ce PIN si la sauvegarde était verrouillée. Une restauration remplace les données de ce téléphone ; ce n'est pas de la synchronisation."
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Export Database writes the whole database to one compressed file. The Import Database row directly above it restores from that same file on another device."
+msgstr "Exporter la base écrit toute la base dans un seul fichier compressé. La ligne Importer la base juste au-dessus restaure à partir de ce même fichier sur un autre appareil."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Export Database writes the whole database to one file and hands it to the system share sheet, so you choose where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with any of them."
 msgstr "« Exporter la base de données » écrit toute la base dans un seul fichier et le transmet au menu de partage du système : vous choisissez la destination — iCloud Drive, Google Drive, Dropbox, un NAS. Budgie n'a aucun serveur de synchronisation ni aucune intégration avec ces services."
-
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "Export Database writes the whole database to one file. The Import Database row directly above it restores from that same file on any device."
-msgstr "Exporter la base de données écrit toute la base dans un seul fichier. La ligne Importer la base de données, juste au-dessus, la restaure depuis ce même fichier sur n’importe quel appareil."
-
-#: src/app/[lang]/features/data-export/metadata.ts
-#: src/app/[lang]/features/data-export/page.tsx
-#: src/app/[lang]/open-source/page.tsx
-#: src/app/[lang]/privacy/page.tsx
-msgid "Export Every Transaction You've Logged"
-msgstr "Exportez chaque transaction que vous avez enregistrée"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Export to JSON, CSV, or direct database access"
@@ -7940,6 +7945,13 @@ msgstr "Export en JSON, CSV, ou accès direct à la base de données"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Export your data as CSV anytime. Budgie doesn't lock you in."
 msgstr "Exportez vos données en CSV à tout moment. Budgie ne vous enferme pas."
+
+#: src/app/[lang]/features/data-export/metadata.ts
+#: src/app/[lang]/features/data-export/page.tsx
+#: src/app/[lang]/open-source/page.tsx
+#: src/app/[lang]/privacy/page.tsx
+msgid "Export Your Transactions, Plus a Full Backup"
+msgstr "Exportez vos transactions, plus une sauvegarde complète"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Extensive feature set beyond budgeting"
@@ -8483,10 +8495,6 @@ msgstr "Complet"
 msgid "Full access to source code for review and security audits"
 msgstr "Accès complet au code source pour examen et audits de sécurité"
 
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "Full database backup file for a complete restore — encrypted if a PIN was set at export time"
-msgstr "Fichier de sauvegarde complet de la base de données pour une restauration intégrale — chiffré si un code PIN était défini au moment de l'export"
-
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Full expense tracking with zero internet dependency"
 msgstr "Suivi complet des dépenses sans dépendance internet"
@@ -8564,8 +8572,8 @@ msgid "gestures"
 msgstr "gestes"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
-msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
-msgstr "Obtenez une confidentialité façon auto-hébergement sans gérer de serveur. Budgie garde les données sur votre téléphone, tandis que votre propre stockage cloud gère les sauvegardes."
+msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; you keep the backup file wherever you like. Zero ops, full ownership."
+msgstr "La confidentialité des apps financières auto-hébergées, sans serveur. Données sur votre téléphone, sauvegarde où vous voulez. Zéro exploitation."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Getting started"
@@ -8717,13 +8725,13 @@ msgstr "Taux de change historiques dans les analyses budgétaires"
 msgid "Hobbyist security researchers and bug hunters"
 msgstr "Des chercheurs en sécurité amateurs et chasseurs de bugs"
 
-#: src/app/[lang]/features/multi-currency/metadata.ts
-msgid "Hold accounts in any currency. A nightly background task fetches fresh FX rates so dashboards always show in your home currency. Cross-currency transfers preserve both legs."
-msgstr "Gérez des comptes dans n'importe quelle devise. Une tâche nocturne en arrière-plan récupère les derniers taux de change pour que les tableaux de bord s'affichent toujours dans votre devise principale. Les virements multi-devises préservent les deux legs."
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Hold accounts in any currency. Budgie refreshes exchange rates in the background so your dashboards always show in your home currency."
 msgstr "Tenez des comptes dans n'importe quelle devise. Budgie actualise les taux de change en arrière-plan pour que vos tableaux de bord s'affichent toujours dans votre devise principale."
+
+#: src/app/[lang]/features/multi-currency/metadata.ts
+msgid "Hold accounts in any currency. Rates refresh in the background so every total shows in your home currency. Cross-currency transfers keep both amounts."
+msgstr "Comptes dans toutes les devises. Les taux se mettent à jour en arrière-plan : tout s'affiche dans votre devise. Les virements gardent les deux montants."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Hold any transaction card"
@@ -8911,10 +8919,6 @@ msgstr "Comment définir une étiquette principale ?"
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "How do I settle a debt?"
 msgstr "Comment régler une dette ?"
-
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "How do I sync between phone and tablet?"
-msgstr "Comment synchroniser entre téléphone et tablette ?"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "How do local-first apps handle security?"
@@ -9213,8 +9217,8 @@ msgid "If you have questions about our open source license, commercial licensing
 msgstr "Si vous avez des questions sur notre licence open source, nos options de licence commerciale ou tout autre sujet lié aux licences de Budgie :"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "If you have set a PIN, yes: the file is encrypted with that PIN, so a provider sees encrypted bytes rather than your transactions. Without a PIN nothing is encrypted, so set one before the file leaves your device."
-msgstr "Si vous avez défini un code PIN, oui : le fichier est chiffré avec ce code PIN, de sorte qu'un fournisseur voit des octets chiffrés plutôt que vos transactions. Sans code PIN, rien n'est chiffré, alors définissez-en un avant que le fichier ne quitte votre appareil."
+msgid "If you have set a PIN, yes: the backup is locked with that PIN, so a provider sees unreadable data rather than your transactions. Without a PIN nothing is locked, so set one before the file leaves your device."
+msgstr "Si vous avez défini un PIN, oui : la sauvegarde est verrouillée par ce PIN, donc un fournisseur voit des données illisibles plutôt que vos transactions. Sans PIN, rien n'est verrouillé : définissez-en un avant que le fichier ne quitte votre appareil."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "If you haven’t exported your Mint data yet, here’s what you need to know:"
@@ -9303,8 +9307,8 @@ msgid "Import bank CSVs and PDFs without a cloud connection"
 msgstr "Importez des CSV et PDF bancaires sans connexion cloud"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and cannot be undone; confirm and it swaps everything in and restarts. A backup encrypted with a PIN asks for that PIN first, and it becomes the app PIN on the restored data."
-msgstr "Importer la base de données se trouve juste au-dessus. Choisissez le fichier et Budgie vous avertit que cela remplacera toutes les données actuelles et ne peut pas être annulé ; confirmez et tout est remplacé puis l'application redémarre. Une sauvegarde chiffrée avec un code PIN demande d'abord ce code PIN, qui devient le code PIN de l'application sur les données restaurées."
+msgid "Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and cannot be undone; confirm and it swaps everything in and restarts. A PIN-locked backup asks for the PIN it was made with first, and it becomes the app PIN on the restored data. A backup made by an older version of Budgie cannot be restored."
+msgstr "Importer la base se trouve juste au-dessus. Choisissez le fichier et Budgie vous prévient qu'il remplacera toutes les données actuelles et que c'est irréversible ; confirmez et il met tout en place puis redémarre. Une sauvegarde verrouillée par PIN demande d'abord le PIN avec lequel elle a été faite, qui devient le PIN de l'app sur les données restaurées. Une sauvegarde faite par une version plus ancienne de Budgie ne peut pas être restaurée."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Import the file into Budgie"
@@ -9354,10 +9358,6 @@ msgstr "En 2019, un laboratoire de recherche appelé Ink & Switch a publié un a
 msgid "In 2022, Plaid settled a $58 million class action lawsuit over allegations that they collected more data than users authorized and retained it longer than necessary. The settlement included claims that Plaid obtained login credentials through interfaces designed to look like bank login pages, leading users to believe they were logging directly into their banks."
 msgstr "En 2022, Plaid a regle un recours collectif de 58 millions de dollars pour des allegations selon lesquelles ils auraient collecte plus de donnees que ce que les utilisateurs avaient autorise et les auraient conservees plus longtemps que necessaire. Le reglement incluait des accusations selon lesquelles Plaid obtenait des identifiants via des interfaces concues pour ressembler a des pages de connexion bancaires, amenant les utilisateurs a croire qu'ils se connectaient directement a leur banque."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "In a background task while the app is closed, and again when you open it, with a short cooldown between refreshes. The newest rate for each currency pair replaces the one held on your device."
-msgstr "Dans une tâche d'arrière-plan pendant que l'application est fermée, puis à nouveau à son ouverture, avec un court délai entre deux actualisations. Le taux le plus récent de chaque paire de devises remplace celui conservé sur votre appareil."
-
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "In an era where data breaches and privacy violations make headlines daily, the way we handle our financial information has never been more critical. When it comes to managing your money, <0>your privacy isn’t just a feature—it’s a fundamental right</0>."
 msgstr "À une époque où les violations de données et les atteintes à la vie privée font quotidiennement la une des journaux, la façon dont nous gérons nos informations financières n'a jamais été aussi critique. En matière de gestion de votre argent, <0>votre vie privée n'est pas seulement une fonctionnalité — c'est un droit fondamental</0>."
@@ -9377,6 +9377,10 @@ msgstr "En decembre 2023, Intuit a annonce la fermeture de Mint apres 17 ans. Le
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "In practice, for most personal applications, this is rarely visible to users. Sync is fast enough that inconsistency windows are short. But your code should not assume instant consistency."
 msgstr "En pratique, pour la plupart des applications personnelles, cela est rarement visible par les utilisateurs. La synchronisation est suffisamment rapide pour que les fenêtres d'incohérence soient courtes. Mais votre code ne doit pas présumer d'une cohérence instantanée."
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "In the background, at intervals your phone's operating system chooses, and again whenever the app syncs — but never more than once every five minutes. The newest rate for each currency pair replaces the one held on your device."
+msgstr "En arrière-plan, à des intervalles choisis par le système d'exploitation de votre téléphone, et à nouveau à chaque synchronisation de l'app — mais jamais plus d'une fois toutes les cinq minutes. Le taux le plus récent de chaque paire de devises remplace celui conservé sur votre appareil."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "In the Categorize inbox, + Tags appears right after you categorize a single group, with the tags you usually give that merchant already selected, so the category and the <0>tags</0> are done in one pass."
@@ -9447,8 +9451,8 @@ msgid "Install + open"
 msgstr "Installer + ouvrir"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and confirm the warning. If the backup was encrypted with a PIN, Budgie asks for that PIN and keeps it as the lock on the restored database; an unencrypted backup restores with no PIN set."
-msgstr "Installe Budgie, ouvre les Réglages et touche « Importer la base de données » dans la liste Gestion des données. Choisis le fichier de sauvegarde et confirme l'avertissement. Si la sauvegarde a été chiffrée avec un code PIN, Budgie demande ce code et le conserve comme verrou de la base restaurée ; une sauvegarde non chiffrée se restaure sans code PIN."
+msgid "Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and confirm the warning. If the backup is PIN-locked, Budgie asks for the PIN it was made with and keeps it as the lock on the restored data; a backup made without a PIN restores with no PIN set. Backups made by an older version of Budgie cannot be restored."
+msgstr "Installez Budgie, ouvrez les Réglages et touchez Importer la base dans la liste Gestion des données. Choisissez le fichier de sauvegarde et confirmez l'avertissement. Si la sauvegarde est verrouillée par PIN, Budgie demande le PIN avec lequel elle a été faite et le garde comme verrou des données restaurées ; une sauvegarde faite sans PIN se restaure sans PIN. Les sauvegardes faites par une version plus ancienne de Budgie ne peuvent pas être restaurées."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Install on iPhone"
@@ -9481,10 +9485,6 @@ msgstr "La dette interpersonnelle est invisible pour la plupart des applications
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
 msgid "interest"
 msgstr "intérêt"
-
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Interest rate and maturity date fields for each deposit account"
-msgstr "Champs de taux d’intérêt et de date d’échéance pour chaque compte de dépôt"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Interest rate, deposits only"
@@ -10731,8 +10731,8 @@ msgid "Most expense apps"
 msgstr "La plupart des applications de dépenses"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an instrument symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and bank balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings → Runway."
-msgstr "La plupart des apps de dépenses s'arrêtent au fiduciaire. Budgie traite les positions crypto comme des instruments à part entière — chacune a une quantité, un symbole d'instrument et un prix quotidien. La valeur nette les additionne toutes. Runway fait exception : elle ne compte par défaut que les espèces et les soldes bancaires, et n'intègre la crypto à cette prévision que lorsque vous activez Inclure la crypto dans Réglages → Runway."
+msgid "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, a symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and bank balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings → Runway."
+msgstr "La plupart des apps de dépenses s'arrêtent aux monnaies classiques. Budgie traite les avoirs crypto comme de vrais instruments : chacun a une quantité, un symbole et un prix quotidien. Le patrimoine net les additionne tous. L'autonomie fait exception : elle ne compte par défaut que les espèces et les soldes bancaires, et n'intègre la crypto à cette prévision qu'une fois Inclure la crypto activé dans Réglages → Autonomie."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Most expense apps stop at “this month's spending.” Budgie gives you the full balance-sheet view — assets, liabilities, and the line they form between them — without spreadsheets."
@@ -10822,8 +10822,8 @@ msgstr "Comptes multi-devises — Budgie"
 #: src/app/[lang]/features/multi-currency/metadata.ts
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Multi-Currency Accounts With Live Rates"
-msgstr "Comptes multi-devises avec taux en temps réel"
+msgid "Multi-Currency Accounts, One Total"
+msgstr "Comptes multidevises, un seul total"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Multi-currency aware — euro-priced coins, dollar-priced coins, and UAH cash all reconcile"
@@ -10934,8 +10934,8 @@ msgid "Net worth and budget come in a small size for just the headline number, o
 msgstr "Le patrimoine net et le budget existent en petit format pour le seul chiffre principal, ou en format plus grand qui ajoute le détail en dessous. L'ajout rapide n'a qu'un format, taillé pour ses trois tuiles."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
-msgstr "Le patrimoine net respecte la direction de la dette : les passifs la réduisent, les créances l'augmentent. Mais aucune transaction ne touche jamais le compte de dette lui-même. Prêter de l'argent enregistre une dépense ; un remboursement enregistre un revenu — tous deux sur le compte par lequel l'argent est réellement passé, tous deux classés sous Prêt ou Emprunt. Le compte de dette ne fait que tenir le score : restant contre remboursé, jusqu'à ce que vous l'archiviez."
+msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until the debt is paid off."
+msgstr "Le patrimoine net respecte le sens de la dette : les dettes le réduisent, les créances l'augmentent. Mais aucune transaction ne touche jamais le compte de dette lui-même. Prêter de l'argent enregistre une dépense ; un remboursement enregistre un revenu — tous deux sur le compte par lequel l'argent est réellement passé, tous deux classés en Prêt ou Emprunt. Le compte de dette ne fait que tenir le score : restant contre remboursé, jusqu'à ce que la dette soit soldée."
 
 #: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Net worth tracker"
@@ -11300,8 +11300,8 @@ msgid "No. Budgie is completely free, with no paywall and no paid tier. The expe
 msgstr "Non. Budgie est entièrement gratuite, sans mur payant ni offre payante. Le suivi des dépenses, la synchronisation bancaire et l'IA sur l'appareil n'expirent jamais et ne vous facturent jamais rien."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
-msgstr "Non. Budgie stocke le taux d’intérêt et la date d’échéance, puis calcule une estimation du montant attendu à partir du solde actuel et des jours restants. Il ne crée pas automatiquement de transactions d’intérêts."
+msgid "No. Budgie stores the interest rate and maturity date, then estimates the payout as simple interest on the current balance for the days remaining. It does not automatically create interest transactions."
+msgstr "Non. Budgie enregistre le taux d'intérêt et la date d'échéance, puis estime le versement en intérêts simples sur le solde actuel pour les jours restants. Il ne crée pas automatiquement de transactions d'intérêts."
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "No. CSV import rebuilds the ledger from the file: existing accounts, categories and transactions are cleared first. Treat it as the way to move in from another app, not as a monthly top-up."
@@ -11407,13 +11407,13 @@ msgstr "Non. L'interrupteur modifie ce que Budgie affiche tant qu'elle n'est pas
 msgid "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
 msgstr "Non. Le jeton vit sur la connexion, donc le mettre à jour depuis les paramètres de synchronisation d'un compte quelconque restaure d'un coup tous les comptes qui partagent cette connexion."
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "No. There is no live ticker and no account to create; Budgie fetches the missing days and stores them in your local database."
+msgstr "Non. Il n'y a pas de cours en direct ni de compte à créer ; Budgie récupère les jours manquants et les stocke dans votre base locale."
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No. There is no paid tier and no ads — every feature ships free in the app you install."
 msgstr "Non. Il n'y a ni offre payante ni publicité — chaque fonctionnalité est gratuite dans l'application que vous installez."
-
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "No. There is no ticker connection and no account; the backfill uses CoinGecko's public endpoints and writes the results into your local database."
-msgstr "Non. Il n'y a ni connexion ticker ni compte ; le complément utilise les points de terminaison publics de CoinGecko et écrit les résultats dans votre base de données locale."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "No. They are local notifications scheduled by the app itself from data already on your device. Nothing is sent to a server, and no account is required."
@@ -11447,6 +11447,10 @@ msgstr "Non. Vous ouvrez l'écran, vérifiez les nombres et confirmez sur la car
 #: src/app/[lang]/privacy/page.tsx
 msgid "None"
 msgstr "Aucun"
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "None — a restore replaces the other device's data"
+msgstr "Aucune — une restauration remplace les données de l'autre appareil"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "None — Budgie talks to Monobank directly"
@@ -11729,6 +11733,10 @@ msgstr "Hors ligne d’abord. Privé. Propulsé par l’IA."
 msgid "Offline, private, and card-code aware"
 msgstr "Hors ligne, privé et attentif aux codes MCC"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Often a web app, or none"
+msgstr "Souvent une app web, ou rien"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Often dropped or recomputed"
 msgstr "Souvent supprimé ou recalculé"
@@ -11752,10 +11760,6 @@ msgstr "Souvent oui"
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Older exports often contain the account currency and amount, but no exchange-rate snapshot. Budgie treats that as incomplete valuation data, not as corrupt transaction data. The entry is still usable; it simply needs a base value before it should affect multi-currency charts."
 msgstr "Les anciens exports contiennent souvent la devise et le montant du compte, mais pas de taux de change. Budgie considère cela comme une valorisation incomplète, et non comme des données de transaction corrompues. L'écriture reste utilisable ; il lui faut simplement une valeur de base avant d'influer sur les graphiques multidevises."
-
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Older history backfills from CoinGecko one day at a time, with a visible progress indicator"
-msgstr "L'historique plus ancien est complété depuis CoinGecko jour après jour, avec un indicateur de progression visible"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "OLED-friendly black for the background. Cards and surfaces are dark gray for hierarchy, but the canvas pixels are off — saves battery on OLED screens."
@@ -11911,10 +11915,6 @@ msgstr "Un compte par portefeuille et par actif, chacun avec son solde, son hist
 msgid "One amount, entered once"
 msgstr "Un montant, saisi une seule fois"
 
-#: src/app/[lang]/features/database-backup/metadata.ts
-msgid "One backup file, encrypted once you set a PIN. No account, restore by picking the file."
-msgstr "Un fichier de sauvegarde, chiffré dès que vous définissez un code PIN. Pas de compte, restauration en choisissant le fichier."
-
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "One badge. Scan a list at a glance."
 msgstr "Un badge. Scannez une liste en un coup d’œil."
@@ -11943,6 +11943,14 @@ msgstr "Une pièce, trois écrans"
 msgid "One column per field"
 msgstr "Une colonne par champ"
 
+#: src/app/[lang]/features/database-backup/metadata.ts
+msgid "One compressed backup file, PIN-locked once you set a PIN. No account, restore by picking the file."
+msgstr "Un seul fichier de sauvegarde compressé, verrouillé par PIN dès que vous en définissez un. Pas de compte, restauration en choisissant le fichier."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "One compressed file holds every transaction, account, category, tag and setting on your phone"
+msgstr "Un seul fichier compressé contient chaque transaction, compte, catégorie, étiquette et réglage de votre téléphone"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One connection behind many accounts — cards, jars, and deposits from the same bank"
 msgstr "Une connexion derrière plusieurs comptes — cartes, cagnottes et dépôts de la même banque"
@@ -11954,10 +11962,6 @@ msgstr "Un identifiant par banque, partagé par tous les comptes qui en dépende
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One currency, often hardcoded"
 msgstr "Une seule devise, souvent codée en dur"
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "One file holds every transaction, account, category, tag and setting on your phone"
-msgstr "Un seul fichier contient chaque transaction, compte, catégorie, étiquette et paramètre sur votre téléphone"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "One file holds the database"
@@ -12144,8 +12148,8 @@ msgid "One tag per transaction can be promoted to “primary” and stands out a
 msgstr "Une étiquette par transaction peut être promue « principale » et se démarquer sous forme de pastille mise en évidence"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
-msgstr "Un seul geste exporte tout l'historique : aucune période à choisir, aucun fichier partiel à rapprocher ensuite"
+msgid "One tap exports your whole history — no range to pick, and deleted or merged-away rows stay out"
+msgstr "Un geste exporte tout votre historique — pas de plage à choisir, et les lignes supprimées ou fusionnées restent exclues"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "One tap on the mic"
@@ -12184,12 +12188,12 @@ msgid "One-tap action from any transaction's long-press menu"
 msgstr "Action en un toucher depuis le menu d’appui long d’une transaction"
 
 #: src/app/[lang]/features/data-export/metadata.ts
-msgid "One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — that you can save to iCloud, Drive, or anywhere. Your data, your call."
-msgstr "Export CSV de toutes les transactions en un geste, plus un fichier de sauvegarde complet de la base de données — chiffré avec votre code PIN si vous en définissez un — que vous pouvez enregistrer sur iCloud, Drive, ou où vous le souhaitez. Vos données, votre décision."
+msgid "One-tap CSV export of your transactions plus a compressed full backup, PIN-locked if you set a PIN. Save it to iCloud, Drive, or anywhere."
+msgstr "Export CSV en un geste et sauvegarde complète compressée, verrouillée par PIN si vous en avez un. À enregistrer dans iCloud, Drive ou ailleurs."
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — you can save to iCloud, Drive, or anywhere."
-msgstr "Export CSV de toutes les transactions en un geste, plus un fichier de sauvegarde complet de la base de données — chiffré avec votre code PIN si vous en définissez un — que vous pouvez enregistrer sur iCloud, Drive, ou où vous le souhaitez."
+msgid "One-tap CSV export of your transactions, plus a compressed full backup file — locked with your PIN if you set one — you can save to iCloud, Drive, or anywhere."
+msgstr "Export CSV de vos transactions en un geste, plus un fichier de sauvegarde complet compressé — verrouillé par votre PIN si vous en avez un — à enregistrer dans iCloud, Drive ou ailleurs."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "One-tap drill-down into only the uncategorized transactions that match your current filters"
@@ -12221,8 +12225,8 @@ msgid "Only fees are spending"
 msgstr "Seuls les frais sont des dépenses"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "Only if a PIN was set when you exported it. The backup is a copy of the database file, so it carries whatever state your data was in: encrypted with your PIN if you had one set, and unencrypted if you never did. Restoring an encrypted backup asks for the PIN that backup was made with, and that PIN becomes the app PIN."
-msgstr "Seulement si un PIN était défini au moment de l'exportation. La sauvegarde est une copie du fichier de la base de données, elle porte donc l'état dans lequel se trouvaient vos données : chiffrée avec votre PIN si vous en aviez défini un, et non chiffrée si ce n'était pas le cas. Restaurer une sauvegarde chiffrée demande le PIN avec lequel cette sauvegarde a été faite, et ce PIN devient le PIN de l'application."
+msgid "Only if a PIN was set when you exported it: the backup is locked with your PIN if you had one set, and not locked if you never did. Restoring a PIN-locked backup asks for the PIN that backup was made with, and that PIN becomes the app PIN."
+msgstr "Seulement si un PIN était défini à l'export : la sauvegarde est verrouillée par votre PIN si vous en aviez un, et non verrouillée sinon. Restaurer une sauvegarde verrouillée par PIN demande le PIN avec lequel elle a été faite, et ce PIN devient le PIN de l'app."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Only if you want to. Budgie can suggest a starting budget derived from your own recent transactions, offer a generic starter split across common categories, or hand you an empty canvas."
@@ -12493,10 +12497,6 @@ msgstr "Les noms d'origine des catégories et tags restent inchangés à côté 
 msgid "Original Description"
 msgstr "Original Description"
 
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Original entries stay linked under the consolidated transaction for full audit trail"
-msgstr "Les entrées d’origine restent reliées sous la transaction consolidée pour une piste d’audit complète"
-
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Original FX kept per leg"
 msgstr "Taux de change d’origine conservé par leg"
@@ -12504,6 +12504,10 @@ msgstr "Taux de change d’origine conservé par leg"
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Original name, untouched"
 msgstr "Nom d’origine, intact"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Originals stay linked under the consolidated transaction, so every merge can be inspected and reverted"
+msgstr "Les originaux restent liés sous la transaction consolidée, si bien que chaque fusion peut être inspectée et annulée"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Other applicable data protection and privacy laws"
@@ -12581,9 +12585,13 @@ msgstr "Page introuvable"
 msgid "Paid for a new phone in three parts? Turn the purchase into a plan in a few taps. Budgie attaches every monthly part as it arrives and keeps the next payment on Home."
 msgstr "Vous avez payé un nouveau téléphone en trois fois ? Transformez l’achat en plan en quelques touches. Budgie rattache chaque échéance à son arrivée et garde le prochain paiement sur l’écran d’accueil."
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Paid off shows a clear done state and the debt leaves the home screen; repay too much and the overpaid amount is shown"
+msgstr "Une dette soldée affiche un état terminé clair et quitte l'écran d'accueil ; si vous remboursez trop, le montant en trop est affiché"
+
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
-msgstr "Les paires correspondent si le taux de change implicite se situe dans une fourchette de tolérance plausible. Les deux mouvements doivent quand même arriver dans la même fenêtre de douze heures que les paires dans la même devise. Les montants d'origine dans les deux devises sont conservés sur chaque mouvement."
+msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Both halves still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved."
+msgstr "Les paires correspondent si le taux de change implicite reste dans une marge de tolérance plausible. Les deux moitiés doivent aussi tomber dans la même fenêtre de douze heures que les paires de même devise. Les montants d'origine dans les deux devises sont conservés."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Pairs with the PIN lock for a fuller privacy seal"
@@ -12800,6 +12808,10 @@ msgstr "Verrouillage par code PIN, juste au-dessus"
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Pin the side you type"
 msgstr "Épinglez le côté que vous saisissez"
+
+#: src/app/[lang]/features/database-backup/metadata.ts
+msgid "PIN-Locked Database Backup — Budgie"
+msgstr "Sauvegarde de base verrouillée par PIN — Budgie"
 
 #: src/app/[lang]/security/page.tsx
 msgid "PIN, biometrics, screenshot protection, and on-device encryption the moment you set a PIN. Budgie secures your financial data at every layer."
@@ -13423,8 +13435,8 @@ msgid "Real Data Breaches in Financial Apps"
 msgstr "Violations de donnees reelles dans les applications financieres"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a Revolut card, a crypto wallet, a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and “include in net worth” toggle."
-msgstr "La vraie vie est multi-comptes. Un compte courant, une cagnotte d’épargne, un dépôt à terme, une carte Revolut, un portefeuille crypto, un prêt parental. Budgie traite chacun comme un compte de premier ordre, avec sa propre devise, son type, son solde et son interrupteur « inclure dans le patrimoine net »."
+msgid "Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a travel card, a crypto wallet, a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and “include in net worth” toggle."
+msgstr "La vraie vie est multi-comptes. Un compte courant, une cagnotte d'épargne, un dépôt à terme, une carte de voyage, un portefeuille crypto, un prêt familial. Budgie traite chacun comme un vrai compte avec sa propre devise, son type, son solde et son interrupteur « inclure dans le patrimoine net »."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Real-World Examples of Local-First Apps"
@@ -13467,8 +13479,8 @@ msgid "Reconcile without fake income."
 msgstr "Réconcilier sans faux revenus."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Record or attach the repayment as a normal income or expense — Budgie categorizes it Lending or Borrowing and moves the remaining balance. No transfer ever touches the debt account itself; archive it once it's repaid."
-msgstr "Enregistrez ou rattachez le remboursement comme un revenu ou une dépense normale — Budgie le classe sous Prêt ou Emprunt et met à jour le solde restant. Aucun virement ne touche jamais le compte de dette lui-même ; archivez-le une fois remboursé."
+msgid "Record or attach the repayment as a normal income or expense — Budgie categorizes it Lending or Borrowing and moves the remaining balance. No transfer ever touches the debt account itself. Once it's fully repaid the debt shows a paid-off state and leaves the home screen; archive it from there to keep it in your history."
+msgstr "Saisissez ou rattachez le remboursement comme un revenu ou une dépense ordinaire — Budgie le classe en Prêt ou Emprunt et met à jour le solde restant. Aucun virement ne touche le compte de dette lui-même. Une fois la dette entièrement remboursée, elle affiche un état soldé et quitte l'écran d'accueil ; archivez-la à partir de là pour la garder dans votre historique."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Recreate your category structure (often an opportunity to simplify)"
@@ -13525,8 +13537,8 @@ msgid "Refunds are subject to the policies of the app store (Apple App Store or 
 msgstr "Les remboursements sont soumis aux politiques de la boutique d'applications (Apple App Store ou Google Play Store)"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier expense. Budgie consolidates clear refund matches automatically and leaves uncertain cases exactly as they arrived."
-msgstr "Les remboursements posent le problème inverse : un crédit de commerçant peut ressembler à un revenu alors qu'il annule une dépense antérieure. Budgie consolide automatiquement les remboursements évidents et laisse les cas incertains exactement tels qu'ils sont arrivés."
+msgid "Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier expense. Budgie consolidates clear refund matches automatically — including refunds in another currency that come back slightly larger than the original expense after conversion — and leaves uncertain cases exactly as they arrived."
+msgstr "Les remboursements posent le problème inverse : un crédit marchand peut ressembler à un revenu alors qu'il annule une dépense antérieure. Budgie consolide automatiquement les correspondances claires — y compris les remboursements dans une autre devise qui dépassent légèrement la dépense d'origine après conversion — et laisse les cas incertains tels qu'ils sont arrivés."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Refunds reduce what you have spent, so a returned purchase gives the budget its money back"
@@ -14199,8 +14211,8 @@ msgid "Set a PIN and every amount on every widget turns into dots. The layout st
 msgstr "Activez un code PIN et chaque montant de chaque widget se transforme en points. La mise en page reste la même, vous voyez donc toujours qu'un budget se resserre ou que le patrimoine net a bougé, simplement plus les chiffres eux-mêmes."
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Set a PIN and the file is encrypted with it — no vendor format, no conversion step"
-msgstr "Définissez un code PIN et le fichier est chiffré avec celui-ci — pas de format propriétaire, pas d'étape de conversion"
+msgid "Set a PIN and the backup is locked with it — no vendor format, no conversion step"
+msgstr "Définissez un PIN et la sauvegarde est verrouillée avec lui — pas de format propriétaire, pas d'étape de conversion"
 
 #: src/app/[lang]/security/page.tsx
 msgid "Set a PIN and your data is encrypted on the device — unreadable without those digits"
@@ -14351,8 +14363,8 @@ msgid "Since your financial data is stored locally on your device, international
 msgstr "Vos données financières étant stockées localement sur votre appareil, les transferts internationaux de données sont minimes. Toutefois, si vous utilisez des fonctions cloud facultatives, vos données peuvent être traitées dans les pays où nos prestataires de services exercent leur activité. Nous veillons à mettre en place des garanties appropriées pour protéger vos données conformément aux lois applicables en matière de protection des données, notamment le RGPD et le CCPA."
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Single-currency apps can't model how most people actually save and spend — a UK current account, a Wise USD pot, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing."
-msgstr "Les applications mono-devise ne peuvent pas modéliser la façon dont la plupart des gens épargnent et dépensent vraiment — un compte courant britannique, un pot USD Wise, un salaire UAH. Budgie suit chacun dans sa devise native et convertit vers votre devise principale lors des totaux."
+msgid "Single-currency apps can't model how most people actually save and spend — a UK current account, a USD savings pot, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing."
+msgstr "Les apps mono-devise ne peuvent pas modéliser la façon dont la plupart des gens épargnent et dépensent — un compte courant britannique, une cagnotte en dollars, un salaire en hryvnias. Budgie suit chacun dans sa devise d'origine et convertit vers votre devise de base lors de la somme."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Single-device focus means no automatic cloud sync between devices. We think this is the right trade-off for privacy, but we understand it’s not for everyone. If you need multi-device sync, Actual Budget with self-hosting might be better for you."
@@ -14645,6 +14657,10 @@ msgstr "Tableurs : l'option du contrôle absolu"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "SQLite database you own and control"
 msgstr "Base de données SQLite que vous possédez et contrôlez"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Start a deposit from a synced bank expense, keeping the currency the payment was made in"
+msgstr "Ouvrez un dépôt à partir d'une dépense bancaire synchronisée, en gardant la devise dans laquelle le paiement a été fait"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Start a transaction from your Home Screen"
@@ -14945,8 +14961,8 @@ msgid "Sync repairs find duplicate imports and pair your own-card transfers auto
 msgstr "Les réparations de synchronisation détectent les importations en double et associent automatiquement les virements entre vos propres cartes"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Sync the account the money left and the account it landed in, and each one imports its own leg — an expense on one side, an income on the other. Left alone, one movement lands in your ledger twice."
-msgstr "Synchronisez le compte d'où l'argent est parti et celui où il est arrivé : chacun importe son propre volet — une dépense d'un côté, un revenu de l'autre. Sans rien faire, un même mouvement entre deux fois dans vos comptes."
+msgid "Sync the account the money left and the account it landed in, and each one imports its own half — an expense on one side, an income on the other. Left alone, one movement lands in your ledger twice."
+msgstr "Synchronisez le compte que l'argent a quitté et celui où il est arrivé : chacun importe sa propre moitié — une dépense d'un côté, un revenu de l'autre. Laissé tel quel, un seul mouvement apparaît deux fois dans votre registre."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "System-adaptive dark theme that respects OLED displays and switches with your device — or lock to dark or light."
@@ -15242,8 +15258,8 @@ msgid "The app opens on the lock screen"
 msgstr "L'application s'ouvre sur l'écran de verrouillage"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "The app ships a year of daily closes for the nine largest assets. Beyond that, the background queue fills in older days a day at a time until it catches up."
-msgstr "L'app inclut un an de clôtures quotidiennes pour les neuf plus grands actifs. Au-delà, la file d'attente en arrière-plan complète les jours plus anciens jour après jour jusqu'à rattraper."
+msgid "The app ships a year of daily closes for the nine largest assets. After that, Budgie fills in the days since then, up to today."
+msgstr "L'app est livrée avec un an de clôtures quotidiennes pour les neuf plus gros actifs. Ensuite, Budgie complète les jours écoulés depuis, jusqu'à aujourd'hui."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "The app source is public. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers."
@@ -15270,8 +15286,8 @@ msgid "The average user logs the same merchant more than thirty times a year. Ty
 msgstr "L'utilisateur moyen enregistre le même marchand plus de trente fois par an. Saisir la catégorie, choisir une étiquette, entrer le montant habituel et sélectionner le bon compte pour le même café est un effort gaspillé — l'information est déjà dans votre historique. Budgie la présente sous forme de pastilles à toucher dès l'ouverture du formulaire, de sorte que confirmer une dépense familière prend un toucher au lieu de sept."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "The backfill reports its progress per asset, so you can see how much of the older history is still filling in and when it has finished."
-msgstr "Le complément indique sa progression par actif, donc vous voyez quelle part de l'historique plus ancien est encore en cours et quand il est terminé."
+msgid "The backfill reports its progress per asset, so you can see how much of the recent history is still filling in and when it has finished."
+msgstr "Le remplissage indique sa progression par actif, pour que vous voyiez quelle part de l'historique récent se complète encore et quand c'est terminé."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "The background is solid black, not a dimmed grey panel layered over a light design."
@@ -15688,8 +15704,8 @@ msgid "The next payment, right on Home"
 msgstr "Le prochain paiement, directement sur l’écran d’accueil"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "The nine largest crypto assets ship with a year of daily prices in euro and dollar. Anything beyond that is pulled from CoinGecko's public market data, one missing day at a time, and only for the crypto accounts you hold."
-msgstr "Les neuf plus grands actifs crypto sont livrés avec un an de cours quotidiens en euro et en dollar. Au-delà, les données proviennent des données de marché publiques de CoinGecko, un jour manquant à la fois, et uniquement pour les comptes crypto que vous détenez."
+msgid "The nine largest crypto assets ship with a year of daily prices in euro and dollar. The days since then are fetched automatically, up to today, and only for the crypto accounts you hold."
+msgstr "Les neuf plus gros actifs crypto sont livrés avec un an de prix quotidiens en euros et en dollars. Les jours écoulés depuis sont récupérés automatiquement jusqu'à aujourd'hui, et seulement pour les comptes crypto que vous détenez."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The O'Saasy license allows you to:"
@@ -15716,8 +15732,12 @@ msgid "The original Cyrillic, Greek, or Arabic name stays exactly as you wrote i
 msgstr "Le nom d'origine en cyrillique, en grec ou en arabe reste exactement tel que vous l'avez écrit ; la forme anglaise est aussi ce que vos recherches trouvent. Aucune donnée ne quitte jamais votre appareil."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "The other leg, still there"
-msgstr "L'autre volet, toujours là"
+msgid "The other account's IBAN as the primary signal where the bank sends it; amount and time-window matching for banks that don't"
+msgstr "L'IBAN de l'autre compte comme signal principal quand la banque l'envoie ; rapprochement par montant et fenêtre de temps pour les banques qui ne l'envoient pas"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "The other half, still there"
+msgstr "L'autre moitié, toujours là"
 
 #: src/app/[lang]/not-found.tsx
 msgid "The page you are looking for does not exist or has been moved."
@@ -16569,8 +16589,8 @@ msgid "Track bank, cash, deposit, crypto, and debt accounts in one private app. 
 msgstr "Suivez vos comptes bancaires, espèces, dépôts, crypto et dettes dans une seule appli privée. La crypto se regroupe par devise, archivez ou marquez comme inactif, et contrôle du patrimoine net multidevise."
 
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
-msgid "Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest ship with a year of daily price history."
-msgstr "Suivez Bitcoin, Ethereum et 200 actifs crypto aux côtés de vos comptes bancaires dans une seule vue du patrimoine net. Les plus importants sont livrés avec un an d'historique quotidien des prix."
+msgid "Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest come with a year of daily price history."
+msgstr "Bitcoin, Ethereum et 200 actifs crypto à côté de vos comptes bancaires. Les plus gros incluent un an d'historique de prix quotidiens."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Track Bitcoin, Ethereum, and two hundred crypto assets alongside your bank accounts in a single net-worth view."
@@ -16589,8 +16609,8 @@ msgid "Track expenses, sync banks, manage crypto with complete privacy. Multi-cu
 msgstr "Suivez vos dépenses, synchronisez vos banques et gérez vos cryptomonnaies en toute confidentialité. Multi-devises, suivi des dettes et analyses par IA."
 
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
-msgid "Track fixed-term deposits as a dedicated account type with interest rate, maturity date, days remaining, expected payout, close-to-account transfers, and net worth control."
-msgstr "Suivez les dépôts à terme comme un type de compte dédié, avec taux d’intérêt, date d’échéance, jours restants, montant attendu, virements vers un compte à la clôture et contrôle du patrimoine net."
+msgid "Track fixed-term deposits with interest rate, maturity date, expected payout, and start one straight from a bank expense. Close it into any account."
+msgstr "Dépôts à terme avec taux, échéance et versement attendu. Ouvrez-en un depuis une dépense bancaire, clôturez-le vers n'importe quel compte."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Track fixed-term savings as deposit accounts kept separate from everyday spending, with interest rate, maturity date, days remaining, and expected payout."
@@ -16602,8 +16622,8 @@ msgstr "Suivez dans n'importe quelle devise. Totalisez dans la vôtre."
 
 #: src/app/[lang]/features/multi-currency/metadata.ts
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Track in any currency. Sum in yours. Daily FX-rate refresh keeps the math fair."
-msgstr "Suivez dans n'importe quelle devise. Totalisez dans la vôtre. L'actualisation quotidienne des taux de change maintient les calculs exacts."
+msgid "Track in any currency. Sum in yours. Exchange rates refresh in the background."
+msgstr "Suivez dans n'importe quelle devise. Additionnez dans la vôtre. Les taux de change se mettent à jour en arrière-plan."
 
 #: src/app/[lang]/features/debt-tracking/metadata.ts
 msgid "Track money lent or borrowed as first-class debt accounts. Lending and repayments book real income or expense, so they count in your monthly analytics."
@@ -16835,8 +16855,8 @@ msgid "Two sources, both your own data: the weekly and monthly patterns Budgie s
 msgstr "Deux sources, toutes deux vos propres données : les schémas hebdomadaires et mensuels que Budgie repère dans vos transactions, et les correspondances les plus proches de l'intitulé que vous saisissez dans votre propre historique. Aucun appel au cloud."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it."
-msgstr "Deux banques synchronisées voient le même virement deux fois — une fois en débit, une fois en crédit. Sans consolidation, vos dépenses doublent. Budgie fait correspondre la paire par montant, une fenêtre temporelle et l'IBAN de contrepartie lorsque la banque le fournit."
+msgid "Two synced banks see the same transfer twice — once going out, once coming in. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and the other account's IBAN when the bank provides it."
+msgstr "Deux banques synchronisées voient le même virement deux fois — une fois sortant, une fois entrant. Sans consolidation, vos dépenses doublent. Budgie associe la paire grâce au montant, à une fenêtre de temps et à l'IBAN de l'autre compte quand la banque le fournit."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Two taps from list to done — long-press plus action, no intermediate screens"
@@ -16993,8 +17013,8 @@ msgid "Use Budgie CSV import screen to map your file columns to Budgie fields. T
 msgstr "Utilisez l'écran d'import CSV de Budgie pour mapper les colonnes de votre fichier aux champs de Budgie. L'importateur affiche un aperçu des premières lignes pour vérifier le mapping avant de valider. Budgie déduplique les transactions à l'import, donc les plages de dates qui se chevauchent entre fichiers ne créeront pas de doublons."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Use the Close Deposit action, select the destination account, and confirm. Budgie transfers the remaining deposit balance to that account and archives the deposit."
-msgstr "Utilisez l’action Clôturer le dépôt, sélectionnez le compte de destination, puis confirmez. Budgie transfère le solde restant du dépôt vers ce compte et archive le dépôt."
+msgid "Use the Close Deposit action, select the destination account, and confirm. Budgie transfers the remaining deposit balance to that account and archives the deposit. An archived deposit can be restored from Settings."
+msgstr "Utilisez l'action Clôturer le dépôt, choisissez le compte de destination et confirmez. Budgie vire le solde restant du dépôt vers ce compte et archive le dépôt. Un dépôt archivé peut être restauré depuis les Réglages."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Use the Service for any illegal or unauthorized purpose"
@@ -17019,6 +17039,10 @@ msgstr "Les utilisateurs contrôlent leur propre stratégie de sauvegarde. Cela 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Users notice the difference immediately. Applications feel “snappy“ or “responsive” in ways that are hard to articulate but immediately apparent. This is not optimization; it is a fundamental architectural advantage."
 msgstr "Les utilisateurs remarquent la différence immédiatement. Les applications semblent « réactives » et « fluides » d'une manière difficile à exprimer mais immédiatement perceptible. Ce n'est pas de l'optimisation : c'est un avantage architectural fondamental."
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Usually via your server"
+msgstr "Généralement via votre serveur"
 
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "ux"
@@ -17277,10 +17301,6 @@ msgstr "Nous avons conçu Budgie pour être tout aussi pratique sans les comprom
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "We’ve tested each of these apps extensively. Here’s how they stack up for technical users:"
 msgstr "Nous avons testé chacune de ces applications en profondeur. Voici comment elles se positionnent pour les utilisateurs techniques :"
-
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Web wrapper or none"
-msgstr "Wrapper web ou aucun"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Web-based (no native mobile apps)"
@@ -17562,6 +17582,10 @@ msgstr "Et si je gagne plus que je ne dépense ?"
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "What if I forget my PIN?"
 msgstr "Que se passe-t-il si j'oublie mon code PIN ?"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "What if I logged an expense by hand and my bank syncs it later?"
+msgstr "Et si j'ai saisi une dépense à la main et que ma banque la synchronise plus tard ?"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "What if I want my own category mapping?"
@@ -18710,8 +18734,8 @@ msgid "Yes — Budgie's source is public. Read the network code yourself: github
 msgstr "Oui — le code source de Budgie est public. Lisez vous-même le code réseau : github.com/budgie-at/budgie."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Yes — buys are inflows to the holding account; sells are outflows with the realized FX. The market screen turns that history into an average cost, a cost basis and an unrealized gain for the position."
-msgstr "Oui — les achats sont des entrées sur le compte de position, les ventes des sorties avec le change réalisé. L'écran de marché transforme cet historique en coût moyen, prix de revient et gain latent pour la position."
+msgid "Yes — buys add to the holding and sells take from it. The market screen turns that history into an average cost, a cost basis and an unrealized gain for the position. Realized gains are not shown."
+msgstr "Oui — les achats augmentent la position et les ventes la réduisent. L'écran de marché transforme cet historique en coût moyen, prix de revient et gain latent pour la position. Les gains réalisés ne sont pas affichés."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Yes — by default, none is primary. The badge appears only when you explicitly promote one."
@@ -18722,8 +18746,8 @@ msgid "Yes — cards, jars, and deposit accounts from the same bank all attach t
 msgstr "Oui — les cartes, les cagnottes et les comptes de dépôt d'une même banque se rattachent tous à une seule connexion et apparaissent ensemble sur son écran."
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Yes — each account, transaction, and transfer leg keeps its original currency and amount, and that is what you see on the account and transaction screens. Only the aggregated totals are shown in your base currency."
-msgstr "Oui : chaque compte, chaque transaction et chaque volet de virement conserve sa devise et son montant d'origine, et c'est ce que vous voyez sur les écrans de comptes et de transactions. Seuls les totaux agrégés sont affichés dans votre devise de référence."
+msgid "Yes — each account, transaction, and transfer keeps its original currency and amount, and that is what you see on the account and transaction screens. Only the aggregated totals are shown in your base currency."
+msgstr "Oui — chaque compte, transaction et virement garde sa devise et son montant d'origine, et c'est ce que vous voyez sur les écrans de compte et de transaction. Seuls les totaux agrégés sont affichés dans votre devise de base."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Yes — each asset is a normal account, so it rolls into net worth next to your bank accounts, deposits, and debts."
@@ -18774,8 +18798,8 @@ msgid "Yes — tapping a category row on the budget detail screen opens the tran
 msgstr "Oui — toucher une ligne de catégorie sur l'écran de détail du budget ouvre la liste des transactions filtrée sur cette catégorie et cette période budgétaire exacte."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control: NAS, S3, your own server, your own cloud."
-msgstr "Oui — la sauvegarde n'est qu'un fichier, chiffré si vous aviez défini un code PIN au moment de sa création. Enregistrez-la dans un emplacement que vous contrôlez : NAS, S3, votre propre serveur, votre propre cloud."
+msgid "Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control: NAS, your own server, your own cloud."
+msgstr "Oui — la sauvegarde n'est qu'un fichier, verrouillé par PIN si vous en aviez défini un lors de sa création. Enregistrez-la où vous voulez : NAS, votre propre serveur, votre propre cloud."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Yes — the filter row has an amount-range chip beside the date one. Give it a From value, a To value, or both, and it stacks with every other active filter."
@@ -18837,6 +18861,10 @@ msgstr "Oui, avec consentement. Lorsque vous acceptez des conditions d’utilisa
 msgid "Yes, YNAB supports manual transaction entry. However, the app is designed around bank sync, and some users find the manual-only experience less polished. If you’re using YNAB without bank sync for privacy reasons, you might consider an app that was designed for manual entry from the start."
 msgstr "Oui, YNAB prend en charge la saisie manuelle des transactions. Cependant, l'application est conçue autour de la synchronisation bancaire, et certains utilisateurs trouvent l'expérience en saisie manuelle uniquement moins aboutie. Si vous utilisez YNAB sans synchronisation bancaire pour des raisons de confidentialité, vous pourriez envisager une application conçue pour la saisie manuelle dès le départ."
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Yes. A refund in another currency can come back slightly larger than the original expense once converted; Budgie still matches it when it is clearly the same purchase."
+msgstr "Oui. Un remboursement dans une autre devise peut revenir légèrement plus élevé que la dépense d'origine une fois converti ; Budgie l'associe quand il s'agit clairement du même achat."
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Yes. A rule holds several actions, so the same match can set the category and add a tag, or convert the transaction into a transfer to a chosen account."
 msgstr "Oui. Une règle contient plusieurs actions, si bien que la même correspondance peut définir la catégorie et ajouter une étiquette, ou convertir la transaction en transfert vers un compte choisi."
@@ -18889,6 +18917,10 @@ msgstr "Oui. Budgie est open source. Vous pouvez examiner le code de synchronisa
 msgid "Yes. Chart palettes recompute for legibility — emerald accents shift slightly for contrast on a dark canvas."
 msgstr "Oui. Les palettes de graphiques se recalculent pour la lisibilité — les accents émeraude se décalent légèrement pour le contraste sur un fond sombre."
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Yes. Connect Binance with a read-only key and your balances and history come into Budgie next to your other accounts. Other exchanges and wallets are tracked by hand."
+msgstr "Oui. Connectez Binance avec une clé en lecture seule et vos soldes et votre historique arrivent dans Budgie à côté de vos autres comptes. Les autres plateformes et portefeuilles se suivent à la main."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Yes. CRDTs were specifically designed to enable real-time collaboration without central coordination. Applications like Figma and Linear demonstrate that local-first architecture can support sophisticated collaborative features. The key difference is that collaboration happens through peer synchronization rather than through a central server."
 msgstr "Oui. Les CRDTs ont été spécifiquement conçus pour permettre la collaboration en temps réel sans coordination centrale. Des applications comme Figma et Linear démontrent que l'architecture local-first peut prendre en charge des fonctionnalités collaboratives sophistiquées. La différence clé est que la collaboration se fait par synchronisation entre pairs plutôt que via un serveur central."
@@ -18898,12 +18930,12 @@ msgid "Yes. Debt is a dedicated account type with explicit “I owe” / “owes
 msgstr "Oui. La dette est un type de compte dédié avec direction explicite « je dois » / « me doit ». Voir Suivi des dettes et prêts pour les détails."
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Yes. Deposit is a dedicated account type with interest rate, maturity date, days remaining, expected payout, and a Close Deposit action that transfers the balance to a selected destination account."
-msgstr "Oui. Dépôt est un type de compte dédié, avec taux d’intérêt, date d’échéance, jours restants, montant attendu et une action Clôturer le dépôt qui transfère le solde vers un compte de destination sélectionné."
+msgid "Yes. Deposit is a dedicated account type with interest rate, maturity date, days remaining, expected payout, and a Close Deposit action that moves the balance to an account you pick and archives the deposit."
+msgstr "Oui. Le dépôt est un type de compte à part avec taux d'intérêt, date d'échéance, jours restants, versement attendu et une action Clôturer le dépôt qui vire le solde vers un compte de votre choix et archive le dépôt."
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Yes. Each account has a fixed currency. Daily exchange-rate snapshots convert everything to your base currency for net worth."
-msgstr "Oui. Chaque compte a une devise fixe. Les instantanés quotidiens des taux de change convertissent tout dans votre devise de base pour le patrimoine net."
+msgid "Yes. Each account has a fixed currency. Exchange rates, refreshed in the background, convert everything to your base currency for net worth."
+msgstr "Oui. Chaque compte a une devise fixe. Les taux de change, mis à jour en arrière-plan, convertissent tout dans votre devise de base pour le patrimoine net."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Yes. Each account has an “Include in net worth” toggle so you can keep, say, a business escrow account separate from your personal balance sheet."
@@ -18953,10 +18985,6 @@ msgstr "Oui. Les cagnottes sont récupérées en même temps que vos cartes et l
 msgid "Yes. Like other accounts, deposits have an “include in net worth” setting, so you can decide whether a locked deposit belongs in your net worth view."
 msgstr "Oui. Comme les autres comptes, les dépôts disposent d’un réglage « inclure dans le patrimoine net », afin que vous puissiez décider si un dépôt bloqué appartient à votre vue du patrimoine net."
 
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste don't expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
-msgstr "Oui. Monobank envoie un IBAN de contrepartie sur chaque mouvement, ce qui permet à Budgie de relier ces paires directement. PrivatBank et Erste ne fournissent aucun IBAN de contrepartie, donc Budgie se rabat sur une correspondance par montant et fenêtre temporelle. Pour les paires en devises différentes, une fourchette de tolérance sur le taux de change confirme la correspondance lorsque les montants diffèrent en raison de la conversion."
-
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
 msgstr "Oui. La synchro Monobank utilise un jeton d'API personnel que vous générez vous-même dans votre banque, et la requête part de votre téléphone directement vers la banque. Pour les autres banques, vous importez un fichier de relevé. Budgie ne demande jamais de mot de passe bancaire et aucun agrégateur comme Plaid ne s'interpose."
@@ -18964,6 +18992,10 @@ msgstr "Oui. La synchro Monobank utilise un jeton d'API personnel que vous gén�
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar. Filters apply consistently."
 msgstr "Oui. Un composant sélecteur unique est réutilisé dans les onglets d'analyse, la liste des transactions et le calendrier récurrent. Les filtres s'appliquent de manière cohérente."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Yes. Open the menu of an expense, such as a synced bank payment, and choose Start Deposit. Budgie creates the deposit in the currency the payment was made in and turns the expense into the transfer that funds it."
+msgstr "Oui. Ouvrez le menu d'une dépense, par exemple un paiement bancaire synchronisé, et choisissez Ouvrir un dépôt. Budgie crée le dépôt dans la devise du paiement et transforme la dépense en virement qui l'alimente."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Yes. Open the refunded transaction and tap Revert. The income and expense return to their original standalone state."
@@ -18974,8 +19006,8 @@ msgid "Yes. Pick the original expense and Budgie marks the refund as partial whe
 msgstr "Oui. Choisissez la dépense d’origine et Budgie marque le remboursement comme partiel lorsque le montant remboursé est inférieur au montant de la dépense."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Yes. Prices are stored in your local database, so the market screen renders from what you already have. A connection is only needed to extend the history further back."
-msgstr "Oui. Les prix sont stockés dans votre base de données locale, donc l'écran de marché s'affiche à partir de ce que vous avez déjà. Une connexion n'est nécessaire que pour prolonger l'historique plus loin dans le passé."
+msgid "Yes. Prices are stored in your local database, so the market screen renders from what you already have. A connection is only needed to fetch the days since the built-in history."
+msgstr "Oui. Les prix sont stockés dans votre base locale, donc l'écran de marché s'affiche à partir de ce que vous avez déjà. Une connexion n'est nécessaire que pour récupérer les jours écoulés depuis l'historique intégré."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Yes. Pull requests, bug reports, and feature suggestions are welcome on the GitHub repository. The project follows a standard fork-and-PR workflow with contribution guidelines in the repository."
@@ -19068,6 +19100,10 @@ msgstr "Oui. Le virement est un type de transaction de premier ordre avec des co
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Yes. Turn off Show on home in the Runway section of Settings. The Runway tab stays available in Analytics."
 msgstr "Oui. Désactivez Afficher sur l'accueil dans la section Autonomie des paramètres. L'onglet Autonomie reste disponible dans les analyses."
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Yes. Where a bank tells Budgie the other account's IBAN, Budgie links those pairs directly. Otherwise it falls back to matching on amount and a time window. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to conversion."
+msgstr "Oui. Lorsqu'une banque indique à Budgie l'IBAN de l'autre compte, Budgie relie directement ces paires. Sinon, il se rabat sur l'appariement par montant et fenêtre de temps. Pour les paires multidevises, une marge de tolérance sur le taux confirme la correspondance quand les montants diffèrent à cause de la conversion."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -19427,8 +19463,8 @@ msgid "Your data won’t be sold to third parties"
 msgstr "Vos données ne seront pas vendues à des tiers"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a copy of the database file itself for a full restore. Both are user-initiated and saved through the OS share sheet."
-msgstr "Vos données, votre décision. Budgie propose deux exports : un CSV plat pour les tableurs et une copie du fichier de base de données lui-même pour une restauration complète. Les deux sont initiés par l'utilisateur et enregistrés via le menu de partage du système."
+msgid "Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a compressed copy of your database for a full restore. Both are user-initiated and saved through the OS share sheet."
+msgstr "Vos données, votre choix. Budgie propose deux exports : un CSV à plat pour les tableurs et une copie compressée de votre base pour une restauration complète. Les deux sont lancés par vous et enregistrés via la feuille de partage du système."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Your database is encrypted on the device once you set a PIN — that PIN is the key"
@@ -19569,6 +19605,10 @@ msgstr "Votre flux de transactions est l'un des ensembles de données les plus r
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your transactions stay on your phone"
 msgstr "Vos transactions restent sur votre téléphone"
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Your transactions, one file"
+msgstr "Vos transactions, un seul fichier"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your use or misuse of the Service"
