@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { History, Tags, WifiOff } from 'lucide-react';
+import { History, Keyboard, Tags, WifiOff } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -70,6 +72,42 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Tagging that stays out of your way</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>to add a suggested tag</Trans>} value={<Trans>One tap</Trans>}>
+                    <Trans>Pick a category and the tags you usually use are waiting as pills.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>tags, picked from similar past entries</Trans>} value={<Trans>Your own</Trans>}>
+                    <Trans>Pills come from tags you gave similar transactions before.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>tags uploaded anywhere</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>Every suggestion is made on your phone.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie new expense screen with three suggested tag pills above the Split, Date, Note, Tags and Category buttons`}
+                        locale={lang}
+                        scene="ai-tag-suggestions-1"
+                        slug="ai-tag-suggestions"
+                        y={0.39}
+                    />
+                }
+                heading={<Trans>See where the pills come from</Trans>}
+                lede={<Trans>Suggestions are built from tags you already have, so nothing unfamiliar shows up.</Trans>}
+            >
+                <FeatureProof.Fact icon={Tags}>
+                    <Trans>Pills only ever offer tags you already use</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Keyboard}>
+                    <Trans>Typing a new tag still works next to them</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Tag with one tap</Trans>}>

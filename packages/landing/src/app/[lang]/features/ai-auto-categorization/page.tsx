@@ -1,14 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ShieldCheck, Store, TrendingUp } from 'lucide-react';
+import { CloudOff, Plane, ShieldCheck, Store, TrendingUp } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -110,6 +112,54 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Settings screen with the 100% Offline & Private card saying all your data is stored on the device`}
+                        locale={lang}
+                        scene="ai-auto-categorization-2"
+                        slug="ai-auto-categorization"
+                        y={0.16}
+                    />
+                }
+                heading={<Trans>Check it on your own phone</Trans>}
+                lede={<Trans>Suggestions are worked out on the device, so you can see for yourself that nothing leaves it.</Trans>}
+            >
+                <FeatureProof.Fact icon={Plane}>
+                    <Trans>Turn on airplane mode: suggestions keep coming</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={CloudOff}>
+                    <Trans>There is no cloud fallback to send anything to</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureCropBand
+                heading={<Trans>Suggestions where you type</Trans>}
+                lede={<Trans>Category pills appear above the buttons on the expense form, drawn from what you have already sorted.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie new expense screen with Transportation and Groceries category pills above the Category button`}
+                        locale={lang}
+                        scene="ai-auto-categorization-1"
+                        slug="ai-auto-categorization"
+                        y={0.33}
+                    >
+                        <FeatureCropBand.Pin x={0.24} y={0.44} />
+                        <FeatureCropBand.Pin x={0.82} y={0.478} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Pills from your own history</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>The full list is one tap away</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Store} title={<Trans>Remembers your merchants</Trans>}>

@@ -11,7 +11,7 @@ interface Props {
 }
 
 const FeatureBenefitsRoot = ({ children }: Props) => (
-    <section aria-labelledby="benefits-heading" className="feature-section feature-plain" id="benefits">
+    <section aria-labelledby="benefits-heading" className="feature-section" id="benefits">
         <div className="feature-wrap container px-4 md:px-6">
             <div className="feature-section-head">
                 <h2 className="feature-section-title" id="benefits-heading">

@@ -1,14 +1,17 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Copy, FileSpreadsheet, Tags } from 'lucide-react';
 import Link from 'next/link';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -34,6 +37,42 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     </Trans>
                 }
             />
+
+            <FeatureSpecTiles heading={<Trans>PrivatBank import at a glance</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>PrivatBank categories mapped for you</Trans>} value="77">
+                    <Trans>Each PrivatBank category label becomes a standard merchant category.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>columns to map by hand</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>The PrivatBank24 Excel export is read as it comes.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>to re-import the same export</Trans>} value={<Trans>Safe</Trans>}>
+                    <Trans>Anything already imported is skipped.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Switch on the accounts you want</Trans>}
+                lede={<Trans>Budgie lists the card found in your export and imports only what you choose.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie Import Privatbank screen with the card found in the export switched on and a Start Sync button`}
+                        locale={lang}
+                        scene="privatbank-import-2"
+                        slug="privatbank-import"
+                        y={0.1}
+                    >
+                        <FeatureCropBand.Pin x={0.62} y={0.19} />
+                        <FeatureCropBand.Pin x={0.55} y={0.27} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Select or deselect everything</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Your card, found in the export</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={FileSpreadsheet} title={<Trans>No column mapping</Trans>}>

@@ -5,10 +5,12 @@ import { ArrowLeftRight, Coins, Globe } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -81,6 +83,46 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Step>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Built for more than one currency</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>account kept in its own currency</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Balances stay as they are. Converted totals sit on top.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>minutes at most between rate refreshes</Trans>} value="5">
+                    <Trans>Budgie waits at least five minutes before asking again.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>accounts or keys needed for rates</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>Rates come from public sources your phone reaches directly.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Read each card in its own money</Trans>}
+                lede={<Trans>One screen shows the converted subtotal and the original balances.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie home screen with the Bank group subtotal above a dollar account card and a euro account card`}
+                        locale={lang}
+                        scene="multi-currency-1"
+                        slug="multi-currency"
+                        y={0.35}
+                    >
+                        <FeatureCropBand.Pin x={0.62} y={0.38} />
+                        <FeatureCropBand.Pin x={0.38} y={0.467} />
+                        <FeatureCropBand.Pin x={0.38} y={0.585} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Group subtotal, already converted</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>A dollar card in the group</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>A euro card below it</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Coins} title={<Trans>Every account in its own currency</Trans>}>

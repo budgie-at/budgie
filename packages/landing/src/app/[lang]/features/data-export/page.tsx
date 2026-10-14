@@ -9,7 +9,9 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -74,6 +76,66 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
+
+            <FeatureVersus
+                heading={<Trans>Getting your data out</Trans>}
+                lede={<Trans>Exports are often an afterthought. In Budgie they are two plain rows.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Many apps</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Export may sit behind a paid plan</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>A vendor account is often required</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Partial exports you reconcile later</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Backups held on company servers</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Both exports are free, no plan</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No vendor account needed</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Whole history in one tap</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Backups saved where you choose</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Settings Data Management section listing Import CSV, Export CSV, Import Database and Export Database rows`}
+                        locale={lang}
+                        scene="database-backup-1"
+                        slug="database-backup"
+                        y={0.3}
+                    />
+                }
+                heading={<Trans>Check it in Settings</Trans>}
+                lede={<Trans>Both exports are plain rows, each beside the import that reads the file back in.</Trans>}
+            >
+                <FeatureProof.Fact icon={FileSpreadsheet}>
+                    <Trans>Export CSV takes every transaction in one tap</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={DatabaseBackup}>
+                    <Trans>The backup export is a full copy you can restore from</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/features/database-backup`}>
+                    <Trans>See how backup works</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={FileSpreadsheet} title={<Trans>CSV for any spreadsheet</Trans>}>

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Hourglass, Landmark, ShieldCheck } from 'lucide-react';
+import { Calculator, Hourglass, Landmark, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -84,6 +86,42 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>What a deposit shows you</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>figures on the deposit screen</Trans>} value="4">
+                    <Trans>Interest rate, maturity date, days remaining and expected payout.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>action to close and move the balance</Trans>} value="1">
+                    <Trans>Close Deposit transfers what is left to the account you pick, then archives it.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>offered as an expense source</Trans>} value={<Trans>Never</Trans>}>
+                    <Trans>Deposits are left out when you choose which account pays.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie deposit account screen with the interest rate, maturity date, days remaining and expected payout`}
+                        locale={lang}
+                        scene="deposit-tracking-1"
+                        slug="deposit-tracking"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>Check the payout math</Trans>}
+                lede={<Trans>The expected payout is a simple estimate. The source shows exactly how it is worked out.</Trans>}
+            >
+                <FeatureProof.Fact icon={Calculator}>
+                    <Trans>Payout is your balance plus interest for the days left</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={SlidersHorizontal}>
+                    <Trans>It needs both an interest rate and a maturity date</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Landmark} title={<Trans>Savings kept separate</Trans>}>

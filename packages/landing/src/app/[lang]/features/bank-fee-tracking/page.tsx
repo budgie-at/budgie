@@ -4,6 +4,7 @@ import { Trans } from '@lingui/react/macro';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -85,6 +86,18 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Fees counted, transfers left alone</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>of your own money counted as spending</Trans>} value={<Trans>Never</Trans>}>
+                    <Trans>Only the fee counts, so moving $900 between your accounts stays out of your expenses.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>transaction you add by hand can carry a fee</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Expenses, income and transfers, not only card purchases.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>category in your analytics</Trans>} value={<Trans>Own</Trans>}>
+                    <Trans>Fees default to Bank Fees &amp; Charges, shown as its own line in analytics.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
             <BankFeeTrackingBenefitsSection />
 

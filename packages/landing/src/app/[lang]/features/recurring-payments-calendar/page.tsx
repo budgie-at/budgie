@@ -5,10 +5,12 @@ import { CalendarDays, Repeat, Search } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -102,6 +104,48 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Found in your history, not typed in</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>months of history checked for patterns</Trans>} value="24">
+                    <Trans>A subscription is spotted from its rhythm, not just this month.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>billing rhythms recognised</Trans>} value="7">
+                    <Trans>From weekly to yearly, so nothing is forced into a monthly slot.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>to add by hand</Trans>} value={<Trans>Nothing</Trans>}>
+                    <Trans>Charges are detected from what you already recorded.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Tap a day, see the bills</Trans>}
+                lede={<Trans>Each marked day opens the list of charges due, with a total.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie Recurring screen with Day 15 selected, its total and charges for Gym Membership, Netflix and Spotify`}
+                        locale={lang}
+                        scene="recurring-payments-calendar-2"
+                        slug="recurring-payments-calendar"
+                        y={0.5}
+                    >
+                        <FeatureCropBand.Pin x={0.74} y={0.553} />
+                        <FeatureCropBand.Pin x={0.78} y={0.6} />
+                        <FeatureCropBand.Pin x={0.78} y={0.7} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>The day&apos;s total</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Every charge due that day</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Its category beside each one</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Search} title={<Trans>Found without setup</Trans>}>

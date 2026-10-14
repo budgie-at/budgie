@@ -5,10 +5,12 @@ import { CalendarClock, ListChecks, RefreshCw } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { InstallmentPreview } from '../../../../feature/component/installment-preview/installment-preview';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -110,6 +112,48 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     slug="installment-tracking"
                 />
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>The plan in numbers</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>payments at most in one plan</Trans>} value="24">
+                    <Trans>Pick 2, 3, 4, 6, 10, 12 or 24 and watch the total update.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>days of slack when matching a part</Trans>} value="3">
+                    <Trans>Next month&apos;s part attaches if it lands within three days of its due date.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>payment shown on Home</Trans>} value={<Trans>Next</Trans>}>
+                    <Trans>Each plan with a part due shows its amount and date.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Where a plan stands</Trans>}
+                lede={<Trans>One screen shows what is left, what is paid and what is next.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie installment plan screen with the amount left to repay, the repaid and total amounts, the paid count with the next payment and the first part below`}
+                        locale={lang}
+                        scene="installment-tracking-2"
+                        slug="installment-tracking"
+                        y={0.2}
+                    >
+                        <FeatureCropBand.Pin x={0.74} y={0.237} />
+                        <FeatureCropBand.Pin x={0.5} y={0.285} />
+                        <FeatureCropBand.Pin x={0.8} y={0.333} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>What is left to repay</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Repaid so far against the total</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Parts paid, and the next date</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Any purchase can become a plan</Trans>}>

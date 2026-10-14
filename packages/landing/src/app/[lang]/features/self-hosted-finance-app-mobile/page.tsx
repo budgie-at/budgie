@@ -1,16 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Lock, ServerOff, Smartphone } from 'lucide-react';
+import { Database, Lock, ServerOff, Smartphone } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
-import { FeaturePageCategoryComparison } from '../../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -72,6 +73,62 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 </FeatureStory.Point>
             </FeatureStory>
 
+            <FeatureVersus
+                heading={<Trans>A server to run, or just your phone</Trans>}
+                lede={<Trans>Self-hosting keeps data yours but hands you the ops work. Budgie skips the server.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>A self-hosted finance app</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Data lives on a server you run</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>You patch it and renew certificates</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Mobile is often just a web wrapper</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Setup can take hours</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Data lives on your phone</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No server to maintain</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Native iOS and Android app</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Install and open</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings data management list with the Import Database and Export Database rows`}
+                        locale={lang}
+                        scene="database-backup-1"
+                        slug="database-backup"
+                        y={0.3}
+                    />
+                }
+                heading={<Trans>Your backup is just a file</Trans>}
+                lede={<Trans>Two rows in Settings save and restore everything. Keep the file wherever you like.</Trans>}
+            >
+                <FeatureProof.Fact icon={Database}>
+                    <Trans>Export Database writes one file with all your data</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Smartphone}>
+                    <Trans>Import Database restores it on a new phone</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={ServerOff} title={<Trans>No server to maintain</Trans>}>
                     <Trans>No server to patch, renew certificates for, or pay for — just a file only you hold.</Trans>
@@ -93,41 +150,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Feature comparison</Trans>}>
-                    <FeaturePageCategoryComparison categoryLabel={<Trans>Server-based finance apps</Trans>}>
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>On your phone, encrypted when a PIN is set</Trans>}
-                            competitorValue={<Trans>Your VPS / Docker host</Trans>}
-                            label={<Trans>Where data lives</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>None</Trans>}
-                            competitorValue={<Trans>Yes — updates, certs, backups</Trans>}
-                            label={<Trans>Server to maintain</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Native iOS + Android</Trans>}
-                            competitorValue={<Trans>Web wrapper or none</Trans>}
-                            label={<Trans>Mobile experience</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>To your own iCloud / Google Drive</Trans>}
-                            competitorValue={<Trans>Manual server snapshots</Trans>}
-                            label={<Trans>Backup</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Backup file copied via your cloud</Trans>}
-                            competitorValue={<Trans>Built-in via your server</Trans>}
-                            label={<Trans>Multi-device sync</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Install + open</Trans>}
-                            competitorValue={<Trans>Hours of ops</Trans>}
-                            label={<Trans>Setup time</Trans>}
-                        />
-                    </FeaturePageCategoryComparison>
-                </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>

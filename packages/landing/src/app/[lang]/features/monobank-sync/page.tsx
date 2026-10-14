@@ -1,16 +1,18 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, PiggyBank, RefreshCw } from 'lucide-react';
+import { ArrowLeftRight, CloudOff, PiggyBank, Plane, RefreshCw } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
-import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -82,6 +84,78 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
+            <FeatureSpecTiles heading={<Trans>Everything Monobank knows, nothing extra in the loop</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>companies between you and your bank</Trans>} value="0">
+                    <Trans>Budgie asks Monobank directly from your phone. Nobody else sees a single transaction.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>token for everything</Trans>} value="1">
+                    <Trans>All cards and jars on one connection.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>history if you want it</Trans>} value={<Trans>Full</Trans>}>
+                    <Trans>Pick how far back to go, from one month to the whole period.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureVersus
+                heading={<Trans>Why skip the middleman</Trans>}
+                lede={
+                    <Trans>Many bank-sync apps route your bank through a data aggregator. Here is what changes when they don&apos;t.</Trans>
+                }
+            >
+                <FeatureVersus.Without title={<Trans>Apps that use an aggregator</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Your bank access sits in someone else&apos;s vault</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Every transaction is copied to their servers</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Original exchange rates are often lost</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Fees often get folded into the amount</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie with Monobank</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Your token, kept on your phone</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Transactions go from Monobank straight to you</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>The original amount stays on foreign purchases</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Fees show up as their own entries</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Settings screen with the 100% Offline & Private card saying all your data is stored on the device`}
+                        locale={lang}
+                        scene="ai-auto-categorization-2"
+                        slug="ai-auto-categorization"
+                        y={0.16}
+                    />
+                }
+                heading={<Trans>Don&apos;t trust us. Check.</Trans>}
+                lede={<Trans>Budgie is source-available, so anyone can read exactly what happens to your bank data.</Trans>}
+            >
+                <FeatureProof.Fact icon={Plane}>
+                    <Trans>Turn on airplane mode: everything already synced still works</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={CloudOff}>
+                    <Trans>There is no Budgie server to send anything to</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Transfers that don&apos;t count twice</Trans>}>
                     <Trans>
@@ -147,36 +221,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={2} title={<Trans>Plaid-based apps vs. Budgie + Monobank</Trans>}>
-                    <FeaturePageComparisonTable rivalLabel={<Trans>Plaid-based app</Trans>}>
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Your token, in your local database</Trans>}
-                            concern={<Trans>Token control</Trans>}
-                            rival={<Trans>Plaid-managed credential vault</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Original FX kept per leg</Trans>}
-                            concern={<Trans>FX preserved</Trans>}
-                            rival={<Trans>Often dropped or recomputed</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Tracked as fee entries</Trans>}
-                            concern={<Trans>Bank fees</Trans>}
-                            rival={<Trans>Often merged into the main amount</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Yes — enables transfer-pair detection</Trans>}
-                            concern={<Trans>Counter-IBAN stored</Trans>}
-                            rival={<Trans>Rarely surfaced</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>None — Budgie talks to Monobank directly</Trans>}
-                            concern={<Trans>Aggregator middleman</Trans>}
-                            rival={<Trans>Plaid (or similar) sees every transaction</Trans>}
-                        />
-                    </FeaturePageComparisonTable>
-                </FeatureDetails.Item>
-                <FeatureDetails.Guides index={3} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>

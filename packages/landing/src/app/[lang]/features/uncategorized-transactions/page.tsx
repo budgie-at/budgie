@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ListFilter, MousePointerClick, Smartphone } from 'lucide-react';
+import { ListFilter, MousePointerClick, RefreshCw, SlidersHorizontal, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
@@ -10,6 +10,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -110,6 +112,42 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Cleanup that stays in context</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>filters carry over to the cleanup list</Trans>} value={<Trans>Same</Trans>}>
+                    <Trans>Account, date, type and tag filters follow you from the list into the cleanup view.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>refreshes needed after a fix</Trans>} value="0">
+                    <Trans>Set a category and the list and the count update on their own.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>tap from the count to the inbox</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>The pill opens the Categorize inbox for bulk work.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie transaction list with the filter chips and a 14 missing categories pill above the rows`}
+                        locale={lang}
+                        scene="uncategorized-transactions-1"
+                        slug="uncategorized-transactions"
+                        y={0.1}
+                    />
+                }
+                heading={<Trans>Change a filter, watch the count</Trans>}
+                lede={<Trans>The number always matches the list you are looking at.</Trans>}
+            >
+                <FeatureProof.Fact icon={SlidersHorizontal}>
+                    <Trans>The pill counts only rows inside your active filters</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={RefreshCw}>
+                    <Trans>Categorize a row and the count drops right away</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/features/bulk-categorize-transactions`}>
+                    <Trans>See the Categorize inbox</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={ListFilter} title={<Trans>Counts that follow your filters</Trans>}>

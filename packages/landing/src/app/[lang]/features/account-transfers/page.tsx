@@ -5,11 +5,13 @@ import { ArrowLeftRight, Coins, History } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -112,6 +114,64 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureVersus
+                heading={<Trans>Transfers without the bookkeeping</Trans>}
+                lede={<Trans>Many apps make you log a transfer as an expense and an income. Budgie does not.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Transfers as two entries</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Log an expense, then an income</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Totals can count the money twice</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Currency maths done by hand</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Fixing a mistake means two edits</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>One transfer, entered once</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Spending and income stay clean</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Both amounts shown, rate saved</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Edit or delete one transfer</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureCropBand
+                heading={<Trans>Type one side, see the other</Trans>}
+                lede={<Trans>Pick which currency you type and Budgie converts the rest.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie New Transfer screen with 250 US dollars, the sending pill and the converted euro amount`}
+                        locale={lang}
+                        scene="account-transfers-2"
+                        slug="account-transfers"
+                        y={0.24}
+                    >
+                        <FeatureCropBand.Pin x={0.33} y={0.31} />
+                        <FeatureCropBand.Pin x={0.65} y={0.335} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Pin the side you type</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>The other side, converted for you</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Never confused with spending</Trans>}>

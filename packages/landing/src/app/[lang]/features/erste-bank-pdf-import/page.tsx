@@ -1,14 +1,17 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Eye, FileText, ScanText } from 'lucide-react';
 import Link from 'next/link';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -34,6 +37,64 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                     </Trans>
                 }
             />
+
+            <FeatureVersus
+                heading={<Trans>Statements without the retyping</Trans>}
+                lede={<Trans>Copying a PDF statement by hand is slow and easy to get wrong. Budgie reads it for you.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Doing it by hand</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Copy each line from the PDF</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Re-importing can duplicate rows</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Find mistakes after saving</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Account details typed in yourself</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Pick the PDF, lines are read for you</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Known rows are skipped on re-import</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Preview the account before saving</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Account details read for you</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureCropBand
+                heading={<Trans>Pick what to bring in</Trans>}
+                lede={<Trans>Budgie finds the account in your statement and waits for your go.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie Import Erste Bank screen listing the account found in the statement with a switch`}
+                        locale={lang}
+                        scene="erste-bank-pdf-import-1"
+                        slug="erste-bank-pdf-import"
+                        y={0.1}
+                    >
+                        <FeatureCropBand.Pin x={0.62} y={0.19} />
+                        <FeatureCropBand.Pin x={0.6} y={0.27} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Select all or pick accounts</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>The account found in the file</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={FileText} title={<Trans>Both statement layouts</Trans>}>

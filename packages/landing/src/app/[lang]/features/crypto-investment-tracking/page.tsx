@@ -5,10 +5,12 @@ import { ChartLine, Coins, WifiOff } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -130,6 +132,48 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeatureStory.Shot>
             </FeatureStory>
 
+            <FeatureSpecTiles heading={<Trans>Ready before you add a single coin</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>coins ready to track</Trans>} value="200">
+                    <Trans>Bitcoin, Ethereum and the rest of the largest coins by market cap ship with the app.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>of daily prices built in</Trans>} value={<Trans>1 year</Trans>}>
+                    <Trans>The biggest coins have charts the moment you open them.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>price currencies</Trans>} value="2">
+                    <Trans>Every built-in price comes in both euro and dollar.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Your cost next to today&apos;s price</Trans>}
+                lede={<Trans>Every coin gets a market screen that values your position against the stored daily price.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie Bitcoin market screen with a holdings card listing the quantity, average cost, cost basis and unrealized profit`}
+                        locale={lang}
+                        scene="crypto-investment-tracking-3"
+                        slug="crypto-investment-tracking"
+                        y={0.4}
+                    >
+                        <FeatureCropBand.Pin x={0.55} y={0.478} />
+                        <FeatureCropBand.Pin x={0.55} y={0.548} />
+                        <FeatureCropBand.Pin x={0.55} y={0.598} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>What you hold, valued in your currency</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Average cost and cost basis</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Unrealized gain over what you paid</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Coins} title={<Trans>Crypto inside your net worth</Trans>}>
                     <Trans>Holdings roll up into net worth alongside fiat accounts</Trans>
@@ -151,12 +195,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         <Trans>Multi-currency aware — euro-priced coins, dollar-priced coins, and UAH cash all reconcile</Trans>
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
-                        <Trans>
-                            A year of daily prices for BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC, and HYPE ships with the app, in euro and
-                            dollar
-                        </Trans>
-                    </FeatureBenefits.Item>
-                    <FeatureBenefits.Item>
                         <Trans>Reachable straight from the crypto group on the home screen</Trans>
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
@@ -173,12 +211,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                             an instrument symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only
                             cash and bank balances by default, and only folds crypto into that forecast once you switch on Include crypto in
                             Settings → Runway.
-                        </Trans>
-                    </p>
-                    <p>
-                        <Trans>
-                            Two hundred crypto instruments ship with the app, ranked by market cap, and the major assets come with real
-                            daily market history built in. Stocks and ETFs are not supported yet.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>

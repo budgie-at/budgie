@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, Repeat, Wallet } from 'lucide-react';
+import { ArrowLeftRight, Eye, KeyRound, Repeat, Wallet } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -9,7 +9,9 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -83,6 +85,64 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Step>
             </FeatureStory>
+
+            <FeatureVersus
+                heading={<Trans>Buying USDT without the mess</Trans>}
+                lede={<Trans>A P2P purchase leaves two records. Here is what happens to them.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Tracking it by hand</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Bank payment counts as an expense</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Crypto arrival counts as income</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Statistics are off with every purchase</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>You match each pair yourself</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie with Binance</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Both legs merge into one transfer</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Nothing is counted as income</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Statistics stay clean</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Matched for you, doubtful ones left alone</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Connect Binance screen with the numbered setup steps, including keeping only Enable Reading on, above the key and secret fields`}
+                        locale={lang}
+                        scene="binance-sync-1"
+                        slug="binance-sync"
+                        y={0.2}
+                    />
+                }
+                heading={<Trans>Look at step three</Trans>}
+                lede={<Trans>Step three tells you to leave trading and withdrawals off, and Budgie only reads balances and history.</Trans>}
+            >
+                <FeatureProof.Fact icon={Eye}>
+                    <Trans>Setup asks for the reading permission only</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={KeyRound}>
+                    <Trans>Your key and secret stay on your phone</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Wallet} title={<Trans>Balances straight from Binance</Trans>}>

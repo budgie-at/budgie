@@ -5,12 +5,13 @@ import { Bell, Sparkles, Target } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
-import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -94,6 +95,72 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
+            <FeatureCropBand
+                heading={<Trans>Going over is a number, not a feeling</Trans>}
+                lede={
+                    <Trans>
+                        A category past its limit turns red and shows exactly how far over you are. Refunds give the budget its money back.
+                    </Trans>
+                }
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Category limit cards: Housing & Utilities within its limit, Groceries over budget in red`}
+                        locale={lang}
+                        scene="budget-planning-2"
+                        slug="budget-planning"
+                        y={0.33}
+                    >
+                        <FeatureCropBand.Pin x={0.62} y={0.425} />
+                        <FeatureCropBand.Pin x={0.5} y={0.535} />
+                        <FeatureCropBand.Pin x={0.38} y={0.578} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Spent, left and limit on every card</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Red the moment a limit breaks</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>How far over, in money</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureVersus
+                heading={<Trans>Budgeting without the subscription</Trans>}
+                lede={<Trans>Many budget apps keep your plan on their servers and charge for it. Budgie does neither.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Cloud budget apps</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Your progress is worked out on their server</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Alerts are tied to an online account</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Starting templates from a shared library</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Budgets are often the paid tier</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Everything is worked out on your phone</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Alerts work offline, no account</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Start from your own recent spending</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Free, no subscription</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Target} title={<Trans>Limits that match your spending</Trans>}>
                     <Trans>An overall monthly limit, per-category limits, and one cap for everything else</Trans>
@@ -159,31 +226,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={2} title={<Trans>Subscription budget apps vs. Budgie</Trans>}>
-                    <FeaturePageComparisonTable rivalLabel={<Trans>Cloud budget app</Trans>}>
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>A template built from your own recent spending, a generic starter, or nothing at all</Trans>}
-                            concern={<Trans>Getting started</Trans>}
-                            rival={<Trans>Generic templates from a shared library</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Computed on-device from your local database</Trans>}
-                            concern={<Trans>Where progress is calculated</Trans>}
-                            rival={<Trans>On a server that mirrors your transactions</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Local notifications, opt-in, deduped per period</Trans>}
-                            concern={<Trans>Limit alerts</Trans>}
-                            rival={<Trans>Server-side push tied to an account</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Free, no account, no subscription</Trans>}
-                            concern={<Trans>Cost of budgeting</Trans>}
-                            rival={<Trans>Often the paid tier</Trans>}
-                        />
-                    </FeaturePageComparisonTable>
-                </FeatureDetails.Item>
-                <FeatureDetails.Guides index={3} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>

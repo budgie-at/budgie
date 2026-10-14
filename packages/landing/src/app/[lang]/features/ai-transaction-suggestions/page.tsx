@@ -1,14 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { MousePointerClick, ShieldCheck, TrendingUp } from 'lucide-react';
+import { History, MousePointerClick, Power, ShieldCheck, TrendingUp } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -96,6 +98,57 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureCropBand
+                heading={<Trans>Pills before the first digit</Trans>}
+                lede={<Trans>Suggestions wait on the empty form. Tap one, or just start typing.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie new expense screen with a zero amount above Transportation and Groceries suggestion pills`}
+                        locale={lang}
+                        scene="ai-transaction-suggestions-1"
+                        slug="ai-transaction-suggestions"
+                        y={0.24}
+                    >
+                        <FeatureCropBand.Pin x={0.75} y={0.305} />
+                        <FeatureCropBand.Pin x={0.24} y={0.44} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>The usual amount fills in after a tap</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Nothing applies until you tap a pill</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row`}
+                        locale={lang}
+                        scene="on-device-ai-budget-app-1"
+                        slug="on-device-ai-budget-app"
+                        y={0.5}
+                    />
+                }
+                heading={<Trans>You decide what runs</Trans>}
+                lede={
+                    <Trans>
+                        The optional model behind edit and voice suggestions is one switch in Settings. Budgie is source-available, so you
+                        can read the code.
+                    </Trans>
+                }
+            >
+                <FeatureProof.Fact icon={Power}>
+                    <Trans>Switch On-device AI off whenever you like</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={History}>
+                    <Trans>Suggestions are built from your own history</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={MousePointerClick} title={<Trans>Tap instead of typing</Trans>}>

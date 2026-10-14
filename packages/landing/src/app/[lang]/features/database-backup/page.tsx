@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -82,6 +84,40 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Step>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Small enough to carry anywhere</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>file holds everything</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Transactions, accounts, categories, tags and settings travel together.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>accounts needed</Trans>} value="0">
+                    <Trans>Export on one phone and import on the next, no upload in between.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>name on every backup file</Trans>} value={<Trans>Dated</Trans>}>
+                    <Trans>Each copy carries its date and time, so none overwrites another.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings Data Management section with the Import Database and Export Database rows`}
+                        locale={lang}
+                        scene="database-backup-1"
+                        slug="database-backup"
+                        y={0.4}
+                    />
+                }
+                heading={<Trans>Back up and restore in Settings</Trans>}
+                lede={<Trans>Export Database and Import Database sit side by side in Settings.</Trans>}
+            >
+                <FeatureProof.Fact icon={Smartphone}>
+                    <Trans>Export on one phone, import on another</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Lock}>
+                    <Trans>Encrypted with your PIN when you set one</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Database} title={<Trans>Everything in one file</Trans>}>

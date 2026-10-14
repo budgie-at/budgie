@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Moon, Rocket, SunMoon } from 'lucide-react';
+import { Moon, Palette, Rocket, SunMoon } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -68,6 +70,40 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Light or dark, your call</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>to switch between light and dark</Trans>} value={<Trans>One tap</Trans>}>
+                    <Trans>The Dark Mode switch lives in Settings, under Appearance.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>launch screens, one for each theme</Trans>} value="2">
+                    <Trans>The splash screen has a white version and a black one.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>between launches</Trans>} value={<Trans>Saved</Trans>}>
+                    <Trans>The theme you pick is still there next time.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie transaction list showing red expense amounts and a green income amount on expense cards`}
+                        locale={lang}
+                        scene="expense-tracking-2"
+                        slug="expense-tracking"
+                        y={0.55}
+                    />
+                }
+                heading={<Trans>Compare it on this page</Trans>}
+                lede={<Trans>This screenshot follows the theme of the page, so switch the site to dark and look again.</Trans>}
+            >
+                <FeatureProof.Fact icon={Palette}>
+                    <Trans>Red and green get brighter versions in dark mode</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Moon}>
+                    <Trans>The dark surface is pure black</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Moon} title={<Trans>True black for OLED</Trans>}>

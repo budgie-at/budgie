@@ -12,7 +12,6 @@ interface Props {
 
 const FeatureDetailsRoot = ({ children }: Props) => (
     <FeatureSplitSection
-        className="feature-band"
         heading={<Trans>The details</Trans>}
         id="details"
         lede={

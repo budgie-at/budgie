@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ListChecks, Mic, Smartphone } from 'lucide-react';
+import { Download, ListChecks, Mic, Smartphone, ToggleRight } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { FeatureHeroFocusEnum } from '../../../../feature/enum/feature-hero-focus.enum';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
@@ -97,6 +99,47 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Talk once, get every expense</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>expenses from one sentence</Trans>} value={<Trans>3 in 1</Trans>}>
+                    <Trans>Coffee, taxi and parking come back as three separate rows, each with its own amount and category.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>audio uploaded</Trans>} value="0">
+                    <Trans>Your voice is turned into text on the phone.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>main languages</Trans>} value="5">
+                    <Trans>English, Ukrainian, German, French and Spanish.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings showing the On-device AI switch that transcribes voice notes on this device`}
+                        locale={lang}
+                        scene="on-device-ai-budget-app-1"
+                        slug="on-device-ai-budget-app"
+                        y={0.52}
+                    />
+                }
+                heading={<Trans>Try it in airplane mode</Trans>}
+                lede={
+                    <Trans>
+                        Once the voice models are on your phone, entry keeps working with no connection at all. That&apos;s how you know
+                        nothing is sent.
+                    </Trans>
+                }
+            >
+                <FeatureProof.Fact icon={ToggleRight}>
+                    <Trans>One switch in Settings turns on-device AI on or off</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Download}>
+                    <Trans>Models download once, best on Wi-Fi</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/offline-first`}>
+                    <Trans>See how offline works</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Mic} title={<Trans>Several expenses, one sentence</Trans>}>

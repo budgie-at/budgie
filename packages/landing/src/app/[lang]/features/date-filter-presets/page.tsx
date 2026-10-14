@@ -5,10 +5,12 @@ import { CalendarDays, CalendarRange, SlidersHorizontal } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -85,6 +87,48 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Built for the windows you use</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>presets, one tap each</Trans>} value="7">
+                    <Trans>From Today to All Time, without touching the calendar.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>is always a week</Trans>} value={<Trans>Mon to Sun</Trans>}>
+                    <Trans>This Week and Last Week run the same span on every phone.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>start and end date by hand</Trans>} value={<Trans>Any</Trans>}>
+                    <Trans>Pick a custom range on the calendar when no preset fits.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Apply a range, see the list change</Trans>}
+                lede={<Trans>Pick Last Month and the list narrows to what you asked for.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie transaction list filtered to Last Month, with the Clear All chip, the active Last Month chip and 73 matching transactions`}
+                        locale={lang}
+                        scene="date-filter-presets-2"
+                        slug="date-filter-presets"
+                        y={0.12}
+                    >
+                        <FeatureCropBand.Pin x={0.2} y={0.2} />
+                        <FeatureCropBand.Pin x={0.42} y={0.2} />
+                        <FeatureCropBand.Pin x={0.5} y={0.335} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Clear All puts the list back</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Last Month, applied as a chip</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Every row dated inside August</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={CalendarRange} title={<Trans>Seven presets, one tap</Trans>}>

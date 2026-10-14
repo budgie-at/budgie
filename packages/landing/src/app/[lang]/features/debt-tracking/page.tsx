@@ -5,11 +5,13 @@ import { CalendarClock, Link2, Scale } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -110,6 +112,70 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
+            <FeatureVersus
+                heading={<Trans>A loan that stays in view</Trans>}
+                lede={<Trans>Many people track loans in notes or a sheet. Here is the difference.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Notes or a spreadsheet</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Loans kept in a separate sheet</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Balances updated by hand</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Repayments typed in twice</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Net worth often ignores what you owe</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Debts live next to your accounts</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Loans sit beside your accounts</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Remaining balance moves for you</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Attach a repayment you already logged</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Net worth can include what you owe</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureCropBand
+                heading={<Trans>What one loan looks like</Trans>}
+                lede={<Trans>A debt account keeps score so you do not have to.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie debt account screen for Lent to Daniel showing the amount still to receive, the returned and lent totals and the repayment below`}
+                        locale={lang}
+                        scene="debt-tracking-2"
+                        slug="debt-tracking"
+                        y={0.17}
+                    >
+                        <FeatureCropBand.Pin x={0.74} y={0.237} />
+                        <FeatureCropBand.Pin x={0.5} y={0.285} />
+                        <FeatureCropBand.Pin x={0.65} y={0.445} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>What is still to receive</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Returned so far against the total lent</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Each repayment, listed under the debt</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Scale} title={<Trans>Owe and owed, signed correctly</Trans>}>
                     <Trans>Explicit direction: &quot;I owe&quot; vs &quot;owes me&quot; — net worth signs them correctly</Trans>
@@ -156,17 +222,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Attach a repayment you already recorded</Trans>}>
-                    <p>
-                        <Trans>
-                            Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income
-                            long before you think about the debt. Attach that transaction to the debt instead of re-entering it: Budgie
-                            files it under Lending or Borrowing and moves the debt&apos;s remaining balance, while it stays exactly where
-                            your bank put it and keeps counting as income.
-                        </Trans>
-                    </p>
-                </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>

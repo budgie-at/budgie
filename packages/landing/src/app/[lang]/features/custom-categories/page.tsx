@@ -1,14 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Merge, Palette, ShieldCheck } from 'lucide-react';
+import { GitMerge, Link2, Merge, Palette, ShieldCheck } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -105,6 +107,56 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Edit Category form with a Merge into another category button above Cancel and Save`}
+                        locale={lang}
+                        scene="custom-categories-2"
+                        slug="custom-categories"
+                        y={0.73}
+                    />
+                }
+                heading={<Trans>Tidy up without losing a thing</Trans>}
+                lede={<Trans>Rename and merge freely. Your transactions come along.</Trans>}
+            >
+                <FeatureProof.Fact icon={Link2}>
+                    <Trans>Renaming a category never unlinks its transactions</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={GitMerge}>
+                    <Trans>Merging moves every transaction to the category you keep</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureCropBand
+                heading={<Trans>Everything on one edit screen</Trans>}
+                lede={<Trans>Name it once and Budgie fills in what helps you find it later.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie Edit Category form with the name Netflix, an English translation and search keywords`}
+                        locale={lang}
+                        scene="custom-categories-2"
+                        slug="custom-categories"
+                        y={0.3}
+                    >
+                        <FeatureCropBand.Pin x={0.75} y={0.34} />
+                        <FeatureCropBand.Pin x={0.72} y={0.44} />
+                        <FeatureCropBand.Pin x={0.72} y={0.49} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Call it whatever you like</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>An English translation, kept beside it</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Keywords that help you find it</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Palette} title={<Trans>Categories named your way</Trans>}>

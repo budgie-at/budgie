@@ -5,10 +5,12 @@ import { CalendarClock, CopyX, Tags } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -73,6 +75,46 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     </Trans>
                 </FeatureStory.Step>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>The re-sync sheet in numbers</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>windows to choose from</Trans>} value="4">
+                    <Trans>The whole history, or the last 90, 30 or 7 days.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>days is the smallest slice</Trans>} value="7">
+                    <Trans>The tightest window re-pulls just the last week.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>option asks before it clears anything</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Only the whole-history reset asks you to confirm.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Pick how far to rewind</Trans>}
+                lede={<Trans>One sheet on each synced account&apos;s settings.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie re-sync sheet listing re-sync entire history, last 90 days, last 30 days and last 7 days`}
+                        locale={lang}
+                        scene="bank-resync-window-1"
+                        slug="bank-resync-window"
+                        y={0.6}
+                    >
+                        <FeatureCropBand.Pin x={0.72} y={0.625} />
+                        <FeatureCropBand.Pin x={0.55} y={0.705} />
+                        <FeatureCropBand.Pin x={0.5} y={0.853} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Whole history, resets all sync state</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Or just the last 90 days</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Or only the last 7 days</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={CalendarClock} title={<Trans>Four re-sync windows</Trans>}>

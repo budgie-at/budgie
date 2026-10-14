@@ -5,10 +5,12 @@ import { CalendarRange, PieChart, Tags } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -96,6 +98,42 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Pick the period that matters</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>date presets, from Today to All Time</Trans>} value="7">
+                    <Trans>One tap switches every total and category row.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>range you draw on the calendar</Trans>} value={<Trans>Any</Trans>}>
+                    <Trans>Presets not enough? Pick exact start and end dates.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>category row opens its transactions</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Go from a total to the entries behind it.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Your spending, category by category</Trans>}
+                lede={<Trans>Each category gets a bar sized to its share of what you spent.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie Spending by category list with a bar and a percentage of expenses under each category`}
+                        locale={lang}
+                        scene="spending-analytics-1"
+                        slug="spending-analytics"
+                        y={0.5}
+                    >
+                        <FeatureCropBand.Pin x={0.72} y={0.648} />
+                        <FeatureCropBand.Pin x={0.72} y={0.735} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Share of everything you spent</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Tap any row for its transactions</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={PieChart} title={<Trans>See where money goes</Trans>}>

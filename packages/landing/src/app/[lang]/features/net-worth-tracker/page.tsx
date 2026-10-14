@@ -7,10 +7,11 @@ import { FeatureBenefits } from '../../../../feature/component/feature-benefits/
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
-import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -94,6 +95,52 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
+            <FeatureSpecTiles heading={<Trans>What goes into the figure</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>number at the top of Home</Trans>} value="1">
+                    <Trans>Bank, cash, deposit, crypto and debt accounts already roll up into it.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>currency you hold, converted for you</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Each account keeps its own currency while the total counts it in yours.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>over which accounts count</Trans>} value={<Trans>Your call</Trans>}>
+                    <Trans>Switch any account in or out of net worth.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureVersus
+                heading={<Trans>More than a spending tracker</Trans>}
+                lede={<Trans>Many expense apps stop at this month&apos;s spending. Budgie shows the whole balance sheet.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Many expense apps</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Often bank accounts only</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Often a single currency only</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Debts often treated as expenses</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Often no say in what counts</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Bank, cash, deposit, crypto and debt</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Each account in its own currency</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Debts subtract from net worth</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Switch any account in or out</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Scale} title={<Trans>Debts counted automatically</Trans>}>
                     <Trans>Liability and debt accounts subtract automatically; receivables add</Trans>
@@ -126,31 +173,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Most expense apps vs. Budgie</Trans>}>
-                    <FeaturePageComparisonTable rivalLabel={<Trans>Most expense apps</Trans>}>
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Bank + cash + deposit + crypto + debt</Trans>}
-                            concern={<Trans>Asset coverage</Trans>}
-                            rival={<Trans>Bank only</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Per-account currency, background auto-conversion</Trans>}
-                            concern={<Trans>FX support</Trans>}
-                            rival={<Trans>One currency, often hardcoded</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>First-class — subtract from net worth</Trans>}
-                            concern={<Trans>Liability accounts</Trans>}
-                            rival={<Trans>Treated as expenses</Trans>}
-                        />
-                        <FeaturePageComparisonTable.Row
-                            budgie={<Trans>Net worth trendline alongside</Trans>}
-                            concern={<Trans>Time series</Trans>}
-                            rival={<Trans>Spending only</Trans>}
-                        />
-                    </FeaturePageComparisonTable>
-                </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>

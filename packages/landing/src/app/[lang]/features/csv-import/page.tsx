@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Columns3, FileSpreadsheet, WandSparkles } from 'lucide-react';
+import { Columns3, FileSpreadsheet, ListChecks, Rows3, WandSparkles } from 'lucide-react';
 import Link from 'next/link';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
@@ -10,6 +10,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -90,6 +92,40 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>CSV import at a glance</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>built-in presets</Trans>} value="3">
+                    <Trans>Pick one and every column mapping is filled in one tap.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>required columns, the rest optional</Trans>} value="5">
+                    <Trans>Account, category, date, amount and currency are all you must map.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>column order works</Trans>} value={<Trans>Any</Trans>}>
+                    <Trans>You choose which column feeds each field.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Map CSV Columns screen with import presets above required column selectors`}
+                        locale={lang}
+                        scene="csv-import-1"
+                        slug="csv-import"
+                        y={0.17}
+                    />
+                }
+                heading={<Trans>See the mapping before you import</Trans>}
+                lede={<Trans>Every field shows the column it will read, so you know where each value comes from.</Trans>}
+            >
+                <FeatureProof.Fact icon={ListChecks}>
+                    <Trans>Five fields are required, the rest are optional</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Rows3}>
+                    <Trans>A badge counts the rows Budgie found in your file</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Columns3} title={<Trans>Any column order works</Trans>}>

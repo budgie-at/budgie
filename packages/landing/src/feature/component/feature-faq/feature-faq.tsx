@@ -17,7 +17,7 @@ const FeatureFaqRoot = ({ children, locale }: Props) => (
         <FaqPageJsonLd i18n={getI18nInstance(locale)} itemType={FeatureFaqItem}>
             {children}
         </FaqPageJsonLd>
-        <FeatureSplitSection className="feature-plain" heading={<Trans>Questions</Trans>} id="faq">
+        <FeatureSplitSection heading={<Trans>Questions</Trans>} id="faq">
             {children}
         </FeatureSplitSection>
     </>

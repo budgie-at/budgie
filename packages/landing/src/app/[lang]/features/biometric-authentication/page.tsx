@@ -5,10 +5,12 @@ import { EyeOff, KeyRound, ScanFace } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -74,6 +76,52 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie lock screen with the title Enter your PIN, four empty PIN dots and a number keypad`}
+                        locale={lang}
+                        scene="pin-app-lock-2"
+                        slug="pin-app-lock"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>Cancel a scan, the keypad waits</Trans>}
+                lede={<Trans>The keypad is the lock screen itself, so a cancelled or failed scan costs you nothing.</Trans>}
+            >
+                <FeatureProof.Fact icon={KeyRound}>
+                    <Trans>Your PIN is the only other way in</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={EyeOff}>
+                    <Trans>The phone does the matching, Budgie sees only the result</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureCropBand
+                heading={<Trans>Start from the App Lock card</Trans>}
+                lede={<Trans>Settings, under Security, is where App Lock and your PIN begin.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie Settings Security section with the App Lock card reading Secure your app with PIN and Face ID`}
+                        locale={lang}
+                        scene="screenshot-protection-1"
+                        slug="screenshot-protection"
+                        y={0.33}
+                    >
+                        <FeatureCropBand.Pin x={0.55} y={0.392} />
+                        <FeatureCropBand.Pin x={0.55} y={0.445} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>App Lock card, under Security</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>PIN and Face ID, set up together</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={ScanFace} title={<Trans>Unlock with Face ID or Touch ID</Trans>}>

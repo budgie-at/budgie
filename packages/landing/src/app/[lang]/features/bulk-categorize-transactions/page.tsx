@@ -11,7 +11,9 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -206,6 +208,52 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Less chore, more done</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>tap categorizes a whole merchant group</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Accept the suggestion and every row from that merchant follows.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>inboxes, one for categories and one for tags</Trans>} value="2">
+                    <Trans>Both work the same way, so you learn it once.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>confident suggestion accepted at once</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>One button clears the sure groups. Undo reverses it.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureVersus
+                heading={<Trans>Sorting by hand, or by merchant</Trans>}
+                lede={<Trans>Row by row is a chore that can stall a budget.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>One transaction at a time</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Open each transaction, one by one</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>The same shop keeps coming back</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Pick a category from scratch each time</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>A wrong tap can be hard to undo</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie&apos;s Categorize inbox</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>One card for each merchant</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Rows from one shop share a card</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Suggested from how you chose before</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Accept all, then Undo if needed</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Inbox} title={<Trans>One inbox, grouped by merchant</Trans>}>

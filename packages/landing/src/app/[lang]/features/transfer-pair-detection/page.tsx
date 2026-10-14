@@ -5,11 +5,13 @@ import { ArrowLeftRight, Link2, ShieldCheck } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -105,6 +107,68 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureVersus
+                heading={<Trans>Why matching beats cleaning up</Trans>}
+                lede={<Trans>Two synced banks report one move twice. Here is what changes when Budgie pairs them.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Fixing it by hand</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>One transfer shows up as two rows</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Your spending looks doubled</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Refunds look like new income</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>You hunt down each pair yourself</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie with matching</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Matching legs merge into one transfer</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Spending stays accurate</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Clear refunds match their expense</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Obvious pairs merge, unsure ones stay put</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureCropBand
+                heading={<Trans>Both originals, one tap away</Trans>}
+                lede={<Trans>A merged transfer keeps the two legs it came from, and you can undo the merge.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie consolidation sheet listing an outgoing and an incoming transfer above Done and Revert`}
+                        locale={lang}
+                        scene="transfer-pair-detection-2"
+                        slug="transfer-pair-detection"
+                        y={0.66}
+                    >
+                        <FeatureCropBand.Pin x={0.7} y={0.75} />
+                        <FeatureCropBand.Pin x={0.7} y={0.81} />
+                        <FeatureCropBand.Pin x={0.82} y={0.865} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>The leg that left</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>The leg that arrived</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Revert restores both</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Matches without perfect metadata</Trans>}>

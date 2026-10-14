@@ -3,10 +3,12 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -123,6 +125,48 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>The numbers behind the verdict</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>complete months of history</Trans>} value="6">
+                    <Trans>Runway reads your last six finished months, never the one in progress.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>complete months before it appears</Trans>} value="3">
+                    <Trans>Until then the pill stays hidden and the tab tells you how many it has.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>months on the meter scale</Trans>} value="12">
+                    <Trans>While you are burning, the meter counts months left across one year.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>The whole answer on one screen</Trans>}
+                lede={<Trans>Verdict, run-out month and a typical month, together.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie Runway tab with a burning verdict, the Include one-offs switch and the monthly expenses, income and net`}
+                        locale={lang}
+                        scene="runway-1"
+                        slug="runway"
+                        y={0.2}
+                    >
+                        <FeatureCropBand.Pin x={0.6} y={0.235} />
+                        <FeatureCropBand.Pin x={0.55} y={0.372} />
+                        <FeatureCropBand.Pin x={0.38} y={0.478} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Months left at this pace</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Switch on for the cautious view</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>A typical month: spending, income, net</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureDetails>
                 <FeatureDetails.Item index={0} title={<Trans>Built on a typical month, not a lucky one</Trans>}>

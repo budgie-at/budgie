@@ -5,10 +5,12 @@ import { KeyRound, Link2, ToggleRight } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -114,6 +116,56 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 </FeatureStory.Shot>
             </FeatureStory>
 
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Monobank connection screen listing two cards and a jar, each with a balance and a sync switch`}
+                        locale={lang}
+                        scene="monobank-sync-1"
+                        slug="monobank-sync"
+                        y={0.15}
+                    />
+                }
+                heading={<Trans>Check it on the bank screen</Trans>}
+                lede={<Trans>Open any connected bank and every account behind it is on one list.</Trans>}
+            >
+                <FeatureProof.Fact icon={ToggleRight}>
+                    <Trans>Each account has its own sync switch</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={KeyRound}>
+                    <Trans>The token belongs to the connection, not an account</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureCropBand
+                heading={<Trans>Re-pull a window, not everything</Trans>}
+                lede={<Trans>Any synced account can fetch again, from the last week to its entire history.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie re-sync sheet offering the entire history, the last 90 days, 30 days and 7 days`}
+                        locale={lang}
+                        scene="bank-resync-window-1"
+                        slug="bank-resync-window"
+                        y={0.57}
+                    >
+                        <FeatureCropBand.Pin x={0.72} y={0.63} />
+                        <FeatureCropBand.Pin x={0.62} y={0.715} />
+                        <FeatureCropBand.Pin x={0.6} y={0.865} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Start over from the full history</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Or the last 90 or 30 days</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Or just the last 7 days</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Link2} title={<Trans>One connection, many accounts</Trans>}>
                     <Trans>One connection behind many accounts — cards, jars, and deposits from the same bank</Trans>
@@ -136,9 +188,6 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
                         <Trans>Statement-based banks get a connection too, so imported accounts group under one roof</Trans>
-                    </FeatureBenefits.Item>
-                    <FeatureBenefits.Item>
-                        <Trans>Archiving or deleting one account leaves the rest of the connection syncing untouched</Trans>
                     </FeatureBenefits.Item>
                 </FeatureBenefits.Included>
             </FeatureBenefits>

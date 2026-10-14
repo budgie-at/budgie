@@ -21,7 +21,7 @@ export const FeaturePageShell = ({ children, lang, meta }: Props) => {
     const featureName = i18n._(meta.name);
 
     return (
-        <main className={`flex-1 ${PILLAR_CLASS_NAME[meta.pillar]}`}>
+        <main className={`feature-page flex-1 ${PILLAR_CLASS_NAME[meta.pillar]}`}>
             <BreadcrumbsJsonLd locale={lang} path={`/features/${meta.slug}`}>
                 <BreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={`/${lang}`} />
                 <BreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={`/${lang}/features`} />

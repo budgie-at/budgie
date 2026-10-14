@@ -1,16 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Code, Gift, ServerOff } from 'lucide-react';
+import { Code, Gift, LockOpen, ServerOff } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
-import { FeaturePageCategoryComparison } from '../../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -77,6 +78,66 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 </FeatureStory.Point>
             </FeatureStory>
 
+            <FeatureVersus
+                heading={<Trans>Paying versus not paying</Trans>}
+                lede={<Trans>Many budget apps charge monthly and hold your data on their servers. Budgie does neither.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Subscription budget apps</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>A monthly fee, again and again</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Often read-only if you stop paying</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Bank sync is often a paid tier</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Offline use is often limited</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Free, with no tiers</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Your data stays on your phone</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Bank sync and PDF or CSV import included</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Core tracking works fully offline</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings screen with the Security and General groups and no upgrade row`}
+                        locale={lang}
+                        scene="subscription-free-budget-app-1"
+                        slug="subscription-free-budget-app"
+                        y={0.3}
+                    />
+                }
+                heading={<Trans>Look for the paywall</Trans>}
+                lede={
+                    <Trans>
+                        Open any screen and try to find an upgrade prompt. Budgie is source-available, so you can check the code too.
+                    </Trans>
+                }
+            >
+                <FeatureProof.Fact icon={LockOpen}>
+                    <Trans>No upgrade row, no tiers, no locked features</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={ServerOff}>
+                    <Trans>No Budgie servers to pay for, so no fee</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Gift} title={<Trans>Every feature is free</Trans>}>
                     <Trans>
@@ -112,41 +173,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Feature comparison</Trans>}>
-                    <FeaturePageCategoryComparison categoryLabel={<Trans>Subscription budget apps</Trans>}>
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Free</Trans>}
-                            competitorValue={<Trans>Monthly recurring</Trans>}
-                            label={<Trans>Pricing</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Everything — always</Trans>}
-                            competitorValue={<Trans>Read-only or nothing if you stop paying</Trans>}
-                            label={<Trans>What you keep</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>$0</Trans>}
-                            competitorValue={<Trans>$300+ recurring</Trans>}
-                            label={<Trans>Cost over 5 years</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Direct API or PDF/CSV</Trans>}
-                            competitorValue={<Trans>Aggregator (often paid tier)</Trans>}
-                            label={<Trans>Bank sync</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Full</Trans>}
-                            competitorValue={<Trans>Limited or none</Trans>}
-                            label={<Trans>Offline use</Trans>}
-                        />
-                        <FeaturePageCategoryComparison.Row
-                            budgieValue={<Trans>Yes</Trans>}
-                            competitorValue={<Trans>No</Trans>}
-                            label={<Trans>Public source</Trans>}
-                        />
-                    </FeaturePageCategoryComparison>
-                </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>

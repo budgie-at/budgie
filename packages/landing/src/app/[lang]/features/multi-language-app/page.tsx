@@ -5,10 +5,12 @@ import { Languages, RefreshCw, Smartphone } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -74,6 +76,48 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Switch in a moment</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>languages in the app</Trans>} value="5">
+                    <Trans>English, Ukrainian, French, German and Spanish.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>relaunches to change language</Trans>} value="0">
+                    <Trans>Pick a language and the screen updates in place.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>language from your device at first launch</Trans>} value={<Trans>Auto</Trans>}>
+                    <Trans>Change it anytime in Settings.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Find your language fast</Trans>}
+                lede={<Trans>One sheet lists every language with a flag and a code.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie language selector sheet with a search box and English, French and Ukrainian rows, English ticked as the active language`}
+                        locale={lang}
+                        scene="multi-language-app-1"
+                        slug="multi-language-app"
+                        y={0.55}
+                    >
+                        <FeatureCropBand.Pin x={0.75} y={0.628} />
+                        <FeatureCropBand.Pin x={0.7} y={0.715} />
+                        <FeatureCropBand.Pin x={0.7} y={0.79} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Search by name or code</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>A tick marks the active language</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Flag, name and code per row</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Languages} title={<Trans>Five full languages</Trans>}>

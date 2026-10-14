@@ -23,7 +23,7 @@ export const FeatureRelated = ({ locale, slugs }: Props) => {
         .slice(0, 3);
 
     return (
-        <section aria-labelledby="related-heading" className="feature-section feature-band">
+        <section aria-labelledby="related-heading" className="feature-section">
             <div className="feature-wrap container px-4 md:px-6">
                 <div className="feature-section-head">
                     <h2 className="feature-section-title" id="related-heading">

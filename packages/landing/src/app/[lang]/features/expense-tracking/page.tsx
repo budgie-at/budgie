@@ -9,7 +9,9 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -98,6 +100,52 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Built for a quick entry</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>is already the date</Trans>} value={<Trans>Today</Trans>}>
+                    <Trans>Your default account is filled in too, so you type the amount and save.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>tap on a pill sets the category</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Once you type a title, a suggested category appears.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>monthly bars show what is normal</Trans>} value="6">
+                    <Trans>Open a transaction with similar ones to compare it.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureVersus
+                heading={<Trans>Beyond the notebook</Trans>}
+                lede={<Trans>A notebook or spreadsheet means retyping everything. Budgie fills in what it can.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Notebook or spreadsheet</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Type every field each time</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Easy to overwrite a row by accident</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Transfers often get counted as spending</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No quick way to spot an odd cost</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Account and date are pre-filled</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>A tap reads, a long-press acts</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Transfers never count as spending</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Monthly bars compare similar transactions</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Zap} title={<Trans>Pre-filled for fast entry</Trans>}>

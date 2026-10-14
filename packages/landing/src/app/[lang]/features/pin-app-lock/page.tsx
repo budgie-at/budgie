@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -110,6 +112,40 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>What stands between you and your data</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>digits open the app and your data</Trans>} value="4">
+                    <Trans>The same four digits are the key your data is locked with.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>wrong PINs before any wait</Trans>} value="4">
+                    <Trans>The fifth wrong PIN starts a 30-second wait, and each one after that waits longer.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>re-lock when you leave the app</Trans>} value={<Trans>Instant</Trans>}>
+                    <Trans>Switch away and the keypad is back when you return.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie lock screen with the title Enter your PIN, four empty PIN dots and a number keypad`}
+                        locale={lang}
+                        scene="pin-app-lock-2"
+                        slug="pin-app-lock"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>See the lock for yourself</Trans>}
+                lede={<Trans>Leave Budgie and come back. The keypad is the first thing you see.</Trans>}
+            >
+                <FeatureProof.Fact icon={Lock}>
+                    <Trans>Leaving the app brings the keypad back</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={KeyRound}>
+                    <Trans>A wrong PIN clears the dots and says so</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>A lock that encrypts</Trans>}>

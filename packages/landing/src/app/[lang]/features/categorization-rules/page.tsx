@@ -5,10 +5,12 @@ import { History, Tags, Zap } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -114,6 +116,48 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                 </FeatureStory.Shot>
             </FeatureStory>
 
+            <FeatureSpecTiles heading={<Trans>What a rule can do</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>things a condition can look at</Trans>} value="7">
+                    <Trans>Title, comment, amount, merchant code, account, type and import source.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>actions on every match</Trans>} value="3">
+                    <Trans>Set a category, add a tag, or turn it into a transfer.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>import and sync runs your rules</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Most rows land already sorted.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>From an edit to a rule</Trans>}
+                lede={<Trans>Recategorize a transaction and Budgie offers to remember it for next time.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie edit expense screen with a Quick rule pill above the amount and Tags and Category buttons below`}
+                        locale={lang}
+                        scene="categorization-rules-2"
+                        slug="categorization-rules"
+                        y={0.22}
+                    >
+                        <FeatureCropBand.Pin x={0.72} y={0.262} />
+                        <FeatureCropBand.Pin x={0.66} y={0.455} />
+                        <FeatureCropBand.Pin x={0.82} y={0.455} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Tap the pill to create the rule</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>It keeps the tags you picked</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>And the category you chose</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Category, tag or transfer</Trans>}>
                     <Trans>Actions that set a category, add a tag, or convert the transaction into a transfer</Trans>
@@ -130,12 +174,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
                         <Trans>Match all or match any, with contains, equals, comparison, list, and regular-expression operators</Trans>
-                    </FeatureBenefits.Item>
-                    <FeatureBenefits.Item>
-                        <Trans>A dedicated Rules screen with search across conditions, actions, categories, tags, and accounts</Trans>
-                    </FeatureBenefits.Item>
-                    <FeatureBenefits.Item>
-                        <Trans>Every rule can be switched off without being deleted</Trans>
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
                         <Trans>A &quot;matching rules&quot; pill on a transaction shows which rules apply to it</Trans>

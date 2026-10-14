@@ -1,14 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Hand, Tag, Zap } from 'lucide-react';
+import { Hand, Star, Tag, Zap } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -73,6 +75,56 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie tag picker sheet with a search box and a grid of tags such as Work, Family, Weekend and Groceries run`}
+                        locale={lang}
+                        scene="transaction-tags-1"
+                        slug="transaction-tags"
+                        y={0.57}
+                    />
+                }
+                heading={<Trans>Pick your main tag yourself</Trans>}
+                lede={<Trans>Open the tag picker on any transaction and long-press the tag you want shown.</Trans>}
+            >
+                <FeatureProof.Fact icon={Hand}>
+                    <Trans>Long-press a tag to make it the main one</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Star}>
+                    <Trans>Selected tags carry a star, filled on the main one</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/features/transaction-tags`}>
+                    <Trans>See how tags work</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
+
+            <FeatureCropBand
+                heading={<Trans>One chip, however many tags</Trans>}
+                lede={<Trans>Each row shows its main tag and counts the rest.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie transaction list where rows with several tags show a bordered tag chip with a plus-one count`}
+                        locale={lang}
+                        scene="primary-tag-1"
+                        slug="primary-tag"
+                        y={0.22}
+                    >
+                        <FeatureCropBand.Pin x={0.52} y={0.298} />
+                        <FeatureCropBand.Pin x={0.82} y={0.27} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>The main tag, shown as a chip</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>A count of the other tags</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Tag} title={<Trans>Scan without opening rows</Trans>}>

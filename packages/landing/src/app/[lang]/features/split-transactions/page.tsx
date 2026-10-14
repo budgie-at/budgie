@@ -5,10 +5,12 @@ import { Split, ChartPie, Tags } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -83,6 +85,46 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Every item in its right place</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>match needed before you can confirm</Trans>} value={<Trans>Exact</Trans>}>
+                    <Trans>Confirm unlocks only when the rows add up to the full amount.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>amount left to assign</Trans>} value={<Trans>Live</Trans>}>
+                    <Trans>The footer button shows the remainder until the split is complete.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>category per row, never repeated</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>A category already used in the split cannot be picked again.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Allocate until nothing is left</Trans>}
+                lede={<Trans>The split sheet keeps the running balance in front of you.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie split sheet with two category rows, an Add item button and a $62.50 left to assign label`}
+                        locale={lang}
+                        scene="split-transactions-2"
+                        slug="split-transactions"
+                        y={0.66}
+                    >
+                        <FeatureCropBand.Pin x={0.58} y={0.72} />
+                        <FeatureCropBand.Pin x={0.72} y={0.84} />
+                        <FeatureCropBand.Pin x={0.8} y={0.905} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Each row has its own category</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Add a row while money remains</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>What is still left to assign</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Split} title={<Trans>Unlimited splits per bill</Trans>}>

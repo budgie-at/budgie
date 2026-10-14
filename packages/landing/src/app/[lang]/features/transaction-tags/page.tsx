@@ -5,10 +5,12 @@ import { ChartPie, Star, Tags } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -99,6 +101,42 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Tags, by the numbers</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>on tags per transaction</Trans>} value={<Trans>No limit</Trans>}>
+                    <Trans>Layer as many tags as you need on one expense.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>primary tag per transaction</Trans>} value="1">
+                    <Trans>Promote one tag and it stands out as a highlighted pill.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>tag you use gets its own total</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Analytics lists spending per tag, plus an Untagged bucket.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>Scan tags without opening a row</Trans>}
+                lede={<Trans>A tagged row shows one tag chip, plus a count when it has more.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie transaction list with a category label and a tag chip on each row`}
+                        locale={lang}
+                        scene="transaction-tags-2"
+                        slug="transaction-tags"
+                        y={0.27}
+                    >
+                        <FeatureCropBand.Pin x={0.55} y={0.386} />
+                        <FeatureCropBand.Pin x={0.58} y={0.425} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Category says what you bought</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>The tag adds your own label</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Flat, reusable tags</Trans>}>

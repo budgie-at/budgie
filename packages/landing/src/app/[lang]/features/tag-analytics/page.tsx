@@ -1,15 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CircleQuestionMark, MousePointerClick, Tags } from 'lucide-react';
+import { Calendar, CircleQuestionMark, MousePointerClick, Tags } from 'lucide-react';
 import Link from 'next/link';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -84,6 +86,62 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Step>
             </FeatureStory>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Analytics with the Categories and Tags tabs above the This Month filter chip and the overview of spent, income and balance`}
+                        locale={lang}
+                        scene="statistics-tags-tab-1"
+                        slug="statistics-tags-tab"
+                        y={0.07}
+                    />
+                }
+                heading={<Trans>Same filters as Categories</Trans>}
+                lede={<Trans>Switch tabs and the period and filters stay exactly where you set them.</Trans>}
+            >
+                <FeatureProof.Fact icon={Tags}>
+                    <Trans>The Tags tab sits right beside Categories</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Calendar}>
+                    <Trans>One period and one set of filter chips for both</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/features/transaction-tags`}>
+                    <Trans>See how tags work</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
+
+            <FeatureCropBand
+                heading={<Trans>Where the money went, per tag</Trans>}
+                lede={<Trans>Income and spending get their own lists, each row with a total and a share.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie Analytics Tags tab with an income-by-tag card and a spending-by-tag list where each row shows a total and a percentage of expenses`}
+                        locale={lang}
+                        scene="statistics-tags-tab-1"
+                        slug="statistics-tags-tab"
+                        y={0.4}
+                    >
+                        <FeatureCropBand.Pin x={0.6} y={0.427} />
+                        <FeatureCropBand.Pin x={0.7} y={0.515} />
+                        <FeatureCropBand.Pin x={0.75} y={0.59} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Income totalled for each tag</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Spending listed separately below</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Each tag&apos;s share of expenses</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Income and spending by tag</Trans>}>

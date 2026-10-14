@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -75,6 +77,40 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Hidden before anyone looks</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>masking when the app leaves the screen</Trans>} value={<Trans>Instant</Trans>}>
+                    <Trans>Balances and net worth swap to a placeholder as soon as Budgie is not the active app.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>switch to turn it on</Trans>} value="1">
+                    <Trans>It sits under App Lock in Settings, off until you enable it.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>protected amount, not just the home screen</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Balances, net worth and runway figures are masked wherever they appear.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings Security section with the App Lock card above the Screenshot Protection switch`}
+                        locale={lang}
+                        scene="screenshot-protection-1"
+                        slug="screenshot-protection"
+                        y={0.3}
+                    />
+                }
+                heading={<Trans>Try it, then switch apps</Trans>}
+                lede={<Trans>Turn it on, open the app switcher, and look for your balances. They are gone.</Trans>}
+            >
+                <FeatureProof.Fact icon={ToggleRight}>
+                    <Trans>One switch in Settings, under Security</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={EyeOff}>
+                    <Trans>Balances and net worth show a placeholder</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={EyeOff} title={<Trans>Balances hidden instantly</Trans>}>

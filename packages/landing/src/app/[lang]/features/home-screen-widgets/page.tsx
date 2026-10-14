@@ -7,6 +7,7 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -99,6 +100,18 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>What a widget gives you</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>widgets for net worth, budget and quick add</Trans>} value="3">
+                    <Trans>Each one is its own widget, so you add only the ones you want.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>sizes for net worth and budget</Trans>} value="2">
+                    <Trans>Small for the headline number, larger for the detail.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>in place of amounts when a PIN is on</Trans>} value={<Trans>Dots</Trans>}>
+                    <Trans>Only the figures hide, the layout stays.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
             <FeatureDetails>
                 <FeatureDetails.Item index={0} title={<Trans>Locked when you are, current when it matters</Trans>}>

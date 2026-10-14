@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Languages, Search, Type } from 'lucide-react';
+import { Languages, Search, Smartphone, Type } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -9,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -79,6 +81,42 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Step>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Your names, readable everywhere</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>of your category names leave your phone</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>The English form is made on your device.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>names searchable, original and English</Trans>} value={<Trans>Both</Trans>}>
+                    <Trans>Search finds it whichever form you remember.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>if the English form comes out wrong</Trans>} value={<Trans>Editable</Trans>}>
+                    <Trans>Tap the English form or keywords to edit them.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Edit Category screen with the name Сільпо above an English translation and search keywords`}
+                        locale={lang}
+                        scene="ai-category-translation-1"
+                        slug="ai-category-translation"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>Check it on one category</Trans>}
+                lede={<Trans>Open any non-Latin category and look under the name.</Trans>}
+            >
+                <FeatureProof.Fact icon={Type}>
+                    <Trans>Your original name stays exactly as you wrote it</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Smartphone}>
+                    <Trans>The English form is made on your phone</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/ai-features`}>
+                    <Trans>See how on-device AI works</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Languages} title={<Trans>Works across many scripts</Trans>}>

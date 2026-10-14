@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Eye, PenLine, ShieldCheck } from 'lucide-react';
+import { Eye, PenLine, ShieldCheck, Wrench } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -8,6 +9,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -33,6 +36,40 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     </Trans>
                 }
             />
+
+            <FeatureSpecTiles heading={<Trans>Cleanup you stay in charge of</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>hand-typed entries touched</Trans>} value="0">
+                    <Trans>Only imported rows are ever repaired. Your own entries stay as you typed them.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>shown before any change</Trans>} value={<Trans>A count</Trans>}>
+                    <Trans>The screen tells you how many rows it would fix first.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>repairs in the background</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>Nothing runs until you press Repair.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings data management list with the Repair Sync Data and Consolidate Matches rows`}
+                        locale={lang}
+                        scene="database-backup-1"
+                        slug="database-backup"
+                        y={0.6}
+                    />
+                }
+                heading={<Trans>Find it in Settings</Trans>}
+                lede={<Trans>The repair has its own row in Settings, and it only acts after you confirm.</Trans>}
+            >
+                <FeatureProof.Fact icon={Wrench}>
+                    <Trans>Repair Sync Data sits in the data section</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={ShieldCheck}>
+                    <Trans>A confirmation card comes before every repair</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Eye} title={<Trans>See the count first</Trans>}>

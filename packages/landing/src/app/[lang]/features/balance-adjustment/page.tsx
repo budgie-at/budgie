@@ -8,6 +8,8 @@ import { FeatureDetails } from '../../../../feature/component/feature-details/fe
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -33,6 +35,52 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                     </Trans>
                 }
             />
+
+            <FeatureSpecTiles heading={<Trans>One number in, one clean correction</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>number to type</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Enter the balance your bank shows and Budgie works out the difference.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>row added for every fix</Trans>} value={<Trans>Dated</Trans>}>
+                    <Trans>Open it, edit it or remove it later, like any other transaction.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>rules or spending totals touched</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>Adjustments are skipped by categorization rules and spending analytics.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureVersus
+                heading={<Trans>Two ways to fix a balance</Trans>}
+                lede={<Trans>Balances drift. What happens next is the difference.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Overwrite it</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Many apps just replace the number</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>The old balance quietly disappears</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No trace of what changed</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Past reports can shift without notice</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Adjust it</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>You type the true balance</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>A dated Adjustment row is added</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Every correction stays visible</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Edit or remove it any time</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Scale} title={<Trans>Fix a balance in one step</Trans>}>

@@ -5,10 +5,12 @@ import { Hand, ListChecks, Smartphone } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -161,6 +163,48 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Everything you do to a transaction</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>actions behind one long-press</Trans>} value={<Trans>Up to 6</Trans>}>
+                    <Trans>Not every action shows on every transaction. A single expense can show six.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>the actions that fit the row</Trans>} value={<Trans>Only</Trans>}>
+                    <Trans>Refund shows for income, deposit for expenses.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>press and hold to open it</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>The menu opens next to the card you pressed.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>One short menu, right at the card</Trans>}
+                lede={<Trans>Pick an action without leaving the list. Delete always comes last.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie context menu with Edit Transaction, Convert to Transfer, Attach debt and a red Delete Transaction`}
+                        locale={lang}
+                        scene="transaction-long-press-menu-1"
+                        slug="transaction-long-press-menu"
+                        y={0.33}
+                    >
+                        <FeatureCropBand.Pin x={0.81} y={0.42} />
+                        <FeatureCropBand.Pin x={0.81} y={0.455} />
+                        <FeatureCropBand.Pin x={0.81} y={0.53} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Edit it straight from the list</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Convert it to a transfer here</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Delete sits last, marked in red</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Hand} title={<Trans>Act straight from the list</Trans>}>

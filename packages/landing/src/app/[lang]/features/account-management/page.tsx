@@ -1,14 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Archive, Palette, Wallet } from 'lucide-react';
+import { Archive, EyeOff, Palette, RotateCcw, Wallet } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -106,6 +108,56 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Archived Accounts screen listing two archived accounts, each with a restore button`}
+                        locale={lang}
+                        scene="account-management-2"
+                        slug="account-management"
+                        y={0.1}
+                    />
+                }
+                heading={<Trans>Closed does not mean gone</Trans>}
+                lede={<Trans>Archive an account to tidy up. Bring it back whenever you need it.</Trans>}
+            >
+                <FeatureProof.Fact icon={RotateCcw}>
+                    <Trans>Restore any archived account from Settings</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={EyeOff}>
+                    <Trans>Archived accounts stay out of your totals until restored</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureCropBand
+                heading={<Trans>A form that fits the account</Trans>}
+                lede={<Trans>Deposits ask for the details that only deposits have.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie deposit form with interest rate, maturity date and include in net worth fields`}
+                        locale={lang}
+                        scene="account-management-3"
+                        slug="account-management"
+                        y={0.5}
+                    >
+                        <FeatureCropBand.Pin x={0.78} y={0.575} />
+                        <FeatureCropBand.Pin x={0.75} y={0.68} />
+                        <FeatureCropBand.Pin x={0.68} y={0.785} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Interest rate, if you know it</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Maturity date, when you want one</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Choose if it counts toward net worth</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Wallet} title={<Trans>Unlimited accounts, any type</Trans>}>

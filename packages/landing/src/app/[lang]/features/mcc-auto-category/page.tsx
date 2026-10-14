@@ -5,10 +5,12 @@ import { BookmarkCheck, History, Tags } from 'lucide-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
 import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
 import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -99,6 +101,44 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
+
+            <FeatureSpecTiles heading={<Trans>Sorted before you open the form</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>merchant codes already mapped</Trans>} value="1051">
+                    <Trans>Cafes, fuel, transit and the rest land in your categories with no setup.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>to remember an override</Trans>} value={<Trans>One tap</Trans>}>
+                    <Trans>After you change a category, the Quick rule pill keeps your choice.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>by default, one switch to turn off</Trans>} value={<Trans>On</Trans>}>
+                    <Trans>Prefer to categorize by hand? Turn it off in Settings.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
+
+            <FeatureCropBand
+                heading={<Trans>From bank code to category</Trans>}
+                lede={<Trans>Silpo arrives with its Grocery code, and Groceries is already set.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie expense form for a Silpo transaction with the Grocery merchant code under the merchant name and Groceries set as the category`}
+                        locale={lang}
+                        scene="mcc-auto-category-1"
+                        slug="mcc-auto-category"
+                        y={0.3}
+                    >
+                        <FeatureCropBand.Pin x={0.72} y={0.405} />
+                        <FeatureCropBand.Pin x={0.7} y={0.525} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>The bank&apos;s code, under the merchant</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Your category, filled in for you</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
             <FeatureBenefits>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Categories assigned for you</Trans>}>
