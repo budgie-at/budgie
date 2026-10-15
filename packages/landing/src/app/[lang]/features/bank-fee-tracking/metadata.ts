@@ -15,7 +15,7 @@ export const FEATURE_METADATA = {
     primaryKeyword: 'bank fee tracker',
     seoKeywords: ['bank fee tracker', 'ATM fee tracker', 'transfer fee analytics', 'card commission tracker', 'expense tracker bank fees'],
     relatedFeatureSlugs: ['spending-analytics', 'monobank-sync', 'transfer-pair-detection', 'split-transactions'],
-    relatedArticleSlugs: ['historical-exchange-rates-budget-analytics', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['historical-exchange-rates-budget-analytics', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-06-04',
     updatedAt: '2026-06-04',
     ogTags: ['fees', 'analytics', 'bank-sync']

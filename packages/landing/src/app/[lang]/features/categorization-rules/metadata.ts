@@ -29,7 +29,7 @@ export const FEATURE_METADATA = {
         'transaction-tags',
         'transaction-long-press-menu'
     ],
-    relatedArticleSlugs: ['mint-alternatives-developers', 'ynab-alternatives-privacy'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'ynab-alternatives-privacy'],
     publishedAt: '2026-09-02',
     updatedAt: '2026-09-02',
     ogTags: ['rules', 'categorization', 'automation']

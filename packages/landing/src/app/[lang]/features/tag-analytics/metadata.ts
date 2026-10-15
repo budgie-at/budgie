@@ -30,7 +30,7 @@ export const FEATURE_METADATA = {
         'ai-tag-suggestions',
         'bulk-categorize-transactions'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-01-04',
     updatedAt: '2026-09-27',
     ogTags: ['tags', 'analytics', 'drill-down']

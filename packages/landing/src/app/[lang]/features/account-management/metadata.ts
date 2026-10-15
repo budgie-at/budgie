@@ -28,7 +28,7 @@ export const FEATURE_METADATA = {
         'debt-tracking',
         'crypto-investment-tracking'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-09-07',
     ogTags: ['accounts', 'management', 'multi-account']

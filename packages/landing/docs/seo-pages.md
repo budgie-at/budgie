@@ -14,7 +14,7 @@ These rules apply uniformly across blog articles, feature pages, pillar hubs, le
 
 Every SEO landing lives at its own `src/app/[lang]/<route>/page.tsx`. Do not collapse static SEO pages into a dynamic `[slug]/page.tsx`. Adding a page means adding a new route file; deleting a page means deleting the route file.
 
-Blog articles use explicit per-slug folders such as `src/app/[lang]/blog/budgie-offline-financial-data/page.tsx`. The codebase does not use `src/app/[lang]/blog/[slug]/page.tsx` for articles.
+Blog articles use explicit per-slug folders such as `src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx`. The codebase does not use `src/app/[lang]/blog/[slug]/page.tsx` for articles.
 
 Feature pages use explicit per-slug folders under `src/app/[lang]/features/<slug>/page.tsx`. Pillar hubs use explicit top-level locale folders such as `src/app/[lang]/privacy/page.tsx`.
 

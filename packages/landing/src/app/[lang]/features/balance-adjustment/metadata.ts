@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'net worth correction'
     ],
     relatedFeatureSlugs: ['account-management', 'net-worth-tracker', 'multi-currency'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-11',
     updatedAt: '2026-09-11',
     ogTags: ['balance', 'reconcile', 'accounts']

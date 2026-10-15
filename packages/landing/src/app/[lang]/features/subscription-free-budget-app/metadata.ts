@@ -23,7 +23,7 @@ export const FEATURE_METADATA = {
         'no subscription personal finance'
     ],
     relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'spending-analytics', 'self-hosted-finance-app-mobile'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-05-07',
     ogTags: ['pricing', 'comparison', 'subscription-free']

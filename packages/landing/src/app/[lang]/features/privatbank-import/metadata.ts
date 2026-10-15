@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'PrivatBank statement import'
     ],
     relatedFeatureSlugs: ['csv-import', 'erste-bank-pdf-import', 'monobank-sync', 'bank-integration-management', 'mcc-auto-category'],
-    relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-02-02',
     updatedAt: '2026-10-14',
     ogTags: ['privatbank', 'xlsx', 'import']

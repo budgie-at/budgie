@@ -28,7 +28,7 @@ export const FEATURE_METADATA = {
         'date-filter-presets',
         'mcc-auto-category'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-18',
     updatedAt: '2026-09-26',
     ogTags: ['uncategorized', 'categories', 'analytics']

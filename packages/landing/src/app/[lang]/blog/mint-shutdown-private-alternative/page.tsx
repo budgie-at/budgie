@@ -170,6 +170,18 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleProse>
                         <Trans>Moving from Mint to another cloud service does not solve the problem. It reschedules it.</Trans>
                     </BlogArticleProse>
+
+                    <BlogArticleSubheading>
+                        <Trans>Why Credit Karma Is Not the Fix</Trans>
+                    </BlogArticleSubheading>
+
+                    <BlogArticleProse>
+                        <Trans>
+                            Intuit pointed Mint users to Credit Karma, a free, cloud-hosted service funded by financial-product offers. It
+                            comes from the same company that retired Mint, so it raises the same question: who controls your history when
+                            the company changes course? Staying inside the same ownership model does not answer it.
+                        </Trans>
+                    </BlogArticleProse>
                 </BlogArticleSection>
 
                 <BlogArticleSection>
@@ -375,6 +387,13 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     </BlogArticleHeading>
 
                     <BlogFaqSection locale={lang}>
+                        <BlogFaqItem question={<Trans>What should I look for in a Mint replacement?</Trans>}>
+                            <Trans>
+                                Check three things: where your history is stored, whether you can export it in standard formats, and whether
+                                the app keeps working if the company behind it disappears. Features come second to those answers.
+                            </Trans>
+                        </BlogFaqItem>
+
                         <BlogFaqItem question={<Trans>Is Budgie really free to use?</Trans>}>
                             <Trans>
                                 Budgie has a free tier that covers core expense tracking. Unlike ad-supported models, the free tier does not

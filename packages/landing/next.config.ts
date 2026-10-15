@@ -37,9 +37,16 @@ const nextConfig: NextConfig = {
                 permanent: true
             }))
             .concat(
-                ['whats-new-august-september-2026', 'whats-new-september-2026'].map(retiredSlug => ({
+                [
+                    ['whats-new-august-september-2026', '/changelog'],
+                    ['whats-new-september-2026', '/changelog'],
+                    ['mint-alternatives-developers', '/blog/mint-shutdown-private-alternative'],
+                    ['offline-first-privacy-financial-app', '/blog/cloud-budgeting-privacy-risks'],
+                    ['offline-first-bank-data-safety', '/blog/cloud-budgeting-privacy-risks'],
+                    ['budgie-offline-financial-data', '/privacy']
+                ].map(([retiredSlug, destination]) => ({
                     source: `/:lang(${SUPPORTED_LOCALES.join('|')})/blog/${retiredSlug}`,
-                    destination: '/:lang/changelog',
+                    destination: `/:lang${destination}`,
                     permanent: true
                 }))
             );

@@ -28,7 +28,7 @@ export const FEATURE_METADATA = {
         'transfer-pair-detection',
         'multi-currency'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'cloud-budgeting-privacy-risks'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-09-02',
     updatedAt: '2026-10-14',
     ogTags: ['binance', 'crypto', 'sync']

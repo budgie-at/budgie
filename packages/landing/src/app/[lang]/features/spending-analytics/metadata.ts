@@ -30,7 +30,7 @@ export const FEATURE_METADATA = {
         'ai-category-translation',
         'bank-fee-tracking'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-12-19',
     updatedAt: '2026-09-16',
     ogTags: ['analytics', 'charts', 'drill-down']

@@ -23,7 +23,7 @@ export const FEATURE_METADATA = {
         'mobile-first self-hosted'
     ],
     relatedFeatureSlugs: ['expense-tracking', 'database-backup', 'data-export', 'subscription-free-budget-app'],
-    relatedArticleSlugs: ['local-first-movement-developers', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['local-first-movement-developers', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-05-07',
     ogTags: ['self-hosted', 'privacy', 'no-server']

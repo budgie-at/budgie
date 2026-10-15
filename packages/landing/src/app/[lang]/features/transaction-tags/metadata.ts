@@ -15,7 +15,7 @@ export const FEATURE_METADATA = {
     primaryKeyword: 'transaction labels app',
     seoKeywords: ['transaction labels app', 'expense tagging app', 'tag transactions', 'project expense tags', 'shared expense tracker'],
     relatedFeatureSlugs: ['tag-analytics', 'primary-tag', 'custom-categories', 'expense-tracking', 'split-transactions'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-19',
     updatedAt: '2026-05-03',
     ogTags: ['tags', 'organization', 'analytics']

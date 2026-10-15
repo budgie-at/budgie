@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'recurring-payments-calendar',
         'database-backup'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-09-02',
     updatedAt: '2026-09-02',
     ogTags: ['budget', 'limits', 'alerts']

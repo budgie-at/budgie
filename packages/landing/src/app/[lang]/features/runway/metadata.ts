@@ -27,7 +27,7 @@ export const FEATURE_METADATA = {
         'crypto-investment-tracking',
         'recurring-payments-calendar'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-26',
     updatedAt: '2026-09-26',
     ogTags: ['runway', 'forecast', 'burn rate']

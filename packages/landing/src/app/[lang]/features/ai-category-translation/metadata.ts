@@ -15,7 +15,7 @@ export const FEATURE_METADATA = {
     primaryKeyword: 'category translation budget app',
     seoKeywords: ['category translation budget app', 'translate expense categories', 'multilingual expense categories'],
     relatedFeatureSlugs: ['spending-analytics', 'voice-transaction-entry', 'multi-language-app'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-02-07',
     updatedAt: '2026-09-16',
     ogTags: ['translation', 'ai', 'multilingual']

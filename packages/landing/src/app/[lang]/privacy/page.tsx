@@ -317,6 +317,25 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     }
                 />
                 <FeaturePageFaqItem
+                    question={<Trans>How do I move my data to a new phone?</Trans>}
+                    answer={
+                        <Trans>
+                            Export a backup on the old phone, carry the file across yourself, then pick it in Import Database on the new
+                            one. Confirm the replacement and, if the backup is PIN-protected, enter its PIN, which becomes your app PIN. No
+                            account and no server sit in between.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What happens if I lose my phone?</Trans>}
+                    answer={
+                        <Trans>
+                            Without a backup file your data is gone, because Budgie has no copy to restore. That is the price of keeping
+                            everything on your device, so save backups to storage you control.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
                     question={<Trans>Is the privacy claim verifiable?</Trans>}
                     answer={
                         <Trans>Yes — Budgie&apos;s source is public. Read the network code yourself: github.com/budgie-at/budgie.</Trans>

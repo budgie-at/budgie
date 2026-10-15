@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'net worth deposit account'
     ],
     relatedFeatureSlugs: ['account-management', 'bank-integration-management', 'net-worth-tracker', 'account-transfers', 'debt-tracking'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-08-13',
     updatedAt: '2026-08-13',
     ogTags: ['deposit', 'interest', 'maturity']

@@ -15,7 +15,7 @@ export const FEATURE_METADATA = {
     primaryKeyword: 'PIN lock finance app',
     seoKeywords: ['PIN lock finance app', 'finance app lock', 'budget app PIN', 'PIN-protected expense tracker', 'finance app screen lock'],
     relatedFeatureSlugs: ['biometric-authentication', 'screenshot-protection', 'expense-tracking', 'database-backup'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2025-12-18',
     updatedAt: '2026-05-03',
     ogTags: ['security', 'pin', 'lock']
