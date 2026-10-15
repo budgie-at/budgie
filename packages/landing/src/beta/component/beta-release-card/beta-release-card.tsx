@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Download } from 'lucide-react';
+import { Download } from 'reicon-react';
 
 import { Button } from '../../../ui/button';
 import { Card } from '../../../ui/card/card';

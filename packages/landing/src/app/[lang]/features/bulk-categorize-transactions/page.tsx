@@ -1,8 +1,8 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Dumbbell, House, ShoppingCart, Tag } from 'lucide-react';
 import Link from 'next/link';
+import { Dumbbell, House, ShoppingCart, Tag } from 'reicon-react';
 
 import { CategorizeDemo } from '../../../../feature/component/categorize-demo/categorize-demo';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';

@@ -1,7 +1,7 @@
 'use client';
 
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Search, X } from 'lucide-react';
+import { Search, X } from 'reicon-react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 

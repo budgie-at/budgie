@@ -2,7 +2,7 @@
 
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { CheckCircle2, Sparkles } from 'lucide-react';
+import { CheckCircle, Sparkles } from 'reicon-react';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -37,7 +37,7 @@ export const WaitlistSuccess = ({ variant, position }: Props) => {
     return (
         <div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
             <div className="flex items-center gap-2 text-green-500">
-                <CheckCircle2 className="size-6" />
+                <CheckCircle className="size-6" />
 
                 <span className="text-lg font-semibold">
                     <Trans>You&apos;re in!</Trans>

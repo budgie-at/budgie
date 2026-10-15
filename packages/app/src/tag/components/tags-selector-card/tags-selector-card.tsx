@@ -10,6 +10,8 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { TagVariantType } from '../../type/tag-variant.type';
 
+import type { IconWeight } from 'reicon-react-native';
+
 interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
     readonly onSelect: (id: number) => void;
     readonly variant: TagVariantType;
@@ -25,8 +27,8 @@ const TAG_CARD_HEIGHT = 56;
 const PRIMARY_SCALE = 1.04;
 const NORMAL_SCALE = 1;
 const SCALE_SPRING = { damping: 14, stiffness: 220 };
-const PRIMARY_STAR_FILL = 'currentColor';
-const TRANSPARENT_FILL = 'transparent';
+const filledStarIconWeight: IconWeight = 'Filled';
+const outlineStarIconWeight: IconWeight = 'Outline';
 
 const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justify-center gap-x-md', {
     variants: {
@@ -106,7 +108,7 @@ export const TagsSelectorCard = ({
     const numberOfLines = variant === 'static' ? 2 : 1;
     const longPressHandler = isDefined(onPrimarySelect) ? handlePrimarySelect : void 0;
     const showStarBadge = variant === 'static' && isSelected;
-    const starFill = isPrimary ? PRIMARY_STAR_FILL : TRANSPARENT_FILL;
+    const starWeight = isPrimary ? filledStarIconWeight : outlineStarIconWeight;
 
     const scaleStyle = useAnimatedStyle(() => ({
         transform: [{ scale: withSpring(isPrimary ? PRIMARY_SCALE : NORMAL_SCALE, SCALE_SPRING) }]
@@ -132,7 +134,7 @@ export const TagsSelectorCard = ({
 
                 {showStarBadge ? (
                     <View className="absolute top-1.5 right-1.5">
-                        <Icon icon={UserIconNameEnum.Star} size={STAR_SIZE} fill={starFill} className={starVariants({ isPrimary })} />
+                        <Icon icon={UserIconNameEnum.Star} size={STAR_SIZE} weight={starWeight} className={starVariants({ isPrimary })} />
                     </View>
                 ) : null}
 
