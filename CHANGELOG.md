@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.13](https://github.com/budgie-at/budgie/compare/v6.103.12...v6.103.13) (2026-10-15)
+
+
+### Bug Fixes
+
+* **landing:** clean up structured data, sitemap dates and blog headings ([10eba4a](https://github.com/budgie-at/budgie/commit/10eba4ae9495391529117ab0b7c005875afb35fb))
+
+
+
+
+
 ## [6.103.12](https://github.com/budgie-at/budgie/compare/v6.103.11...v6.103.12) (2026-10-15)
 
 
