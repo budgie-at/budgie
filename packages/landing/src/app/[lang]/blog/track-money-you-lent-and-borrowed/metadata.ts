@@ -21,7 +21,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'додаток для обліку боргів'
     ],
     seoDescription: msg`How to track money you lent to friends and money you borrowed: open a debt, attach repayments, and see who still owes whom at a glance.`,
-    relatedArticleSlugs: ['whats-new-september-2026'],
+    relatedArticleSlugs: ['pay-in-parts-purchases'],
     relatedFeatureSlugs: ['debt-tracking', 'installment-tracking', 'account-management']
 };
 
