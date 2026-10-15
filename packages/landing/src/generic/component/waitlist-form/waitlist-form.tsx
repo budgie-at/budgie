@@ -51,7 +51,7 @@ const formVariants = cva('flex flex-col w-full', {
         variant: {
             [WaitlistVariantEnum.HERO]: 'gap-3 sm:flex-row sm:w-auto',
             [WaitlistVariantEnum.CTA]: 'gap-3 sm:flex-row sm:w-auto',
-            [WaitlistVariantEnum.FEATURE]: 'gap-2 min-[480px]:grid min-[480px]:grid-cols-[minmax(0,1fr)_auto]'
+            [WaitlistVariantEnum.FEATURE]: 'gap-2 min-[480px]:flex-row min-[480px]:flex-wrap'
         }
     }
 });
@@ -64,7 +64,7 @@ const inputVariants = cva('outline-none transition-all w-full', {
             [WaitlistVariantEnum.CTA]:
                 'h-14 px-6 rounded-full border-2 backdrop-blur-sm focus:ring-2 text-lg sm:w-auto sm:min-w-[300px] border-white/30 bg-white/10 text-white placeholder:text-white/60 focus:border-white focus:ring-white/20',
             [WaitlistVariantEnum.FEATURE]:
-                'h-12 min-w-0 rounded-[0.875rem] border border-border bg-muted/50 px-4 text-[1.0625rem] placeholder:text-muted-foreground focus-visible:border-pillar focus-visible:ring-2 focus-visible:ring-pillar/25'
+                'h-12 min-w-0 min-[480px]:min-w-[14rem] min-[480px]:flex-1 rounded-[0.875rem] border border-border bg-muted/50 px-4 text-[1.0625rem] placeholder:text-muted-foreground focus-visible:border-pillar focus-visible:ring-2 focus-visible:ring-pillar/25'
         }
     }
 });
@@ -76,7 +76,7 @@ const buttonVariants = cva('font-semibold transition-all', {
                 'rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg bg-primary text-primary-foreground hover:bg-primary/90',
             [WaitlistVariantEnum.CTA]: 'rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg bg-white text-primary hover:bg-white/90',
             [WaitlistVariantEnum.FEATURE]:
-                'h-12 w-full rounded-[0.875rem] px-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-pillar min-[480px]:w-auto'
+                'h-12 w-full rounded-[0.875rem] px-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-pillar min-[480px]:w-auto min-[480px]:flex-none'
         }
     }
 });

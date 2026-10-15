@@ -158,12 +158,7 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                 <FeatureFaq.Item
                     index={0}
                     question={<Trans>Which languages are supported?</Trans>}
-                    answer={
-                        <Trans>
-                            English (source), Ukrainian, French, German, Spanish. More on the roadmap as the community contributes
-                            translations.
-                        </Trans>
-                    }
+                    answer={<Trans>English (source), Ukrainian, French, German and Spanish.</Trans>}
                 />
                 <FeatureFaq.Item
                     index={1}

@@ -7737,8 +7737,8 @@ msgid "Encryption, PIN lock and screenshot blur"
 msgstr "Шифрування, PIN-код і розмиття знімків екрана"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "English (source), Ukrainian, French, German, Spanish. More on the roadmap as the community contributes translations."
-msgstr "Англійська (оригінал), українська, французька, німецька, іспанська. Більше мов у планах, коли спільнота додасть переклади."
+msgid "English (source), Ukrainian, French, German and Spanish."
+msgstr "Англійська (мова оригіналу), українська, французька, німецька та іспанська."
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "English translation"
