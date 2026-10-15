@@ -260,6 +260,12 @@ jobs:
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder","trf-budgie-builder-2"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
+            # Gate on the turbo graph as well as detect-mobile-impact's path
+            # list: iOS Maestro runs only when the app, its workspace
+            # dependencies or the Maestro suite changed.
+            target-packages: |
+                @budgie-at/app
+                @budgie-at/app-tests
             targets: >-
                 [{"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
                 "appId":"com.vitalyiegorov.budgie.e2e","prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]
