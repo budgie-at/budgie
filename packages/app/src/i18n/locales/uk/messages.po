@@ -2253,10 +2253,6 @@ msgstr "Як налаштувати"
 msgid "How to export"
 msgstr "Як експортувати"
 
-#: src/@generic/component/icon/icon.tsx
-msgid "Icon importer not found: {icon}"
-msgstr "Імпортер значків не знайдено: {icon}"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки"

@@ -1,4 +1,4 @@
-import { CalendarClock } from 'lucide-react';
+import { CalendarTick } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 
@@ -17,7 +17,7 @@ export const InstallmentPreviewPlan = ({ eyebrow, title, next, outstanding, tota
         <span className="block text-xs font-medium text-muted-foreground">{eyebrow}</span>
         <span className="mt-2 flex items-center gap-3">
             <span className="ipv-icon">
-                <CalendarClock size={16} />
+                <CalendarTick size={16} />
             </span>
             <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold">{title}</span>

@@ -13,6 +13,8 @@ export { CurrencyEnum } from './@generic/enum/currency.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
 export { LanguageEnum } from './@generic/enum/language.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
+export { ReiconIconNameEnum } from './@generic/enum/reicon-icon-name.enum';
+export { isReiconIcon } from './@generic/type-guard/is-reicon-icon.type-guard';
 export { isEmojiIcon } from './@generic/type-guard/is-emoji-icon.type-guard';
 export { isUserIcon } from './@generic/type-guard/is-user-icon.type-guard';
 export type { UserIconType } from './@generic/type/user-icon.type';
