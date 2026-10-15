@@ -13,15 +13,20 @@ interface Props {
     description: string;
     date: string;
     dateModified?: string;
-    author: string;
     image?: string;
     locale: string;
     slug: string;
     keywords: string;
 }
 
-export const BlogPostingJsonLd = ({ title, description, date, dateModified, author, image, locale, slug, keywords }: Props) => {
+export const BlogPostingJsonLd = ({ title, description, date, dateModified, image, locale, slug, keywords }: Props) => {
     const articleUrl = `${BASE_URL}/${locale}/blog/${slug}`;
+    const organization = {
+        '@type': 'Organization',
+        name: 'Budgie',
+        url: BASE_URL,
+        logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg` }
+    };
     const data = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
@@ -29,13 +34,8 @@ export const BlogPostingJsonLd = ({ title, description, date, dateModified, auth
         description,
         datePublished: date,
         dateModified: dateModified ?? date,
-        author: { '@type': 'Person', name: author },
-        publisher: {
-            '@type': 'Organization',
-            name: 'Budgie',
-            url: BASE_URL,
-            logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg` }
-        },
+        author: organization,
+        publisher: organization,
         url: articleUrl,
         mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
         ...(isDefined(image) && { image: `${BASE_URL}${image}` }),
