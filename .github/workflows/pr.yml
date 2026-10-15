@@ -263,6 +263,7 @@ jobs:
             # Gate on the turbo graph as well as detect-mobile-impact's path
             # list: iOS Maestro runs only when the app, its workspace
             # dependencies or the Maestro suite changed.
+            turbo-version: 2.11.5
             target-packages: |
                 @budgie-at/app
                 @budgie-at/app-tests
