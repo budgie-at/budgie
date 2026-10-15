@@ -34,8 +34,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Category and tag names in Cyrillic, Greek, or Arabic get an English form — on your device, without sending anything
-                        to a server.
+                        Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your
+                        device, without sending anything to a server.
                     </Trans>
                 }
             />
@@ -43,7 +43,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One category, translated on your phone</Trans>}>
                     <Trans>
-                        One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it.
+                        One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It
+                        needs On-device AI, which downloads its models once.
                     </Trans>
                 </FeatureStory.Intro>
 
@@ -88,15 +89,16 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Categories and tags you create or import in Ukrainian, Greek, or Arabic script are unreadable to search and
-                        suggestions built around Latin text. Budgie writes an English form for each one, adds search keywords, and keeps
-                        both forms. All of it happens on your phone.
+                        Categories and tags you create or import in Ukrainian or other non-Latin scripts are hard for search and suggestions
+                        built around Latin text to find. Budgie translates each name into English, adds search keywords, and keeps both
+                        forms. All of it happens on your phone, once On-device AI is on and its one-time download has finished.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The original Cyrillic, Greek, or Arabic name stays exactly as you wrote it; the English form is what your search
-                        queries also match against. No data ever leaves your device.
+                        The original name stays exactly as you wrote it; the English form is what your search queries also match against. No
+                        data ever leaves your device. Renaming a category clears its English form and keywords, and Budgie generates them
+                        again for the new name.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -107,7 +109,7 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more</Trans>
+                        <Trans>Names in non-Latin scripts get an English translation, tested with Ukrainian</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Original category and tag names stay untouched alongside the English form</Trans>
@@ -129,8 +131,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     question={<Trans>Which scripts are supported?</Trans>}
                     answer={
                         <Trans>
-                            Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, Chinese, Japanese, Korean, Thai, and
-                            more.
+                            Names not written in the Latin alphabet are picked up for translation. We test it with Ukrainian; other
+                            languages may work less well, so check the English form and edit it if needed.
                         </Trans>
                     }
                 />
@@ -147,8 +149,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     question={<Trans>What if a category or tag is translated wrongly?</Trans>}
                     answer={
                         <Trans>
-                            Open the category or tag and edit its English form or keywords directly. Your edit is permanent for that
-                            category or tag.
+                            Open the category or tag and edit its English form or keywords directly, or regenerate them. If you later rename
+                            a category, its translation is reset and generated again.
                         </Trans>
                     }
                 />
@@ -156,8 +158,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     question={<Trans>Does this run on every category and tag?</Trans>}
                     answer={
                         <Trans>
-                            Only when needed. Latin-script names skip translation. Non-Latin names flow through the queue automatically
-                            after you create or import them.
+                            New or renamed categories and tags without a saved English form are picked up automatically. Latin-alphabet
+                            names skip translation but still get search keywords.
                         </Trans>
                     }
                 />

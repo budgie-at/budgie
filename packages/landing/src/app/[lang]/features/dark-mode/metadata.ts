@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'dark-mode',
     tier: FeatureTierEnum.NICHE,
     title: msg`True Dark Mode (Not Just Dimmed)`,
-    tagline: msg`OLED-friendly black, locale-aware, no white flash on cold launch.`,
+    tagline: msg`A black dark theme that follows your device until you switch it.`,
     metaTitle: msg`Dark Mode Budget App — Easy on the Eyes — Budgie`,
-    metaDescription: msg`System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility.`,
+    metaDescription: msg`A black dark theme that follows your device by default. One switch in Settings turns dark mode on or off.`,
     primaryKeyword: 'dark mode expense tracker',
     seoKeywords: [
         'dark mode expense tracker',

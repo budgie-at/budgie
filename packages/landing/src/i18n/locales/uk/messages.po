@@ -2339,6 +2339,22 @@ msgstr "Резервна копія всього"
 msgid "A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie models it that way: a connection holds the credential, and every account you sync from that bank points at it. Banks you import statements from, such as PrivatBank and Erste, have no token at all."
 msgstr "Токен банку належить не одному рахунку, а вашим стосункам із банком. Budgie моделює його саме так: підключення зберігає облікові дані, а кожен рахунок, який ви синхронізуєте з цього банку, посилається на нього. Банки, виписки з яких ви імпортуєте, як-от ПриватБанк і Erste, токена не мають взагалі."
 
+#: src/app/[lang]/features/dark-mode/metadata.ts
+msgid "A black dark theme that follows your device by default. One switch in Settings turns dark mode on or off."
+msgstr "Чорна темна тема, яка за замовчуванням слідує за пристроєм. Один перемикач у Налаштуваннях вмикає або вимикає темний режим."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "A black dark theme that follows your device until you flip the Dark Mode switch in Settings."
+msgstr "Чорна темна тема, яка слідує за пристроєм, доки ви не натиснете перемикач темного режиму в Налаштуваннях."
+
+#: src/app/[lang]/features/dark-mode/metadata.ts
+msgid "A black dark theme that follows your device until you switch it."
+msgstr "Чорна темна тема, яка слідує за пристроєм, доки ви її не перемкнете."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "A black launch screen in dark mode"
+msgstr "Чорний екран запуску в темному режимі"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "A budget is one overall limit plus as many per-category limits as you want, and a single cap for everything that falls outside those categories. The form shows how much you have allocated, how much is left, and warns you the moment your category limits exceed the overall limit."
 msgstr "Бюджет — це один загальний ліміт плюс стільки лімітів по категоріях, скільки потрібно, і єдина межа для всього, що не входить у ці категорії. Форма показує, скільки вже розподілено, скільки залишилось, і попереджає, щойно ліміти категорій перевищують загальний ліміт."
@@ -2436,8 +2452,8 @@ msgid "A filter-aware missing-category pill surfaces uncategorized transactions 
 msgstr "Швидка дія з урахуванням фільтрів показує некатегоризовані транзакції до того, як вони спотворять бюджетні звіти."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
-msgid "A finance app you check at midnight should not blast your retinas. Budgie's dark theme is OLED-friendly black, not a dimmed gray, and respects the system preference by default."
-msgstr "Фінансовий застосунок, який ви відкриваєте опівночі, має бути комфортним для очей. Темна тема Budgie — це OLED-дружній чорний, а не приглушений сірий, і за замовчуванням вона поважає системні налаштування."
+msgid "A finance app you check at midnight should not blast your retinas. Budgie's dark theme uses a black background, not a dimmed gray, and follows your device's setting until you switch it yourself."
+msgstr "Фінансовий застосунок, який відкриваєте опівночі, не повинен сліпити. Темна тема Budgie має чорний фон, а не притемнений сірий, і слідує за налаштуванням пристрою, доки ви самі її не перемкнете."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. From an attacker perspective, this is a far more attractive target than any individual bank, because:"
@@ -2520,8 +2536,8 @@ msgid "A refunded purchase closes its plan at what you already paid"
 msgstr "Повернена покупка закриває свій план на сумі, яку ви вже сплатили"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
-msgstr "Екран перевірки показує кожен рядок перед збереженням — «Вибрати всі категорії» та «Ввести всі суми» виправляють весь пакет одразу"
+msgid "A review sheet lists every row before saving — the Save button reads “Select all categories” or “Enter all amounts” until nothing is missing"
+msgstr "Екран перевірки показує кожен рядок перед збереженням — кнопка «Зберегти» має підпис «Виберіть усі категорії» або «Введіть усі суми», доки чогось не вистачає"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "A review sheet shows every row before anything is saved. Fix a row, fix the whole batch at once, or re-record and try again."
@@ -2538,10 +2554,6 @@ msgstr "Екран налаштувань сканує ваші імпорти �
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "A short message instead of numbers, so an empty widget never looks like a zero balance."
 msgstr "Коротке повідомлення замість цифр, щоб порожній віджет ніколи не виглядав як нульовий баланс."
-
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
-msgstr "Один перемикач темного режиму в Налаштуваннях — за замовчуванням стежить за темою системи, вручну перемикається будь-коли"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "A single month says little about your habits. Runway only counts finished calendar months, up to the last six, and appears once at least three of them have transactions. Until then the pill stays hidden and the Runway tab tells you how many complete months it has so far."
@@ -2602,6 +2614,10 @@ msgstr "Переказ може мати вартість"
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "A transfer is its own type"
 msgstr "Переказ — це окремий тип"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "A true black background instead of a dimmed gray panel"
+msgstr "Справжній чорний фон замість притемненої сірої панелі"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "A typical month in numbers"
@@ -2700,10 +2716,6 @@ msgstr "Рахунки групуються за типом"
 #: src/app/[lang]/page.tsx
 msgid "Accounts, budgets, analytics and bank imports, all running from the same local database."
 msgstr "Рахунки, бюджети, аналітика та імпорт з банку працюють з однієї локальної бази даних."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Accurate, multilingual transcription that happens on your phone"
-msgstr "Точна багатомовна транскрипція прямо на вашому телефоні"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Acknowledge receipt of security reports within 48 hours"
@@ -3468,8 +3480,8 @@ msgid "Attempt to gain unauthorized access to any part of the Service"
 msgstr "Спроби отримати несанкціонований доступ до будь-якої частини Сервісу"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Audio never leaves the device — no Siri-style cloud round-trip"
-msgstr "Аудіо ніколи не покидає пристрій — без хмарних запитів у стилі Siri"
+msgid "Audio never leaves the device"
+msgstr "Звук ніколи не залишає пристрій"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Audit our security and privacy implementations"
@@ -4066,6 +4078,10 @@ msgstr "Біометрія відкриває замок, PIN лишається
 msgid "bitcoin"
 msgstr "bitcoin"
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Black for the background. Cards and surfaces are dark gray for hierarchy."
+msgstr "Фон чорний. Картки й поверхні темно-сірі для ієрархії."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Block, the parent company of Cash App, disclosed that a former employee downloaded internal reports containing customer data for over 8 million users. The breach included full names, brokerage account numbers, portfolio values, and stock trading activity."
 msgstr "Block, материнська компанія Cash App, розкрила, що колишній співробітник завантажив внутрішні звіти, що містили дані клієнтів понад 8 мільйонів користувачів. Витік включав:"
@@ -4135,6 +4151,10 @@ msgstr "Пов'язані їхньою політикою конфіденцій
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Breaking security changes are clearly communicated"
 msgstr "Критичні зміни безпеки чітко комунікуються"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Brighter green and red amounts for legibility on black"
+msgstr "Яскравіші зелені та червоні суми для кращої читабельності на чорному"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Brighter red and green"
@@ -5644,8 +5664,8 @@ msgid "categories"
 msgstr "категорії"
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Categories and tags you create or import in Ukrainian, Greek, or Arabic script are unreadable to search and suggestions built around Latin text. Budgie writes an English form for each one, adds search keywords, and keeps both forms. All of it happens on your phone."
-msgstr "Категорії й теги, які ви створюєте або імпортуєте українською, грецькою чи арабською писемністю, нечитабельні для пошуку й підказок, розрахованих на латинський текст. Budgie записує англійську форму для кожної, додає ключові слова для пошуку і зберігає обидві форми. Усе це відбувається на вашому телефоні."
+msgid "Categories and tags you create or import in Ukrainian or other non-Latin scripts are hard for search and suggestions built around Latin text to find. Budgie translates each name into English, adds search keywords, and keeps both forms. All of it happens on your phone, once On-device AI is on and its one-time download has finished."
+msgstr "Категорії й теги, які ви створюєте чи імпортуєте українською або іншими нелатинськими абетками, важко знайти за допомогою пошуку й підказок, орієнтованих на латиницю. Budgie перекладає кожну назву англійською, додає ключові слова для пошуку й зберігає обидві форми. Усе відбувається на вашому телефоні, щойно ввімкнено ШІ на пристрої й завершено одноразове завантаження."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Categories answer \"what kind of expense\"; tags answer \"for what purpose\". Both views live in Analytics — switch between them with one tap. Categories give a structured budget view; tags give project-level and context-level views."
@@ -5755,8 +5775,16 @@ msgid "Category and tag breakdowns for any period, with drill-down from any row 
 msgstr "Розподіли за категоріями й тегами для будь-якого періоду з переходом із будь-якого рядка до транзакцій за ним."
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Category and tag names in Cyrillic, Greek, or Arabic get an English form — on your device, without sending anything to a server."
-msgstr "Назви категорій і тегів кирилицею, грецькою чи арабською отримують англійську форму — на вашому пристрої, без надсилання будь-чого на сервер."
+msgid "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your device, without sending anything to a server."
+msgstr "Назви категорій і тегів нелатинськими абетками, як-от кирилицею, отримують англійську форму та ключові слова для пошуку — на вашому пристрої, без надсилання чогось на сервер."
+
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your phone."
+msgstr "Назви категорій і тегів нелатинськими абетками, як-от кирилицею, отримують англійську форму та ключові слова для пошуку — на вашому телефоні."
+
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Category and tag names in other scripts get an English form and keywords, so search matches either. Runs on your phone."
+msgstr "Назви категорій і тегів іншими абетками отримують англійську форму та ключові слова, щоб пошук знаходив обидві. Працює на вашому телефоні."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Category and tag translation for Cyrillic, Greek, and Arabic names"
@@ -5843,10 +5871,6 @@ msgstr "Зміни в основних функціях"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Charges for that day"
 msgstr "Списання за цей день"
-
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Chart palettes auto-recompute for legibility on dark canvas"
-msgstr "Палітри графіків автоматично перераховуються для кращого читання на темному фоні"
 
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "charts"
@@ -6715,26 +6739,13 @@ msgstr "Власні теги транзакцій для обліку витр�
 msgid "CVE (Common Vulnerabilities and Exposures) tracking and responses"
 msgstr "Відстеження CVE (Common Vulnerabilities and Exposures) та реагування на них"
 
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, Chinese, Japanese, Korean, Thai, and more."
-msgstr "Кирилиця (українська, російська, болгарська, сербська), грецька, арабська, іврит, китайська, японська, корейська, тайська та інші."
-
 #: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
 msgid "Cyrillic to English. On-device."
 msgstr "Кирилиця на англійську. На пристрої."
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-category-translation/metadata.ts
 msgid "Cyrillic, Greek, and Arabic category and tag names become readable and searchable — on your phone."
 msgstr "Назви категорій і тегів кирилицею, грецькою та арабською стають читабельними й доступними для пошуку — на вашому телефоні."
-
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more"
-msgstr "Кирилиця, грецька, арабська, китайська, японська, корейська та інші"
-
-#: src/app/[lang]/features/ai-category-translation/metadata.ts
-msgid "Cyrillic, Greek, or Arabic category and tag names get an English form so search and suggestions match either script. Runs on-device."
-msgstr "Назви категорій і тегів кирилицею, грецькою чи арабською отримують англійську форму, щоб пошук і підказки знаходили обидва варіанти написання. Працює на пристрої."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Daily prices backfilled only for the crypto accounts you actually hold"
@@ -7123,10 +7134,6 @@ msgstr "Чи працює якийсь із цих додатків без ін�
 msgid "Do Binance holdings count towards net worth?"
 msgstr "Чи враховуються активи на Binance у чистих активах?"
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Do charts recolor?"
-msgstr "Чи змінюються кольори графіків?"
-
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
 msgid "Do fees show up in analytics?"
 msgstr "Чи видно комісії в аналітиці?"
@@ -7203,6 +7210,10 @@ msgstr "Чи потрібне сповіщенням підключення до
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Do the charts work offline?"
 msgstr "Чи працюють графіки офлайн?"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Do the colors change?"
+msgstr "Чи змінюються кольори?"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Do the widgets update on their own?"
@@ -10344,10 +10355,6 @@ msgstr "Ручна або запланована"
 msgid "Manual override is one tap. Open the consolidated transaction, choose Revert, and Budgie restores the original entries with their original categories."
 msgstr "Ручне виправлення — це один дотик. Відкрийте консолідовану транзакцію, виберіть Скасувати, і Budgie відновить початкові записи з їхніми початковими категоріями."
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Manual override is two taps in Settings. The theme switch is non-flickering on cold launch (no white-flash). Charts and accents recolor for legibility."
-msgstr "Ручне перевизначення — два дотики в Налаштуваннях. Перемикач теми не мигає при холодному запуску (без білого спалаху). Графіки та акценти перефарбовуються для зручності читання."
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Manual server snapshots"
 msgstr "Ручні знімки сервера"
@@ -11024,6 +11031,14 @@ msgstr "Друг повернув мені гроші банківським п�
 msgid "Named by its destination account"
 msgstr "Названо за рахунком призначення"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Names in non-Latin scripts get an English translation, tested with Ukrainian"
+msgstr "Назви не латинкою отримують англійський переклад, протестовано на українській"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Names not written in the Latin alphabet are picked up for translation. We test it with Ukrainian; other languages may work less well, so check the English form and edit it if needed."
+msgstr "Назви, написані не латинкою, беруться в переклад. Ми тестуємо це на українській; інші мови можуть працювати гірше, тому перевірте англійську форму та за потреби виправте її."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Narrow by amount, not just by date"
 msgstr "Звужуйте пошук за сумою, а не лише за датою"
@@ -11070,8 +11085,8 @@ msgid "Net worth and account balances answer a different question from spending 
 msgstr "Чистий капітал і баланси рахунків відповідають на інше запитання, ніж аналітика витрат. Чистий капітал питає: «Скільки зараз коштують мої активи?» Аналітика витрат питає: «Скільки це коштувало мені тоді?» Для цих запитань не має діяти одне й те саме правило конвертації."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail underneath. Quick add is one size, sized for its three tiles."
-msgstr "Чистий капітал і бюджет доступні в малому розмірі лише з головною цифрою або у більшому розмірі з деталями під нею. Швидке додавання має один розмір, розрахований на три плитки."
+msgid "Net worth and budget come in a small size for the headline number, or a larger size that adds the detail underneath. Quick add is one size, sized for its three tiles."
+msgstr "Чистий капітал і бюджет бувають малого розміру — лише головне число — або більшого, що додає подробиці знизу. Швидке додавання має один розмір, розрахований на три плитки."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until the debt is paid off."
@@ -11137,6 +11152,10 @@ msgstr "Нові встановлення починаються з вимкне
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "New manual entries get suggestions from your history instantly, with nothing to download"
 msgstr "Нові ручні записи миттєво отримують підказки з твоєї історії — нічого завантажувати не треба"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "New or renamed categories and tags without a saved English form are picked up automatically. Latin-alphabet names skip translation but still get search keywords."
+msgstr "Нові чи перейменовані категорії й теги без збереженої англійської форми обробляються автоматично. Назви, написані латинкою, не перекладаються, але отримують ключові слова для пошуку."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
@@ -11403,10 +11422,6 @@ msgstr "Жодна відмова від дотримання будь-якої 
 msgid "No Way to Verify Security Claims"
 msgstr "Неможливість перевірити заяви про безпеку"
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "No white flash on cold launch — native splash respects the OS theme"
-msgstr "Без білого спалаху при холодному запуску — нативний екран завантаження враховує тему ОС"
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "no-server"
 msgstr "без сервера"
@@ -11540,8 +11555,8 @@ msgid "No. The count and the drill-down list both run entirely on-device, withou
 msgstr "Ні. Лічильник і детальний список працюють повністю на пристрої, без будь-якого хмарного сервісу аналітики."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become text. Nothing is saved, sent, or logged."
-msgstr "Ні. Мікрофон передає дані напряму для розпізнавання на пристрої, а аудіо видаляється, щойно перетворюється на текст. Нічого не зберігається, не надсилається і не логується."
+msgid "No. The microphone feeds transcription directly on the device, and your audio is never sent to a server."
+msgstr "Ні. Мікрофон передає звук прямо на розпізнавання на пристрої, і ваше аудіо ніколи не надсилається на сервер."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. Budgie keeps no biometric material — your PIN is what protects your data."
@@ -11705,8 +11720,8 @@ msgid "Nothing is lost. Each connection commits what it fetched to your local da
 msgstr "Нічого не втрачається. Кожне з'єднання одразу записує отримані дані до вашої локальної бази після завершення, і кожен рядок має ідентифікатор джерела, тож наступна синхронізація продовжує з того місця без створення дублікатів."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
-msgstr "Нічого не записується, доки ви не натиснете «Зберегти» — весь пакет записується однією транзакцією бази даних, тож ви ніколи не отримаєте наполовину збереженого речення"
+msgid "Nothing is saved until you tap Save, and Save stays off until every row has an amount and a category"
+msgstr "Нічого не зберігається, доки ви не натиснете «Зберегти», а кнопка залишається вимкненою, поки кожен рядок не має суми й категорії"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Nothing on this screen asks who you are. There is no account, no email, no sign-in step — so there is no server-side profile that a breach could expose."
@@ -11917,18 +11932,6 @@ msgstr "Часто так"
 msgid "Older exports often contain the account currency and amount, but no exchange-rate snapshot. Budgie treats that as incomplete valuation data, not as corrupt transaction data. The entry is still usable; it simply needs a base value before it should affect multi-currency charts."
 msgstr "Старіші експорти часто містять валюту й суму рахунку, але не містять знімка курсу валют. Budgie сприймає це як неповні дані оцінки, а не як пошкоджені дані транзакції. Запис залишається придатним до використання; йому лише потрібна базова вартість, перш ніж він вплине на мультивалютні діаграми."
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "OLED-friendly black for the background. Cards and surfaces are dark gray for hierarchy, but the canvas pixels are off — saves battery on OLED screens."
-msgstr "Чорний OLED-дружній фон. Картки та поверхні темно-сірі для ієрархії, але пікселі полотна вимкнені — економить заряд батареї на OLED-екранах."
-
-#: src/app/[lang]/features/dark-mode/metadata.ts
-msgid "OLED-friendly black, locale-aware, no white flash on cold launch."
-msgstr "Чорний OLED-дружній, з урахуванням локалі, без білого спалаху при холодному запуску."
-
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "OLED-friendly true black canvas — saves battery on modern phones"
-msgstr "Справжнє чорне OLED-дружнє полотно — економить заряд батареї на сучасних телефонах"
-
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "On a cold launch Budgie asks the system to authenticate you the moment the lock screen appears, and a successful scan takes you straight in. The keypad also keeps a scan button, so you can ask for it again."
 msgstr "На холодному старті Budgie просить систему автентифікувати вас щойно з’являється екран блокування, і вдале сканування одразу впускає всередину. На клавіатурі також лишається кнопка сканування, щоб попросити ще раз."
@@ -12131,6 +12134,10 @@ msgstr "Одні облікові дані на банк, спільні для 
 msgid "One currency, often hardcoded"
 msgstr "Одна валюта, часто жорстко закодована"
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "One Dark Mode switch in Settings — follows your device's theme until you switch it"
+msgstr "Один перемикач темного режиму в Налаштуваннях — слідує за темою пристрою, доки ви його не перемкнете"
+
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "One date per transaction line, taken straight from the statement"
 msgstr "Одна дата на рядок транзакції, взята просто з виписки"
@@ -12252,16 +12259,16 @@ msgid "One screen to finish it"
 msgstr "Один екран — і готово"
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it."
-msgstr "Один екран: категорія з українською назвою, англійська форма та ключові слова для пошуку, які Budgie згенерував для неї."
+msgid "One screen: a category named in Ukrainian, with the English form and search keywords Budgie generated for it. It needs On-device AI, which downloads its models once."
+msgstr "Один екран: категорія з українською назвою, англійська форма та ключові слова для пошуку, які Budgie згенерував для неї. Потрібен ШІ на пристрої, який завантажує свої моделі один раз."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "One screen: the Tags tab beside Categories, income totalled tag by tag, then spending, each with its share of the period."
 msgstr "Один екран: вкладка «Теги» поруч із «Категоріями», доходи, підсумовані тег за тегом, потім витрати — кожне зі своєю часткою періоду."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "One sentence can log several transactions at once — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, not one merged entry. A review sheet shows every extracted row with its amount, category, and account before anything is written to the database."
-msgstr "Одне речення може створити кілька транзакцій одразу — «дванадцять за каву, сорок за таксі і вісім євро за парковку» повертається як три окремі рядки, а не один об’єднаний запис. Екран перевірки показує кожен розпізнаний рядок із сумою, категорією та рахунком, перш ніж щось буде записано до бази даних."
+msgid "One sentence can log several transactions at once — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, not one merged entry. A review sheet shows every extracted row with its amount, category, and account before anything is saved."
+msgstr "Одне речення може записати кілька транзакцій одразу — «дванадцять за каву, сорок за таксі й вісім євро за паркування» повертає три окремі рядки, а не один об'єднаний запис. Екран перевірки показує кожен розпізнаний рядок із сумою, категорією та рахунком, перш ніж щось буде збережено."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "One settings screen, and a public repository where every line of it can be checked."
@@ -12439,10 +12446,6 @@ msgstr "Лише рядки без категорії"
 msgid "Only to download the PDF from George. Reading the statement happens entirely on your device — it never leaves your phone."
 msgstr "Лише щоб завантажити PDF із George. Зчитування виписки відбувається повністю на вашому пристрої — вона ніколи не залишає ваш телефон."
 
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Only when needed. Latin-script names skip translation. Non-Latin names flow through the queue automatically after you create or import them."
-msgstr "Лише коли потрібно. Назви латиницею пропускають переклад. Назви в іншій писемності автоматично потрапляють у чергу після створення чи імпорту."
-
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Open a bank-synced account and tap Re-sync. Picking a window moves that account's sync start back to the date you chose, so the next sync starts from there instead of walking the whole history again."
 msgstr "Відкрийте рахунок із банківською синхронізацією та натисніть «Повторна синхронізація». Вибір вікна переносить початок синхронізації цього рахунку на обрану дату, тож наступна синхронізація почнеться звідти, а не проходитиме всю історію наново."
@@ -12512,8 +12515,8 @@ msgid "Open the account menu and choose Close Deposit. Budgie moves the remainin
 msgstr "Відкрийте меню рахунку та виберіть «Закрити вклад». Budgie переказує залишок на вибраний рахунок призначення й архівує вклад."
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "Open the category or tag and edit its English form or keywords directly. Your edit is permanent for that category or tag."
-msgstr "Відкрийте категорію чи тег і відредагуйте англійську форму або ключові слова напряму. Ваша правка залишається постійною для цієї категорії чи тега."
+msgid "Open the category or tag and edit its English form or keywords directly, or regenerate them. If you later rename a category, its translation is reset and generated again."
+msgstr "Відкрийте категорію чи тег і змініть англійську форму або ключові слова вручну, або створіть їх заново. Якщо ви потім перейменуєте категорію, її переклад скидається й створюється знову."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category first, then tags, then a comment, with the usual amount filled in once you have chosen."
@@ -12816,10 +12819,6 @@ msgstr "Мабуть, найважливіше те, що Credit Karma нале�
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
 msgstr "Цим безоплатно надається дозвіл будь-якій особі, яка отримала копію цього програмного забезпечення та пов'язаних із ним файлів документації (далі — «Програмне забезпечення»), користуватися Програмним забезпеченням без обмежень, включно з правом без обмежень використовувати, копіювати, змінювати, об'єднувати, публікувати, поширювати, надавати субліцензії та/або продавати копії Програмного забезпечення, а також дозволяти особам, яким надається Програмне забезпечення, робити те саме, за дотримання таких умов:"
-
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Persists across app relaunch and device restarts"
-msgstr "Зберігається при перезапуску додатка та перезавантаженні пристрою"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Personal and Private by Nature"
@@ -14010,6 +14009,10 @@ msgstr "Скажіть «дванадцять за каву, сорок за т�
 msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. Transcription and parsing both happen on your phone — the audio never leaves it."
 msgstr "Скажіть «дванадцять за каву, сорок за таксі й вісім євро за паркування» — і Budgie запише всі три. І розпізнавання, і розбір відбуваються прямо на вашому телефоні — аудіо ніколи його не залишає."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Say hryvnia, dollars or euros and the row lands on your account in that currency"
+msgstr "Скажіть гривні, долари чи євро — і рядок потрапить на ваш рахунок у цій валюті"
+
 #: src/app/[lang]/page.tsx
 msgid "Say what you spent and Budgie logs it. The audio never leaves the device."
 msgstr "Скажіть, що ви витратили, і Budgie це запише. Аудіо ніколи не залишає пристрій."
@@ -15103,8 +15106,8 @@ msgid "Switches without a relaunch"
 msgstr "Перемикається без перезапуску"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff."
-msgstr "Перемикання режиму — це один дотик до перемикача Темний режим у Налаштуваннях, вручну, а не автоматично."
+msgid "Switching is one tap on the Dark Mode switch in Settings. It is a single on/off switch: once you use it, Budgie stays on the theme you chose."
+msgstr "Перемикання — одне натискання перемикача темного режиму в Налаштуваннях. Це єдиний перемикач увімк./вимк.: після того як ви ним скористалися, Budgie залишається на обраній темі."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Switching to Budgie CSV import eliminates the aggregator entirely. Download your statement from your bank website as you normally would and import it into Budgie. You gain full transaction history without any ongoing credential exposure to a third party."
@@ -15152,14 +15155,6 @@ msgstr "Виправлення синхронізації знаходять д�
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Sync the account the money left and the account it landed in, and each one imports its own half — an expense on one side, an income on the other. Left alone, one movement lands in your ledger twice."
 msgstr "Синхронізуйте рахунок, з якого пішли гроші, і рахунок, на який вони надійшли — кожен імпортує свою половину: витрату з одного боку, дохід з іншого. Якщо нічого не робити, один рух потрапить до вашого обліку двічі."
-
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "System-adaptive dark theme that respects OLED displays and switches with your device — or lock to dark or light."
-msgstr "Системна адаптивна темна тема, що враховує OLED-дисплеї та перемикається разом із пристроєм — або зафіксуйте темну чи світлу."
-
-#: src/app/[lang]/features/dark-mode/metadata.ts
-msgid "System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility."
-msgstr "Системна адаптивна темна тема, що враховує OLED-дисплеї. Перемикайтеся разом із пристроєм або зафіксуйте темну чи світлу. Графіки перераховують палітру для зручності читання."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest."
@@ -15527,8 +15522,8 @@ msgid "The budget itself is kept in your default currency, and spending recorded
 msgstr "Сам бюджет ведеться у вашій основній валюті, а витрати, записані на рахунках в інших валютах, конвертуються в неї за курсами, збереженими на вашому пристрої."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "The budget widget carries the same spent, left and percentage as the budget screen, and the larger size adds your top categories. Tap it and Budgie opens the budget screen for the active period."
-msgstr "Віджет бюджету показує ті самі значення витраченого, залишку та відсотка, що й екран бюджету, а більший розмір додає ваші основні категорії. Дотик відкриває екран бюджету для поточного періоду."
+msgid "The budget widget shows what is left, the daily amount you can spend and the days remaining, with a ring for the percentage used. The larger size shows spent against your limit and adds your top categories. Tap it and Budgie opens the budget screen for the active period."
+msgstr "Віджет бюджету показує, скільки лишилося, суму на день і кількість днів, що залишилися, а кільце — відсоток використаного. Більший розмір показує витрачене відносно ліміту й додає ваші головні категорії. Торкніться — і Budgie відкриє екран бюджету для активного періоду."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Budgie Difference: Privacy-First Financial Management"
@@ -15826,6 +15821,10 @@ msgstr "Спершу відкривається клавіатура. Введі
 msgid "The last part is simply whatever is left on the plan, so rounding never leaves a plan open by a few cents."
 msgstr "Остання частина — це просто залишок плану, тож округлення ніколи не залишить план відкритим через кілька копійок."
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "The launch screen is black when your device is in dark mode and white when it is in light mode."
+msgstr "Екран запуску чорний, коли пристрій у темному режимі, і білий, коли у світлому."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
 msgstr "Життєвий цикл ваших фінансових даних виходить далеко за межі вашого активного використання додатку."
@@ -15912,13 +15911,9 @@ msgstr "Найбільш приватний спосіб отримати бан
 msgid "The name stays as you wrote it"
 msgstr "Назва залишається такою, як ви її написали"
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "The native splash screen reads the OS theme directly so the transition into the app stays in dark mode without an intermediate light state."
-msgstr "Нативний екран запуску безпосередньо зчитує тему ОС, тож перехід у застосунок залишається в темному режимі без проміжного світлого стану."
-
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and whether you are growing or burning. Tap it and Budgie opens straight to Home."
-msgstr "Віджет чистого капіталу відображає загальну суму вгорі екрана «Головна», а більший розмір додає, наскільки вона змінилася цього місяця та чи ви накопичуєте, чи витрачаєте більше, ніж заробляєте. Дотик відкриває Budgie одразу на «Головній»."
+msgid "The net worth widget mirrors the total at the top of Home along with whether you are growing or burning, and the larger size adds how much it moved this month and the total per account type. Tap it and Budgie opens straight to Home."
+msgstr "Віджет чистого капіталу повторює підсумок угорі Головної та показує, ростете ви чи спалюєте, а більший розмір додає, наскільки він змінився цього місяця, і суму за типами рахунків. Торкніться — і Budgie відкриє Головну."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "The net worth widget opens Home, the budget widget opens the budget screen, and each quick add tile opens the new-transaction screen already set to expense, income or transfer."
@@ -15953,8 +15948,8 @@ msgid "The operating system does the matching — Budgie never sees biometric da
 msgstr "Звірку виконує операційна система — Budgie не бачить біометричних даних, лише результат"
 
 #: src/app/[lang]/features/ai-category-translation/page.tsx
-msgid "The original Cyrillic, Greek, or Arabic name stays exactly as you wrote it; the English form is what your search queries also match against. No data ever leaves your device."
-msgstr "Оригінальна назва кирилицею, грецькою чи арабською залишається точно такою, як ви її написали; англійська форма — це те, що також знаходять ваші пошукові запити. Жодні дані ніколи не залишають ваш пристрій."
+msgid "The original name stays exactly as you wrote it; the English form is what your search queries also match against. No data ever leaves your device. Renaming a category clears its English form and keywords, and Budgie generates them again for the new name."
+msgstr "Початкова назва залишається саме такою, як ви її написали; англійська форма — це те, з чим також зіставляються ваші пошукові запити. Дані ніколи не залишають ваш пристрій. Перейменування категорії очищає її англійську форму та ключові слова, і Budgie створює їх знову для нової назви."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The other account's IBAN as the primary signal where the bank sends it; amount and time-window matching for banks that don't"
@@ -16247,10 +16242,6 @@ msgstr "Код відкритий для читання, але ліцензія
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "The split screen’s “left to assign” footer could get stuck at a fraction of a cent and never turn into the confirm button; the remaining amount is now compared exactly. See <0>split transactions</0>."
 msgstr "Нижній напис «залишилося розподілити» на екрані розподілу міг зависати на частці копійки й ніколи не перетворюватися на кнопку підтвердження; тепер залишок суми порівнюється точно. Див. <0>розподіл транзакцій</0>."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "The spoken currency picks the matching account automatically"
-msgstr "Вимовлена валюта автоматично вибирає відповідний рахунок"
 
 #: src/app/[lang]/blog/privat24-statement-excel-import/page.tsx
 msgid "The statement carries no counterparty details, so Budgie knows who you paid only from the description. Your own categorization rules also run on the new operations. If you hold PrivatBank cards in different currencies, each becomes a separate account, and <0>multi-currency tracking</0> brings them together in your main currency."
@@ -16882,6 +16873,10 @@ msgstr "Транзакції: фільтрація за діапазоном с�
 msgid "Transcribed on the phone, never uploaded"
 msgstr "Транскрибується на телефоні, ніколи не завантажується"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Transcription that happens on your phone, in your phone's language"
+msgstr "Розпізнавання мовлення відбувається на вашому телефоні, мовою телефону"
+
 #: src/app/[lang]/features/account-transfers/metadata.ts
 msgid "Transfer between your own accounts as a first-class transaction type with automatic FX conversion and dual-amount display. Spending stats stay clean; balance reconciliation stays exact."
 msgstr "Переказ між власними рахунками як першокласний тип транзакції з автоматичною конверсією FX та подвійним відображенням суми. Статистика витрат залишається чистою; узгодження балансу залишається точним."
@@ -17312,12 +17307,16 @@ msgid "Voice Entry"
 msgstr "Голосове введення"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Voice entry downloads what it needs once and keeps it on the device — only after you switch On-device AI on in Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more, and follows your phone's language automatically."
-msgstr "Голосове введення завантажує потрібне один раз і зберігає на пристрої — лише після того, як ви увімкнете ШІ на пристрої в налаштуваннях, і лише при першому записі. Воно охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а ще десятки інших, і автоматично слідує за мовою вашого телефону."
+msgid "Voice entry downloads what it needs once (about 2.5 GB) and keeps it on the device — only after you switch On-device AI on in Settings. Transcription follows your phone's language when it is supported and detects the language otherwise. Picking out amounts and currencies is tuned for English and Ukrainian, including mixed sentences."
+msgstr "Голосовий ввід одноразово завантажує все потрібне (приблизно 2,5 ГБ) і зберігає на пристрої — лише після того, як ви ввімкнете ШІ на пристрої в Налаштуваннях. Розпізнавання мовлення слідує за мовою телефону, якщо вона підтримується, а інакше визначає мову сама. Визначення сум і валют налаштоване на англійську та українську, зокрема змішані речення."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Voice entry runs on the On-device AI switch in Settings. Its description says it transcribes voice notes on this device and downloads the models once, best on Wi-Fi. Your audio becomes text on the phone and is never sent to a server."
-msgstr "Голосове введення працює завдяки перемикачу «ШІ на пристрої» в налаштуваннях. За його описом, він транскрибує голосові нотатки на цьому пристрої та одноразово завантажує моделі, найкраще через Wi-Fi. Ваше аудіо перетворюється на текст на телефоні й ніколи не надсилається на сервер."
+msgid "Voice entry runs on the On-device AI switch in Settings, which is off until you turn it on. Turning it on starts a one-time download of about 2.5 GB, best on Wi-Fi. After that, your audio becomes text on the phone and is never sent to a server."
+msgstr "Голосовий ввід працює через перемикач «ШІ на пристрої» в Налаштуваннях, який вимкнений, доки ви його не ввімкнете. Увімкнення запускає одноразове завантаження приблизно 2,5 ГБ, найкраще через Wi-Fi. Після цього ваш голос перетворюється на текст на телефоні й ніколи не надсилається на сервер."
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Voice entry without sending your audio anywhere"
+msgstr "Голосовий ввід без надсилання вашого звуку кудись"
 
 #: src/app/[lang]/page.tsx
 msgid "Voice entry, transcribed on your phone"
@@ -17332,8 +17331,8 @@ msgid "voice input"
 msgstr "голосове введення"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories are pulled out there too."
-msgstr "Голос — найшвидший спосіб внесення витрати, але сьогодні кожен голосовий бюджетний додаток передає дані з мікрофона на сервер постачальника. Budgie тримає аудіо повністю на пристрої: там воно перетворюється на текст, і там же виокремлюються суми та категорії."
+msgid "Voice is the fastest input mode for an expense. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories are pulled out there too."
+msgstr "Голос — найшвидший спосіб внести витрату. Budgie зберігає звук повністю на пристрої: він перетворюється на текст там, і суми з категоріями теж визначаються там."
 
 #: src/generic/utils/build-landing-json-ld.util.ts
 msgid "Voice transaction entry"
@@ -17653,6 +17652,10 @@ msgstr "Що насправді приховує захист від скрин�
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "What does the budget widget show if I have no active budget?"
 msgstr "Що показує віджет бюджету, якщо в мене немає активного бюджету?"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "What does the launch screen look like?"
+msgstr "Як виглядає екран запуску?"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "What does the own-card transfer fix actually change?"
@@ -18557,10 +18560,6 @@ msgstr "Чому з’являються дублікати"
 msgid "Why entry friction kills expense trackers"
 msgstr "Чому тертя при введенні вбиває трекери витрат"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Why every voice budgeting app today is a privacy hole"
-msgstr "Чому кожен голосовий фінансовий додаток сьогодні є дірою конфіденційності"
-
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-overview-section/bank-fee-tracking-overview-section.tsx
 msgid "Why fees need their own entry type"
 msgstr "Чому комісіям потрібен власний тип запису"
@@ -18620,10 +18619,6 @@ msgstr "Чому більшість діаграм витрат марні"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Why Most Mint Alternatives Have the Same Problem"
 msgstr "Чому більшість альтернатив Mint мають ту саму проблему"
-
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Why no white flash on cold launch?"
-msgstr "Чому немає білого спалаху при холодному запуску?"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Why not just full re-sync?"
@@ -18976,10 +18971,6 @@ msgstr "Так — дивіться «Розумна консолідація п
 msgid "Yes — Settings → Security → App Lock, then the biometric row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
 msgstr "Так — Налаштування → Безпека → Блокування застосунку, потім рядок біометрії всередині картки. PIN залишається активним. Якщо вимкнути блокування застосунку, біометрія вимикається разом із ним."
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Yes — system theme by default. Override to Light or Dark in Settings if you prefer."
-msgstr "Так — системна тема за замовчуванням. Замініть на Світлу або Темну в Налаштуваннях за бажанням."
-
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Yes — tapping a category row on the budget detail screen opens the transaction list filtered to that category and that exact budget period."
 msgstr "Так — торкання рядка категорії на екрані деталей бюджету відкриває список транзакцій, відфільтрований за цією категорією та саме цим періодом бюджету."
@@ -19039,6 +19030,10 @@ msgstr "Так, повністю. Кожна основна функція — �
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Yes, once you save a rule. After you categorize a single group, tap the rule button in the bar at the bottom: the rule editor opens pre-filled and, once saved, categorizes matching transactions on every future bank sync and import. Even without a rule, your choices make the next suggestions more accurate."
 msgstr "Так, щойно ви збережете правило. Категоризувавши одну групу, торкніться кнопки правила на панелі внизу: редактор правила відкриється заповненим, а після збереження категоризуватиме відповідні транзакції під час кожної наступної синхронізації з банком та імпорту. Навіть без правила ваші рішення роблять наступні підказки точнішими."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Yes, until you touch the switch. Budgie follows your device's theme by default. Once you flip the Dark Mode switch in Settings, it stays on the theme you picked and does not go back to following the device."
+msgstr "Так, доки ви не торкнетеся перемикача. За замовчуванням Budgie слідує за темою пристрою. Щойно ви натиснете перемикач темного режиму в Налаштуваннях, застосунок залишається на обраній темі й більше не повертається до теми пристрою."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Yes, while the switch is on Budgie asks your phone to block screen capture. Exactly how a blocked capture looks, blank or refused, depends on your phone."
@@ -19100,10 +19095,6 @@ msgstr "Так. Budgie визначає реальний інтервал кож
 msgid "Yes. Budgie’s source code is available on GitHub. You can review the bank sync and import code to confirm that no outbound calls send transaction data to Budgie servers. The network requests during sync go directly from your device to your bank API endpoint."
 msgstr "Так. Вихідний код Budgie доступний на GitHub. Ви можете переглянути код синхронізації з банком та імпорту й переконатися, що жодні вихідні виклики не передають дані транзакцій на сервери Budgie. Мережеві запити під час синхронізації йдуть напряму з вашого пристрою до банку."
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Yes. Chart palettes recompute for legibility — emerald accents shift slightly for contrast on a dark canvas."
-msgstr "Так. Палітри графіків перераховуються для зручності читання — смарагдові акценти трохи зміщуються для контрасту на темному полотні."
-
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Yes. Connect Binance with a read-only key and your balances and history come into Budgie next to your other accounts. Other exchanges and wallets are tracked by hand."
 msgstr "Так. Підключіть Binance за допомогою ключа лише для читання — і ваші баланси та історія з'являться в Budgie поруч з іншими рахунками. Інші біржі та гаманці ведуться вручну."
@@ -19163,6 +19154,10 @@ msgstr "Так. Вивантажте виписку для кожної карт
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
 msgid "Yes. Fee entries count toward their selected category, including bank fees attached to transfers."
 msgstr "Так. Записи комісій зараховуються до вибраної категорії, включно з банківськими комісіями, прив’язаними до переказів."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Yes. Green income and red expense amounts turn brighter in dark mode so they stay easy to read on black."
+msgstr "Так. Зелені суми доходів і червоні суми витрат стають яскравішими в темному режимі, щоб їх було легко читати на чорному."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Yes. In Analytics, open the Tags tab and tap Untagged. The tag inbox groups untagged transactions by merchant, suggests tags from your own tagging history and accepts every confident group in one tap, with Undo."
@@ -19620,6 +19615,14 @@ msgstr "Вирішуєте ви в налаштуваннях"
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Your category, tags and own comment are kept; the amount and type change only when the bank changed them"
 msgstr "Ваші категорія, теги й власний коментар зберігаються; сума й тип змінюються, лише якщо їх змінив банк"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Your choice is remembered after you close and reopen Budgie"
+msgstr "Ваш вибір запам'ятовується після закриття й повторного відкриття Budgie"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Your choice is remembered the next time you open Budgie. The launch screen is black in dark mode, and green and red amounts turn brighter so they stay easy to read."
+msgstr "Ваш вибір запам'ятовується під час наступного відкриття Budgie. Екран запуску в темному режимі чорний, а зелені й червоні суми яскравішають, щоб їх було легко читати."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Your contribution does not violate any third-party rights"
