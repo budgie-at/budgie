@@ -1,10 +1,10 @@
 export enum OnboardingStepEnum {
-    WELCOME = 'WELCOME',
-    TRACK = 'TRACK',
+    KEY = 'KEY',
+    PIN = 'PIN',
+    SEAL = 'SEAL',
+    SEALED = 'SEALED',
+    PHONE_LOCK = 'PHONE_LOCK',
+    ACCOUNTS = 'ACCOUNTS',
     BALANCES = 'BALANCES',
-    EXPENSE = 'EXPENSE',
-    BUDGET = 'BUDGET',
-    LOCK = 'LOCK',
-    AI = 'AI',
-    DONE = 'DONE'
+    AI = 'AI'
 }

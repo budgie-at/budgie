@@ -9,6 +9,7 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { CreateFileBankAccountFooter } from '../create-file-bank-account-footer/create-file-bank-account-footer';
@@ -31,6 +32,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     const accountSelection = useAccountSelection();
     const { selectedAccounts, setPreviews } = accountSelection;
     const [fileUri, setFileUri] = useState<string | null>(null);
+    const onboardingHref = useOnboardingRedirect();
 
     const handleSelectFile = async () => {
         setIsLoading(true);
@@ -64,7 +66,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         setIsLoading(true);
         try {
             await config.executeImportForSelectedAccounts(fileUri, [...selectedAccounts]);
-            router.replace('/');
+            router.replace(onboardingHref ?? '/');
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Import failed`, text2: getErrorMessage(error) });
         } finally {

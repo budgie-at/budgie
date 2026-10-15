@@ -1,5 +1,5 @@
-import { OnboardingWelcome } from '../../onboarding/component/onboarding-welcome/onboarding-welcome';
+import { OnboardingKey } from '../../onboarding/component/onboarding-key/onboarding-key';
 
-export default function OnboardingWelcomeScreen() {
-    return <OnboardingWelcome />;
+export default function OnboardingKeyScreen() {
+    return <OnboardingKey />;
 }

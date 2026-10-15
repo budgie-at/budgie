@@ -15,6 +15,7 @@ import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { PIN_KEY } from '../constant/pin-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.constant';
+import { SEAL_UNLOCK_GRANT_KEY } from '../constant/seal-unlock-grant-key.constant';
 import { BiometricTypesInterface } from '../interface/biometric-types.interface';
 
 import { PinAttemptService } from './pin-attempt.service';
@@ -44,18 +45,25 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
             }
         });
 
-        const runRekey = Effect.fn('AuthService.runRekey')(function* (params: RekeyParamsInterface) {
+        const runRekey = Effect.fn('AuthService.runRekey')(function* (params: RekeyParamsInterface, afterCommit: Effect.Effect<void>) {
             const previousPin = yield* getPin();
 
-            yield* databaseRekeyService.rekey(params, persistPin(params.nextKey).pipe(Effect.orDie)).pipe(
+            yield* databaseRekeyService.rekey(params, persistPin(params.nextKey).pipe(Effect.orDie, Effect.andThen(afterCommit))).pipe(
                 Effect.andThen(Effect.promise(() => reloadApp())),
                 Effect.onError(() => persistPin(previousPin).pipe(Effect.orDie))
             );
         });
 
-        const rekeyDatabase = Effect.fn('AuthService.rekeyDatabase')(function* (params: RekeyParamsInterface) {
-            yield* databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, runRekey(params));
+        const rekeyDatabase = Effect.fn('AuthService.rekeyDatabase')(function* (
+            params: RekeyParamsInterface,
+            afterCommit: Effect.Effect<void> = Effect.void
+        ) {
+            yield* databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, runRekey(params, afterCommit));
         });
+
+        const grantSealUnlock = Effect.promise(() =>
+            SecureStore.setItemAsync(SEAL_UNLOCK_GRANT_KEY, String(Date.now()), PIN_SECURE_STORE_OPTIONS)
+        );
 
         return {
             ensurePinBackgroundAccessibility: Effect.fn('AuthService.ensurePinBackgroundAccessibility')(function* () {
@@ -124,6 +132,26 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                         })
                     )
                 );
+            }),
+            sealOnboarding: Effect.fn('AuthService.sealOnboarding')(function* (
+                pin: string,
+                isBiometricEnabled: boolean,
+                onboardingStep: number
+            ) {
+                yield* widgetSnapshotService.mask().pipe(Effect.ignoreCause({ log: 'Error' }));
+                yield* rekeyDatabase(
+                    { nextKey: pin, nextSettings: { isBiometricEnabled, isPinEnabled: true, onboardingStep } },
+                    grantSealUnlock
+                ).pipe(
+                    Effect.onError(() =>
+                        Effect.sync(() => {
+                            widgetSnapshotService.unlock();
+                        })
+                    )
+                );
+            }),
+            consumeSealUnlockGrant: Effect.fn('AuthService.consumeSealUnlockGrant')(function* () {
+                yield* Effect.promise(() => SecureStore.deleteItemAsync(SEAL_UNLOCK_GRANT_KEY, PIN_SECURE_STORE_OPTIONS));
             }),
             changePin: Effect.fn('AuthService.changePin')(function* (pin: string) {
                 yield* rekeyDatabase({ nextKey: pin });

@@ -11,6 +11,7 @@ import { i18nGetOSLocale } from '../../i18n/utils/i18n.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
 
 import type { OnboardingAccountInputInterface } from '../interface/onboarding-account-input.interface';
+import type { OnboardingBalanceInputInterface } from '../interface/onboarding-balance-input.interface';
 
 export class OnboardingService extends Context.Service<OnboardingService>()('@budgie/app/OnboardingService', {
     make: Effect.gen(function* () {
@@ -22,7 +23,10 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
         const onboardingAccountIcon: Partial<Record<AccountTypeEnum, UserIconNameEnum>> = {
             [AccountTypeEnum.CASH]: UserIconNameEnum.Wallet,
             [AccountTypeEnum.BANK]: UserIconNameEnum.Landmark,
+            [AccountTypeEnum.SAVINGS]: UserIconNameEnum.PiggyBank,
+            [AccountTypeEnum.DEPOSIT]: UserIconNameEnum.Vault,
             [AccountTypeEnum.CRYPTO]: UserIconNameEnum.Bitcoin,
+            [AccountTypeEnum.STOCKS]: UserIconNameEnum.ChartCandlestick,
             [AccountTypeEnum.DEBT]: UserIconNameEnum.HandCoins
         };
 
@@ -52,14 +56,48 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
             account: OnboardingAccountInputInterface,
             instrumentId: number
         ) {
+            const icon = onboardingAccountIcon[account.type] ?? UserIconNameEnum.Wallet;
+
+            if (account.type === AccountTypeEnum.DEPOSIT) {
+                yield* accountService.createDeposit({
+                    type: account.type,
+                    title: account.title,
+                    currentBalance: 0,
+                    icon,
+                    includeInNetWorth: true,
+                    instrumentId,
+                    iban: null,
+                    deadline: null,
+                    interestRate: null
+                });
+
+                return;
+            }
+
             yield* accountService.create({
                 type: account.type,
                 title: account.title,
                 currentBalance: 0,
-                icon: onboardingAccountIcon[account.type] ?? UserIconNameEnum.Wallet,
+                icon,
                 includeInNetWorth: true,
                 instrumentId
             });
+        });
+
+        const saveBalance = Effect.fn('OnboardingService.saveBalance')(function* ({ account, balance }: OnboardingBalanceInputInterface) {
+            yield* account.type === AccountTypeEnum.DEPOSIT
+                ? accountService.updateDepositById(account.id, { currentBalance: balance })
+                : accountService.updateById(account.id, { currentBalance: balance });
+        });
+
+        const provisionAccounts = Effect.fn('OnboardingService.provisionAccounts')(function* (accounts: OnboardingAccountInputInterface[]) {
+            const { defaultInstrumentId } = yield* settingsRepository.getSettings();
+            const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
+            const existingAccounts = yield* accountRepository.getAllActiveAccounts();
+            const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
+            const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
+
+            yield* Effect.forEach(accountsToCreate, account => createOnboardingAccount(account, instrumentId), { discard: true });
         });
 
         return {
@@ -76,15 +114,16 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
 
                 yield* settingsRepository.update({ defaultInstrumentId: instrumentId, language });
             }),
-            provisionAccounts: Effect.fn('OnboardingService.provisionAccounts')(function* (accounts: OnboardingAccountInputInterface[]) {
-                const { defaultInstrumentId } = yield* settingsRepository.getSettings();
-                const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
-                const existingAccounts = yield* accountRepository.getAllActiveAccounts();
-                const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
-                const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
+            provisionAccounts,
+            ensureCashAccount: Effect.fn('OnboardingService.ensureCashAccount')(function* (title: string) {
+                const [{ count }] = yield* accountRepository.count();
 
-                yield* Effect.forEach(accountsToCreate, account => createOnboardingAccount(account, instrumentId), { discard: true });
+                if (!isPositiveNumber(count)) {
+                    yield* provisionAccounts([{ type: AccountTypeEnum.CASH, title }]);
+                }
             }),
+            saveBalances: (balances: OnboardingBalanceInputInterface[]) =>
+                Db.transaction(Effect.forEach(balances, balance => saveBalance(balance), { discard: true })),
             complete: () => Db.transaction(settingsRepository.update({ isOnboardingCompleted: true }))
         };
     })

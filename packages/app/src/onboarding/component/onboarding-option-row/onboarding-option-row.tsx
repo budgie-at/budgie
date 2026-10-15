@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -25,13 +25,14 @@ const TICK_ICON_SIZE = 16;
 interface Props {
     readonly icon: UserIconNameEnum;
     readonly title: string;
+    readonly description?: string;
     readonly isSelected: boolean;
     readonly onPress: EmptyFn;
     readonly testID?: string;
 }
 
 export const OnboardingOptionRow = (props: Props) => {
-    const { icon, title, isSelected, onPress, testID } = props;
+    const { icon, title, description, isSelected, onPress, testID } = props;
 
     const reducedMotion = useReducedMotion();
     const pressScale = useSharedValue(FULL_SCALE);
@@ -71,7 +72,10 @@ export const OnboardingOptionRow = (props: Props) => {
 
                 <CircleIcon icon={icon} variant="ghost" size={ICON_TILE_SIZE} iconSize={ICON_TILE_ICON_SIZE} radius={ICON_TILE_RADIUS} />
 
-                <Text className="text-primary text-md font-medium flex-1">{title}</Text>
+                <View className="flex-1 gap-y-xxs">
+                    <Text className="text-primary text-md font-medium">{title}</Text>
+                    {isNotEmptyString(description) ? <Text className="text-secondary-foreground text-xs">{description}</Text> : null}
+                </View>
 
                 {isSelected ? (
                     <Animated.View style={tickStyle} className="bg-primary rounded-full p-xs">
