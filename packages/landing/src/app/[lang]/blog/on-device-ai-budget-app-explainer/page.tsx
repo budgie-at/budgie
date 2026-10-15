@@ -414,8 +414,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie is open source. The privacy claims in this article are not policy statements — they are facts you can
-                            check in the code yourself. You can verify:
+                            Budgie is source-available. The privacy claims in this article are not policy statements — they are facts you
+                            can check in the code yourself. You can verify:
                         </Trans>
                     </BlogArticleProse>
 

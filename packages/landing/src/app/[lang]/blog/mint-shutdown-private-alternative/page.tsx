@@ -199,8 +199,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source codebase</strong> — If the developer stops maintaining the app, the community can fork
-                                it. The code is auditable. You can verify that the privacy claims are real.
+                                <strong>Source-available codebase</strong> — If the developer stops maintaining the app, the code stays
+                                available to read and modify. The code is auditable. You can verify that the privacy claims are real.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -276,7 +276,7 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source</strong> — The codebase is public. Privacy claims are verifiable by anyone with a
+                                <strong>Source-available</strong> — The codebase is public. Privacy claims are verifiable by anyone with a
                                 browser and a GitHub account.
                             </Trans>
                         </BlogArticleListItem>
@@ -385,7 +385,7 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         <BlogFaqItem question={<Trans>What happens to my data if Budgie ever shuts down?</Trans>}>
                             <Trans>
                                 Because your data is stored on your device and backed up to your own storage, nothing happens. You keep your
-                                database. Budgie is also open source, so the community can continue maintaining the app independently of any
+                                database. Budgie’s source code is also public, so it stays available to read and modify regardless of any
                                 company decisions.
                             </Trans>
                         </BlogFaqItem>

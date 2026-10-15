@@ -19,7 +19,6 @@ export const BlogArticlePageShell = ({ article, children, lang }: Props) => {
     return (
         <main className="flex-1">
             <BlogPostingJsonLd
-                author={article.author}
                 date={article.date}
                 description={i18n._(article.description)}
                 image={`/${lang}/blog/${article.slug}/opengraph-image`}

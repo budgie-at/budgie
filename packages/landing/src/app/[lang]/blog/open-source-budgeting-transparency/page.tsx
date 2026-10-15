@@ -910,9 +910,9 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists,
-                            and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends
-                            on your specific requirements.
+                            Budgie isn’t the only finance tool with public source code. A healthy ecosystem of alternatives exists, and we
+                            believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your
+                            specific requirements.
                         </Trans>
                     </BlogArticleProse>
 

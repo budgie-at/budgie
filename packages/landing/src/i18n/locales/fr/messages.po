@@ -809,6 +809,10 @@ msgstr "<0>Apprentissage et enseignement</0> : étudier le code à des fins péd
 msgid "<0>Liability details</0>: Loan amounts, interest rates, minimum payments, origination dates"
 msgstr "<0>Details des engagements</0> : Montants des prets, taux d'interet, paiements minimums, dates d'origination"
 
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "<0>License</0>: Source-available"
+msgstr "<0>Licence</0> : code source disponible"
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Lingui</0> MIT License - Internationalization framework"
 msgstr "<0>Lingui</0> Licence MIT - Framework d'internationalisation"
@@ -1161,22 +1165,6 @@ msgstr "<0>Stockage sur l'appareil</0> — chaque transaction, compte et catégo
 msgid "<0>One-time purchase:</0> No ongoing relationship or data motivation"
 msgstr "<0>Achat unique :</0> Pas de relation continue ni de motivation à monétiser les données"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Open source codebase</0> — If the developer stops maintaining the app, the community can fork it. The code is auditable. You can verify that the privacy claims are real."
-msgstr "<0>Code source ouvert</0> — Si le développeur cesse de maintenir l'application, la communauté peut en faire un fork. Le code est auditable. Vous pouvez vérifier que les affirmations sur la confidentialité sont réelles."
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "<0>Open source transparency.</0> The codebase is public, allowing security researchers and privacy advocates to verify claims."
-msgstr "<0>Transparence open source.</0> La base de code est publique, permettant aux chercheurs en sécurité et aux défenseurs de la vie privée de vérifier nos déclarations."
-
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "<0>Open source transparency</0>: The entire codebase is available for inspection. Security researchers can verify privacy claims. You can even build the app yourself if you want complete assurance."
-msgstr "<0>Transparence open source</0> : L'intégralité du code source est disponible pour inspection. Les chercheurs en sécurité peuvent vérifier les affirmations en matière de confidentialité. Vous pouvez même compiler l'application vous-même pour une assurance totale."
-
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Open source</0> — The codebase is public. Privacy claims are verifiable by anyone with a browser and a GitHub account."
-msgstr "<0>Open source</0> — Le code source est public. Les affirmations sur la confidentialité sont vérifiables par quiconque dispose d'un navigateur et d'un compte GitHub."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: N/A"
 msgstr "<0>Open source</0>: N/A"
@@ -1184,16 +1172,11 @@ msgstr "<0>Open source</0>: N/A"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: No"
-msgstr "<0>Monarch Money</0>: Non"
+msgstr "<0>Open source</0>: Non"
 
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-msgid "<0>Open source</0>: Security claims are verifiable through code review"
-msgstr "<0>Open source</0> : Les revendications de securite sont verifiables par revue de code"
-
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: Yes"
-msgstr "<0>Monarch Money</0>: Oui"
+msgstr "<0>Open source</0>: Oui"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Opt-out</0>: Disable analytics and optional cloud features in app settings"
@@ -1604,6 +1587,30 @@ msgstr "Moyennement technique : Budgie, Lunch Money"
 msgid "<0>Source review for critical paths</0>: Dependencies that touch encryption, database operations, or any sensitive data paths are manually reviewed."
 msgstr "<0>Revue du code source pour les chemins critiques</0> : Les dependances qui touchent au chiffrement, aux operations de base de donnees ou a tout chemin de donnees sensible sont revisees manuellement."
 
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Source-available codebase</0> — If the developer stops maintaining the app, the code stays available to read and modify. The code is auditable. You can verify that the privacy claims are real."
+msgstr "<0>Code source disponible</0> — Si le développeur cesse de maintenir l’application, le code reste disponible pour être lu et modifié. Le code est vérifiable. Vous pouvez constater par vous-même que les engagements de confidentialité sont réels."
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source-available transparency.</0> The codebase is public, allowing security researchers and privacy advocates to verify claims."
+msgstr "<0>Transparence du code source.</0> Le code est public : chercheurs en sécurité et défenseurs de la vie privée peuvent vérifier nos affirmations."
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "<0>Source-available transparency</0>: The entire codebase is available for inspection. Security researchers can verify privacy claims. You can even build the app yourself if you want complete assurance."
+msgstr "<0>Transparence du code source</0> : l’ensemble du code est consultable. Les chercheurs en sécurité peuvent vérifier les engagements de confidentialité. Vous pouvez même compiler l’application vous-même si vous voulez une garantie totale."
+
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Source-available</0> — The codebase is public. Privacy claims are verifiable by anyone with a browser and a GitHub account."
+msgstr "<0>Code source disponible</0> — Le code est public. Les engagements de confidentialité peuvent être vérifiés par toute personne disposant d’un navigateur et d’un compte GitHub."
+
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
+msgid "<0>Source-available</0>: Security claims are verifiable through code review"
+msgstr "<0>Code source disponible</0> : les engagements de sécurité sont vérifiables par une revue du code"
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "<0>Source-available</0>: Yes"
+msgstr "<0>Code source consultable</0>: Oui"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
 msgstr "<0>Cloud standard :</0> Données stockées sur les serveurs de l'entreprise (le moins privé)"
@@ -1889,8 +1896,8 @@ msgid "1. Agreement to Terms"
 msgstr "1. Acceptation des conditions"
 
 #: src/app/[lang]/legal/license/page.tsx
-msgid "1. Commitment to Open Source"
-msgstr "1. Engagement envers l'open source"
+msgid "1. Commitment to Transparency"
+msgstr "1. Engagement en faveur de la transparence"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "1. Copyright and Permission Notice"
@@ -2093,13 +2100,13 @@ msgstr "4. Stockage et sécurité des données"
 msgid "4. License and Permitted Use"
 msgstr "4. Licence et utilisation autorisée"
 
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "4. Open Source Transparency"
-msgstr "Transparence open source"
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "4. Restricted Uses"
 msgstr "4. Utilisations restreintes"
+
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
+msgid "4. Source-Available Transparency"
+msgstr "4. Transparence du code source"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "4. Technical Reliability"
@@ -2927,6 +2934,10 @@ msgstr "alertes"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Alerts that never leave your phone"
 msgstr "Des alertes qui ne quittent jamais votre téléphone"
+
+#: src/blog/component/blog-browser/blog-browser.tsx
+msgid "All articles"
+msgstr "Tous les articles"
 
 #: src/app/[lang]/features/opengraph-image.tsx
 #: src/app/[lang]/features/page.tsx
@@ -3813,8 +3824,8 @@ msgid "Because data is local, every interaction is immediate. Adding a transacti
 msgstr "Parce que les données sont locales, chaque interaction est immédiate. Ajouter une transaction, catégoriser des dépenses, consulter des rapports : tout cela se produit à la vitesse locale. Il n'y a pas de moulinets de chargement en attente de réponses réseau."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Because your data is stored on your device and backed up to your own storage, nothing happens. You keep your database. Budgie is also open source, so the community can continue maintaining the app independently of any company decisions."
-msgstr "Parce que vos données sont stockées sur votre appareil et sauvegardées dans votre propre stockage, rien ne se passe. Vous conservez votre base de données. Budgie est également open source, donc la communauté peut continuer à maintenir l'application indépendamment de toute décision d'entreprise."
+msgid "Because your data is stored on your device and backed up to your own storage, nothing happens. You keep your database. Budgie’s source code is also public, so it stays available to read and modify regardless of any company decisions."
+msgstr "Comme vos données sont stockées sur votre appareil et sauvegardées dans votre propre espace, il ne se passe rien. Vous conservez votre base de données. Le code source de Budgie est en outre public : il reste disponible pour être lu et modifié, quelles que soient les décisions de l’entreprise."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Because your data lives on your device in standard formats, you’re never locked in:"
@@ -4517,8 +4528,8 @@ msgid "Budgie is an offline-first expense tracker built for iOS and Android. All
 msgstr "Budgie est un tracker de dépenses hors ligne pour iOS et Android. Toutes les données sont stockées dans une base de données sur votre appareil, chiffrée dès que vous définissez un code PIN. Il n'y a aucun serveur Budgie qui reçoit vos transactions, aucun agrégateur qui détient vos identifiants bancaires, et aucun abonnement requis pour utiliser les fonctionnalités principales."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Budgie is and will remain free. The app is open source, and we’re committed to a sustainable model that doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional services in the future (like hosted backup), but the core app will always be free and fully functional."
-msgstr "Budgie est et restera gratuit. L'application est open source, et nous sommes engagés dans un modèle durable qui ne repose pas sur la monétisation des données utilisateur ni sur le blocage de fonctionnalités derrière un paywall. Nous pourrons proposer des services optionnels à l'avenir (comme une sauvegarde hébergée), mais l'application principale sera toujours gratuite et pleinement fonctionnelle."
+msgid "Budgie is and will remain free. The app’s source code is public, and we’re committed to a sustainable model that doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional services in the future (like hosted backup), but the core app will always be free and fully functional."
+msgstr "Budgie est et restera gratuit. Le code source de l’application est public, et nous nous engageons sur un modèle durable qui ne repose ni sur la monétisation des données des utilisateurs ni sur des fonctionnalités verrouillées derrière un paywall. Nous pourrons proposer des services optionnels à l’avenir (comme la sauvegarde hébergée), mais l’application de base restera toujours gratuite et pleinement fonctionnelle."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie is built from the ground up as a local-first personal finance application. Here is how we implement the local-first ideals:"
@@ -4529,8 +4540,8 @@ msgid "Budgie is built on the principle that you shouldn’t have to trust us. Y
 msgstr "Budgie repose sur le principe que vous ne devriez pas avoir à nous faire confiance aveuglément. Vous devriez pouvoir vérifier nos affirmations, examiner notre code et confirmer que nous faisons ce que nous disons. Le code source de Budgie est public, de l'application mobile aux services backend."
 
 #: src/app/[lang]/legal/license/page.tsx
-msgid "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
-msgstr "Budgie s'engage en faveur de la transparence, de la sécurité et de la collaboration communautaire. Nous sommes convaincus que les logiciels open source sont essentiels pour instaurer la confiance, en particulier lorsqu'il s'agit d'applications financières qui traitent des données personnelles sensibles. En rendant notre code source public, nous permettons les audits de sécurité, les contributions de la communauté et la vérification par les utilisateurs de nos engagements en matière de confidentialité."
+msgid "Budgie is committed to transparency, security, and community collaboration. We believe that publicly available source code is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
+msgstr "Budgie s’engage en faveur de la transparence, de la sécurité et de la collaboration avec la communauté. Nous pensons qu’un code source accessible au public est indispensable pour instaurer la confiance, surtout pour des applications financières qui traitent des données personnelles sensibles. En rendant notre code source public, nous permettons les audits de sécurité, les contributions de la communauté et la vérification par les utilisateurs de nos engagements de confidentialité."
 
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Budgie is completely free — nothing to unlock later"
@@ -4553,16 +4564,8 @@ msgid "Budgie is licensed under the O'Saasy License, a source-available license 
 msgstr "Budgie est distribué sous la licence O'Saasy, une licence à code source disponible qui autorise l'utilisation, la modification et la distribution libres tout en empêchant la concurrence directe sous forme de SaaS. Cette licence permet :"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a local database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
-msgstr "Budgie est natif, mobile-first, entièrement capable de fonctionner hors ligne et radicalement privé. Vos données résident sur votre appareil dans une base de données locale que vous pouvez interroger directement. La synchronisation bancaire, lorsqu'elle est utilisée, repose sur une architecture à connaissance nulle. L'application est open source afin que vous puissiez vérifier chacune de nos affirmations."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie is open source, so anyone can read exactly how your PIN becomes your database's encryption key — there is no hidden derivation step and no proprietary library standing between your PIN and the data. That code is public for community review."
-msgstr "Budgie est open source, donc n'importe qui peut lire exactement comment votre code PIN devient la clé de chiffrement de votre base de données — il n'y a aucune étape de dérivation cachée ni aucune bibliothèque propriétaire entre votre code PIN et les données. Ce code est public pour être examiné par la communauté."
-
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "Budgie is open source. The privacy claims in this article are not policy statements — they are facts you can check in the code yourself. You can verify:"
-msgstr "Budgie est open source. Les affirmations sur la confidentialité de cet article ne sont pas des déclarations de principe — ce sont des faits que vous pouvez vérifier vous-même dans le code. Vous pouvez vérifier :"
+msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a local database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is source-available so you can verify every claim we make."
+msgstr "Budgie est une application mobile native, entièrement utilisable hors ligne et radicalement privée. Vos données restent sur votre appareil, dans une base locale que vous pouvez interroger directement. La synchronisation bancaire, lorsque vous l’utilisez, repose sur une architecture à connaissance nulle. Le code source de l’application est disponible, ce qui vous permet de vérifier chacune de nos affirmations."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Budgie is operated by Budgie (\"we,\" \"us,\" or \"our\"). We reserve the right to update, change, or replace any part of these Terms by posting updates and changes to our website. Your continued use of the Service following the posting of any changes constitutes acceptance of those changes."
@@ -4580,9 +4583,13 @@ msgstr "Budgie est conçu pour un seul appareil. Il n’y a pas de synchronisati
 msgid "Budgie is source-available, and the Monobank connection is kept current through regular releases."
 msgstr "Budgie est en source disponible, et la connexion Monobank est maintenue à jour par des versions régulières."
 
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
+msgid "Budgie is source-available. The privacy claims in this article are not policy statements — they are facts you can check in the code yourself. You can verify:"
+msgstr "Le code source de Budgie est disponible. Les engagements de confidentialité de cet article ne sont pas de simples déclarations : ce sont des faits que vous pouvez vérifier vous-même dans le code. Vous pouvez contrôler :"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
-msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
-msgstr "Budgie n'est pas la seule option open source pour la gestion financière. Un écosystème sain d'alternatives existe, et nous croyons qu'il est juste de les mentionner honnêtement. Différents outils conviennent à différents besoins, et le meilleur choix dépend de vos exigences spécifiques."
+msgid "Budgie isn’t the only finance tool with public source code. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
+msgstr "Budgie n’est pas le seul outil financier dont le code source est public. Il existe un écosystème d’alternatives sain, et nous tenons à les présenter honnêtement. Chaque outil répond à des besoins différents, et le meilleur choix dépend de vos exigences précises."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity."
@@ -4707,10 +4714,6 @@ msgstr "L'IA sur l'appareil de Budgie suggère des catégories pendant que vous 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie only does this work when you add or edit a transaction — never continuously in the background. It gets ready when the feature that needs it starts and lets go about half a minute after you finish, so the first request after a pause pays for that and the ones after it are quick. The cumulative battery impact of normal daily use is negligible."
 msgstr "Budgie ne fait ce travail que lorsque vous ajoutez ou modifiez une transaction — jamais en continu en arrière-plan. Il se prépare quand la fonctionnalité concernée démarre et se relâche environ une demi-minute après que vous avez terminé, si bien que la première requête après une pause en paie le prix et que les suivantes sont rapides. L'impact cumulé sur la batterie d'un usage quotidien normal est négligeable."
-
-#: src/app/[lang]/legal/license/metadata.ts
-msgid "Budgie Open Source License - Learn about our O'Saasy License and open source commitments"
-msgstr "Licence open source de Budgie - Découvrez notre licence O'Saasy et nos engagements open source"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie parses and categorizes the transactions locally"
@@ -4869,6 +4872,10 @@ msgstr "Budgie est livré sans aucun SDK d'analyse tiers ou de publicité. Les r
 #: src/generic/component/hero-section/hero-section-image.tsx
 msgid "Budgie showing a total balance, a monthly budget bar and bank, cash and savings accounts on one screen"
 msgstr "Budgie affiche le solde total, le budget mensuel ainsi que les comptes bancaires, espèces et épargne sur un seul écran"
+
+#: src/app/[lang]/legal/license/metadata.ts
+msgid "Budgie Source-Available License - Learn about our O'Saasy License and how our source code is shared"
+msgstr "Licence Budgie à code source disponible – découvrez la licence O'Saasy et la façon dont nous partageons notre code source"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label"
@@ -5084,8 +5091,8 @@ msgid "Budgie’s bank sync uses direct connections to bank APIs where available
 msgstr "Supprimez les anciens comptes : Apres la migration, supprimez completement les comptes des applications cloud et revoquez l'acces des agregateurs"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
-msgid "Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the application yourself."
-msgstr "Le code source de Budgie est ouvert, permettant aux chercheurs en sécurité et aux utilisateurs curieux de vérifier nos affirmations. Vous pouvez inspecter exactement comment les données sont stockées, confirmer que rien n'est transmis à nos serveurs, et même compiler l'application vous-même."
+msgid "Budgie’s codebase is source-available, allowing security researchers and curious users to verify our claims. You can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the application yourself."
+msgstr "Le code de Budgie est consultable : chercheurs en sécurité et utilisateurs curieux peuvent ainsi vérifier nos affirmations. Vous pouvez voir exactement comment les données sont stockées, confirmer que rien n’est transmis à nos serveurs et même compiler l’application vous-même."
 
 #: src/app/[lang]/security/page.tsx
 msgid "Budgie's PIN and biometric lock gate every app launch. Even if the device is unlocked, no financial data is visible until the correct PIN or biometric challenge is passed."
@@ -5106,6 +5113,10 @@ msgstr "L'écran Paramètres de Budgie s'ouvre sur une carte Confidentialité, e
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
 msgstr "Le code source de Budgie est hébergé sur GitHub. Vous pouvez le consulter, le forker et y contribuer sur github.com/budgie-at/budgie. Le dépôt inclut l'application complète, la couche de services IA, les contracts et la landing page."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Budgie’s source is public, so anyone can read exactly how your PIN becomes your database's encryption key — there is no hidden derivation step and no proprietary library standing between your PIN and the data. That code is public for community review."
+msgstr "Le code source de Budgie est public : chacun peut lire comment votre code PIN devient la clé de chiffrement de votre base de données, sans étape de dérivation cachée ni bibliothèque propriétaire entre votre PIN et les données. Ce code est public et ouvert à l’examen de la communauté."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie's source is public. Audit the code, verify our privacy claims, and contribute — because your financial app should have nothing to hide."
@@ -6902,6 +6913,10 @@ msgstr "Détecté, pas ajouté"
 msgid "Detected, not declared"
 msgstr "Détecté, pas déclaré"
 
+#: src/app/[lang]/layout.tsx
+msgid "Developer of Budgie, a privacy-first offline expense tracker for iOS and Android."
+msgstr "Développeur de Budgie, un suivi de dépenses hors ligne axé sur la confidentialité pour iOS et Android."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "developer tools"
@@ -6986,8 +7001,8 @@ msgid "Discover a vulnerability by examining the code"
 msgstr "Découvrir une vulnérabilité en examinant le code"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
-msgid "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, encrypted backups, and open-source transparency."
-msgstr "Découvrez précisément comment Budgie garde vos données financières hors du cloud : stockage exclusivement local, chiffrement au repos, sauvegardes chiffrées et transparence open source."
+msgid "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, encrypted backups, and source-available transparency."
+msgstr "Découvrez comment Budgie garde vos données financières hors du cloud : stockage uniquement local, chiffrement, sauvegardes chiffrées et transparence du code source."
 
 #: src/generic/component/blog-section/blog-section.tsx
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
@@ -7761,8 +7776,8 @@ msgid "Everything runs on your phone after a one-time download"
 msgstr "Tout s'exécute sur votre téléphone après un téléchargement unique"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Everything we have described in this article can be verified by examining our source code. Budgie is open source, and we believe this transparency is essential for any application that handles sensitive financial data."
-msgstr "Tout ce que nous avons decrit dans cet article peut etre verifie en examinant notre code source. Budgie est open source, et nous croyons que cette transparence est essentielle pour toute application qui traite des donnees financieres sensibles."
+msgid "Everything we have described in this article can be verified by examining our source code. Budgie is source-available, and we believe this transparency is essential for any application that handles sensitive financial data."
+msgstr "Tout ce que nous avons décrit dans cet article peut être vérifié en examinant notre code source. Le code de Budgie est disponible, et nous pensons que cette transparence est indispensable pour toute application qui traite des données financières sensibles."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Excalidraw"
@@ -8276,8 +8291,8 @@ msgid "For IT professionals who understand these tradeoffs, offline-first archit
 msgstr "Pour les professionnels de l'informatique qui comprennent ces compromis, l'architecture Offline-First offre une voie a suivre. Vos donnees financieres meritent le meme niveau de securite que vous appliqueriez a des identifiants de production ou a des donnees clients."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "For more details on our security architecture, visit our security section. To see the complete source code and verify everything we have described, check out our open-source section."
-msgstr "Pour plus de details sur notre architecture de securite, visitez notre [section securite](/{lang}#security). Pour consulter le code source complet et verifier tout ce que nous avons decrit, rendez-vous sur notre [section open source](/{lang}#open-source)."
+msgid "For more details on our security architecture, visit our security section. To see the complete source code and verify everything we have described, check out our source-available section."
+msgstr "Pour en savoir plus sur notre architecture de sécurité, consultez notre section dédiée à la sécurité. Pour voir l’intégralité du code source et vérifier tout ce que nous avons décrit, rendez-vous dans notre section sur le code source disponible."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "For more information about the O'Saasy license, visit <0>https://osaasy.dev</0>"
@@ -9189,8 +9204,8 @@ msgid "If you have any questions, concerns, or requests regarding this Privacy P
 msgstr "Si vous avez des questions, des préoccupations ou des demandes concernant la présente politique de confidentialité ou nos pratiques en matière de données, veuillez nous contacter à l'adresse suivante :"
 
 #: src/app/[lang]/legal/license/page.tsx
-msgid "If you have questions about our open source license, commercial licensing options, or anything else related to Budgie's licensing:"
-msgstr "Si vous avez des questions sur notre licence open source, nos options de licence commerciale ou tout autre sujet lié aux licences de Budgie :"
+msgid "If you have questions about our license, commercial licensing options, or anything else related to Budgie's licensing:"
+msgstr "Si vous avez des questions sur notre licence, sur les options de licence commerciale ou sur tout autre sujet lié à la licence de Budgie :"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "If you have set a PIN, yes: the backup is locked with that PIN, so a provider sees unreadable data rather than your transactions. Without a PIN nothing is locked, so set one before the file leaves your device."
@@ -12296,56 +12311,9 @@ msgstr "Ouvrez Budgie et allez dans Paramètres > Importer des données"
 msgid "Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that covers your full history, then export it as Excel — PDF and CSV files can't be imported. If Privat24 emails you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie's file picker."
 msgstr "Dans Privat24, sélectionnez la carte ou le compte que vous souhaitez importer, puis ouvrez son relevé. Choisissez une plage de dates couvrant tout votre historique, puis exportez-le au format Excel — les fichiers PDF et CSV ne peuvent pas être importés. Si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception, puis sélectionnez-le dans le sélecteur de fichiers de Budgie."
 
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "open source"
-msgstr "Un code open source pour vérification"
-
-#: src/app/[lang]/opengraph-image.tsx
-msgid "Open Source"
-msgstr "Open source"
-
-#: src/app/[lang]/blog/local-first-movement-developers/page.tsx
-msgid "Open source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code remains available. Communities can maintain and extend it indefinitely."
-msgstr "L'open source répond également à la préoccupation de pérennité. Même si Budgie en tant qu'entreprise venait à disparaître, le code reste disponible. Les communautés peuvent le maintenir et l'étendre indéfiniment."
-
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Open source and auditable end to end"
-msgstr "Open source et auditable de bout en bout"
-
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Open source code for verification"
-msgstr "Un code open source pour vérification"
-
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "Open source for complete transparency"
-msgstr "Code source ouvert pour une transparence complète"
-
-#: src/app/[lang]/legal/license/page.tsx
-#: src/generic/component/footer/footer.tsx
-msgid "Open Source License"
-msgstr "Licence open source"
-
-#: src/app/[lang]/legal/license/metadata.ts
-msgid "Open Source License | Budgie"
-msgstr "Licence open source | Budgie"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Open source software depends on a chain of dependencies, and any link in that chain could introduce vulnerabilities or privacy issues. Our security practices include:"
-msgstr "Les logiciels open source dependent d'une chaine de dependances, et tout maillon de cette chaine pourrait introduire des vulnerabilites ou des problemes de confidentialite. Nos pratiques de securite comprennent :"
-
-#: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Open Source Transparency"
 msgstr "Transparence open source"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Open Source Verification"
-msgstr "Vérification par l'open source"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Open Source: Verify Our Claims Yourself"
-msgstr "Open source : verifiez nos affirmations par vous-meme"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Open Tags in Analytics and tap Untagged. Transactions group by merchant, each with a suggested tag."
@@ -12395,10 +12363,6 @@ msgstr "Ouvrez le virement et ajoutez des frais. Ils sont classés sous « Frais
 msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
 msgstr "Ouvrez cette page dans Safari — les autres navigateurs ne peuvent pas déclencher une installation OTA."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "open-source"
-msgstr "open-source"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Open-source budgeting apps offer a fundamentally different approach. When the code is public, everything changes. Security researchers can verify claims. Privacy advocates can audit data handling. And you, as a user, can trust not because a company asks you to, but because the evidence is right there for anyone to examine."
 msgstr "Les applications de budget open source proposent une approche fondamentalement différente. Quand le code est public, tout change. Les chercheurs en sécurité peuvent vérifier les affirmations. Les défenseurs de la vie privée peuvent auditer le traitement des données. Et vous, en tant qu'utilisateur, pouvez faire confiance non pas parce qu'une entreprise vous le demande, mais parce que les preuves sont là, accessibles à tous."
@@ -12414,10 +12378,6 @@ msgstr "Le logiciel open source inverse le modèle de sécurité traditionnel. A
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Open-source software isn’t automatically more secure, but it enables better security through transparency. When code is public, security flaws can be found and fixed by anyone with the expertise, not just the original developers. This distributed scrutiny typically catches problems faster than relying solely on internal security teams. However, the security benefits only materialize when the community actually reviews the code, so active, well-maintained projects are more likely to be secure than abandoned ones."
 msgstr "Le logiciel open source n'est pas automatiquement plus sécurisé, mais il permet une meilleure sécurité grâce à la transparence. Lorsque le code est public, les failles de sécurité peuvent être trouvées et corrigées par quiconque possède l'expertise, pas uniquement par les développeurs originaux. Cet examen distribué détecte généralement les problèmes plus rapidement que les seules équipes de sécurité internes. Cependant, les avantages en matière de sécurité ne se concrétisent que lorsque la communauté examine effectivement le code, ce qui signifie que les projets actifs et bien maintenus sont plus susceptibles d'être sécurisés que les projets abandonnés."
-
-#: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Open-source translations — community can contribute new locales"
-msgstr "Traductions open source — la communauté peut contribuer de nouvelles locales"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount, account, category, tags, comment, and the details the bank sent — with editing behind an explicit button. Looking something up stops being a chance to change it by accident."
@@ -12513,8 +12473,8 @@ msgid "Other projects can build on our work"
 msgstr "D'autres projets peuvent s'appuyer sur notre travail"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "Our code is open source, meaning:"
-msgstr "Notre code est open source, ce qui signifie :"
+msgid "Our code is source-available, meaning:"
+msgstr "Notre code source est disponible, ce qui signifie :"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Our Commitment"
@@ -12525,8 +12485,8 @@ msgid "Our commitments:"
 msgstr "Nos engagements :"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Our complete source code is available on GitHub. You can find it by visiting our open-source section where the repository link is provided."
-msgstr "Notre code source complet est disponible sur GitHub. Vous pouvez le trouver en visitant notre [section open source](/{lang}#open-source) ou le lien vers le depot est fourni."
+msgid "Our complete source code is available on GitHub. You can find it by visiting our source-available section where the repository link is provided."
+msgstr "Notre code source complet est disponible sur GitHub. Le lien vers le dépôt se trouve dans notre section sur le code source disponible."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Our development roadmap is public and regularly updated. You can see:"
@@ -12988,8 +12948,8 @@ msgid "Privacy claims"
 msgstr "Affirmations de confidentialité"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is open source, meaning:"
-msgstr "Les déclarations de confidentialité sont faciles à faire et difficiles à vérifier — sauf si vous pouvez lire le code. Budgie est open source, ce qui signifie :"
+msgid "Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is source-available, meaning:"
+msgstr "Les engagements de confidentialité sont faciles à énoncer et difficiles à vérifier, à moins de pouvoir lire le code. Le code de Budgie est disponible, ce qui signifie :"
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Privacy claims are verifiable, not just promised"
@@ -13195,6 +13155,10 @@ msgstr "Public sur GitHub"
 #: src/app/[lang]/privacy/page.tsx
 msgid "Public source"
 msgstr "Code source public"
+
+#: src/app/[lang]/blog/local-first-movement-developers/page.tsx
+msgid "Public source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code remains available, and its license lets you keep using and modifying it for your own needs."
+msgstr "Un code source public répond aussi à la question de la pérennité. Même si l’entreprise Budgie venait à disparaître, le code resterait disponible et sa licence vous permet de continuer à l’utiliser et à le modifier pour vos propres besoins."
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "public source budget app"
@@ -14384,6 +14348,10 @@ msgstr "Les SDK de connexion sociale qui partagent des donnees avec les fourniss
 msgid "software architecture"
 msgstr "La confidentialité comme architecture"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Software depends on a chain of dependencies, and any link in that chain could introduce vulnerabilities or privacy issues. Our security practices include:"
+msgstr "Un logiciel repose sur une chaîne de dépendances, et chaque maillon de cette chaîne peut introduire des vulnérabilités ou des problèmes de confidentialité. Nos pratiques de sécurité comprennent :"
+
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Software engineer"
 msgstr "Ingénieur logiciel"
@@ -14444,10 +14412,21 @@ msgstr "Code source"
 msgid "Source code is publicly available — read every line that touches your data"
 msgstr "Le code source est publiquement disponible — lisez chaque ligne qui touche vos données"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "source-available"
 msgstr "source disponible"
+
+#: src/app/[lang]/opengraph-image.tsx
+msgid "Source-Available"
+msgstr "Code source disponible"
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "Source-available and auditable end to end"
+msgstr "Code source disponible et vérifiable de bout en bout"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/metadata.ts
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
@@ -14459,6 +14438,19 @@ msgstr "Budget à source disponible : pourquoi la transparence compte pour votre
 msgid "Source-available code"
 msgstr "Code Source-Available"
 
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "Source-available code for verification"
+msgstr "Code source disponible pour vérification"
+
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
+msgid "Source-available for complete transparency"
+msgstr "Code source disponible pour une transparence totale"
+
+#: src/app/[lang]/legal/license/page.tsx
+#: src/generic/component/footer/footer.tsx
+msgid "Source-Available License"
+msgstr "Licence à code source disponible"
+
 #: src/app/[lang]/open-source/page.tsx
 msgid "Source-available license — fork it, run your own build, take your data with you"
 msgstr "Licence source-available — forkez, compilez votre propre build, emportez vos données"
@@ -14467,13 +14459,17 @@ msgstr "Licence source-available — forkez, compilez votre propre build, emport
 msgid "Source-Available License — No Lock-In"
 msgstr "Licence source-available — Aucun verrouillage"
 
+#: src/app/[lang]/legal/license/metadata.ts
+msgid "Source-Available License | Budgie"
+msgstr "Licence à code source disponible | Budgie"
+
 #: src/generic/component/trust-banner/trust-banner.tsx
 msgid "Source-available on GitHub"
 msgstr "Code source consultable sur GitHub"
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Source-available personal finance"
-msgstr "Finances personnelles à code source ouvert"
+msgstr "Finances personnelles au code source consultable"
 
 #: src/app/[lang]/open-source/metadata.ts
 #: src/app/[lang]/open-source/page.tsx
@@ -14483,6 +14479,18 @@ msgstr "Finances personnelles à source disponible — Transparente par concepti
 #: src/app/[lang]/open-source/metadata.ts
 msgid "Source-Available Personal Finance App — Budgie"
 msgstr "Application de finances personnelles à source disponible — Budgie"
+
+#: src/app/[lang]/blog/local-first-movement-developers/page.tsx
+msgid "Source-Available Transparency"
+msgstr "Transparence du code source"
+
+#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+msgid "Source-Available Verification"
+msgstr "Vérification grâce au code source disponible"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Source-Available: Verify Our Claims Yourself"
+msgstr "Code source disponible : vérifiez nos affirmations vous-même"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Speak it, review it, save it"
@@ -14757,8 +14765,8 @@ msgid "Strong privacy through self-hosting"
 msgstr "Confidentialité solide grâce à l'auto-hébergement"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
-msgid "Subject to the open source license under which the software is distributed (see our Open Source License page), you may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer or attempt to extract the source code of that software, except as permitted by law or with our written permission."
-msgstr "Sous réserve de la licence open source en vertu de laquelle le logiciel est distribué (voir notre page Licence open source), vous n'êtes pas autorisé à copier, modifier, distribuer, vendre ou louer toute partie de notre Service ou des logiciels inclus, ni à procéder à l'ingénierie inverse ou tenter d'extraire le code source de ces logiciels, sauf dans les cas permis par la loi ou avec notre autorisation écrite."
+msgid "Subject to the source-available license under which the software is distributed (see our Source-Available License page), you may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer or attempt to extract the source code of that software, except as permitted by law or with our written permission."
+msgstr "Sous réserve de la licence à code source disponible selon laquelle le logiciel est distribué (voir notre page « Licence à code source disponible »), vous ne pouvez pas copier, modifier, distribuer, vendre ou louer une partie quelconque de notre Service ou du logiciel inclus, ni procéder à de l’ingénierie inverse ou tenter d’extraire le code source de ce logiciel, sauf dans les cas permis par la loi ou avec notre autorisation écrite."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to download, install, and use the Application on your personal mobile device solely for your personal, non-commercial use."
@@ -16294,8 +16302,8 @@ msgid "This is not a rejection of the internet or collaboration. Instead, it is 
 msgstr "Il ne s'agit pas d'un rejet d'internet ou de la collaboration. C'est plutôt une refonte fondamentale de l'emplacement des données, de leur propriétaire et du comportement attendu des applications. Pour les développeurs qui créent des logiciels personnels, en particulier dans des domaines sensibles comme la finance, la santé et la productivité personnelle, l'architecture local-first offre des avantages indéniables que les approches cloud-first ne peuvent tout simplement pas égaler."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "This is not because we do not care about improving the product. We do. But we have chosen to gather feedback through direct user conversations and open-source community input rather than surveillance infrastructure."
-msgstr "Ce n'est pas parce que nous ne nous soucions pas d'ameliorer le produit. Au contraire. Mais nous avons choisi de recueillir les retours par des conversations directes avec les utilisateurs et les contributions de la communaute open source, plutot que par une infrastructure de surveillance."
+msgid "This is not because we do not care about improving the product. We do. But we have chosen to gather feedback through direct user conversations and community input rather than surveillance infrastructure."
+msgstr "Ce n’est pas que l’amélioration du produit nous soit indifférente, bien au contraire. Mais nous avons choisi de recueillir des retours par des échanges directs avec les utilisateurs et par les contributions de la communauté plutôt que par une infrastructure de surveillance."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "This is not hypothetical risk assessment. This is the reality of cloud-based personal finance applications in 2025."
@@ -16677,6 +16685,10 @@ msgstr "traduction"
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Translation and learning progress"
 msgstr "Progression de la traduction et de l’apprentissage"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Translations live in the public source code, so new languages can be proposed"
+msgstr "Les traductions font partie du code source public : de nouvelles langues peuvent donc être proposées"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Transmit viruses, malware, or any malicious code"
@@ -17129,8 +17141,8 @@ msgid "We believe in transparency. Here's an honest comparison with other popula
 msgstr "Nous croyons en la transparence. Voici une comparaison honnête avec d'autres applications de budget populaires."
 
 #: src/app/[lang]/legal/license/page.tsx
-msgid "We believe in transparent, ethical software development. By keeping Budgie open source, we ensure that our privacy and security claims can be independently verified. We are committed to maintaining Budgie as an open source project and fostering a welcoming community for contributors and users alike."
-msgstr "Nous croyons à un développement logiciel transparent et éthique. En maintenant Budgie en open source, nous garantissons que nos engagements en matière de confidentialité et de sécurité peuvent être vérifiés de manière indépendante. Nous nous engageons à maintenir Budgie comme projet open source et à cultiver une communauté accueillante pour les contributeurs comme pour les utilisateurs."
+msgid "We believe in transparent, ethical software development. By keeping Budgie’s source code public, we ensure that our privacy and security claims can be independently verified. We are committed to keeping Budgie’s source available and fostering a welcoming community for contributors and users alike."
+msgstr "Nous croyons à un développement logiciel transparent et éthique. En gardant le code source de Budgie public, nous garantissons que nos engagements de confidentialité et de sécurité peuvent être vérifiés de manière indépendante. Nous nous engageons à maintenir le code source de Budgie disponible et à favoriser une communauté accueillante pour les contributeurs comme pour les utilisateurs."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "We believe that welcoming security research makes Budgie safer for everyone. Researchers who examine our code are doing us and our users a service."
@@ -18366,7 +18378,7 @@ msgstr "Pourquoi ne pas utiliser une synchronisation cloud chiffree de bout en b
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Why offline-first and source-available matter"
-msgstr "Pourquoi le hors-ligne d'abord et le code ouvert comptent"
+msgstr "Pourquoi le hors-ligne d'abord et le code source consultable comptent"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why Offline-First Changes Everything"
@@ -18816,8 +18828,8 @@ msgid "Yes. Budgie infers each pattern's real interval from the gaps between cha
 msgstr "Oui. Budgie déduit l'intervalle réel de chaque motif à partir des écarts entre les prélèvements plutôt que de supposer que tout est mensuel, de sorte qu'une prime bimestrielle ou un impôt trimestriel tombe le bon jour au lieu d'être forcé dans une case mensuelle."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "Yes. Budgie is open source. You can review the bank sync and import code to confirm that no outbound calls send transaction data to Budgie servers. The network requests during sync go directly from your device to your bank API endpoint."
-msgstr "Oui. Budgie est open source. Vous pouvez examiner le code de synchronisation bancaire et d'import pour confirmer qu'aucun appel sortant n'envoie des données de transaction aux serveurs de Budgie. Les requêtes réseau lors de la synchronisation vont directement de votre appareil au point de terminaison API de votre banque."
+msgid "Yes. Budgie’s source code is available on GitHub. You can review the bank sync and import code to confirm that no outbound calls send transaction data to Budgie servers. The network requests during sync go directly from your device to your bank API endpoint."
+msgstr "Oui. Le code source de Budgie est disponible sur GitHub. Vous pouvez examiner le code de synchronisation bancaire et d’import pour confirmer qu’aucun appel sortant n’envoie de données de transaction aux serveurs de Budgie. Les requêtes réseau pendant la synchronisation vont directement de votre appareil à votre banque."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Yes. Chart palettes recompute for legibility — emerald accents shift slightly for contrast on a dark canvas."

@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.13](https://github.com/budgie-at/budgie/compare/v6.103.12...v6.103.13) (2026-10-15)
+
+
+### Bug Fixes
+
+* **landing:** clean up structured data, sitemap dates and blog headings ([10eba4a](https://github.com/budgie-at/budgie/commit/10eba4ae9495391529117ab0b7c005875afb35fb))
+
+
+
+
+
+## [6.103.12](https://github.com/budgie-at/budgie/compare/v6.103.11...v6.103.12) (2026-10-15)
+
+
+### Bug Fixes
+
+* **landing:** describe Budgie as source-available in every locale ([05e3c58](https://github.com/budgie-at/budgie/commit/05e3c582e4e6af0a7b1c057969f32756fc54d007))
+* **landing:** say source-available, not open source ([28f936a](https://github.com/budgie-at/budgie/commit/28f936aba5f03bc2502e11fca332c4549f2fe0fd))
+
+
+
+
+
 ## [6.103.11](https://github.com/budgie-at/budgie/compare/v6.103.10...v6.103.11) (2026-10-14)
 
 
