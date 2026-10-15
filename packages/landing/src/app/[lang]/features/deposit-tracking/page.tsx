@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Calculator, Hourglass, Landmark, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,25 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Deposit Tracking</Trans>}
-                locale={lang}
+                heading={<Trans>Savings deposits, kept separate</Trans>}
                 tagline={
                     <Trans>
                         Track fixed-term savings as deposit accounts kept separate from everyday spending, with interest rate, maturity
                         date, days remaining, and expected payout.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="deposit-tracking-1" slug="deposit-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>A fixed term, tracked like an account</Trans>}>
@@ -53,16 +56,7 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         calculated expected payout.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="deposit-tracking-1"
-                    slug="deposit-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="deposit-tracking-1" slug="deposit-tracking">
                     <FeatureStory.Callout y={0.339}>
                         <Trans>Maturity date and days left</Trans>
                     </FeatureStory.Callout>
@@ -93,61 +87,95 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why deposits need their own account type</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from
-                        normal spending accounts while still appearing in your broader account list.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those to
-                        show days remaining and an expected payout estimate — simple interest on the current balance for the days left —
-                        without pretending interest has automatically posted.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>What a deposit shows you</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>figures on the deposit screen</Trans>} value="4">
+                    <Trans>Interest rate, maturity date, days remaining and expected payout.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>action to close and move the balance</Trans>} value="1">
+                    <Trans>Close Deposit transfers what is left to the account you pick, then archives it.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>offered as an expense source</Trans>} value={<Trans>Never</Trans>}>
+                    <Trans>Deposits are left out when you choose which account pays.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Dedicated Deposit account type for fixed-term savings and locked principal</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie deposit account screen with the interest rate, maturity date, days remaining and expected payout`}
+                        locale={lang}
+                        scene="deposit-tracking-1"
+                        slug="deposit-tracking"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>Check the payout math</Trans>}
+                lede={<Trans>The expected payout is a simple estimate. The source shows exactly how it is worked out.</Trans>}
+            >
+                <FeatureProof.Fact icon={Calculator}>
+                    <Trans>Payout is your balance plus interest for the days left</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={SlidersHorizontal}>
+                    <Trans>It needs both an interest rate and a maturity date</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Landmark} title={<Trans>Savings kept separate</Trans>}>
+                    <Trans>Dedicated Deposit account type for fixed-term savings and locked principal</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Hourglass} title={<Trans>Days left and expected payout</Trans>}>
+                    <Trans>Days remaining and a simple-interest payout estimate from your balance, rate, and maturity date</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Principal stays protected</Trans>}>
+                    <Trans>Deposit principal is protected from normal expense spending and cannot go negative</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>An interest rate and a maturity date for each deposit account</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Days remaining and a simple-interest payout estimate from your balance, rate, and maturity date</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Close a deposit into a selected destination account with a transfer — it is archived and can be restored
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Deposit principal is protected from normal expense spending and cannot go negative</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>&ldquo;Include in net worth&rdquo; stays available when a deposit should or should not count</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Start a deposit from a synced bank expense, keeping the currency the payment was made in</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={7}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Add a deposit straight from a bank connection, next to its synced accounts</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why deposits need their own account type</Trans>}>
+                    <p>
+                        <Trans>
+                            A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from
+                            normal spending accounts while still appearing in your broader account list.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those
+                            to show days remaining and an expected payout estimate — simple interest on the current balance for the days
+                            left — without pretending interest has automatically posted.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Can I spend from a deposit account?</Trans>}
                     answer={
                         <Trans>
@@ -156,7 +184,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Does Budgie automatically accrue deposit interest?</Trans>}
                     answer={
                         <Trans>
@@ -165,7 +194,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>How do I close a deposit?</Trans>}
                     answer={
                         <Trans>
@@ -174,7 +204,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can deposits be included in net worth?</Trans>}
                     answer={
                         <Trans>
@@ -183,7 +214,8 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I start a deposit from a payment I already made?</Trans>}
                     answer={
                         <Trans>
@@ -192,7 +224,7 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

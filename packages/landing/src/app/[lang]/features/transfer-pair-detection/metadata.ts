@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'transfer-pair-detection',
     tier: FeatureTierEnum.POWER,
-    title: msg`Smart Transfer and Refund Consolidation`,
+    pillar: PillarEnum.BANK,
+    name: msg`Transfer and Refund Consolidation`,
     tagline: msg`Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.`,
     metaTitle: msg`Smart Transfer and Refund Consolidation — Budgie`,
     metaDescription: msg`Budgie merges obvious transfer pairs, merchant refunds and duplicates of manual expenses so bank imports do not inflate spending or income.`,

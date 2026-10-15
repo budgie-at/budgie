@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'debt-tracking',
     tier: FeatureTierEnum.POWER,
-    title: msg`Debt & Loan Tracking`,
-    tagline: msg`Money out, money in — first-class accounts with target balances, return dates, and contact assignment.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Debt & Loan Tracking`,
+    tagline: msg`Money out, money in. First-class accounts with target balances, return dates, and contact assignment.`,
     metaTitle: msg`Debt & Loan Tracking — Budgie`,
     metaDescription: msg`Track money lent or borrowed as first-class debt accounts. Lending and repayments book real income or expense, so they count in your monthly analytics.`,
     primaryKeyword: 'personal debt tracker app',

@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-category-translation',
     tier: FeatureTierEnum.POWER,
-    title: msg`AI Category & Tag Translation`,
+    pillar: PillarEnum.AI,
+    name: msg`Category & Tag Translation`,
     tagline: msg`Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your phone.`,
     metaTitle: msg`Category & Tag Translation, On-Device — Budgie`,
     metaDescription: msg`Category and tag names in other scripts get an English form and keywords, so search matches either. Runs on your phone.`,

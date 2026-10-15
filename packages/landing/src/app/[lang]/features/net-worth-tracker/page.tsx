@@ -1,19 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Coins, Scale, ToggleRight } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -25,21 +23,23 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie home screen with the total balance header above every account section`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Net Worth Tracker for Mobile</Trans>}
-                locale={lang}
+                heading={<Trans>Your net worth, one number</Trans>}
                 tagline={
                     <Trans>
                         Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with
                         multi-currency conversion baked in.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Watch the number add up</Trans>}>
@@ -49,14 +49,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 <FeatureStory.Step index={0} title={<Trans>One number, everything in it</Trans>}>
                     <Trans>Bank, cash, crypto and debt are already inside the figure at the top of Home.</Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie home screen with the total balance header above every account section`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="net-worth-tracker-1"
-                    slug="net-worth-tracker"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
                     <FeatureStory.Callout y={0.175}>
                         <Trans>Total in your base currency</Trans>
                     </FeatureStory.Callout>
@@ -102,74 +95,90 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why an expense tracker should also be a balance sheet</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Most expense apps stop at &ldquo;this month&apos;s spending.&rdquo; Budgie gives you the full balance-sheet view —
-                        assets, liabilities, and the line they form between them — without spreadsheets.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Toggle &ldquo;include in net worth&rdquo; per account. A background task keeps exchange rates fresh so a Euro
-                        savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>What goes into the figure</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>number at the top of Home</Trans>} value="1">
+                    <Trans>Bank, cash, deposit, crypto and debt accounts already roll up into it.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>currency you hold, converted for you</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Each account keeps its own currency while the total counts it in yours.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>over which accounts count</Trans>} value={<Trans>Your call</Trans>}>
+                    <Trans>Switch any account in or out of net worth.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Per-account &ldquo;include in net worth&rdquo; toggle — partial-truth balance is your call</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Background FX-rate refresh converts every account to your base currency</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Liability and debt accounts subtract automatically; receivables add</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureVersus
+                heading={<Trans>More than a spending tracker</Trans>}
+                lede={<Trans>Many expense apps stop at this month&apos;s spending. Budgie shows the whole balance sheet.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Many expense apps</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Often bank accounts only</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Often a single currency only</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Debts often treated as expenses</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Often no say in what counts</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Bank, cash, deposit, crypto and debt</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Each account in its own currency</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Debts subtract from net worth</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Switch any account in or out</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Scale} title={<Trans>Debts counted automatically</Trans>}>
+                    <Trans>Liability and debt accounts subtract automatically; receivables add</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Coins} title={<Trans>Every account in your currency</Trans>}>
+                    <Trans>Background FX-rate refresh converts every account to your base currency</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ToggleRight} title={<Trans>Choose what counts</Trans>}>
+                    <Trans>Per-account &ldquo;include in net worth&rdquo; toggle — partial-truth balance is your call</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Crypto holdings sit alongside your fiat accounts with the same UX</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Most expense apps vs. Budgie</Trans>
-                </FeaturePageHeading>
-                <FeaturePageComparisonTable rivalLabel={<Trans>Most expense apps</Trans>}>
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Bank + cash + deposit + crypto + debt</Trans>}
-                        concern={<Trans>Asset coverage</Trans>}
-                        rival={<Trans>Bank only</Trans>}
-                    />
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Per-account currency, background auto-conversion</Trans>}
-                        concern={<Trans>FX support</Trans>}
-                        rival={<Trans>One currency, often hardcoded</Trans>}
-                    />
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>First-class — subtract from net worth</Trans>}
-                        concern={<Trans>Liability accounts</Trans>}
-                        rival={<Trans>Treated as expenses</Trans>}
-                    />
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Net worth trendline alongside</Trans>}
-                        concern={<Trans>Time series</Trans>}
-                        rival={<Trans>Spending only</Trans>}
-                    />
-                </FeaturePageComparisonTable>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why an expense tracker should also be a balance sheet</Trans>}>
+                    <p>
+                        <Trans>
+                            Most expense apps stop at &ldquo;this month&apos;s spending.&rdquo; Budgie gives you the full balance-sheet view
+                            — assets, liabilities, and the line they form between them — without spreadsheets.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Toggle &ldquo;include in net worth&rdquo; per account. A background task keeps exchange rates fresh so a Euro
+                            savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Where do exchange rates come from?</Trans>}
                     answer={
                         <Trans>
@@ -178,7 +187,8 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Can I exclude an account from net worth?</Trans>}
                     answer={
                         <Trans>
@@ -187,7 +197,8 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>How do crypto holdings price?</Trans>}
                     answer={
                         <Trans>
@@ -196,7 +207,8 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Is the home screen number always accurate?</Trans>}
                     answer={
                         <Trans>
@@ -205,7 +217,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -17,7 +17,7 @@ export const PillarHubBreadcrumbs = ({ locale, current }: Props) => (
                 </Link>
             </li>
             <li aria-hidden>›</li>
-            <li aria-current="page" className="text-foreground font-medium">
+            <li aria-current="page" className="text-pillar font-medium">
                 {current}
             </li>
         </ol>

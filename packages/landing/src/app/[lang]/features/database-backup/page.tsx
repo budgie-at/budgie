@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Database, Lock, Smartphone } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,7 +23,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
     const storyAlt = t(
         i18n
     )`Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows`;
@@ -33,15 +32,16 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Database Backup &amp; Restore</Trans>}
-                locale={lang}
+                heading={<Trans>Back up everything in one file</Trans>}
                 tagline={
                     <Trans>
-                        Capture the whole Budgie database as one compressed file — locked with your PIN when you set one — and put it back
-                        on another device. No account, no upload.
+                        Capture the whole Budgie database as one compressed file, locked with your PIN when you set one, and put it back on
+                        another device. No account, no upload.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={storyAlt} locale={lang} scene="database-backup-1" slug="database-backup" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Where a server would be, there is a file</Trans>}>
@@ -58,7 +58,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         is encrypted with.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="database-backup-1" slug="database-backup">
+                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout y={0.54}>
                         <Trans>Writes the whole database</Trans>
                     </FeatureStory.Callout>
@@ -86,53 +86,83 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a backup file beats a vendor backup</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Cloud apps do &ldquo;backups&rdquo; by holding all your data on their servers. Budgie does backups by handing you
-                        the database file. Where you put it is your business.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Restore lives in the same Settings list as the export. Pick the file, confirm the warning that it replaces
-                        everything, and the app restarts on the restored database. No account is involved on either side.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Small enough to carry anywhere</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>file holds everything</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Transactions, accounts, categories, tags and settings travel together.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>accounts needed</Trans>} value="0">
+                    <Trans>Export on one phone and import on the next, no upload in between.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>name on every backup file</Trans>} value={<Trans>Dated</Trans>}>
+                    <Trans>Each copy carries its date and time, so none overwrites another.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One compressed file holds every transaction, account, category, tag and setting on your phone</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Set a PIN and the backup is locked with it — no vendor format, no conversion step</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings Data Management section with the Import Database and Export Database rows`}
+                        locale={lang}
+                        scene="database-backup-1"
+                        slug="database-backup"
+                        y={0.4}
+                    />
+                }
+                heading={<Trans>Back up and restore in Settings</Trans>}
+                lede={<Trans>Export Database and Import Database sit side by side in Settings.</Trans>}
+            >
+                <FeatureProof.Fact icon={Smartphone}>
+                    <Trans>Export on one phone, import on another</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Lock}>
+                    <Trans>Locked with your PIN when you set one</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Database} title={<Trans>Everything in one file</Trans>}>
+                    <Trans>One compressed file holds every transaction, account, category, tag and setting on your phone</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Lock} title={<Trans>Locked with your PIN</Trans>}>
+                    <Trans>Set a PIN and the backup is locked with it — no vendor format, no conversion step</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>Move to a new phone</Trans>}>
+                    <Trans>Move to a new phone by exporting on the old one and importing on the new one — no account on either side</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Restore from the same Settings list: pick the file, confirm the destructive replace, the app restarts on it
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>
-                            Move to a new phone by exporting on the old one and importing on the new one — no account on either side
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>The export leaves through the system share sheet — Files, iCloud Drive, Drive, Dropbox or a USB stick</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a backup file beats a vendor backup</Trans>}>
+                    <p>
+                        <Trans>
+                            Cloud apps do &ldquo;backups&rdquo; by holding all your data on their servers. Budgie does backups by handing
+                            you the database file. Where you put it is your business.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Restore lives in the same Settings list as the export. Pick the file, confirm the warning that it replaces
+                            everything, and the app restarts on the restored database. No account is involved on either side.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How do I restore on another device?</Trans>}
                     answer={
                         <Trans>
@@ -143,7 +173,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Is the backup file safe to upload to a cloud?</Trans>}
                     answer={
                         <Trans>
@@ -152,7 +183,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I have multiple backups?</Trans>}
                     answer={
                         <Trans>
@@ -161,7 +193,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does Budgie auto-backup?</Trans>}
                     answer={
                         <Trans>
@@ -170,7 +203,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

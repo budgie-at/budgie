@@ -12,7 +12,7 @@ export const buildFeaturesItemListJsonLd = (i18n: I18n, locale: string): Record<
     itemListElement: FEATURE_REGISTRY.map((entry, index) => ({
         '@type': 'ListItem',
         position: index + 1,
-        name: i18n._(entry.title),
+        name: i18n._(entry.name),
         url: `${BASE_URL}/${locale}/features/${entry.slug}`
     }))
 });

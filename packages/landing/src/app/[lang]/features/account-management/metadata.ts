@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'account-management',
     tier: FeatureTierEnum.CORE,
-    title: msg`Multi-Account Money Management`,
-    tagline: msg`Bank, cash, deposit, crypto, debt — all on one home screen, each with its own color.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Multi-Account Management`,
+    tagline: msg`Bank, cash, deposit, crypto, and debt, all on one home screen, each with its own color.`,
     metaTitle: msg`Multi-Account Money Management — Budgie`,
     metaDescription: msg`Track bank, cash, deposit, crypto, and debt accounts in one private app. Crypto groups by currency, archive or mark inactive, and multi-currency net worth control.`,
     primaryKeyword: 'money management app',

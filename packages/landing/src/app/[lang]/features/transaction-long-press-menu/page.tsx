@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Hand, ListChecks, Smartphone } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,30 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
-                locale={lang}
+                heading={<Trans>Long-press for quick actions</Trans>}
                 tagline={
                     <Trans>
-                        Long-press any transaction card for a menu — edit, delete, convert to a transfer, convert income to a refund, attach
+                        Long-press any transaction card for a menu: edit, delete, convert to a transfer, convert income to a refund, attach
                         a debt and more, without opening the full edit form.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="transaction-long-press-menu-1"
+                    slug="transaction-long-press-menu"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Every change starts on the list</Trans>}>
@@ -52,12 +60,9 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     <Trans>The menu opens anchored to the card you pressed, and the rest of the list dims behind it.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="transaction-long-press-menu-1"
                     slug="transaction-long-press-menu"
                 >
@@ -159,51 +164,92 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Actions belong on the list</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Editing a transaction in most expense apps means opening a detail screen, then an edit button, then a form. Common
-                        operations like deleting a duplicate or reclassifying an expense as a transfer should not cost that much. Budgie
-                        puts them behind a single long-press anchored to the transaction card itself.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on every
-                        platform.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Everything you do to a transaction</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>actions behind one long-press</Trans>} value={<Trans>Up to 6</Trans>}>
+                    <Trans>Not every action shows on every transaction. A single expense can show six.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>the actions that fit the row</Trans>} value={<Trans>Only</Trans>}>
+                    <Trans>Refund shows for income, deposit for expenses.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>press and hold to open it</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>The menu opens next to the card you pressed.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Start any action from the list — long-press the row, then pick it</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Context-aware menu — actions adapt to the transaction so you never see an option that does not apply</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureCropBand
+                heading={<Trans>One short menu, right at the card</Trans>}
+                lede={<Trans>Pick an action without leaving the list. Delete always comes last.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie context menu with Edit Transaction, Convert to Transfer, Attach debt and a red Delete Transaction`}
+                        locale={lang}
+                        scene="transaction-long-press-menu-1"
+                        slug="transaction-long-press-menu"
+                        y={0.33}
+                    >
+                        <FeatureCropBand.Pin x={0.81} y={0.42} />
+                        <FeatureCropBand.Pin x={0.81} y={0.455} />
+                        <FeatureCropBand.Pin x={0.81} y={0.53} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Edit it straight from the list</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Convert it to a transfer here</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Delete sits last, marked in red</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Hand} title={<Trans>Act straight from the list</Trans>}>
+                    <Trans>Start any action from the list — long-press the row, then pick it</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Only actions that apply</Trans>}>
+                    <Trans>Context-aware menu — actions adapt to the transaction so you never see an option that does not apply</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>One-handed, no extra screens</Trans>}>
+                    <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>One menu on every platform — no full-screen form to open first</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Actions belong on the list</Trans>}>
+                    <p>
+                        <Trans>
+                            Editing a transaction in most expense apps means opening a detail screen, then an edit button, then a form.
+                            Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost that much.
+                            Budgie puts them behind a single long-press anchored to the transaction card itself.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on
+                            every platform.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How do I open the menu?</Trans>}
                     answer={<Trans>Press and hold any transaction card. Budgie&apos;s own menu appears next to the card.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What actions are available?</Trans>}
                     answer={
                         <Trans>
@@ -213,13 +259,15 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I customize the menu?</Trans>}
                     answer={
                         <Trans>Not yet. The menu surfaces the most common actions; let us know on GitHub if you want a custom slot.</Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does this work on iPad?</Trans>}
                     answer={
                         <Trans>
@@ -227,7 +275,7 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

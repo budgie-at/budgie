@@ -82,8 +82,8 @@ The overlay for a scene is resolved by filename convention against
 `scenes/`, trying each of these in order and using the first match, or none:
 
 1. `scenes/<SCENE>.sql` — exact match.
-2. `scenes/<SCENE minus trailing -N>.sql` — lets `pin-app-lock-2` and
-   `pin-app-lock-clip-1` share `scenes/pin-app-lock.sql`.
+2. `scenes/<SCENE minus trailing -N>.sql` — lets `pin-app-lock-1` and
+   `pin-app-lock-2` share `scenes/pin-app-lock.sql`.
 
 A scene overlay file is either the SQL itself or a one-line
 `.read shared/<state>.sql`, so multiple scenes that need the same state (for

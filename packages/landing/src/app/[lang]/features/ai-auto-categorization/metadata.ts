@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-auto-categorization',
     tier: FeatureTierEnum.HERO,
-    title: msg`On-Device AI Auto-Categorization`,
+    pillar: PillarEnum.AI,
+    name: msg`AI Auto-Categorization`,
     tagline: msg`Category, tag, and merchant suggestions that run entirely on your phone and learn from your corrections.`,
     metaTitle: msg`On-Device AI Auto-Categorization — Budgie`,
     metaDescription: msg`Category, tag, and merchant suggestions that run entirely on your phone, learn from your corrections, and never reach a server.`,

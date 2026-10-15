@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'erste-bank-pdf-import',
     tier: FeatureTierEnum.CORE,
-    title: msg`Erste Bank PDF Import`,
+    pillar: PillarEnum.BANK,
+    name: msg`Erste Bank PDF Import`,
     tagline: msg`Import the statement PDF you download in George — every transaction in seconds.`,
     metaTitle: msg`Erste Bank PDF Import — Budgie`,
     metaDescription: msg`Import your Erste Bank statement from the PDF you download in George. IBAN, balance, and every transaction line are read on your device.`,

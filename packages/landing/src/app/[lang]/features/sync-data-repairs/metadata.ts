@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'sync-data-repairs',
     tier: FeatureTierEnum.POWER,
-    title: msg`Sync Data Repairs`,
+    pillar: PillarEnum.BANK,
+    name: msg`Sync Data Repairs`,
     tagline: msg`Finds duplicate imports and fixes transfers that were split or mismatched — manual entries are never touched.`,
     metaTitle: msg`Sync Data Repairs — Budgie`,
     metaDescription: msg`A Settings screen scans your PrivatBank and Erste imports for duplicates and mismatched transfers, shows a count, and repairs only after you confirm.`,

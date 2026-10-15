@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'bulk-categorize-transactions',
     tier: FeatureTierEnum.CORE,
-    title: msg`Bulk Categorize and Tag Transactions`,
+    pillar: PillarEnum.AI,
+    name: msg`Bulk Categorize and Tag`,
     tagline: msg`Uncategorized or untagged bank transactions grouped by merchant, with suggestions learned from your own choices. One tap per group.`,
     metaTitle: msg`Bulk Categorize and Tag Transactions — Budgie`,
     metaDescription: msg`Categorize and tag bank transactions in bulk. Budgie groups them by merchant, suggests from your own history and accepts the confident ones in one tap.`,

@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'net-worth-tracker',
     tier: FeatureTierEnum.HERO,
-    title: msg`Net Worth Tracker for Mobile`,
-    tagline: msg`Bank, cash, deposit, crypto, debt — one number on your home screen.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Net Worth Tracker`,
+    tagline: msg`Bank, cash, deposit, crypto, and debt in one number on your home screen.`,
     metaTitle: msg`Net Worth Tracker for Mobile — Budgie`,
     metaDescription: msg`Roll up every bank account, cash wallet, deposit, crypto holding, and liability into a single net-worth number. Multi-currency conversion baked in.`,
     primaryKeyword: 'net worth tracker app',

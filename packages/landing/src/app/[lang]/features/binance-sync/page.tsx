@@ -1,18 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ArrowLeftRight, Eye, KeyRound, Repeat, Wallet } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -24,21 +23,25 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Binance Sync — Read-Only Keys, Real Balances</Trans>}
-                locale={lang}
+                heading={<Trans>Your Binance balances, on your phone</Trans>}
                 tagline={
                     <Trans>
-                        Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges
+                        Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone, then merges
                         your P2P buys with the bank payment that funded them.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="binance-sync-1" slug="binance-sync" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Setup is one screen</Trans>}>
@@ -55,16 +58,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         Binance login.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="binance-sync-1"
-                    slug="binance-sync"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="binance-sync-1" slug="binance-sync">
                     <FeatureStory.Callout index={0} y={0.22}>
                         <Trans>Opens Binance API management</Trans>
                     </FeatureStory.Callout>
@@ -92,86 +86,139 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>A key that can only read</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Budgie asks for an API key and secret, and the setup screen tells you exactly how to create it: keep only
-                        &quot;Enable Reading&quot; switched on, never trading, never withdrawals. Budgie only ever reads your balances and
-                        history — there is no order or withdrawal feature in the app to use.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Your key and secret stay on your device. Nothing is proxied through a Budgie server, because there is no Budgie
-                        server: the app talks to Binance directly, the same way it talks to your bank.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureVersus
+                heading={<Trans>Buying USDT without the mess</Trans>}
+                lede={<Trans>A P2P purchase leaves two records. Here is what happens to them.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Tracking it by hand</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Bank payment counts as an expense</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Crypto arrival counts as income</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Statistics are off with every purchase</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>You match each pair yourself</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie with Binance</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Both legs merge into one transfer</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Nothing is counted as income</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Statistics stay clean</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Matched for you, doubtful ones left alone</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Balances taken from Binance itself, covering Spot, Funding, and Flexible and Locked Simple Earn</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Connect Binance screen with the numbered setup steps, including keeping only Enable Reading on, above the key and secret fields`}
+                        locale={lang}
+                        scene="binance-sync-1"
+                        slug="binance-sync"
+                        y={0.2}
+                    />
+                }
+                heading={<Trans>Look at step three</Trans>}
+                lede={<Trans>Step three tells you to leave trading and withdrawals off, and Budgie only reads balances and history.</Trans>}
+            >
+                <FeatureProof.Fact icon={Eye}>
+                    <Trans>Setup asks for the reading permission only</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={KeyRound}>
+                    <Trans>Your key and secret stay on your phone</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Wallet} title={<Trans>Balances straight from Binance</Trans>}>
+                    <Trans>Balances taken from Binance itself, covering Spot, Funding, and Flexible and Locked Simple Earn</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Repeat} title={<Trans>Trades are not fake income</Trans>}>
+                    <Trans>Spot trades and Convert land as transfers between two of your asset accounts, not as fake income</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>P2P buy and bank payment merged</Trans>}>
+                    <Trans>A P2P purchase and the bank payment behind it merge into one cross-currency transfer</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>One account per wallet and asset, each with its own balance, history, and place in net worth</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Crypto and fiat deposits and withdrawals, P2P buy and sell orders, and Simple Earn rewards</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Spot trades and Convert land as transfers between two of your asset accounts, not as fake income</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>A P2P purchase and the bank payment behind it merge into one cross-currency transfer</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             The first sync walks up to five years of history backwards in windows; later runs only ask for the days since
                             the last one
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Each source type is saved to your device as it finishes, and re-runs never create duplicates</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={7}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Assets Budgie cannot price are listed under &quot;valuation unavailable&quot; at setup instead of vanishing
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>P2P without double-counting</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Buying USDT with a bank card produces two records: money leaving your bank account and crypto arriving on Binance.
-                        Counted separately, that is one phantom expense and one phantom income in your statistics every single time.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Budgie matches the two sides automatically. It prefers the fiat figures Binance itself quotes on the order (a bank
-                        amount within about 2% of them), and otherwise compares the implied rate against the exchange rates on your device,
-                        accepting up to a 10% difference — triangulating through your base currency, so a hryvnia payment for USDT resolves
-                        without a direct currency pair. Both sides must sit within an hour of each other, and up to three bank payments can
-                        add up to a single P2P purchase. When two candidates are equally plausible, nothing is merged: an ambiguous guess is
-                        worse than a manual fix.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>A key that can only read</Trans>}>
+                    <p>
+                        <Trans>
+                            Budgie asks for an API key and secret, and the setup screen tells you exactly how to create it: keep only
+                            &quot;Enable Reading&quot; switched on, never trading, never withdrawals. Budgie only ever reads your balances
+                            and history — there is no order or withdrawal feature in the app to use.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Your key and secret stay on your device. Nothing is proxied through a Budgie server, because there is no Budgie
+                            server: the app talks to Binance directly, the same way it talks to your bank.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>P2P without double-counting</Trans>}>
+                    <p>
+                        <Trans>
+                            Buying USDT with a bank card produces two records: money leaving your bank account and crypto arriving on
+                            Binance. Counted separately, that is one phantom expense and one phantom income in your statistics every single
+                            time.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Budgie matches the two sides automatically. It prefers the fiat figures Binance itself quotes on the order (a
+                            bank amount within about 2% of them), and otherwise compares the implied rate against the exchange rates on your
+                            device, accepting up to a 10% difference — triangulating through your base currency, so a hryvnia payment for
+                            USDT resolves without a direct currency pair. Both sides must sit within an hour of each other, and up to three
+                            bank payments can add up to a single P2P purchase. When two candidates are equally plausible, nothing is merged:
+                            an ambiguous guess is worse than a manual fix.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Can Budgie trade or withdraw with my key?</Trans>}
                     answer={
                         <Trans>
@@ -181,7 +228,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Which balances are included?</Trans>}
                     answer={
                         <Trans>
@@ -190,7 +238,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>How far back does the history go?</Trans>}
                     answer={
                         <Trans>
@@ -199,7 +248,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What if the app is closed mid-sync?</Trans>}
                     answer={
                         <Trans>
@@ -208,7 +258,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Do Binance holdings count towards net worth?</Trans>}
                     answer={
                         <Trans>
@@ -217,7 +268,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

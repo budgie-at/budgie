@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'bank-integration-management',
     tier: FeatureTierEnum.CORE,
-    title: msg`Bank Connections — One Credential, Many Accounts`,
+    pillar: PillarEnum.BANK,
+    name: msg`Bank Connections`,
     tagline: msg`Monobank cards, jars, and your deposits share one connection, so a token change is a one-time job.`,
     metaTitle: msg`Bank Connection Management — Budgie`,
     metaDescription: msg`One connection backs every account under it. Change a Monobank or Binance token once and all follow. Statement banks need no token.`,

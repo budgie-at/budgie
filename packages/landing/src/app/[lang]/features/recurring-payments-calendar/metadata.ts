@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'recurring-payments-calendar',
     tier: FeatureTierEnum.POWER,
-    title: msg`Recurring Payments Calendar`,
-    tagline: msg`Spot the slow leak before it bills — subscription patterns plotted on a month calendar with forecasted upcoming.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Recurring Payments Calendar`,
+    tagline: msg`Spot the slow leak before it bills. Subscription patterns plotted on a month calendar with forecasted upcoming.`,
     metaTitle: msg`Recurring Payments Calendar — Budgie`,
     metaDescription: msg`Budgie auto-detects subscription and recurring-payment patterns from your history and plots them on a monthly calendar so you can see upcoming bills within the current month.`,
     primaryKeyword: 'recurring payment tracker',

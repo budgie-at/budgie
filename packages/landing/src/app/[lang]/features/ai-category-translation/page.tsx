@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Languages, Search, Smartphone, Type } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,25 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Edit Category screen for a category named Сільпо, with an AI-generated metadata block showing the English translation silpo supermarket and the search keywords groceries, supermarket, food, market, store, silpo`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
-                locale={lang}
+                heading={<Trans>Foreign category names, made readable</Trans>}
                 tagline={
                     <Trans>
-                        Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords — on your
+                        Category and tag names in non-Latin scripts, such as Cyrillic, get an English form and search keywords on your
                         device, without sending anything to a server.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="ai-category-translation-1" slug="ai-category-translation" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One category, translated on your phone</Trans>}>
@@ -55,12 +58,9 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Edit Category screen for a category named Сільпо, with an AI-generated metadata block showing the English translation silpo supermarket and the search keywords groceries, supermarket, food, market, store, silpo`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="ai-category-translation-1"
                     slug="ai-category-translation"
                 >
@@ -83,51 +83,86 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 </FeatureStory.Step>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why foreign category and tag names break expense search</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Categories and tags you create or import in Ukrainian or other non-Latin scripts are hard for search and suggestions
-                        built around Latin text to find. Budgie translates each name into English, adds search keywords, and keeps both
-                        forms. All of it happens on your phone, once On-device AI is on and its one-time download has finished.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The original name stays exactly as you wrote it; the English form is what your search queries also match against. No
-                        data ever leaves your device. Renaming a category clears its English form and keywords, and Budgie generates them
-                        again for the new name.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Your names, readable everywhere</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>of your category names leave your phone</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>The English form is made on your device.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>names searchable, original and English</Trans>} value={<Trans>Both</Trans>}>
+                    <Trans>Search finds it whichever form you remember.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>if the English form comes out wrong</Trans>} value={<Trans>Editable</Trans>}>
+                    <Trans>Tap the English form or keywords to edit them.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Names in non-Latin scripts get an English translation, tested with Ukrainian</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Original category and tag names stay untouched alongside the English form</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Both forms are searchable — search finds the category or tag whichever one you remember</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Edit Category screen with the name Сільпо above an English translation and search keywords`}
+                        locale={lang}
+                        scene="ai-category-translation-1"
+                        slug="ai-category-translation"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>Check it on one category</Trans>}
+                lede={<Trans>Open any non-Latin category and look under the name.</Trans>}
+            >
+                <FeatureProof.Fact icon={Type}>
+                    <Trans>Your original name stays exactly as you wrote it</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Smartphone}>
+                    <Trans>The English form is made on your phone</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/ai-features`}>
+                    <Trans>See how on-device AI works</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Languages} title={<Trans>Works across many scripts</Trans>}>
+                    <Trans>Names in non-Latin scripts get an English translation, tested with Ukrainian</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Type} title={<Trans>Original names untouched</Trans>}>
+                    <Trans>Original category and tag names stay untouched alongside the English form</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Search} title={<Trans>Search finds either form</Trans>}>
+                    <Trans>Both forms are searchable — search finds the category or tag whichever one you remember</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>On your phone — no category or tag name ever leaves it</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Edit any category or tag if its English form comes back wrong</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why foreign category and tag names break expense search</Trans>}>
+                    <p>
+                        <Trans>
+                            Categories and tags you create or import in Ukrainian or other non-Latin scripts are hard for search and
+                            suggestions built around Latin text to find. Budgie translates each name into English, adds search keywords, and
+                            keeps both forms. All of it happens on your phone, once On-device AI is on and its one-time download has
+                            finished.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The original name stays exactly as you wrote it; the English form is what your search queries also match
+                            against. No data ever leaves your device. Renaming a category clears its English form and keywords, and Budgie
+                            generates them again for the new name.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Which scripts are supported?</Trans>}
                     answer={
                         <Trans>
@@ -136,7 +171,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Are my original category and tag names kept?</Trans>}
                     answer={
                         <Trans>
@@ -145,7 +181,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What if a category or tag is translated wrongly?</Trans>}
                     answer={
                         <Trans>
@@ -154,7 +191,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does this run on every category and tag?</Trans>}
                     answer={
                         <Trans>
@@ -163,7 +201,7 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ChartPie, Star, Tags } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,23 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie new expense form with the tag sheet open on a searchable grid of tag chips`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Transaction Tags for Multi-Dimensional Tracking</Trans>}
-                locale={lang}
+                heading={<Trans>Layer tags on top of categories</Trans>}
                 tagline={
                     <Trans>
-                        Layer tags on top of categories — one transaction can be both Groceries (category) and #vacation, #shared, and
+                        Layer tags on top of categories. One transaction can be both Groceries (category) and #vacation, #shared, and
                         #reimbursable (tags).
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="transaction-tags-1" slug="transaction-tags" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One transaction, two ways to file it</Trans>}>
@@ -53,14 +54,7 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         your own flat list.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie new expense form with the tag sheet open on a searchable grid of tag chips`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="transaction-tags-1"
-                    slug="transaction-tags"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="transaction-tags-1" slug="transaction-tags">
                     <FeatureStory.Callout y={0.49}>
                         <Trans>Tags sit next to Category</Trans>
                     </FeatureStory.Callout>
@@ -108,51 +102,85 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why categories alone are not enough</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Categories answer &ldquo;what kind of expense&rdquo;; tags answer &ldquo;for which project, person, or
-                        purpose.&rdquo; Tag a stretch of transactions #vacation-2026 and the analytics tab gives you a per-tag P&amp;L
-                        without rebuilding the category tree.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a highlighted pill on the transaction list so
-                        you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card
-                        there.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Tags, by the numbers</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>on tags per transaction</Trans>} value={<Trans>No limit</Trans>}>
+                    <Trans>Layer as many tags as you need on one expense.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>primary tag per transaction</Trans>} value="1">
+                    <Trans>Promote one tag and it stands out as a highlighted pill.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>tag you use gets its own total</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Analytics lists spending per tag, plus an Untagged bucket.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Tags are flat, reusable, and combine freely — no rigid hierarchy</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>One tag per transaction can be promoted to &ldquo;primary&rdquo; and stands out as a highlighted pill</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureCropBand
+                heading={<Trans>Scan tags without opening a row</Trans>}
+                lede={<Trans>A tagged row shows one tag chip, plus a count when it has more.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie transaction list with a category label and a tag chip on each row`}
+                        locale={lang}
+                        scene="transaction-tags-2"
+                        slug="transaction-tags"
+                        y={0.27}
+                    >
+                        <FeatureCropBand.Pin x={0.55} y={0.386} />
+                        <FeatureCropBand.Pin x={0.58} y={0.425} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Category says what you bought</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>The tag adds your own label</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Flat, reusable tags</Trans>}>
+                    <Trans>Tags are flat, reusable, and combine freely — no rigid hierarchy</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Star} title={<Trans>Primary tag stands out</Trans>}>
+                    <Trans>One tag per transaction can be promoted to &ldquo;primary&rdquo; and stands out as a highlighted pill</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ChartPie} title={<Trans>Per-tag totals</Trans>}>
+                    <Trans>Tag-based analytics: per-tag totals plus an &ldquo;Untagged&rdquo; bucket</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Selector stays open across multi-selections; commit with a Done pill</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Merge tags across the database — same mass-reassignment story as categories</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Tag-based analytics: per-tag totals plus an &ldquo;Untagged&rdquo; bucket</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why categories alone are not enough</Trans>}>
+                    <p>
+                        <Trans>
+                            Categories answer &ldquo;what kind of expense&rdquo;; tags answer &ldquo;for which project, person, or
+                            purpose.&rdquo; Tag a stretch of transactions #vacation-2026 and the analytics tab gives you a per-tag P&amp;L
+                            without rebuilding the category tree.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a highlighted pill on the transaction
+                            list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a
+                            different tag card there.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How are tags different from categories?</Trans>}
                     answer={
                         <Trans>
@@ -161,7 +189,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How many tags can I add to a transaction?</Trans>}
                     answer={
                         <Trans>
@@ -170,7 +199,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What does &ldquo;primary tag&rdquo; mean?</Trans>}
                     answer={
                         <Trans>
@@ -179,7 +209,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I rename or merge tags?</Trans>}
                     answer={
                         <Trans>
@@ -188,7 +219,7 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

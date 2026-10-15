@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'split-transactions',
     tier: FeatureTierEnum.POWER,
-    title: msg`Split a Transaction Across Categories`,
-    tagline: msg`That €87 supermarket bill was groceries and a phone charger — split it.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Split Transactions`,
+    tagline: msg`That €87 supermarket bill was groceries and a phone charger. Split it.`,
     metaTitle: msg`Split Transactions — Budgie`,
     metaDescription: msg`Divide a single transaction across multiple categories with a running left-to-assign total. Each split keeps its own tags and comment.`,
     primaryKeyword: 'split transaction by category',

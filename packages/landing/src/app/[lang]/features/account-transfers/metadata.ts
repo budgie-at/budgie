@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'account-transfers',
     tier: FeatureTierEnum.CORE,
-    title: msg`Account Transfers — Done Right`,
-    tagline: msg`Cross-currency, dual-amount, exact — money between your own accounts is never an expense.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Account Transfers`,
+    tagline: msg`Cross-currency, dual-amount, exact. Money between your own accounts is never an expense.`,
     metaTitle: msg`Account Transfers — Budgie`,
     metaDescription: msg`Transfer between your own accounts as a first-class transaction type with automatic FX conversion and dual-amount display. Spending stats stay clean; balance reconciliation stays exact.`,
     primaryKeyword: 'transfer between accounts app',

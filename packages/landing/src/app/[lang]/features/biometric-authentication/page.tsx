@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { EyeOff, KeyRound, ScanFace } from 'lucide-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,20 +23,24 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Face ID, Touch ID and Fingerprint Unlock</Trans>}
-                locale={lang}
+                heading={<Trans>Unlock with a glance</Trans>}
                 tagline={
                     <Trans>
                         One glance past Budgie&apos;s lock screen. The four digits you chose stay the fallback and the lock behind it.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Biometrics open the lock, the PIN stays the fallback</Trans>}>
@@ -54,16 +57,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="screenshot-protection-1"
-                    slug="screenshot-protection"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection">
                     <FeatureStory.Callout y={0.42}>
                         <Trans>App Lock: PIN and biometric unlock</Trans>
                     </FeatureStory.Callout>
@@ -83,53 +77,98 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why biometrics belong on a finance app you check ten times a day</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication
-                        API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the keypad
-                        is what the lock screen renders in the first place. Budgie asks the system not to offer the device passcode as a
-                        fallback, so your Budgie PIN is the only alternative.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie lock screen with the title Enter your PIN, four empty PIN dots and a number keypad`}
+                        locale={lang}
+                        scene="pin-app-lock-2"
+                        slug="pin-app-lock"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>Cancel a scan, the keypad waits</Trans>}
+                lede={<Trans>The keypad is the lock screen itself, so a cancelled or failed scan costs you nothing.</Trans>}
+            >
+                <FeatureProof.Fact icon={KeyRound}>
+                    <Trans>Your PIN is the only other way in</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={EyeOff}>
+                    <Trans>The phone does the matching, Budgie sees only the result</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            Face ID, Touch ID or Android fingerprint and face unlock on the lock screen, offered when the device has one
-                            enrolled
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Falls back to PIN if biometrics are disabled or unavailable</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureCropBand
+                heading={<Trans>Start from the App Lock card</Trans>}
+                lede={<Trans>Settings, under Security, is where App Lock and your PIN begin.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie Settings Security section with the App Lock card reading Secure your app with PIN and Face ID`}
+                        locale={lang}
+                        scene="screenshot-protection-1"
+                        slug="screenshot-protection"
+                        y={0.33}
+                    >
+                        <FeatureCropBand.Pin x={0.55} y={0.392} />
+                        <FeatureCropBand.Pin x={0.55} y={0.445} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>App Lock card, under Security</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>PIN and Face ID, set up together</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ScanFace} title={<Trans>Unlock with biometrics</Trans>}>
+                    <Trans>
+                        Face ID, Touch ID or Android fingerprint and face unlock on the lock screen, offered when the device has one
+                        enrolled
+                    </Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={EyeOff} title={<Trans>Biometric data stays private</Trans>}>
+                    <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>PIN is always your fallback</Trans>}>
+                    <Trans>Falls back to PIN if biometrics are disabled or unavailable</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>The device-passcode fallback is switched off on purpose — your PIN is the only alternative</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>The prompt fires by itself as the lock screen appears — no extra tap at app open</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why biometrics belong on a finance app you check ten times a day</Trans>}>
+                    <p>
+                        <Trans>
+                            Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system
+                            authentication API, so the matching happens in the operating system and Budgie only ever learns whether it
+                            succeeded.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the
+                            keypad is what the lock screen renders in the first place. Budgie asks the system not to offer the device
+                            passcode as a fallback, so your Budgie PIN is the only alternative.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Does Budgie store my biometric data?</Trans>}
                     answer={
                         <Trans>
@@ -138,7 +177,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What if biometrics fail?</Trans>}
                     answer={
                         <Trans>
@@ -148,7 +188,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I disable biometrics?</Trans>}
                     answer={
                         <Trans>
@@ -157,7 +198,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Is biometric unlock safer than a PIN?</Trans>}
                     answer={
                         <Trans>
@@ -166,7 +208,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }
