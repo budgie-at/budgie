@@ -288,7 +288,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return null;
                 }
 
-                return { instrumentId: euroInstrument.id, quoteInstrumentId: euroInstrument.id, fromDate, toDate, priority: 10 };
+                return { instrumentId: euroInstrument.id, quoteInstrumentId: euroInstrument.id, fromDate, toDate, priority: 5 };
             });
 
             const fetchHistoricalFiatRates = Effect.fn('HistoricalMarketDataService.fetchHistoricalFiatRates')(function* (
