@@ -211,8 +211,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source codebase</strong> — If the developer stops maintaining the app, the community can fork
-                                it. The code is auditable. You can verify that the privacy claims are real.
+                                <strong>Public source code</strong> — The code is open for anyone to read, so you can check what the app
+                                does with your data instead of taking privacy claims on trust.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -239,7 +239,7 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         <Trans>
                             Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your
                             device, encrypted the moment you set a PIN. There are no Budgie servers that receive your transactions, no
-                            aggregator that holds your bank credentials, and no subscription required to use the core features.
+                            aggregator that holds your bank credentials, and no subscription. Budgie is free to use, with no paid tier.
                         </Trans>
                     </BlogArticleProse>
 
@@ -257,8 +257,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Strong database encryption</strong> — The database is encrypted at rest. Even if someone gains
-                                physical access to your device, they cannot read your financial data without the key.
+                                <strong>Database encryption</strong> — Set a PIN and your database is encrypted on your device. Even if
+                                someone gets hold of your phone, they cannot read your financial data without the PIN.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -270,32 +270,34 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>CSV and PDF import</strong> — Export a statement from any bank website and import it into Budgie.
-                                This works with every bank on the planet, requires no API key, and leaves no credential exposure.
+                                <strong>CSV and PDF import</strong> — Download a statement from your bank website and import it into Budgie.
+                                CSV import works with any bank that lets you download a CSV, and nothing requires handing over your bank
+                                login.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>On-device AI categorization</strong> — A small language model runs entirely on your device to
-                                suggest categories for new transactions. Your spending patterns are never sent to a cloud AI service.
+                                <strong>On-device AI categorization</strong> — Category suggestions for new transactions are worked out on
+                                your device. Your spending patterns are never sent to a cloud AI service.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Encrypted local backup</strong> — Create a backup of your entire database at any time and save it to
-                                iCloud, a USB drive, or anywhere you choose. Budgie does not hold your backup.
+                                <strong>Local backup</strong> — Create a backup of your entire database at any time and save it to iCloud, a
+                                USB drive, or anywhere you choose. If you have set a PIN, the backup is encrypted too. Budgie does not hold
+                                your backup.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source</strong> — The codebase is public. Privacy claims are verifiable by anyone with a
-                                browser and a GitHub account.
+                                <strong>Public source</strong> — The code is publicly readable under a source-available license, so anyone
+                                can check the privacy claims.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>Multi-currency support</strong> — Track accounts in different currencies and view balances in a
-                                single base currency with exchange rates fetched anonymously.
+                                single base currency. Fetching exchange rates sends none of your transactions or balances.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -320,14 +322,14 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleProse>
                         <Trans>
                             If you still have a Mint CSV export, open it in a spreadsheet app and verify the column names: date,
-                            description, amount, and category. Budgie CSV importer maps standard Mint columns automatically.
+                            description, amount, and category. Budgie CSV importer lets you match those columns to the right fields.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
                             If you no longer have your Mint export, download statements directly from your bank website. Most banks offer
-                            CSV or Excel downloads going back 12 to 24 months. PDF statements from any period also work with Budgie PDF
+                            CSV or Excel downloads going back 12 to 24 months. PDF statements from supported banks also work with Budgie PDF
                             import.
                         </Trans>
                     </BlogArticleProse>
@@ -350,9 +352,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
                     <BlogArticleProse>
                         <Trans>
-                            Use Budgie CSV import screen to map your file columns to Budgie fields. The importer shows a preview of the
-                            first few rows so you can verify the mapping before committing. Budgie deduplicates transactions on import, so
-                            overlapping date ranges between files will not create duplicates.
+                            Use Budgie CSV import screen to map your file columns to Budgie fields before importing. Import each period only
+                            once so the same transactions are not added twice.
                         </Trans>
                     </BlogArticleProse>
 
@@ -362,7 +363,7 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie on-device AI suggests categories as you review imported transactions. You can also define custom
+                            Budgie suggests categories on your device as you review imported transactions. You can also define custom
                             categories and set up recurring transaction templates for bills and subscriptions so future entries are
                             categorized automatically.
                         </Trans>
@@ -396,23 +397,22 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
                         <BlogFaqItem question={<Trans>Is Budgie really free to use?</Trans>}>
                             <Trans>
-                                Budgie has a free tier that covers core expense tracking. Unlike ad-supported models, the free tier does not
-                                monetize your spending data. There is no advertising and no data brokering.
+                                Yes. Budgie is free to use and has no paid tier. Unlike ad-supported models, it does not monetize your
+                                spending data. There is no advertising and no data brokering.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>What happens to my data if Budgie ever shuts down?</Trans>}>
                             <Trans>
                                 Because your data is stored on your device and backed up to your own storage, nothing happens. You keep your
-                                database. Budgie is also open source, so the community can continue maintaining the app independently of any
-                                company decisions.
+                                database. Budgie’s source code is also public, so you can see exactly how your data is handled.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Can I import years of Mint transaction history?</Trans>}>
                             <Trans>
-                                Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and amount.
-                                If your Mint export was a single file covering multiple years, you can import it in one step.
+                                Yes. Budgie CSV importer lets you map the columns of your Mint export to Budgie fields, so a single file
+                                covering multiple years can be imported in one step.
                             </Trans>
                         </BlogFaqItem>
 

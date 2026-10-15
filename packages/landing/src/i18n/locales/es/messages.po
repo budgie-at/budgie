@@ -307,8 +307,8 @@ msgid "<0>Credential storage</0>: Your actual username and password must be stor
 msgstr "<0>Almacenamiento de credenciales</0>: Tu nombre de usuario y contrasena reales deben almacenarse (incluso cifrados) en servidores de terceros"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>CSV and PDF import</0> — Export a statement from any bank website and import it into Budgie. This works with every bank on the planet, requires no API key, and leaves no credential exposure."
-msgstr "<0>Importación de CSV y PDF</0> — Exporta un extracto de cualquier sitio web bancario e impórtalo en Budgie. Funciona con cualquier banco del mundo, no requiere clave API y no expone credenciales."
+msgid "<0>CSV and PDF import</0> — Download a statement from your bank website and import it into Budgie. CSV import works with any bank that lets you download a CSV, and nothing requires handing over your bank login."
+msgstr "<0>Importación de CSV y PDF</0> — Descarga un extracto desde la web de tu banco e impórtalo en Budgie. La importación de CSV funciona con cualquier banco que te permita descargar un CSV, y nada exige entregar tus credenciales bancarias."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>CSV import/export.</0> Good data portability."
@@ -358,6 +358,10 @@ msgstr "<0>Firefly III</0>: Autoalojado"
 msgid "<0>Data Storage</0>: Your choice"
 msgstr "<0>Almacenamiento de datos</0>: A tu elección"
 
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Database encryption</0> — Set a PIN and your database is encrypted on your device. Even if someone gets hold of your phone, they cannot read your financial data without the PIN."
+msgstr "<0>Cifrado de la base de datos</0> — Configura un PIN y tu base de datos se cifra en tu dispositivo. Incluso si alguien se hace con tu teléfono, no podrá leer tus datos financieros sin el PIN."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Delete old accounts</0>: After migration, fully delete cloud-based app accounts and revoke aggregator access"
 msgstr "<0>Elimina las cuentas antiguas</0>: Despues de la migracion, elimina completamente las cuentas de aplicaciones en la nube y revoca el acceso de los agregadores"
@@ -393,10 +397,6 @@ msgstr "<0>La computación en el borde</0> acerca el cómputo a los usuarios. La
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Electric SQL</0> synchronizes SQLite databases between devices and cloud Postgres, enabling local-first with familiar SQL."
 msgstr "<0>Electric SQL</0> sincroniza bases de datos SQLite entre dispositivos y Postgres en la nube, habilitando local-first con SQL familiar."
-
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Encrypted local backup</0> — Create a backup of your entire database at any time and save it to iCloud, a USB drive, or anywhere you choose. Budgie does not hold your backup."
-msgstr "<0>Copia de seguridad local cifrada</0> — Crea una copia de seguridad de toda tu base de datos en cualquier momento y guárdala en iCloud, una unidad USB o donde prefieras. Budgie no guarda tu copia de seguridad."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Evaluate offline alternatives</0>: Budgie and similar apps offer core features without privacy compromises"
@@ -547,6 +547,10 @@ msgid "<0>llama.rn</0> MIT License - On-device language model runtime binding"
 msgstr "<0>llama.rn</0> Licencia MIT: enlace en tiempo de ejecución para modelos de lenguaje en el dispositivo"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Local backup</0> — Create a backup of your entire database at any time and save it to iCloud, a USB drive, or anywhere you choose. If you have set a PIN, the backup is encrypted too. Budgie does not hold your backup."
+msgstr "<0>Copia de seguridad local</0> — Crea en cualquier momento una copia de toda tu base de datos y guárdala en iCloud, en una unidad USB o donde prefieras. Si has configurado un PIN, la copia también está cifrada. Budgie no guarda tu copia de seguridad."
+
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Local data storage</0> — Your transaction history lives on your device, in a format you can read and export. No internet connection required to access your own records."
 msgstr "<0>Almacenamiento de datos local</0> — Tu historial de transacciones vive en tu dispositivo, en un formato que puedes leer y exportar. No se requiere conexión a internet para acceder a tus propios registros."
 
@@ -615,8 +619,8 @@ msgid "<0>Multi-currency support.</0> Track accounts in 150+ currencies, plus cr
 msgstr "<0>Soporte multi-divisa.</0> Gestiona cuentas en más de 150 monedas, incluyendo criptomonedas, sin comprometer la privacidad."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Multi-currency support</0> — Track accounts in different currencies and view balances in a single base currency with exchange rates fetched anonymously."
-msgstr "<0>Soporte multidivisa</0> — Rastrea cuentas en diferentes divisas y visualiza saldos en una única moneda base con tipos de cambio obtenidos de forma anónima."
+msgid "<0>Multi-currency support</0> — Track accounts in different currencies and view balances in a single base currency. Fetching exchange rates sends none of your transactions or balances."
+msgstr "<0>Compatibilidad con varias divisas</0> — Lleva cuentas en distintas divisas y consulta los saldos en una única divisa base. Al obtener los tipos de cambio no se envía ninguna de tus transacciones ni saldos."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Multi-device sync</0>: Your data exists on one device unless you manually transfer it"
@@ -695,8 +699,8 @@ msgid "<0>Offline-first architecture</0> - Works without internet, syncs when av
 msgstr "<0>Arquitectura offline-first</0> — Funciona sin internet, se sincroniza cuando está disponible"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>On-device AI categorization</0> — A small language model runs entirely on your device to suggest categories for new transactions. Your spending patterns are never sent to a cloud AI service."
-msgstr "<0>Categorización por IA en el dispositivo</0> — Un modelo de lenguaje pequeño se ejecuta completamente en tu dispositivo para sugerir categorías para nuevas transacciones. Tus patrones de gasto nunca se envían a un servicio de IA en la nube."
+msgid "<0>On-device AI categorization</0> — Category suggestions for new transactions are worked out on your device. Your spending patterns are never sent to a cloud AI service."
+msgstr "<0>Categorización con IA en el dispositivo</0> — Las sugerencias de categoría para las nuevas transacciones se calculan en tu dispositivo. Tus patrones de gasto nunca se envían a un servicio de IA en la nube."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "<0>On-device AI</0> — Everything the app needs is downloaded once, then stays on your phone. Every request is answered locally. No network call, no server log, no third party ever sees the input."
@@ -710,17 +714,9 @@ msgstr "<0>Almacenamiento en el dispositivo</0>: cada transacción, cuenta y cat
 msgid "<0>One-time purchase:</0> No ongoing relationship or data motivation"
 msgstr "<0>Compra única:</0> Sin relación continua ni motivación para monetizar datos"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Open source codebase</0> — If the developer stops maintaining the app, the community can fork it. The code is auditable. You can verify that the privacy claims are real."
-msgstr "<0>Código fuente abierto</0> — Si el desarrollador deja de mantener la aplicación, la comunidad puede hacer un fork. El código es auditable. Puedes verificar que las declaraciones de privacidad son reales."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open source transparency.</0> The codebase is public, allowing security researchers and privacy advocates to verify claims."
 msgstr "<0>Transparencia de código abierto.</0> La base de código es pública, permitiendo a los investigadores de seguridad y defensores de la privacidad verificar las afirmaciones."
-
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Open source</0> — The codebase is public. Privacy claims are verifiable by anyone with a browser and a GitHub account."
-msgstr "<0>Código abierto</0> — El código fuente es público. Las declaraciones de privacidad son verificables por cualquiera con un navegador y una cuenta de GitHub."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: N/A"
@@ -729,10 +725,6 @@ msgstr "<0>Código abierto</0>: N/A"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: No"
 msgstr "<0>Monarch Money</0>: No"
-
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-msgid "<0>Open source</0>: Security claims are verifiable through code review"
-msgstr "<0>Codigo abierto</0>: Las afirmaciones de seguridad son verificables mediante revision de codigo"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Open Source</0>: Yes"
@@ -878,6 +870,18 @@ msgstr "<0>Privacidad por diseño</0> — Tus datos permanecen en tu dispositivo
 msgid "<0>Proprietary export:</0> Locked into their ecosystem"
 msgstr "<0>Exportación propietaria:</0> Atado a su ecosistema"
 
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Public source code</0> — The code is open for anyone to read, so you can check what the app does with your data instead of taking privacy claims on trust."
+msgstr "<0>Código fuente público</0> — Cualquiera puede leer el código, así que puedes comprobar qué hace la app con tus datos en lugar de fiarte de promesas de privacidad."
+
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Public source</0> — The code is publicly readable under a source-available license, so anyone can check the privacy claims."
+msgstr "<0>Código fuente público</0> — El código se puede leer públicamente bajo una licencia de código disponible, así que cualquiera puede comprobar las promesas de privacidad."
+
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
+msgid "<0>Public source</0>: The code is publicly readable, so security claims can be checked"
+msgstr "<0>Código fuente público</0>: El código se puede leer públicamente, así que las afirmaciones de seguridad se pueden comprobar"
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Qwen3</0> Apache License 2.0 - Pretrained language model used for on-device text tasks"
 msgstr "<0>Qwen3</0> Licencia Apache 2.0: modelo de lenguaje preentrenado utilizado para tareas de texto en el dispositivo"
@@ -1009,10 +1013,6 @@ msgstr "<0>Formatos de exportación estándar</0>: exportaciones en CSV o JSON q
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Stay informed</0>: Follow fintech security news and breach disclosures"
 msgstr "<0>Mantente al día</0>: sigue las noticias de seguridad fintech y las divulgaciones de brechas"
-
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Strong database encryption</0> — The database is encrypted at rest. Even if someone gains physical access to your device, they cannot read your financial data without the key."
-msgstr "<0>Cifrado sólido de la base de datos</0>: la base de datos está cifrada en reposo. Incluso si alguien obtiene acceso físico a tu dispositivo, no podrá leer tus datos financieros sin la clave."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Subscription:</0> Ongoing revenue, potential pressure to monetize data"
@@ -2919,8 +2919,8 @@ msgid "Because data is local, every interaction is immediate. Adding a transacti
 msgstr "Como los datos son locales, cada interacción es inmediata. Añadir una transacción, categorizar gastos, ver informes: todo esto ocurre a velocidad local. No hay indicadores de carga esperando respuestas de red."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Because your data is stored on your device and backed up to your own storage, nothing happens. You keep your database. Budgie is also open source, so the community can continue maintaining the app independently of any company decisions."
-msgstr "Como tus datos se almacenan en tu dispositivo y se respaldan en tu propio almacenamiento, no pasa nada. Conservas tu base de datos. Budgie también es de código abierto, por lo que la comunidad puede seguir manteniendo la app de forma independiente a cualquier decisión empresarial."
+msgid "Because your data is stored on your device and backed up to your own storage, nothing happens. You keep your database. Budgie’s source code is also public, so you can see exactly how your data is handled."
+msgstr "Como tus datos están guardados en tu dispositivo y respaldados en tu propio almacenamiento, no pasa nada. Conservas tu base de datos. Además, el código fuente de Budgie es público, así que puedes ver exactamente cómo se tratan tus datos."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Because your data lives on your device in standard formats, you’re never locked in:"
@@ -3456,10 +3456,6 @@ msgstr "Budgie sigue un proceso de toma de decisiones transparente:"
 msgid "Budgie gathers every uncategorized transaction into one inbox, groups it by merchant and suggests a category from your own past choices. One tap categorizes the whole group, and a second inbox does the same for tags."
 msgstr "Budgie reúne todos los movimientos sin categoría en una sola bandeja, los agrupa por comercio y sugiere una categoría a partir de tus elecciones anteriores. Un toque categoriza el grupo entero, y una segunda bandeja hace lo mismo con las etiquetas."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Budgie has a free tier that covers core expense tracking. Unlike ad-supported models, the free tier does not monetize your spending data. There is no advertising and no data brokering."
-msgstr "Budgie tiene un plan gratuito que cubre el control de gastos básico. A diferencia de los modelos con publicidad, el plan gratuito no monetiza tus datos de gasto. No hay publicidad ni intermediación de datos."
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie home screen dimmed behind the quick-entry sheet, with a ringed microphone button in the centre of the bottom bar and a close button on the right"
 msgstr "Pantalla de inicio de Budgie atenuada detrás de la hoja de entrada rápida, con un botón de micrófono rodeado por un aro en el centro de la barra inferior y un botón de cierre a la derecha"
@@ -3507,10 +3503,6 @@ msgstr "Pantalla de inicio de Budgie con la cabecera de saldo total que el widge
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups"
 msgstr "Pantalla de inicio de Budgie con el saldo total dividido en una etiqueta de efectivo y otra de cripto, encima de los grupos de cuentas bancarias, de efectivo y de cripto"
-
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-msgid "Budgie implements offline-first architecture with no compromises:"
-msgstr "Budgie implementa la arquitectura Offline-First sin compromisos:"
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Budgie imports Erste Bank statements from the PDF you download in George, the Erste online banking. It is built around the Erste Bank Austria statement layout and handles EUR accounts."
@@ -3566,12 +3558,16 @@ msgid "Budgie is a source-available personal finance app. Read the source, audit
 msgstr "Budgie es una app de finanzas personales con código fuente disponible. Lee el código, audita las promesas de privacidad, contribuye funciones y confía en tu rastreador de gastos porque puedes verificarlo."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your device, encrypted the moment you set a PIN. There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and no subscription required to use the core features."
-msgstr "Budgie es una app de gastos offline-first para iOS y Android. Todos los datos se guardan en una base de datos en tu dispositivo, cifrada en cuanto configuras un PIN. No hay servidores de Budgie que reciban tus transacciones, ni ningún agregador que gestione tus credenciales bancarias, ni suscripción necesaria para usar las funciones principales."
+msgid "Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your device, encrypted the moment you set a PIN. There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and no subscription. Budgie is free to use, with no paid tier."
+msgstr "Budgie es un gestor de gastos offline-first para iOS y Android. Todos los datos se guardan en una base de datos en tu dispositivo, cifrada en cuanto configuras un PIN. No hay servidores de Budgie que reciban tus transacciones, ni un agregador que guarde tus credenciales bancarias, ni suscripción. Budgie se puede usar gratis, sin nivel de pago."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie is built from the ground up as a local-first personal finance application. Here is how we implement the local-first ideals:"
 msgstr "Budgie está construido desde cero como una aplicación local-first de finanzas personales. Así es como implementamos los ideales local-first:"
+
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
+msgid "Budgie is built offline-first:"
+msgstr "Budgie está construido con un enfoque offline-first:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie is built on the principle that you shouldn’t have to trust us. You should be able to verify our claims, examine our code, and confirm that we do what we say. Budgie's source is public, from the mobile app to the backend services."
@@ -3586,8 +3582,8 @@ msgid "Budgie is completely free — nothing to unlock later"
 msgstr "Budgie es completamente gratis: nada que desbloquear más adelante"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
-msgid "Budgie is free to use with optional premium features for users who want additional capabilities. Our business model relies on users who find enough value in the product to support its development, not on monetizing user data. The public-source model actually supports this because users can trust their data isn’t being sold, making them more willing to pay for premium features. Transparency and sustainable business can coexist."
-msgstr "Budgie es gratis, con funciones premium opcionales para quienes quieren capacidades adicionales. Nuestro modelo de negocio depende de usuarios que encuentran suficiente valor en el producto como para apoyar su desarrollo, no de monetizar datos de usuarios. El modelo de código fuente público ayuda a esto porque los usuarios pueden confiar en que sus datos no se venden, lo que aumenta su disposición a pagar por funciones premium. Transparencia y negocio sostenible pueden coexistir."
+msgid "Budgie is free to use. There is no paid tier, no advertising, and your data is never sold. Public source supports this because anyone can check that your data stays on your device."
+msgstr "Budgie se puede usar gratis. No hay nivel de pago, ni publicidad, y tus datos nunca se venden. El código fuente público lo respalda, porque cualquiera puede comprobar que tus datos se quedan en tu dispositivo."
 
 #: src/generic/component/cta-section/cta-section.tsx
 msgid "Budgie is in private beta. Join the waitlist and we will write to you when your build is ready."
@@ -3614,8 +3610,8 @@ msgid "Budgie is source-available, and the Monobank connection is kept current t
 msgstr "Budgie es de código disponible y la conexión con Monobank se mantiene al día con lanzamientos regulares."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
-msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
-msgstr "Budgie no es la única opción de código abierto para la gestión financiera. Existe un ecosistema saludable de alternativas, y creemos en mencionarlas de manera justa. Diferentes herramientas se adaptan a diferentes necesidades, y la mejor elección depende de tus requisitos específicos."
+msgid "Budgie isn’t the only transparent option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
+msgstr "Budgie no es la única opción transparente para gestionar tus finanzas. Existe un ecosistema sano de alternativas y creemos en reconocerlas con justicia. Cada herramienta se adapta a necesidades distintas, y la mejor elección depende de lo que necesites."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity."
@@ -3728,10 +3724,6 @@ msgstr "Pantalla Nueva transferencia de Budgie convirtiendo 250 dólares estadou
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie New Transfer screen with 250 entered above a row naming Main Checking as the source and Cash Wallet as the destination"
 msgstr "Pantalla Nueva transferencia de Budgie con 250 introducidos sobre una fila que indica Main Checking como origen y Cash Wallet como destino"
-
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Budgie on-device AI suggests categories as you review imported transactions. You can also define custom categories and set up recurring transaction templates for bills and subscriptions so future entries are categorized automatically."
-msgstr "La IA en el dispositivo de Budgie sugiere categorías mientras revisas las transacciones importadas. También puedes definir categorías personalizadas y configurar plantillas de transacciones recurrentes para facturas y suscripciones para que las entradas futuras se categoricen automáticamente."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie only does this work when you add or edit a transaction — never continuously in the background. It gets ready when the feature that needs it starts and lets go about half a minute after you finish, so the first request after a pause pays for that and the ones after it are quick. The cumulative battery impact of normal daily use is negligible."
@@ -3907,6 +3899,10 @@ msgstr "Budgie detecta patrones de suscripción y renovaciones, los representa e
 msgid "Budgie spots what repeats weekly or monthly in your history and surfaces the usual category, tags, comment and amount. The pills appear step by step: category first, then tags, then a comment, and the amount is filled in after you have chosen."
 msgstr "Budgie detecta lo que se repite cada semana o cada mes en tu historial y muestra la categoría, las etiquetas, el comentario y el importe habituales. Los botones aparecen paso a paso: primero la categoría, luego las etiquetas, luego un comentario, y el importe se rellena cuando has elegido."
 
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "Budgie suggests categories on your device as you review imported transactions. You can also define custom categories and set up recurring transaction templates for bills and subscriptions so future entries are categorized automatically."
+msgstr "Budgie sugiere categorías en tu dispositivo mientras revisas las transacciones importadas. También puedes definir categorías propias y crear plantillas de transacciones recurrentes para facturas y suscripciones, de modo que las futuras entradas se categoricen automáticamente."
+
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 msgid "Budgie suggests category, tags, comment and amount from your own spending history as tappable pills — faster than typing, private, offline."
 msgstr "Budgie sugiere categoría, etiquetas, comentario e importe de tu historial de gastos como botones: más rápido que escribir, privado y sin conexión."
@@ -4065,8 +4061,8 @@ msgid "Budgie’s Approach"
 msgstr "Sin procesamiento del lado del servidor: Los calculos, categorizacion y analisis se realizan en el dispositivo"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-msgid "Budgie’s bank sync uses direct connections to bank APIs where available, bypassing data aggregators entirely. Credentials are stored locally on your device with hardware-backed encryption, not on any server. Transaction data flows directly from your bank to your device without intermediate storage. In regions where direct API access is not available, manual import from bank exports provides a fully private alternative."
-msgstr "Elimina las cuentas antiguas: Despues de la migracion, elimina completamente las cuentas de aplicaciones en la nube y revoca el acceso de los agregadores"
+msgid "Budgie’s bank sync uses direct connections to bank APIs where available, bypassing data aggregators entirely. Your access key stays in the database on your device, which is encrypted once you set a PIN, and never on a server. Transaction data flows directly from your bank to your device without intermediate storage. In regions where direct API access is not available, manual import from bank exports provides a fully private alternative."
+msgstr "La sincronización bancaria de Budgie usa conexiones directas con las API de los bancos cuando están disponibles, evitando por completo a los agregadores de datos. Tu clave de acceso permanece en la base de datos de tu dispositivo, que se cifra en cuanto configuras un PIN, y nunca en un servidor. Los datos de las transacciones fluyen directamente de tu banco a tu dispositivo sin almacenamiento intermedio. En las regiones donde no hay acceso directo por API, la importación manual de exportaciones bancarias es una alternativa totalmente privada."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the application yourself."
@@ -7791,16 +7787,16 @@ msgid "If you must use a cloud-based financial app, here is a technical checklis
 msgstr "Si debes usar una aplicacion financiera en la nube, aqui tienes una lista de verificacion tecnica para la evaluacion."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "If you no longer have your Mint export, download statements directly from your bank website. Most banks offer CSV or Excel downloads going back 12 to 24 months. PDF statements from any period also work with Budgie PDF import."
-msgstr "Si ya no tienes tu exportación de Mint, descarga extractos directamente del sitio web de tu banco. La mayoría de los bancos ofrecen descargas en CSV o Excel con hasta 12 a 24 meses de antigüedad. Los extractos en PDF de cualquier período también funcionan con la importación de PDF de Budgie."
+msgid "If you no longer have your Mint export, download statements directly from your bank website. Most banks offer CSV or Excel downloads going back 12 to 24 months. PDF statements from supported banks also work with Budgie PDF import."
+msgstr "Si ya no tienes tu exportación de Mint, descarga los extractos directamente desde la web de tu banco. La mayoría de los bancos ofrecen descargas en CSV o Excel de los últimos 12 a 24 meses. Los extractos en PDF de bancos compatibles también funcionan con la importación de PDF de Budgie."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If you purchase a subscription:"
 msgstr "Si adquiere una suscripción:"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "If you still have a Mint CSV export, open it in a spreadsheet app and verify the column names: date, description, amount, and category. Budgie CSV importer maps standard Mint columns automatically."
-msgstr "Si todavía tienes una exportación CSV de Mint, ábrela en una app de hojas de cálculo y verifica los nombres de columnas: fecha, descripción, importe y categoría. El importador CSV de Budgie mapea las columnas estándar de Mint automáticamente."
+msgid "If you still have a Mint CSV export, open it in a spreadsheet app and verify the column names: date, description, amount, and category. Budgie CSV importer lets you match those columns to the right fields."
+msgstr "Si todavía tienes una exportación CSV de Mint, ábrela en una hoja de cálculo y comprueba los nombres de las columnas: fecha, descripción, importe y categoría. El importador de CSV de Budgie te permite asignar esas columnas a los campos correctos."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "If you want to audit these claims yourself, the source is publicly available. You do not have to take our word for it."
@@ -9963,8 +9959,8 @@ msgid "Offline-first architecture involves tradeoffs:"
 msgstr "La arquitectura Offline-First implica compromisos:"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-msgid "Offline-first does not mean you cannot sync with banks. It means the sync architecture protects your privacy. With traditional cloud sync, your data flows from your device to a cloud server, then to an aggregator, and finally to the bank, with databases at each step. With offline-first sync, bank data flows directly to your device through a secure proxy and is stored only in your local database."
-msgstr "Offline-first no significa que no puedas sincronizar con bancos. Significa que la arquitectura de sincronización protege tu privacidad. Con la sincronización en la nube tradicional, tus datos fluyen de tu dispositivo a un servidor en la nube, luego a un agregador y finalmente al banco, con bases de datos en cada paso. Con la sincronización offline-first, los datos bancarios fluyen directamente a tu dispositivo a través de un proxy seguro y se almacenan solo en tu base de datos local."
+msgid "Offline-first does not mean you cannot sync with banks. It means the sync architecture protects your privacy. With traditional cloud sync, your data flows from your device to a cloud server, then to an aggregator, and finally to the bank, with databases at each step. With offline-first sync, bank data flows directly to your device and is stored only in your local database."
+msgstr "Offline-first no significa que no puedas sincronizar con los bancos. Significa que la arquitectura de la sincronización protege tu privacidad. Con la sincronización en la nube tradicional, tus datos fluyen de tu dispositivo a un servidor en la nube, luego a un agregador y por último al banco, con bases de datos en cada paso. Con la sincronización offline-first, los datos bancarios llegan directamente a tu dispositivo y se guardan solo en tu base de datos local."
 
 #: src/app/[lang]/page.tsx
 msgid "Offline-first expense tracker"
@@ -14805,8 +14801,8 @@ msgid "Use automated systems to access the Service without permission"
 msgstr "Utilizar sistemas automatizados para acceder al Servicio sin permiso"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Use Budgie CSV import screen to map your file columns to Budgie fields. The importer shows a preview of the first few rows so you can verify the mapping before committing. Budgie deduplicates transactions on import, so overlapping date ranges between files will not create duplicates."
-msgstr "Usa la pantalla de importación CSV de Budgie para mapear las columnas de tu archivo a los campos de Budgie. El importador muestra una vista previa de las primeras filas para que puedas verificar el mapeo antes de confirmar. Budgie deduplica las transacciones en la importación, por lo que los rangos de fechas superpuestos entre archivos no crearán duplicados."
+msgid "Use Budgie CSV import screen to map your file columns to Budgie fields before importing. Import each period only once so the same transactions are not added twice."
+msgstr "Usa la pantalla de importación de CSV de Budgie para asignar las columnas de tu archivo a los campos de Budgie antes de importar. Importa cada período una sola vez para no añadir las mismas transacciones dos veces."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Use the Close Deposit action, select the destination account, and confirm. Budgie transfers the remaining deposit balance to that account and archives the deposit. An archived deposit can be restored from Settings."
@@ -16453,12 +16449,16 @@ msgid "Yes. Both export flows produce files locally; you only need internet to u
 msgstr "Sí. Ambos flujos de exportación generan archivos localmente; solo necesitas internet para subirlos a un servicio de almacenamiento remoto."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and amount. If your Mint export was a single file covering multiple years, you can import it in one step."
-msgstr "Sí. El importador CSV de Budgie maneja archivos grandes y deduplica por fecha de transacción, descripción e importe. Si tu exportación de Mint era un solo archivo que cubría varios años, puedes importarlo en un paso."
+msgid "Yes. Budgie CSV importer lets you map the columns of your Mint export to Budgie fields, so a single file covering multiple years can be imported in one step."
+msgstr "Sí. El importador de CSV de Budgie te permite asignar las columnas de tu exportación de Mint a los campos de Budgie, así que un único archivo que abarque varios años se puede importar de una vez."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Yes. Budgie infers each pattern's real interval from the gaps between charges instead of assuming everything is monthly, so a bi-monthly premium or a quarterly tax payment lands on the right day instead of being forced into a monthly slot."
 msgstr "Sí. Budgie infiere el intervalo real de cada patrón a partir de los espacios entre los cargos en lugar de asumir que todo es mensual, de modo que una prima bimestral o un pago de impuestos trimestral cae en el día correcto en lugar de forzarse a una casilla mensual."
+
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "Yes. Budgie is free to use and has no paid tier. Unlike ad-supported models, it does not monetize your spending data. There is no advertising and no data brokering."
+msgstr "Sí. Budgie se puede usar gratis y no tiene nivel de pago. A diferencia de los modelos financiados con publicidad, no monetiza tus datos de gasto. No hay publicidad ni venta de datos."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Yes. Chart palettes recompute for legibility — emerald accents shift slightly for contrast on a dark canvas."

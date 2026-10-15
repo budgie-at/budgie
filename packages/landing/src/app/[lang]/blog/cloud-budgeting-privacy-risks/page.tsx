@@ -873,7 +873,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                             Offline-first does not mean you cannot sync with banks. It means the sync architecture protects your privacy.
                             With traditional cloud sync, your data flows from your device to a cloud server, then to an aggregator, and
                             finally to the bank, with databases at each step. With offline-first sync, bank data flows directly to your
-                            device through a secure proxy and is stored only in your local database.
+                            device and is stored only in your local database.
                         </Trans>
                     </BlogArticleProse>
 
@@ -971,7 +971,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>Budgie implements offline-first architecture with no compromises:</Trans>
+                        <Trans>Budgie is built offline-first:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -997,7 +997,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source</strong>: Security claims are verifiable through code review
+                                <strong>Public source</strong>: The code is publicly readable, so security claims can be checked
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -1154,9 +1154,10 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         <BlogFaqItem question={<Trans>How does Budgie handle bank synchronization without compromising privacy?</Trans>}>
                             <Trans>
                                 Budgie’s bank sync uses direct connections to bank APIs where available, bypassing data aggregators
-                                entirely. Credentials are stored locally on your device with hardware-backed encryption, not on any server.
-                                Transaction data flows directly from your bank to your device without intermediate storage. In regions where
-                                direct API access is not available, manual import from bank exports provides a fully private alternative.
+                                entirely. Your access key stays in the database on your device, which is encrypted once you set a PIN, and
+                                never on a server. Transaction data flows directly from your bank to your device without intermediate
+                                storage. In regions where direct API access is not available, manual import from bank exports provides a
+                                fully private alternative.
                             </Trans>
                         </BlogFaqItem>
 
