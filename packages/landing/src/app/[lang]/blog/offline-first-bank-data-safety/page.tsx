@@ -441,9 +441,9 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                         <BlogFaqItem question={<Trans>Can I verify that Budgie does not send my bank data to a server?</Trans>}>
                             <Trans>
-                                Yes. Budgie is open source. You can review the bank sync and import code to confirm that no outbound calls
-                                send transaction data to Budgie servers. The network requests during sync go directly from your device to
-                                your bank API endpoint.
+                                Yes. Budgie’s source code is available on GitHub. You can review the bank sync and import code to confirm
+                                that no outbound calls send transaction data to Budgie servers. The network requests during sync go directly
+                                from your device to your bank API endpoint.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
