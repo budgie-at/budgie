@@ -1,1 +1,6 @@
-export type SettingToggleKey = 'isBudgetPushEnabled' | 'isBudgetWidgetEnabled' | 'isRunwayCryptoIncluded' | 'isRunwayPillEnabled';
+export type SettingToggleKey =
+    | 'isAiWifiOnly'
+    | 'isBudgetPushEnabled'
+    | 'isBudgetWidgetEnabled'
+    | 'isRunwayCryptoIncluded'
+    | 'isRunwayPillEnabled';

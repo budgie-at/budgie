@@ -1,5 +1,5 @@
 import { AiInvokeError } from '@budgie/ai';
-import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL, EmbeddingInvoker } from '@budgie/categorization';
+import { EMBEDDING_CONTEXT_SIZE, EmbeddingInvoker } from '@budgie/categorization';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -7,19 +7,24 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 
+import { AiModelDownloadService } from './ai-model-download.service';
 import { LlamaModelService } from './llama-model.service';
 
 export class LocalEmbeddingService extends Context.Service<LocalEmbeddingService>()('@budgie/app/LocalEmbeddingService', {
-    make: Effect.sync(() => {
-        const model = new LlamaModelService({
-            modelUrl: EMBEDDING_MODEL_URL,
-            modelFilename: EMBEDDING_MODEL_FILENAME,
-            contextSize: EMBEDDING_CONTEXT_SIZE,
-            embedding: true,
-            poolingType: 'mean',
-            snapshot: embeddingModelSnapshotAtom
-        });
+    make: Effect.gen(function* () {
+        const aiModelDownloadService = yield* AiModelDownloadService;
+        const model = new LlamaModelService(
+            {
+                name: AiSubsystemNameEnum.EMBEDDING,
+                contextSize: EMBEDDING_CONTEXT_SIZE,
+                embedding: true,
+                poolingType: 'mean',
+                snapshot: embeddingModelSnapshotAtom
+            },
+            aiModelDownloadService
+        );
 
         return {
             model,
@@ -37,7 +42,9 @@ export class LocalEmbeddingService extends Context.Service<LocalEmbeddingService
         };
     })
 }) {
-    static readonly layer = Layer.effect(LocalEmbeddingService, LocalEmbeddingService.make);
+    static readonly layer = Layer.effect(LocalEmbeddingService, LocalEmbeddingService.make).pipe(
+        Layer.provide(AiModelDownloadService.layer)
+    );
 
     static readonly invokerLayer = Layer.effect(EmbeddingInvoker, LocalEmbeddingService).pipe(Layer.provide(LocalEmbeddingService.layer));
 }

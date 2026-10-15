@@ -138,6 +138,19 @@ msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
 
+#: src/ai/component/ai-download-home-row/ai-download-home-row.tsx
+msgid "{downloaded} of {total} GB"
+msgstr "{downloaded} von {total} GB"
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "{downloaded} of {total} GB is kept. It carries on when you're back on Wi-Fi."
+msgstr "{downloaded} von {total} GB bleiben erhalten. Es geht weiter, sobald du wieder im WLAN bist."
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "{downloaded} of {total} GB is kept. It carries on when you're back online."
+msgstr "{downloaded} von {total} GB bleiben erhalten. Es geht weiter, sobald du wieder online bist."
+
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "{downloadPercent}%"
 msgstr "{downloadPercent}%"
@@ -166,6 +179,14 @@ msgstr "{formattedRemaining} über Budget"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# Treffer mit hoher Sicherheit} other {# Treffer mit hoher Sicherheit}}"
 
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "{free} GB free on this phone."
+msgstr "{free} GB frei auf diesem Telefon."
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "{free} GB is free right now. Your money data isn't affected."
+msgstr "Gerade sind {free} GB frei. Deine Finanzdaten sind nicht betroffen."
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} Tage"
@@ -178,6 +199,14 @@ msgstr "{localSelectedCount, plural, =0 {Alle Typen anzeigen} one {# Typ anzeige
 #: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# passende Regel} other {# passende Regeln}}"
+
+#: src/ai/component/ai-download-eta/ai-download-eta.tsx
+msgid "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # minutes left on Wi-Fi}}"
+msgstr "{minutesLeft, plural, one {Noch etwa # Minute im WLAN} other {Noch etwa # Minuten im WLAN}}"
+
+#: src/ai/component/ai-download-eta/ai-download-eta.tsx
+msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
+msgstr "{minutesLeft, plural, one {Noch etwa # Minute} other {Noch etwa # Minuten}}"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{months, plural, one {# month} other {# months}}"
@@ -202,6 +231,10 @@ msgstr "{percentage}% der Ausgaben"
 #: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "{remaining} GB one-time download"
+msgstr "{remaining} GB einmaliger Download"
 
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
@@ -256,9 +289,17 @@ msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung 
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 
+#: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
+msgid "{statusLabel} · {downloaded} of {total} GB"
+msgstr "{statusLabel} · {downloaded} von {total} GB"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# in dieser Sitzung getaggt} other {# in dieser Sitzung getaggt}}"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "{total} GB on this phone"
+msgstr "{total} GB auf diesem Telefon"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
@@ -508,6 +549,11 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "AI model download paused: no Wi-Fi"
+msgstr "Download der KI-Modelle pausiert: kein WLAN"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "KI aus"
@@ -815,6 +861,10 @@ msgstr "Budgie kann doppelte Bank-Sync-Importe finden und Überweisungskonsolidi
 msgid "Budgie could not open your data"
 msgstr "Budgie konnte deine Daten nicht öffnen"
 
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "Budgie deleted the damaged part. It starts again only when you ask."
+msgstr "Budgie hat den beschädigten Teil gelöscht. Der Download startet erst wieder, wenn du es möchtest."
+
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie ist auf ein unerwartetes Problem gestoßen. Du kannst die App neu starten oder das Problem melden, damit wir es untersuchen können."
@@ -886,6 +936,10 @@ msgstr "Kann Stunden dauern"
 msgid "Cancel"
 msgstr "Abbrechen"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Cancel and delete"
+msgstr "Abbrechen und löschen"
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Cash"
@@ -911,13 +965,17 @@ msgstr "Kategorien ({selectedCategoriesCount})"
 msgid "Categories break your spending down automatically. Add a transaction, or widen the period to see earlier ones."
 msgstr "Kategorien schlüsseln deine Ausgaben automatisch auf. Füge eine Transaktion hinzu oder erweitere den Zeitraum, um frühere zu sehen."
 
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Categories, tags and voice notes are handled on this phone."
+msgstr "Kategorien, Tags und Sprachnotizen werden auf diesem Telefon verarbeitet."
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Categorise imports automatically"
 msgstr "Importe automatisch kategorisieren"
 
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
-msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachnotizen direkt auf diesem Gerät. Lädt einmalig etwa 2,5 GB an Modellen herunter – am besten über WLAN."
+msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about {estimatedGigabytes} GB of models once — best on Wi-Fi."
+msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachnotizen auf diesem Gerät. Lädt einmalig etwa {estimatedGigabytes} GB an Modellen herunter – am besten im WLAN."
 
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
@@ -1415,6 +1473,14 @@ msgstr "Einstellung konnte nicht aktualisiert werden"
 msgid "Could not update settings"
 msgstr "Einstellungen konnten nicht aktualisiert werden"
 
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "Could not update the AI model download"
+msgstr "Der Download der KI-Modelle konnte nicht aktualisiert werden"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Could not update the download setting"
+msgstr "Die Download-Einstellung konnte nicht aktualisiert werden"
+
 #: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Could not update token"
@@ -1629,6 +1695,7 @@ msgid "Default Account"
 msgstr "Standardkonto"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -1658,6 +1725,14 @@ msgstr "Dauerhaft löschen"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Delete rule"
 msgstr "Regel löschen"
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "Delete the {downloaded} GB part"
+msgstr "Die {downloaded} GB löschen"
+
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "Delete the {downloaded} GB part?"
+msgstr "Die {downloaded} GB löschen?"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
@@ -1731,9 +1806,45 @@ msgstr "Fertig"
 msgid "Done ({count})"
 msgstr "Fertig ({count})"
 
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Download {remaining} GB"
+msgstr "{remaining} GB herunterladen"
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "Download {remaining} GB again"
+msgstr "{remaining} GB erneut herunterladen"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Download damaged"
+msgstr "Download beschädigt"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Download interrupted"
+msgstr "Download unterbrochen"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Download only on Wi-Fi"
+msgstr "Nur im WLAN herunterladen"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Download stopped"
+msgstr "Download gestoppt"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Download your statement as PDF"
 msgstr "Kontoauszug als PDF herunterladen"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Downloading"
+msgstr "Wird heruntergeladen"
+
+#: src/ai/component/ai-download-home-row/ai-download-home-row.tsx
+msgid "Downloading AI models"
+msgstr "KI-Modelle werden heruntergeladen"
+
+#: src/ai/component/ai-download-home-row/ai-download-home-row.tsx
+msgid "Downloading AI models on Wi-Fi"
+msgstr "KI-Modelle werden im WLAN heruntergeladen"
 
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
@@ -2232,6 +2343,10 @@ msgstr "So konfigurieren Sie"
 msgid "How to export"
 msgstr "So exportieren Sie"
 
+#: src/app/(tabs)/settings/ai.tsx
+msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
+msgstr "Kommt ein Download beschädigt an, löscht Budgie ihn und fragt, bevor er neu startet."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Falls Privat24 Ihnen die Datei per E-Mail statt zum Download sendet, speichern Sie den Anhang aus Ihrem Postfach"
@@ -2393,6 +2508,10 @@ msgstr "Sie wird nicht mehr im Kalender angezeigt."
 msgid "Jars"
 msgstr "Sparziele"
 
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "Keep"
+msgstr "Behalten"
+
 #: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
 msgid "Keep as already tracked cash, not spending"
 msgstr "Als bereits erfasstes Bargeld behalten, keine Ausgabe"
@@ -2400,6 +2519,10 @@ msgstr "Als bereits erfasstes Bargeld behalten, keine Ausgabe"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Aktivieren Sie nur \"Lesen aktivieren\" — erlauben Sie niemals Handel oder Auszahlungen"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
+msgstr "Nutze Budgie in der Zwischenzeit weiter. Bis das Modell bereit ist, kommen Kategorien aus einfachen Regeln auf dem Telefon."
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -2640,6 +2763,10 @@ msgstr "Fehlende Kategorien"
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "Missing rate"
 msgstr "Kurs fehlt"
+
+#: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
+msgid "Models and downloads"
+msgstr "Modelle und Downloads"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -2942,6 +3069,10 @@ msgstr "enthält nicht"
 msgid "Not Contains"
 msgstr "Enthält nicht"
 
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Not downloaded"
+msgstr "Nicht heruntergeladen"
+
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/app/import-backup-pin.tsx
 #: src/import/components/import-database/import-database.tsx
@@ -2990,7 +3121,16 @@ msgstr "jetzt"
 msgid "of"
 msgstr "von"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "of {total} GB"
+msgstr "von {total} GB"
+
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "OK"
+msgstr "OK"
+
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+#: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "On-Device-KI"
 
@@ -3179,6 +3319,22 @@ msgstr "Fügen Sie Ihren Binance-API-Schlüssel ein:"
 msgid "Paste your Binance API secret:"
 msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Pause"
+msgstr "Pausieren"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Paused"
+msgstr "Pausiert"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Paused: no Wi-Fi"
+msgstr "Pausiert: kein WLAN"
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Paused. {downloaded} of {total} GB is kept."
+msgstr "Pausiert. {downloaded} von {total} GB bleiben erhalten."
+
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -3349,6 +3505,10 @@ msgstr "Resync der letzten 90 Tage beginnt beim nächsten Sync."
 msgid "Re-sync transactions"
 msgstr "Transaktionen neu synchronisieren"
 
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Ready"
+msgstr "Bereit"
+
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Ready to accept"
 msgstr "Bereit zum Akzeptieren"
@@ -3493,6 +3653,10 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 msgid "Restore from Backup"
 msgstr "Aus Sicherung wiederherstellen"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Resume"
+msgstr "Fortsetzen"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Kehren Sie zu Budgie zurück und wählen Sie unten die gespeicherte XLSX-Datei aus"
@@ -3548,6 +3712,10 @@ msgstr "Regeln funktionieren mit importierten Transaktionen"
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Läuft im Hintergrund und deutlich langsamer, wenn die App geschlossen ist."
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Runs on"
+msgstr "Läuft auf"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Runs out around {runOutDate}"
@@ -4136,6 +4304,18 @@ msgstr "Zielsaldo"
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Die Bank hat die Währung der Einlage nicht übermittelt. Bestätige die Währung und den Empfangsbetrag."
 
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "The download arrived damaged."
+msgstr "Der Download ist beschädigt angekommen."
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "The download stopped before it finished. Try again when the connection is stable."
+msgstr "Der Download wurde vor dem Ende unterbrochen. Versuche es erneut, wenn die Verbindung stabil ist."
+
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
+msgstr "Die heruntergeladenen KI-Modelldaten werden von diesem Telefon entfernt. Nichts wird erneut heruntergeladen, bis du es startest."
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen mussten aktualisiert werden."
@@ -4184,6 +4364,18 @@ msgstr "Diesen Monat"
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Dieser Monat"
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "This phone needs {missing} GB more free space first."
+msgstr "Dieses Telefon braucht zuerst {missing} GB mehr freien Speicher."
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "This phone needs {missing} GB more free space."
+msgstr "Dieses Telefon braucht {missing} GB mehr freien Speicher."
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "This phone only"
+msgstr "Nur dieses Telefon"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "This re-indexes every transaction. Continue?"
@@ -4420,6 +4612,8 @@ msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Try again"
 msgstr "Erneut versuchen"
@@ -4429,6 +4623,10 @@ msgstr "Erneut versuchen"
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Erneut versuchen"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Turn on on-device AI to download the models."
+msgstr "Schalte die On-Device-KI ein, um die Modelle herunterzuladen."
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -4520,6 +4718,11 @@ msgstr "Verwenden Sie Face ID oder Touch ID, um Ihre App schnell und sicher zu e
 msgid "Use Face ID to unlock your app quickly and securely"
 msgstr "Verwenden Sie Face ID, um Ihre App schnell und sicher zu entsperren"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "Use mobile data for {remaining} GB"
+msgstr "Mobile Daten für {remaining} GB nutzen"
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Verwenden Sie Touch ID, um Ihre App schnell und sicher zu entsperren"
@@ -4580,6 +4783,10 @@ msgstr "Volumen"
 msgid "Waiting"
 msgstr "Warten"
 
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Waiting for a connection"
+msgstr "Warte auf Verbindung"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Warning"
 msgstr "Warnung"
@@ -4604,10 +4811,6 @@ msgstr "Wann wird die Einlage fällig?"
 msgid "When should it be returned?"
 msgstr "Wann soll es zurückgegeben werden?"
 
-#: src/ai/service/whisper-model.service.ts
-msgid "Whisper model download failed"
-msgstr "Download des Whisper-Modells fehlgeschlagen"
-
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who do you owe?"
 msgstr "Wem schuldest du etwas?"
@@ -4623,6 +4826,10 @@ msgstr "Gesamter Zeitraum"
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/ai/component/ai-download-eta/ai-download-eta.tsx
+msgid "Working out the time left…"
+msgstr "Restzeit wird berechnet…"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "Works offline"
@@ -4676,6 +4883,22 @@ msgstr "Sie haben Geld erhalten"
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "You're all set"
 msgstr "Alles bereit"
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're offline. It starts when you're back online."
+msgstr "Du bist offline. Es startet, sobald du wieder online bist."
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're on mobile data."
+msgstr "Du nutzt mobile Daten."
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're on mobile data. It starts when you're back on Wi-Fi."
+msgstr "Du nutzt mobile Daten. Es startet, sobald du wieder im WLAN bist."
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're on Wi-Fi."
+msgstr "Du bist im WLAN."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your bank, with nobody in between"

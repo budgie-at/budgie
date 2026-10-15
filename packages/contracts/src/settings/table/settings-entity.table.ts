@@ -31,6 +31,7 @@ export const SettingsEntityTable = sqliteTable(
         isOnboardingCompleted: int('is_onboarding_completed', { mode: 'boolean' }).notNull().default(false),
         onboardingStep: int('onboarding_step', { mode: 'number' }).notNull().default(0),
         isAiEnabled: int('is_ai_enabled', { mode: 'boolean' }).notNull().default(false),
+        isAiWifiOnly: int('is_ai_wifi_only', { mode: 'boolean' }).notNull().default(true),
         isRunwayPillEnabled: int('is_runway_pill_enabled', { mode: 'boolean' }).notNull().default(true),
         isRunwayCryptoIncluded: int('is_runway_crypto_included', { mode: 'boolean' }).notNull().default(false)
     })

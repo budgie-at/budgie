@@ -18,13 +18,13 @@ import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
-import { WhisperModelService } from './whisper-model.service';
+import { AiModelDownloadService } from './ai-model-download.service';
 
 import type { WhisperContext } from 'whisper.rn';
 
 export class SttService extends Context.Service<SttService>()('@budgie/app/SttService', {
     make: Effect.gen(function* () {
-        const whisperModelService = yield* WhisperModelService;
+        const aiModelDownloadService = yield* AiModelDownloadService;
         const streamLock = yield* Semaphore.make(1);
         let context: WhisperContext | null = null;
         let whisper: typeof import('whisper.rn') | null = null;
@@ -98,10 +98,13 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                     if (isReady()) {
                         return;
                     }
-                    patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
-                    const modelPath = yield* whisperModelService.download(downloadProgress => {
-                        patchAtom(sttSnapshotAtom, { downloadProgress });
-                    });
+                    const modelPath = aiModelDownloadService.modelPath(AiSubsystemNameEnum.STT);
+                    if (!isDefined(modelPath)) {
+                        patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.DOWNLOADING });
+                        yield* aiModelDownloadService.start();
+
+                        return;
+                    }
                     patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.INITIALIZING });
                     const whisperModule = yield* Effect.promise(() => import('whisper.rn'));
                     whisper = whisperModule;
@@ -112,12 +115,11 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                     Effect.catchCause(effect, cause =>
                         Effect.sync(() => {
                             context = null;
-                            whisperModelService.delete();
                             patchAtom(sttSnapshotAtom, {
                                 status: AiSubsystemStatusEnum.ERROR,
                                 errorMessage: getRootErrorMessage(Cause.squash(cause))
                             });
-                        })
+                        }).pipe(Effect.andThen(aiModelDownloadService.markDamaged(AiSubsystemNameEnum.STT)))
                     )
             ),
             stop: Effect.fn('SttService.stop')(function* () {
@@ -141,7 +143,6 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                     Exit.isSuccess(exit)
                         ? {
                               status: AiSubsystemStatusEnum.SUSPENDED,
-                              downloadProgress: 0,
                               committedTranscription: '',
                               nonCommittedTranscription: ''
                           }
@@ -165,5 +166,5 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
         };
     })
 }) {
-    static readonly layer = Layer.effect(SttService, SttService.make).pipe(Layer.provide(WhisperModelService.layer));
+    static readonly layer = Layer.effect(SttService, SttService.make).pipe(Layer.provide(AiModelDownloadService.layer));
 }

@@ -20,6 +20,7 @@ export const DEFAULT_SETTINGS = {
     isOnboardingCompleted: false,
     onboardingStep: 0,
     isAiEnabled: false,
+    isAiWifiOnly: true,
     isRunwayPillEnabled: true,
     isRunwayCryptoIncluded: false
 } satisfies SettingsEntityInterface;

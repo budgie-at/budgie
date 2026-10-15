@@ -2,6 +2,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Semaphore from 'effect/Semaphore';
+import * as Stream from 'effect/Stream';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -12,6 +13,7 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { MODEL_IDLE_RELEASE_DELAY_MS } from '../utils/ai-constants.util';
 
+import { AiModelDownloadService } from './ai-model-download.service';
 import { ChatService } from './chat.service';
 import { LocalEmbeddingService } from './embedding.service';
 import { SttService } from './stt.service';
@@ -23,6 +25,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
         const chatService = yield* ChatService;
         const localEmbeddingService = yield* LocalEmbeddingService;
         const sttService = yield* SttService;
+        const aiModelDownloadService = yield* AiModelDownloadService;
         const layerScope = yield* Effect.scope;
         const subsystems: Record<AiSubsystemNameEnum, AiSubsystemServiceInterface> = {
             [AiSubsystemNameEnum.CHAT]: chatService.model,
@@ -58,6 +61,18 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
                 yield* subsystems[subsystem].stop();
             }
         });
+
+        const loadDownloadedWhileLeased = Effect.fn('AiModelResidencyService.loadDownloadedWhileLeased')(function* (
+            subsystem: AiSubsystemNameEnum
+        ) {
+            if (isAiEnabled() && !isSuspended && isPositiveNumber(getLeaseCount(subsystem))) {
+                yield* subsystems[subsystem].start();
+            }
+        });
+
+        yield* Effect.forkScoped(
+            Stream.runForEach(aiModelDownloadService.completions, subsystem => lock.withPermit(loadDownloadedWhileLeased(subsystem)))
+        );
 
         return {
             acquire: Effect.fn('AiModelResidencyService.acquire')(function* (subsystem: AiSubsystemNameEnum) {
@@ -115,6 +130,6 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
     })
 }) {
     static readonly layer = Layer.effect(AiModelResidencyService, AiModelResidencyService.make).pipe(
-        Layer.provide([ChatService.layer, LocalEmbeddingService.layer, SttService.layer])
+        Layer.provide([ChatService.layer, LocalEmbeddingService.layer, SttService.layer, AiModelDownloadService.layer])
     );
 }

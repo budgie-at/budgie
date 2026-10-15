@@ -2,12 +2,16 @@ import { filterTranscriptionTokens } from '@budgie/ai';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as Atom from 'effect/reactivity/Atom';
 import { useRef, useState } from 'react';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
-import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
+import { aiModelDownloadSnapshotAtom, sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { SttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
@@ -28,11 +32,17 @@ interface UseSttReturn {
     readonly cancelStream: () => void;
 }
 
+const sttWithDownloadAtom = Atom.make(get => {
+    const { bytesWritten, totalBytes } = get(aiModelDownloadSnapshotAtom).models[AiSubsystemNameEnum.STT];
+
+    return { ...get(sttSnapshotAtom), downloadProgress: isPositiveNumber(totalBytes) ? bytesWritten / totalBytes : 0 };
+});
+
 export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
 
-    const sttSnapshot = useAtomValue(sttSnapshotAtom);
+    const sttSnapshot = useAtomValue(sttWithDownloadAtom);
 
     const [status, setStatus] = useState<SttStatus>('idle');
     const [baseTranscription, setBaseTranscription] = useState('');

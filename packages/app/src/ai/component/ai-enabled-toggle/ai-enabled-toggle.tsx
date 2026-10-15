@@ -4,6 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { useFormatGigabytes } from '../../../@generic/hook/use-format-gigabytes.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -11,10 +12,12 @@ import { SettingSwitch } from '../../../settings/components/setting-switch/setti
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
+import { AI_MODEL_ESTIMATED_TOTAL_BYTES } from '../../constant/ai-model-files.constant';
 
 export const AiEnabledToggle = () => {
     const { t } = useLingui();
     const isAiEnabled = useSetting('isAiEnabled');
+    const formatGigabytes = useFormatGigabytes();
 
     const handleValueChange = (next: boolean) => {
         appRuntime.runFork(
@@ -25,6 +28,7 @@ export const AiEnabledToggle = () => {
         );
     };
 
+    const estimatedGigabytes = formatGigabytes(AI_MODEL_ESTIMATED_TOTAL_BYTES);
     const switchSlot = (
         <SettingSwitch
             value={isAiEnabled}
@@ -39,7 +43,7 @@ export const AiEnabledToggle = () => {
         <SettingsCard
             testID={SettingsPageSelector.AiEnabledCard}
             title={t`On-device AI`}
-            description={t`Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi.`}
+            description={t`Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about ${estimatedGigabytes} GB of models once — best on Wi-Fi.`}
             icon={UserIconNameEnum.Brain}
             variant="positive"
             right={switchSlot}

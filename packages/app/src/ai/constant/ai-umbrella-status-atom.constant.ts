@@ -10,10 +10,10 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
 import { AiSystemUmbrellaSnapshotInterface } from '../interface/ai-system-umbrella-snapshot.interface';
 
+import { aiModelDownloadSummaryAtom } from './ai-model-download-summary-atom.constant';
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from './ai-snapshot-atoms.constant';
 
 const TRUNCATE_LEN = 80;
-const SUBSYSTEM_COUNT = 3;
 
 const getErrorSource = (chatError: string | null, embeddingError: string | null): AiSubsystemNameEnum => {
     if (isDefined(chatError)) {
@@ -54,12 +54,10 @@ const deriveUmbrellaStatus = (get: Atom.AtomContext): AiSystemUmbrellaSnapshotIn
     const statuses = [chat.status, embedding.status, stt.status] as const;
 
     if (statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING)) {
-        const downloadPercent = Math.round((chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / SUBSYSTEM_COUNT);
-
         return {
             state: AiSystemUmbrellaStateEnum.DOWNLOADING,
             statusText: t`Downloading AI models…`,
-            downloadPercent,
+            downloadPercent: get(aiModelDownloadSummaryAtom).percent,
             errorMessage: null
         };
     }

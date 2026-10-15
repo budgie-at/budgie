@@ -74,6 +74,7 @@
         "expo-linking": "~58.0.9",
         "expo-local-authentication": "~58.0.1",
         "expo-localization": "~58.0.2",
+        "expo-network": "~58.0.3",
         "expo-notifications": "~58.0.10",
         "expo-pdf-text-extract": "~1.1.0",
         "expo-router": "~58.0.11",
