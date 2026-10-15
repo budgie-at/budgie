@@ -466,7 +466,7 @@ Which banks have direct API support? Monobank today; we add direct integrations 
 
 ---
 
-# Comparison: Open-Source Budget App for Mobile
+# Comparison: Source-Available Budget App for Mobile
 Source: https://budgie.at/en/open-source
 
 Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.
@@ -590,7 +590,7 @@ Financial apps have been breached, and user data has been exposed. Mint (Intuit)
 Source: https://budgie.at/en/blog/ynab-alternatives-privacy
 Published: February 3, 2025 | 17 min read | By Budgie Team
 
-Compare the best YNAB alternatives for privacy-conscious users in 2026. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private.
+Compare the best YNAB alternatives for privacy-conscious users in 2026. Discover privacy-focused, offline-first and self-hosted budgeting apps that keep your financial data private.
 
 ## Why People Are Looking for YNAB Alternatives
 
