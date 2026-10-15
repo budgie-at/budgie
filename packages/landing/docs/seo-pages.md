@@ -469,7 +469,7 @@ When you add a new SEO page:
 4. Keep body copy in the route page.
 5. Run `pnpm i18n:sync` after changing visible or metadata strings.
 
-`SITEMAP_STATIC_LAST_MODIFIED` (`src/generic/constant/sitemap-last-modified.constant.ts`) must be updated manually when the corresponding static page is meaningfully changed.
+The static `lastModified` map in `src/app/sitemap.ts` must be updated manually when the corresponding static page is meaningfully changed.
 
 ---
 

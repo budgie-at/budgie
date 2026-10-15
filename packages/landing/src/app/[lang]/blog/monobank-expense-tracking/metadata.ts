@@ -20,7 +20,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'track monobank spending'
     ],
     seoDescription: msg`Connect Monobank once and Budgie does the rest: purchases arrive on their own, get categories from merchant codes, transfers merge, budgets fill in.`,
-    relatedArticleSlugs: ['monobank-api-token', 'offline-first-bank-data-safety'],
+    relatedArticleSlugs: ['monobank-api-token', 'cloud-budgeting-privacy-risks'],
     relatedFeatureSlugs: ['monobank-sync', 'mcc-auto-category', 'budget-planning']
 };
 

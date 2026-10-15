@@ -20,7 +20,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'monobank expense tracker'
     ],
     seoDescription: msg`Get your personal Monobank API token, paste it into Budgie and choose how much history to load. Step by step, plus privacy and sync fixes.`,
-    relatedArticleSlugs: ['offline-first-bank-data-safety', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'mint-shutdown-private-alternative'],
     relatedFeatureSlugs: ['monobank-sync', 'mcc-auto-category', 'budget-planning']
 };
 
