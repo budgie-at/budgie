@@ -251,7 +251,7 @@ export const Footer = async ({ lang }: Props) => {
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             href={`/${lang}/legal/license`}
                         >
-                            <Trans>Open Source License</Trans>
+                            <Trans>Source-Available License</Trans>
                         </Link>
                     </div>
                 </div>

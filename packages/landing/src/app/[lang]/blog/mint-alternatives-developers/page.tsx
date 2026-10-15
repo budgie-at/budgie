@@ -74,7 +74,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                                 <Trans>budget app</Trans>
                             </Badge>
                             <Badge variant="secondary">
-                                <Trans>open source</Trans>
+                                <Trans>source-available</Trans>
                             </Badge>
                         </>
                     }
@@ -354,7 +354,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                             <Trans>Transparent security practices</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Open source code for verification</Trans>
+                            <Trans>Source-available code for verification</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -430,7 +430,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open Source</strong>: Yes
+                                <strong>License</strong>: Source-available
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -487,7 +487,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open Source</strong>: Yes
+                                <strong>License</strong>: Source-available
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -544,7 +544,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open Source</strong>: Yes
+                                <strong>License</strong>: Source-available
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -861,7 +861,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source transparency</strong>: The entire codebase is available for inspection. Security
+                                <strong>Source-available transparency</strong>: The entire codebase is available for inspection. Security
                                 researchers can verify privacy claims. You can even build the app yourself if you want complete assurance.
                             </Trans>
                         </BlogArticleListItem>
@@ -895,7 +895,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>Open source and auditable end to end</Trans>
+                            <Trans>Source-available and auditable end to end</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Your data in a local file you can open and query yourself</Trans>
@@ -1563,7 +1563,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         <Trans>
                             Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device
                             in a local database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app
-                            is open source so you can verify every claim we make.
+                            is source-available so you can verify every claim we make.
                         </Trans>
                     </BlogArticleProse>
 
@@ -1801,9 +1801,9 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>Will Budgie ever charge for features?</Trans>}>
                             <Trans>
-                                Budgie is and will remain free. The app is open source, and we’re committed to a sustainable model that
-                                doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional services in
-                                the future (like hosted backup), but the core app will always be free and fully functional.
+                                Budgie is and will remain free. The app’s source code is public, and we’re committed to a sustainable model
+                                that doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional services
+                                in the future (like hosted backup), but the core app will always be free and fully functional.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
