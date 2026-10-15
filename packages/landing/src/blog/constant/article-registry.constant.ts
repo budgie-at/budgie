@@ -7,9 +7,9 @@ import { ARTICLE_METADATA as MonobankApiTokenArticleMetadata } from '../../app/[
 import { ARTICLE_METADATA as MonobankExpenseTrackingArticleMetadata } from '../../app/[lang]/blog/monobank-expense-tracking/metadata';
 import { ARTICLE_METADATA as OnDeviceAiBudgetAppExplainerArticleMetadata } from '../../app/[lang]/blog/on-device-ai-budget-app-explainer/metadata';
 import { ARTICLE_METADATA as OpenSourceBudgetingTransparencyArticleMetadata } from '../../app/[lang]/blog/open-source-budgeting-transparency/metadata';
+import { ARTICLE_METADATA as PayInPartsPurchasesArticleMetadata } from '../../app/[lang]/blog/pay-in-parts-purchases/metadata';
 import { ARTICLE_METADATA as Privat24StatementExcelImportArticleMetadata } from '../../app/[lang]/blog/privat24-statement-excel-import/metadata';
 import { ARTICLE_METADATA as TrackMoneyYouLentAndBorrowedArticleMetadata } from '../../app/[lang]/blog/track-money-you-lent-and-borrowed/metadata';
-import { ARTICLE_METADATA as PayInPartsPurchasesArticleMetadata } from '../../app/[lang]/blog/pay-in-parts-purchases/metadata';
 import { ARTICLE_METADATA as UahEurBudgetUkrainiansInEuArticleMetadata } from '../../app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/metadata';
 import { ARTICLE_METADATA as YnabAlternativesPrivacyArticleMetadata } from '../../app/[lang]/blog/ynab-alternatives-privacy/metadata';
 
