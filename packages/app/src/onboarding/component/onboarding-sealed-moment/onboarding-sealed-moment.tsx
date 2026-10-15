@@ -10,13 +10,12 @@ import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useOnboardingOpensWithLabel } from '../../hook/use-onboarding-opens-with-label.hook';
-import { OnboardingReceiptCard } from '../onboarding-receipt-card/onboarding-receipt-card';
 
 import { OnboardingSealedMomentSelector } from './onboarding-sealed-moment.selector';
 
@@ -42,10 +41,6 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
     const sealedTime = intl.formatTime(sealedAt, { hour: 'numeric', minute: '2-digit' });
     const surfaceEntering = reducedMotion ? FadeIn : FadeIn.duration(400);
     const lockEntering = reducedMotion ? FadeIn : ZoomIn.springify();
-    const receiptRows = [
-        { label: t`Opens with`, value: opensWith },
-        { label: t`Copies elsewhere`, value: t`None` }
-    ];
 
     useEffect(() => {
         hapticImpact(ImpactFeedbackStyle.Heavy);
@@ -60,35 +55,57 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
     }, []);
 
     return (
-        <Animated.View entering={surfaceEntering} className="flex-1 bg-positive-background pt-safe pb-safe">
+        <Animated.View entering={surfaceEntering} className="flex-1 bg-seal-background pt-safe pb-safe">
             <Pressable
                 testID={OnboardingSealedMomentSelector.Root}
                 onPress={onContinue}
                 accessibilityRole="button"
                 accessibilityHint={t`Tap to continue`}
-                className="flex-1 px-5xl justify-between"
+                className="flex-1"
             >
-                <View className="flex-1 items-center justify-center gap-y-3xl">
-                    <Animated.View entering={lockEntering}>
-                        <CircleIcon icon={UserIconNameEnum.Lock} variant="positive" size={112} iconSize={48} border />
-                    </Animated.View>
+                <View className="flex-1 items-center justify-center gap-y-[26px] px-5xl">
+                    <View className="size-[280px] items-center justify-center rounded-full border border-white/12">
+                        <View className="size-[210px] items-center justify-center rounded-full border border-white/22">
+                            <Animated.View
+                                entering={lockEntering}
+                                className="size-[140px] items-center justify-center rounded-full bg-white"
+                            >
+                                <Icon icon={UserIconNameEnum.LockKeyhole} size={64} strokeWidth={1.75} className="text-seal-background" />
+                            </Animated.View>
+                        </View>
+                    </View>
 
-                    <Text className="text-positive-foreground text-(length:--text-8xl) font-bold tracking-tight">
-                        <Trans>Sealed.</Trans>
-                    </Text>
+                    <View className="items-center gap-y-lg">
+                        <Text className="text-white text-(length:--text-8xl) leading-none font-semibold tracking-[-0.035em]">
+                            <Trans>Sealed.</Trans>
+                        </Text>
 
-                    <Text className="text-positive-foreground text-sm">
-                        {sealedDate} · {sealedTime}
-                    </Text>
+                        <Text className="text-white/80 text-xs font-mono font-medium">
+                            {sealedDate} · {sealedTime}
+                        </Text>
+                    </View>
                 </View>
 
-                <View className="gap-y-3xl mb-5xl">
-                    <OnboardingReceiptCard variant="positive" rows={receiptRows} />
-
-                    <Text className="text-positive-foreground text-sm text-center">
-                        <Trans>Tap to continue</Trans>
-                    </Text>
+                <View className="mx-5xl rounded-[22px] border border-white/22 bg-white/10 px-4xl py-xs">
+                    <View className="flex-row justify-between gap-x-lg border-b border-white/18 py-xl">
+                        <Text className="text-white/80 text-sm">
+                            <Trans>Opens with</Trans>
+                        </Text>
+                        <Text className="text-white text-sm">{opensWith}</Text>
+                    </View>
+                    <View className="flex-row justify-between gap-x-lg py-xl">
+                        <Text className="text-white/80 text-sm">
+                            <Trans>Copies elsewhere</Trans>
+                        </Text>
+                        <Text className="text-white text-sm font-semibold">
+                            <Trans>None</Trans>
+                        </Text>
+                    </View>
                 </View>
+
+                <Text className="text-white/80 text-md text-center px-5xl pt-6xl pb-[40px]">
+                    <Trans>Tap to continue</Trans>
+                </Text>
             </Pressable>
         </Animated.View>
     );

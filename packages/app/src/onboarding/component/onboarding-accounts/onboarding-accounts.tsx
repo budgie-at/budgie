@@ -15,7 +15,7 @@ import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingFileState } from '../../hook/use-onboarding-file-state.hook';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingService } from '../../service/onboarding.service';
-import { OnboardingAccountOptionRow } from '../onboarding-account-option-row/onboarding-account-option-row';
+import { OnboardingAccountTile } from '../onboarding-account-tile/onboarding-account-tile';
 import { OnboardingCurrencyRow } from '../onboarding-currency-row/onboarding-currency-row';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
@@ -41,7 +41,7 @@ export const OnboardingAccounts = () => {
         { type: AccountTypeEnum.SAVINGS, icon: UserIconNameEnum.PiggyBank, title: t`Savings` },
         { type: AccountTypeEnum.DEPOSIT, icon: UserIconNameEnum.Vault, title: t`Deposits` },
         { type: AccountTypeEnum.CRYPTO, icon: UserIconNameEnum.Bitcoin, title: t`Crypto` },
-        { type: AccountTypeEnum.STOCKS, icon: UserIconNameEnum.ChartCandlestick, title: t`Stocks` },
+        { type: AccountTypeEnum.STOCKS, icon: UserIconNameEnum.ChartLine, title: t`Stocks` },
         { type: AccountTypeEnum.DEBT, icon: UserIconNameEnum.HandCoins, title: t`Debts and loans` }
     ];
 
@@ -114,19 +114,21 @@ export const OnboardingAccounts = () => {
         >
             <OnboardingStepIntro title={t`What goes inside?`} description={t`Each one becomes an account. Rename or remove them later.`} />
 
-            <View className="gap-y-md">
-                {accountOptions.map(option => (
-                    <OnboardingAccountOptionRow
-                        key={option.type}
-                        testID={OnboardingAccountsSelector.Option(option.type)}
-                        option={option}
-                        isSelected={isTypeSelected(option.type)}
-                        onToggle={handleToggleType}
-                    />
-                ))}
-            </View>
+            <View className="gap-y-xl">
+                <View className="flex-row flex-wrap gap-lg">
+                    {accountOptions.map(option => (
+                        <OnboardingAccountTile
+                            key={option.type}
+                            testID={OnboardingAccountsSelector.Option(option.type)}
+                            option={option}
+                            isSelected={isTypeSelected(option.type)}
+                            onToggle={handleToggleType}
+                        />
+                    ))}
+                </View>
 
-            <OnboardingCurrencyRow />
+                <OnboardingCurrencyRow />
+            </View>
         </OnboardingStepLayout>
     );
 };

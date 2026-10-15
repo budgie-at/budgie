@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
@@ -17,7 +17,7 @@ import { useOnboardingFileState } from '../../hook/use-onboarding-file-state.hoo
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingBalanceRow } from '../onboarding-balance-row/onboarding-balance-row';
-import { OnboardingOptionRow } from '../onboarding-option-row/onboarding-option-row';
+import { OnboardingSourceRow } from '../onboarding-source-row/onboarding-source-row';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -85,7 +85,34 @@ export const OnboardingBalances = () => {
     };
 
     const hasManualAccounts = isNotEmptyArray(manualAccounts);
+    const sourcesAccountId = manualAccounts.find(account => account.type === AccountTypeEnum.BANK)?.id;
+    const hasStandaloneSources = !isDefined(sourcesAccountId);
     const isSaveDisabled = !isNotEmptyArray(enteredBalances);
+
+    const sources = (
+        <View className="gap-y-md">
+            <Text className="text-secondary-foreground text-xs">
+                <Trans>Or fill it from</Trans>
+            </Text>
+
+            <OnboardingSourceRow
+                testID={OnboardingBalancesSelector.MonobankOption}
+                icon={UserIconNameEnum.Link}
+                iconClassName="text-violet-foreground"
+                title={t`Monobank`}
+                description={t`Your token is stored in Budgie's file and only ever sent to Monobank.`}
+                onPress={handleMonobankPress}
+            />
+            <OnboardingSourceRow
+                testID={OnboardingBalancesSelector.StatementOption}
+                icon={UserIconNameEnum.FileText}
+                iconClassName="text-cyan-foreground"
+                title={t`A bank statement (PDF or XLSX)`}
+                description={t`Read on this phone, then you can delete it.`}
+                onPress={handleStatementPress}
+            />
+        </View>
+    );
 
     return (
         <OnboardingStepLayout
@@ -114,7 +141,7 @@ export const OnboardingBalances = () => {
             <OnboardingStepIntro title={t`What's in them today?`} description={t`A rough number is fine. You can correct it any time.`} />
 
             {hasManualAccounts ? (
-                <View className="gap-y-md">
+                <View className="gap-y-lg">
                     {manualAccounts.map(account => (
                         <OnboardingBalanceRow
                             key={account.id}
@@ -122,33 +149,14 @@ export const OnboardingBalances = () => {
                             currencySymbol={defaultInstrument.symbol}
                             value={balances[account.id] ?? 0}
                             onChangeValue={handleBalanceChange}
-                        />
+                        >
+                            {account.id === sourcesAccountId ? sources : null}
+                        </OnboardingBalanceRow>
                     ))}
                 </View>
             ) : null}
 
-            <View className="gap-y-md">
-                <Text className="text-xs uppercase text-secondary-foreground">
-                    <Trans>Or fill it from</Trans>
-                </Text>
-
-                <OnboardingOptionRow
-                    testID={OnboardingBalancesSelector.MonobankOption}
-                    icon={UserIconNameEnum.Landmark}
-                    title={t`Monobank`}
-                    description={t`Your token is stored in Budgie's file and only ever sent to Monobank.`}
-                    isSelected={false}
-                    onPress={handleMonobankPress}
-                />
-                <OnboardingOptionRow
-                    testID={OnboardingBalancesSelector.StatementOption}
-                    icon={UserIconNameEnum.FileText}
-                    title={t`A bank statement (PDF or XLSX)`}
-                    description={t`Read on this phone, then you can delete it.`}
-                    isSelected={false}
-                    onPress={handleStatementPress}
-                />
-            </View>
+            {hasStandaloneSources ? sources : null}
         </OnboardingStepLayout>
     );
 };

@@ -103,12 +103,12 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
                 accessibilityState={accessibilityState}
                 accessibilityActions={ACCESSIBILITY_ACTIONS}
                 onAccessibilityAction={handleAccessibilityAction}
-                className="overflow-hidden rounded-3xl border border-cta-corner bg-cta-background"
+                className="overflow-hidden rounded-3xl bg-cta-background/45"
             >
-                <Animated.View style={fillStyle} className="absolute inset-y-0 left-0 bg-positive-foreground/40" />
+                <Animated.View style={fillStyle} className="absolute inset-y-0 left-0 bg-cta-background" />
 
-                <View className="flex-row items-center justify-center gap-x-md py-3xl">
-                    <Icon icon={UserIconNameEnum.Lock} size={16} className="text-cta-foreground" />
+                <View className="flex-row items-center justify-center gap-x-md p-3xl">
+                    <Icon icon={UserIconNameEnum.Lock} size={18} className="text-cta-foreground" />
                     <Text className="text-cta-foreground text-md font-semibold">{label}</Text>
                 </View>
             </View>
