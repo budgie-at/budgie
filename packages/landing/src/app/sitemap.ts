@@ -53,7 +53,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
     const blogEntries = LOCALES.flatMap(locale =>
         ARTICLE_REGISTRY.map(entry => ({
             url: `${BASE_URL}/${locale}/blog/${entry.slug}`,
-            lastModified: new Date(entry.date),
+            lastModified: new Date(entry.dateModified ?? entry.date),
             changeFrequency: 'monthly' as const,
             priority: 0.7,
             alternates: { languages: buildSitemapLanguages(`/blog/${entry.slug}`) }

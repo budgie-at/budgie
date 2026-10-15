@@ -590,7 +590,7 @@ Financial apps have been breached, and user data has been exposed. Mint (Intuit)
 Source: https://budgie.at/en/blog/ynab-alternatives-privacy
 Published: February 3, 2025 | 17 min read | By Budgie Team
 
-Compare the best YNAB alternatives for privacy-conscious users in 2025. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private.
+Compare the best YNAB alternatives for privacy-conscious users in 2026. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private.
 
 ## Why People Are Looking for YNAB Alternatives
 
@@ -606,7 +606,7 @@ Data Storage Location: Local-first/Offline-first (data stored exclusively on you
 
 ## Comparison Table
 
-Budgie: Device only storage, optional bank sync, source-available, free, iOS and Android, best for privacy maximalists who want modern UX.
+Budgie: Device only storage, optional bank sync, source-available, free, iOS and Android, currently in private beta (waitlist), best for privacy maximalists who want modern UX.
 
 Actual Budget: Local/Self-hosted storage, optional plugin bank sync, yes open source, free (self-hosted), Web and Desktop, best for technical users wanting full control.
 
