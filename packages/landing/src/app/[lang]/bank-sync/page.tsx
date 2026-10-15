@@ -1,5 +1,6 @@
 /* eslint-disable max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 
 import { FeaturePageFaqItem } from '../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../feature/component/feature-page-faq-section/feature-page-faq-section';
@@ -130,6 +131,81 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
             </PillarHubSection>
 
             <FeaturePageFaqSection locale={lang}>
+                <FeaturePageFaqItem
+                    answer={
+                        <>
+                            <Trans>
+                                You need a personal token from Monobank, which you generate yourself and which only lets Budgie read your
+                                data. Budgie imports your accounts and transactions, and refreshes them when you open the app and in the
+                                background at the pace your phone allows, with no fixed interval. When you connect, you choose how far back
+                                to load: 1, 3 or 6 months, a year, the whole period, or only new transactions.
+                            </Trans>{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/monobank-sync`}>
+                                <Trans>More about Monobank sync</Trans>
+                            </Link>
+                        </>
+                    }
+                    question={<Trans>What do I need to connect Monobank?</Trans>}
+                />
+                <FeaturePageFaqItem
+                    answer={
+                        <>
+                            <Trans>
+                                Export a statement from Privat24 as an Excel file and pick it in Budgie. Each export is a one-time import
+                                with no connection to your bank. If you import a newer export later, anything already in Budgie is skipped,
+                                so nothing is duplicated.
+                            </Trans>{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/privatbank-import`}>
+                                <Trans>More about PrivatBank import</Trans>
+                            </Link>
+                        </>
+                    }
+                    question={<Trans>How do I import PrivatBank transactions?</Trans>}
+                />
+                <FeaturePageFaqItem
+                    answer={
+                        <>
+                            <Trans>
+                                Yes. Download the PDF account statement from George, Erste&apos;s online banking, and pick it in Budgie.
+                                Euro accounts are supported, and a later statement skips transactions you have already imported.
+                            </Trans>{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/erste-bank-pdf-import`}>
+                                <Trans>More about Erste PDF import</Trans>
+                            </Link>
+                        </>
+                    }
+                    question={<Trans>Can I import an Erste Bank Austria statement?</Trans>}
+                />
+                <FeaturePageFaqItem
+                    answer={
+                        <>
+                            <Trans>
+                                Create a read-only API key in Binance with only reading enabled, never trading or withdrawals, and enter it
+                                in Budgie. Your balances and history come in, and P2P purchases are matched with the bank payments you made
+                                for them.
+                            </Trans>{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/binance-sync`}>
+                                <Trans>More about Binance sync</Trans>
+                            </Link>
+                        </>
+                    }
+                    question={<Trans>How does Binance sync work?</Trans>}
+                />
+                <FeaturePageFaqItem
+                    answer={
+                        <>
+                            <Trans>
+                                Live sync works only with Monobank and Binance, and statement import only with PrivatBank and Erste Bank
+                                Austria. Any other bank can still be added: export a CSV file from its app or website and map the columns
+                                once, or start from a built-in preset.
+                            </Trans>{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/csv-import`}>
+                                <Trans>More about CSV import</Trans>
+                            </Link>
+                        </>
+                    }
+                    question={<Trans>What if my bank is not on the list?</Trans>}
+                />
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
