@@ -4,6 +4,9 @@ import { ARTICLE_METADATA as HistoricalExchangeRatesBudgetAnalyticsArticleMetada
 import { ARTICLE_METADATA as LocalFirstMovementDevelopersArticleMetadata } from '../../app/[lang]/blog/local-first-movement-developers/metadata';
 import { ARTICLE_METADATA as MintShutdownPrivateAlternativeArticleMetadata } from '../../app/[lang]/blog/mint-shutdown-private-alternative/metadata';
 import { ARTICLE_METADATA as MonobankApiTokenArticleMetadata } from '../../app/[lang]/blog/monobank-api-token/metadata';
+import { ARTICLE_METADATA as MonobankExpenseTrackingArticleMetadata } from '../../app/[lang]/blog/monobank-expense-tracking/metadata';
+import { ARTICLE_METADATA as OfflineFirstBankDataSafetyArticleMetadata } from '../../app/[lang]/blog/offline-first-bank-data-safety/metadata';
+import { ARTICLE_METADATA as OfflineFirstPrivacyFinancialAppArticleMetadata } from '../../app/[lang]/blog/offline-first-privacy-financial-app/metadata';
 import { ARTICLE_METADATA as OnDeviceAiBudgetAppExplainerArticleMetadata } from '../../app/[lang]/blog/on-device-ai-budget-app-explainer/metadata';
 import { ARTICLE_METADATA as OpenSourceBudgetingTransparencyArticleMetadata } from '../../app/[lang]/blog/open-source-budgeting-transparency/metadata';
 import { ARTICLE_METADATA as Privat24StatementExcelImportArticleMetadata } from '../../app/[lang]/blog/privat24-statement-excel-import/metadata';
@@ -27,5 +30,6 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     PayInPartsPurchasesArticleMetadata,
     ErsteGeorgePdfStatementImportArticleMetadata,
     UahEurBudgetUkrainiansInEuArticleMetadata,
-    MonobankApiTokenArticleMetadata
+    MonobankApiTokenArticleMetadata,
+    MonobankExpenseTrackingArticleMetadata
 ];
