@@ -8,10 +8,10 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'multi-currency',
     tier: FeatureTierEnum.POWER,
-    title: msg`Multi-Currency Accounts With Live Rates`,
-    tagline: msg`Track in any currency. Sum in yours. Daily FX-rate refresh keeps the math fair.`,
+    title: msg`Multi-Currency Accounts, One Total`,
+    tagline: msg`Track in any currency. Sum in yours. Exchange rates refresh in the background.`,
     metaTitle: msg`Multi-Currency Accounts — Budgie`,
-    metaDescription: msg`Hold accounts in any currency. A nightly background task fetches fresh FX rates so dashboards always show in your home currency. Cross-currency transfers preserve both legs.`,
+    metaDescription: msg`Hold accounts in any currency. Rates refresh in the background so every total shows in your home currency. Cross-currency transfers keep both amounts.`,
     primaryKeyword: 'multi currency expense tracker',
     seoKeywords: [
         'multi currency expense tracker',

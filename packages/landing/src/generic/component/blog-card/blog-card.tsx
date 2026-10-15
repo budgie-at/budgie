@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { Calendar, Clock } from 'reicon-react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 

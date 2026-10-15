@@ -34,8 +34,8 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 locale={lang}
                 tagline={
                     <Trans>
-                        Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, and
-                        amount all filled in before you type a single character.
+                        Open the expense form and Budgie offers pill-shaped suggestions from your own history — category first, then tags,
+                        then a comment, with the usual amount filled in once you have chosen.
                     </Trans>
                 }
             />
@@ -72,7 +72,8 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 <FeatureStory.Step index={1} title={<Trans>Powered by the on-device AI</Trans>}>
                     <Trans>
                         Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date.
-                        Suggestions come from your own history on this device.
+                        New manual entries use your own history right away; editing a transaction or adding one by voice also uses the
+                        on-device model, once you turn it on and it has downloaded.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -99,53 +100,35 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering
-                        the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is
-                        already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so
-                        confirming a familiar expense takes one tap instead of seven.
+                        Typing the category, picking a tag and entering the usual amount for the same coffee shop again and again is wasted
+                        effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you
+                        open the form, so confirming a familiar expense takes a few taps instead of typing.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Unlike cloud-based suggestion engines that profile spending patterns on a vendor server, every match happens
-                        on-device. Your transaction history never leaves your phone, and the suggestions improve as you add more entries —
-                        no account, no sync, no exposure.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Two ways of knowing, zero cloud round-trips</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Budgie learns your recurring spending and your one-offs separately. It spots what repeats weekly or monthly and
-                        surfaces the usual category and amount for that merchant. Alongside that it matches the title you are typing against
-                        your whole history by meaning rather than spelling — catching name variations and abbreviations that a keyword match
-                        would miss.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        When both agree, the suggestion chips appear immediately. When they diverge, the recurring pattern wins for amount
-                        and category while the history match adds tag and comment hints. Every accepted or corrected suggestion is taken
-                        into account, so the next similar entry lands even closer.
+                        Suggestions are made on your device. Your transaction history never leaves your phone, and the suggestions improve
+                        as you add more entries.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Three kinds of match, not one</Trans>
+                    <Trans>Your habits first, the on-device model on top</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Budgie matches your history in three separate ways, each returning up to three candidates. Transaction titles are
-                        matched against your past entries to suggest a category and tags. Shop names are matched across spelling variants,
-                        so the same store resolves consistently even when two banks write it differently — the visible result behind
-                        merchant name clean-up. And your own free-text notes are matched too, so a comment you typed once for a coffee shop
-                        comes back as a suggestion the next time you visit it.
+                        Budgie spots what repeats weekly or monthly in your history and surfaces the usual category, tags, comment and
+                        amount. The pills appear step by step: category first, then tags, then a comment, and the amount is filled in after
+                        you have chosen.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        When you edit a transaction or add one by voice, the optional on-device model also matches the title against your
+                        whole history by meaning rather than spelling, catching name variations and abbreviations. It works offline after a
+                        one-time download. Every transaction you save feeds the next suggestion.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -156,22 +139,19 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One-tap form fill — category, tags, comment, and amount pre-filled from your own history</Trans>
+                        <Trans>
+                            Tappable suggestions for category, tags and comment, with the usual amount filled in after — all from your own
+                            history
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Fully private — everything runs on your phone, no network call, no profiling</Trans>
+                        <Trans>Fully private — suggestions are made on your phone, with no profiling</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Self-improving — accepted or corrected suggestions sharpen the next one</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Works offline and on every form variant — expense, income, and transfer</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>
-                            Three kinds of match — transaction title, merchant name, and your own comments — each surfacing up to three
-                            candidates
-                        </Trans>
+                        <Trans>Works offline on the expense and income forms; the optional model needs a one-time download</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -181,8 +161,8 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     question={<Trans>Where do the suggestions come from?</Trans>}
                     answer={
                         <Trans>
-                            Two sources, both your own data: the weekly and monthly patterns Budgie spots in your transactions, and the
-                            closest matches to the title you are typing in your own history. No cloud calls.
+                            Your own data: the weekly and monthly patterns Budgie spots in your transactions and, for edits and voice
+                            entries, the closest matches to the title in your own history. No cloud calls.
                         </Trans>
                     }
                 />
@@ -197,13 +177,14 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     answer={
                         <Trans>
                             Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you
-                            ignore them. Settings → AI shows what the on-device AI is doing and how far along it is.
+                            ignore them. The on-device model behind edit and voice suggestions is off until you turn On-device AI on in
+                            Settings, and you can switch it off again at any time.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work for income and transfers too?</Trans>}
-                    answer={<Trans>Yes. The suggestion engine runs on every form variant — expense, income, and transfer.</Trans>}
+                    answer={<Trans>On expense and income, yes. The transfer form does not show suggestions.</Trans>}
                 />
             </FeaturePageFaqSection>
         </FeaturePageShell>

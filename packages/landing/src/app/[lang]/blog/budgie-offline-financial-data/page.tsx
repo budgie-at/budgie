@@ -74,7 +74,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                                 <Trans>encryption</Trans>
                             </Badge>
                             <Badge variant="secondary">
-                                <Trans>open-source</Trans>
+                                <Trans>source-available</Trans>
                             </Badge>
                             <Badge variant="secondary">
                                 <Trans>offline-first</Trans>
@@ -232,7 +232,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             This is not because we do not care about improving the product. We do. But we have chosen to gather feedback
-                            through direct user conversations and open-source community input rather than surveillance infrastructure.
+                            through direct user conversations and community input rather than surveillance infrastructure.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -558,13 +558,14 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>Open Source: Verify Our Claims Yourself</Trans>
+                        <Trans>Source-Available: Verify Our Claims Yourself</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Everything we have described in this article can be verified by examining our source code. Budgie is open
-                            source, and we believe this transparency is essential for any application that handles sensitive financial data.
+                            Everything we have described in this article can be verified by examining our source code. Budgie is
+                            source-available, and we believe this transparency is essential for any application that handles sensitive
+                            financial data.
                         </Trans>
                     </BlogArticleProse>
 
@@ -574,8 +575,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Our complete source code is available on GitHub. You can find it by visiting our open-source section where the
-                            repository link is provided.
+                            Our complete source code is available on GitHub. You can find it by visiting our source-available section where
+                            the repository link is provided.
                         </Trans>
                     </BlogArticleProse>
 
@@ -712,8 +713,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Open source software depends on a chain of dependencies, and any link in that chain could introduce
-                            vulnerabilities or privacy issues. Our security practices include:
+                            Software depends on a chain of dependencies, and any link in that chain could introduce vulnerabilities or
+                            privacy issues. Our security practices include:
                         </Trans>
                     </BlogArticleProse>
 
@@ -796,9 +797,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>Is the encryption implementation audited?</Trans>}>
                             <Trans>
-                                Budgie is open source, so anyone can read exactly how your PIN becomes your database&apos;s encryption key —
-                                there is no hidden derivation step and no proprietary library standing between your PIN and the data. That
-                                code is public for community review.
+                                Budgie’s source is public, so anyone can read exactly how your PIN becomes your database&apos;s encryption
+                                key — there is no hidden derivation step and no proprietary library standing between your PIN and the data.
+                                That code is public for community review.
                             </Trans>
                         </BlogFaqItem>
 
@@ -860,7 +861,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             For more details on our security architecture, visit our security section. To see the complete source code and
-                            verify everything we have described, check out our open-source section.
+                            verify everything we have described, check out our source-available section.
                         </Trans>
                     </BlogArticleProse>
 

@@ -89,8 +89,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/multi-currency`}
                         index={3}
-                        tagline={<Trans>Track in any currency. Sum in yours. Daily FX-rate refresh keeps the math fair.</Trans>}
-                        title={<Trans>Multi-Currency Accounts With Live Rates</Trans>}
+                        tagline={<Trans>Track in any currency. Sum in yours. Exchange rates refresh in the background.</Trans>}
+                        title={<Trans>Multi-Currency Accounts, One Total</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/database-backup`}

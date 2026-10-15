@@ -1,8 +1,8 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Dumbbell, House, ShoppingCart, Tag } from 'lucide-react';
 import Link from 'next/link';
+import { Dumbbell, House, ShoppingCart, Tag } from 'reicon-react';
 
 import { CategorizeDemo } from '../../../../feature/component/categorize-demo/categorize-demo';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -372,6 +372,15 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 <FeaturePageFaqItem
                     question={<Trans>Do I need to turn on On-device AI?</Trans>}
                     answer={<Trans>No. The Categorize inbox works with On-device AI switched off and needs no extra download.</Trans>}
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What about ATM withdrawals?</Trans>}
+                    answer={
+                        <Trans>
+                            They get their own Cash withdrawals section in the inbox. Instead of picking a category you can move them to
+                            cash, and Undo reverses that too.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I undo a bulk categorization?</Trans>}

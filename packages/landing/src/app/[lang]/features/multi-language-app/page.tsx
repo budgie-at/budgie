@@ -119,7 +119,7 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                         <Trans>Number and date formatting follows the language you choose in Settings</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Open-source translations — community can contribute new locales</Trans>
+                        <Trans>Translations live in the public source code, so new languages can be proposed</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>

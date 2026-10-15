@@ -3,6 +3,129 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
+
+
+### Bug Fixes
+
+* address icon review findings ([fffc644](https://github.com/budgie-at/budgie/commit/fffc644acb9cedb2db93131c7a9afd41d924b044))
+* **app:** drop Russian from icon search ([0c013a8](https://github.com/budgie-at/budgie/commit/0c013a8a1676dd48f2692a335ecd37b3a8045539))
+* **app:** make every icon searchable by the image it shows ([4ec1601](https://github.com/budgie-at/budgie/commit/4ec16015086066e47d6debc84472d89ac6a4516b))
+* **app:** map MailOpen to the Reicon open envelope ([56ff24d](https://github.com/budgie-at/budgie/commit/56ff24d1f6a0f97a466174bf712149cf1b395c00))
+* **app:** map Plane to the Reicon airplane ([a1e72ae](https://github.com/budgie-at/budgie/commit/a1e72ae4f7d68478ffaf844369b939c35ac97f8b))
+* **app:** render Reicon glyphs on first launch ([5b54177](https://github.com/budgie-at/budgie/commit/5b541776ae5a0999aa19c8e84e47544f73ec9694))
+* **app:** show each distinct icon once in the icon picker ([50df7a7](https://github.com/budgie-at/budgie/commit/50df7a7a875ab924a5fe43acaf59414f46f660fe))
+* **app:** sync icon catalogs ([d04a724](https://github.com/budgie-at/budgie/commit/d04a7240d1387ef3a6d2da7b0cf48df4e9b599c2))
+
+
+### Features
+
+* **app:** make the full Reicon catalog selectable without losing saved icons ([56aecff](https://github.com/budgie-at/budgie/commit/56aecff80ff1c2129862fb0c3174180b1bac722e))
+* replace Lucide with Reicon while preserving saved icons ([45180c2](https://github.com/budgie-at/budgie/commit/45180c248fb0a50444c5e75c33daa301cdba8ed1)), closes [#1419](https://github.com/budgie-at/budgie/issues/1419)
+
+
+
+
+
+## [6.103.13](https://github.com/budgie-at/budgie/compare/v6.103.12...v6.103.13) (2026-10-15)
+
+
+### Bug Fixes
+
+* **landing:** clean up structured data, sitemap dates and blog headings ([10eba4a](https://github.com/budgie-at/budgie/commit/10eba4ae9495391529117ab0b7c005875afb35fb))
+
+
+
+
+
+## [6.103.12](https://github.com/budgie-at/budgie/compare/v6.103.11...v6.103.12) (2026-10-15)
+
+
+### Bug Fixes
+
+* **landing:** describe Budgie as source-available in every locale ([05e3c58](https://github.com/budgie-at/budgie/commit/05e3c582e4e6af0a7b1c057969f32756fc54d007))
+* **landing:** say source-available, not open source ([28f936a](https://github.com/budgie-at/budgie/commit/28f936aba5f03bc2502e11fca332c4549f2fe0fd))
+
+
+
+
+
+## [6.103.11](https://github.com/budgie-at/budgie/compare/v6.103.10...v6.103.11) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** self canonicals for legal and beta pages ([01e3a55](https://github.com/budgie-at/budgie/commit/01e3a5508d78797e2d874c07ab8356de65509754))
+
+
+
+
+
+## [6.103.10](https://github.com/budgie-at/budgie/compare/v6.103.9...v6.103.10) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** temporary language redirect and a localized 404 ([79998d2](https://github.com/budgie-at/budgie/commit/79998d275fc11d9a65182bbc953521a2a8b810a3))
+
+
+
+
+
+## [6.103.9](https://github.com/budgie-at/budgie/compare/v6.103.8...v6.103.9) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** bank and sync pages tell the truth ([e41f07c](https://github.com/budgie-at/budgie/commit/e41f07c01428c668280213837e811f00b8f05158))
+
+
+
+
+
+## [6.103.8](https://github.com/budgie-at/budgie/compare/v6.103.7...v6.103.8) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** money pages tell the truth ([69b71c0](https://github.com/budgie-at/budgie/commit/69b71c0443cea339aa1b299c0b4d2d6b41cd3f8a))
+
+
+
+
+
+## [6.103.7](https://github.com/budgie-at/budgie/compare/v6.103.6...v6.103.7) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** categorization pages tell the truth ([5652e58](https://github.com/budgie-at/budgie/commit/5652e58bc010c00c0a4b0459e45195ed0c1d5d8c))
+* **landing:** use formal French on the corrected pages ([af8c6ab](https://github.com/budgie-at/budgie/commit/af8c6ab39ee5ffeae39d7f788837fd6233da98b4))
+
+
+
+
+
+## [6.103.6](https://github.com/budgie-at/budgie/compare/v6.103.5...v6.103.6) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** make transaction feature pages accurate ([fa37dac](https://github.com/budgie-at/budgie/commit/fa37dac5019c041a5a3f851ff1f4368ce8bfbc9a))
+* **landing:** use formal French on the corrected pages ([d95da3d](https://github.com/budgie-at/budgie/commit/d95da3ddb5ea8901f064bedd9594deef70f7819f))
+
+
+
+
+
+## [6.103.5](https://github.com/budgie-at/budgie/compare/v6.103.4...v6.103.5) (2026-10-14)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
 ## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
 
 

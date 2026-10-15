@@ -1,6 +1,7 @@
 /* eslint-disable max-lines, max-lines-per-function -- legal page keeps binding copy inline instead of MDX or registries */
 import { Trans } from '@lingui/react/macro';
 
+import { buildAlternates } from '../../../../generic/utils/build-alternates.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -15,6 +16,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 
     return {
         title: i18n._(TERMS_OF_SERVICE_METADATA.title),
+        alternates: buildAlternates(lang, '/legal/terms-of-service'),
         description: i18n._(TERMS_OF_SERVICE_METADATA.description)
     };
 }
@@ -259,9 +261,10 @@ export default async function TermsOfServicePage(props: PageLangParam) {
             </p>
             <p>
                 <Trans>
-                    Subject to the open source license under which the software is distributed (see our Open Source License page), you may
-                    not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer
-                    or attempt to extract the source code of that software, except as permitted by law or with our written permission.
+                    Subject to the source-available license under which the software is distributed (see our Source-Available License page),
+                    you may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse
+                    engineer or attempt to extract the source code of that software, except as permitted by law or with our written
+                    permission.
                 </Trans>
             </p>
             <h2>

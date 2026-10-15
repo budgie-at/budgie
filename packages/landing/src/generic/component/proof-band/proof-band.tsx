@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
+import { BranchUp } from 'reicon-react';
 
 import { Button } from '../../../ui/button';
 import { ProofBandLink } from '../proof-band-link/proof-band-link';
@@ -50,7 +50,7 @@ export const ProofBand = ({ locale }: Props) => (
                     <Button asChild className="mt-2 rounded-full" size="lg">
                         {/* oxlint-disable-next-line lingui/no-unlocalized-strings */}
                         <Link href="https://github.com/budgie-at/budgie" rel="noopener noreferrer" target="_blank">
-                            <GitBranch aria-hidden="true" className="mr-2 size-4" />
+                            <BranchUp aria-hidden="true" className="mr-2 size-4" />
                             <Trans>Read the source on GitHub</Trans>
                         </Link>
                     </Button>

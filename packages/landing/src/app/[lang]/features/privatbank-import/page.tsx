@@ -33,15 +33,15 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 locale={lang}
                 tagline={
                     <Trans>
-                        Import accounts and transactions from a PrivatBank24 XLSX export — with PrivatBank&apos;s own MCC categories mapped
-                        automatically.
+                        Import accounts and transactions from a Privat24 Excel export — with PrivatBank&apos;s own category names matched to
+                        your Budgie categories automatically.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why MCC mapping matters for downstream automation</Trans>
+                    <Trans>Categories arrive already matched</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
@@ -51,8 +51,9 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        PrivatBank exports XLSX with a fixed schema and proprietary MCC labels. Budgie parses both, mapping each PrivatBank
-                        category to the equivalent ISO MCC code so AI categorization downstream still works.
+                        A Privat24 export is an Excel file with a fixed column layout: date and time, category, card, description, the
+                        amount in the card and operation currencies, and the balance after each operation. Budgie reads all of it and
+                        matches each PrivatBank category name to a Budgie category, so the Categorize inbox only has the leftovers to sort.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -81,10 +82,10 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Native PrivatBank24 XLSX schema parser — no manual column mapping</Trans>
+                        <Trans>Reads the Privat24 Excel layout as exported — no manual column mapping</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>PrivatBank&apos;s proprietary MCC labels map to ISO MCC codes automatically</Trans>
+                        <Trans>PrivatBank&apos;s own category names are matched to Budgie categories automatically</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
@@ -92,7 +93,7 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Currency, FX, and counterparty fields all preserved</Trans>
+                        <Trans>Card and operation amounts and currencies are kept</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Dedupes against existing transactions on re-import</Trans>
@@ -112,7 +113,7 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         In the Privat24 app, select the card or account you want to import, open its statement, and choose a date range
                         covering your full history. Export it as Excel — PDF and CSV aren&apos;t accepted — and if Privat24 emails the file
                         instead of downloading it, save the attachment from your inbox. In Budgie, start a new account, choose PrivatBank,
-                        and pick the saved file. Budgie validates it, parses the rows, and writes them to your selected account.
+                        and pick the saved file. Budgie checks it, reads the rows, and writes them to your selected account.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -130,11 +131,11 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What about PrivatBank&apos;s custom MCC labels?</Trans>}
+                    question={<Trans>How are PrivatBank categories handled?</Trans>}
                     answer={
                         <Trans>
-                            Budgie maps each PrivatBank category label to the corresponding ISO MCC code, so AI categorization, MCC chips,
-                            and analytics all work the same as with other bank-synced data.
+                            Budgie matches each PrivatBank category name to a Budgie category, so analytics work the same as with other
+                            bank-synced data. A name Budgie does not recognise stays uncategorized and waits in the Categorize inbox.
                         </Trans>
                     }
                 />
@@ -160,7 +161,8 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     question={<Trans>Does it work offline?</Trans>}
                     answer={
                         <Trans>
-                            The parsing step is on-device. You only need internet to download the XLSX from PrivatBank24 in the first place.
+                            Reading the file happens on your device. You only need internet to download the export from Privat24 in the
+                            first place.
                         </Trans>
                     }
                 />
