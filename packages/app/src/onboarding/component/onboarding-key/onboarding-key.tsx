@@ -28,7 +28,6 @@ export const OnboardingKey = () => {
         <OnboardingStepLayout
             step={OnboardingStepEnum.KEY}
             fileState={t`Will be created on this phone`}
-            isBackVisible={false}
             footer={
                 <Button
                     testID={OnboardingKeySelector.RestoreButton}
@@ -40,8 +39,8 @@ export const OnboardingKey = () => {
             }
         >
             <OnboardingStepIntro
-                title={t`Budgie`}
-                description={t`Your money will live in one file on this phone. Who should be able to open it?`}
+                title={t`Who holds the key?`}
+                description={t`Your money will live in one file on this phone. Choose who can open it.`}
             />
 
             <Card variant="secondary" size="md" className="gap-y-lg">

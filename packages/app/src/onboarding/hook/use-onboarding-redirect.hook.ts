@@ -41,7 +41,7 @@ export const useOnboardingRedirect = (): Href | null => {
         return null;
     }
 
-    const persistedStep = ONBOARDING_STEP_ORDER.at(onboardingStep);
+    const resumeStep = resolveResumeStep(ONBOARDING_STEP_ORDER.at(onboardingStep), isPinEnabled);
 
-    return ONBOARDING_STEP_ROUTE[resolveResumeStep(persistedStep, isPinEnabled)];
+    return resumeStep === OnboardingStepEnum.KEY ? '/onboarding' : ONBOARDING_STEP_ROUTE[resumeStep];
 };

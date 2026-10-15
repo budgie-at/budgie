@@ -553,10 +553,6 @@ msgstr "Add Account"
 msgid "Add accounts"
 msgstr "Add accounts"
 
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "Add accounts and balances"
-msgstr "Add accounts and balances"
-
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
 msgid "Add accounts from bank"
 msgstr "Add accounts from bank"
@@ -702,10 +698,6 @@ msgstr "Already tracked"
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Amount"
-
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "Amount first. Budgie guesses the account and category."
-msgstr "Amount first. Budgie guesses the account and category."
 
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
@@ -909,7 +901,7 @@ msgid "Budget limit reached"
 msgstr "Budget limit reached"
 
 #: src/app/(tabs)/settings/index.tsx
-#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -1021,7 +1013,6 @@ msgid "Cancel and delete"
 msgstr "Cancel and delete"
 
 #: src/account/constant/account-type.constant.ts
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"
 msgstr "Cash"
@@ -2410,10 +2401,6 @@ msgstr "fingerprint"
 msgid "Fingerprint day to day"
 msgstr "Fingerprint day to day"
 
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "Finish when you're ready"
-msgstr "Finish when you're ready"
-
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fix Errors"
@@ -2495,6 +2482,10 @@ msgstr "Get API Token"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
 msgstr "Get notified when a budget threshold is crossed"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Get started"
+msgstr "Get started"
 
 #: src/@generic/component/go-back-button/go-back-button.tsx
 msgid "Go back"
@@ -2888,14 +2879,6 @@ msgstr "Loading…"
 msgid "Lock Budgie with your own PIN"
 msgstr "Lock Budgie with your own PIN"
 
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "Log what you spend. That's all Budgie needs."
-msgstr "Log what you spend. That's all Budgie needs."
-
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "Log your first expense"
-msgstr "Log your first expense"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Looks right"
@@ -2907,10 +2890,6 @@ msgstr "Main Currency"
 #: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
 msgid "Main currency: <0>{currencyName}</0>, from your phone's region"
 msgstr "Main currency: <0>{currencyName}</0>, from your phone's region"
-
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "Make a PIN"
-msgstr "Make a PIN"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Make a PIN after all"
@@ -3166,6 +3145,10 @@ msgstr "New Transfer"
 #: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Next {formattedNextAmount} · {nextDate}"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "No account needed · Takes about a minute"
+msgstr "No account needed · Takes about a minute"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account. There's nothing to sign up for."
@@ -3445,10 +3428,6 @@ msgstr "On this phone"
 msgid "On-device AI"
 msgstr "On-device AI"
 
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "On-device AI · {aiSize} GB"
-msgstr "On-device AI · {aiSize} GB"
-
 #: src/settings/components/your-data-local-items/your-data-local-items.tsx
 msgid "On-device AI · {downloaded} GB"
 msgstr "On-device AI · {downloaded} GB"
@@ -3506,6 +3485,10 @@ msgstr "Only single-entry expenses can be converted"
 #: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Only single-entry incomes can be converted"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Only you hold the key."
+msgstr "Only you hold the key."
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Only your PIN opens this file."
@@ -5101,10 +5084,6 @@ msgstr "Type"
 msgid "Type ({selectedTypesCount})"
 msgstr "Type ({selectedTypesCount})"
 
-#: src/onboarding/component/home-first-steps/home-first-steps.tsx
-msgid "Type the amount. Budgie puts it in a Cash wallet until you add accounts."
-msgstr "Type the amount. Budgie puts it in a Cash wallet until you add accounts."
-
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Type the same PIN again to make sure it's the one you meant."
@@ -5306,6 +5285,10 @@ msgstr "Which bank is the statement from?"
 msgid "Who do you owe?"
 msgstr "Who do you owe?"
 
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Who holds the key?"
+msgstr "Who holds the key?"
+
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who owes you?"
 msgstr "Who owes you?"
@@ -5432,9 +5415,13 @@ msgstr "Your database backup is ready to share."
 msgid "Your holdings"
 msgstr "Your holdings"
 
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Your money in one file."
+msgstr "Your money in one file."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-msgid "Your money will live in one file on this phone. Who should be able to open it?"
-msgstr "Your money will live in one file on this phone. Who should be able to open it?"
+msgid "Your money will live in one file on this phone. Choose who can open it."
+msgstr "Your money will live in one file on this phone. Choose who can open it."
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Your phone's lock will be the only lock."

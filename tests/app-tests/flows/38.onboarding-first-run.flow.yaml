@@ -10,8 +10,16 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'OnboardingKey.PhoneLockOption'
+          id: 'OnboardingWelcome.StartButton'
       timeout: 30000
+
+- tapOn:
+      id: 'OnboardingWelcome.StartButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingKey.PhoneLockOption'
+      timeout: 3000
 
 - tapOn:
       id: 'OnboardingKey.PhoneLockOption'
