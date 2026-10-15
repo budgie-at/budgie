@@ -143,8 +143,8 @@ describe('fiat rate backfill', () => {
             expect(drained?.job.fromDate).toBe('2026-05-26');
             expect(rates.find(rate => rate.rateDate === '2026-06-01')?.rate).toBeCloseTo(1 / 48, 12);
             expect(staleRate).not.toBeCloseTo(0.025, 6);
-            expect((yield* findEntryValuation(historyValuedTransactionId))?.baseExchangeRate).toBeCloseTo(0.025, 12);
-            expect((yield* findEntryValuation(historyValuedTransactionId))?.baseAmount).toBe(25 * PRECISION);
+            expect((yield* findEntryValuation(historyValuedTransactionId)).baseExchangeRate).toBeCloseTo(0.025, 12);
+            expect((yield* findEntryValuation(historyValuedTransactionId)).baseAmount).toBe(25 * PRECISION);
             expect(yield* findEntryValuation(providedTransactionId)).toStrictEqual({ baseExchangeRate: 0.03, baseAmount: 30 * PRECISION });
         }).pipe(Effect.provide(FiatBackfillLayer))
     );
