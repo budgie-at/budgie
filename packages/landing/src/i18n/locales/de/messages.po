@@ -9896,7 +9896,7 @@ msgstr "Sprachen"
 
 #: src/app/[lang]/blog/monobank-api-token/page.tsx
 msgid "Last 1 month: about a minute."
-msgstr "„Letzter 1 Monat“: etwa eine Minute."
+msgstr "„Letzter Monat“: etwa eine Minute."
 
 #: src/app/[lang]/blog/monobank-api-token/page.tsx
 msgid "Last 3 months: about 3 minutes. This is the default."

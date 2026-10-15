@@ -9918,7 +9918,7 @@ msgstr "Dernière mise à jour : {updatedAtText}"
 
 #: src/app/[lang]/blog/monobank-api-token/page.tsx
 msgid "Last year: about 12 minutes."
-msgstr "« L’année dernière » : environ 12 minutes."
+msgstr "« Les 12 derniers mois » : environ 12 minutes."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Lastschrifteinzug FITINN GES.M.B.H. MDID:AT41ZZZ00000012345"
