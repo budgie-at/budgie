@@ -27,7 +27,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.1.0 # v3.1.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.2.0 # v3.2.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder","trf-budgie-builder-2"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -39,7 +39,8 @@ jobs:
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true
             flows-dir: tests/app-tests/flows/media
-            flows-exclude-pattern: '[ap]*-clip-1.flow.yaml'
+            # PIN rekey quits the app on a seeded DB, and AI is disabled in the e2e build.
+            flows-exclude-pattern: pin-app-lock-clip-1.flow.yaml, ai-auto-categorization-clip-1.flow.yaml
             shard-count: 1
             maestro-config: tests/app-tests/config.yaml
             pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml
