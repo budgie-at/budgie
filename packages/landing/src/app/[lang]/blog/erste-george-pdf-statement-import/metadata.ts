@@ -20,7 +20,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'Erste Bank PDF statement budget app'
     ],
     seoDescription: msg`Download your Erste Bank statement as a PDF in George and import it into Budgie. Bookings and the IBAN carry over, and repeats are skipped.`,
-    relatedArticleSlugs: ['offline-first-bank-data-safety', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'historical-exchange-rates-budget-analytics'],
     relatedFeatureSlugs: ['erste-bank-pdf-import', 'csv-import', 'multi-currency']
 };
 

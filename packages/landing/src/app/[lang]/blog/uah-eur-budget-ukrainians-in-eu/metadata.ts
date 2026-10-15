@@ -20,7 +20,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'multi-currency budget abroad'
     ],
     seoDescription: msg`Track hryvnia and euro in one budget: Monobank syncs, EU bank statements import, cash in both currencies, one net worth in the currency you pick.`,
-    relatedArticleSlugs: ['historical-exchange-rates-budget-analytics', 'offline-first-bank-data-safety'],
+    relatedArticleSlugs: ['historical-exchange-rates-budget-analytics', 'cloud-budgeting-privacy-risks'],
     relatedFeatureSlugs: ['multi-currency', 'monobank-sync', 'erste-bank-pdf-import', 'csv-import', 'net-worth-tracker']
 };
 

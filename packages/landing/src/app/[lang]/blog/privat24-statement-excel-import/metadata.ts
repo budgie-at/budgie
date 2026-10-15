@@ -20,7 +20,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'PrivatBank statement import'
     ],
     seoDescription: msg`Export a Privat24 card statement to Excel and import it into Budgie. Categories, amounts and currencies carry over, and repeats are skipped.`,
-    relatedArticleSlugs: ['offline-first-bank-data-safety', 'historical-exchange-rates-budget-analytics'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'historical-exchange-rates-budget-analytics'],
     relatedFeatureSlugs: ['privatbank-import', 'csv-import', 'multi-currency']
 };
 

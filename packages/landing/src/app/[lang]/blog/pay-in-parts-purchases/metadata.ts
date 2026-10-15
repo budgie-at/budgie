@@ -20,7 +20,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'installment purchase tracking app'
     ],
     seoDescription: msg`How to track Monobank and PrivatBank pay-in-parts purchases in Budgie: create a plan in a few taps and see every payment and what is still left.`,
-    relatedArticleSlugs: ['offline-first-bank-data-safety', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'historical-exchange-rates-budget-analytics'],
     relatedFeatureSlugs: ['installment-tracking', 'debt-tracking', 'budget-planning', 'transaction-long-press-menu']
 };
 
