@@ -56,6 +56,7 @@ export const CreateDebtAccount = () => {
     const variant = ACCOUNT_COLOR.DEBT;
     const stickyInstrument = useStickyDefinedValue(instrument);
     const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
+    const debtAmountLabel = isLentDebt ? t`Amount lent` : t`Amount borrowed`;
     const openingAccountLabel = isLentDebt ? t`From account` : t`To account`;
 
     if (!isDefined(stickyInstrument)) {
@@ -77,7 +78,7 @@ export const CreateDebtAccount = () => {
                     onChange={setOpeningAccountId}
                 />
 
-                <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />
+                <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} label={debtAmountLabel} />
 
                 <DebtAccountTypeField control={control} />
 
