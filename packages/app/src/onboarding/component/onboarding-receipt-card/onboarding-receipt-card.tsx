@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
+import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 
@@ -20,7 +21,11 @@ export const OnboardingReceiptCard = ({ rows, variant = 'secondary', testID }: P
                 className={cn('flex-row items-center justify-between gap-x-lg py-lg', index > 0 && 'border-t border-secondary-corner')}
             >
                 <Text className="text-secondary-foreground text-sm">{row.label}</Text>
-                <Text className="text-primary text-sm font-semibold text-right flex-shrink">{row.value}</Text>
+                <Text
+                    className={cn('text-sm font-semibold text-right flex-shrink', FOREGROUND_COLOR_PALETTE[row.valueVariant ?? 'primary'])}
+                >
+                    {row.value}
+                </Text>
             </View>
         ))}
     </Card>

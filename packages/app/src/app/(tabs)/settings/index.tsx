@@ -59,6 +59,7 @@ export default function SettingsPage() {
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
     const handleNavigateToRules = () => void router.push('/settings/rules');
+    const handleYourDataPress = () => void router.push('/settings/your-data');
     const handleReportBug = () =>
         void openGithubIssueCreation().catch((error: unknown) => {
             Toast.show({ type: 'error', text1: t`Could not open GitHub`, text2: getErrorMessage(error) });
@@ -82,6 +83,14 @@ export default function SettingsPage() {
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
                         title={t`100% Offline & Private`}
                         description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
+                    />
+                    <SettingsCard
+                        testID={SettingsPageSelector.YourDataCard}
+                        icon={UserIconNameEnum.Database}
+                        variant="positive"
+                        title={t`Your data`}
+                        description={t`Where your file lives and who can open it`}
+                        onPress={handleYourDataPress}
                     />
                 </SettingsGroup>
 

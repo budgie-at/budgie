@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: Props) => {
     const { isPinEnabled } = settings;
 
     const [isUnlocked, setIsUnlocked] = useState(hasFreshSealUnlockGrant);
+    const [hasEnteredPinSinceLaunch, setHasEnteredPinSinceLaunch] = useState(isUnlocked);
 
     const shouldAutoUnlock = !settingsLoading && !isPinEnabled;
 
@@ -59,9 +60,13 @@ export const AuthProvider = ({ children }: Props) => {
         return () => void subscription.remove();
     }, [isPinEnabled]);
 
+    const markPinEntered = () => void setHasEnteredPinSinceLaunch(true);
+
     const value: AuthContextInterface = {
         isUnlocked,
         setIsUnlocked,
+        hasEnteredPinSinceLaunch,
+        markPinEntered,
         isFaceIdAvailable,
         isTouchIdAvailable,
         isSomeAvailable,

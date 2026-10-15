@@ -102,10 +102,24 @@ const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
     }, [canStartAutomatically]);
 };
 
+const useUnlockBiometricState = () => {
+    const { t } = useLingui();
+    const { isFaceIdAvailable, isSomeAvailable, hasEnteredPinSinceLaunch } = useAuthContext();
+    const isBiometricConfigured = useSetting('isBiometricEnabled') && isSomeAvailable;
+
+    const biometricName = isFaceIdAvailable ? t`Face ID` : t`fingerprint`;
+    const description =
+        isBiometricConfigured && !hasEnteredPinSinceLaunch
+            ? t`Budgie restarted, so it needs your PIN once before ${biometricName} works again.`
+            : t`Enter your ${PIN_LENGTH}-digit PIN to unlock`;
+
+    return { canUseBiometric: isBiometricConfigured && hasEnteredPinSinceLaunch, description, isFaceIdAvailable };
+};
+
 export const usePinAuthentication = () => {
     const { t } = useLingui();
-    const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
-    const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
+    const { setIsUnlocked, markPinEntered } = useAuthContext();
+    const { canUseBiometric, description, isFaceIdAvailable } = useUnlockBiometricState();
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
@@ -126,6 +140,10 @@ export const usePinAuthentication = () => {
         setIsLoading(false);
 
         if (success) {
+            if (isPinAttempt) {
+                markPinEntered();
+            }
+
             setIsUnlocked(true);
             router.replace('/');
         } else if (isPinAttempt) {
@@ -172,7 +190,7 @@ export const usePinAuthentication = () => {
     return {
         addDigit,
         canUseBiometric,
-        description: t`Enter your ${PIN_LENGTH}-digit PIN to unlock`,
+        description,
         deleteDigit,
         error,
         handleBiometricAuth,

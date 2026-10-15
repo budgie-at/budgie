@@ -232,6 +232,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         debtPaidAmount: debtProgressSql.paidAmount,
                         debtProgressPercentage: debtProgressSql.percentage,
                         debtTotalAmount: debtProgressSql.totalAmount,
+                        hasLedgerHistory: sql<number>`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id} AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`,
                         instrument: InstrumentEntityTable
                     })
                     .from(AccountEntityTable)

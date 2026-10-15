@@ -154,6 +154,10 @@ msgstr "Se conservan {downloaded} de {total} GB. Continuará cuando vuelvas a te
 msgid "{downloadPercent}%"
 msgstr "{downloadPercent}%"
 
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
+msgid "{fileSize} · on this phone"
+msgstr "{fileSize} · en este teléfono"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
@@ -378,6 +382,10 @@ msgstr "Un extracto bancario (PDF o XLSX)"
 msgid "A deposit in the funding account currency must receive the full funding amount"
 msgstr "Un depósito en la moneda de la cuenta de origen debe recibir el importe completo"
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "A forgotten PIN can't be reset."
+msgstr "Un PIN olvidado no se puede restablecer."
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "A rough number is fine. You can correct it any time."
 msgstr "Una cifra aproximada basta. Puedes corregirla cuando quieras."
@@ -532,6 +540,10 @@ msgstr "Añadir cuentas y saldos"
 msgid "Add accounts from bank"
 msgstr "Añadir cuentas del banco"
 
+#: src/account/component/account-grid-item/account-grid-item.tsx
+msgid "Add balance"
+msgstr "Añadir saldo"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Add balances later"
 msgstr "Añadir saldos más tarde"
@@ -572,9 +584,17 @@ msgstr "Añade la comisión del plan"
 msgid "Adjustment"
 msgstr "Ajuste"
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
+msgstr "Tras 5 intentos fallidos, Budgie espera un poco más entre intentos."
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "AI"
 msgstr "IA"
+
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "AI is turned off and its {downloaded} GB of model files are deleted from this phone."
+msgstr "La IA se desactiva y sus {downloaded} GB de archivos de modelo se eliminan de este teléfono."
 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
@@ -791,6 +811,10 @@ msgstr "Sincronización bancaria"
 msgid "Bank sync reset"
 msgstr "Sincronización bancaria restablecida"
 
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "Bank tokens"
+msgstr "Tokens bancarios"
+
 #: src/@generic/component/currency-selector/currency-selector.tsx
 msgid "Base currency"
 msgstr "Moneda base"
@@ -868,6 +892,14 @@ msgstr "Budgie"
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie puede encontrar importaciones duplicadas de sincronización bancaria y reparar consolidaciones de transferencias que terminaron en cuentas inactivas."
 
+#: src/app/note-input.tsx
+msgid "Budgie can sort notes on this phone"
+msgstr "Budgie puede ordenar notas en este teléfono"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Budgie can't reset your PIN"
+msgstr "Budgie no puede restablecer tu PIN"
+
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Budgie could not open your data"
 msgstr "Budgie no pudo abrir tus datos"
@@ -880,9 +912,17 @@ msgstr "Budgie eliminó la parte dañada. Solo volverá a empezar cuando tú lo 
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie encontró un problema inesperado. Puedes reiniciar la app o informar del problema para que podamos investigarlo."
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
+msgstr "Budgie vuelve a cifrar {DB_NAME} ({fileSize}) en este teléfono. Tarda unos segundos."
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Budgie reads these statements on this phone."
 msgstr "Budgie lee estos extractos en este teléfono."
+
+#: src/auth/hook/use-pin-authentication.hook.ts
+msgid "Budgie restarted, so it needs your PIN once before {biometricName} works again."
+msgstr "Budgie se ha reiniciado y necesita tu PIN una vez antes de que {biometricName} vuelva a funcionar."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -923,6 +963,7 @@ msgstr "Puede tardar horas"
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/import/hook/use-restore-backup.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
@@ -934,6 +975,7 @@ msgstr "Puede tardar horas"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -1053,6 +1095,7 @@ msgstr "Elige «Excel» como formato de exportación; no se pueden importar arch
 msgid "Choose a different PIN"
 msgstr "Elegir otro PIN"
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Choose a PIN"
 msgstr "Elige un PIN"
@@ -1060,6 +1103,10 @@ msgstr "Elige un PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Elige un preset para autocompletar las asignaciones de columnas"
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Choose and confirm a PIN"
+msgstr "Elige y confirma un PIN"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Choose what goes inside"
@@ -1234,6 +1281,7 @@ msgstr "Convertir a transferencia"
 msgid "Convert to Transfer?"
 msgstr "¿Convertir a transferencia?"
 
+#: src/app/(tabs)/settings/your-data.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
@@ -1351,11 +1399,15 @@ msgstr "No se pudo eliminar la etiqueta"
 msgid "Could not delete transaction."
 msgstr "No se pudo eliminar la transacción."
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Could not erase the data"
+msgstr "No se pudieron borrar los datos"
+
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
 msgstr "No se pudo exportar el CSV"
 
-#: src/export/components/export-database/export-database.tsx
+#: src/export/hook/use-export-database-action.hook.ts
 msgid "Could not export database"
 msgstr "No se pudo exportar la base de datos"
 
@@ -1410,6 +1462,10 @@ msgstr "No se pudo reasignar la etiqueta"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "No se pudieron recalcular los saldos"
+
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "Could not remove the AI models"
+msgstr "No se pudieron eliminar los modelos de IA"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1674,7 +1730,7 @@ msgstr "Modo oscuro"
 msgid "Data management"
 msgstr "Gestión de datos"
 
-#: src/export/components/export-database/export-database.tsx
+#: src/export/hook/use-export-database-action.hook.ts
 msgid "Database exported"
 msgstr "Base de datos exportada"
 
@@ -1769,6 +1825,10 @@ msgstr "¿Eliminar los {downloaded} GB descargados?"
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Eliminar transacción"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Deletes {DB_NAME} from this phone"
+msgstr "Elimina {DB_NAME} de este teléfono"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/constant/account-type.constant.ts
@@ -2112,6 +2172,18 @@ msgstr "igual a"
 msgid "Equals"
 msgstr "Igual a"
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Erase"
+msgstr "Borrar"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Erase and start fresh"
+msgstr "Borrar y empezar de cero"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Erase and start fresh?"
+msgstr "¿Borrar y empezar de cero?"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Errors"
 msgstr "Errores"
@@ -2193,6 +2265,10 @@ msgstr "Gasto"
 msgid "Expenses"
 msgstr "Gastos"
 
+#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+msgid "Export a backup"
+msgstr "Exportar una copia"
+
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export all transactions to a CSV file"
 msgstr "Exportar todas las transacciones a un archivo CSV"
@@ -2209,6 +2285,7 @@ msgstr "Exportar base de datos"
 msgid "External ID"
 msgstr "ID externo"
 
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Face ID"
 msgstr "Face ID"
@@ -2284,6 +2361,10 @@ msgstr "Filtrar categorías"
 msgid "Filter tags"
 msgstr "Filtrar etiquetas"
 
+#: src/auth/hook/use-pin-authentication.hook.ts
+msgid "fingerprint"
+msgstr "la huella dactilar"
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Fingerprint day to day"
 msgstr "Huella dactilar en el día a día"
@@ -2299,6 +2380,10 @@ msgstr "Corregir errores"
 #: src/app/(main)/create-account/index.tsx
 msgid "Fixed-term savings with an interest rate"
 msgstr "Ahorros a plazo fijo con una tasa de interés"
+
+#: src/app/(main)/pin.tsx
+msgid "Forgot PIN?"
+msgstr "¿Olvidaste el PIN?"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
@@ -2600,6 +2685,10 @@ msgstr "Cifrará todo lo que pongas en Budgie. Elige uno que recuerdes pero que 
 msgid "It will no longer appear in the calendar."
 msgstr "Ya no aparecerá en el calendario."
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
+msgstr "Es la única llave de tu archivo. No hay cuenta ni copia en un servidor, así que no hay desde dónde restablecerlo."
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Huchas"
@@ -2619,6 +2708,14 @@ msgstr "Mantén activado solo \"Habilitar lectura\" — nunca permitas operacion
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
 msgstr "Sigue usando Budgie mientras tanto. Hasta que el modelo esté listo, las categorías se asignan con reglas sencillas en el teléfono."
+
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "Kept in this file"
+msgstr "Guardado en este archivo"
+
+#: src/app/(tabs)/settings/your-data.tsx
+msgid "Key"
+msgstr "Clave"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -2647,6 +2744,10 @@ msgstr "Últimos 7 días"
 #: src/app/resync-window-picker.tsx
 msgid "Last 90 days"
 msgstr "Últimos 90 días"
+
+#: src/app/(tabs)/settings/your-data.tsx
+msgid "Last backup"
+msgstr "Última copia"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last error"
@@ -2737,6 +2838,10 @@ msgstr "Cargando..."
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Loading…"
 msgstr "Cargando…"
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Lock Budgie with your own PIN"
+msgstr "Bloquea Budgie con tu propio PIN"
 
 #: src/onboarding/component/home-first-steps/home-first-steps.tsx
 msgid "Log what you spend. That's all Budgie needs."
@@ -2917,6 +3022,7 @@ msgstr "Monobank envía alrededor de un mes de historial por minuto, por cada cu
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 msgid "Monthly budget"
 msgstr "Presupuesto mensual"
 
@@ -2975,6 +3081,10 @@ msgstr "Neto"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Net worth"
 msgstr "Patrimonio neto"
+
+#: src/app/(tabs)/settings/your-data.tsx
+msgid "Never"
+msgstr "Nunca"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Never synced, never uploaded."
@@ -3181,6 +3291,7 @@ msgstr "Ninguna transacción coincidió"
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
+#: src/app/(tabs)/settings/your-data.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
@@ -3202,6 +3313,10 @@ msgstr "No contiene"
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Not downloaded"
 msgstr "No descargado"
+
+#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+msgid "Not encrypted, because there's no PIN. You choose where it goes."
+msgstr "Sin cifrar, porque no hay PIN. Tú eliges adónde va."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/app/import-backup-pin.tsx
@@ -3225,9 +3340,17 @@ msgstr "No es igual a"
 msgid "Not generated"
 msgstr "No generado"
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Not now"
+msgstr "Ahora no"
+
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
 msgstr "no establecido"
+
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "Not set up"
+msgstr "Sin configurar"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
@@ -3259,6 +3382,10 @@ msgstr "de {total} GB"
 msgid "OK"
 msgstr "OK"
 
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "On this phone"
+msgstr "En este teléfono"
+
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
@@ -3267,6 +3394,14 @@ msgstr "IA en el dispositivo"
 #: src/onboarding/component/home-first-steps/home-first-steps.tsx
 msgid "On-device AI · {aiSize} GB"
 msgstr "IA en el dispositivo · {aiSize} GB"
+
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "On-device AI · {downloaded} GB"
+msgstr "IA en el dispositivo · {downloaded} GB"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "One you exported with a PIN you remember"
+msgstr "Una que exportaste con un PIN que recuerdas"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "One-off"
@@ -3350,6 +3485,7 @@ msgstr "Abre Privat24 y selecciona la tarjeta o cuenta que quieres importar"
 msgid "Open settings"
 msgstr "Abrir configuración"
 
+#: src/app/(tabs)/settings/your-data.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
@@ -3518,6 +3654,7 @@ msgstr "Se denegó el permiso para acceder a los contactos."
 
 #: src/auth/components/security-status-chip/security-status-chip.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Phone lock only"
 msgstr "Solo bloqueo del teléfono"
 
@@ -3756,6 +3893,7 @@ msgstr "Restante"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 msgid "Remove"
 msgstr "Eliminar"
 
@@ -3774,6 +3912,10 @@ msgstr "Eliminar comisión"
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee?"
 msgstr "¿Eliminar comisión?"
+
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "Remove on-device AI?"
+msgstr "¿Eliminar la IA del dispositivo?"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split"
@@ -3817,6 +3959,10 @@ msgstr "Reiniciar app"
 msgid "Restore"
 msgstr "Restaurar"
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Restore a backup"
+msgstr "Restaurar una copia"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Restore Account?"
 msgstr "¿Restaurar cuenta?"
@@ -3856,6 +4002,10 @@ msgstr "¿Revertir consolidación?"
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
+msgstr "Ahora mismo, cualquiera que pueda desbloquear tu teléfono puede abrir Budgie. Con un PIN, el propio archivo se cifra y solo se abre con él."
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -3947,6 +4097,7 @@ msgid "Seal"
 msgstr "Sellar"
 
 #: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Sealed"
 msgstr "Sellado"
 
@@ -3954,9 +4105,17 @@ msgstr "Sellado"
 msgid "Sealed · {contents}"
 msgstr "Sellado · {contents}"
 
+#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+msgid "Sealed with your PIN. You choose where it goes."
+msgstr "Sellada con tu PIN. Tú eliges adónde va."
+
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed."
 msgstr "Sellado."
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Sealed. Face ID or fingerprint is optional."
+msgstr "Sellado. Face ID o la huella dactilar son opcionales."
 
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed. Only your PIN opens this file."
@@ -4164,6 +4323,10 @@ msgstr "Seleccionado"
 msgid "Sending {fromCode}"
 msgstr "Enviando {fromCode}"
 
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "Sent only to the bank they belong to."
+msgstr "Solo se envían al banco al que pertenecen."
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Primero configura una moneda predeterminada en Ajustes"
@@ -4193,6 +4356,10 @@ msgstr "Establecer fecha de vencimiento"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Establecer fecha de devolución"
+
+#: src/settings/components/your-data-local-items/your-data-local-items.tsx
+msgid "Set up"
+msgstr "Configurado"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
@@ -4509,6 +4676,10 @@ msgstr "La descarga se detuvo antes de terminar. Inténtalo de nuevo cuando la c
 msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 msgstr "Los datos descargados de los modelos de IA se eliminan de este teléfono. No se descargará nada hasta que lo inicies."
 
+#: src/app/(tabs)/settings/your-data.tsx
+msgid "The file"
+msgstr "El archivo"
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "El PIN se convierte en la clave de cifrado"
@@ -4557,6 +4728,10 @@ msgstr "Esta copia de seguridad se creó con una versión anterior de Budgie y n
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
+msgstr "Esto elimina {DB_NAME} y todo su contenido de este teléfono. No se puede deshacer."
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
@@ -4832,6 +5007,7 @@ msgstr "Intenta ajustar tus filtros para ver más resultados"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Try again"
 msgstr "Inténtalo de nuevo"
@@ -4845,6 +5021,10 @@ msgstr "Intentar de nuevo"
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Try switching on Airplane Mode. Budgie works exactly the same."
 msgstr "Prueba a activar el modo avión. Budgie funciona exactamente igual."
+
+#: src/app/note-input.tsx
+msgid "Turn on On-device AI in Settings. Tap to see what it downloads."
+msgstr "Activa la IA en el dispositivo en Ajustes. Toca para ver qué descarga."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Turn on on-device AI to download the models."
@@ -5057,6 +5237,10 @@ msgstr "¿Cuándo vence el depósito?"
 msgid "When should it be returned?"
 msgstr "¿Cuándo debería ser devuelto?"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Where your file lives and who can open it"
+msgstr "Dónde está tu archivo y quién puede abrirlo"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Which bank is the statement from?"
 msgstr "¿De qué banco es el extracto?"
@@ -5166,6 +5350,11 @@ msgstr "Estás conectado a Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "Estás conectado a Wi-Fi."
 
+#: src/app/(tabs)/settings/index.tsx
+#: src/app/(tabs)/settings/your-data.tsx
+msgid "Your data"
+msgstr "Tus datos"
+
 #: src/auth/components/security-status-chip/security-status-chip.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Tus datos están sellados. Solo tu PIN los abre."
@@ -5178,7 +5367,7 @@ msgstr "Tus datos permanecen intactos en este dispositivo. Inténtalo de nuevo o
 msgid "Your data: {state}"
 msgstr "Tus datos: {state}"
 
-#: src/export/components/export-database/export-database.tsx
+#: src/export/hook/use-export-database-action.hook.ts
 msgid "Your database backup is ready to share."
 msgstr "Tu copia de seguridad de la base de datos está lista para compartir."
 

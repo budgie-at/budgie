@@ -8,6 +8,7 @@ import m0004 from './20261004121613_transaction_tag_source/migration.sql';
 import m0005 from './20261005210950_account_installment_count/migration.sql';
 import m0006 from './20261007190655_transaction_entry_operation_metadata/migration.sql';
 import m0007 from './20261015125006_settings_ai_wifi_only/migration.sql';
+import m0008 from './20261015134457_settings_backup_and_ai_hint/migration.sql';
 
 export default {
     migrations: {
@@ -18,6 +19,7 @@ export default {
         '20261004121613_transaction_tag_source': m0004,
         '20261005210950_account_installment_count': m0005,
         '20261007190655_transaction_entry_operation_metadata': m0006,
-        '20261015125006_settings_ai_wifi_only': m0007
+        '20261015125006_settings_ai_wifi_only': m0007,
+        '20261015134457_settings_backup_and_ai_hint': m0008
     }
 };

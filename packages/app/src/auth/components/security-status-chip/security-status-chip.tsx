@@ -6,7 +6,6 @@ import { Text } from 'react-native';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 
 import { SecurityStatusChipSelector } from './security-status-chip.selector';
 
@@ -14,8 +13,8 @@ export const SecurityStatusChip = () => {
     const { t } = useLingui();
     const isPinEnabled = useSetting('isPinEnabled');
 
-    const handleSealedPress = () => void router.push({ pathname: '/settings', params: { anchor: 'security' } });
-    const handlePhoneLockPress = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CREATE } });
+    const handleSealedPress = () => void router.push('/settings/your-data');
+    const handlePhoneLockPress = () => void router.push('/add-pin');
 
     if (isPinEnabled) {
         return (

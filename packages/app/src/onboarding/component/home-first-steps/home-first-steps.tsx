@@ -13,7 +13,6 @@ import { useFormatGigabytes } from '../../../@generic/hook/use-format-gigabytes.
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useAiDownloadPreflight } from '../../../ai/hook/use-ai-download-preflight.hook';
-import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useGetTransactionCountQuery } from '../../../transaction/query/use-get-transaction-count.query';
 import { OnboardingService } from '../../service/onboarding.service';
@@ -55,7 +54,7 @@ export const HomeFirstSteps = ({ accountCount }: Props) => {
             )
         );
     };
-    const handleMakePinPress = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CREATE } });
+    const handleMakePinPress = () => void router.push('/add-pin');
     const handleAddAccountsPress = () => void router.push('/create-account');
     const handleAiPress = () => void router.push('/settings/ai');
 
