@@ -1,6 +1,7 @@
 /* eslint-disable max-lines, max-lines-per-function -- legal page keeps binding copy inline instead of MDX or registries */
 import { Trans } from '@lingui/react/macro';
 
+import { buildAlternates } from '../../../../generic/utils/build-alternates.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -15,6 +16,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 
     return {
         title: i18n._(TERMS_OF_SERVICE_METADATA.title),
+        alternates: buildAlternates(lang, '/legal/terms-of-service'),
         description: i18n._(TERMS_OF_SERVICE_METADATA.description)
     };
 }
