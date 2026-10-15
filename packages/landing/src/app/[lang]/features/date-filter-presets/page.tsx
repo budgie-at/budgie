@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CalendarDays, CalendarRange, SlidersHorizontal } from 'lucide-react';
+import { CalendarDays, SliderHorizontal } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -131,13 +131,13 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={CalendarRange} title={<Trans>Seven presets, one tap</Trans>}>
+                <FeatureBenefits.Benefit icon={CalendarDays} title={<Trans>Seven presets, one tap</Trans>}>
                     <Trans>Seven presets cover the windows you actually use, from Today to All Time</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={CalendarDays} title={<Trans>A custom range when needed</Trans>}>
                     <Trans>Custom range fallback for anything else</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={SlidersHorizontal} title={<Trans>Narrow by amount too</Trans>}>
+                <FeatureBenefits.Benefit icon={SliderHorizontal} title={<Trans>Narrow by amount too</Trans>}>
                     <Trans>An amount-range chip in the same filter row, with a From value, a To value, or both</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, Eye, KeyRound, Repeat, Wallet } from 'lucide-react';
+import { ArrowSwapHorizontal, Eye, Key, Repeat, Wallet } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -138,7 +138,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 <FeatureProof.Fact icon={Eye}>
                     <Trans>Setup asks for the reading permission only</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={KeyRound}>
+                <FeatureProof.Fact icon={Key}>
                     <Trans>Your key and secret stay on your phone</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
@@ -151,7 +151,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Repeat} title={<Trans>Trades are not fake income</Trans>}>
                     <Trans>Spot trades and Convert land as transfers between two of your asset accounts, not as fake income</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>P2P buy and bank payment merged</Trans>}>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>P2P buy and bank payment merged</Trans>}>
                     <Trans>A P2P purchase and the bank payment behind it merge into one cross-currency transfer</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

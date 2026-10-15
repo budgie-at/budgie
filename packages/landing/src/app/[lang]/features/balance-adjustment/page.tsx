@@ -1,6 +1,6 @@
 /* eslint-disable max-lines-per-function */
 import { Trans } from '@lingui/react/macro';
-import { Coins, Scale, ScrollText } from 'lucide-react';
+import { Coins, DocumentText, Scale } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -89,7 +89,7 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                 <FeatureBenefits.Benefit icon={Coins} title={<Trans>Net worth stays consistent</Trans>}>
                     <Trans>The correction carries the exchange rate of the day it was booked, so net worth stays consistent</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ScrollText} title={<Trans>Corrections stay visible</Trans>}>
+                <FeatureBenefits.Benefit icon={DocumentText} title={<Trans>Corrections stay visible</Trans>}>
                     <Trans>An audited trail — the past is corrected in the open, never silently overwritten</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

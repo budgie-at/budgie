@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, Split, Zap } from 'lucide-react';
+import { ArrowSwapHorizontal, Bolt, Scissors } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -148,13 +148,13 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
             </FeatureVersus>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={Zap} title={<Trans>Pre-filled for fast entry</Trans>}>
+                <FeatureBenefits.Benefit icon={Bolt} title={<Trans>Pre-filled for fast entry</Trans>}>
                     <Trans>Fast entry: account and date are pre-filled, and a suggested category is one tap away</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Transfers never miscounted</Trans>}>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Transfers never miscounted</Trans>}>
                     <Trans>Three first-class transaction types: expense, income, transfer — never confused, never miscounted</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Split} title={<Trans>One entry, several categories</Trans>}>
+                <FeatureBenefits.Benefit icon={Scissors} title={<Trans>One entry, several categories</Trans>}>
                     <Trans>Split one entry across several categories right in the quick-entry form</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

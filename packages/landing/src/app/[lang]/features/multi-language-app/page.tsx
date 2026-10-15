@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Languages, RefreshCw, Smartphone } from 'lucide-react';
+import { Language, Mobile, Refresh } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -120,13 +120,13 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={Languages} title={<Trans>Five full languages</Trans>}>
+                <FeatureBenefits.Benefit icon={Language} title={<Trans>Five full languages</Trans>}>
                     <Trans>Five languages: English, Ukrainian, French, German, Spanish — full UI</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>Set up in your language</Trans>}>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>Set up in your language</Trans>}>
                     <Trans>Auto-detected from device locale on first launch</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={RefreshCw} title={<Trans>Switch without relaunching</Trans>}>
+                <FeatureBenefits.Benefit icon={Refresh} title={<Trans>Switch without relaunching</Trans>}>
                     <Trans>In-app switcher — no reinstall, no relaunch</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

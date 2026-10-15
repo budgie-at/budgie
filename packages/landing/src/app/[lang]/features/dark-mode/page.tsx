@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Moon, Palette, Rocket, SunMoon } from 'lucide-react';
+import { DarkLight, Moon, Palette, Rocket } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -106,7 +106,7 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Moon} title={<Trans>True black background</Trans>}>
                     <Trans>A true black background instead of a dimmed gray panel</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={SunMoon} title={<Trans>Follows your system theme</Trans>}>
+                <FeatureBenefits.Benefit icon={DarkLight} title={<Trans>Follows your system theme</Trans>}>
                     <Trans>One Dark Mode switch in Settings — follows your device&apos;s theme until you switch it</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Rocket} title={<Trans>A black launch screen</Trans>}>

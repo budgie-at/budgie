@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CloudOff, Plane, ShieldCheck, Store, TrendingUp } from 'lucide-react';
+import { CloudCross, Plane, ShieldCheck, Store, TrendUp } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -131,7 +131,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 <FeatureProof.Fact icon={Plane}>
                     <Trans>Turn on airplane mode: suggestions keep coming</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={CloudOff}>
+                <FeatureProof.Fact icon={CloudCross}>
                     <Trans>There is no cloud fallback to send anything to</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
@@ -165,7 +165,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 <FeatureBenefits.Benefit icon={Store} title={<Trans>Remembers your merchants</Trans>}>
                     <Trans>Merchants you have categorized before are recognized instantly</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={TrendingUp} title={<Trans>Learns from every correction</Trans>}>
+                <FeatureBenefits.Benefit icon={TrendUp} title={<Trans>Learns from every correction</Trans>}>
                     <Trans>Every correction counts on the spot — accuracy improves as you use it</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Statements stay on your phone</Trans>}>

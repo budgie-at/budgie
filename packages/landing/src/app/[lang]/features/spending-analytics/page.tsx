@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CalendarRange, PieChart, Tags } from 'lucide-react';
+import { CalendarDays, ChartPie, Tags } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -136,13 +136,13 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={PieChart} title={<Trans>See where money goes</Trans>}>
+                <FeatureBenefits.Benefit icon={ChartPie} title={<Trans>See where money goes</Trans>}>
                     <Trans>Categories tab: per-category totals, with drill-down to every transaction in the row</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Spot the bookkeeping gaps</Trans>}>
                     <Trans>Tags tab: per-tag income and expense, plus an &ldquo;Untagged&rdquo; bucket for the gaps</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={CalendarRange} title={<Trans>Any period you need</Trans>}>
+                <FeatureBenefits.Benefit icon={CalendarDays} title={<Trans>Any period you need</Trans>}>
                     <Trans>Seven date presets, from Today to All Time, plus any range you pick on the calendar</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

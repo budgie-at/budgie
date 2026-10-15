@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Banknote, ChartPie, Receipt } from 'lucide-react';
+import { Banknote, ChartPie, Receipt } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../../feature/component/feature-benefits/feature-benefits';
 

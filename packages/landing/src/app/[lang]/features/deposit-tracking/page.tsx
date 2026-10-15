@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Calculator, Hourglass, Landmark, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { Bank, Calculator, Hourglass, ShieldCheck, SliderHorizontal } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -117,14 +117,14 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                 <FeatureProof.Fact icon={Calculator}>
                     <Trans>Payout is your balance plus interest for the days left</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={SlidersHorizontal}>
+                <FeatureProof.Fact icon={SliderHorizontal}>
                     <Trans>It needs both an interest rate and a maturity date</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={Landmark} title={<Trans>Savings kept separate</Trans>}>
+                <FeatureBenefits.Benefit icon={Bank} title={<Trans>Savings kept separate</Trans>}>
                     <Trans>Dedicated Deposit account type for fixed-term savings and locked principal</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Hourglass} title={<Trans>Days left and expected payout</Trans>}>

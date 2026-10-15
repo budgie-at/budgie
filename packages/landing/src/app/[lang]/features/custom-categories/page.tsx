@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { GitMerge, Link2, Merge, Palette, ShieldCheck } from 'lucide-react';
+import { BranchDown, Link2, Palette, ShieldCheck } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -124,7 +124,7 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                 <FeatureProof.Fact icon={Link2}>
                     <Trans>Renaming a category never unlinks its transactions</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={GitMerge}>
+                <FeatureProof.Fact icon={BranchDown}>
                     <Trans>Merging moves every transaction to the category you keep</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
@@ -164,7 +164,7 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                         Create unlimited categories with a custom name and icon, plus AI-generated translation and search keywords
                     </Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Merge} title={<Trans>Merge, keep every transaction</Trans>}>
+                <FeatureBenefits.Benefit icon={BranchDown} title={<Trans>Merge, keep every transaction</Trans>}>
                     <Trans>Merge two categories into one with mass-reassignment of transactions</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Deleting never orphans data</Trans>}>

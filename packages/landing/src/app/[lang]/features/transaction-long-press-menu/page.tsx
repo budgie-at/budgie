@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Hand, ListChecks, Smartphone } from 'lucide-react';
+import { Hand, ListCheck, Mobile } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -210,10 +210,10 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 <FeatureBenefits.Benefit icon={Hand} title={<Trans>Act straight from the list</Trans>}>
                     <Trans>Start any action from the list — long-press the row, then pick it</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Only actions that apply</Trans>}>
+                <FeatureBenefits.Benefit icon={ListCheck} title={<Trans>Only actions that apply</Trans>}>
                     <Trans>Context-aware menu — actions adapt to the transaction so you never see an option that does not apply</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>One-handed, no extra screens</Trans>}>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>One-handed, no extra screens</Trans>}>
                     <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

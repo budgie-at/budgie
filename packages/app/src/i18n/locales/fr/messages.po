@@ -2242,10 +2242,6 @@ msgstr "Comment configurer"
 msgid "How to export"
 msgstr "Comment exporter"
 
-#: src/@generic/component/icon/icon.tsx
-msgid "Icon importer not found: {icon}"
-msgstr "Importateur d'icônes introuvable : {icon}"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception"

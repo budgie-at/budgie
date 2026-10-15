@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { EyeOff, ShieldCheck, ToggleRight } from 'lucide-react';
+import { EyeOff, ShieldCheck, ToggleOn } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -104,7 +104,7 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 heading={<Trans>Try it, then switch apps</Trans>}
                 lede={<Trans>Turn it on, open the app switcher, and look for your balances. They are gone.</Trans>}
             >
-                <FeatureProof.Fact icon={ToggleRight}>
+                <FeatureProof.Fact icon={ToggleOn}>
                     <Trans>One switch in Settings, under Security</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Fact icon={EyeOff}>
@@ -120,7 +120,7 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Screen capture blocked</Trans>}>
                     <Trans>Asks your phone to block screenshots and screen recordings while it is on</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ToggleRight} title={<Trans>One simple switch</Trans>}>
+                <FeatureBenefits.Benefit icon={ToggleOn} title={<Trans>One simple switch</Trans>}>
                     <Trans>One switch in Settings → Security, right under the PIN-lock card</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

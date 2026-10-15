@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { History, MousePointerClick, Power, ShieldCheck, TrendingUp } from 'lucide-react';
+import { Cursor, History, Power, ShieldCheck, TrendUp } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -151,7 +151,7 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={MousePointerClick} title={<Trans>Tap instead of typing</Trans>}>
+                <FeatureBenefits.Benefit icon={Cursor} title={<Trans>Tap instead of typing</Trans>}>
                     <Trans>
                         Tappable suggestions for category, tags and comment, with the usual amount filled in after — all from your own
                         history
@@ -160,7 +160,7 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Private by design</Trans>}>
                     <Trans>Fully private — suggestions are made on your phone, with no profiling</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={TrendingUp} title={<Trans>Sharper with every entry</Trans>}>
+                <FeatureBenefits.Benefit icon={TrendUp} title={<Trans>Sharper with every entry</Trans>}>
                     <Trans>Self-improving — accepted or corrected suggestions sharpen the next one</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

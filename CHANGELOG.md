@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
+
+
+### Bug Fixes
+
+* address icon review findings ([fffc644](https://github.com/budgie-at/budgie/commit/fffc644acb9cedb2db93131c7a9afd41d924b044))
+* **app:** drop Russian from icon search ([0c013a8](https://github.com/budgie-at/budgie/commit/0c013a8a1676dd48f2692a335ecd37b3a8045539))
+* **app:** make every icon searchable by the image it shows ([4ec1601](https://github.com/budgie-at/budgie/commit/4ec16015086066e47d6debc84472d89ac6a4516b))
+* **app:** map MailOpen to the Reicon open envelope ([56ff24d](https://github.com/budgie-at/budgie/commit/56ff24d1f6a0f97a466174bf712149cf1b395c00))
+* **app:** map Plane to the Reicon airplane ([a1e72ae](https://github.com/budgie-at/budgie/commit/a1e72ae4f7d68478ffaf844369b939c35ac97f8b))
+* **app:** render Reicon glyphs on first launch ([5b54177](https://github.com/budgie-at/budgie/commit/5b541776ae5a0999aa19c8e84e47544f73ec9694))
+* **app:** show each distinct icon once in the icon picker ([50df7a7](https://github.com/budgie-at/budgie/commit/50df7a7a875ab924a5fe43acaf59414f46f660fe))
+* **app:** sync icon catalogs ([d04a724](https://github.com/budgie-at/budgie/commit/d04a7240d1387ef3a6d2da7b0cf48df4e9b599c2))
+
+
+### Features
+
+* **app:** make the full Reicon catalog selectable without losing saved icons ([56aecff](https://github.com/budgie-at/budgie/commit/56aecff80ff1c2129862fb0c3174180b1bac722e))
+* replace Lucide with Reicon while preserving saved icons ([45180c2](https://github.com/budgie-at/budgie/commit/45180c248fb0a50444c5e75c33daa301cdba8ed1)), closes [#1419](https://github.com/budgie-at/budgie/issues/1419)
+
+
+
+
+
 ## [6.103.13](https://github.com/budgie-at/budgie/compare/v6.103.12...v6.103.13) (2026-10-15)
 
 

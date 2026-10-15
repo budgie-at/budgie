@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { EyeOff, KeyRound, ScanFace } from 'lucide-react';
+import { EyeOff, FaceScanSquare, Key } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -90,7 +90,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 heading={<Trans>Cancel a scan, the keypad waits</Trans>}
                 lede={<Trans>The keypad is the lock screen itself, so a cancelled or failed scan costs you nothing.</Trans>}
             >
-                <FeatureProof.Fact icon={KeyRound}>
+                <FeatureProof.Fact icon={Key}>
                     <Trans>Your PIN is the only other way in</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Fact icon={EyeOff}>
@@ -124,7 +124,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={ScanFace} title={<Trans>Unlock with biometrics</Trans>}>
+                <FeatureBenefits.Benefit icon={FaceScanSquare} title={<Trans>Unlock with biometrics</Trans>}>
                     <Trans>
                         Face ID, Touch ID or Android fingerprint and face unlock on the lock screen, offered when the device has one
                         enrolled
@@ -133,7 +133,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 <FeatureBenefits.Benefit icon={EyeOff} title={<Trans>Biometric data stays private</Trans>}>
                     <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>PIN is always your fallback</Trans>}>
+                <FeatureBenefits.Benefit icon={Key} title={<Trans>PIN is always your fallback</Trans>}>
                     <Trans>Falls back to PIN if biometrics are disabled or unavailable</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

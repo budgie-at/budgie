@@ -1,9 +1,9 @@
 'use client';
 
 import { Trans } from '@lingui/react/macro';
-import { Home, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { Home, Sparkles } from 'reicon-react';
 
 import { isString } from '@rnw-community/shared';
 

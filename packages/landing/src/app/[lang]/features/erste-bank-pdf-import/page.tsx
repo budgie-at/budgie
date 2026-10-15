@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Eye, FileText, ScanText } from 'lucide-react';
 import Link from 'next/link';
+import { Eye, FileText, Scan } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -100,7 +100,7 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 <FeatureBenefits.Benefit icon={FileText} title={<Trans>Straight from George</Trans>}>
                     <Trans>Reads the statement PDF as downloaded from George — no manual column mapping</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ScanText} title={<Trans>Account details read for you</Trans>}>
+                <FeatureBenefits.Benefit icon={Scan} title={<Trans>Account details read for you</Trans>}>
                     <Trans>IBAN and closing balance read automatically</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Eye} title={<Trans>Preview before anything is saved</Trans>}>

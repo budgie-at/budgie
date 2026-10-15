@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { DatabaseBackup, FileSpreadsheet, MousePointerClick } from 'lucide-react';
+import { Cursor, Database, FileText } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -127,10 +127,10 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 heading={<Trans>Check it in Settings</Trans>}
                 lede={<Trans>Both exports are plain rows, each beside the import that reads the file back in.</Trans>}
             >
-                <FeatureProof.Fact icon={FileSpreadsheet}>
+                <FeatureProof.Fact icon={FileText}>
                     <Trans>Export CSV takes your transactions in one tap</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={DatabaseBackup}>
+                <FeatureProof.Fact icon={Database}>
                     <Trans>The backup export is a full copy you can restore from</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Action href={`/${lang}/features/database-backup`}>
@@ -139,16 +139,16 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={FileSpreadsheet} title={<Trans>CSV for any spreadsheet</Trans>}>
+                <FeatureBenefits.Benefit icon={FileText} title={<Trans>CSV for any spreadsheet</Trans>}>
                     <Trans>
                         CSV export with title, both accounts and amounts, currencies, category, MCC, date, comment, and the bank&apos;s
                         transaction id
                     </Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={DatabaseBackup} title={<Trans>Complete restore from one file</Trans>}>
+                <FeatureBenefits.Benefit icon={Database} title={<Trans>Complete restore from one file</Trans>}>
                     <Trans>Compressed full backup file for a complete restore — PIN-locked if a PIN was set at export time</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={MousePointerClick} title={<Trans>Your transactions in one tap</Trans>}>
+                <FeatureBenefits.Benefit icon={Cursor} title={<Trans>Your transactions in one tap</Trans>}>
                     <Trans>One tap exports your whole history — no range to pick, and deleted or merged-away rows stay out</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

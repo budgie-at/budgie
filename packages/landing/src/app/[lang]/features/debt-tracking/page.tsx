@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CalendarClock, Link2, Scale } from 'lucide-react';
+import { CalendarTick, Link2, Scale } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -180,7 +180,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Scale} title={<Trans>Owe and owed, signed correctly</Trans>}>
                     <Trans>Explicit direction: &quot;I owe&quot; vs &quot;owes me&quot; — net worth signs them correctly</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={CalendarClock} title={<Trans>Targets and return dates</Trans>}>
+                <FeatureBenefits.Benefit icon={CalendarTick} title={<Trans>Targets and return dates</Trans>}>
                     <Trans>Target balance and return date for closing the loop</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Link2} title={<Trans>Repayments without re-entering</Trans>}>

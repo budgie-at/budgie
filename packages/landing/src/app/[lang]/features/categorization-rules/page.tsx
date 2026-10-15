@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { History, Tags, Zap } from 'lucide-react';
+import { Bolt, History, Tags } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -162,7 +162,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Category, tag or transfer</Trans>}>
                     <Trans>Actions that set a category, add a tag, or convert the transaction into a transfer</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Zap} title={<Trans>Applied on every sync</Trans>}>
+                <FeatureBenefits.Benefit icon={Bolt} title={<Trans>Applied on every sync</Trans>}>
                     <Trans>Rules run automatically on Monobank sync, bank file sync, and CSV import</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={History} title={<Trans>Fix existing transactions too</Trans>}>

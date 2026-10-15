@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Database, Lock, Smartphone } from 'lucide-react';
+import { Database, Lock, Mobile } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -111,7 +111,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 heading={<Trans>Back up and restore in Settings</Trans>}
                 lede={<Trans>Export Database and Import Database sit side by side in Settings.</Trans>}
             >
-                <FeatureProof.Fact icon={Smartphone}>
+                <FeatureProof.Fact icon={Mobile}>
                     <Trans>Export on one phone, import on another</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Fact icon={Lock}>
@@ -127,7 +127,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Lock} title={<Trans>Locked with your PIN</Trans>}>
                     <Trans>Set a PIN and the backup is locked with it — no vendor format, no conversion step</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>Move to a new phone</Trans>}>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>Move to a new phone</Trans>}>
                     <Trans>Move to a new phone by exporting on the old one and importing on the new one — no account on either side</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

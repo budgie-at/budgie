@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { KeyRound, Link2, ToggleRight } from 'lucide-react';
+import { Key, Link2, ToggleOn } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -129,10 +129,10 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 heading={<Trans>Check it on the bank screen</Trans>}
                 lede={<Trans>Open any connected bank and every account behind it is on one list.</Trans>}
             >
-                <FeatureProof.Fact icon={ToggleRight}>
+                <FeatureProof.Fact icon={ToggleOn}>
                     <Trans>Each account has its own sync switch</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={KeyRound}>
+                <FeatureProof.Fact icon={Key}>
                     <Trans>The token belongs to the connection, not an account</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
@@ -170,10 +170,10 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 <FeatureBenefits.Benefit icon={Link2} title={<Trans>One connection, many accounts</Trans>}>
                     <Trans>One connection behind many accounts — Monobank cards and jars, plus deposits you open under the same bank</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>Renew a token once</Trans>}>
+                <FeatureBenefits.Benefit icon={Key} title={<Trans>Renew a token once</Trans>}>
                     <Trans>Change the token once and every account on that connection follows</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ToggleRight} title={<Trans>Per-account sync switch</Trans>}>
+                <FeatureBenefits.Benefit icon={ToggleOn} title={<Trans>Per-account sync switch</Trans>}>
                     <Trans>A connection screen listing its accounts with their balances and a per-account sync switch</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

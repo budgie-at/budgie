@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CalendarClock, ListChecks, RefreshCw } from 'lucide-react';
+import { CalendarTick, ListCheck, Refresh } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -156,15 +156,15 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Any purchase can become a plan</Trans>}>
+                <FeatureBenefits.Benefit icon={ListCheck} title={<Trans>Any purchase can become a plan</Trans>}>
                     <Trans>
                         Any expense can become a plan, from a bank&apos;s pay-in-parts service to a store&apos;s installment offer
                     </Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={RefreshCw} title={<Trans>Parts attach after each sync</Trans>}>
+                <FeatureBenefits.Benefit icon={Refresh} title={<Trans>Parts attach after each sync</Trans>}>
                     <Trans>Monthly parts are attached after each sync, matched by account, amount and due date</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={CalendarClock} title={<Trans>Next payment on Home</Trans>}>
+                <FeatureBenefits.Benefit icon={CalendarTick} title={<Trans>Next payment on Home</Trans>}>
                     <Trans>Every open plan appears under You owe on Home, next to your other debts</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

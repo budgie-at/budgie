@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, Link2, ShieldCheck } from 'lucide-react';
+import { ArrowSwapHorizontal, Link2, ShieldCheck } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -171,7 +171,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Matches without perfect metadata</Trans>}>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Matches without perfect metadata</Trans>}>
                     <Trans>Amount + time-window matching catches transfers and refunds without perfect bank metadata</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>No silent guesses</Trans>}>

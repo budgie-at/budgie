@@ -3,7 +3,7 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Users } from 'lucide-react';
+import { Users } from 'reicon-react';
 
 import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
 

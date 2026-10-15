@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Coins, Scale, ToggleRight } from 'lucide-react';
+import { Coins, Scale, ToggleOn } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -148,7 +148,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Coins} title={<Trans>Every account in your currency</Trans>}>
                     <Trans>Background FX-rate refresh converts every account to your base currency</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ToggleRight} title={<Trans>Choose what counts</Trans>}>
+                <FeatureBenefits.Benefit icon={ToggleOn} title={<Trans>Choose what counts</Trans>}>
                     <Trans>Per-account &ldquo;include in net worth&rdquo; toggle — partial-truth balance is your call</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

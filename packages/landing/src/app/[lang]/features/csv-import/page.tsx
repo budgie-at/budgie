@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Columns3, FileSpreadsheet, ListChecks, Rows3, WandSparkles } from 'lucide-react';
 import Link from 'next/link';
+import { FileText, Layout, List, ListCheck, MagicWand } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -118,26 +118,26 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                 heading={<Trans>See the mapping before you import</Trans>}
                 lede={<Trans>Every field shows the column it will read, so you know where each value comes from.</Trans>}
             >
-                <FeatureProof.Fact icon={ListChecks}>
+                <FeatureProof.Fact icon={ListCheck}>
                     <Trans>Five fields are required, the rest are optional</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={Rows3}>
+                <FeatureProof.Fact icon={List}>
                     <Trans>A badge counts the rows Budgie found in your file</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={Columns3} title={<Trans>Any column order works</Trans>}>
+                <FeatureBenefits.Benefit icon={Layout} title={<Trans>Any column order works</Trans>}>
                     <Trans>
                         Map To Account, Category, Date, Amount and To Currency onto whichever columns your bank exports — your order, not
                         ours
                     </Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={WandSparkles} title={<Trans>One-tap import presets</Trans>}>
+                <FeatureBenefits.Benefit icon={MagicWand} title={<Trans>One-tap import presets</Trans>}>
                     <Trans>Built-in presets for Budgie&apos;s own export, SmartBudget and FinEye fill every selector in one tap</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={FileSpreadsheet} title={<Trans>Nothing to set up first</Trans>}>
+                <FeatureBenefits.Benefit icon={FileText} title={<Trans>Nothing to set up first</Trans>}>
                     <Trans>Accounts and categories are created from the values in the file — nothing to set up beforehand</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { KeyRound, Lock, ScanFace } from 'lucide-react';
+import { FaceScanSquare, Key, Lock } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -141,17 +141,17 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 <FeatureProof.Fact icon={Lock}>
                     <Trans>Leaving the app brings the keypad back</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={KeyRound}>
+                <FeatureProof.Fact icon={Key}>
                     <Trans>A wrong PIN clears the dots and says so</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={KeyRound} title={<Trans>A lock tied to your data</Trans>}>
+                <FeatureBenefits.Benefit icon={Key} title={<Trans>A lock tied to your data</Trans>}>
                     <Trans>The PIN is tied to your data — not just a screen guard</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ScanFace} title={<Trans>Unlock with your face</Trans>}>
+                <FeatureBenefits.Benefit icon={FaceScanSquare} title={<Trans>Unlock with your face</Trans>}>
                     <Trans>Optional Face ID, Touch ID or Android fingerprint or face unlock, with the PIN as fallback</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Lock} title={<Trans>Locks when you leave</Trans>}>

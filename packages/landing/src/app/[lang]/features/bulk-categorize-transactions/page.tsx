@@ -1,8 +1,8 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CheckCheck, Dumbbell, House, Inbox, ShoppingCart, Sparkles, Tag } from 'lucide-react';
 import Link from 'next/link';
+import { CheckRead, Dumbbell, House, Inbox, ShoppingCart, Sparkles, Tag } from 'reicon-react';
 
 import { CategorizeDemo } from '../../../../feature/component/categorize-demo/categorize-demo';
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
@@ -262,7 +262,7 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 <FeatureBenefits.Benefit icon={Sparkles} title={<Trans>Suggestions from your choices</Trans>}>
                     <Trans>Category suggestions learned from your own past choices</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={CheckCheck} title={<Trans>Accept all, then Undo</Trans>}>
+                <FeatureBenefits.Benefit icon={CheckRead} title={<Trans>Accept all, then Undo</Trans>}>
                     <Trans>Accept every confident suggestion at once, with Undo</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

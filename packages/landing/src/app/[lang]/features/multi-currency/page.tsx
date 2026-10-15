@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, Coins, Globe } from 'lucide-react';
+import { ArrowSwapHorizontal, Coins, Globe } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -131,7 +131,7 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Globe} title={<Trans>One total in your base currency</Trans>}>
                     <Trans>Home and analytics screens convert to your base currency automatically</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Transfers keep both amounts</Trans>}>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Transfers keep both amounts</Trans>}>
                     <Trans>Cross-currency transfers keep both amounts and the exchange rate at transfer time</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

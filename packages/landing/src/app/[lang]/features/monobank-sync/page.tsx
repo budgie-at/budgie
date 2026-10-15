@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, CloudOff, PiggyBank, Plane, RefreshCw } from 'lucide-react';
+import { ArrowSwapHorizontal, CloudCross, Plane, Refresh, Safe } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -150,23 +150,23 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 <FeatureProof.Fact icon={Plane}>
                     <Trans>Turn on airplane mode: everything already synced still works</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={CloudOff}>
+                <FeatureProof.Fact icon={CloudCross}>
                     <Trans>There is no Budgie server to send anything to</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Transfers that don&apos;t count twice</Trans>}>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Transfers that don&apos;t count twice</Trans>}>
                     <Trans>
                         Automatic transfer consolidation — both sides of a transfer between your accounts are detected from the counterparty
                         account and exchange rate, then merged into a single transfer
                     </Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={PiggyBank} title={<Trans>Jars next to your cards</Trans>}>
+                <FeatureBenefits.Benefit icon={Safe} title={<Trans>Jars next to your cards</Trans>}>
                     <Trans>Jars sync next to your cards, each one selectable on its own, with top-ups merged into transfers</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={RefreshCw} title={<Trans>Fix drift without losing edits</Trans>}>
+                <FeatureBenefits.Benefit icon={Refresh} title={<Trans>Fix drift without losing edits</Trans>}>
                     <Trans>Windowed re-sync to fix drift while keeping your own comments, categories and tags</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

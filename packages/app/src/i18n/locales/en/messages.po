@@ -2243,10 +2243,6 @@ msgstr "How to configure"
 msgid "How to export"
 msgstr "How to export"
 
-#: src/@generic/component/icon/icon.tsx
-msgid "Icon importer not found: {icon}"
-msgstr "Icon importer not found: {icon}"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"

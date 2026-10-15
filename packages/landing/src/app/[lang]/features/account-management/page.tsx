@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Archive, EyeOff, Palette, RotateCcw, Wallet } from 'lucide-react';
+import { Archive, EyeOff, Palette, RotateLeft, Wallet } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -122,7 +122,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 heading={<Trans>Closed does not mean gone</Trans>}
                 lede={<Trans>Archive an account to tidy up. Bring it back whenever you need it.</Trans>}
             >
-                <FeatureProof.Fact icon={RotateCcw}>
+                <FeatureProof.Fact icon={RotateLeft}>
                     <Trans>Restore any archived account from Settings</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Fact icon={EyeOff}>

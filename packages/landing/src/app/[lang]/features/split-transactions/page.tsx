@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Split, ChartPie, Tags } from 'lucide-react';
+import { ChartPie, Scissors, Tags } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -127,7 +127,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={Split} title={<Trans>Unlimited splits per bill</Trans>}>
+                <FeatureBenefits.Benefit icon={Scissors} title={<Trans>Unlimited splits per bill</Trans>}>
                     <Trans>Unlimited splits per transaction — every category gets its accurate share</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Tags and comments per row</Trans>}>

@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Copy, FileSpreadsheet, Tags } from 'lucide-react';
 import Link from 'next/link';
+import { Copy, FileText, Tags } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -75,7 +75,7 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={FileSpreadsheet} title={<Trans>No column mapping</Trans>}>
+                <FeatureBenefits.Benefit icon={FileText} title={<Trans>No column mapping</Trans>}>
                     <Trans>Reads the Privat24 Excel layout as exported — no manual column mapping</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Categories matched for you</Trans>}>

@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ListFilter, MousePointerClick, RefreshCw, SlidersHorizontal, Smartphone } from 'lucide-react';
 import Link from 'next/link';
+import { Cursor, Filter, Mobile, Refresh, SliderHorizontal } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -138,10 +138,10 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                 heading={<Trans>Change a filter, watch the count</Trans>}
                 lede={<Trans>The number always matches the list you are looking at.</Trans>}
             >
-                <FeatureProof.Fact icon={SlidersHorizontal}>
+                <FeatureProof.Fact icon={SliderHorizontal}>
                     <Trans>The pill counts only rows inside your active filters</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={RefreshCw}>
+                <FeatureProof.Fact icon={Refresh}>
                     <Trans>Categorize a row and the count drops right away</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Action href={`/${lang}/features/bulk-categorize-transactions`}>
@@ -150,13 +150,13 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={ListFilter} title={<Trans>Counts that follow your filters</Trans>}>
+                <FeatureBenefits.Benefit icon={Filter} title={<Trans>Counts that follow your filters</Trans>}>
                     <Trans>Filter-aware count for missing categories under the current account, date, tag, and transaction type</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={MousePointerClick} title={<Trans>One tap to the gaps</Trans>}>
+                <FeatureBenefits.Benefit icon={Cursor} title={<Trans>One tap to the gaps</Trans>}>
                     <Trans>One-tap drill-down into only the uncategorized transactions that match your current filters</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>Offline and on-device</Trans>}>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>Offline and on-device</Trans>}>
                     <Trans>Works offline and on-device, with no analytics service reading your financial data</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

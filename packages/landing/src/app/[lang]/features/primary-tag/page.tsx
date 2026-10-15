@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Hand, Star, Tag, Zap } from 'lucide-react';
+import { Bolt, Hand, Star, Tag } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -133,7 +133,7 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Hand} title={<Trans>Pick the main tag</Trans>}>
                     <Trans>Long-press a tag in the picker to make it the main one</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Zap} title={<Trans>Nothing to set up</Trans>}>
+                <FeatureBenefits.Benefit icon={Bolt} title={<Trans>Nothing to set up</Trans>}>
                     <Trans>The first tag is main automatically, so there is nothing to set up</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

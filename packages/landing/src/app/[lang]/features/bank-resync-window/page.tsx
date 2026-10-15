@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { CalendarClock, CopyX, Tags } from 'lucide-react';
+import { CalendarTick, Copy, Tags } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -117,13 +117,13 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={CalendarClock} title={<Trans>Four re-sync windows</Trans>}>
+                <FeatureBenefits.Benefit icon={CalendarTick} title={<Trans>Four re-sync windows</Trans>}>
                     <Trans>Four choices: the last 7, 30 or 90 days, or the whole history</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Categories and tags stay</Trans>}>
                     <Trans>Your category, tags and own comment are kept; the amount and type change only when the bank changed them</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={CopyX} title={<Trans>No duplicate rows</Trans>}>
+                <FeatureBenefits.Benefit icon={Copy} title={<Trans>No duplicate rows</Trans>}>
                     <Trans>Repeat rows are matched with what you already have, not inserted again</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

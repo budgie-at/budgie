@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Database, Lock, ServerOff, Smartphone } from 'lucide-react';
+import { Database, Lock, Mobile, Server } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -124,20 +124,20 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 <FeatureProof.Fact icon={Database}>
                     <Trans>Export Database writes one file with all your data</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={Smartphone}>
+                <FeatureProof.Fact icon={Mobile}>
                     <Trans>Import Database restores it on a new phone</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={ServerOff} title={<Trans>No server to maintain</Trans>}>
+                <FeatureBenefits.Benefit icon={Server} title={<Trans>No server to maintain</Trans>}>
                     <Trans>No server to patch, renew certificates for, or pay for — just a file only you hold.</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Lock} title={<Trans>Your data on your phone</Trans>}>
                     <Trans>On your phone, encrypted when a PIN is set</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>A real mobile app</Trans>}>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>A real mobile app</Trans>}>
                     <Trans>Native iOS + Android</Trans>
                 </FeatureBenefits.Benefit>
             </FeatureBenefits>

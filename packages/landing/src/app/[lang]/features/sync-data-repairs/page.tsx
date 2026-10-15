@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Eye, PenLine, ShieldCheck, Wrench } from 'lucide-react';
+import { Eye, PenLine, Setting, ShieldCheck } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -63,7 +63,7 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 heading={<Trans>Find it in Settings</Trans>}
                 lede={<Trans>The repair has its own row in Settings, and it only acts after you confirm.</Trans>}
             >
-                <FeatureProof.Fact icon={Wrench}>
+                <FeatureProof.Fact icon={Setting}>
                     <Trans>Repair Sync Data sits in the data section</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Fact icon={ShieldCheck}>

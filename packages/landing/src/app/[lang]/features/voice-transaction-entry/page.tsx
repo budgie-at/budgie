@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Download, ListChecks, Mic, Smartphone, ToggleRight } from 'lucide-react';
+import { Download, ListCheck, Mic, Mobile, ToggleOn } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -130,7 +130,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     </Trans>
                 }
             >
-                <FeatureProof.Fact icon={ToggleRight}>
+                <FeatureProof.Fact icon={ToggleOn}>
                     <Trans>One switch in Settings turns on-device AI on or off</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Fact icon={Download}>
@@ -145,10 +145,10 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 <FeatureBenefits.Benefit icon={Mic} title={<Trans>Several expenses, one sentence</Trans>}>
                     <Trans>Natural speech is split into multiple transactions, each with its own amount and category</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Smartphone} title={<Trans>Audio stays on your phone</Trans>}>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>Audio stays on your phone</Trans>}>
                     <Trans>Audio never leaves the device</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ListChecks} title={<Trans>Review before saving</Trans>}>
+                <FeatureBenefits.Benefit icon={ListCheck} title={<Trans>Review before saving</Trans>}>
                     <Trans>
                         A review sheet lists every row before saving — the Save button reads &ldquo;Select all categories&rdquo; or
                         &ldquo;Enter all amounts&rdquo; until nothing is missing

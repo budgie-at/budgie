@@ -1,8 +1,8 @@
-import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import type { IconComponent } from 'reicon-react';
 
 interface Props {
-    readonly icon: LucideIcon;
+    readonly icon: IconComponent;
     readonly title: ReactNode;
     readonly children: ReactNode;
 }

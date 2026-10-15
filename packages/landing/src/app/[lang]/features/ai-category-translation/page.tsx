@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Languages, Search, Smartphone, Type } from 'lucide-react';
+import { Language, Mobile, Search, Text } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -108,10 +108,10 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                 heading={<Trans>Check it on one category</Trans>}
                 lede={<Trans>Open any non-Latin category and look under the name.</Trans>}
             >
-                <FeatureProof.Fact icon={Type}>
+                <FeatureProof.Fact icon={Text}>
                     <Trans>Your original name stays exactly as you wrote it</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={Smartphone}>
+                <FeatureProof.Fact icon={Mobile}>
                     <Trans>The English form is made on your phone</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Action href={`/${lang}/ai-features`}>
@@ -120,10 +120,10 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
             </FeatureProof>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={Languages} title={<Trans>Works across many scripts</Trans>}>
+                <FeatureBenefits.Benefit icon={Language} title={<Trans>Works across many scripts</Trans>}>
                     <Trans>Names in non-Latin scripts get an English translation, tested with Ukrainian</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={Type} title={<Trans>Original names untouched</Trans>}>
+                <FeatureBenefits.Benefit icon={Text} title={<Trans>Original names untouched</Trans>}>
                     <Trans>Original category and tag names stay untouched alongside the English form</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Search} title={<Trans>Search finds either form</Trans>}>

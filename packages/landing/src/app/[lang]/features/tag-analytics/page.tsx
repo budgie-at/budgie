@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Calendar, CircleQuestionMark, MousePointerClick, Tags } from 'lucide-react';
 import Link from 'next/link';
+import { Calendar, Cursor, HelpCircle, Tags } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -147,10 +147,10 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 <FeatureBenefits.Benefit icon={Tags} title={<Trans>Income and spending by tag</Trans>}>
                     <Trans>Income by tag and spending by tag, one tap from the Analytics tab bar</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={CircleQuestionMark} title={<Trans>See what has no tag</Trans>}>
+                <FeatureBenefits.Benefit icon={HelpCircle} title={<Trans>See what has no tag</Trans>}>
                     <Trans>An Untagged row for whatever in the period carries no label, and the transactions behind it</Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={MousePointerClick} title={<Trans>Tap through to transactions</Trans>}>
+                <FeatureBenefits.Benefit icon={Cursor} title={<Trans>Tap through to transactions</Trans>}>
                     <Trans>Tap any row to open the transactions behind that tag for the active period</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>

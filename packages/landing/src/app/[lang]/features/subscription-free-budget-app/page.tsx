@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Code, Gift, LockOpen, ServerOff } from 'lucide-react';
+import { Code, Gift, LockOpen, Server } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -132,7 +132,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 <FeatureProof.Fact icon={LockOpen}>
                     <Trans>No upgrade row, no tiers, no locked features</Trans>
                 </FeatureProof.Fact>
-                <FeatureProof.Fact icon={ServerOff}>
+                <FeatureProof.Fact icon={Server}>
                     <Trans>No Budgie servers to pay for, so no fee</Trans>
                 </FeatureProof.Fact>
                 <FeatureProof.Source />
@@ -151,7 +151,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                         subscription apps with closed servers.
                     </Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ServerOff} title={<Trans>No servers, no recurring fee</Trans>}>
+                <FeatureBenefits.Benefit icon={Server} title={<Trans>No servers, no recurring fee</Trans>}>
                     <Trans>
                         Most run cloud infrastructure to mirror your transactions. We don&apos;t run servers — your data lives on your phone
                         — so we don&apos;t need recurring revenue to keep the lights on.

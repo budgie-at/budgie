@@ -1,7 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ArrowLeftRight, Coins, History } from 'lucide-react';
+import { ArrowSwapHorizontal, Coins, History } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -174,7 +174,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
             </FeatureCropBand>
 
             <FeatureBenefits>
-                <FeatureBenefits.Benefit icon={ArrowLeftRight} title={<Trans>Never confused with spending</Trans>}>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Never confused with spending</Trans>}>
                     <Trans>First-class Transfer transaction type — never confused with expense or income</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Coins} title={<Trans>Both currencies side by side</Trans>}>
