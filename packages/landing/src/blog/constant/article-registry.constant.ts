@@ -10,6 +10,7 @@ import { ARTICLE_METADATA as OnDeviceAiBudgetAppExplainerArticleMetadata } from 
 import { ARTICLE_METADATA as OpenSourceBudgetingTransparencyArticleMetadata } from '../../app/[lang]/blog/open-source-budgeting-transparency/metadata';
 import { ARTICLE_METADATA as Privat24StatementExcelImportArticleMetadata } from '../../app/[lang]/blog/privat24-statement-excel-import/metadata';
 import { ARTICLE_METADATA as TrackMoneyYouLentAndBorrowedArticleMetadata } from '../../app/[lang]/blog/track-money-you-lent-and-borrowed/metadata';
+import { ARTICLE_METADATA as PayInPartsPurchasesArticleMetadata } from '../../app/[lang]/blog/pay-in-parts-purchases/metadata';
 import { ARTICLE_METADATA as WhatsNewAugustSeptember2026ArticleMetadata } from '../../app/[lang]/blog/whats-new-august-september-2026/metadata';
 import { ARTICLE_METADATA as WhatsNewSeptember2026ArticleMetadata } from '../../app/[lang]/blog/whats-new-september-2026/metadata';
 import { ARTICLE_METADATA as YnabAlternativesPrivacyArticleMetadata } from '../../app/[lang]/blog/ynab-alternatives-privacy/metadata';
@@ -31,5 +32,6 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     WhatsNewAugustSeptember2026ArticleMetadata,
     WhatsNewSeptember2026ArticleMetadata,
     Privat24StatementExcelImportArticleMetadata,
-    TrackMoneyYouLentAndBorrowedArticleMetadata
+    TrackMoneyYouLentAndBorrowedArticleMetadata,
+    PayInPartsPurchasesArticleMetadata
 ];
