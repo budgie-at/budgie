@@ -1,5 +1,4 @@
-import { and, asc, count, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
-import { alias } from 'drizzle-orm/sqlite-core';
+import { and, asc, eq, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -8,13 +7,10 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
-import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
-import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
 import type { SQL } from 'drizzle-orm';
 
 export class TransactionEntryRepository extends Context.Service<TransactionEntryRepository>()(
@@ -26,16 +22,6 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                     db
                         .delete(TransactionEntryEntityTable)
                         .where(and(isNull(TransactionEntryEntityTable.originalTransactionId), ...conditions))
-                );
-            const buildPendingBaseValuationWhere = (baseInstrumentId: number) =>
-                and(
-                    or(
-                        isNull(TransactionEntryEntityTable.baseInstrumentId),
-                        sql`${TransactionEntryEntityTable.baseInstrumentId} != ${baseInstrumentId}`
-                    ),
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    isNull(TransactionEntityTable.deletedAt),
-                    isNull(AccountEntityTable.deletedAt)
                 );
 
             return {
@@ -112,27 +98,6 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                         ? yield* Db.query(db => db.insert(TransactionEntryEntityTable).values(inputs).returning())
                         : [];
                 }),
-                findPendingBaseValuationBuckets: Effect.fn('TransactionEntryRepository.findPendingBaseValuationBuckets')(function* (
-                    baseInstrumentId: number
-                ) {
-                    const originalTransaction = alias(TransactionEntityTable, 'original_transaction');
-                    const rateDateSql = sql<string>`date(COALESCE(${originalTransaction.operatedAt}, ${TransactionEntityTable.operatedAt}), 'unixepoch')`;
-
-                    return yield* Db.query(db =>
-                        db
-                            .select({
-                                rateDate: rateDateSql,
-                                sourceInstrumentId: AccountEntityTable.instrumentId,
-                                entryCount: count(TransactionEntryEntityTable.id)
-                            })
-                            .from(TransactionEntryEntityTable)
-                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                            .leftJoin(originalTransaction, eq(originalTransaction.id, TransactionEntryEntityTable.originalTransactionId))
-                            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                            .where(buildPendingBaseValuationWhere(baseInstrumentId))
-                            .groupBy(rateDateSql, AccountEntityTable.instrumentId)
-                    );
-                }),
                 updateById: Effect.fn('TransactionEntryRepository.updateById')(function* (
                     id: number,
                     input: TransactionEntryUpdateInputInterface
@@ -193,45 +158,6 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                 create: (input: TransactionEntryCreateEntityInterface) =>
                     Db.query(db => db.insert(TransactionEntryEntityTable).values([input]).returning()).pipe(
                         Effect.map(([transactionEntry]) => transactionEntry)
-                    ),
-                countPendingBaseValuationEntries: (baseInstrumentId: number) =>
-                    Db.query(db =>
-                        db
-                            .select({ count: count(TransactionEntryEntityTable.id) })
-                            .from(TransactionEntryEntityTable)
-                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                            .where(buildPendingBaseValuationWhere(baseInstrumentId))
-                    ).pipe(Effect.map(([row]) => row.count)),
-                updateBaseValuationBucket: (input: BaseValuationBucketUpdateInterface) =>
-                    Db.mutation(
-                        { type: 'update', tables: ['transaction_entries'] },
-                        Db.query(db =>
-                            db.run(sql`
-                        UPDATE transaction_entries
-                        SET base_instrument_id = ${input.baseInstrumentId},
-                            base_exchange_rate = ${input.baseExchangeRate},
-                            base_amount = ROUND(amount * ${input.baseExchangeRate})
-                        WHERE id IN (
-                            SELECT te.id
-                            FROM transaction_entries te
-                            INNER JOIN transactions t ON t.id = te.transaction_id
-                            LEFT JOIN transactions original_t ON original_t.id = te.original_transaction_id
-                            INNER JOIN accounts a ON a.id = te.account_id
-                            WHERE date(COALESCE(original_t.operated_at, t.operated_at), 'unixepoch') = ${input.rateDate}
-                              AND a.instrument_id = ${input.sourceInstrumentId}
-                              AND te.deleted_at IS NULL
-                              AND t.deleted_at IS NULL
-                              AND a.deleted_at IS NULL
-                              AND (
-                                te.base_amount IS NULL
-                                OR te.base_exchange_rate IS NULL
-                                OR te.base_instrument_id IS NULL
-                                OR te.base_instrument_id != ${input.baseInstrumentId}
-                              )
-                        )
-                    `)
-                        )
                     ),
                 findByTransactionIdAndExternalId: (transactionId: number, externalId: string) =>
                     Db.query(db =>
