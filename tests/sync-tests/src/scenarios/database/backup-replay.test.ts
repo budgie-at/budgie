@@ -21,7 +21,12 @@ import { testDb, TestLayer } from '../../harness';
 import { backupDatabasePath } from '../../harness/scenario/setup';
 
 const REPLAY_TIMEOUT_MS = 600_000;
-const ACCEPTED_ACCOUNT_IDS = new Set((process.env['BUDGIE_BACKUP_ACCEPT'] ?? '').split(',').filter(isNotEmptyString).map(Number));
+const ACCEPTED_ACCOUNT_IDS = new Set(
+    String(process.env['BUDGIE_BACKUP_ACCEPT'] ?? '')
+        .split(',')
+        .filter(isNotEmptyString)
+        .map(Number)
+);
 const LEDGER_SIGN_BY_ENTRY_TYPE: Partial<Record<TransactionEntryTypeEnum, number>> = {
     [TransactionEntryTypeEnum.DEBIT]: 1,
     [TransactionEntryTypeEnum.CREDIT]: -1,

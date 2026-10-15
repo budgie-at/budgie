@@ -69,7 +69,11 @@ describe('privatbank/fake-iban', () => {
             yield* syncService.executeImportForSelectedAccounts(STATEMENT_URI, [IMPORTED_CARD]);
 
             expect(preview).toMatchObject({ existingAccountId: null, iban: null });
-            expect((yield* fetchActiveAccounts()).map(account => account.externalId).toSorted()).toEqual([EXISTING_CARD, IMPORTED_CARD]);
+            expect(
+                (yield* fetchActiveAccounts())
+                    .map(account => account.externalId)
+                    .toSorted((left, right) => (left ?? '').localeCompare(right ?? ''))
+            ).toEqual([EXISTING_CARD, IMPORTED_CARD]);
             expect(existingAccount.externalId).toBe(EXISTING_CARD);
         }).pipe(Effect.provide(TestLayer))
     );

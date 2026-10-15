@@ -59,7 +59,7 @@ describe('importer replaceAll', () => {
             const bulkCreateSpy = vi
                 .spyOn(transactionRepository, 'bulkCreate')
                 .mockReturnValue(Effect.die(new Error('transaction write failed')));
-            yield* Effect.addFinalizer(() => Effect.sync(() => bulkCreateSpy.mockRestore()));
+            yield* Effect.addFinalizer(() => Effect.sync(() => void bulkCreateSpy.mockRestore()));
 
             const exit = yield* Effect.exit(
                 importerService.replaceAll(

@@ -14,6 +14,7 @@ import {
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
+    fetchSortedBinanceExternalIds,
     seedCryptoInstrument,
     setupAdaUsdtFixture,
     setupBinanceFixture,
@@ -212,7 +213,7 @@ describe('binance/spot-trades/symbols', () => {
                 requestedSymbols
             );
             yield* binanceSyncService.sync();
-            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
+            const externalIds = yield* fetchSortedBinanceExternalIds();
             expect([...requestedSymbols]).toEqual(['ADAUSDT']);
             expect(externalIds).toEqual(['binance:trade:ADAUSDT:18', 'binance:trade:ADAUSDT:19']);
         }).pipe(Effect.provide(TestLayer))

@@ -108,7 +108,7 @@ describe('ledger/balance-properties', () => {
                                 ? yield* transferCreationService.createInternalTransfer(input)
                                 : yield* transactionService.createInternal(input);
 
-                        live = [...live, { ...draft, id: created?.id ?? 0 }];
+                        live = live.concat({ ...draft, id: created.id });
                     } else if (picked !== undefined && kind === 3) {
                         const edited = { ...picked, amount, fee };
 

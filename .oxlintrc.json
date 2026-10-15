@@ -1177,6 +1177,27 @@
             "rules": {
                 "budgie/shared-guards": "off"
             }
+        },
+        {
+            "files": [
+                "packages/*/test/**/*.ts",
+                "tests/*/src/**/*.ts"
+            ],
+            "rules": {
+                "no-magic-numbers": "off",
+                "max-statements": "off",
+                "max-lines-per-function": "off",
+                "max-lines": "off",
+                "no-use-before-define": "off",
+                "lingui/no-unlocalized-strings": "off",
+                "no-undefined": "off",
+                "typescript/no-invalid-void-type": "off",
+                "no-underscore-dangle": "off",
+                "max-params": "off",
+                "n/no-unsupported-features/node-builtins": "off",
+                "typescript/dot-notation": "off",
+                "dot-notation": "off"
+            }
         }
     ]
 }

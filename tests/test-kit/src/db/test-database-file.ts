@@ -26,8 +26,8 @@ export const acquireTestDatabasePath = (sourceDatabasePath: string | null) =>
             const temporaryDirectoryPath = mkdtempSync(join(tmpdir(), `budgie-test-db-${basename(sourceDatabasePath)}-`));
             const path = join(temporaryDirectoryPath, basename(sourceDatabasePath));
 
-            yield* Effect.try(() => copyFileSync(sourceDatabasePath, path)).pipe(
-                Effect.tapError(() => Effect.sync(() => rmSync(temporaryDirectoryPath, { recursive: true, force: true }))),
+            yield* Effect.try(() => void copyFileSync(sourceDatabasePath, path)).pipe(
+                Effect.tapError(() => Effect.sync(() => void rmSync(temporaryDirectoryPath, { recursive: true, force: true }))),
                 Effect.orDie
             );
 
