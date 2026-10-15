@@ -19,4 +19,3 @@
 30.crypto-decimal-monero-account.flow.yaml
 37.deposit-lifecycle.flow.yaml
 40.installment-plan.flow.yaml
-41.ai-models-settings-navigation.flow.yaml

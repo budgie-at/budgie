@@ -19,7 +19,7 @@ import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
 import type { AiModelResidencyService } from './ai-model-residency.service';
-import type { Db, DbError } from '@budgie/contracts';
+import type { Db } from '@budgie/contracts';
 import type * as Context from 'effect/Context';
 import type * as Atom from 'effect/reactivity/Atom';
 
@@ -246,7 +246,7 @@ export class DrainerService<E> {
         }
     }
 
-    private withModel(use: Effect.Effect<void, E, Db>): Effect.Effect<boolean, E | DbError, Db> {
+    private withModel(use: Effect.Effect<void, E, Db>): Effect.Effect<boolean, E, Db> {
         return Effect.acquireUseRelease(
             this.modelResidency.acquire(this.config.subsystem),
             isReady => (isReady ? Effect.as(use, true) : Effect.succeed(false)),

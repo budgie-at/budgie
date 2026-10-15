@@ -15,8 +15,9 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
-import { AiModelStorageSettingsCard } from '../../../ai/component/ai-model-storage-settings-card/ai-model-storage-settings-card';
+import { AiFeaturesSettingsCard } from '../../../ai/component/ai-features-settings-card/ai-features-settings-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -49,6 +50,8 @@ export default function SettingsPage() {
     const { t } = useLingui();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
+    const isAiBuildDisabled = !isAiEnabled();
+
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
     const handleNavigateToCategories = () => void router.push('/settings/categories');
@@ -116,13 +119,15 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                <View {...anchorLayout('ai')}>
-                    <SettingsGroup title={t`AI`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiModelStorageSettingsCard />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
+                {isAiBuildDisabled ? null : (
+                    <View {...anchorLayout('ai')}>
+                        <SettingsGroup title={t`AI`}>
+                            <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
+                                <AiFeaturesSettingsCard />
+                            </Animated.View>
+                        </SettingsGroup>
+                    </View>
+                )}
 
                 <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>

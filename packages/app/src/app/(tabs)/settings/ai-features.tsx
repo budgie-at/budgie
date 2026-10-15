@@ -5,24 +5,24 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { AiModelStorageCard } from '../../../ai/component/ai-model-storage-card/ai-model-storage-card';
+import { AiSettingsSection } from '../../../ai/component/ai-settings-section/ai-settings-section';
 
-import { AiModelsPageSelector } from './ai-models-page.selector';
+import { AiFeaturesPageSelector } from './ai-features-page.selector';
 
 const handleGoBack = () => void goBackOrReplace('/settings');
 
-export default function AiModelsPage() {
+export default function AiFeaturesPage() {
     const { t } = useLingui();
 
     return (
         <CollapsibleChromePage
             title={t`AI features`}
-            subtitle={t`Choose features and manage downloads`}
+            subtitle={t`Models download once, best on Wi-Fi`}
             leading={<GoBackButton onPress={handleGoBack} />}
-            testID={AiModelsPageSelector.Container}
+            testID={AiFeaturesPageSelector.Container}
         >
             <View className="gap-y-lg pb-5xl">
-                <AiModelStorageCard />
+                <AiSettingsSection />
                 <MenuSpacer />
             </View>
         </CollapsibleChromePage>

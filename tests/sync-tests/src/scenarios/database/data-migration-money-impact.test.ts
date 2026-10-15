@@ -2,7 +2,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { AccountBalanceRepository, AccountDebtTypeEnum, AccountTypeEnum, PRECISION, UserIconNameEnum } from '@budgie/contracts';
-import { AccountDebtOpeningService, AccountBalanceIncrementalService } from '@budgie/ledger';
+import { AccountDebtOpeningService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -11,21 +12,23 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { seed, seedBankPair, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
-const applyMigration = (migrationName: string) =>
-    Effect.forEach(
-        readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', migrationName, 'migration.sql'), 'utf8').split(
-            '--> statement-breakpoint'
-        ),
+const applyMigration = (migrationName: string) => {
+    const migrationSql = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', migrationName, 'migration.sql'), 'utf8');
+    const dropAddedColumns = Array.from(
+        migrationSql.matchAll(/ALTER TABLE `(\w+)` ADD `(\w+)`/gu),
+        ([, table, column]) => `ALTER TABLE ${table} DROP COLUMN ${column}`
+    );
+
+    return Effect.forEach(
+        [...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
         statement => testDb.$client.unsafe(statement).raw,
         { discard: true }
     );
+};
 
 const MIGRATIONS_FOLDER = resolve(process.cwd(), '../../packages/app/drizzle');
 const DATA_CHANGE_PATTERN = /\b(?:UPDATE\s+\S+\s+SET|INSERT(?:\s+OR\s+\w+)?\s+INTO|DELETE\s+FROM)\b/iu;
-const OPERATED_AT_YEAR = 2025;
-const HISTORICAL_ATM_AMOUNT = 408;
-const SALARY_AMOUNT = 2_100;
-const OPERATED_AT = new Date(OPERATED_AT_YEAR, 5, 1, 12, 0, 0);
+const OPERATED_AT = new Date(2025, 5, 1, 12, 0, 0);
 
 const seedLedgerFixture = Effect.fnUntraced(function* () {
     const accountDebtOpeningService = yield* AccountDebtOpeningService;
@@ -33,7 +36,7 @@ const seedLedgerFixture = Effect.fnUntraced(function* () {
     const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
     const historicalAtm = yield* seedBankPair.expense(
         { externalId: 'tx-atm', operatedAt: OPERATED_AT },
-        { accountId: bankAccount.id, amount: HISTORICAL_ATM_AMOUNT * PRECISION }
+        { accountId: bankAccount.id, amount: 408 * PRECISION }
     );
 
     yield* seedBankPair.expense(
@@ -42,7 +45,7 @@ const seedLedgerFixture = Effect.fnUntraced(function* () {
     );
     yield* seedBankPair.income(
         { externalId: 'tx-salary', operatedAt: OPERATED_AT },
-        { accountId: bankAccount.id, amount: SALARY_AMOUNT * PRECISION }
+        { accountId: bankAccount.id, amount: 2_100 * PRECISION }
     );
     yield* seed.directTransfer({
         exchangeRate: 1,
@@ -93,13 +96,6 @@ describe.runIf(isNotEmptyArray(dataMigrations))('database/data-migration-money-i
             const accountIds = yield* seedLedgerFixture();
             yield* transferConsolidationService.consolidate(null);
             const ledgerBefore = yield* accountBalanceRepository.getLedgerBalances(accountIds);
-            if (migrationName === '20261011120000_ai_feature_settings') {
-                yield* Effect.forEach(
-                    ['is_ai_voice_input_enabled', 'is_ai_suggestions_enabled', 'is_ai_translations_enabled'],
-                    columnName => testDb.$client.unsafe(`ALTER TABLE settings DROP COLUMN ${columnName}`).raw,
-                    { discard: true }
-                );
-            }
 
             yield* applyMigration(migrationName);
             yield* transferConsolidationService.consolidate(null);

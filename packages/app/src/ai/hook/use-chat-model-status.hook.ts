@@ -21,16 +21,12 @@ interface UseChatModelStatusReturn {
     readonly modelStatus: ChatModelStatusInterface;
 }
 
-export const useChatModelStatus = (enabled = true): UseChatModelStatusReturn => {
+export const useChatModelStatus = (): UseChatModelStatusReturn => {
     const chat = useAtomValue(chatModelSnapshotAtom);
     const embedding = useAtomValue(embeddingModelSnapshotAtom);
     const isChatReady = chat.status === AiSubsystemStatusEnum.READY;
 
     useEffect(() => {
-        if (!enabled) {
-            return;
-        }
-
         appRuntime.runFork(
             Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT))
         );
@@ -42,7 +38,7 @@ export const useChatModelStatus = (enabled = true): UseChatModelStatusReturn => 
                 )
             );
         };
-    }, [enabled]);
+    }, []);
 
     return {
         isChatReady,

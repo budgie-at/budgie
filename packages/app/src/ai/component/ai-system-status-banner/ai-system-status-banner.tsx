@@ -1,0 +1,51 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import { Text, View } from 'react-native';
+
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+
+import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
+import { aiUmbrellaStatusAtom } from '../../constant/ai-umbrella-status-atom.constant';
+import { AiSystemUmbrellaStateEnum } from '../../enum/ai-system-umbrella-state.enum';
+
+const ICON_SIZE = 14;
+
+const BANNER_ICON: Record<AiSystemUmbrellaStateEnum, UserIconNameEnum | null> = {
+    [AiSystemUmbrellaStateEnum.DISABLED]: UserIconNameEnum.CircleAlert,
+    [AiSystemUmbrellaStateEnum.DOWNLOADING]: UserIconNameEnum.LoaderCircle,
+    [AiSystemUmbrellaStateEnum.HEALTHY]: null,
+    [AiSystemUmbrellaStateEnum.INITIALIZING]: UserIconNameEnum.LoaderCircle,
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: UserIconNameEnum.TriangleAlert
+};
+
+const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
+    [AiSystemUmbrellaStateEnum.DISABLED]: 'text-secondary-foreground',
+    [AiSystemUmbrellaStateEnum.DOWNLOADING]: 'text-primary',
+    [AiSystemUmbrellaStateEnum.HEALTHY]: 'text-secondary-foreground',
+    [AiSystemUmbrellaStateEnum.INITIALIZING]: 'text-warning-foreground',
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: 'text-destructive-foreground'
+};
+
+export const AiSystemStatusBanner = () => {
+    const umbrella = useAtomValue(aiUmbrellaStatusAtom);
+    const isHidden = umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY || umbrella.state === AiSystemUmbrellaStateEnum.DISABLED;
+
+    if (isHidden) {
+        return null;
+    }
+
+    const icon = BANNER_ICON[umbrella.state];
+    const colorClass = BANNER_COLOR[umbrella.state];
+    const showPercent = umbrella.state === AiSystemUmbrellaStateEnum.DOWNLOADING && isPositiveNumber(umbrella.downloadPercent);
+
+    return (
+        <View className="flex-row items-center gap-x-sm px-lg py-md bg-secondary-background rounded-xl">
+            {isDefined(icon) && <Icon icon={icon} size={ICON_SIZE} className={colorClass} />}
+            <Text className={cn('flex-1 text-xs font-medium', colorClass)} numberOfLines={1}>
+                {umbrella.statusText}
+            </Text>
+            {showPercent && <Text className={cn('text-xs font-medium', colorClass)}>{`${umbrella.downloadPercent}%`}</Text>}
+        </View>
+    );
+};

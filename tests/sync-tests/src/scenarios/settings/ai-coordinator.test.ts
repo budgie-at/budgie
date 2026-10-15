@@ -2,24 +2,23 @@ import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.consta
 import { Workload } from '@app/@generic/service/workload.service';
 import {
     aiCoordinatorSnapshotAtom,
+    embeddingProgressSnapshotAtom,
     translationDrainerSnapshotAtom,
-    translationProgressSnapshotAtom,
-    embeddingProgressSnapshotAtom
+    translationProgressSnapshotAtom
 } from '@app/ai/constant/ai-snapshot-atoms.constant';
+import { AiSubsystemNameEnum } from '@app/ai/enum/ai-subsystem-name.enum';
 import { AiCoordinatorService } from '@app/ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '@app/ai/service/ai-embedding-status.service';
 import { AiModelResidencyService } from '@app/ai/service/ai-model-residency.service';
 import { ChatService } from '@app/ai/service/chat.service';
 import { EmbeddingDrainerService } from '@app/ai/service/embedding-drainer.service';
-import { LocalEmbeddingService } from '@app/ai/service/embedding.service';
 import { TranslationDrainerService } from '@app/ai/service/translation-drainer.service';
 import { EmbeddingProgressStore } from '@app/ai/store/embedding-progress.store';
 import { TranslationProgressStore } from '@app/ai/store/translation-progress.store';
-import { Db, DbError, SettingsRepository } from '@budgie/contracts';
+import { Db, SettingsRepository } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import * as Cause from 'effect/Cause';
+import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
-import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import * as SubscriptionRef from 'effect/SubscriptionRef';
 import { vi } from 'vitest';
@@ -30,98 +29,60 @@ import { testDb } from '../../harness/scenario/setup';
 
 vi.mock('react-native', () => ({ AppState: { currentState: 'active', addEventListener: () => ({ remove: emptyFn }) } }));
 
-const restartError = new DbError({ cause: new Error('restart settings read failed') });
-const cleanupError = new DbError({ cause: new Error('cleanup failed') });
+const cases = [
+    {
+        features: { isAiVoiceInputEnabled: true, isAiSuggestionsEnabled: false, isAiTranslationsEnabled: false },
+        subsystems: [AiSubsystemNameEnum.CHAT, AiSubsystemNameEnum.EMBEDDING, AiSubsystemNameEnum.STT],
+        startedDrainers: []
+    },
+    {
+        features: { isAiVoiceInputEnabled: false, isAiSuggestionsEnabled: false, isAiTranslationsEnabled: true },
+        subsystems: [AiSubsystemNameEnum.CHAT],
+        startedDrainers: ['translation']
+    }
+];
 
-const makeCoordinator = Effect.fnUntraced(function* (failRestart: boolean) {
-    let settingsReads = 0;
-    const settingsRepository = yield* SettingsRepository.make;
-    yield* settingsRepository.update({
-        isAiEnabled: true,
-        isAiVoiceInputEnabled: true,
-        isAiSuggestionsEnabled: false,
-        isAiTranslationsEnabled: false
-    });
-    const foregroundCount = yield* SubscriptionRef.make(0);
-    appAtomRegistry.set(aiCoordinatorSnapshotAtom, { isAvailable: true, isSuspended: false });
-
-    return yield* AiCoordinatorService.make.pipe(
-        Effect.provide(
-            Layer.mergeAll(
-                Layer.mock(Workload, { foregroundCount }),
-                Layer.mock(AiModelResidencyService, { suspend: () => Effect.void, resume: () => Effect.void }),
-                ChatService.layer,
-                LocalEmbeddingService.layer,
-                Layer.mock(EmbeddingDrainerService, { drainers: [] }),
-                Layer.mock(AiEmbeddingStatusService, {}),
-                Layer.mock(TranslationDrainerService, {
-                    snapshot: translationDrainerSnapshotAtom,
-                    cancelBoost: emptyFn,
-                    stop: () => Effect.void,
-                    whenIdle: () => Effect.void,
-                    setForegroundBusy: () => Effect.void
-                }),
-                Layer.mock(TranslationProgressStore, { snapshot: translationProgressSnapshotAtom }),
-                Layer.mock(EmbeddingProgressStore, { snapshot: embeddingProgressSnapshotAtom }),
-                Layer.mock(SettingsRepository, {
-                    getSettings: () =>
-                        Effect.gen(function* () {
-                            settingsReads += 1;
-                            if (failRestart && settingsReads === 2) {
-                                return yield* restartError;
-                            }
-
-                            return yield* settingsRepository.getSettings();
-                        })
-                })
-            )
-        )
-    );
-});
-
-describe('AiCoordinatorService.withStoppedRuntime', () => {
-    it.effect('reports restart settings failure after successful cleanup and remains suspended', () =>
+describe('AiCoordinatorService.start', () => {
+    it.effect.each(cases)('loads only the models and drainers of enabled features %#', ({ features, subsystems, startedDrainers }) =>
         Effect.gen(function* () {
-            const coordinator = yield* makeCoordinator(true);
-            const result = yield* Effect.exit(coordinator.withStoppedRuntime(Effect.succeed('cleaned')));
+            const settingsRepository = yield* SettingsRepository;
+            yield* settingsRepository.update({ isAiEnabled: true, ...features });
+            appAtomRegistry.set(aiCoordinatorSnapshotAtom, { isAvailable: true, isSuspended: false });
+            const started = yield* Deferred.make<boolean>();
+            const resumedSubsystems: AiSubsystemNameEnum[] = [];
+            const drainerStarts: string[] = [];
+            const recordStart = (drainer: string) => () => Effect.sync(() => void drainerStarts.push(drainer));
 
-            expect(Exit.isFailure(result)).toBe(true);
-            if (Exit.isFailure(result)) {
-                expect(result.cause.reasons.filter(Cause.isFailReason).map(reason => reason.error)).toEqual([restartError]);
-            }
-            expect(appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended).toBe(true);
-        }).pipe(Effect.provideService(Db, testDb))
-    );
-
-    it.effect('retains the cleanup failure first and the restart failure in the cause', () =>
-        Effect.gen(function* () {
-            const coordinator = yield* makeCoordinator(true);
-            const result = yield* Effect.exit(coordinator.withStoppedRuntime(Effect.fail(cleanupError)));
-
-            expect(Exit.isFailure(result)).toBe(true);
-            if (Exit.isFailure(result)) {
-                expect(result.cause.reasons.filter(Cause.isFailReason).map(reason => reason.error)).toEqual([cleanupError, restartError]);
-            }
-            expect(appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended).toBe(true);
-        }).pipe(Effect.provideService(Db, testDb))
-    );
-
-    it.effect('restarts only after cleanup finishes and returns its result', () =>
-        Effect.gen(function* () {
-            const coordinator = yield* makeCoordinator(false);
-            const result = yield* coordinator.withStoppedRuntime(
-                Effect.sync(() => {
-                    expect(appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended).toBe(true);
-
-                    return 'cleaned';
-                })
+            const coordinator = yield* AiCoordinatorService.make.pipe(
+                Effect.provide(
+                    Layer.mergeAll(
+                        Layer.mock(Workload, { foregroundCount: yield* SubscriptionRef.make(0) }),
+                        Layer.mock(AiModelResidencyService, {
+                            resume: enabled => Effect.sync(() => void resumedSubsystems.push(...enabled))
+                        }),
+                        ChatService.layer,
+                        Layer.mock(EmbeddingDrainerService, { drainers: [], start: recordStart('embedding') }),
+                        Layer.mock(AiEmbeddingStatusService, { migrateModel: () => Effect.void }),
+                        Layer.mock(TranslationDrainerService, {
+                            snapshot: translationDrainerSnapshotAtom,
+                            cancelBoost: emptyFn,
+                            start: recordStart('translation'),
+                            setForegroundBusy: () => Effect.void
+                        }),
+                        Layer.mock(TranslationProgressStore, { snapshot: translationProgressSnapshotAtom, refresh: () => Effect.void }),
+                        Layer.mock(EmbeddingProgressStore, {
+                            snapshot: embeddingProgressSnapshotAtom,
+                            refresh: () => Effect.asVoid(Deferred.succeed(started, true))
+                        }),
+                        Layer.succeed(SettingsRepository, settingsRepository)
+                    )
+                )
             );
+            yield* coordinator.start();
+            yield* Deferred.await(started);
 
-            expect(appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended).toBe(false);
-            yield* coordinator.stop();
-            expect(appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended).toBe(true);
-
-            expect(result).toBe('cleaned');
-        }).pipe(Effect.provideService(Db, testDb))
+            expect(resumedSubsystems).toEqual(subsystems);
+            expect(drainerStarts).toEqual(startedDrainers);
+        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
     );
 });

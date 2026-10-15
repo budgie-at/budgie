@@ -35,7 +35,7 @@ export const sttSnapshotAtom = Atom.keepAlive(
 );
 
 export const aiCoordinatorSnapshotAtom = Atom.keepAlive(
-    Atom.make<AiCoordinatorSnapshotInterface>({ isAvailable: isAiEnabled(), isSuspended: true })
+    Atom.make<AiCoordinatorSnapshotInterface>({ isAvailable: isAiEnabled(), isSuspended: false })
 );
 
 export const translationDrainerSnapshotAtom = makeDrainerSnapshotAtom();

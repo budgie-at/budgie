@@ -10,7 +10,6 @@ import { chatModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { CHAT_CONTEXT_SIZE, CHAT_MODEL_FILENAME, CHAT_MODEL_URL } from '../utils/ai-constants.util';
-import { isAiRuntimeActive } from '../utils/is-ai-runtime-active.util';
 import { runCompletion } from '../utils/run-completion.util';
 
 import { LlamaModelService } from './llama-model.service';
@@ -42,7 +41,7 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
                     Effect.suspend(() => {
                         const { context } = model;
 
-                        return isAiRuntimeActive() && model.isReady && isDefined(context)
+                        return model.isReady && isDefined(context)
                             ? runCompletion(context, systemPrompt, userMessage, options)
                             : Effect.fail(new AiInvokeError({ cause: new AiNotReadyError({ subsystem: AiSubsystemNameEnum.CHAT }) }));
                     })

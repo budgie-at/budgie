@@ -7,7 +7,6 @@ import * as Effect from 'effect/Effect';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
-import { useSetting } from '../../settings/hook/use-setting.hook';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
@@ -26,11 +25,10 @@ interface UseTagSuggestionParams {
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
-    const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
-    const isSuggestionsEnabled = useSetting('isAiSuggestionsEnabled');
     const embeddingStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
+    const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
+    const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const hasTagsLoaded = isNotEmptyArray(allTags);
 
@@ -47,19 +45,9 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
     };
 
     const { status, suggestions } = useSuggestionBase({
-        enabled: enabled && isSuggestionsEnabled,
+        enabled,
         readyChecks: [embeddingReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
-        requestKeyParts: [
-            transactionTitle,
-            categoryId,
-            mccCategoryId,
-            comment,
-            aiContext,
-            enabled,
-            isSuggestionsEnabled,
-            embeddingReady,
-            allTags?.length ?? 0
-        ],
+        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, embeddingReady, allTags?.length ?? 0],
         fetchSuggestions
     });
 

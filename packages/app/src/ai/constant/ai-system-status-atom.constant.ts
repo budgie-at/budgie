@@ -1,10 +1,9 @@
 import * as Equal from 'effect/Equal';
 import * as Atom from 'effect/reactivity/Atom';
 
-import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
-import { settingsContextAtom } from '../../settings/constants/settings-context-atom.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemStateEnum } from '../enum/ai-system-state.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
@@ -22,6 +21,7 @@ import {
 import { embeddingDrainerSnapshotAtom } from './embedding-drainer-snapshot-atom.constant';
 
 const FULL_PERCENT = 100;
+const SUBSYSTEM_COUNT = 3;
 const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
     state: AiSystemStateEnum.DISABLED,
     percent: 0
@@ -31,39 +31,28 @@ const isBooting = (statuses: readonly AiSubsystemStatusEnum[]): boolean =>
     statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING);
 
 const deriveSystemStatus = (get: Atom.AtomContext): AiSystemSnapshotInterface => {
-    const { settings } = get(settingsContextAtom);
+    if (!isAiEnabled()) {
+        return EMPTY_SNAPSHOT;
+    }
+
     const chat = get(chatModelSnapshotAtom);
     const embedding = get(embeddingModelSnapshotAtom);
     const stt = get(sttSnapshotAtom);
     const translationDrainer = get(translationDrainerSnapshotAtom);
     const embeddingDrainer = get(embeddingDrainerSnapshotAtom);
-    const isChatEnabled = settings.isAiVoiceInputEnabled || settings.isAiTranslationsEnabled;
-    const isEmbeddingEnabled = settings.isAiVoiceInputEnabled || settings.isAiSuggestionsEnabled;
-    const activeSubsystems = [
-        ...(isChatEnabled ? [chat] : []),
-        ...(isEmbeddingEnabled ? [embedding] : []),
-        ...(settings.isAiVoiceInputEnabled ? [stt] : [])
-    ];
 
-    if (!isAiEnabled() || !settings.isAiEnabled || !isNotEmptyArray(activeSubsystems)) {
-        return EMPTY_SNAPSHOT;
-    }
-    const hasSubsystemError = activeSubsystems.some(subsystem => isNotEmptyString(subsystem.errorMessage));
-    const hasDrainerError = [
-        ...(settings.isAiTranslationsEnabled ? [translationDrainer] : []),
-        ...(settings.isAiSuggestionsEnabled ? [embeddingDrainer] : [])
-    ].some(drainer => drainer.state === DrainerStateEnum.ERROR && isNotEmptyString(drainer.errorMessage));
-
+    const hasSubsystemError = [chat, embedding, stt].some(subsystem => isNotEmptyString(subsystem.errorMessage));
+    const hasDrainerError = [translationDrainer, embeddingDrainer].some(
+        drainer => drainer.state === DrainerStateEnum.ERROR && isNotEmptyString(drainer.errorMessage)
+    );
     if (hasSubsystemError || hasDrainerError) {
         return { state: AiSystemStateEnum.ERROR, percent: 0 };
     }
 
-    if (isBooting(activeSubsystems.map(subsystem => subsystem.status))) {
+    if (isBooting([chat.status, embedding.status, stt.status])) {
         return {
             state: AiSystemStateEnum.BOOTING,
-            percent: Math.round(
-                activeSubsystems.reduce((percent, subsystem) => percent + subsystem.downloadProgress, 0) / activeSubsystems.length
-            )
+            percent: Math.round((chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / SUBSYSTEM_COUNT)
         };
     }
 
@@ -73,21 +62,19 @@ const deriveSystemStatus = (get: Atom.AtomContext): AiSystemSnapshotInterface =>
 
     const translationProgress = get(translationProgressSnapshotAtom);
     const embeddingProgress = get(embeddingProgressSnapshotAtom);
-    const translationBoosting = settings.isAiTranslationsEnabled && translationDrainer.state === DrainerStateEnum.BOOSTING;
-    const embeddingBoosting = settings.isAiSuggestionsEnabled && embeddingDrainer.state === DrainerStateEnum.BOOSTING;
-
-    if (translationBoosting || embeddingBoosting) {
+    const translationBoosting = translationDrainer.state === DrainerStateEnum.BOOSTING;
+    if (translationBoosting || embeddingDrainer.state === DrainerStateEnum.BOOSTING) {
         return {
             state: AiSystemStateEnum.BOOSTING,
             percent: translationBoosting ? translationProgress.percent : embeddingProgress.percent
         };
     }
 
-    if (settings.isAiTranslationsEnabled && isPositiveNumber(translationDrainer.pending)) {
+    if (isPositiveNumber(translationDrainer.pending)) {
         return { state: AiSystemStateEnum.TRANSLATING, percent: translationProgress.percent };
     }
 
-    if (settings.isAiSuggestionsEnabled && isPositiveNumber(embeddingDrainer.pending)) {
+    if (isPositiveNumber(embeddingDrainer.pending)) {
         return { state: AiSystemStateEnum.INDEXING, percent: embeddingProgress.percent };
     }
 

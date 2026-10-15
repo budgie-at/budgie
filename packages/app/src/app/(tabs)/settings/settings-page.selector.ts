@@ -39,7 +39,7 @@ export const SettingsPageSelector = {
     BudgetPushSwitch: 'SettingsPage.BudgetPushSwitch',
     BudgetPushSwitchStateOn: 'SettingsPage.BudgetPushSwitch.State.On',
     BudgetPushSwitchStateOff: 'SettingsPage.BudgetPushSwitch.State.Off',
-    AiModelsCard: 'SettingsPage.AiModelsCard',
+    AiFeaturesCard: 'SettingsPage.AiFeaturesCard',
     RunwayPillCard: 'SettingsPage.RunwayPillCard',
     RunwayPillSwitch: 'SettingsPage.RunwayPillSwitch',
     RunwayPillSwitchStateOn: 'SettingsPage.RunwayPillSwitch.State.On',

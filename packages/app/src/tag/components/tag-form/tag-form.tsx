@@ -48,7 +48,7 @@ export const TagForm = (props: Props) => {
     const [openTagsSelector] = useTagsSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
     const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
-    const { isChatReady, modelStatus } = useChatModelStatus(isTranslationsEnabled);
+    const { isChatReady, modelStatus } = useChatModelStatus();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 

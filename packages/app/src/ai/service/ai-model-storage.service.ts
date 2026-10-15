@@ -1,241 +1,87 @@
+import { EMBEDDING_MODEL_FILENAME } from '@budgie/categorization';
 import { SettingsRepository } from '@budgie/contracts';
-import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Reactivity from 'effect/reactivity/Reactivity';
-import * as Semaphore from 'effect/Semaphore';
 import { File, Paths } from 'expo-file-system';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { NativeCallError } from '../../@generic/error/native-call.error';
-import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
-import { AI_FEATURE_MODEL_STORAGE_IDS } from '../constant/ai-feature-model-storage-ids.constant';
-import { AI_MODEL_STORAGE_FILES } from '../constant/ai-model-storage-files.constant';
-import { AI_MODEL_STORAGE_REACTIVITY_KEYS } from '../constant/ai-model-storage-reactivity-keys.constant';
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
-import { AiFeatureIdEnum } from '../enum/ai-feature-id.enum';
-import { AiModelStorageIdEnum } from '../enum/ai-model-storage-id.enum';
+import { WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_FILENAME, WHISPER_MODEL_TEMP_FILENAME } from '../constant/whisper-model.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { AiModelStorageBusyError } from '../error/ai-model-storage-busy.error';
-import { AiModelStorageEntryInterface } from '../interface/ai-model-storage-entry.interface';
-import { AiModelStorageFileInterface } from '../interface/ai-model-storage-file.interface';
-
-import { AiCoordinatorService } from './ai-coordinator.service';
-
-import type { AiFeatureSettingsInterface } from '../interface/ai-feature-settings.interface';
+import { CHAT_MODEL_FILENAME } from '../utils/ai-constants.util';
+import { getEnabledAiSubsystems } from '../utils/get-enabled-ai-subsystems.util';
 
 export class AiModelStorageService extends Context.Service<AiModelStorageService>()('@budgie/app/AiModelStorageService', {
     make: Effect.gen(function* () {
-        const aiCoordinatorService = yield* AiCoordinatorService;
         const settingsRepository = yield* SettingsRepository;
-        const reactivity = yield* Reactivity.Reactivity;
-        const storageLock = yield* Semaphore.make(1);
-        const featureSettingKey = {
-            [AiFeatureIdEnum.VOICE_INPUT]: 'isAiVoiceInputEnabled',
-            [AiFeatureIdEnum.TRANSACTION_SUGGESTIONS]: 'isAiSuggestionsEnabled',
-            [AiFeatureIdEnum.CATEGORY_TAG_TRANSLATIONS]: 'isAiTranslationsEnabled'
-        } as const satisfies Record<AiFeatureIdEnum, keyof AiFeatureSettingsInterface>;
-
-        const statusBySubsystem: Record<AiSubsystemNameEnum, () => AiSubsystemStatusEnum> = {
-            [AiSubsystemNameEnum.CHAT]: () => appAtomRegistry.get(chatModelSnapshotAtom).status,
-            [AiSubsystemNameEnum.EMBEDDING]: () => appAtomRegistry.get(embeddingModelSnapshotAtom).status,
-            [AiSubsystemNameEnum.STT]: () => appAtomRegistry.get(sttSnapshotAtom).status
+        const subsystemSnapshots = {
+            [AiSubsystemNameEnum.CHAT]: chatModelSnapshotAtom,
+            [AiSubsystemNameEnum.EMBEDDING]: embeddingModelSnapshotAtom,
+            [AiSubsystemNameEnum.STT]: sttSnapshotAtom
         };
+        const modelFiles = [
+            { path: [CHAT_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.CHAT },
+            { path: [EMBEDDING_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.EMBEDDING },
+            { path: [WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.STT },
+            { path: [WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_TEMP_FILENAME], subsystem: AiSubsystemNameEnum.STT },
+            { path: [WHISPER_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.STT },
+            { path: ['nomic-embed-text-v2-moe.Q8_0.gguf'], subsystem: null },
+            { path: ['qwen2.5-1.5b-instruct-q8_0.gguf'], subsystem: null }
+        ];
 
-        const resolveFile = (storageFile: AiModelStorageFileInterface): File => new File(Paths.document, ...storageFile.path);
-
-        const isBusy = (storageFile: AiModelStorageFileInterface): boolean => {
-            if (!isDefined(storageFile.subsystem)) {
-                return false;
-            }
-            const status = statusBySubsystem[storageFile.subsystem]();
+        const isBusy = (subsystem: AiSubsystemNameEnum): boolean => {
+            const { status } = appAtomRegistry.get(subsystemSnapshots[subsystem]);
 
             return status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING;
         };
 
-        const isCurrentStorageFile = (storageFile: AiModelStorageFileInterface): boolean => {
-            if (storageFile.id !== AiModelStorageIdEnum.LEGACY_STT) {
-                return storageFile.isCurrent;
-            }
+        const sumBytes = (files: readonly File[]): number => files.reduce((total, file) => total + file.size, 0);
 
-            return !AI_MODEL_STORAGE_FILES.some(knownStorageFile =>
-                knownStorageFile.id === AiModelStorageIdEnum.STT ? resolveFile(knownStorageFile).exists : false
-            );
-        };
+        const readFiles = Effect.fnUntraced(function* () {
+            const enabledSubsystems = getEnabledAiSubsystems(yield* settingsRepository.getSettings());
 
-        const sumEntries = (entries: readonly AiModelStorageEntryInterface[]): number =>
-            entries.reduce((totalBytes, entry) => totalBytes + entry.bytes, 0);
-
-        const getFeatureSettingsAfterChange = (
-            settings: AiFeatureSettingsInterface,
-            featureId: AiFeatureIdEnum,
-            isEnabled: boolean
-        ): AiFeatureSettingsInterface => ({ ...settings, [featureSettingKey[featureId]]: isEnabled });
-
-        const getEnabledFeatures = (settings: AiFeatureSettingsInterface): readonly AiFeatureIdEnum[] =>
-            Object.values(AiFeatureIdEnum).filter(featureId => settings[featureSettingKey[featureId]]);
-
-        const readFeatureSettings = Effect.fnUntraced(function* () {
-            const settings = yield* settingsRepository.getSettings();
-
-            return {
-                isAiVoiceInputEnabled: settings.isAiEnabled && settings.isAiVoiceInputEnabled,
-                isAiSuggestionsEnabled: settings.isAiEnabled && settings.isAiSuggestionsEnabled,
-                isAiTranslationsEnabled: settings.isAiEnabled && settings.isAiTranslationsEnabled
-            };
-        });
-
-        const readEntry = Effect.fnUntraced(function* (
-            storageFile: AiModelStorageFileInterface
-        ): Effect.fn.Return<AiModelStorageEntryInterface | null, NativeCallError> {
-            const file = resolveFile(storageFile);
-            const result = yield* Effect.try({
-                try: () => ({ exists: file.exists, bytes: file.exists ? file.size : 0 }),
-                catch: cause => new NativeCallError({ cause })
-            });
-
-            return result.exists
-                ? {
-                      id: storageFile.id,
-                      bytes: result.bytes,
-                      isCurrent: isCurrentStorageFile(storageFile),
-                      isBusy: isBusy(storageFile)
-                  }
-                : null;
-        });
-
-        const getFeatureStorageIds = (
-            entries: readonly AiModelStorageEntryInterface[],
-            featureId: AiFeatureIdEnum
-        ): ReadonlySet<AiModelStorageIdEnum> => {
-            const storageIds = new Set(AI_FEATURE_MODEL_STORAGE_IDS[featureId]);
-            const legacySttEntry = entries.find(entry => entry.id === AiModelStorageIdEnum.LEGACY_STT);
-
-            if (featureId === AiFeatureIdEnum.VOICE_INPUT && legacySttEntry?.isCurrent) {
-                storageIds.add(AiModelStorageIdEnum.LEGACY_STT);
-            }
-
-            return storageIds;
-        };
-
-        const getNeededStorageIds = (
-            entries: readonly AiModelStorageEntryInterface[],
-            featureSettings: AiFeatureSettingsInterface
-        ): ReadonlySet<AiModelStorageIdEnum> =>
-            new Set(getEnabledFeatures(featureSettings).flatMap(featureId => [...getFeatureStorageIds(entries, featureId)]));
-
-        const findUnusedEntries = (
-            entries: readonly AiModelStorageEntryInterface[],
-            featureSettings: AiFeatureSettingsInterface
-        ): readonly AiModelStorageEntryInterface[] => {
-            const neededStorageIds = getNeededStorageIds(entries, featureSettings);
-
-            return entries.filter(entry => !entry.isBusy && (!entry.isCurrent || !neededStorageIds.has(entry.id)));
-        };
-
-        const readInventory = Effect.fnUntraced(function* () {
-            const entries = yield* Effect.forEach(AI_MODEL_STORAGE_FILES, readEntry);
-            const featureSettings = yield* readFeatureSettings();
-
-            return { entries: entries.filter(isDefined), featureSettings };
-        });
-
-        const list = Effect.fn('AiModelStorageService.list')(function* () {
-            const { entries, featureSettings } = yield* readInventory();
-            const enabledFeatures = getEnabledFeatures(featureSettings);
-            const unusedEntries = findUnusedEntries(entries, featureSettings);
-
-            return {
-                features: Object.values(AiFeatureIdEnum).map(featureId => ({
-                    id: featureId,
-                    isEnabled: enabledFeatures.includes(featureId),
-                    requiredBytes: sumEntries(
-                        entries.filter(entry => getFeatureStorageIds(entries, featureId).has(entry.id) && entry.isCurrent)
-                    )
-                })),
-                entries,
-                unusedBytes: sumEntries(unusedEntries),
-                totalBytes: sumEntries(entries)
-            };
-        });
-
-        const previewDisableFeature = Effect.fn('AiModelStorageService.previewDisableFeature')(function* (featureId: AiFeatureIdEnum) {
-            const { entries, featureSettings } = yield* readInventory();
-            const nextFeatureSettings = getFeatureSettingsAfterChange(featureSettings, featureId, false);
-            const neededStorageIds = getNeededStorageIds(entries, featureSettings);
-            const nextNeededStorageIds = getNeededStorageIds(entries, nextFeatureSettings);
-
-            return {
-                featureId,
-                reclaimableBytes: sumEntries(findUnusedEntries(entries, nextFeatureSettings)),
-                keepsSharedDownloads: entries.some(
-                    entry => entry.isCurrent && neededStorageIds.has(entry.id) && nextNeededStorageIds.has(entry.id)
-                )
-            };
-        });
-
-        const readUnusedStorageFiles = Effect.fnUntraced(function* () {
-            const { entries, featureSettings } = yield* readInventory();
-            const unusedEntries = findUnusedEntries(entries, featureSettings);
-
-            return AI_MODEL_STORAGE_FILES.filter(storageFile => unusedEntries.some(entry => entry.id === storageFile.id));
-        });
-
-        const deleteStorageFile = Effect.fnUntraced(function* (storageFile: AiModelStorageFileInterface) {
-            const file = resolveFile(storageFile);
-
-            yield* Effect.try({
+            return yield* Effect.try({
                 try: () => {
-                    if (file.exists) {
-                        file.delete();
-                    }
+                    const existing = modelFiles
+                        .map(({ path, subsystem }) => ({ file: new File(Paths.document, ...path), subsystem }))
+                        .filter(({ file }) => file.exists);
+
+                    return {
+                        all: existing.map(({ file }) => file),
+                        unused: existing
+                            .filter(({ subsystem }) => !isDefined(subsystem) || (!enabledSubsystems.has(subsystem) && !isBusy(subsystem)))
+                            .map(({ file }) => file)
+                    };
                 },
                 catch: cause => new NativeCallError({ cause })
             });
         });
 
-        const deleteUnusedStorageFiles = Effect.fnUntraced(function* () {
-            const storageFiles = yield* readUnusedStorageFiles();
-
-            if (storageFiles.some(isBusy)) {
-                return yield* new AiModelStorageBusyError();
-            }
-            yield* Effect.forEach(storageFiles, deleteStorageFile, { discard: true });
-        });
-
-        const withStoppedRuntime = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
-            aiCoordinatorService
-                .withStoppedRuntime(effect)
-                .pipe(Effect.catchIf(Cause.isTimeoutError, () => Effect.fail(new AiModelStorageBusyError())));
-
-        const withStorageLock = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
-            storageLock.withPermit(effect).pipe(Effect.ensuring(reactivity.invalidate(AI_MODEL_STORAGE_REACTIVITY_KEYS)));
-
-        const updateFeature = Effect.fnUntraced(function* (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean) {
-            const currentFeatureSettings = yield* readFeatureSettings();
-            const nextFeatureSettings = getFeatureSettingsAfterChange(currentFeatureSettings, featureId, isEnabled);
-
-            yield* updateSettingsMutation({
-                ...nextFeatureSettings,
-                isAiEnabled: Object.values(nextFeatureSettings).some(Boolean)
-            });
-            yield* withStoppedRuntime(removeUnusedDownloads ? deleteUnusedStorageFiles() : Effect.void);
-        });
-
         return {
-            list,
-            previewDisableFeature,
-            setFeatureEnabled: (featureId: AiFeatureIdEnum, isEnabled: boolean, removeUnusedDownloads: boolean) =>
-                withStorageLock(updateFeature(featureId, isEnabled, removeUnusedDownloads)),
-            freeUnusedDownloads: () => withStorageLock(withStoppedRuntime(deleteUnusedStorageFiles()))
+            getUsage: Effect.fn('AiModelStorageService.getUsage')(function* () {
+                const files = yield* readFiles();
+
+                return { totalBytes: sumBytes(files.all), unusedBytes: sumBytes(files.unused) };
+            }),
+            deleteUnused: Effect.fn('AiModelStorageService.deleteUnused')(function* () {
+                const files = yield* readFiles();
+
+                yield* Effect.try({
+                    try: () => {
+                        files.unused.forEach(file => {
+                            file.delete();
+                        });
+                    },
+                    catch: cause => new NativeCallError({ cause })
+                });
+            })
         };
     })
 }) {
-    static readonly layer = Layer.effect(AiModelStorageService, AiModelStorageService.make).pipe(
-        Layer.provide([AiCoordinatorService.layer, SettingsRepository.layer])
-    );
+    static readonly layer = Layer.effect(AiModelStorageService, AiModelStorageService.make).pipe(Layer.provide(SettingsRepository.layer));
 }
