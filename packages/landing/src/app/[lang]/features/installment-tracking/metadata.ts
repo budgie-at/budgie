@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'track purchases paid in installments'
     ],
     relatedFeatureSlugs: ['debt-tracking', 'monobank-sync', 'privatbank-import', 'recurring-payments-calendar', 'transfer-pair-detection'],
-    relatedArticleSlugs: ['whats-new-september-2026', 'ynab-alternatives-privacy'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy'],
     publishedAt: '2026-10-06',
     updatedAt: '2026-10-06',
     ogTags: ['installments', 'pay in parts', 'debt']

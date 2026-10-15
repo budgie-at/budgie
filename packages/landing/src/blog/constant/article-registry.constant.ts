@@ -13,8 +13,6 @@ import { ARTICLE_METADATA as Privat24StatementExcelImportArticleMetadata } from 
 import { ARTICLE_METADATA as TrackMoneyYouLentAndBorrowedArticleMetadata } from '../../app/[lang]/blog/track-money-you-lent-and-borrowed/metadata';
 import { ARTICLE_METADATA as PayInPartsPurchasesArticleMetadata } from '../../app/[lang]/blog/pay-in-parts-purchases/metadata';
 import { ARTICLE_METADATA as UahEurBudgetUkrainiansInEuArticleMetadata } from '../../app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/metadata';
-import { ARTICLE_METADATA as WhatsNewAugustSeptember2026ArticleMetadata } from '../../app/[lang]/blog/whats-new-august-september-2026/metadata';
-import { ARTICLE_METADATA as WhatsNewSeptember2026ArticleMetadata } from '../../app/[lang]/blog/whats-new-september-2026/metadata';
 import { ARTICLE_METADATA as YnabAlternativesPrivacyArticleMetadata } from '../../app/[lang]/blog/ynab-alternatives-privacy/metadata';
 
 import type { ArticleRegistryEntryInterface } from '../interface/article-registry-entry.interface';
@@ -31,8 +29,6 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     OnDeviceAiBudgetAppExplainerArticleMetadata,
     OfflineFirstBankDataSafetyArticleMetadata,
     HistoricalExchangeRatesBudgetAnalyticsArticleMetadata,
-    WhatsNewAugustSeptember2026ArticleMetadata,
-    WhatsNewSeptember2026ArticleMetadata,
     Privat24StatementExcelImportArticleMetadata,
     TrackMoneyYouLentAndBorrowedArticleMetadata,
     PayInPartsPurchasesArticleMetadata,
