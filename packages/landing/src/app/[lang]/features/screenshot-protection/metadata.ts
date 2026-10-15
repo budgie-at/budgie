@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'screenshot-protection',
     tier: FeatureTierEnum.NICHE,
     title: msg`Screenshot Protection — Hide Bank Balance from Previews`,
-    tagline: msg`Accidental shares stay private — balances blur in screenshots and the app switcher.`,
+    tagline: msg`Ask your phone to block screen capture and hide amounts in the app switcher with one switch in Settings.`,
     metaTitle: msg`Screenshot Protection — Budgie`,
-    metaDescription: msg`Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen.`,
+    metaDescription: msg`One switch asks your phone to block screenshots and screen recordings and hides amounts when Budgie is in the background. Off by default.`,
     primaryKeyword: 'hide bank balance screenshot',
     seoKeywords: [
         'hide bank balance screenshot',

@@ -70,19 +70,27 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/pin-app-lock`}
                         index={1}
-                        tagline={<Trans>The PIN unlocks the app and unlocks your data — no PIN, no readable database.</Trans>}
-                        title={<Trans>PIN App Lock — Locks With the Encryption Key</Trans>}
+                        tagline={
+                            <Trans>
+                                A 4-digit PIN guards the app, with a growing wait after wrong tries and optional fingerprint or face unlock.
+                            </Trans>
+                        }
+                        title={<Trans>PIN App Lock — Nothing Opens Without Your PIN or Biometrics</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/biometric-authentication`}
                         index={2}
-                        tagline={<Trans>Biometric unlock hands Budgie only a yes or no — your PIN stays the key.</Trans>}
-                        title={<Trans>Face ID / Touch ID Authentication</Trans>}
+                        tagline={<Trans>Biometric unlock hands Budgie only a yes or no — your PIN stays the fallback.</Trans>}
+                        title={<Trans>Face ID, Touch ID and Fingerprint Unlock</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/screenshot-protection`}
                         index={3}
-                        tagline={<Trans>Accidental shares stay private — balances blur in screenshots and the app switcher.</Trans>}
+                        tagline={
+                            <Trans>
+                                Ask your phone to block screen capture and hide amounts in the app switcher with one switch in Settings.
+                            </Trans>
+                        }
                         title={<Trans>Screenshot Protection — Hide Bank Balance from Previews</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
