@@ -37,6 +37,14 @@ env:
       id: 'CreateFileBankAccount.StartSyncButton'
       retryTapIfNoChange: true
 
+- extendedWaitUntil:
+      visible:
+          id: 'CreateFileBankAccount.ImportButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'CreateFileBankAccount.ImportButton'
+
 - runFlow:
       when:
           visible: 'Already syncing'

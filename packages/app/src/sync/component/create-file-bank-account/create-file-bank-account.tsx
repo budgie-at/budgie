@@ -1,7 +1,8 @@
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -10,47 +11,50 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
+import { FileImportStepEnum } from '../../enum/file-import-step.enum';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { CreateFileBankAccountFooter } from '../create-file-bank-account-footer/create-file-bank-account-footer';
+import { FileImportReviewStep } from '../file-import-review-step/file-import-review-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
 import { CreateFileBankAccountSelector } from './create-file-bank-account.selector';
 
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
-
-type SetupStep = 'file' | 'accounts';
+import type { SelectedFileInterface } from '../../interface/selected-file.interface';
+import type { FileBankSyncImportReviewInterface } from '@budgie/sync';
 
 interface CreateFileBankAccountProps {
     readonly config: CreateFileBankAccountConfigInterface;
 }
 
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
-    const [step, setStep] = useState<SetupStep>('file');
+    const [step, setStep] = useState(FileImportStepEnum.FILE);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<SelectedFileInterface | null>(null);
+    const [review, setReview] = useState<FileBankSyncImportReviewInterface | null>(null);
     const accountSelection = useAccountSelection();
     const { selectedAccounts, setPreviews } = accountSelection;
-    const [fileUri, setFileUri] = useState<string | null>(null);
     const onboardingHref = useOnboardingRedirect();
 
     const handleSelectFile = async () => {
         setIsLoading(true);
         try {
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
-            const assetPreview = result.assets?.at(0);
-            const { uri } = isDefined(assetPreview) ? assetPreview : {};
+            const asset = result.assets?.at(0);
 
-            if (result.canceled || !isNotEmptyString(uri)) {
+            if (result.canceled || !isDefined(asset) || !isNotEmptyString(asset.uri)) {
                 setIsLoading(false);
 
                 return;
             }
 
-            const previews = await config.importPreview(uri);
-            setFileUri(uri);
+            const previews = await config.importPreview(asset.uri);
+            setSelectedFile({ uri: asset.uri, name: asset.name });
             setPreviews(previews);
-            setStep('accounts');
+            setStep(FileImportStepEnum.ACCOUNTS);
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Invalid file`, text2: getErrorMessage(error) });
         } finally {
@@ -58,14 +62,30 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         }
     };
 
-    const handleSetupSync = async () => {
-        if (!isDefined(fileUri)) {
+    const handleReview = async () => {
+        if (!isDefined(selectedFile)) {
             return;
         }
 
         setIsLoading(true);
         try {
-            await config.executeImportForSelectedAccounts(fileUri, [...selectedAccounts]);
+            setReview(await config.reviewImport(selectedFile.uri, [...selectedAccounts]));
+            setStep(FileImportStepEnum.REVIEW);
+        } catch (error) {
+            Toast.show({ type: 'error', text1: t`Invalid file`, text2: getErrorMessage(error) });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleImport = async () => {
+        if (!isDefined(selectedFile)) {
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            await config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
             router.replace(onboardingHref ?? '/');
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Import failed`, text2: getErrorMessage(error) });
@@ -74,28 +94,33 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         }
     };
 
-    const isFileStep = step === 'file';
+    const newTransactionCount = isDefined(review) ? review.parsedTransactionCount - review.duplicateTransactionCount : 0;
+    const importLabel = t({ message: plural(newTransactionCount, { one: 'Import # transaction', other: 'Import # transactions' }) });
+    const fileName = selectedFile?.name ?? '';
     const hasSelectedAccounts = selectedAccounts.size > 0;
-    const formStep = isFileStep ? (
-        <FileUploadStep
-            steps={config.steps}
-            fileIcon={config.fileIcon}
-            fileTypeLabel={config.fileTypeLabel}
-            selectFileText={config.selectFileText}
-            onSelectFile={handleSelectFile}
-            isLoading={isLoading}
-        />
-    ) : (
-        <AccountSelectionStep {...accountSelection} />
-    );
+    const stepContent: Record<FileImportStepEnum, ReactElement | null> = {
+        [FileImportStepEnum.FILE]: (
+            <FileUploadStep
+                steps={config.steps}
+                fileIcon={config.fileIcon}
+                fileTypeLabel={config.fileTypeLabel}
+                selectFileText={config.selectFileText}
+                onSelectFile={handleSelectFile}
+                isLoading={isLoading}
+            />
+        ),
+        [FileImportStepEnum.ACCOUNTS]: <AccountSelectionStep {...accountSelection} />,
+        [FileImportStepEnum.REVIEW]: isDefined(review) ? <FileImportReviewStep review={review} fileName={fileName} /> : null
+    };
     const footer = (
         <CreateFileBankAccountFooter
-            isFileStep={isFileStep}
+            step={step}
             isLoading={isLoading}
             hasSelectedAccounts={hasSelectedAccounts}
-            ctaLabel={config.ctaLabel}
+            importLabel={importLabel}
             onSelectFile={handleSelectFile}
-            onSetupSync={handleSetupSync}
+            onReview={handleReview}
+            onImport={handleImport}
         />
     );
 
@@ -107,7 +132,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             testID={CreateFileBankAccountSelector.ScrollView}
             footer={footer}
         >
-            <FormLayoutGroup>{formStep}</FormLayoutGroup>
+            <FormLayoutGroup>{stepContent[step]}</FormLayoutGroup>
         </CollapsibleChromePage>
     );
 };

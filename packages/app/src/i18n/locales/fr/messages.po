@@ -154,6 +154,10 @@ msgstr "{downloaded} sur {total} Go sont conservés. Le téléchargement reprend
 msgid "{downloadPercent}%"
 msgstr "{downloadPercent}%"
 
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
+msgstr "{duplicateTransactionCount, plural, one {# ignorée} other {# ignorées}}"
+
 #: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "{fileSize} · on this phone"
 msgstr "{fileSize} · sur ce téléphone"
@@ -181,6 +185,10 @@ msgstr "{formattedRemaining} au-dessus du budget"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# correspondance fiable} other {# correspondances fiables}}"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "{foundAccountCount, plural, one {Found # account} other {Found # accounts}}"
+msgstr "{foundAccountCount, plural, one {# compte trouvé} other {# comptes trouvés}}"
 
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "{free} GB free on this phone."
@@ -231,6 +239,10 @@ msgstr "{months, plural, one {# mois} other {# mois}}"
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {Ajouter # compte} other {Ajouter # comptes}}"
 
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+msgid "{newTransactionCount, plural, one {Import # transaction} other {Import # transactions}}"
+msgstr "{newTransactionCount, plural, one {Importer # transaction} other {Importer # transactions}}"
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} nouvelles, {existingTransactionCount} déjà importées, {parsedTransactionCount} vérifiées"
@@ -242,6 +254,10 @@ msgstr "{overdueDays, plural, one {En retard de # jour} other {En retard de # jo
 #: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
 msgid "{paidCount} of {installmentCount} paid"
 msgstr "{paidCount} sur {installmentCount} payées"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "{parsedTransactionCount, plural, one {# transaction found} other {# transactions found}}"
+msgstr "{parsedTransactionCount, plural, one {# transaction trouvée} other {# transactions trouvées}}"
 
 #: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -275,6 +291,10 @@ msgstr "{rowCount, plural, one {# transaction catégorisée} other {# transactio
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {# transaction étiquetée} other {# transactions étiquetées}}"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
+msgstr "{selectedAccountCount, plural, one {Ajouter # compte} other {Ajouter # comptes}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -653,6 +673,10 @@ msgstr "Toutes vos données financières sont stockées localement sur votre app
 msgid "Allocated"
 msgstr "Alloué"
 
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Already in Budgie"
+msgstr "Déjà dans Budgie"
+
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already repaid"
@@ -888,6 +912,10 @@ msgstr "Limite de budget atteinte"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
+msgstr "Budgie récupère le dernier mois d'historique, puis demande les nouvelles transactions à Monobank quand tu ouvres l'app."
+
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie peut détecter les imports de synchronisation bancaire en double et réparer les consolidations de virements associées à des comptes inactifs."
@@ -1112,6 +1140,10 @@ msgstr "Choisis et confirme un code PIN"
 msgid "Choose what goes inside"
 msgstr "Choisir ce qu'il contient"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Choose what to track. Balances and history come straight from the bank."
+msgstr "Choisis ce que tu veux suivre. Les soldes et l'historique viennent directement de la banque."
+
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
 msgstr "Effacer"
@@ -1152,6 +1184,10 @@ msgstr "Clôturer le dépôt ?"
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
 msgstr "Fermer le menu"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Closing balance · {title}"
+msgstr "Solde de clôture · {title}"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
@@ -1194,6 +1230,10 @@ msgstr "Confirmer la répartition"
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
 msgstr "Confirmer la sélection des tags"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Connect"
+msgstr "Connecter"
 
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Connect a bank"
@@ -1242,6 +1282,7 @@ msgstr "Contient"
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
 msgstr "Continuer"
@@ -1291,6 +1332,10 @@ msgstr "Copies ailleurs"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
 msgstr "Copiez la clé API et la clé secrète dans les champs ci-dessous"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Copy the token and paste it below"
+msgstr "Copie le jeton et colle-le ci-dessous"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Cost basis"
@@ -1636,10 +1681,6 @@ msgstr "Créer des comptes"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Créer et copier le jeton personnel"
-
-#: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Create and copy your personal API token"
-msgstr "Créez et copiez votre jeton API personnel"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Create and organize transaction tags"
@@ -2329,7 +2370,6 @@ msgid "Fee, percent"
 msgstr "Frais, en pourcentage"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Récupérer les comptes"
 
@@ -2531,10 +2571,6 @@ msgstr "Si tu ne t'en souviens pas, cette sauvegarde ne peut pas être ouverte. 
 msgid "If you forget it, nobody can open this file, including you and us."
 msgstr "Si tu l'oublies, personne ne pourra ouvrir ce fichier, ni toi ni nous."
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Import"
-msgstr "Importer"
-
 #: src/app/(main)/create-account/index.tsx
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
@@ -2565,6 +2601,10 @@ msgstr "Échec de l'importation"
 #: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Import file"
 msgstr "Importer un fichier"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Import into"
+msgstr "Importer dans"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
@@ -2713,6 +2753,10 @@ msgstr "Continuez à utiliser Budgie en attendant. Tant que le modèle n'est pas
 msgid "Kept in this file"
 msgstr "Conservé dans ce fichier"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
+msgstr "Conservé dans le fichier de Budgie sur ce téléphone. Envoyé uniquement à Monobank, jamais à nous."
+
 #: src/app/(tabs)/settings/your-data.tsx
 msgid "Key"
 msgstr "Clé"
@@ -2850,6 +2894,10 @@ msgstr "Note ce que tu dépenses. C'est tout ce dont Budgie a besoin."
 #: src/onboarding/component/home-first-steps/home-first-steps.tsx
 msgid "Log your first expense"
 msgstr "Note ta première dépense"
+
+#: src/sync/component/token-input-step/token-input-step.tsx
+msgid "Looks right"
+msgstr "Ça a l'air bon"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
@@ -3015,6 +3063,10 @@ msgstr "Sorties"
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Monobank"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between."
+msgstr "Monobank te fournit un jeton personnel. Budgie l'utilise pour parler directement à la banque, sans intermédiaire."
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Monobank sends about one month of history per minute, for each account you selected."
@@ -3295,6 +3347,7 @@ msgstr "Aucune transaction pour le moment"
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
 msgstr "Aucune"
 
@@ -3588,10 +3641,6 @@ msgstr "Vous doit"
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Payé {paidAmount} · {paidCount} sur {installmentCount}"
 
-#: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Paste the token into the field below"
-msgstr "Collez le jeton dans le champ ci-dessous"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
 msgstr "Collez votre jeton API ci-dessous :"
@@ -3813,6 +3862,10 @@ msgstr "La resynchronisation des 90 derniers jours commencera à la prochaine sy
 #: src/app/resync-window-picker.tsx
 msgid "Re-sync transactions"
 msgstr "Resynchroniser les transactions"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Read on this phone"
+msgstr "Lu sur ce téléphone"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Read on this phone, then you can delete it."
@@ -4088,6 +4141,10 @@ msgstr "Épargne"
 msgid "Savings Account"
 msgstr "Compte d'épargne"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Scan the QR code with the Monobank app"
+msgstr "Scanne le code QR avec l'app Monobank"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Screenshot Protection"
 msgstr "Protection des captures d'écran"
@@ -4228,10 +4285,6 @@ msgstr "Sélectionner un compte"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Select Account"
 msgstr "Sélectionner un compte"
-
-#: src/sync/component/account-selection-step/account-selection-step.tsx
-msgid "Select accounts to sync:"
-msgstr "Sélectionner les comptes à synchroniser :"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Select Action Type"
@@ -4491,7 +4544,6 @@ msgid "Start Import"
 msgstr "Démarrer l'importation"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Démarrer la synchronisation"
@@ -4576,10 +4628,6 @@ msgstr "Réparations de synchronisation"
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisez vos soldes et transactions Binance"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Sync your Monobank accounts and transactions"
-msgstr "Synchronisez vos comptes et transactions Monobank"
-
 #: src/sync/service/background-sync-session.service.ts
 msgid "Syncing bank history"
 msgstr "Synchronisation de l’historique bancaire"
@@ -4632,8 +4680,8 @@ msgid "Tap \"Get API Key\" above and sign in to Binance"
 msgstr "Touchez \"Obtenir la clé API\" ci-dessus et connectez-vous à Binance"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Tap \"Get API Token\" above and log in to Monobank"
-msgstr "Touchez \"Obtenir le jeton API\" ci-dessus et connectez-vous à Monobank"
+msgid "Tap \"Get API Token\" above to open api.monobank.ua"
+msgstr "Touche « Get API Token » ci-dessus pour ouvrir api.monobank.ua"
 
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "Tap a suggestion to accept it"
@@ -4732,6 +4780,10 @@ msgstr "Ce virement consolidé n’a aucune écriture source déplacée."
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
 msgstr "Cela supprime {DB_NAME} et tout son contenu de ce téléphone. C'est irréversible."
+
+#: src/sync/component/token-input-step/token-input-step.tsx
+msgid "This doesn't look like a Monobank token yet"
+msgstr "Ça ne ressemble pas encore à un jeton Monobank"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
@@ -4934,6 +4986,10 @@ msgstr "Transaction introuvable"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transactions"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Transactions already in Budgie are skipped. Nothing is written until you import."
+msgstr "Les transactions déjà dans Budgie sont ignorées. Rien n'est enregistré avant l'import."
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Transactions imported"
@@ -5398,10 +5454,6 @@ msgstr "Ton code PIN · Empreinte digitale"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your token is stored in Budgie's file and only ever sent to Monobank."
 msgstr "Ton jeton est stocké dans le fichier de Budgie et n'est envoyé qu'à Monobank."
-
-#: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Your token is stored securely in the database. Sync continues in the background."
-msgstr "Votre jeton est stocké en toute sécurité dans la base de données. La synchronisation continue en arrière-plan."
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."

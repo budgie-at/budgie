@@ -5,6 +5,8 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { SyncAccountBalanceStateEnum } from '../enum/sync-account-balance-state.enum';
+import { SyncTransactionTypeEnum } from '../enum/sync-transaction-type.enum';
 import { SyncWorkload } from '../port/sync-workload.port';
 import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
 
@@ -13,6 +15,8 @@ import { mapBankTransactionToCreateInput } from './map-bank-transaction-to-creat
 
 import type { FileBankSyncAccountImportResultInterface } from '../interface/file-bank-sync-account-import-result.interface';
 import type { FileBankSyncImportResultInterface } from '../interface/file-bank-sync-import-result.interface';
+import type { FileBankSyncImportReviewInterface } from '../interface/file-bank-sync-import-review.interface';
+import type { FileBankSyncReviewTransactionInterface } from '../interface/file-bank-sync-review-transaction.interface';
 import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
 import type { FileSyncServiceDefinitionInterface } from '../interface/file-sync-service-definition.interface';
 import type { ImportContextInterface } from '../interface/import-context.interface';
@@ -184,6 +188,65 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return buildImportResult(bankAccounts.length, accountImportResults);
     });
 
+    const toReviewTransaction = (transaction: SyncTransactionInterface, currencyCode: string): FileBankSyncReviewTransactionInterface => ({
+        externalId: transaction.id,
+        operatedAt: new Date(transaction.time * 1000),
+        description: transaction.description,
+        signedAmount: transaction.type === SyncTransactionTypeEnum.INCOME ? Math.abs(transaction.amount) : -Math.abs(transaction.amount),
+        currencyCode
+    });
+
+    const isKnownTransaction = (transaction: SyncTransactionInterface, existingTransactionIdMap: Map<string, number>) =>
+        existingTransactionIdMap.has(transaction.id) ||
+        (transaction.legacyExternalIds ?? []).some(legacyExternalId => existingTransactionIdMap.has(legacyExternalId));
+
+    const resolveClosingBalance = (bankAccount: SyncAccountInterface, transactions: SyncTransactionInterface[]): number | null => {
+        if (bankAccount.balanceState !== SyncAccountBalanceStateEnum.REPRESENTABLE) {
+            return null;
+        }
+
+        if (bankAccount.balance !== 0) {
+            return bankAccount.balance;
+        }
+
+        const latestTransaction = transactions.reduce<SyncTransactionInterface | null>(
+            (latest, transaction) => (!isDefined(latest) || transaction.time > latest.time ? transaction : latest),
+            null
+        );
+
+        return isDefined(latestTransaction) && latestTransaction.balance !== 0 ? latestTransaction.balance : null;
+    };
+
+    const buildImportReview = (
+        client: FileBasedSyncClientInterface,
+        bankAccounts: SyncAccountInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ): FileBankSyncImportReviewInterface => {
+        const accountTransactions = bankAccounts.flatMap(bankAccount =>
+            client.getTransactions(bankAccount.id).map(transaction => ({ transaction, currencyCode: bankAccount.currencyCode }))
+        );
+        const operatedTimes = accountTransactions.map(({ transaction }) => transaction.time);
+        const sortedByRecency = [...accountTransactions].sort((left, right) => right.transaction.time - left.transaction.time);
+
+        return {
+            parsedTransactionCount: accountTransactions.length,
+            duplicateTransactionCount: accountTransactions.filter(({ transaction }) =>
+                isKnownTransaction(transaction, existingTransactionIdMap)
+            ).length,
+            earliestOperatedAt: isNotEmptyArray(operatedTimes) ? new Date(Math.min(...operatedTimes) * 1000) : null,
+            latestOperatedAt: isNotEmptyArray(operatedTimes) ? new Date(Math.max(...operatedTimes) * 1000) : null,
+            sampleTransactions: sortedByRecency
+                .slice(0, 3)
+                .map(({ transaction, currencyCode }) => toReviewTransaction(transaction, currencyCode)),
+            accounts: bankAccounts.map(bankAccount => ({
+                externalId: bankAccount.id,
+                title: bankAccount.title ?? bankAccount.iban ?? bankAccount.id,
+                currencyCode: bankAccount.currencyCode,
+                closingBalance: resolveClosingBalance(bankAccount, client.getTransactions(bankAccount.id))
+            }))
+        };
+    };
+
     const executeImport = (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) =>
         syncWorkload.runUser(importWork(client, bankAccounts));
 
@@ -197,6 +260,13 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             }
 
             return yield* syncService.mapAccountsToPreview(bankAccounts);
+        }),
+        reviewImport: Effect.fn('AbstractFileSyncService.reviewImport')(function* (uri: string, selectedAccountIds: string[]) {
+            const { client, bankAccounts } = yield* definition.parseFile(uri);
+            const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
+            const existingTransactionIdMap = yield* transactionService.findIdMapByExternalSource(definition.provider);
+
+            return buildImportReview(client, selectedBankAccounts, existingTransactionIdMap);
         }),
         executeImportForSelectedAccounts: Effect.fn('AbstractFileSyncService.executeImportForSelectedAccounts')(function* (
             uri: string,
