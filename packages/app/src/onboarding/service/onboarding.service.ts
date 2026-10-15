@@ -115,13 +115,6 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
                 yield* settingsRepository.update({ defaultInstrumentId: instrumentId, language });
             }),
             provisionAccounts,
-            ensureCashAccount: Effect.fn('OnboardingService.ensureCashAccount')(function* (title: string) {
-                const [{ count }] = yield* accountRepository.count();
-
-                if (!isPositiveNumber(count)) {
-                    yield* provisionAccounts([{ type: AccountTypeEnum.CASH, title }]);
-                }
-            }),
             saveBalances: (balances: OnboardingBalanceInputInterface[]) =>
                 Db.transaction(Effect.forEach(balances, balance => saveBalance(balance), { discard: true })),
             complete: () => Db.transaction(settingsRepository.update({ isOnboardingCompleted: true }))

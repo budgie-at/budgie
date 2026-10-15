@@ -10,7 +10,6 @@ import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-col
 import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
 import { AiDownloadHomeStatus } from '../../ai/component/ai-download-home-status/ai-download-home-status';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
-import { HomeFirstSteps } from '../../onboarding/component/home-first-steps/home-first-steps';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 
 export default function HomePage() {
@@ -26,7 +25,6 @@ export default function HomePage() {
     const listHeaderComponent = (
         <View className="mb-3xl gap-y-3xl">
             <AiDownloadHomeStatus />
-            <HomeFirstSteps accountCount={activeAccountCount} />
             <BudgetWidget />
         </View>
     );
