@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'binance-sync',
     tier: FeatureTierEnum.POWER,
     title: msg`Binance Sync — Read-Only Keys, Real Balances`,
-    tagline: msg`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key.`,
+    tagline: msg`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — using a read-only API key.`,
     metaTitle: msg`Binance Account Sync — Budgie`,
-    metaDescription: msg`Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment.`,
+    metaDescription: msg`Connect Binance with a read-only API key. Balances, P2P orders, trades, and Earn rewards sync to your device; P2P buys merge with the bank payment.`,
     primaryKeyword: 'binance portfolio sync app',
     seoKeywords: [
         'binance portfolio sync app',
@@ -30,6 +30,6 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-02',
-    updatedAt: '2026-09-02',
+    updatedAt: '2026-10-14',
     ogTags: ['binance', 'crypto', 'sync']
 } satisfies FeatureRegistryEntryInterface;

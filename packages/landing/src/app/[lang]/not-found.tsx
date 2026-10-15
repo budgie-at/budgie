@@ -1,7 +1,7 @@
 'use client';
 
 import { Trans } from '@lingui/react/macro';
-import { BookOpen, Home } from 'lucide-react';
+import { Home, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -37,9 +37,9 @@ export default function NotFound() {
                     </Button>
 
                     <Button asChild className="rounded-full" size="lg" variant="outline">
-                        <Link href={`/${detectedLang}/blog`}>
-                            <BookOpen className="mr-2 size-4" />
-                            <Trans>Read Blog</Trans>
+                        <Link href={`/${detectedLang}/features`}>
+                            <Sparkles className="mr-2 size-4" />
+                            <Trans>Features</Trans>
                         </Link>
                     </Button>
                 </div>

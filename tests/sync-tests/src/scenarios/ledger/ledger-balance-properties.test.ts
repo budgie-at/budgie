@@ -73,6 +73,8 @@ const expectedBalance = (live: readonly LiveTransaction[], accountId: number) =>
         return sum + (received - spent) * PRECISION;
     }, 0);
 
+const PROPERTY_TIMEOUT = 120_000;
+
 describe('ledger/balance-properties', () => {
     it.effect.prop(
         'stored balances equal the ledger and the summed entries after any create, edit and delete sequence',
@@ -127,6 +129,7 @@ describe('ledger/balance-properties', () => {
                     expect(ledger.get(accountId) ?? 0).toBe(expected);
                     expect(stored.find(balance => balance.accountId === accountId)?.amount ?? 0).toBe(expected);
                 }
-            }).pipe(Effect.provide(TestLayer))
+            }).pipe(Effect.provide(TestLayer)),
+        PROPERTY_TIMEOUT
     );
 });

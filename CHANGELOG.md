@@ -3,6 +3,82 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.103.11](https://github.com/budgie-at/budgie/compare/v6.103.10...v6.103.11) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** self canonicals for legal and beta pages ([01e3a55](https://github.com/budgie-at/budgie/commit/01e3a5508d78797e2d874c07ab8356de65509754))
+
+
+
+
+
+## [6.103.10](https://github.com/budgie-at/budgie/compare/v6.103.9...v6.103.10) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** temporary language redirect and a localized 404 ([79998d2](https://github.com/budgie-at/budgie/commit/79998d275fc11d9a65182bbc953521a2a8b810a3))
+
+
+
+
+
+## [6.103.9](https://github.com/budgie-at/budgie/compare/v6.103.8...v6.103.9) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** bank and sync pages tell the truth ([e41f07c](https://github.com/budgie-at/budgie/commit/e41f07c01428c668280213837e811f00b8f05158))
+
+
+
+
+
+## [6.103.8](https://github.com/budgie-at/budgie/compare/v6.103.7...v6.103.8) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** money pages tell the truth ([69b71c0](https://github.com/budgie-at/budgie/commit/69b71c0443cea339aa1b299c0b4d2d6b41cd3f8a))
+
+
+
+
+
+## [6.103.7](https://github.com/budgie-at/budgie/compare/v6.103.6...v6.103.7) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** categorization pages tell the truth ([5652e58](https://github.com/budgie-at/budgie/commit/5652e58bc010c00c0a4b0459e45195ed0c1d5d8c))
+* **landing:** use formal French on the corrected pages ([af8c6ab](https://github.com/budgie-at/budgie/commit/af8c6ab39ee5ffeae39d7f788837fd6233da98b4))
+
+
+
+
+
+## [6.103.6](https://github.com/budgie-at/budgie/compare/v6.103.5...v6.103.6) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** make transaction feature pages accurate ([fa37dac](https://github.com/budgie-at/budgie/commit/fa37dac5019c041a5a3f851ff1f4368ce8bfbc9a))
+* **landing:** use formal French on the corrected pages ([d95da3d](https://github.com/budgie-at/budgie/commit/d95da3ddb5ea8901f064bedd9594deef70f7819f))
+
+
+
+
+
+## [6.103.5](https://github.com/budgie-at/budgie/compare/v6.103.4...v6.103.5) (2026-10-14)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
 ## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
 
 

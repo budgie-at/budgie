@@ -953,7 +953,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source</strong>: Security claims are verifiable through code review
+                                <strong>Source-available</strong>: Security claims are verifiable through code review
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>

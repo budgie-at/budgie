@@ -229,7 +229,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                             <Trans>No user profiles or advertising IDs</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Open source for complete transparency</Trans>
+                            <Trans>Source-available for complete transparency</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -324,11 +324,11 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleList>
 
                     <BlogArticleSubheading>
-                        <Trans>4. Open Source Transparency</Trans>
+                        <Trans>4. Source-Available Transparency</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>Our code is open source, meaning:</Trans>
+                        <Trans>Our code is source-available, meaning:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>

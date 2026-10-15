@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('erste-bank-pdf-import', i18n => ({
     title: t(i18n)`Erste Bank PDF Import`,
-    tagline: t(i18n)`Classic and modern PDF formats supported.`,
+    tagline: t(i18n)`Import the statement PDF you download in George.`,
     tags: [t(i18n)`erste`, t(i18n)`pdf`, t(i18n)`import`]
 }));

@@ -5,7 +5,8 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SUPPORTED_LOCALES as locales } from './i18n/supported-locales.constant.mjs';
 
-const PERMANENT_REDIRECT_STATUS = 301;
+const TEMPORARY_REDIRECT_STATUS = 307;
+const CASE_NORMALIZATION_STATUS = 308;
 
 const getRequestLocale = (requestHeaders: Headers): string => {
     const langHeader = requestHeaders.get('accept-language');
@@ -29,9 +30,18 @@ export function proxy(request: NextRequest) {
         return;
     }
 
+    const [, firstSegment = '', ...restSegments] = pathname.split('/');
+    const normalizedSegment = firstSegment.toLowerCase();
+
+    if (normalizedSegment !== firstSegment && locales.includes(normalizedSegment)) {
+        request.nextUrl.pathname = `/${[normalizedSegment, ...restSegments].join('/')}`;
+
+        return NextResponse.redirect(request.nextUrl, CASE_NORMALIZATION_STATUS);
+    }
+
     const locale = getRequestLocale(request.headers);
     request.nextUrl.pathname = `/${locale}${pathname}`;
-    const response = NextResponse.redirect(request.nextUrl, PERMANENT_REDIRECT_STATUS);
+    const response = NextResponse.redirect(request.nextUrl, TEMPORARY_REDIRECT_STATUS);
     // oxlint-disable-next-line lingui/no-unlocalized-strings
     response.headers.set('Vary', 'Accept-Language');
 
