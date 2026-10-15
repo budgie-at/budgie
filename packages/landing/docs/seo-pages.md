@@ -220,6 +220,51 @@ Publication gate:
 - `switch-from/*` pages may be published earlier: they serve people who already chose Budgie and need the import steps. Their CTA uses whichever store badges are live.
 - Angle for both families: privacy, on-device data, and bank sync for Ukraine and the EU. Do not invent other angles.
 
+### 15. Merchant-code (MCC) glossary pages
+
+The merchant-code glossary is an allowed page family, primary languages `uk` and `en` (the other locales are still translated and built, as for every page). It obeys rules 1-8 and 13 except where stated here.
+
+Routes, never `[slug]`:
+
+```text
+src/app/[lang]/merchant-codes/{page.tsx,metadata.ts,opengraph-image.tsx}
+src/app/[lang]/merchant-codes/<code>/{page.tsx,metadata.ts,opengraph-image.tsx}
+```
+
+- One hub: `merchant-codes/page.tsx`.
+- A FIXED list of explicit code pages, one folder per four-digit code (`merchant-codes/5499/`). The list is chosen by a human for search demand (codes people look up on statements) and for being verifiable against the seed. A new code page is a new folder in a PR that states the demand and cites the seed row. There is no generation of code pages from the seed, and a code in the seed does not get a page by default.
+
+Allowed enumeration (the explicit exception to rules 2 and 6):
+
+- The hub may render the full list of seeded codes grouped by category. That list is rendered from the data constant `mcc-default-category-seed.constant.ts` in `@budgie/contracts`, never hand-copied into the page, a registry or a sidecar. It is runtime/enumerated listing data in the sense of rule 6, not fixed body copy.
+- The hub's introduction, category headings' explanatory prose and FAQ stay inline JSX (rule 2). Only code number to category rows are enumerated; category labels are translated through the existing category labels, not new strings per code.
+- Code pages state their own meaning, typical merchants and the category Budgie assigns inline. The assigned category must equal the seed's entry for that code.
+- A package test (colocated, `@effect/vitest`, rule 27) asserts parity: every code with an explicit page exists in the seed with the category the page's sidecar declares (`categoryKey`), the explicit-page list equals the folders under `merchant-codes/`, and the hub renders exactly the seed's code set. A seed change that breaks parity fails CI; update the page in the same PR.
+
+Metadata, registry, sitemap:
+
+- Each code page and the hub own a sibling `metadata.ts`: `code`, `slug` (equal to the folder name and the code), `categoryKey`, `title`, `metaTitle`, `metaDescription`, `publishedAt`, `updatedAt`, `relatedFeatureSlugs`, `relatedArticleSlugs`. No visible copy.
+- `MERCHANT_CODE_REGISTRY` is a metadata-only aggregator of the code-page sidecars for the hub's links, related codes and the sitemap. The hub's full code table comes from the seed, not from the registry.
+- `src/app/sitemap.ts` lists the hub and each explicit code page in every locale with `lastModified: meta.updatedAt` and hreflang via `buildAlternates`. Seeded codes without a page are not in the sitemap.
+
+JSON-LD:
+
+- Code pages: `WebPage` + `BreadcrumbList` (Home, Merchant codes, the code) and a `DefinedTerm` (`name` is the code, `description` is the plain meaning, `inDefinedTermSet` points at the hub URL). `DefinedTerm` fits schema.org for a glossary entry.
+- Hub: `WebPage` + `BreadcrumbList` + a `DefinedTermSet` (`name`, `url`). It lists terms through `hasDefinedTerm` only for the explicit code pages, not the full seed, so the schema never duplicates the enumerated table. If a typed `DefinedTermSet` component does not yet exist, add it as a JSX schema component (rule 7), not an object builder.
+- `FAQPage` only for a visible FAQ rendered from the same JSX children. No `Review` or rating markup.
+
+Linking:
+
+- Every code page links to `/features/mcc-auto-category` (how Budgie assigns a category from the code) and `/features/categorization-rules` (how to override it with a rule), through the related-features slots using `relatedFeatureSlugs`, plus one in-prose link from the explanation text. The hub links to both as well.
+- `mcc-auto-category` links back to the hub, and to a code page where its prose names that code.
+- Code pages link to the neighbouring explicit codes of the same category through registry relationship data.
+
+Content rules:
+
+- State what the code means and what Budgie does with it as outcomes (the category assigned, that the user can change it). Never describe the seed format, the database or the mapping implementation (`AGENTS.md` -> "No implementation details in user-facing copy").
+- Do not claim what a bank or card network will report for a given purchase: a merchant can be coded differently. Phrase code meaning as "usually" and cite the standard classification only in the PR.
+- Every claim about Budgie behaviour is verified in code and cited as `file:line` in the PR, as the landing standard requires.
+
 ---
 
 ## Canonical page shapes
@@ -535,6 +580,7 @@ Check this list before authoring a new SEO component.
 - Adding a new blog article: create `src/app/[lang]/blog/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the article registry/index aggregator, and optionally add `opengraph-image.tsx`.
 - Adding a new feature page: create `src/app/[lang]/features/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the feature registry/index aggregator, compose a `FeatureStory` with 2–5 steps referencing only scene ids present in the generated media manifest, and optionally add `opengraph-image.tsx`.
 - Adding a new pillar hub: create `src/app/[lang]/<slug>/page.tsx`, create sibling metadata if the family is enumerated, and keep visible hub copy in the page or a page-owned explicit JSX component.
+- Adding a merchant-code page: follow rule 15. Create the explicit `merchant-codes/<code>/` folder with `page.tsx`, `metadata.ts` and `opengraph-image.tsx`, confirm the code and category in the seed, link `mcc-auto-category` and `categorization-rules`, and keep the parity test green.
 - Adding an alternatives or switch-from page: follow rule 14. Create the explicit folder with `page.tsx`, `metadata.ts` (including `verifiedAt`) and `opengraph-image.tsx`, import the sidecar into the family registry, list per-claim sources and access dates in the PR, and respect the publication gate.
 - Adding a new legal page: create `src/app/[lang]/legal/<slug>/page.tsx`; do not add it to a registry or sitemap.
 - Adding a new SEO concern: build a primitive component and have pages compose it as children. Do not bolt body-copy prop bags onto existing wrappers.
