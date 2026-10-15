@@ -30,16 +30,12 @@ const seedSameCurrencyPairFixture = (incomeToIban: string | null) =>
 
 const fetchConsolidationParentId = (transactionId: number) =>
     Effect.gen(function* () {
-        return (yield* testQueryService.findTransactionById(transactionId))?.consolidationParentTransactionId ?? null;
+        return (yield* testQueryService.findTransactionById(transactionId)).consolidationParentTransactionId ?? null;
     });
 
 const fetchSingleTransferPairCanonical = () =>
     Effect.gen(function* () {
         const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-
-        if (canonical === undefined) {
-            throw new Error('Expected a single TRANSFER_PAIR canonical');
-        }
 
         return canonical.id;
     });

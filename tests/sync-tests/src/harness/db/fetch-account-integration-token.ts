@@ -8,15 +8,16 @@ import { testDb } from '../scenario/setup';
 
 export const fetchAccountIntegrationToken = (accountId: number) =>
     Effect.gen(function* () {
-        const [account] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.id, accountId));
-        if (!isDefined(account?.integrationId)) {
+        const accounts = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.id, accountId));
+        const integrationId = accounts.at(0)?.integrationId;
+        if (!isDefined(integrationId)) {
             return null;
         }
 
-        const [integration] = yield* testDb
+        const integrations = yield* testDb
             .select()
             .from(BankIntegrationEntityTable)
-            .where(eq(BankIntegrationEntityTable.id, account.integrationId));
+            .where(eq(BankIntegrationEntityTable.id, integrationId));
 
-        return integration?.token ?? null;
+        return integrations.at(0)?.token ?? null;
     });

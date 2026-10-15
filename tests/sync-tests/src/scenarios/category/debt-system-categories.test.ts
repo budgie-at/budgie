@@ -56,7 +56,7 @@ describe('category/debt-system-categories', () => {
                 pickable
                     .filter(category => category.isSystemCategory)
                     .map(category => category.id)
-                    .sort()
+                    .sort((left, right) => left - right)
             ).toEqual(DEBT_CATEGORY_IDS);
         }).pipe(Effect.provide(TestLayer))
     );

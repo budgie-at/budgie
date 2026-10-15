@@ -408,11 +408,12 @@ layer(TestLayer)('recurringService', it => {
             Effect.gen(function* () {
                 const { seed, ids } = yield* seedTrackedStreams(streams);
                 const after = yield* chargeAndRead(seed, months, survivors);
+                const anySeriesId: unknown = expect.any(Number);
                 expect(after.map(entry => [entry.seriesId, entry.title, entry.userState])).toEqual(
                     visible.map(amount =>
                         isDefined(amount)
                             ? [ids.get(amount), `Plan ${amount}`, RecurringSeriesUserStateEnum.CONFIRMED]
-                            : [expect.any(Number), 'BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
+                            : [anySeriesId, 'BILLING', RecurringSeriesUserStateEnum.SUGGESTED]
                     )
                 );
             })
@@ -570,7 +571,7 @@ layer(TestLayer)('recurringService', it => {
             ]) {
                 yield* Effect.forEach(
                     fixture
-                        .replaceAll("'now'", "'" + date + "'")
+                        .replaceAll("'now'", `'${date}'`)
                         .split(';')
                         .filter(statement => statement.trim().length > 0),
                     statement => testDb.$client.unsafe(statement),

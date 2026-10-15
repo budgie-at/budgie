@@ -102,8 +102,8 @@ it.effect('counts a nearby fixed-price charge once at the earliest billing date'
     Effect.sync(() => {
         const charges = [...[5, 36, 64, 95].map(day => charge(day)), { ...charge(96), defaultAmount: 20 * PRECISION }];
         const [series] = detectRecurringSeries(charges);
-        expect(series?.events.map(event => event.transactionId)).toEqual([5, 36, 64, 95]);
-        expect(series?.anchorTimestamp).toBe(new Date(2026, 3, 5).getTime());
+        expect(series.events.map(event => event.transactionId)).toEqual([5, 36, 64, 95]);
+        expect(series.anchorTimestamp).toBe(new Date(2026, 3, 5).getTime());
         const actual = calendarFromCharges(charges, new Date(2026, 3, 10));
         expect([...actual.entriesByDay.values()].flat()).toHaveLength(1);
         expect(actual.entriesByDay.get(5)?.[0].latestAmount).toBe(12 * PRECISION);

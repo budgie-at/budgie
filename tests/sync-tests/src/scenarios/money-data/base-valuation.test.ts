@@ -141,8 +141,8 @@ describe('base valuation', () => {
                 LanguageEnum.EN
             );
 
-            expect(totals?.expense).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
-            expect(totals?.income).toBe(0);
+            expect(totals.expense).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
+            expect(totals.income).toBe(0);
             expect(categoryTotal.amount).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );

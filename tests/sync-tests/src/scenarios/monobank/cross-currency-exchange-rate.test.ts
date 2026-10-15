@@ -30,10 +30,7 @@ describe('monobank/cross-currency-exchange-rate', () => {
 
             yield* monobankSyncService.sync();
 
-            const transaction = (yield* testDb
-                .select()
-                .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, 'tx-fx')))[0];
+            const [transaction] = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-fx'));
             const [entry] = yield* fetchExpenseEntries(transaction.id);
 
             expect(transaction.exchangeRate).toBe(41);
@@ -51,10 +48,10 @@ describe('monobank/cross-currency-exchange-rate', () => {
 
             yield* monobankSyncService.sync();
 
-            const transaction = (yield* testDb
+            const [transaction] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, 'tx-same-currency')))[0];
+                .where(eq(TransactionEntityTable.externalId, 'tx-same-currency'));
             expect(transaction.exchangeRate).toBe(1);
         }).pipe(Effect.provide(TestLayer))
     );

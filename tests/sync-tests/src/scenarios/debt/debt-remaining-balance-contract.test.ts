@@ -16,8 +16,7 @@ import {
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountDebtOpeningService } from '@budgie/ledger';
-import { TransactionDebtSettlementService } from '@budgie/ledger';
+import { AccountDebtOpeningService, TransactionDebtSettlementService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

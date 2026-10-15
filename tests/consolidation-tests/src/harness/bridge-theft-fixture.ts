@@ -1,5 +1,4 @@
-import { ExternalSourceEnum, PRECISION } from '@budgie/contracts';
-import { ExchangeRateEntityTable, InstrumentTypeEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, PRECISION, ExchangeRateEntityTable, InstrumentTypeEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 

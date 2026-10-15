@@ -24,7 +24,7 @@ describe('monobank/consolidation-survives-resync', () => {
 
             const operatedAt = new Date(2026, 0, 15);
 
-            const sourceExpense = (yield* testDb
+            const [sourceExpense] = yield* testDb
                 .insert(TransactionEntityTable)
                 .values({
                     type: TransactionTypeEnum.EXPENSE,
@@ -37,9 +37,9 @@ describe('monobank/consolidation-survives-resync', () => {
                     toAccountId: null,
                     comment: ''
                 })
-                .returning())[0];
+                .returning();
 
-            const sourceIncome = (yield* testDb
+            const [sourceIncome] = yield* testDb
                 .insert(TransactionEntityTable)
                 .values({
                     type: TransactionTypeEnum.INCOME,
@@ -52,9 +52,9 @@ describe('monobank/consolidation-survives-resync', () => {
                     toAccountId: toAccount.id,
                     comment: ''
                 })
-                .returning())[0];
+                .returning();
 
-            const canonicalTransfer = (yield* testDb
+            const [canonicalTransfer] = yield* testDb
                 .insert(TransactionEntityTable)
                 .values({
                     type: TransactionTypeEnum.TRANSFER,
@@ -68,7 +68,7 @@ describe('monobank/consolidation-survives-resync', () => {
                     consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
                     comment: ''
                 })
-                .returning())[0];
+                .returning();
 
             yield* testDb.insert(TransactionEntryEntityTable).values([
                 {

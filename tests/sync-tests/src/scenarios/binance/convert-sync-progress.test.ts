@@ -7,7 +7,7 @@ import * as Effect from 'effect/Effect';
 import {
     binanceStub,
     buildBinance,
-    fetchBinanceTransactions,
+    fetchSortedBinanceExternalIds,
     fetchSyncById,
     seedCryptoInstrument,
     setupBinanceFixture,
@@ -71,7 +71,7 @@ describe('binance/convert-sync-progress', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
+            const externalIds = yield* fetchSortedBinanceExternalIds();
             expect(externalIds).toEqual(['binance:convert:7101', 'binance:convert:7102']);
             expect(requestedWindows.length).toBeGreaterThan(MIN_SPLIT_WINDOW_COUNT);
         }).pipe(Effect.provide(TestLayer))

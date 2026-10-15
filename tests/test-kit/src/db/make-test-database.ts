@@ -16,9 +16,9 @@ export const makeTestDatabase = Effect.fnUntraced(function* (
         onStatement === undefined
             ? client
             : new Proxy(client, {
-                  get: (target, property, receiver) =>
+                  get: (target, property, receiver): unknown =>
                       property === 'unsafe'
-                          ? (queryText: string, params?: ReadonlyArray<unknown>) => {
+                          ? (queryText: string, params?: ReadonlyArray<unknown>): unknown => {
                                 onStatement(queryText, params);
 
                                 return target.unsafe(queryText, params);
