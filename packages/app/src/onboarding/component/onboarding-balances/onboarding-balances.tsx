@@ -1,11 +1,12 @@
 import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
@@ -81,6 +82,20 @@ export const OnboardingBalances = () => {
     const hasStandaloneSources = !isDefined(sourcesAccountId);
     const isSaveDisabled = !isNotEmptyArray(enteredBalances);
 
+    const monobankAccountCount = accounts.filter(account => account.externalSource === ExternalSourceEnum.MONOBANK).length;
+    const isMonobankConnected = isPositiveNumber(monobankAccountCount);
+    const monobankIcon = isMonobankConnected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Link;
+    const monobankIconClassName = isMonobankConnected ? 'text-positive-foreground' : 'text-violet-foreground';
+    const monobankTitle = isMonobankConnected ? t`Monobank connected` : t`Monobank`;
+    const monobankDescription = isMonobankConnected
+        ? t({
+              message: plural(monobankAccountCount, {
+                  one: '# account. Balances come straight from the bank.',
+                  other: '# accounts. Balances come straight from the bank.'
+              })
+          })
+        : t`Your token is stored in Budgie's file and only ever sent to Monobank.`;
+
     const sources = (
         <View className="gap-y-md">
             <Text className="text-secondary-foreground text-xs">
@@ -89,10 +104,10 @@ export const OnboardingBalances = () => {
 
             <OnboardingSourceRow
                 testID={OnboardingBalancesSelector.MonobankOption}
-                icon={UserIconNameEnum.Link}
-                iconClassName="text-violet-foreground"
-                title={t`Monobank`}
-                description={t`Your token is stored in Budgie's file and only ever sent to Monobank.`}
+                icon={monobankIcon}
+                iconClassName={monobankIconClassName}
+                title={monobankTitle}
+                description={monobankDescription}
                 onPress={handleMonobankPress}
             />
             <OnboardingSourceRow

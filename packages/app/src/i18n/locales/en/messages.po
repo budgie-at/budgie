@@ -232,6 +232,10 @@ msgstr "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # 
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+msgstr "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# month} other {# months}}"
@@ -386,10 +390,6 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
-
-#: src/app/(tabs)/settings/index.tsx
-msgid "100% Offline & Private"
-msgstr "100% Offline & Private"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
@@ -609,10 +609,6 @@ msgstr "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgid "AI"
 msgstr "AI"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "AI is turned off and its {downloaded} GB of model files are deleted from this phone."
-msgstr "AI is turned off and its {downloaded} GB of model files are deleted from this phone."
-
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
 msgstr "AI model download paused: no Wi-Fi"
@@ -661,10 +657,6 @@ msgstr "All Recurring"
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
 msgstr "All Time"
-
-#: src/app/(tabs)/settings/index.tsx
-msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
-msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Allocated"
@@ -827,10 +819,6 @@ msgstr "Bank sync"
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Bank sync reset"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Bank tokens"
-msgstr "Bank tokens"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx
 msgid "Base currency"
@@ -996,7 +984,6 @@ msgstr "Can take hours"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -1496,10 +1483,6 @@ msgstr "Could not reassign tag"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Could not recalculate balances"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Could not remove the AI models"
-msgstr "Could not remove the AI models"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -2730,17 +2713,9 @@ msgstr "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
 msgstr "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Kept in this file"
-msgstr "Kept in this file"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
-
-#: src/app/(tabs)/settings/your-data.tsx
-msgid "Key"
-msgstr "Key"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -2770,7 +2745,7 @@ msgstr "Last 7 days"
 msgid "Last 90 days"
 msgstr "Last 90 days"
 
-#: src/app/(tabs)/settings/your-data.tsx
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Last backup"
 msgstr "Last backup"
 
@@ -3033,6 +3008,10 @@ msgstr "Money out"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Monobank connected"
+msgstr "Monobank connected"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between."
 msgstr "Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between."
@@ -3043,7 +3022,6 @@ msgstr "Monobank sends about one month of history per minute, for each account y
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 msgid "Monthly budget"
 msgstr "Monthly budget"
 
@@ -3103,7 +3081,7 @@ msgstr "Net"
 msgid "Net worth"
 msgstr "Net worth"
 
-#: src/app/(tabs)/settings/your-data.tsx
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Never"
 msgstr "Never"
 
@@ -3371,10 +3349,6 @@ msgstr "Not now"
 msgid "not set"
 msgstr "not set"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Not set up"
-msgstr "Not set up"
-
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
@@ -3405,18 +3379,10 @@ msgstr "of {total} GB"
 msgid "OK"
 msgstr "OK"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "On this phone"
-msgstr "On this phone"
-
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "On-device AI"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "On-device AI · {downloaded} GB"
-msgstr "On-device AI · {downloaded} GB"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
@@ -3912,7 +3878,6 @@ msgstr "Remaining"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 msgid "Remove"
 msgstr "Remove"
 
@@ -3931,10 +3896,6 @@ msgstr "Remove fee"
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee?"
 msgstr "Remove fee?"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Remove on-device AI?"
-msgstr "Remove on-device AI?"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split"
@@ -4341,10 +4302,6 @@ msgstr "Selected"
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Sent only to the bank they belong to."
-msgstr "Sent only to the bank they belong to."
-
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Set a default currency in Settings first"
@@ -4374,10 +4331,6 @@ msgstr "Set Maturity Date"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Set Return Date"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Set up"
-msgstr "Set up"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
@@ -4689,10 +4642,6 @@ msgstr "The download stopped before it finished. Try again when the connection i
 msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 msgstr "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 
-#: src/app/(tabs)/settings/your-data.tsx
-msgid "The file"
-msgstr "The file"
-
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "The PIN becomes the encryption key"
@@ -4751,8 +4700,8 @@ msgid "This doesn't look like a Monobank token yet"
 msgstr "This doesn't look like a Monobank token yet"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
-msgstr "This is where your data lives and who can read it. You can find it again in Settings › Your data."
+msgid "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
+msgstr "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
@@ -5253,10 +5202,6 @@ msgstr "When does the deposit mature?"
 msgid "When should it be returned?"
 msgstr "When should it be returned?"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Where your file lives and who can open it"
-msgstr "Where your file lives and who can open it"
-
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Which bank is the statement from?"
 msgstr "Which bank is the statement from?"
@@ -5369,11 +5314,6 @@ msgstr "You're on Wi-Fi"
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "You're on Wi-Fi."
 msgstr "You're on Wi-Fi."
-
-#: src/app/(tabs)/settings/index.tsx
-#: src/app/(tabs)/settings/your-data.tsx
-msgid "Your data"
-msgstr "Your data"
 
 #: src/auth/components/security-status-chip/security-status-chip.tsx
 msgid "Your data is sealed. Only your PIN opens it."

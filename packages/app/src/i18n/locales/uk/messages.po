@@ -231,6 +231,10 @@ msgstr "{minutesLeft, plural, one {Залишилася приблизно # х�
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {Залишилася приблизно # хвилина} few {Залишилося приблизно # хвилини} many {Залишилося приблизно # хвилин} other {Залишилося приблизно # хвилини}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+msgstr "{monobankAccountCount, plural, one {# рахунок. Баланси надходять безпосередньо з банку.} few {# рахунки. Баланси надходять безпосередньо з банку.} many {# рахунків. Баланси надходять безпосередньо з банку.} other {# рахунку. Баланси надходять безпосередньо з банку.}}"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
@@ -385,10 +389,6 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
-
-#: src/app/(tabs)/settings/index.tsx
-msgid "100% Offline & Private"
-msgstr "100% офлайн і приватно"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
@@ -608,10 +608,6 @@ msgstr "Після 5 невдалих спроб Budgie трохи довше ч
 msgid "AI"
 msgstr "ШІ"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "AI is turned off and its {downloaded} GB of model files are deleted from this phone."
-msgstr "ШІ вимикається, а його {downloaded} ГБ файлів моделей видаляються з цього телефона."
-
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
 msgstr "Завантаження моделей ШІ призупинено: немає Wi-Fi"
@@ -660,10 +656,6 @@ msgstr "Усі регулярні"
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
 msgstr "Весь час"
-
-#: src/app/(tabs)/settings/index.tsx
-msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
-msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Allocated"
@@ -826,10 +818,6 @@ msgstr "Синхронізація банку"
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Bank tokens"
-msgstr "Банківські токени"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx
 msgid "Base currency"
@@ -995,7 +983,6 @@ msgstr "Може тривати годинами"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -1495,10 +1482,6 @@ msgstr "Не вдалося перепризначити тег"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Could not remove the AI models"
-msgstr "Не вдалося видалити моделі ШІ"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -2729,17 +2712,9 @@ msgstr "Залиште увімкненим лише \"Дозволити чит
 msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
 msgstr "Користуйтеся Budgie тим часом. Поки модель не готова, категорії визначаються простими правилами на телефоні."
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Kept in this file"
-msgstr "Зберігається в цьому файлі"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Зберігається у файлі Budgie на цьому телефоні. Надсилається лише в Monobank, ніколи нам."
-
-#: src/app/(tabs)/settings/your-data.tsx
-msgid "Key"
-msgstr "Ключ"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -2769,7 +2744,7 @@ msgstr "Останні 7 днів"
 msgid "Last 90 days"
 msgstr "Останні 90 днів"
 
-#: src/app/(tabs)/settings/your-data.tsx
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Last backup"
 msgstr "Остання резервна копія"
 
@@ -3032,6 +3007,10 @@ msgstr "Витрати"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Monobank connected"
+msgstr "Monobank підключено"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between."
 msgstr "Monobank видає вам особистий токен. Budgie використовує його, щоб говорити з банком напряму, без посередників."
@@ -3042,7 +3021,6 @@ msgstr "Monobank надсилає близько одного місяця іс�
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
 
@@ -3102,7 +3080,7 @@ msgstr "Чистий"
 msgid "Net worth"
 msgstr "Чисті активи"
 
-#: src/app/(tabs)/settings/your-data.tsx
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Never"
 msgstr "Ніколи"
 
@@ -3370,10 +3348,6 @@ msgstr "Не зараз"
 msgid "not set"
 msgstr "не встановлено"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Not set up"
-msgstr "Не налаштовано"
-
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
@@ -3404,18 +3378,10 @@ msgstr "з {total} ГБ"
 msgid "OK"
 msgstr "OK"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "On this phone"
-msgstr "На цьому телефоні"
-
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "ШІ на пристрої"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "On-device AI · {downloaded} GB"
-msgstr "ШІ на пристрої · {downloaded} ГБ"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
@@ -3911,7 +3877,6 @@ msgstr "Залишок"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
 msgid "Remove"
 msgstr "Видалити"
 
@@ -3930,10 +3895,6 @@ msgstr "Видалити комісію"
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee?"
 msgstr "Видалити комісію?"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Remove on-device AI?"
-msgstr "Видалити ШІ на пристрої?"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split"
@@ -4340,10 +4301,6 @@ msgstr "Вибрано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Sent only to the bank they belong to."
-msgstr "Надсилаються лише в банк, якому належать."
-
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
@@ -4373,10 +4330,6 @@ msgstr "Встановити дату погашення"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
-
-#: src/settings/components/your-data-local-items/your-data-local-items.tsx
-msgid "Set up"
-msgstr "Налаштовано"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
@@ -4688,10 +4641,6 @@ msgstr "Завантаження зупинилося, не завершивши
 msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 msgstr "Завантажені дані моделей ШІ буде видалено з цього телефону. Нічого не завантажуватиметься, доки ви не запустите це знову."
 
-#: src/app/(tabs)/settings/your-data.tsx
-msgid "The file"
-msgstr "Файл"
-
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "PIN-код стає ключем шифрування"
@@ -4750,8 +4699,8 @@ msgid "This doesn't look like a Monobank token yet"
 msgstr "Це ще не схоже на токен Monobank"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
-msgstr "Ось де зберігаються ваші дані й хто може їх читати. Це можна знову знайти в Налаштування › Ваші дані."
+msgid "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
+msgstr "Тут зберігаються ваші дані й видно, хто може їх прочитати. Знайти це знову можна в Налаштування › Конфіденційність."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
@@ -5252,10 +5201,6 @@ msgstr "Коли настає термін погашення депозиту?"
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Where your file lives and who can open it"
-msgstr "Де зберігається ваш файл і хто може його відкрити"
-
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Which bank is the statement from?"
 msgstr "З якого банку виписка?"
@@ -5368,11 +5313,6 @@ msgstr "Ви підключені до Wi-Fi"
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "You're on Wi-Fi."
 msgstr "Ви підключені до Wi-Fi."
-
-#: src/app/(tabs)/settings/index.tsx
-#: src/app/(tabs)/settings/your-data.tsx
-msgid "Your data"
-msgstr "Ваші дані"
 
 #: src/auth/components/security-status-chip/security-status-chip.tsx
 msgid "Your data is sealed. Only your PIN opens it."
