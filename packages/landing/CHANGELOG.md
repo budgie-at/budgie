@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **landing:** address review findings on AI and misc truth pass ([a8914ad](https://github.com/budgie-at/budgie/commit/a8914addc7a2c635964a3420022c1ceb29483274))
+* **landing:** address review findings on the Monobank token guide ([ec8b9ca](https://github.com/budgie-at/budgie/commit/ec8b9ca9c1d2c46c5cbf535ebc4901197c467fad))
+* **landing:** correct Budgie claims in the privacy blog posts ([8d25427](https://github.com/budgie-at/budgie/commit/8d2542744d236250f2f38225a73e069faf66745a))
+* **landing:** drop retired whats-new related slug ([32c1114](https://github.com/budgie-at/budgie/commit/32c1114e39efc9927d0b346d0e11f134b9b3bfa2))
+* **landing:** make voice, translation, dark mode and widget pages truthful ([6bab008](https://github.com/budgie-at/budgie/commit/6bab008409317c4536bb464a9784723ddf39d548))
+* **landing:** qualify capture blocking and present biometrics as the PIN alternative ([ba4a707](https://github.com/budgie-at/budgie/commit/ba4a707f99094ac390017895aec6a90d0c78aced))
+* **landing:** readable story stage with pinned callouts and a mobile layout that fits ([20ef7a7](https://github.com/budgie-at/budgie/commit/20ef7a762a2126395d71a1959d553c312dc6f62f))
+* **landing:** refresh the YNAB alternatives article for 2026 ([7b74fec](https://github.com/budgie-at/budgie/commit/7b74fec1956a7a5fb13cc37f66aa1b33ccc2e83a))
+* **landing:** repoint related slugs away from folded posts ([458f8dc](https://github.com/budgie-at/budgie/commit/458f8dc4a3fe493863a819deeb1169e111e4a89d))
+* **landing:** security pages tell the truth about screenshot protection and PIN lock ([ab79e8a](https://github.com/budgie-at/budgie/commit/ab79e8a1bc70dcedc1be3ea099db083814768480))
+* **landing:** use formal French on the corrected pages ([0037e50](https://github.com/budgie-at/budgie/commit/0037e50ab7025fbdcf5f6d9705401f37aea5133f))
+
+
+### Features
+
+* **landing:** add a bank FAQ to the bank-sync hub ([cea4a3c](https://github.com/budgie-at/budgie/commit/cea4a3ca12d64d57f008811c2ffa35dcb8506c9c))
+* **landing:** add a guide to tracking money you lent and borrowed ([3687ef5](https://github.com/budgie-at/budgie/commit/3687ef5ea1fdb0e250c2698dbc9df234be57eb91))
+* **landing:** add a guide to tracking Monobank spending automatically ([ac77771](https://github.com/budgie-at/budgie/commit/ac7777120e09ca1133687399e4148311b902e0c1))
+* **landing:** add a guide to tracking pay-in-parts purchases ([aa85176](https://github.com/budgie-at/budgie/commit/aa85176056c528529047c1ec6cdc269b4f909543))
+* **landing:** add a Monobank token setup guide ([06e196d](https://github.com/budgie-at/budgie/commit/06e196d77a7f5642db83b5116d96cace2aee71cb))
+* **landing:** add a Privat24 statement import guide ([51a1835](https://github.com/budgie-at/budgie/commit/51a18356e8a1e72821d039f148db01dba474ca4a))
+* **landing:** add a UAH and EUR budgeting guide for Ukrainians in the EU ([a33d7d5](https://github.com/budgie-at/budgie/commit/a33d7d562ba9d5cdde6b0469891b692358659174))
+* **landing:** add an Erste George statement import guide ([738d23e](https://github.com/budgie-at/budgie/commit/738d23e8db95223a3aef04d34d1c3ee04ba50fe5))
+* **landing:** four section layouts so feature pages stop looking identical ([6339fda](https://github.com/budgie-at/budgie/commit/6339fdaa5a8fbd7d024d13c8bcebacdccedb6d4e))
+* **landing:** per-pillar accent colours and black ink buttons ([21fc71a](https://github.com/budgie-at/budgie/commit/21fc71a84265fa576744febecd535756d9c8f99e))
+* **landing:** short outcome H1s separate from SEO titles ([8aa3ff5](https://github.com/budgie-at/budgie/commit/8aa3ff53ec3989f1658b52db9ae29523245b0f66))
+* **landing:** shorter feature page body with an indexed details drawer ([200d274](https://github.com/budgie-at/budgie/commit/200d274df0fe9f2a01a334bf38e0223c7435a90b))
+* **landing:** show-then-tell feature hero with inline signup and trust strip ([5b739d3](https://github.com/budgie-at/budgie/commit/5b739d3a37cebfd0fb3b4db3e34c17e1f917d7ef))
+
+
+### Performance Improvements
+
+* **landing:** replace looping clips with static screenshots and trim motion ([a58d749](https://github.com/budgie-at/budgie/commit/a58d74921f11f17c1ce73e451c272b6be9647f3c))
+
+
+
+
+
 ## [6.104.1](https://github.com/budgie-at/budgie/compare/v6.104.0...v6.104.1) (2026-10-15)
 
 **Note:** Version bump only for package @budgie-at/landing
