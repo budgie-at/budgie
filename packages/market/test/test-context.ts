@@ -24,11 +24,15 @@ afterAll(() => testDbHandle.dispose());
 
 export const setDefaultInstrument = (defaultInstrumentId: number) => testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
 
-export const makeFakeHttpClientLayer = (body: unknown) =>
+export const makeRoutedFakeHttpClientLayer = (resolveBody: (url: URL) => unknown) =>
     Layer.succeed(
         HttpClient.HttpClient,
-        HttpClient.make(request => Effect.succeed(HttpClientResponse.fromWeb(request, new Response(JSON.stringify(body), { status: 200 }))))
+        HttpClient.make((request, url) =>
+            Effect.succeed(HttpClientResponse.fromWeb(request, new Response(JSON.stringify(resolveBody(url)), { status: 200 })))
+        )
     );
+
+export const makeFakeHttpClientLayer = (body: unknown) => makeRoutedFakeHttpClientLayer(() => body);
 
 export const TestLayer = Layer.mergeAll(
     ExchangeRatesService.layer,

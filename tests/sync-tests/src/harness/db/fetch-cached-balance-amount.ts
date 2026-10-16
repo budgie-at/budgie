@@ -6,7 +6,7 @@ import { testDb } from '../scenario/setup';
 
 export const fetchCachedBalanceAmount = (accountId: number) =>
     Effect.gen(function* () {
-        const [row] = yield* testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId));
+        const rows = yield* testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId));
 
-        return row?.amount;
+        return rows.at(0)?.amount;
     });

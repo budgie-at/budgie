@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const PillarHubHero = ({ locale, heading, tagline, breadcrumbs, children }: Props) => (
-    <section className="w-full pt-12 pb-16 md:pt-20 md:pb-24 bg-gradient-to-b from-emerald-50/40 to-background dark:from-emerald-950/20">
+    <section className="w-full pt-12 pb-16 md:pt-20 md:pb-24 bg-gradient-to-b from-pillar-tint to-background">
         <div className="container px-4 md:px-6 max-w-4xl">
             <Motion>
                 {breadcrumbs}

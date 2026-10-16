@@ -36,7 +36,6 @@ const seedIbanBridgeTransferFixture = () =>
         return { ...topology, ...(yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId)) };
     });
 
-// eslint-disable-next-line max-lines-per-function -- Test suite with multiple fixture-heavy scenarios
 layer(TestLayer)('consolidation/iban-bridge-transfer', it => {
     it.effect('builds a source to target canonical from two bridge legs', () =>
         Effect.gen(function* () {

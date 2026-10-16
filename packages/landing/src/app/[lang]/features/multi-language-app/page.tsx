@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Language, Mobile, Refresh } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,20 +23,24 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Budgie in Five Languages</Trans>}
-                locale={lang}
+                heading={<Trans>Budgie speaks your language</Trans>}
                 tagline={
                     <Trans>
-                        Full UI in English, Ukrainian, French, German, and Spanish — auto-detected from device locale, switchable in-app.
+                        Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="multi-language-app-1" slug="multi-language-app" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>The same app, five languages deep</Trans>}>
@@ -47,16 +50,7 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                 <FeatureStory.Step index={0} title={<Trans>Five languages, all first-class</Trans>}>
                     <Trans>English, Ukrainian, French, German and Spanish.</Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="multi-language-app-1"
-                    slug="multi-language-app"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="multi-language-app-1" slug="multi-language-app">
                     <FeatureStory.Callout y={0.62}>
                         <Trans>Search bar above the list</Trans>
                     </FeatureStory.Callout>
@@ -83,66 +77,101 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why privacy-first finance shouldn&apos;t be English-only</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Privacy-first finance tools are usually English-only. Budgie ships full translations across five languages so
-                        non-English-first speakers don&apos;t lose features in translation.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Language switching is in-app — no reinstall. Numbers and dates format using whichever language you have selected;
-                        there is no separate locale setting to keep in sync.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Switch in a moment</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>languages in the app</Trans>} value="5">
+                    <Trans>English, Ukrainian, French, German and Spanish.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>relaunches to change language</Trans>} value="0">
+                    <Trans>Pick a language and the screen updates in place.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>language from your device at first launch</Trans>} value={<Trans>Auto</Trans>}>
+                    <Trans>Change it anytime in Settings.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Five languages: English, Ukrainian, French, German, Spanish — full UI</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Auto-detected from device locale on first launch</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>In-app switcher — no reinstall, no relaunch</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureCropBand
+                heading={<Trans>Find your language fast</Trans>}
+                lede={<Trans>One sheet lists every language with a flag and a code.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie language selector sheet with a search box and English, French and Ukrainian rows, English ticked as the active language`}
+                        locale={lang}
+                        scene="multi-language-app-1"
+                        slug="multi-language-app"
+                        y={0.55}
+                    >
+                        <FeatureCropBand.Pin x={0.75} y={0.628} />
+                        <FeatureCropBand.Pin x={0.7} y={0.715} />
+                        <FeatureCropBand.Pin x={0.7} y={0.79} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Search by name or code</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>A tick marks the active language</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Flag, name and code per row</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Language} title={<Trans>Five full languages</Trans>}>
+                    <Trans>Five languages: English, Ukrainian, French, German, Spanish — full UI</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>Set up in your language</Trans>}>
+                    <Trans>Auto-detected from device locale on first launch</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Refresh} title={<Trans>Switch without relaunching</Trans>}>
+                    <Trans>In-app switcher — no reinstall, no relaunch</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Number and date formatting follows the language you choose in Settings</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Translations live in the public source code, so new languages can be proposed</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
-                    question={<Trans>Which languages are supported?</Trans>}
-                    answer={
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why privacy-first finance shouldn&apos;t be English-only</Trans>}>
+                    <p>
                         <Trans>
-                            English (source), Ukrainian, French, German, Spanish. More on the roadmap as the community contributes
-                            translations.
+                            Privacy-first finance tools are usually English-only. Budgie ships full translations across five languages so
+                            non-English-first speakers don&apos;t lose features in translation.
                         </Trans>
-                    }
+                    </p>
+                    <p>
+                        <Trans>
+                            Language switching is in-app — no reinstall. Numbers and dates format using whichever language you have
+                            selected; there is no separate locale setting to keep in sync.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
+                    question={<Trans>Which languages are supported?</Trans>}
+                    answer={<Trans>English (source), Ukrainian, French, German and Spanish.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How does language detection work?</Trans>}
                     answer={<Trans>Auto-detected from device locale on first launch. Override anytime in Settings → Language.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Does it require a relaunch?</Trans>}
                     answer={<Trans>No. Switching language re-renders the UI in-place, no reinstall or relaunch.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What about number / date formats?</Trans>}
                     answer={
                         <Trans>
@@ -151,7 +180,7 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

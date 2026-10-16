@@ -1,6 +1,7 @@
 import { parsePrivatbankXlsx } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { utils, write } from 'xlsx';
 
 const STATEMENT_HEADER_ROWS = [['Історія операцій'], ['Дата', 'Категорія', 'Картка', 'Опис операції']];
@@ -11,7 +12,7 @@ const buildStatement = (rawDates: readonly string[]): Uint8Array => {
 
     utils.book_append_sheet(workbook, utils.aoa_to_sheet([...STATEMENT_HEADER_ROWS, ...rows]), 'Statement');
 
-    return new Uint8Array(write(workbook, { type: 'buffer', bookType: 'xlsx' }));
+    return Schema.decodeUnknownSync(Schema.Uint8Array)(write(workbook, { type: 'buffer', bookType: 'xlsx' }));
 };
 
 const parseStatementDates = (rawDates: readonly string[]) =>

@@ -81,8 +81,8 @@ describe('account/account-balance-scope', () => {
             const [untouchedBalance] = yield* fetchBalanceRow(untouchedAccount.id);
 
             expect(changedBalance?.balance).toBe(-12_000);
-            expect(untouchedBalance?.amount).toBe(-50_000);
-            expect(untouchedBalance?.updatedAt).toEqual(OLD_BALANCE_UPDATED_AT);
+            expect(untouchedBalance.amount).toBe(-50_000);
+            expect(untouchedBalance.updatedAt).toEqual(OLD_BALANCE_UPDATED_AT);
         }).pipe(Effect.provide(TestLayer))
     );
 });

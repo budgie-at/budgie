@@ -66,7 +66,7 @@ describe('monobank/suspended-run-lock', () => {
                             )
                         )
                 ),
-                spy => Effect.sync(() => spy.mockRestore())
+                spy => Effect.sync(() => void spy.mockRestore())
             );
             const blockerWork = yield* Effect.forkChild(
                 inWorkload(Effect.andThen(Deferred.succeed(blockerStarted, undefined), Deferred.await(blockerGate)))

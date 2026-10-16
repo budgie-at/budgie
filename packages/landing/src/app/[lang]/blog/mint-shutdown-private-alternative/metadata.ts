@@ -14,7 +14,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     tags: ['mint-alternatives', 'offline-first', 'privacy', 'on-device', 'cloud-shutdown'],
     seoKeywords: ['Mint shutdown alternative', 'private Mint replacement', 'offline budget app after Mint', 'no cloud Mint alternative'],
     seoDescription: msg`Mint shut down in 2024. This guide covers why offline-first, on-device expense trackers are the only durable answer to vendor risk and financial-data privacy.`,
-    relatedArticleSlugs: ['mint-alternatives-developers', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     relatedFeatureSlugs: ['expense-tracking', 'csv-import', 'monobank-sync', 'database-backup', 'pin-app-lock']
 };
 

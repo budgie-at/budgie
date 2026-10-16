@@ -50,6 +50,7 @@ describe('monobank/backfill-interruption', () => {
                             maximumInFlightRequests = Math.max(maximumInFlightRequests, inFlightRequests.size);
                             if (requests.length === 1) {
                                 runFork(workload.runUser(Deferred.succeed(firstUserFinished, undefined)));
+
                                 return HttpResponse.json([]);
                             }
 
@@ -58,6 +59,7 @@ describe('monobank/backfill-interruption', () => {
                                 yield* Deferred.succeed(resumedRequestStarted, undefined);
                             }
                             yield* Deferred.await(releaseRequests);
+
                             return HttpResponse.json([]);
                         }).pipe(Effect.ensuring(Effect.sync(() => inFlightRequests.delete(request.signal))))
                     )
@@ -114,6 +116,7 @@ describe('monobank/backfill-interruption', () => {
                                 yield* Deferred.succeed(requestStarted, undefined);
                                 yield* Deferred.await(releaseRequest);
                             }
+
                             return HttpResponse.json([]);
                         })
                     )

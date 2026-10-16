@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 
+import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
 import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
 export const CtaSection = () => (
@@ -15,7 +16,7 @@ export const CtaSection = () => (
                 </p>
 
                 <div className="w-full">
-                    <WaitlistForm showCount={false} variant="cta" />
+                    <WaitlistForm showCount={false} variant={WaitlistVariantEnum.CTA} />
                 </div>
             </div>
         </div>

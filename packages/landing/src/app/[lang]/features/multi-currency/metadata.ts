@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'multi-currency',
     tier: FeatureTierEnum.POWER,
-    title: msg`Multi-Currency Accounts, One Total`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Multi-Currency Accounts`,
     tagline: msg`Track in any currency. Sum in yours. Exchange rates refresh in the background.`,
     metaTitle: msg`Multi-Currency Accounts — Budgie`,
     metaDescription: msg`Hold accounts in any currency. Rates refresh in the background so every total shows in your home currency. Cross-currency transfers keep both amounts.`,
@@ -27,7 +29,7 @@ export const FEATURE_METADATA = {
         'account-transfers',
         'crypto-investment-tracking'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'historical-exchange-rates-budget-analytics'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-19',
     updatedAt: '2026-05-03',
     ogTags: ['multi-currency', 'fx', 'accounts']

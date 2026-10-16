@@ -1,55 +1,82 @@
 'use client';
 
-import { msg, plural } from '@lingui/core/macro';
+import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
-import { useState } from 'react';
-import { ArrowRight, Loader, Users } from 'reicon-react';
+import { useId, useState } from 'react';
+import { ArrowRight, Loader } from 'reicon-react';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../ui/button';
 import { joinWaitlist } from '../../action/waitlist.action';
 import { WaitlistMessageKeyEnum } from '../../enum/waitlist-message-key.enum';
+import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
 import { useWaitlistCount } from '../../hook/use-waitlist-count.hook';
 
+import { WaitlistCount } from './waitlist-count';
 import { WaitlistSuccess } from './waitlist-success';
 
 import type { MessageDescriptor } from '@lingui/core';
 
 interface Props {
-    variant?: 'hero' | 'cta';
-    showCount?: boolean;
+    readonly variant?: WaitlistVariantEnum;
+    readonly showCount?: boolean;
 }
 
-const inputVariants = cva(
-    'h-14 px-6 rounded-full border-2 backdrop-blur-sm focus:ring-2 outline-none transition-all text-lg w-full sm:w-auto sm:min-w-[300px]',
-    {
-        variants: {
-            variant: {
-                hero: 'border-border/50 bg-background/80 focus:border-primary focus:ring-primary/20',
-                cta: 'border-white/30 bg-white/10 text-white placeholder:text-white/60 focus:border-white focus:ring-white/20'
-            }
-        }
-    }
-);
-
-const buttonVariants = cva('rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold transition-all', {
+const containerVariants = cva('flex flex-col', {
     variants: {
         variant: {
-            hero: 'bg-primary text-primary-foreground hover:bg-primary/90',
-            cta: 'bg-white text-primary hover:bg-white/90'
+            [WaitlistVariantEnum.HERO]: 'items-center gap-4',
+            [WaitlistVariantEnum.CTA]: 'items-center gap-4',
+            [WaitlistVariantEnum.FEATURE]: 'w-full max-w-[30rem] items-stretch gap-2'
         }
     }
 });
 
-const countTextVariants = cva('flex items-center gap-2 text-sm', {
+const labelVariants = cva('', {
     variants: {
         variant: {
-            hero: 'text-muted-foreground',
-            cta: 'text-white/90'
+            [WaitlistVariantEnum.HERO]: 'sr-only',
+            [WaitlistVariantEnum.CTA]: 'sr-only',
+            [WaitlistVariantEnum.FEATURE]: 'text-sm text-muted-foreground'
+        }
+    }
+});
+
+const formVariants = cva('flex flex-col w-full', {
+    variants: {
+        variant: {
+            [WaitlistVariantEnum.HERO]: 'gap-3 sm:flex-row sm:w-auto',
+            [WaitlistVariantEnum.CTA]: 'gap-3 sm:flex-row sm:w-auto',
+            [WaitlistVariantEnum.FEATURE]: 'gap-2 min-[480px]:flex-row min-[480px]:flex-wrap'
+        }
+    }
+});
+
+const inputVariants = cva('outline-none transition-all w-full', {
+    variants: {
+        variant: {
+            [WaitlistVariantEnum.HERO]:
+                'h-14 px-6 rounded-full border-2 backdrop-blur-sm focus:ring-2 text-lg sm:w-auto sm:min-w-[300px] border-border/50 bg-background/80 focus:border-primary focus:ring-primary/20',
+            [WaitlistVariantEnum.CTA]:
+                'h-14 px-6 rounded-full border-2 backdrop-blur-sm focus:ring-2 text-lg sm:w-auto sm:min-w-[300px] border-white/30 bg-white/10 text-white placeholder:text-white/60 focus:border-white focus:ring-white/20',
+            [WaitlistVariantEnum.FEATURE]:
+                'h-12 min-w-0 min-[480px]:min-w-[14rem] min-[480px]:flex-1 rounded-[0.875rem] border border-border bg-muted/50 px-4 text-[1.0625rem] placeholder:text-muted-foreground focus-visible:border-pillar focus-visible:ring-2 focus-visible:ring-pillar/25'
+        }
+    }
+});
+
+const buttonVariants = cva('font-semibold transition-all', {
+    variants: {
+        variant: {
+            [WaitlistVariantEnum.HERO]:
+                'rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg bg-primary text-primary-foreground hover:bg-primary/90',
+            [WaitlistVariantEnum.CTA]: 'rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg bg-white text-primary hover:bg-white/90',
+            [WaitlistVariantEnum.FEATURE]:
+                'h-12 w-full rounded-[0.875rem] px-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-pillar min-[480px]:w-auto min-[480px]:flex-none'
         }
     }
 });
@@ -57,8 +84,9 @@ const countTextVariants = cva('flex items-center gap-2 text-sm', {
 const disclaimerVariants = cva('text-xs', {
     variants: {
         variant: {
-            hero: 'text-muted-foreground',
-            cta: 'text-white/90'
+            [WaitlistVariantEnum.HERO]: 'text-muted-foreground',
+            [WaitlistVariantEnum.CTA]: 'text-white/90',
+            [WaitlistVariantEnum.FEATURE]: 'sr-only'
         }
     }
 });
@@ -66,8 +94,9 @@ const disclaimerVariants = cva('text-xs', {
 const errorVariants = cva('text-sm', {
     variants: {
         variant: {
-            hero: 'text-red-500',
-            cta: 'text-white'
+            [WaitlistVariantEnum.HERO]: 'text-red-500',
+            [WaitlistVariantEnum.CTA]: 'text-white',
+            [WaitlistVariantEnum.FEATURE]: 'text-red-600 dark:text-red-400'
         }
     }
 });
@@ -78,8 +107,9 @@ const WAITLIST_ERROR_MESSAGES: Partial<Record<WaitlistMessageKeyEnum, MessageDes
 const WAITLIST_CONFIRMATION_ERROR_MESSAGE = msg`We couldn't confirm your signup. Please try again.`;
 const WAITLIST_CONFIRMATION_DEADLINE_MS = 8000;
 
-export const WaitlistForm = ({ variant = 'hero', showCount = true }: Props) => {
+export const WaitlistForm = ({ variant = WaitlistVariantEnum.HERO, showCount = true }: Props) => {
     const { i18n, t } = useLingui();
+    const inputId = useId();
 
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -120,22 +150,17 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true }: Props) => {
         return <WaitlistSuccess position={position} variant={variant} />;
     }
 
-    const hasWaitlistCount = showCount && isPositiveNumber(initialCount);
-    const countText = hasWaitlistCount
-        ? t({
-              message: plural(initialCount, {
-                  one: '#+ person already waiting',
-                  other: '#+ people already waiting'
-              })
-          })
-        : '';
-
     return (
-        <div className="flex flex-col items-center gap-4">
-            <form className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto" onSubmit={handleSubmit}>
+        <div className={containerVariants({ variant })}>
+            <label className={labelVariants({ variant })} htmlFor={inputId}>
+                <Trans>Get the app when it opens</Trans>
+            </label>
+            <form className={formVariants({ variant })} onSubmit={handleSubmit}>
                 <input
+                    autoComplete="email"
                     className={inputVariants({ variant })}
                     disabled={isLoading}
+                    id={inputId}
                     onChange={handleChange}
                     placeholder={t`Enter your email`}
                     required
@@ -161,12 +186,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true }: Props) => {
                 </p>
             )}
 
-            {hasWaitlistCount && (
-                <div className={countTextVariants({ variant })}>
-                    <Users className="size-4" />
-                    <span>{countText}</span>
-                </div>
-            )}
+            {showCount && isPositiveNumber(initialCount) && <WaitlistCount initialCount={initialCount} variant={variant} />}
 
             <p className={disclaimerVariants({ variant })}>
                 <Trans>No spam, ever. Unsubscribe anytime.</Trans>

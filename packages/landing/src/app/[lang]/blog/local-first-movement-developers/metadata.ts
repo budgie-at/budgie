@@ -14,7 +14,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     tags: ['local-first', 'offline-first', 'CRDTs', 'sync-engines', 'software-architecture', 'privacy', 'developers'],
     seoKeywords: ['local-first software', 'CRDTs', 'offline-first architecture', 'sync engines'],
     seoDescription: msg`Explore the local-first movement: CRDTs, sync engines, real-world examples, and why developers are building offline-first apps for better privacy and performance.`,
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'ynab-alternatives-privacy'],
     relatedFeatureSlugs: ['expense-tracking', 'database-backup', 'data-export']
 };
 

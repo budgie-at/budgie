@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'uncategorized-transactions',
     tier: FeatureTierEnum.CORE,
-    title: msg`Uncategorized Transaction Finder`,
+    pillar: PillarEnum.AI,
+    name: msg`Uncategorized Transactions`,
     tagline: msg`A filter-aware missing-category pill surfaces uncategorized transactions before they distort your budget analytics.`,
     metaTitle: msg`Uncategorized Transactions Finder`,
     metaDescription: msg`Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device.`,
@@ -28,7 +30,7 @@ export const FEATURE_METADATA = {
         'date-filter-presets',
         'mcc-auto-category'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-18',
     updatedAt: '2026-09-26',
     ogTags: ['uncategorized', 'categories', 'analytics']

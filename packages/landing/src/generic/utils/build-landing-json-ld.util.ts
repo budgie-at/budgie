@@ -5,7 +5,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { version } from '../../../package.json';
 import { BASE_URL } from '../constant/seo.constant';
-import { MediaKindEnum } from '../enum/media-kind.enum';
 
 import { resolveMediaAssetPath } from './resolve-media-asset-path.util';
 import { resolveMediaAsset } from './resolve-media-asset.util';
@@ -21,7 +20,7 @@ const HOME_SCREENSHOT_SCENES = [
 ] as const;
 
 const buildScreenshotUrls = (locale: string): string[] =>
-    HOME_SCREENSHOT_SCENES.map(([slug, scene]) => resolveMediaAsset(slug, scene, locale, MediaKindEnum.STILL).light)
+    HOME_SCREENSHOT_SCENES.map(([slug, scene]) => resolveMediaAsset(slug, scene, locale).light)
         .filter(isDefined)
         .map(asset => `${BASE_URL}${resolveMediaAssetPath(asset)}@2x.webp`);
 

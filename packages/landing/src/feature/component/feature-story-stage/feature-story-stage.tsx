@@ -2,41 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 
-import { emptyFn, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
 
-const STORY_DESKTOP_QUERY = '(min-width:1024px)';
-const STORY_STATIC_QUERY = '(prefers-reduced-motion:reduce)';
-const STORY_DESKTOP_ANCHOR = 0.5;
-const STORY_PINNED_ANCHOR = 0.85;
-const STORY_PROGRESS_PROPERTY = '--story-progress';
-const STORY_PROGRESS_STEPS = 400;
-const STORY_MOTION_TARGETS = '.story-frame,.story-bloom,.story-rail-progress';
-
-const readSaveData = () => {
-    const connection: unknown = Reflect.get(navigator, 'connection');
-
-    return typeof connection === 'object' && isDefined(connection) && 'saveData' in connection && connection.saveData === true;
-};
+const STORY_ANCHOR = 0.5;
 
 const readIndex = (element: Element) => Number(element.getAttribute('data-index') ?? 0);
 
-const readCalloutIndex = (callout: HTMLElement) => {
-    const ownIndex = callout.getAttribute('data-index');
-    const stage = callout.closest('[data-story-stage]');
-
-    if (isNotEmptyString(ownIndex)) {
-        return Number(ownIndex);
-    }
-
-    return isDefined(stage) ? readIndex(stage) : 0;
-};
-
-const createActivator = (grid: HTMLElement, steps: HTMLElement[], stages: HTMLElement[]) => {
-    const calloutIndexes = new Map(
-        [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')].map(callout => [callout, readCalloutIndex(callout)])
-    );
+const createActivator = (grid: HTMLElement) => {
+    const steps = [...grid.querySelectorAll<HTMLElement>('[data-story-step]')];
+    const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
+    const callouts = [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')];
     let activeIndex = -1;
 
     return (index: number) => {
@@ -46,31 +23,25 @@ const createActivator = (grid: HTMLElement, steps: HTMLElement[], stages: HTMLEl
 
         activeIndex = index;
 
-        const activeStageIndex = Math.max(...stages.map(readIndex).filter(stageIndex => stageIndex <= index));
+        const activeStageIndex = Math.max(0, ...stages.map(readIndex).filter(stageIndex => stageIndex <= index));
 
         steps.forEach(step => {
             step.toggleAttribute('data-active', readIndex(step) === index);
+            step.toggleAttribute('data-passed', readIndex(step) <= index);
         });
         stages.forEach(stage => {
             stage.toggleAttribute('data-active', readIndex(stage) === activeStageIndex);
         });
-        calloutIndexes.forEach((calloutIndex, callout) => {
-            callout.toggleAttribute('data-shown', calloutIndex <= index);
+        callouts.forEach(callout => {
+            callout.toggleAttribute('data-shown', readIndex(callout) <= index);
         });
     };
 };
 
-const buildRootMargin = (anchor: number) => {
-    const above = Math.round(anchor * 100) - 4;
-    const below = 96 - Math.round(anchor * 100);
-
-    return [`-${above}%`, '0px', `-${below}%`, '0px'].join(' ');
-};
-
-const observeStory = (steps: HTMLElement[], stages: HTMLElement[], anchor: number, activate: (index: number) => void) => {
+const observeStory = (sentinels: HTMLElement[], activate: (index: number) => void) => {
     const resolveActiveIndex = () => {
-        const anchorLine = window.innerHeight * anchor;
-        const lastPassed = steps.filter(step => step.getBoundingClientRect().top <= anchorLine).at(-1);
+        const anchorLine = window.innerHeight * STORY_ANCHOR;
+        const lastPassed = sentinels.filter(sentinel => sentinel.getBoundingClientRect().top <= anchorLine).at(-1);
 
         return isDefined(lastPassed) ? readIndex(lastPassed) : 0;
     };
@@ -79,82 +50,25 @@ const observeStory = (steps: HTMLElement[], stages: HTMLElement[], anchor: numbe
         () => {
             activate(resolveActiveIndex());
         },
-        { rootMargin: buildRootMargin(anchor), threshold: 0 }
+        { rootMargin: ['-50%', '0px', '-49%', '0px'].join(' '), threshold: 0 }
     );
 
-    [...steps, ...stages].forEach(element => {
-        observer.observe(element);
+    sentinels.forEach(sentinel => {
+        observer.observe(sentinel);
     });
 
     return observer;
 };
 
-const attachStoryObserver = (steps: HTMLElement[], stages: HTMLElement[], activate: (index: number) => void) => {
-    const desktopQuery = window.matchMedia(STORY_DESKTOP_QUERY);
-    const resolveAnchor = () => (desktopQuery.matches ? STORY_DESKTOP_ANCHOR : STORY_PINNED_ANCHOR);
-    let observer = observeStory(steps, stages, resolveAnchor(), activate);
-
-    const reobserve = () => {
-        observer.disconnect();
-        observer = observeStory(steps, stages, resolveAnchor(), activate);
-    };
-
-    desktopQuery.addEventListener('change', reobserve);
-
-    return () => {
-        desktopQuery.removeEventListener('change', reobserve);
-        observer.disconnect();
-    };
-};
-
-const supportsScrollTimeline = () => 'CSS' in window && CSS.supports('animation-timeline', 'view()');
-
-const skipsScrollFallback = () => window.matchMedia(STORY_STATIC_QUERY).matches || readSaveData() || supportsScrollTimeline();
-
-const trackStoryProgress = (grid: HTMLElement) => {
-    const targets = [...grid.querySelectorAll<HTMLElement>(STORY_MOTION_TARGETS)];
-    let lastProgress = -1;
-
-    const update = () => {
-        const bounds = grid.getBoundingClientRect();
-        const span = bounds.height - window.innerHeight;
-        const ratio = span > 0 ? -bounds.top / span : 0;
-        const progress = Math.round(Math.min(1, Math.max(0, ratio)) * STORY_PROGRESS_STEPS) / STORY_PROGRESS_STEPS;
-
-        if (progress === lastProgress) {
-            return;
-        }
-
-        lastProgress = progress;
-        targets.forEach(target => {
-            target.style.setProperty(STORY_PROGRESS_PROPERTY, String(progress));
-        });
-    };
-
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update, { passive: true });
-    grid.dataset.storyMotion = 'fallback';
-    update();
-
-    return () => {
-        window.removeEventListener('scroll', update);
-        window.removeEventListener('resize', update);
-        delete grid.dataset.storyMotion;
-    };
-};
-
-const startStory = (grid: HTMLElement, saveData: boolean, activate: (index: number) => void) => {
-    grid.dataset.ready = '';
-    grid.toggleAttribute('data-save-data', saveData);
-    activate(0);
-};
-
 interface Props {
+    readonly count: number;
     readonly children: ReactNode;
 }
 
-export const FeatureStoryStage = ({ children }: Props) => {
+export const FeatureStoryStage = ({ count, children }: Props) => {
     const gridRef = useRef<HTMLDivElement>(null);
+    const positions = Array.from({ length: count }, (_, position) => position);
+    const gridStyle = { '--story-steps': count };
 
     useEffect(() => {
         const grid = gridRef.current;
@@ -163,33 +77,48 @@ export const FeatureStoryStage = ({ children }: Props) => {
             return emptyFn;
         }
 
-        const steps = [...grid.querySelectorAll<HTMLElement>('[data-story-step]')];
+        const sentinels = [...grid.querySelectorAll<HTMLElement>('[data-story-sentinel]')];
 
-        if (isEmptyArray(steps)) {
+        if (isEmptyArray(sentinels)) {
             return emptyFn;
         }
 
-        const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
-        const activate = createActivator(grid, steps, stages);
-        const stopObserving = attachStoryObserver(steps, stages, activate);
-        const stopProgress = skipsScrollFallback() ? emptyFn : trackStoryProgress(grid);
+        const activate = createActivator(grid);
+        const observer = observeStory(sentinels, activate);
 
-        startStory(grid, readSaveData(), activate);
+        grid.dataset.ready = '';
+        activate(0);
 
         return () => {
-            stopObserving();
-            stopProgress();
+            observer.disconnect();
             grid.removeAttribute('data-ready');
         };
     }, []);
 
     return (
-        <div className="story-grid" ref={gridRef}>
-            <div aria-hidden="true" className="story-scrim" />
-            <div aria-hidden="true" className="story-rail">
-                <span className="story-rail-progress" />
+        <div className="story-grid" ref={gridRef} style={gridStyle}>
+            <div className="story-panel">
+                <div aria-hidden="true" className="story-progress">
+                    {positions.map(position => (
+                        <span className="story-progress-segment" data-index={position} data-story-step key={position} />
+                    ))}
+                </div>
+                {children}
             </div>
-            {children}
+            {positions.map(position => {
+                const sentinelStyle = { '--story-sentinel': position };
+
+                return (
+                    <span
+                        aria-hidden="true"
+                        className="story-sentinel"
+                        data-index={position}
+                        data-story-sentinel
+                        key={position}
+                        style={sentinelStyle}
+                    />
+                );
+            })}
         </div>
     );
 };

@@ -2,6 +2,7 @@ import { msg } from '@lingui/core/macro';
 
 import { FeatureCategoryEnum } from '../../../../feature/constant/feature-category.enum';
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -9,9 +10,10 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'self-hosted-finance-app-mobile',
     tier: FeatureTierEnum.POWER,
+    pillar: PillarEnum.PRIVACY,
     category: FeatureCategoryEnum.COMPARISON,
-    title: msg`Self-Hosted Finance App on Mobile — Without Running a Server`,
-    tagline: msg`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server.`,
+    name: msg`Self-Hosted Finance on Mobile`,
+    tagline: msg`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops. Your phone is the server.`,
     metaTitle: msg`Self-Hosted Budget App Mobile — No Server Needed — Budgie`,
     metaDescription: msg`Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; you keep the backup file wherever you like. Zero ops, full ownership.`,
     primaryKeyword: 'self-hosted budget mobile app',
@@ -23,7 +25,7 @@ export const FEATURE_METADATA = {
         'mobile-first self-hosted'
     ],
     relatedFeatureSlugs: ['expense-tracking', 'database-backup', 'data-export', 'subscription-free-budget-app'],
-    relatedArticleSlugs: ['local-first-movement-developers', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['local-first-movement-developers', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-05-07',
     ogTags: ['self-hosted', 'privacy', 'no-server']

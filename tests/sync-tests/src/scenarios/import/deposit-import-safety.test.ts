@@ -131,9 +131,9 @@ describe('import/deposit-import-safety', () => {
                 .from(Contracts.TransactionEntryEntityTable)
                 .where(eq(Contracts.TransactionEntryEntityTable.transactionId, transactionId));
 
-            expect(transaction?.title).toBe('Original imported deposit expense');
-            expect(transaction?.comment).toBe('original');
-            expect(entry?.amount).toBe(IMPORT_INITIAL_AMOUNT);
+            expect(transaction.title).toBe('Original imported deposit expense');
+            expect(transaction.comment).toBe('original');
+            expect(entry.amount).toBe(IMPORT_INITIAL_AMOUNT);
             expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * Contracts.PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );

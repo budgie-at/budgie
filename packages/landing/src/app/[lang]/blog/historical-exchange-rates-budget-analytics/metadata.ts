@@ -19,7 +19,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
         'CSV import currency conversion'
     ],
     seoDescription: msg`Learn why budget analytics should value each transaction using the exchange rate from its real transaction date. Budgie stores base-currency values for accurate multi-currency history.`,
-    relatedArticleSlugs: ['mint-alternatives-developers', 'offline-first-bank-data-safety'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     relatedFeatureSlugs: ['multi-currency', 'spending-analytics', 'csv-import', 'monobank-sync']
 };
 

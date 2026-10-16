@@ -595,9 +595,19 @@ msgstr "Already tracked"
 msgid "Amount"
 msgstr "Amount"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Amount borrowed"
+msgstr "Amount borrowed"
+
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Amount first. Budgie picks the account and guesses the category."
 msgstr "Amount first. Budgie picks the account and guesses the category."
+
+#: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Amount lent"
+msgstr "Amount lent"
 
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
@@ -4177,10 +4187,6 @@ msgstr "Tap to clear"
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "Tap to select"
 msgstr "Tap to select"
-
-#: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx
-msgid "Target balance"
-msgstr "Target balance"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."

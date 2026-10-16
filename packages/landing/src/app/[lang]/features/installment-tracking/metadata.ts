@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'installment-tracking',
     tier: FeatureTierEnum.POWER,
-    title: msg`Pay in Parts: Installment Tracking`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Installment Tracking`,
     tagline: msg`Turn a purchase paid in parts into a plan. Budgie attaches each monthly part and shows the next payment on Home.`,
     metaTitle: msg`Installment Tracker for Pay in Parts Purchases`,
     metaDescription: msg`Know what you still owe on things you bought in parts. Turn the purchase into a plan, and Budgie attaches each monthly part and shows the next payment.`,
@@ -21,7 +23,7 @@ export const FEATURE_METADATA = {
         'track purchases paid in installments'
     ],
     relatedFeatureSlugs: ['debt-tracking', 'monobank-sync', 'privatbank-import', 'recurring-payments-calendar', 'transfer-pair-detection'],
-    relatedArticleSlugs: ['whats-new-september-2026', 'ynab-alternatives-privacy'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy'],
     publishedAt: '2026-10-06',
     updatedAt: '2026-10-06',
     ogTags: ['installments', 'pay in parts', 'debt']

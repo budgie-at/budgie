@@ -3,6 +3,7 @@ import type { MessageDescriptor } from '@lingui/core';
 export interface ArticleRegistryEntryInterface {
     readonly slug: string;
     readonly date: string;
+    readonly dateModified?: string;
     readonly author: string;
     readonly image?: string;
     readonly readingTimeMinutes: number;

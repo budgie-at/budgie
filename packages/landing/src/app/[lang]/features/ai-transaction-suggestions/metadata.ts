@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-transaction-suggestions',
     tier: FeatureTierEnum.CORE,
-    title: msg`Smart Transaction Suggestions — Tap and Done`,
-    tagline: msg`Open the expense form and Budgie offers tappable suggestions from your own history — category, then tags, then a comment.`,
+    pillar: PillarEnum.AI,
+    name: msg`Transaction Suggestions`,
+    tagline: msg`Open the expense form and Budgie offers tappable suggestions from your own history: category, then tags, then a comment.`,
     metaTitle: msg`Smart Expense Suggestions for Mobile — Budgie`,
     metaDescription: msg`Budgie suggests category, tags, comment and amount from your own spending history as tappable pills — faster than typing, private, offline.`,
     primaryKeyword: 'smart expense suggestions',
@@ -28,7 +30,7 @@ export const FEATURE_METADATA = {
         'transaction-tags',
         'ai-category-translation'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-09-07',
     ogTags: ['ai', 'suggestions', 'expense-tracking']

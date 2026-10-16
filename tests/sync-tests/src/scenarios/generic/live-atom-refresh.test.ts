@@ -91,7 +91,7 @@ import type * as Atom from 'effect/reactivity/Atom';
 type LiveAtom = Atom.Atom<AsyncResult.AsyncResult<unknown, unknown>>;
 
 const BASE_INSTRUMENT_ID = 1;
-const EN = LanguageEnum.EN;
+const { EN } = LanguageEnum;
 const NOW = Date.now();
 const FLUSH_WAIT = '120 millis';
 const tablesByName = new Map<string, SQLiteTable>(Object.values(schema).map(table => [getTableName(table), table]));
@@ -208,7 +208,7 @@ const liveAtoms = ({
 const readTables = (statements: readonly string[]) =>
     new Set(
         statements
-            .flatMap(statement => [...statement.matchAll(/\b(?:from|join)\s+"?(\w+)"?/giu)].map(match => match[1] ?? ''))
+            .flatMap(statement => [...statement.matchAll(/\b(?:from|join)\s+"?(\w+)"?/giu)].map(match => match[1]))
             .filter(tableName => tablesByName.has(tableName))
     );
 
@@ -228,7 +228,7 @@ const withLiveRegistry = <A, E, R>(use: (registry: AtomRegistry.AtomRegistry) =>
                 Effect.sync(() => registry.mount(testAtomRuntime)),
                 use(registry)
             ),
-        registry => Effect.sync(() => registry.dispose())
+        registry => Effect.sync(() => void registry.dispose())
     );
 
 const inLiveRuntime = <A, E, R>(registry: AtomRegistry.AtomRegistry, effect: Effect.Effect<A, E, R>) =>

@@ -127,6 +127,19 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                             })
                             .where(eq(InstrumentMarketDataJobEntityTable.id, jobId))
                     ).pipe(Effect.asVoid),
+                findUnsupportedInstrumentIds: (quoteInstrumentId: number) =>
+                    Db.query(db =>
+                        db
+                            .selectDistinct({ instrumentId: InstrumentMarketDataJobEntityTable.instrumentId })
+                            .from(InstrumentMarketDataJobEntityTable)
+                            .where(
+                                and(
+                                    eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
+                                    eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.UNSUPPORTED),
+                                    isNull(InstrumentMarketDataJobEntityTable.deletedAt)
+                                )
+                            )
+                    ).pipe(Effect.map(rows => rows.map(row => row.instrumentId))),
                 findLatestByInstrumentAndQuote: (instrumentId: number, quoteInstrumentId: number) =>
                     Db.query(db =>
                         db.query.InstrumentMarketDataJobEntityTable.findFirst({

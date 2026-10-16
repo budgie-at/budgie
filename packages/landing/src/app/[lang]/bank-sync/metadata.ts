@@ -1,9 +1,12 @@
 import { msg } from '@lingui/core/macro';
 
+import { PillarEnum } from '../../../feature/constant/pillar.enum';
+
 import type { PillarHubMetadataInterface } from '../../../feature/interface/pillar-hub-metadata.interface';
 
 export const BANK_SYNC_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     slug: 'bank-sync',
+    pillar: PillarEnum.BANK,
     title: msg`Bank Sync & Statement Import — Bring Your Bank Data In`,
     metaTitle: msg`Bank Sync & Statement Import — Budgie`,
     metaDescription: msg`Connect your bank for automatic sync, or import statements from PDF, XLSX, or CSV. Budgie catches duplicate imports, matches transfers automatically, and lets you fix a bad sync without starting over.`,

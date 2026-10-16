@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { CalendarDays, SliderHorizontal } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,23 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie date filter sheet with an August calendar above the row of preset range chips`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Date Filter Presets — Past Periods, One Tap</Trans>}
-                locale={lang}
+                heading={<Trans>Any period, two taps away</Trans>}
                 tagline={
                     <Trans>
-                        Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the
-                        right window.
+                        Today, This Week, Last Week, This Month, Last Month, This Year, All Time. Every screen with a list gets two taps to
+                        the right window.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="date-filter-presets-1" slug="date-filter-presets" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Two taps to the window you want</Trans>}>
@@ -55,14 +56,7 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         the calendar instead and tap Show selected range.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie date filter sheet with an August calendar above the row of preset range chips`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="date-filter-presets-1"
-                    slug="date-filter-presets"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="date-filter-presets-1" slug="date-filter-presets">
                     <FeatureStory.Callout y={0.498}>
                         <Trans>Pick any range by hand</Trans>
                     </FeatureStory.Callout>
@@ -94,73 +88,109 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a date picker should never be the bottleneck</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range
-                        fallback. Every transaction list, every analytics tab, every recurring view shares the same picker.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        This Week and Last Week always mean the most recently completed Monday-to-Sunday span. The week boundary itself does
-                        not follow your device locale today.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Built for the windows you use</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>presets, one tap each</Trans>} value="7">
+                    <Trans>From Today to All Time, without touching the calendar.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>is always a week</Trans>} value={<Trans>Mon to Sun</Trans>}>
+                    <Trans>This Week and Last Week run the same span on every phone.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>start and end date by hand</Trans>} value={<Trans>Any</Trans>}>
+                    <Trans>Pick a custom range on the calendar when no preset fits.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Seven presets cover the windows you actually use, from Today to All Time</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Custom range fallback for anything else</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureCropBand
+                heading={<Trans>Apply a range, see the list change</Trans>}
+                lede={<Trans>Pick Last Month and the list narrows to what you asked for.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie transaction list filtered to Last Month, with the Clear All chip, the active Last Month chip and 73 matching transactions`}
+                        locale={lang}
+                        scene="date-filter-presets-2"
+                        slug="date-filter-presets"
+                        y={0.12}
+                    >
+                        <FeatureCropBand.Pin x={0.2} y={0.2} />
+                        <FeatureCropBand.Pin x={0.42} y={0.2} />
+                        <FeatureCropBand.Pin x={0.5} y={0.335} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Clear All puts the list back</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Last Month, applied as a chip</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Every row dated inside August</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={CalendarDays} title={<Trans>Seven presets, one tap</Trans>}>
+                    <Trans>Seven presets cover the windows you actually use, from Today to All Time</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={CalendarDays} title={<Trans>A custom range when needed</Trans>}>
+                    <Trans>Custom range fallback for anything else</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={SliderHorizontal} title={<Trans>Narrow by amount too</Trans>}>
+                    <Trans>An amount-range chip in the same filter row, with a From value, a To value, or both</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Same picker across analytics, transactions, and recurring screens</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>This Week and Last Week always run Monday to Sunday, no matter your locale</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             &ldquo;Last Month&rdquo; always means the most-recent COMPLETED month — never the half-finished current one
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
-                        <Trans>An amount-range chip in the same filter row, with a From value, a To value, or both</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Narrow by amount, not just by date</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a
-                        From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The
-                        chip shows the range you picked, and clearing it is one tap.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Combined with the date presets it turns &quot;where did the money go last month?&quot; into a two-chip question:
-                        Last Month plus everything above a threshold, and the list in front of you is the answer.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a date picker should never be the bottleneck</Trans>}>
+                    <p>
+                        <Trans>
+                            Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range
+                            fallback. Every transaction list, every analytics tab, every recurring view shares the same picker.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            This Week and Last Week always mean the most recently completed Monday-to-Sunday span. The week boundary itself
+                            does not follow your device locale today.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Narrow by amount, not just by date</Trans>}>
+                    <p>
+                        <Trans>
+                            The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set
+                            a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band.
+                            The chip shows the range you picked, and clearing it is one tap.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Combined with the date presets it turns &quot;where did the money go last month?&quot; into a two-chip question:
+                            Last Month plus everything above a threshold, and the list in front of you is the answer.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Can I customize the week start?</Trans>}
                     answer={
                         <Trans>
@@ -169,7 +199,8 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Are the presets the same on every screen?</Trans>}
                     answer={
                         <Trans>
@@ -178,7 +209,8 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I filter by amount too?</Trans>}
                     answer={
                         <Trans>
@@ -187,17 +219,19 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What does &ldquo;All Time&rdquo; cover?</Trans>}
                     answer={<Trans>Every transaction in your database. Useful for full-history analytics or one-off audits.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I save a custom range?</Trans>}
                     answer={
                         <Trans>Custom ranges are session-scoped today. Saved custom ranges are on the roadmap for a future release.</Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }
