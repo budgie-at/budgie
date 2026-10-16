@@ -165,7 +165,7 @@ jobs:
               timeout-minutes: 3
               run: |
                   if command -v sqlite3 && command -v ruby; then exit 0; fi
-                  for attempt in 1 2 3; do
+                  for _ in 1 2 3; do
                     timeout 90 sudo apt-get -o Acquire::Retries=3 update -qq \
                       && timeout 90 sudo apt-get install -y --no-install-recommends sqlite3 ruby \
                       && exit 0
