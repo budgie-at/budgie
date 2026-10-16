@@ -18,7 +18,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.2.0 # v3.2.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.3.0 # v3.3.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -40,10 +40,6 @@ jobs:
             test-timeout-minutes: 20
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
-            # turbo.json uses `agentGuidance` (turbo >= 2.11), which mobile-ci's default
-            # turbo 2.10.8 rejects; keep in step with the lockfile's turbo. Drop once
-            # rnw-community/mobile-ci#189 resolves the version from the lockfile.
-            turbo-version: '2.11.5'
             build-command: pnpm exec turbo build --filter='@budgie/*'
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
