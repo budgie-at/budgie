@@ -53,12 +53,8 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
                 );
             });
 
-            const enqueueAccounts = Effect.fn('HistoricalMarketDataDrainerService.enqueueAccounts')(function* (
-                accounts: AccountEntityInterface[]
-            ) {
-                yield* historicalMarketDataService.enqueueAccounts(accounts);
-                yield* scheduleDrain();
-            });
+            const enqueueAccounts = (accounts: AccountEntityInterface[]) =>
+                historicalMarketDataService.enqueueAccounts(accounts).pipe(Effect.ensuring(scheduleDrain()));
 
             return {
                 enqueueAccounts,

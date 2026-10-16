@@ -14,11 +14,13 @@ import { format } from 'date-fns/format';
 import { isAfter } from 'date-fns/isAfter';
 import { parseISO } from 'date-fns/parseISO';
 import { subDays } from 'date-fns/subDays';
+import * as Arr from 'effect/Array';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Order from 'effect/Order';
 import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -260,12 +262,12 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     { concurrency: 'unbounded' }
                 );
 
-                return gapStartDates
-                    .map(gapStartDate =>
+                return Arr.sort(
+                    gapStartDates.map(gapStartDate =>
                         isDefined(gapStartDate) ? format(addDays(parseISO(gapStartDate), 1), rateDateFormat) : windowStartDate
-                    )
-                    .toSorted()
-                    .at(0);
+                    ),
+                    Order.String
+                ).at(0);
             });
 
             const buildFiatJobInput = Effect.fn('HistoricalMarketDataService.buildFiatJobInput')(function* () {
@@ -392,7 +394,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     { concurrency: 'unbounded' }
                 );
 
-                yield* instrumentMarketDataJobRepository.enqueueMany([...inputs, yield* buildFiatJobInput()].filter(isDefined));
+                yield* instrumentMarketDataJobRepository.enqueueMany(inputs.filter(isDefined));
+                yield* instrumentMarketDataJobRepository.enqueueMany([yield* buildFiatJobInput()].filter(isDefined));
             });
 
             return {
