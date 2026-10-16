@@ -1,7 +1,7 @@
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
-import * as Exit from 'effect/Exit';
 import * as Atom from 'effect/reactivity/Atom';
+import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -24,7 +24,7 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
             if (this.isReady) {
                 return;
             }
-            yield* Effect.ignore(this.releaseContext());
+            yield* this.releaseContext();
             patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
             const modelPath = yield* downloadModel(this.config.modelUrl, this.config.modelFilename, downloadProgress => {
                 patchAtom(this.snapshot, { downloadProgress });
@@ -50,17 +50,23 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
                         errorMessage: getRootErrorMessage(Cause.squash(cause))
                     });
                 })
-            )
+            ),
+        effect => this.contextLock.withPermit(Effect.uninterruptible(effect))
     );
 
-    readonly stop = Effect.fn('LlamaModelService.stop')(function* (this: LlamaModelService) {
-        const { status } = appAtomRegistry.get(this.snapshot);
-        if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
-            return;
-        }
-        const exit = yield* Effect.exit(this.releaseContext());
-        patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.SUSPENDED, ...(Exit.isSuccess(exit) && { downloadProgress: 0 }) });
-    });
+    readonly stop = Effect.fn('LlamaModelService.stop')(
+        function* (this: LlamaModelService) {
+            const { status } = appAtomRegistry.get(this.snapshot);
+            if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
+                return;
+            }
+            yield* this.releaseContext();
+            patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.SUSPENDED, downloadProgress: 0 });
+        },
+        effect => this.contextLock.withPermit(Effect.uninterruptible(effect))
+    );
+
+    readonly contextLock = Semaphore.makeUnsafe(1);
 
     context: LlamaContext | null = null;
 
@@ -76,10 +82,20 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
 
     private releaseContext(): Effect.Effect<void, NativeCallError> {
         const { context } = this;
-        this.context = null;
 
         return isDefined(context)
-            ? Effect.tryPromise({ try: () => context.release(), catch: cause => new NativeCallError({ cause }) })
+            ? Effect.tryPromise({ try: () => context.release(), catch: cause => new NativeCallError({ cause }) }).pipe(
+                  Effect.tap(() =>
+                      Effect.sync(() => {
+                          this.context = null;
+                      })
+                  ),
+                  Effect.tapError(error =>
+                      Effect.sync(() => {
+                          patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.ERROR, errorMessage: getRootErrorMessage(error) });
+                      })
+                  )
+              )
             : Effect.void;
     }
 }

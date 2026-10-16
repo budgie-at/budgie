@@ -508,6 +508,15 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "AI downloads on this device: {totalSize}"
+msgstr "KI-Downloads auf diesem Gerät: {totalSize}"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "AI features"
+msgstr "AI-Funktionen"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "KI aus"
@@ -847,6 +856,10 @@ msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen 
 msgid "Burning"
 msgstr "Cash-Burn"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "bytes"
+msgstr "Bytes"
+
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Kann bei alten Konten Stunden dauern und ist deutlich langsamer, wenn die App geschlossen ist."
@@ -915,10 +928,6 @@ msgstr "Kategorien schlüsseln deine Ausgaben automatisch auf. Füge eine Transa
 msgid "Categorise imports automatically"
 msgstr "Importe automatisch kategorisieren"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
-msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachnotizen direkt auf diesem Gerät. Lädt einmalig etwa 2,5 GB an Modellen herunter – am besten über WLAN."
-
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
 msgstr "Kategorisieren"
@@ -984,6 +993,10 @@ msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien könne
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+msgid "Choose features and free space from unused downloads"
+msgstr "Funktionen auswählen und Speicherplatz aus ungenutzten Downloads freigeben"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1290,6 +1303,10 @@ msgstr "Konten konnten nicht geladen werden"
 msgid "Could not load accounts from the bank"
 msgstr "Konten von der Bank konnten nicht geladen werden"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load AI downloads"
+msgstr "KI-Downloads konnten nicht geladen werden"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
@@ -1325,6 +1342,10 @@ msgstr "Tag konnte nicht neu zugewiesen werden"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Salden konnten nicht neu berechnet werden"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not remove unused downloads"
+msgstr "Ungenutzte Downloads konnten nicht entfernt werden"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1383,6 +1404,10 @@ msgstr "Transaktion konnte nicht entkonsolidiert werden."
 msgid "Could not undo the move to cash"
 msgstr "Verschieben ins Bargeld konnte nicht rückgängig gemacht werden"
 
+#: src/ai/component/ai-feature-toggle/ai-feature-toggle.tsx
+msgid "Could not update AI feature"
+msgstr "AI-Funktion konnte nicht aktualisiert werden"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
 msgstr "Kategoriesymbol konnte nicht aktualisiert werden"
@@ -1390,10 +1415,6 @@ msgstr "Kategoriesymbol konnte nicht aktualisiert werden"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Benachrichtigungen konnten nicht aktualisiert werden"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Could not update on-device AI"
-msgstr "On-Device-KI konnte nicht aktualisiert werden"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Could not update recurring payment."
@@ -2168,6 +2189,10 @@ msgstr "Einzahlungsbetrag"
 msgid "General"
 msgstr "Allgemein"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Generate English names and search keywords automatically."
+msgstr "Englische Namen und Suchbegriffe automatisch generieren."
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Allgemein"
@@ -2183,6 +2208,10 @@ msgstr "API-Schlüssel abrufen"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "API-Token abrufen"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Get category, tag, and note suggestions from your history."
+msgstr "Erhalte Kategorie-, Tag- und Notizvorschläge aus deinem Verlauf."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
@@ -2487,6 +2516,10 @@ msgstr "Limit"
 msgid "Listening..."
 msgstr "Zuhören..."
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Loading AI downloads…"
+msgstr "KI-Downloads werden geladen…"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "KI-Modell wird geladen..."
@@ -2640,6 +2673,10 @@ msgstr "Fehlende Kategorien"
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "Missing rate"
 msgstr "Kurs fehlt"
+
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "Models download once, best on Wi-Fi"
+msgstr "Modelle werden einmal geladen, am besten über WLAN"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -2989,10 +3026,6 @@ msgstr "jetzt"
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
 msgstr "von"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "On-device AI"
-msgstr "On-Device-KI"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
@@ -3447,6 +3480,10 @@ msgstr "Aufteilung entfernen"
 msgid "Remove split?"
 msgstr "Aufteilung entfernen?"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Remove unused downloads ({unusedSize})"
+msgstr "Ungenutzte Downloads entfernen ({unusedSize})"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
 msgstr "Umbenennen"
@@ -3492,6 +3529,10 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Restore from Backup"
 msgstr "Aus Sicherung wiederherstellen"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Retry"
+msgstr "Erneut versuchen"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -3895,6 +3936,10 @@ msgstr "Ähnliche Transaktionen"
 msgid "Skip"
 msgstr "Überspringen"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Smart suggestions"
+msgstr "Intelligente Vorschläge"
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Smarter, without the cloud"
 msgstr "Schlauer, ganz ohne Cloud"
@@ -3927,6 +3972,10 @@ msgstr "Quellen"
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Spanisch"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Speak an expense and Budgie fills in the transaction."
+msgstr "Sprich eine Ausgabe ein und Budgie füllt die Transaktion aus."
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Spending by Category"
@@ -4384,6 +4433,10 @@ msgstr "Vom Konto übertragen"
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Translate categories and tags"
+msgstr "Kategorien und Tags übersetzen"
+
 #: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translating categories and tags"
 msgstr "Kategorien und Tags werden übersetzt"
@@ -4571,6 +4624,10 @@ msgstr "Archivierte Konten anzeigen und wiederherstellen"
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
 msgstr "Quelltransaktionen anzeigen"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Voice notes"
+msgstr "Sprachnotizen"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"
