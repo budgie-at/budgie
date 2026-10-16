@@ -2,10 +2,10 @@ import { AiInvokeError, ChatInvoker } from '@budgie/ai';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { chatModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
@@ -29,7 +29,6 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
             },
             aiModelDownloadService
         );
-        const completionLock = yield* Semaphore.make(1);
 
         return {
             model,
@@ -41,7 +40,7 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
                 userMessage: string,
                 options?: GenerateOptionsInterface
             ): Effect.Effect<string, AiInvokeError> =>
-                completionLock.withPermit(
+                model.contextLock.withPermit(
                     Effect.suspend(() => {
                         const { context } = model;
 
@@ -50,9 +49,16 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
                             : Effect.fail(new AiInvokeError({ cause: new AiNotReadyError({ subsystem: AiSubsystemNameEnum.CHAT }) }));
                     })
                 ),
-            interrupt: Effect.sync(() => {
-                void model.context?.stopCompletion();
-            }).pipe(Effect.andThen(completionLock.withPermit(Effect.void)))
+            interrupt: Effect.gen(function* () {
+                const { context } = model;
+                if (isDefined(context)) {
+                    yield* Effect.tryPromise({
+                        try: () => Promise.resolve(context.stopCompletion()),
+                        catch: cause => new NativeCallError({ cause })
+                    });
+                }
+                yield* model.contextLock.withPermit(Effect.void);
+            }).pipe(Effect.uninterruptible)
         };
     })
 }) {

@@ -1,8 +1,8 @@
 {
     "version": "7",
     "dialect": "sqlite",
-    "id": "0c3f5c2c-97ef-41bb-bf9e-822a23cc4343",
-    "prevIds": ["de0f28c1-b766-4205-9def-18091b82a085"],
+    "id": "4f07a14e-0edd-43b4-9a67-2f5338cebffd",
+    "prevIds": ["8ebcbe70-c5aa-4970-a7cc-dd05b8b73e96"],
     "ddl": [
         {
             "name": "account_balances",
@@ -2477,6 +2477,36 @@
             "default": "false",
             "generated": null,
             "name": "is_ai_enabled",
+            "entityType": "columns",
+            "table": "settings"
+        },
+        {
+            "type": "integer",
+            "notNull": true,
+            "autoincrement": false,
+            "default": "false",
+            "generated": null,
+            "name": "is_ai_voice_input_enabled",
+            "entityType": "columns",
+            "table": "settings"
+        },
+        {
+            "type": "integer",
+            "notNull": true,
+            "autoincrement": false,
+            "default": "false",
+            "generated": null,
+            "name": "is_ai_suggestions_enabled",
+            "entityType": "columns",
+            "table": "settings"
+        },
+        {
+            "type": "integer",
+            "notNull": true,
+            "autoincrement": false,
+            "default": "false",
+            "generated": null,
+            "name": "is_ai_translations_enabled",
             "entityType": "columns",
             "table": "settings"
         },

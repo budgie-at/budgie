@@ -258,6 +258,7 @@ jobs:
             actions: read
         uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.1.0 # v3.1.0
         with:
+            turbo-version: '2.11.5'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder","trf-budgie-builder-2"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             # Gate on the turbo graph as well as detect-mobile-impact's path
@@ -266,7 +267,6 @@ jobs:
             target-packages: |
                 @budgie-at/app
                 @budgie-at/app-tests
-            turbo-version: 2.11.5
             targets: >-
                 [{"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
                 "appId":"com.vitalyiegorov.budgie.e2e","prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]

@@ -32,13 +32,7 @@ export const runCompletion = Effect.fn('runCompletion')(function* (
                 ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
             }),
         catch: cause => new AiInvokeError({ cause })
-    }).pipe(
-        Effect.onInterrupt(() =>
-            Effect.sync(() => {
-                void context.stopCompletion();
-            })
-        )
-    );
+    }).pipe(Effect.uninterruptible);
 
     if (result.interrupted && options?.throwOnInterrupt === true) {
         return yield* Effect.interrupt;

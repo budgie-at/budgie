@@ -609,6 +609,15 @@ msgstr "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgid "AI"
 msgstr "AI"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "AI downloads on this device: {totalSize}"
+msgstr "AI downloads on this device: {totalSize}"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "AI features"
+msgstr "AI features"
+
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
 msgstr "AI model download paused: no Wi-Fi"
@@ -953,6 +962,10 @@ msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions
 msgid "Burning"
 msgstr "Burning"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "bytes"
+msgstr "bytes"
+
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Can run for hours on old accounts, and much slower while the app is closed."
@@ -1032,10 +1045,6 @@ msgstr "Categories, tags and voice notes are handled on this phone."
 msgid "Categorise imports automatically"
 msgstr "Categorise imports automatically"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about {estimatedGigabytes} GB of models once — best on Wi-Fi."
-msgstr "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about {estimatedGigabytes} GB of models once — best on Wi-Fi."
-
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
 msgstr "Categorize"
@@ -1114,6 +1123,10 @@ msgstr "Choose a preset to auto-fill column mappings"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Choose and confirm a PIN"
 msgstr "Choose and confirm a PIN"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+msgid "Choose features and free space from unused downloads"
+msgstr "Choose features and free space from unused downloads"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Choose what goes inside"
@@ -1448,6 +1461,10 @@ msgstr "Could not load accounts"
 msgid "Could not load accounts from the bank"
 msgstr "Could not load accounts from the bank"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load AI downloads"
+msgstr "Could not load AI downloads"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Could not load sources. Please try again."
@@ -1483,6 +1500,10 @@ msgstr "Could not reassign tag"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Could not recalculate balances"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not remove unused downloads"
+msgstr "Could not remove unused downloads"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1545,6 +1566,10 @@ msgstr "Could not unconsolidate transaction."
 msgid "Could not undo the move to cash"
 msgstr "Could not undo the move to cash"
 
+#: src/ai/component/ai-feature-toggle/ai-feature-toggle.tsx
+msgid "Could not update AI feature"
+msgstr "Could not update AI feature"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
 msgstr "Could not update category icon"
@@ -1552,10 +1577,6 @@ msgstr "Could not update category icon"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Could not update notifications"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Could not update on-device AI"
-msgstr "Could not update on-device AI"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Could not update recurring payment."
@@ -2435,6 +2456,10 @@ msgstr "Funding amount"
 msgid "General"
 msgstr "General"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Generate English names and search keywords automatically."
+msgstr "Generate English names and search keywords automatically."
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Generic"
@@ -2450,6 +2475,10 @@ msgstr "Get API Key"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "Get API Token"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Get category, tag, and note suggestions from your history."
+msgstr "Get category, tag, and note suggestions from your history."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
@@ -2819,6 +2848,10 @@ msgstr "Listening..."
 msgid "Lives on"
 msgstr "Lives on"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Loading AI downloads…"
+msgstr "Loading AI downloads…"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Loading AI model..."
@@ -2988,6 +3021,10 @@ msgstr "Missing rate"
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "Models and downloads"
 msgstr "Models and downloads"
+
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "Models download once, best on Wi-Fi"
+msgstr "Models download once, best on Wi-Fi"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -3379,7 +3416,6 @@ msgstr "of {total} GB"
 msgid "OK"
 msgstr "OK"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "On-device AI"
@@ -3905,6 +3941,10 @@ msgstr "Remove split"
 msgid "Remove split?"
 msgstr "Remove split?"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Remove unused downloads ({unusedSize})"
+msgstr "Remove unused downloads ({unusedSize})"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
 msgstr "Rename"
@@ -3958,6 +3998,10 @@ msgstr "Restore from Backup"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Resume"
 msgstr "Resume"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Retry"
+msgstr "Retry"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -4389,6 +4433,10 @@ msgstr "Similar transactions"
 msgid "Skip"
 msgstr "Skip"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Smart suggestions"
+msgstr "Smart suggestions"
+
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
 msgstr "Some transactions may match multiple rules. The first matching rule will take priority."
@@ -4421,6 +4469,10 @@ msgstr "Sources"
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Spanish"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Speak an expense and Budgie fills in the transaction."
+msgstr "Speak an expense and Budgie fills in the transaction."
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Spending by Category"
@@ -4938,6 +4990,10 @@ msgstr "Transfer From Account"
 msgid "Transfer To Account"
 msgstr "Transfer To Account"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Translate categories and tags"
+msgstr "Translate categories and tags"
+
 #: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translating categories and tags"
 msgstr "Translating categories and tags"
@@ -5153,6 +5209,10 @@ msgstr "View and restore archived accounts"
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
 msgstr "View source transactions"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Voice notes"
+msgstr "Voice notes"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"

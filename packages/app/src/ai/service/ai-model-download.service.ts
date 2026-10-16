@@ -18,6 +18,7 @@ import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rn
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { NetworkTypeEnum } from '../../@generic/enum/network-type.enum';
 import { NetworkService } from '../../@generic/service/network.service';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { AI_MODEL_DOWNLOAD_ORDER, AI_MODEL_FILES, AI_MODEL_FREE_SPACE_RESERVE_BYTES } from '../constant/ai-model-files.constant';
 import { aiModelDownloadSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { WHISPER_MODEL_FILENAME } from '../constant/whisper-model.constant';
@@ -67,6 +68,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
         const reportedTotals = new Map<AiSubsystemNameEnum, number>();
         let state = emptyState;
         let isWifiOnly = true;
+        let enabledSubsystems: ReadonlySet<AiSubsystemNameEnum> = new Set();
         let networkType = yield* networkService.current;
         let activeDownload: AiModelActiveDownloadInterface | null = null;
         let throughputSamples: readonly AiModelThroughputSampleInterface[] = [];
@@ -108,6 +110,8 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
         };
 
         const isTaskInState = (task: DownloadTask, taskState: DownloadTask['state']): boolean => task.state === taskState;
+
+        const enabledModels = (): AiSubsystemNameEnum[] => AI_MODEL_DOWNLOAD_ORDER.filter(name => enabledSubsystems.has(name));
 
         const isNetworkAllowed = (): boolean =>
             networkType === NetworkTypeEnum.WIFI ||
@@ -205,7 +209,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
                 if (!isDefined(resumeData)) {
                     deleteIfExists(tempFile);
                     reportedTotals.delete(name);
-                    patchModel(name, { bytesWritten: 0 });
+                    patchModel(name, { bytesWritten: 0, isComplete: false });
                 }
             });
             const onProgress = makeProgressHandler(name);
@@ -307,7 +311,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
             function* () {
                 throughputSamples = [];
                 yield* Effect.forkChild(Effect.repeat(sampleProgress, Schedule.spaced(sampleInterval)));
-                for (const name of AI_MODEL_DOWNLOAD_ORDER.filter(modelName => !isModelComplete(modelName))) {
+                for (const name of enabledModels().filter(modelName => !isModelComplete(modelName))) {
                     if (!(yield* checkSpace())) {
                         return;
                     }
@@ -407,9 +411,6 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
                 : emptyState;
 
         const resolveInitialStatus = (): AiModelDownloadStatusEnum => {
-            if (AI_MODEL_DOWNLOAD_ORDER.every(isModelComplete)) {
-                return AiModelDownloadStatusEnum.READY;
-            }
             if (state.hold === AiModelDownloadHoldEnum.PAUSED) {
                 return AiModelDownloadStatusEnum.PAUSED;
             }
@@ -419,21 +420,23 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
                 : AiModelDownloadStatusEnum.NOT_STARTED;
         };
 
-        yield* Effect.sync(() => {
-            migrateLegacyWhisperModel();
-            state = readState();
-            patchSnapshot({
-                models: {
-                    [AiSubsystemNameEnum.CHAT]: readInitialProgress(AiSubsystemNameEnum.CHAT),
-                    [AiSubsystemNameEnum.EMBEDDING]: readInitialProgress(AiSubsystemNameEnum.EMBEDDING),
-                    [AiSubsystemNameEnum.STT]: readInitialProgress(AiSubsystemNameEnum.STT)
+        yield* logAndContinue(
+            Effect.try({
+                try: () => {
+                    migrateLegacyWhisperModel();
+                    state = readState();
+                    patchSnapshot({
+                        models: {
+                            [AiSubsystemNameEnum.CHAT]: readInitialProgress(AiSubsystemNameEnum.CHAT),
+                            [AiSubsystemNameEnum.EMBEDDING]: readInitialProgress(AiSubsystemNameEnum.EMBEDDING),
+                            [AiSubsystemNameEnum.STT]: readInitialProgress(AiSubsystemNameEnum.STT)
+                        },
+                        status: resolveInitialStatus()
+                    });
                 },
-                status: resolveInitialStatus()
-            });
-        });
-        if (getSnapshot().status === AiModelDownloadStatusEnum.READY) {
-            yield* writeState(emptyState);
-        }
+                catch: cause => new AiModelDownloadError({ cause })
+            })
+        );
         yield* Effect.forkScoped(
             Stream.runForEach(networkService.changes, type =>
                 control.withPermit(
@@ -450,10 +453,21 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
             completions: Stream.fromPubSub(completions),
             modelPath: (name: AiSubsystemNameEnum): string | null => (isModelComplete(name) ? resolveFiles(name).modelFile.uri : null),
             start: Effect.fn('AiModelDownloadService.start')(
-                function* () {
-                    if (getSnapshot().status === AiModelDownloadStatusEnum.NOT_STARTED && !isDefined(state.hold)) {
-                        yield* startJob();
+                function* (enabled: ReadonlySet<AiSubsystemNameEnum>) {
+                    enabledSubsystems = enabled;
+                    const { status } = getSnapshot();
+                    if (
+                        isDefined(state.hold) ||
+                        (status !== AiModelDownloadStatusEnum.NOT_STARTED && status !== AiModelDownloadStatusEnum.READY)
+                    ) {
+                        return;
                     }
+                    if (enabledModels().every(isModelComplete)) {
+                        patchSnapshot({ status: AiModelDownloadStatusEnum.READY });
+
+                        return;
+                    }
+                    yield* startJob();
                 },
                 effect => control.withPermit(effect)
             ),

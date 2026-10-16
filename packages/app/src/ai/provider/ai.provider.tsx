@@ -12,6 +12,9 @@ interface Props {
 
 export const AiProvider = ({ children }: Props) => {
     const isAiEnabled = useSetting('isAiEnabled');
+    const isAiVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
+    const isAiSuggestionsEnabled = useSetting('isAiSuggestionsEnabled');
+    const isAiTranslationsEnabled = useSetting('isAiTranslationsEnabled');
     const isAiWifiOnly = useSetting('isAiWifiOnly');
 
     useEffect(() => {
@@ -21,14 +24,19 @@ export const AiProvider = ({ children }: Props) => {
     }, [isAiWifiOnly]);
 
     useEffect(() => {
-        if (isAiEnabled) {
-            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.start()));
-        }
+        appRuntime.runFork(
+            Effect.flatMap(AiCoordinatorService, coordinator => coordinator.restart()).pipe(Effect.tapCause(Effect.logError))
+        );
+    }, [isAiEnabled, isAiVoiceInputEnabled, isAiSuggestionsEnabled, isAiTranslationsEnabled]);
 
-        return () => {
-            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.stop()));
-        };
-    }, [isAiEnabled]);
+    useEffect(
+        () => () => {
+            appRuntime.runFork(
+                Effect.flatMap(AiCoordinatorService, coordinator => coordinator.stop()).pipe(Effect.tapCause(Effect.logError))
+            );
+        },
+        []
+    );
 
     return children;
 };

@@ -24,9 +24,4 @@ export const AI_MODEL_FILES: Readonly<Record<AiSubsystemNameEnum, AiModelFileInt
 
 export const AI_MODEL_DOWNLOAD_ORDER = [AiSubsystemNameEnum.EMBEDDING, AiSubsystemNameEnum.CHAT, AiSubsystemNameEnum.STT] as const;
 
-export const AI_MODEL_ESTIMATED_TOTAL_BYTES = AI_MODEL_DOWNLOAD_ORDER.reduce(
-    (total, name) => total + AI_MODEL_FILES[name].estimatedBytes,
-    0
-);
-
 export const AI_MODEL_FREE_SPACE_RESERVE_BYTES = 300_000_000;

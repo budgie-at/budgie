@@ -28,17 +28,23 @@ export class LocalEmbeddingService extends Context.Service<LocalEmbeddingService
 
         return {
             model,
-            embed: (text: string): Effect.Effect<number[], AiInvokeError> => {
-                const { context } = model;
-                if (!model.isReady || !isDefined(context)) {
-                    return Effect.succeed([]);
-                }
+            embed: (text: string): Effect.Effect<number[], AiInvokeError> =>
+                model.contextLock.withPermit(
+                    Effect.suspend(() => {
+                        const { context } = model;
+                        if (!model.isReady || !isDefined(context)) {
+                            return Effect.succeed([]);
+                        }
 
-                return Effect.tryPromise({
-                    try: () => context.embedding(text),
-                    catch: cause => new AiInvokeError({ cause })
-                }).pipe(Effect.map(result => result.embedding));
-            }
+                        return Effect.tryPromise({
+                            try: () => context.embedding(text),
+                            catch: cause => new AiInvokeError({ cause })
+                        }).pipe(
+                            Effect.map(result => result.embedding),
+                            Effect.uninterruptible
+                        );
+                    })
+                )
         };
     })
 }) {

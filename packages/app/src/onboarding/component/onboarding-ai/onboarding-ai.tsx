@@ -26,7 +26,6 @@ import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-
 import { OnboardingAiSelector } from './onboarding-ai.selector';
 
 import type { OnboardingNetworkRowInterface } from '../../interface/onboarding-network-row.interface';
-import type { SettingsEntityInterface } from '@budgie/contracts';
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const OnboardingAi = () => {
@@ -38,7 +37,7 @@ export const OnboardingAi = () => {
     const { totalBytes, networkType, freeDiskBytes, missingBytes, hasEnoughSpace } = useAiDownloadPreflight();
     const formatGigabytes = useFormatGigabytes();
 
-    const finishWith = (settings: Partial<Pick<SettingsEntityInterface, 'isAiEnabled' | 'isAiWifiOnly'>>, allowMobileData: boolean) => {
+    const finishWith = (settings: Parameters<typeof updateSettingsMutation>[0], allowMobileData: boolean) => {
         setIsSaving(true);
         appRuntime.runFork(
             logAndContinue(
@@ -58,9 +57,15 @@ export const OnboardingAi = () => {
     const isOnWifi = networkType === NetworkTypeEnum.WIFI;
     const isOnCellular = networkType === NetworkTypeEnum.CELLULAR;
 
-    const handleDownloadPress = () => void finishWith({ isAiEnabled: true }, isOnCellular);
-    const handleLaterPress = () => void finishWith({ isAiEnabled: true, isAiWifiOnly: true }, false);
-    const handleNoThanksPress = () => void finishWith({ isAiEnabled: false }, false);
+    const aiFeatures = (isEnabled: boolean) => ({
+        isAiEnabled: isEnabled,
+        isAiVoiceInputEnabled: isEnabled,
+        isAiSuggestionsEnabled: isEnabled,
+        isAiTranslationsEnabled: isEnabled
+    });
+    const handleDownloadPress = () => void finishWith(aiFeatures(true), isOnCellular);
+    const handleLaterPress = () => void finishWith({ ...aiFeatures(true), isAiWifiOnly: true }, false);
+    const handleNoThanksPress = () => void finishWith(aiFeatures(false), false);
 
     const totalSize = formatGigabytes(totalBytes);
     const freeSize = formatGigabytes(freeDiskBytes);
