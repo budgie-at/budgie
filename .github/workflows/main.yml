@@ -15,14 +15,17 @@ on:
       - main
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   release:
     name: Publish a release
     runs-on: [self-hosted, linux-portable-2x4]
     timeout-minutes: 30
+    # Every write (catalog commit, lerna's version commit, tags and GitHub
+    # release) authenticates with PUSH_TO_PROTECTED_TOKEN, not github.token.
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -74,27 +77,51 @@ jobs:
 
           git add packages/app/src/i18n/locales packages/landing/src/i18n/locales
           git commit -m "chore: sync lingui catalogs [skip ci]"
-          git push origin HEAD:main
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt); rebasing onto origin/main."
+            git pull --rebase origin main
+          done
+          exit 1
 
+      # main can move while this job installs (a later merge queued behind this
+      # run): lerna then exits 0 with EBEHIND and publishes nothing, and the old
+      # trailing push failed non-fast-forward (run 38763789695). Rebase onto the
+      # current tip first so this run releases everything merged so far.
+      - name: Rebase onto the latest main
+        run: git pull --rebase origin main
+
+      # lerna publish commits the version bump, tags, and pushes both itself
+      # (git push --follow-tags --atomic), so no separate push step is needed.
       - name: Publish a release
         run: pnpm release
 
-      - name: Push changes
-        uses: ad-m/github-push-action@v1.3.0
-        with:
-          github_token: ${{ secrets.PUSH_TO_PROTECTED_TOKEN }}
+      - name: Verify the release reached origin
+        run: |
+          git fetch origin main
+          if [ -n "$(git rev-list origin/main..HEAD)" ]; then
+            echo "::error::Local main has commits origin/main does not; lerna did not push the release."
+            git log --oneline origin/main..HEAD
+            exit 1
+          fi
 
   eas-update:
     name: EAS Update
     needs: release
     runs-on: [self-hosted, trf-linux-amd64-4x8]
     timeout-minutes: 30
+    permissions:
+      contents: read
     env:
       APP_VARIANT: production
     steps:
       - name: Check for EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+          if [ -z "$EXPO_TOKEN" ]; then
             echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
             exit 1
           fi
@@ -126,7 +153,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build internal workspace packages
         run: pnpm exec turbo build --filter='@budgie/*'
