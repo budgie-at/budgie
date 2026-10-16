@@ -288,6 +288,10 @@ jobs:
             test-timeout-minutes: 110
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
+            # turbo.json uses `agentGuidance` (turbo >= 2.11), which mobile-ci's default
+            # turbo 2.10.8 rejects; keep in step with the lockfile's turbo. Drop once
+            # rnw-community/mobile-ci#189 resolves the version from the lockfile.
+            turbo-version: '2.11.5'
             build-command: pnpm exec turbo build --filter='@budgie/*'
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
