@@ -16,7 +16,7 @@ import { AppResetService } from '../../../@generic/service/app-reset.service';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
-import { OnboardingStepIntro } from '../../../onboarding/component/onboarding-step-intro/onboarding-step-intro';
+import { PinSheetLayout } from '../pin-sheet-layout/pin-sheet-layout';
 
 import { ForgotPinSheetSelector } from './forgot-pin-sheet.selector';
 
@@ -54,18 +54,12 @@ export const ForgotPinSheet = () => {
     const isBusy = isRestoring || isErasing;
 
     return (
-        <View
+        <PinSheetLayout
             testID={ForgotPinSheetSelector.Root}
-            collapsable={false}
-            className="flex-1 bg-primary-reverse px-5xl pt-7xl pb-safe-or-[16px] gap-y-3xl"
+            iconVariant="destructive"
+            title={t`Budgie can't reset your PIN`}
+            description={t`It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from.`}
         >
-            <OnboardingStepIntro
-                icon={UserIconNameEnum.KeyRound}
-                iconVariant="destructive"
-                title={t`Budgie can't reset your PIN`}
-                description={t`It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from.`}
-            />
-
             <View className="gap-y-md">
                 <SimpleHorizontalCell
                     testID={ForgotPinSheetSelector.RestoreRow}
@@ -90,6 +84,6 @@ export const ForgotPinSheet = () => {
             <Text className="text-secondary-foreground text-xs text-center">
                 <Trans>After 5 wrong tries, Budgie waits a little longer between attempts.</Trans>
             </Text>
-        </View>
+        </PinSheetLayout>
     );
 };
