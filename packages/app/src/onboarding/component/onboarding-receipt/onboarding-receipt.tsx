@@ -51,7 +51,7 @@ export const OnboardingReceipt = () => {
                 icon={UserIconNameEnum.ShieldCheck}
                 iconVariant="positive"
                 title={t`Only your PIN opens this file.`}
-                description={t`This is where your data lives and who can read it. You can find it again in Settings › Your data.`}
+                description={t`This is where your data lives and who can read it. You can find it again in Settings › Privacy.`}
             />
 
             <OnboardingReceiptCard rows={receiptRows} />

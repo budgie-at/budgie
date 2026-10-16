@@ -26,7 +26,6 @@ export const SettingsPageSelector = {
     ManageTagsCard: 'SettingsPage.ManageTagsCard',
     ArchivedCard: 'SettingsPage.ArchivedCard',
     InactiveCard: 'SettingsPage.InactiveCard',
-    YourDataCard: 'SettingsPage.YourDataCard',
     ImportDatabaseCard: 'SettingsPage.ImportDatabaseCard',
     ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard',
     ClearDataCard: 'SettingsPage.ClearDataCard',

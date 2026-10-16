@@ -11,7 +11,7 @@ export const SecurityStatusChip = () => {
     const { t } = useLingui();
     const isPinEnabled = useSetting('isPinEnabled');
 
-    const handlePress = () => void router.push(isPinEnabled ? '/settings/your-data' : '/add-pin');
+    const handlePress = () => void router.push(isPinEnabled ? '/settings' : '/add-pin');
 
     const accessibilityLabel = isPinEnabled
         ? t`Your data is sealed. Only your PIN opens it.`

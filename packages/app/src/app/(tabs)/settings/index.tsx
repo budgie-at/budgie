@@ -9,10 +9,8 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
@@ -39,6 +37,7 @@ import { SettingsCard } from '../../../settings/components/settings-card/setting
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
 import { TruncateData } from '../../../settings/components/truncate-data/truncate-data';
+import { YourDataFileCard } from '../../../settings/components/your-data-file-card/your-data-file-card';
 import { useScrollToAnchor } from '../../../settings/hook/use-scroll-to-anchor.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
@@ -59,7 +58,6 @@ export default function SettingsPage() {
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
     const handleNavigateToRules = () => void router.push('/settings/rules');
-    const handleYourDataPress = () => void router.push('/settings/your-data');
     const handleReportBug = () =>
         void openGithubIssueCreation().catch((error: unknown) => {
             Toast.show({ type: 'error', text1: t`Could not open GitHub`, text2: getErrorMessage(error) });
@@ -79,19 +77,7 @@ export default function SettingsPage() {
         <CollapsibleChromePage title={t`Settings`} testID={SettingsPageSelector.Container} scrollViewProps={scrollViewProps}>
             <View className="gap-y-7xl pb-5xl">
                 <SettingsGroup title={t`Privacy`}>
-                    <SimpleHorizontalCell
-                        left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
-                        title={t`100% Offline & Private`}
-                        description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
-                    />
-                    <SettingsCard
-                        testID={SettingsPageSelector.YourDataCard}
-                        icon={UserIconNameEnum.Database}
-                        variant="positive"
-                        title={t`Your data`}
-                        description={t`Where your file lives and who can open it`}
-                        onPress={handleYourDataPress}
-                    />
+                    <YourDataFileCard />
                 </SettingsGroup>
 
                 <View {...anchorLayout('security')}>
