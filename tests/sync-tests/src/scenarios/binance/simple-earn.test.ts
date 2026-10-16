@@ -9,6 +9,7 @@ import {
     buildBinance,
     buildEarnDayKey,
     fetchBinanceTransactions,
+    fetchSortedBinanceExternalIds,
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,
     setupBinanceFixture,
@@ -90,7 +91,7 @@ describe('binance/simple-earn', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
+            const externalIds = yield* fetchSortedBinanceExternalIds();
             expect(externalIds).toStrictEqual(
                 [`binance:earn:USDT:${buildEarnDayKey(firstReward)}`, `binance:earn:USDT:${buildEarnDayKey(lastReward)}`].sort()
             );
@@ -112,8 +113,7 @@ describe('binance/simple-earn', () => {
 
             yield* binanceSyncService.sync();
 
-            const transactions = yield* fetchBinanceTransactions();
-            const externalIds = transactions.map(transaction => transaction.externalId).sort();
+            const externalIds = yield* fetchSortedBinanceExternalIds();
             expect(externalIds).toStrictEqual(
                 [
                     `binance:earn:USDT:${buildEarnDayKey(previousMonth)}`,

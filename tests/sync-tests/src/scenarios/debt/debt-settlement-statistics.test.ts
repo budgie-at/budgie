@@ -27,8 +27,7 @@ import {
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountDebtOpeningService, DebtAccountService } from '@budgie/ledger';
-import { TransactionDebtSettlementService } from '@budgie/ledger';
+import { AccountDebtOpeningService, DebtAccountService, TransactionDebtSettlementService } from '@budgie/ledger';
 import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -666,7 +665,6 @@ describe('debt settlement statistics', () => {
                 for (const _save of [1, 2, 3, 4, 5]) {
                     const manualSettledAmount = (yield* debtEventRepository.getManualSettledAmountByAccountId(account.id)).at(0);
 
-                    // eslint-disable-next-line no-await-in-loop -- Repeated saves must run sequentially to reproduce the drift
                     yield* debtAccountService.updateDebtById(account.id, {
                         debtType,
                         currentBalance: convertFromMicroUnits(manualSettledAmount?.amount ?? 0),
@@ -1286,7 +1284,7 @@ const openFundedDebt = Effect.fnUntraced(function* (
     debtType: AccountDebtTypeEnum,
     fundingAccount: Pick<AccountEntityInterface, 'id' | 'instrumentId'>,
     targetAmount: number,
-    instrumentId = fundingAccount.instrumentId
+    instrumentId: number = fundingAccount.instrumentId
 ) {
     const accountDebtOpeningService = yield* AccountDebtOpeningService;
 
@@ -1407,7 +1405,7 @@ const attachMarchRepayment = Effect.fnUntraced(function* (
     debtAccountId: number,
     type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
     amount: number,
-    operatedAt = DEBT_V2_MARCH_OPERATED_AT
+    operatedAt: Date = DEBT_V2_MARCH_OPERATED_AT
 ) {
     const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 

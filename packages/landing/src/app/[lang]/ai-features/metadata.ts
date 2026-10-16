@@ -1,9 +1,12 @@
 import { msg } from '@lingui/core/macro';
 
+import { PillarEnum } from '../../../feature/constant/pillar.enum';
+
 import type { PillarHubMetadataInterface } from '../../../feature/interface/pillar-hub-metadata.interface';
 
 export const AI_FEATURES_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     slug: 'ai-features',
+    pillar: PillarEnum.AI,
     title: msg`On-Device AI Finance — Private AI for Your Money`,
     metaTitle: msg`On-Device AI Finance App — Private AI — Budgie`,
     metaDescription: msg`Budgie's AI runs on your phone, not in the cloud: category suggestions, voice entry, and merchant clean-up with nothing sent to a server.`,

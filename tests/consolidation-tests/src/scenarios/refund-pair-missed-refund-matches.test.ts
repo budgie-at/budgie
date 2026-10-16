@@ -77,7 +77,7 @@ const expectCandidateGroups = (
     candidates: readonly RefundCandidateBaseInterface[],
     expected: ReadonlyArray<Partial<RefundCandidateInterface>>
 ) => {
-    expect(candidates).toEqual(expect.arrayContaining(expected.map(group => expect.objectContaining(group))));
+    expect(candidates).toEqual(expect.arrayContaining(expected.map((group): unknown => expect.objectContaining(group))));
     expect(candidates).toHaveLength(expected.length);
 };
 

@@ -36,6 +36,7 @@ export {
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
+    fetchSortedBinanceExternalIds,
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,
     seedCryptoInstrument,

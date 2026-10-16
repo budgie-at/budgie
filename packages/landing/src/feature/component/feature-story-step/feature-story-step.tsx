@@ -7,18 +7,17 @@ interface Props {
 }
 
 export const FeatureStoryStep = ({ index, title, children }: Props) => {
-    const rowPlacement = { gridRowStart: index + 2 };
+    const rowPlacement = { '--story-row': index + 1 };
 
     return (
-        <div className="story-step" data-index={index} data-story-step style={rowPlacement}>
-            <div className="story-step-inner">
-                <span aria-hidden="true" className="story-step-ordinal">
-                    <span className="story-step-rule" />
-                    {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3 className="story-step-title">{title}</h3>
-                <p className="story-step-body">{children}</p>
-            </div>
-        </div>
+        <li className="story-step" data-index={index} data-story-step>
+            <span aria-hidden="true" className="story-step-number" style={rowPlacement}>
+                {index + 1}
+            </span>
+            <h3 className="story-step-title" style={rowPlacement}>
+                {title}
+            </h3>
+            <p className="story-step-body">{children}</p>
+        </li>
     );
 };

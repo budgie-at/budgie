@@ -98,7 +98,6 @@ export class TestSeedService {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     bankSyncAccount(
         title: string,
         externalSource: ExternalSourceEnum | null,
@@ -569,7 +568,6 @@ export class TestSeedService {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     private insertTransaction(
         type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
         transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,

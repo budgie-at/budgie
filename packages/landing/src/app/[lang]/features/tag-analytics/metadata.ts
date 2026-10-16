@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'tag-analytics',
     tier: FeatureTierEnum.POWER,
-    title: msg`Tag-Based Spending Analytics`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Tag Analytics`,
     tagline: msg`A Tags tab in Analytics with income and spending totalled tag by tag, each with its share of the period, plus an Untagged row for every gap in your labeling.`,
     metaTitle: msg`Spending Analytics by Tag — Drillable Reports — Budgie`,
     metaDescription: msg`See income and spending per tag in a dedicated Analytics tab, each with its share of the period. The Untagged row finds every transaction missing a label.`,
@@ -30,7 +32,7 @@ export const FEATURE_METADATA = {
         'ai-tag-suggestions',
         'bulk-categorize-transactions'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'budgie-offline-financial-data'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-01-04',
     updatedAt: '2026-09-27',
     ogTags: ['tags', 'analytics', 'drill-down']

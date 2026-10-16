@@ -1,5 +1,5 @@
 #!/bin/bash
-# Self-test for the landing media capture config's scene and clip-flow conventions.
+# Self-test for the landing media capture config's scene and still-flow conventions.
 set -euo pipefail
 
 command -v jq >/dev/null 2>&1 || { echo 'skip  jq not on PATH'; exit 0; }
@@ -45,18 +45,10 @@ for flow_file in "$MEDIA_DIR"/*.flow.yaml; do
     base=$(basename "$flow_file")
     rel="flows/media/$base"
     shots=$(grep -n '^- takeScreenshot:' "$flow_file" || true)
-    starts=$(grep -n '^- startRecording:' "$flow_file" || true)
-    stops=$(grep -c '^- stopRecording$' "$flow_file" || true)
     shot_count=$(printf '%s\n' "$shots" | grep -c . || true)
-    start_count=$(printf '%s\n' "$starts" | grep -c . || true)
-    if [ "$shot_count" -ne 1 ] || [ "$start_count" -ne "$stops" ] || [ "$start_count" -gt 1 ]; then
-        fail "$base does not have exactly one takeScreenshot and at most one startRecording/stopRecording pair"
+    if [ "$shot_count" -ne 1 ] || grep -qE '^- (startRecording|stopRecording)' "$flow_file"; then
+        fail "$base does not have exactly one takeScreenshot and no recording"
         continue
-    fi
-    if [ "$start_count" -eq 1 ]; then
-        shot_line=$(printf '%s\n' "$shots" | cut -d: -f1)
-        start_line=$(printf '%s\n' "$starts" | cut -d: -f1)
-        [ "$shot_line" -lt "$start_line" ] && ok "$base takes its poster before it starts recording" || fail "$base's takeScreenshot is not before its startRecording"
     fi
 
     referencing=$(jq -r --arg f "$rel" '[."capture-scenes"[] | select(.flow == $f) | .name]' "$CONFIG")
@@ -66,13 +58,9 @@ for flow_file in "$MEDIA_DIR"/*.flow.yaml; do
         continue
     fi
     ref_name=$(printf '%s' "$referencing" | jq -r '.[0]')
-    if [ "$start_count" -eq 1 ]; then
-        printf '%s\n' "$ref_name" | grep -qE -- '-clip-[0-9]+$' && ok "$ref_name follows the *-clip-<n> naming convention" || fail "$ref_name does not match the *-clip-<n> naming convention"
-    else
-        printf '%s\n' "$ref_name" | grep -qE -- '-[0-9]+$' && ! printf '%s\n' "$ref_name" | grep -qE -- '-clip-[0-9]+$' &&
-            ok "$ref_name follows the still <slug>-<n> naming convention" ||
-            fail "$ref_name does not match the still <slug>-<n> naming convention"
-    fi
+    printf '%s\n' "$ref_name" | grep -qE -- '-[0-9]+$' && ! printf '%s\n' "$ref_name" | grep -qE -- '-clip-[0-9]+$' &&
+        ok "$ref_name follows the still <slug>-<n> naming convention" ||
+        fail "$ref_name does not match the still <slug>-<n> naming convention"
 done
 
 if [ "$FAILURES" -gt 0 ]; then

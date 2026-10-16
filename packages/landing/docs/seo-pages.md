@@ -14,7 +14,7 @@ These rules apply uniformly across blog articles, feature pages, pillar hubs, le
 
 Every SEO landing lives at its own `src/app/[lang]/<route>/page.tsx`. Do not collapse static SEO pages into a dynamic `[slug]/page.tsx`. Adding a page means adding a new route file; deleting a page means deleting the route file.
 
-Blog articles use explicit per-slug folders such as `src/app/[lang]/blog/budgie-offline-financial-data/page.tsx`. The codebase does not use `src/app/[lang]/blog/[slug]/page.tsx` for articles.
+Blog articles use explicit per-slug folders such as `src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx`. The codebase does not use `src/app/[lang]/blog/[slug]/page.tsx` for articles.
 
 Feature pages use explicit per-slug folders under `src/app/[lang]/features/<slug>/page.tsx`. Pillar hubs use explicit top-level locale folders such as `src/app/[lang]/privacy/page.tsx`.
 
@@ -154,13 +154,13 @@ App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`. Never
 
 A feature page carries at most one `FeatureStory`, with **2–5 steps** (steps variant) or **one shot plus 2–4 points** (basic variant). Step titles, value copy, and callout labels are inline `<Trans>` in the route page; `alt` uses `t(i18n)`. Passing steps as `steps={[…]}`, as a registry field, or as any array of copy is prohibited — it is the same violation as §2 and §6.
 
-Prefer staged stills over motion: build a step out of `FeatureStory.Shot` scenes the scroll swaps whenever the manifest carries stills for the scene, and reach for `FeatureStory.Clip` only when the interaction cannot be told in framed screenshots. Stills carry the device frame baked in by `compose-web-media.sh`; clip media is screen-only and the site draws the same frame around it at render time through `.device-frame`, so `compose-web-clips.sh` must never bake a frame into clip media — MP4 has no alpha channel to carry the frame's transparent surround.
+Build a step out of `FeatureStory.Shot` scenes the scroll swaps. Stills carry the device frame baked in by `compose-web-media.sh`. The site ships no video or looping clips.
 
 Scene ids, `slug`, `locale`, and callout coordinates are page-local literals. They never enter `metadata.ts` or the feature registry; the allowed registry field list is unchanged.
 
-A callout is a numbered dot on the screenshot plus a label rendered **outside** the frame — never a band or pill over app pixels. `y` is the dot's vertical centre as a fraction of the framed screenshot height; the optional `x` is the same fraction horizontally and defaults to the device's right edge, so the dot marks a row without covering content. Keep labels to six words: they sit beside the frame on desktop (alternating sides from 1280px, right-hand side below that, joined by a hairline leader drawn outside the device bounds) and in a numbered caption rail under the frame on mobile. Numbering is a CSS counter, so callout order in the page is the only source of truth. Never use pixel coordinates.
+A callout is a numbered dot on the screenshot plus a label rendered **outside** the frame — never a band or pill over app pixels. `y` is the dot's vertical centre as a fraction of the framed screenshot height; the optional `x` is the same fraction horizontally and defaults to the device's right edge, so the dot marks a row without covering content. Keep labels to six words: on desktop they sit to the right of the frame at the dot's height (nudged apart when two dots are close), joined to the dot by a hairline leader; on mobile they become a numbered list under or beside the phone whose numbers match the dots. Numbering is a CSS counter, so callout order in the page is the only source of truth. Never use pixel coordinates. Consecutive `Shot`s with the same `scene` render as one screenshot whose callouts appear step by step, so a story about one screen repeats the `Shot` per step instead of swapping identical images.
 
-The stage is pinned on every viewport: sticky and top-aligned under the header on mobile with the step copy scrolling in the band beneath it, sticky beside the copy column on desktop. Shots crossfade per active step, parallax and the progress rail run on `animation-timeline` where supported and on one passive scroll listener writing `--story-progress` where it is not, and `prefers-reduced-motion` keeps the crossfade only.
+The stage is one panel pinned under the header that always fits the viewport, and scroll advances the active step. Desktop shows the numbered step list (only the active step's copy is shown) beside a phone that is cropped and shifted towards its callouts so app text stays readable. Mobile shows a progress bar, the active step, the phone sized to the space left and the numbered callout list. Shots crossfade per active step, and `prefers-reduced-motion` shortens every transition to a 150ms fade with no transforms.
 
 The story renders a server compound root; only its inner observer island is `"use client"`, it renders `{children}`, and it holds no translatable text, so every step string stays server-rendered in the SSG'd HTML for all five locales. `FeaturePageMedia` is retained only for a supplementary single shot; a page with a story does not also open with a `FeaturePageMedia` hero shot, and it drops its "How it works" prose section.
 
@@ -514,7 +514,7 @@ When you add a new SEO page:
 4. Keep body copy in the route page.
 5. Run `pnpm i18n:sync` after changing visible or metadata strings.
 
-`SITEMAP_STATIC_LAST_MODIFIED` (`src/generic/constant/sitemap-last-modified.constant.ts`) must be updated manually when the corresponding static page is meaningfully changed.
+The static `lastModified` map in `src/app/sitemap.ts` must be updated manually when the corresponding static page is meaningfully changed.
 
 ---
 
@@ -561,7 +561,6 @@ Check this list before authoring a new SEO component.
 | Story heading + lede        | `FeatureStory.Intro heading` + children                                 |
 | Narration step              | `FeatureStory.Step index title` + children                              |
 | Sticky screenshot           | `FeatureStory.Shot index slug scene locale alt priority` + callouts     |
-| Sticky motion clip          | `FeatureStory.Clip index slug scene locale alt` + callouts              |
 | Screenshot highlight        | `FeatureStory.Callout y x index` + children                             |
 | Basic-variant bullet        | `FeatureStory.Point index` + children                                   |
 

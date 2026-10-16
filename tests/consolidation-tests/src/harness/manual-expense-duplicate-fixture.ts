@@ -13,7 +13,7 @@ export const MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS = 2 * 24 * 60 * 60;
 
 export const seedManualExpenseDuplicateAccounts = Effect.fnUntraced(function* (
     manualAccountType: AccountTypeEnum = AccountTypeEnum.BANK,
-    manualInstrumentId = 1
+    manualInstrumentId: number = 1
 ) {
     return {
         syncedAccount: yield* testSeedService.account({ title: 'Privat card', type: AccountTypeEnum.BANK_SYNC, externalId: 'privat-card' }),

@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'custom-categories',
     tier: FeatureTierEnum.CORE,
-    title: msg`Custom Spending Categories That Bend To You`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Custom Categories`,
     tagline: msg`Create, merge, reassign, and reorder until the tree matches how you actually think about money.`,
     metaTitle: msg`Custom Spending Categories — Budgie`,
     metaDescription: msg`Build, merge, and reassign your own spending categories with mass-migration. Popularity-sorted selectors and MCC pre-fill keep the right category one tap away.`,
@@ -28,7 +30,7 @@ export const FEATURE_METADATA = {
         'spending-analytics',
         'split-transactions'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-19',
     updatedAt: '2026-05-03',
     ogTags: ['categories', 'custom', 'organization']

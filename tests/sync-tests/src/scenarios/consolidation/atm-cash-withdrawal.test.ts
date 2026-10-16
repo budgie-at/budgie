@@ -143,7 +143,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
             const [canonicalCashEntry] = canonicalEntries.filter(
                 entry => entry.type === TransactionEntryTypeEnum.DEBIT && entry.originalTransactionId === null
             );
-            const [feeEntry] = canonicalEntries.filter(entry => String(entry.type) === 'FEE');
+            const [feeEntry] = canonicalEntries.filter(entry => entry.type === TransactionEntryTypeEnum.FEE);
 
             expect(canonicalBankEntry.amount).toBe(400 * PRECISION);
             expect(canonicalCashEntry.amount).toBe(400 * PRECISION);
@@ -323,7 +323,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
             yield* atmCashMoveService.moveToCash([expense.id]);
 
-            const canonical = (yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL))[0];
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
             expect(canonical).toBeDefined();
 
             yield* transactionService.unconsolidateById(canonical.id);

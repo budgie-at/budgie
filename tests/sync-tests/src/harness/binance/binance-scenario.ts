@@ -30,6 +30,11 @@ export const fetchBinanceTransactions = () =>
             .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE));
     });
 
+export const fetchSortedBinanceExternalIds = () =>
+    Effect.map(fetchBinanceTransactions(), transactions =>
+        transactions.map(transaction => transaction.externalId).sort((left, right) => (left ?? '').localeCompare(right ?? ''))
+    );
+
 export const fetchBinanceEntriesByExternalId = (externalId: string) =>
     Effect.gen(function* () {
         return yield* testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId));

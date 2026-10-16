@@ -12,7 +12,7 @@ export class FakeDatabaseConnectionService extends Context.Service<
         readonly db: DB;
         readonly close: Effect.Effect<void>;
     }
->()('@budgie/app/DatabaseConnectionService') {
+>()('@budgie/sync-tests/FakeDatabaseConnectionService') {
     static readonly closeMock = vi.fn((): Effect.Effect<void> => Effect.void);
 
     static readonly layer = Layer.effect(

@@ -47,8 +47,64 @@ cleanup() {
 
 trap cleanup EXIT
 
+FIAT_RATES_THROUGH_DATE=$(date -v+1d +%F 2>/dev/null || date -d tomorrow +%F)
+TODAY_DATE=$(date +%F)
+
 mkdir -p "$NORMALIZED_FIXTURES_DIR"
 node "$PREPARE_DYNAMIC_FIXTURES_SCRIPT" "$DYNAMIC_FIXTURES_DIR"
+
+extend_fiat_rates_through() {
+    DATABASE_PATH="$1"
+
+    sqlite3 -bail "$DATABASE_PATH" "
+WITH RECURSIVE latest AS (
+    SELECT rates.source_instrument_id, rates.target_instrument_id, MAX(rates.rate_date) AS rate_date
+    FROM historical_exchange_rates AS rates
+    JOIN instruments AS source ON source.id = rates.source_instrument_id AND source.type = 'FIAT'
+    JOIN instruments AS target ON target.id = rates.target_instrument_id AND target.type = 'FIAT'
+    WHERE rates.deleted_at IS NULL
+    GROUP BY rates.source_instrument_id, rates.target_instrument_id
+),
+days(source_instrument_id, target_instrument_id, rate_date, rate) AS (
+    SELECT latest.source_instrument_id, latest.target_instrument_id, date(latest.rate_date, '+1 day'), rates.rate
+    FROM latest
+    JOIN historical_exchange_rates AS rates
+        ON rates.source_instrument_id = latest.source_instrument_id
+        AND rates.target_instrument_id = latest.target_instrument_id
+        AND rates.rate_date = latest.rate_date
+        AND rates.deleted_at IS NULL
+    WHERE latest.rate_date < '$FIAT_RATES_THROUGH_DATE'
+    UNION ALL
+    SELECT source_instrument_id, target_instrument_id, date(rate_date, '+1 day'), rate FROM days WHERE rate_date < '$FIAT_RATES_THROUGH_DATE'
+)
+INSERT INTO historical_exchange_rates (source_instrument_id, target_instrument_id, rate_date, rate)
+SELECT source_instrument_id, target_instrument_id, rate_date, rate FROM days;
+"
+}
+
+mark_unsupported_fiat_instruments() {
+    DATABASE_PATH="$1"
+
+    sqlite3 -bail "$DATABASE_PATH" "
+INSERT OR IGNORE INTO instrument_market_data_jobs (created_at, updated_at, instrument_id, quote_instrument_id, from_date, to_date, status)
+SELECT unixepoch(), unixepoch(), held.id, euro.id, '$TODAY_DATE', '$TODAY_DATE', 'UNSUPPORTED'
+FROM instruments AS held
+JOIN instruments AS euro ON euro.code = 'EUR' AND euro.type = 'FIAT'
+WHERE held.type = 'FIAT'
+    AND held.id <> euro.id
+    AND held.id IN (
+        SELECT instrument_id FROM accounts WHERE deleted_at IS NULL
+        UNION
+        SELECT default_instrument_id FROM settings
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM historical_exchange_rates AS rates
+        WHERE rates.source_instrument_id = held.id
+            AND rates.target_instrument_id = euro.id
+            AND rates.deleted_at IS NULL
+    );
+"
+}
 
 install_database_fixture() {
     SOURCE_FIXTURE_PATH="$1"
@@ -61,6 +117,8 @@ install_database_fixture() {
 
     cp "$SOURCE_FIXTURE_PATH" "$NORMALIZED_FIXTURE_PATH"
     sqlite3 "$NORMALIZED_FIXTURE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
+    extend_fiat_rates_through "$NORMALIZED_FIXTURE_PATH"
+    mark_unsupported_fiat_instruments "$NORMALIZED_FIXTURE_PATH"
     install_fixture_file "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME"
 }
 

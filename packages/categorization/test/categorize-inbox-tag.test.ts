@@ -82,7 +82,9 @@ describe('categorization/inbox-tag', () => {
 
             const rows = yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER);
 
-            expect(rows.find(row => row.transactionId === expense.id)?.tagIds.toSorted()).toEqual([coffee.id, work.id].toSorted());
+            expect(rows.find(row => row.transactionId === expense.id)?.tagIds.toSorted((left, right) => left - right)).toEqual(
+                [coffee.id, work.id].toSorted((left, right) => left - right)
+            );
         }).pipe(Effect.provide(TestLayer))
     );
 

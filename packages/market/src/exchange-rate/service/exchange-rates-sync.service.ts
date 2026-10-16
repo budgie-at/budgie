@@ -1,4 +1,4 @@
-import { Db, InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
+import { CurrencyEnum, Db, InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
 import * as Arr from 'effect/Array';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
@@ -11,15 +11,21 @@ import * as Semaphore from 'effect/Semaphore';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { fetchJson } from '../../@generic/utils/fetch-json.util';
+import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { ExchangeRateRepository } from '../repository/exchange-rate.repository';
 
 import { ExchangeRatesService } from './exchange-rates.service';
 
-import type { ExchangeRateCreateEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import type {
+    ExchangeRateCreateEntityInterface,
+    HistoricalExchangeRateCreateEntityInterface,
+    InstrumentEntityInterface
+} from '@budgie/contracts';
 
 export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncService>()('@budgie/market/ExchangeRatesSyncService', {
     make: Effect.gen(function* () {
         const exchangeRateRepository = yield* ExchangeRateRepository;
+        const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
         const instrumentRepository = yield* InstrumentRepository;
         const exchangeRatesService = yield* ExchangeRatesService;
         const coingeckoSimplePriceApiUrl = 'https://api.coingecko.com/api/v3/simple/price';
@@ -46,17 +52,12 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
             { baseInstrumentId: quoteInstrumentId, quoteInstrumentId: baseInstrumentId, rate: 1 / rate, source }
         ];
 
-        const syncFiatRates = Effect.fn('ExchangeRatesSyncService.syncFiatRates')(function* (baseInstrument: InstrumentEntityInterface) {
-            const rates = yield* fetchJson(
-                `${exchangeRateApiUrl}/${baseInstrument.code}`,
-                exchangeRateApiResponseSchema,
-                fetchTimeoutMs
-            ).pipe(
-                Effect.map(apiData => apiData.rates),
-                Effect.orElseSucceed((): Record<string, number> => ({ USD: 1 }))
-            );
-            const instruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
-            const inputs = instruments.flatMap(instrument => {
+        const buildLatestFiatRateInputs = (
+            baseInstrument: InstrumentEntityInterface,
+            instruments: InstrumentEntityInterface[],
+            rates: Record<string, number>
+        ): ExchangeRateCreateEntityInterface[] =>
+            instruments.flatMap(instrument => {
                 const rate = rates[instrument.code];
 
                 return instrument.code === baseInstrument.code || !isPositiveNumber(rate)
@@ -64,7 +65,53 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                     : buildRatePairInputs(baseInstrument.id, instrument.id, rate, 'exchangerate-api.com');
             });
 
-            yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+        const buildHistoricalEuroRateInputs = (
+            euroInstrument: InstrumentEntityInterface | undefined,
+            instruments: InstrumentEntityInterface[],
+            rates: Record<string, number>,
+            rateDate: string
+        ): HistoricalExchangeRateCreateEntityInterface[] => {
+            const euroRate = rates[CurrencyEnum.EUR];
+
+            if (!isDefined(euroInstrument) || !isPositiveNumber(euroRate)) {
+                return [];
+            }
+
+            return instruments.flatMap(instrument => {
+                const rate = rates[instrument.code];
+
+                return instrument.id === euroInstrument.id || !isPositiveNumber(rate)
+                    ? []
+                    : [{ sourceInstrumentId: instrument.id, targetInstrumentId: euroInstrument.id, rateDate, rate: euroRate / rate }];
+            });
+        };
+
+        const syncFiatRates = Effect.fn('ExchangeRatesSyncService.syncFiatRates')(function* (baseInstrument: InstrumentEntityInterface) {
+            const instruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
+            const euroInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
+            const { latestInputs, historicalInputs } = yield* fetchJson(
+                `${exchangeRateApiUrl}/${baseInstrument.code}`,
+                exchangeRateApiResponseSchema,
+                fetchTimeoutMs
+            ).pipe(
+                Effect.map(apiData => ({
+                    latestInputs: buildLatestFiatRateInputs(baseInstrument, instruments, apiData.rates),
+                    historicalInputs: buildHistoricalEuroRateInputs(euroInstrument, instruments, apiData.rates, apiData.date)
+                })),
+                Effect.orElseSucceed(() => ({
+                    latestInputs: buildLatestFiatRateInputs(baseInstrument, instruments, { USD: 1 }),
+                    historicalInputs: []
+                }))
+            );
+
+            yield* Db.transaction(
+                Effect.all(
+                    [exchangeRateRepository.bulkUpsert(latestInputs), historicalExchangeRateRepository.bulkUpsert(historicalInputs)],
+                    {
+                        discard: true
+                    }
+                )
+            );
         });
 
         const syncCryptoRateBatch = Effect.fn('ExchangeRatesSyncService.syncCryptoRateBatch')(function* (
@@ -133,6 +180,11 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
     })
 }) {
     static readonly layer = Layer.effect(ExchangeRatesSyncService, ExchangeRatesSyncService.make).pipe(
-        Layer.provide([ExchangeRateRepository.layer, InstrumentRepository.layer, ExchangeRatesService.layer])
+        Layer.provide([
+            ExchangeRateRepository.layer,
+            HistoricalExchangeRateRepository.layer,
+            InstrumentRepository.layer,
+            ExchangeRatesService.layer
+        ])
     );
 }

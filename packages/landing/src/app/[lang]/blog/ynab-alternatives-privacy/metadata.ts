@@ -7,14 +7,15 @@ import type { ArticleRegistryEntryInterface } from '../../../../blog/interface/a
 export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'ynab-alternatives-privacy',
     date: '2025-02-03',
+    dateModified: '2026-10-14',
     author: 'Budgie Team',
     readingTimeMinutes: 17,
     title: msg`Best YNAB Alternatives for Privacy-Conscious Users`,
     description: msg`Comprehensive comparison of privacy-focused YNAB alternatives. Detailed reviews of Budgie, Actual Budget, Firefly III, and more with migration guide.`,
-    tags: ['ynab', 'alternatives', 'privacy', 'comparison', 'budgeting', 'offline-first', 'open-source'],
+    tags: ['ynab', 'alternatives', 'privacy', 'comparison', 'budgeting', 'offline-first', 'source-available'],
     seoKeywords: ['YNAB alternatives', 'privacy budget app', 'YNAB replacement'],
-    seoDescription: msg`Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide.`,
-    relatedArticleSlugs: ['mint-alternatives-developers', 'cloud-budgeting-privacy-risks'],
+    seoDescription: msg`Best YNAB alternatives for privacy-conscious users in 2026. Compare privacy-focused, offline-first budget apps, with a YNAB migration guide.`,
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     relatedFeatureSlugs: ['expense-tracking', 'custom-categories', 'transaction-tags', 'recurring-payments-calendar']
 };
 

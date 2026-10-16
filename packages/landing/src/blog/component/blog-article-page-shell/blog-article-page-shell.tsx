@@ -20,6 +20,7 @@ export const BlogArticlePageShell = ({ article, children, lang }: Props) => {
         <main className="flex-1">
             <BlogPostingJsonLd
                 date={article.date}
+                dateModified={article.dateModified}
                 description={i18n._(article.description)}
                 image={`/${lang}/blog/${article.slug}/opengraph-image`}
                 keywords={article.seoKeywords.join(', ')}

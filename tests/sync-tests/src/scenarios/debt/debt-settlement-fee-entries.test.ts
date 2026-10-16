@@ -198,18 +198,18 @@ describe('debt settlement fee entries', () => {
 
             const debtEvent = yield* fetchLiveDebtEvent(transaction.id);
 
-            expect(debtEvent?.transactionEntryId).toBe(creditEntry.id);
-            expect(debtEvent?.amount).toBe(PRIMARY_ENTRY_AMOUNT);
-            expect(debtEvent?.direction).toBe(DebtEventDirectionEnum.OPEN);
-            expect(debtEvent?.source).toBe(DebtEventSourceEnum.INCOME_ATTACHMENT);
+            expect(debtEvent.transactionEntryId).toBe(creditEntry.id);
+            expect(debtEvent.amount).toBe(PRIMARY_ENTRY_AMOUNT);
+            expect(debtEvent.direction).toBe(DebtEventDirectionEnum.OPEN);
+            expect(debtEvent.source).toBe(DebtEventSourceEnum.INCOME_ATTACHMENT);
 
             const updatedCreditEntry = yield* fetchEntryById(creditEntry.id);
             const updatedFeeEntry = yield* fetchEntryById(feeEntry.id);
 
-            expect(updatedCreditEntry?.categoryId).toBe(LENDING_CATEGORY_ID);
-            expect(updatedCreditEntry?.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
-            expect(updatedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
-            expect(updatedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
+            expect(updatedCreditEntry.categoryId).toBe(LENDING_CATEGORY_ID);
+            expect(updatedCreditEntry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
+            expect(updatedFeeEntry.categoryId).toBe(BANK_FEE_CATEGORY_ID);
+            expect(updatedFeeEntry.categorySource).toBe(CategorySourceEnum.FEE);
             expect(yield* fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 400 });
         }).pipe(Effect.provide(TestLayer))
     );
@@ -245,10 +245,10 @@ describe('debt settlement fee entries', () => {
             const revertedCreditEntry = yield* fetchEntryById(creditEntry.id);
             const untouchedFeeEntry = yield* fetchEntryById(feeEntry.id);
 
-            expect(revertedCreditEntry?.categoryId).toBeNull();
-            expect(revertedCreditEntry?.categorySource).toBe(CategorySourceEnum.USER);
-            expect(untouchedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
-            expect(untouchedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
+            expect(revertedCreditEntry.categoryId).toBeNull();
+            expect(revertedCreditEntry.categorySource).toBe(CategorySourceEnum.USER);
+            expect(untouchedFeeEntry.categoryId).toBe(BANK_FEE_CATEGORY_ID);
+            expect(untouchedFeeEntry.categorySource).toBe(CategorySourceEnum.FEE);
             expect(yield* fetchLiveDebtEvent(transaction.id)).toBeUndefined();
         }).pipe(Effect.provide(TestLayer))
     );
@@ -271,9 +271,9 @@ describe('debt settlement fee entries', () => {
             const debtEvent = yield* fetchLiveDebtEvent(transaction.id);
 
             expect(staleEntry).toBeUndefined();
-            expect(debtEvent?.transactionEntryId).toBe(newPrimaryEntry?.id);
-            expect(debtEvent?.amount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
-            expect(debtEvent?.baseAmount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
+            expect(debtEvent.transactionEntryId).toBe(newPrimaryEntry.id);
+            expect(debtEvent.amount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
+            expect(debtEvent.baseAmount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
             expect(yield* fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 300 + UPDATED_ENTRY_AMOUNT });
         }).pipe(Effect.provide(TestLayer))
     );

@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
@@ -28,8 +28,16 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
                     return false;
                 }
 
-                yield* historicalMarketDataService.fetchJobPrices(job).pipe(
-                    Effect.flatMap(prices => workload.run(historicalMarketDataService.storeJobPrices(job, prices))),
+                yield* historicalMarketDataService.fetchJobData(job).pipe(
+                    Effect.tap(result =>
+                        isNotEmptyArray(result.unsupportedInstruments)
+                            ? Effect.logWarning(
+                                  'Historical fiat rates unavailable',
+                                  result.unsupportedInstruments.map(instrument => instrument.code)
+                              )
+                            : Effect.void
+                    ),
+                    Effect.flatMap(result => workload.run(historicalMarketDataService.storeJobData(job, result))),
                     Effect.catchCause(cause => workload.run(historicalMarketDataService.failJob(job, cause)))
                 );
 
@@ -48,12 +56,8 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
                 );
             });
 
-            const enqueueAccounts = Effect.fn('HistoricalMarketDataDrainerService.enqueueAccounts')(function* (
-                accounts: AccountEntityInterface[]
-            ) {
-                yield* historicalMarketDataService.enqueueAccounts(accounts);
-                yield* scheduleDrain();
-            });
+            const enqueueAccounts = (accounts: AccountEntityInterface[]) =>
+                historicalMarketDataService.enqueueAccounts(accounts).pipe(Effect.ensuring(scheduleDrain()));
 
             return {
                 enqueueAccounts,

@@ -82,7 +82,7 @@ layer(TestLayer)('consolidation/bridge-claim-repair', it => {
             expect(yield* testQueryService.findTransactionById(fixture.canonicalId)).toBeUndefined();
             const canonicals = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
             expect(canonicals).toHaveLength(1);
-            const rebuilt = canonicals[0];
+            const [rebuilt] = canonicals;
             yield* expectFxPairCanonicalChildren(rebuilt.id, {
                 fxExpenseId: fixture.fxExpenseId,
                 fxBridgeIncomeId: fixture.fxBridgeIncomeId,
@@ -127,7 +127,7 @@ layer(TestLayer)('consolidation/bridge-claim-repair', it => {
 
             expect(repairedCount).toBe(0);
             expect(yield* testQueryService.findTransactionById(canonicalId)).toBeDefined();
-            expect((yield* testQueryService.findTransactionById(fixture.fxBridgeIncome.id))?.consolidationParentTransactionId).toBe(
+            expect((yield* testQueryService.findTransactionById(fixture.fxBridgeIncome.id)).consolidationParentTransactionId).toBe(
                 canonicalId
             );
         })

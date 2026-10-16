@@ -171,7 +171,7 @@ describe('erste/file-import-idempotency', () => {
                     )
                 );
 
-            yield* expectFileImportConsolidationEnqueued(transaction?.id);
+            yield* expectFileImportConsolidationEnqueued(transaction.id);
         }).pipe(Effect.provide(TestLayer))
     );
 

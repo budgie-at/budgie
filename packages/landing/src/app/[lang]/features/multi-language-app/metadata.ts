@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'multi-language-app',
     tier: FeatureTierEnum.NICHE,
-    title: msg`Budgie in Five Languages`,
-    tagline: msg`English, Ukrainian, French, German, Spanish — full UI, locale-aware formatting.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Five Languages`,
+    tagline: msg`English, Ukrainian, French, German, Spanish. Full UI, locale-aware formatting.`,
     metaTitle: msg`Multi-Language App — Budgie`,
     metaDescription: msg`Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app — no reinstall, no relaunch.`,
     primaryKeyword: 'multilingual budget app',
@@ -20,8 +22,8 @@ export const FEATURE_METADATA = {
         'i18n budget app',
         'language switcher expense app'
     ],
-    relatedFeatureSlugs: ['ai-category-translation', 'dark-mode'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedFeatureSlugs: ['ai-category-translation', 'dark-mode', 'voice-transaction-entry', 'custom-categories'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-05-03',
     ogTags: ['i18n', 'languages', 'multilingual']

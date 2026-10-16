@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'binance-sync',
     tier: FeatureTierEnum.POWER,
-    title: msg`Binance Sync — Read-Only Keys, Real Balances`,
+    pillar: PillarEnum.BANK,
+    name: msg`Binance Sync`,
     tagline: msg`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — using a read-only API key.`,
     metaTitle: msg`Binance Account Sync — Budgie`,
     metaDescription: msg`Connect Binance with a read-only API key. Balances, P2P orders, trades, and Earn rewards sync to your device; P2P buys merge with the bank payment.`,
@@ -28,7 +30,7 @@ export const FEATURE_METADATA = {
         'transfer-pair-detection',
         'multi-currency'
     ],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'cloud-budgeting-privacy-risks'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-09-02',
     updatedAt: '2026-10-14',
     ogTags: ['binance', 'crypto', 'sync']

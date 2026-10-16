@@ -27,7 +27,11 @@ const rateLimitDurationsMs = new Set([MONOBANK_RATE_LIMIT_MS, BINANCE_RATE_LIMIT
 const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
     let virtualOffsetMs = 0;
 
-    return Object.assign(Object.create(clock), {
+    return {
+        currentTimeNanos: clock.currentTimeNanos,
+        currentTimeNanosUnsafe: () => clock.currentTimeNanosUnsafe(),
+        monotonicTimeNanos: clock.monotonicTimeNanos,
+        monotonicTimeNanosUnsafe: () => clock.monotonicTimeNanosUnsafe(),
         currentTimeMillis: Effect.sync(() => Date.now() + virtualOffsetMs),
         currentTimeMillisUnsafe: () => Date.now() + virtualOffsetMs,
         sleep: (duration: Parameters<Clock.Clock['sleep']>[0]) => {
@@ -42,7 +46,7 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
 
             return clock.sleep(duration);
         }
-    });
+    };
 };
 
 const platformLayer = makeTestPlatformLayer(testDb);
