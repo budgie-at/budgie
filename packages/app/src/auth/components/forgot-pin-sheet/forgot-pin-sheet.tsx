@@ -54,7 +54,11 @@ export const ForgotPinSheet = () => {
     const isBusy = isRestoring || isErasing;
 
     return (
-        <View testID={ForgotPinSheetSelector.Root} className="bg-primary-reverse px-5xl pt-7xl pb-safe-or-[16px] gap-y-3xl">
+        <View
+            testID={ForgotPinSheetSelector.Root}
+            collapsable={false}
+            className="flex-1 bg-primary-reverse px-5xl pt-7xl pb-safe-or-[16px] gap-y-3xl"
+        >
             <OnboardingStepIntro
                 icon={UserIconNameEnum.KeyRound}
                 iconVariant="destructive"
