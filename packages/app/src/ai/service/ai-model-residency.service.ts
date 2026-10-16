@@ -16,6 +16,7 @@ import { ChatService } from './chat.service';
 import { LocalEmbeddingService } from './embedding.service';
 import { SttService } from './stt.service';
 
+import type { NativeCallError } from '../../@generic/error/native-call.error';
 import type * as Fiber from 'effect/Fiber';
 
 export class AiModelResidencyService extends Context.Service<AiModelResidencyService>()('@budgie/app/AiModelResidencyService', {
@@ -30,7 +31,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             [AiSubsystemNameEnum.STT]: sttService
         };
         const leases = new Map<AiSubsystemNameEnum, number>();
-        const idleTimers = new Map<AiSubsystemNameEnum, Fiber.Fiber<void>>();
+        const idleTimers = new Map<AiSubsystemNameEnum, Fiber.Fiber<void, NativeCallError>>();
         const lock = yield* Semaphore.make(1);
         let isSuspended = false;
         let enabledSubsystems: ReadonlySet<AiSubsystemNameEnum> = new Set();
@@ -111,14 +112,12 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
             resume: Effect.fn('AiModelResidencyService.resume')(function* (subsystemsToEnable: ReadonlySet<AiSubsystemNameEnum>) {
                 isSuspended = false;
                 enabledSubsystems = subsystemsToEnable;
-                yield* Effect.forkIn(
+                yield* lock.withPermit(
                     Effect.forEach(
                         Object.values(AiSubsystemNameEnum),
-                        subsystem =>
-                            lock.withPermit(enabledSubsystems.has(subsystem) ? loadWhileLeased(subsystem) : subsystems[subsystem].stop()),
+                        subsystem => (enabledSubsystems.has(subsystem) ? loadWhileLeased(subsystem) : subsystems[subsystem].stop()),
                         { discard: true }
-                    ),
-                    layerScope
+                    )
                 );
             })
         };

@@ -856,6 +856,10 @@ msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen 
 msgid "Burning"
 msgstr "Cash-Burn"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "bytes"
+msgstr "Bytes"
+
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Kann bei alten Konten Stunden dauern und ist deutlich langsamer, wenn die App geschlossen ist."
@@ -1298,6 +1302,10 @@ msgstr "Konten konnten nicht geladen werden"
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Could not load accounts from the bank"
 msgstr "Konten von der Bank konnten nicht geladen werden"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load AI downloads"
+msgstr "KI-Downloads konnten nicht geladen werden"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -2508,6 +2516,10 @@ msgstr "Limit"
 msgid "Listening..."
 msgstr "Zuhören..."
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Loading AI downloads…"
+msgstr "KI-Downloads werden geladen…"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "KI-Modell wird geladen..."
@@ -3517,6 +3529,10 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Restore from Backup"
 msgstr "Aus Sicherung wiederherstellen"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Retry"
+msgstr "Erneut versuchen"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"

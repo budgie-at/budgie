@@ -856,6 +856,10 @@ msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions ma
 msgid "Burning"
 msgstr "En baisse"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "bytes"
+msgstr "octets"
+
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Peut prendre des heures sur d'anciens comptes, et bien plus lentement lorsque l'app est fermée."
@@ -1298,6 +1302,10 @@ msgstr "Impossible de charger les comptes"
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Could not load accounts from the bank"
 msgstr "Impossible de charger les comptes depuis la banque"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load AI downloads"
+msgstr "Impossible de charger les téléchargements IA"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -2508,6 +2516,10 @@ msgstr "Limite"
 msgid "Listening..."
 msgstr "Écoute..."
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Loading AI downloads…"
+msgstr "Chargement des téléchargements IA…"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Chargement du modèle d'IA..."
@@ -3517,6 +3529,10 @@ msgstr "Restaurer à partir d'un fichier de sauvegarde"
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Restore from Backup"
 msgstr "Restaurer depuis une sauvegarde"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Retry"
+msgstr "Réessayer"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"

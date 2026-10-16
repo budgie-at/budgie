@@ -856,6 +856,10 @@ msgstr "Budgie позначить як видалені такі записи: {
 msgid "Burning"
 msgstr "Спадає"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "bytes"
+msgstr "байт"
+
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Може тривати годинами для старих рахунків і значно повільніше, коли застосунок закрито."
@@ -1298,6 +1302,10 @@ msgstr "Не вдалося завантажити рахунки"
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Could not load accounts from the bank"
 msgstr "Не вдалося завантажити рахунки з банку"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load AI downloads"
+msgstr "Не вдалося завантажити дані ШІ"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -2508,6 +2516,10 @@ msgstr "Ліміт"
 msgid "Listening..."
 msgstr "Слухаю..."
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Loading AI downloads…"
+msgstr "Завантаження даних ШІ…"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
@@ -3517,6 +3529,10 @@ msgstr "Відновити з файлу резервної копії"
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Restore from Backup"
 msgstr "Відновити з резервної копії"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Retry"
+msgstr "Повторити"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"

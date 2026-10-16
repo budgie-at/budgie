@@ -9,7 +9,7 @@ import { AiFeaturesPageSelector } from '../../../app/(tabs)/settings/ai-features
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
+import { updateAiFeatureMutation } from '../../../settings/mutation/update-settings.mutation';
 
 import type { AiFeatureSettingsInterface } from '../../interface/ai-feature-settings.interface';
 import type { UserIconNameEnum } from '@budgie/contracts';
@@ -26,15 +26,8 @@ export const AiFeatureToggle = ({ settingKey, title, description, icon }: Props)
     const { settings } = useSettingsContext();
 
     const handleValueChange = (next: boolean) => {
-        const features = {
-            isAiVoiceInputEnabled: settings.isAiVoiceInputEnabled,
-            isAiSuggestionsEnabled: settings.isAiSuggestionsEnabled,
-            isAiTranslationsEnabled: settings.isAiTranslationsEnabled,
-            [settingKey]: next
-        };
-
         appRuntime.runFork(
-            updateSettingsMutation({ ...features, isAiEnabled: Object.values(features).some(Boolean) }).pipe(
+            updateAiFeatureMutation(settingKey, next).pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not update AI feature`, getErrorMessage(error))))
             )

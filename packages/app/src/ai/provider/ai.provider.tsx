@@ -16,14 +16,19 @@ export const AiProvider = ({ children }: Props) => {
     const isAiTranslationsEnabled = useSetting('isAiTranslationsEnabled');
 
     useEffect(() => {
-        if (isAiEnabled) {
-            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.start()));
-        }
-
-        return () => {
-            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.stop()));
-        };
+        appRuntime.runFork(
+            Effect.flatMap(AiCoordinatorService, coordinator => coordinator.restart()).pipe(Effect.tapCause(Effect.logError))
+        );
     }, [isAiEnabled, isAiVoiceInputEnabled, isAiSuggestionsEnabled, isAiTranslationsEnabled]);
+
+    useEffect(
+        () => () => {
+            appRuntime.runFork(
+                Effect.flatMap(AiCoordinatorService, coordinator => coordinator.stop()).pipe(Effect.tapCause(Effect.logError))
+            );
+        },
+        []
+    );
 
     return children;
 };

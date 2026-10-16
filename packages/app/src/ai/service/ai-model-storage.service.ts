@@ -1,5 +1,5 @@
 import { EMBEDDING_MODEL_FILENAME } from '@budgie/categorization';
-import { SettingsRepository } from '@budgie/contracts';
+import { Db, SettingsRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -9,6 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { NativeCallError } from '../../@generic/error/native-call.error';
+import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_FILENAME, WHISPER_MODEL_TEMP_FILENAME } from '../constant/whisper-model.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
@@ -34,51 +35,64 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
             { path: ['qwen2.5-1.5b-instruct-q8_0.gguf'], subsystem: null }
         ];
 
-        const isBusy = (subsystem: AiSubsystemNameEnum): boolean => {
+        const isUnused = (subsystem: AiSubsystemNameEnum | null, enabled: ReadonlySet<AiSubsystemNameEnum>): boolean => {
+            if (!isDefined(subsystem)) {
+                return true;
+            }
             const { status } = appAtomRegistry.get(subsystemSnapshots[subsystem]);
 
-            return status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING;
+            return (
+                !enabled.has(subsystem) &&
+                (status === AiSubsystemStatusEnum.IDLE ||
+                    status === AiSubsystemStatusEnum.SUSPENDED ||
+                    status === AiSubsystemStatusEnum.DISABLED)
+            );
         };
 
-        const sumBytes = (files: readonly File[]): number => files.reduce((total, file) => total + file.size, 0);
+        const readFiles = () =>
+            modelFiles
+                .map(({ path, subsystem }) => ({ file: new File(Paths.document, ...path), subsystem }))
+                .filter(({ file }) => file.exists);
 
-        const readFiles = Effect.fnUntraced(function* () {
-            const enabledSubsystems = getEnabledAiSubsystems(yield* settingsRepository.getSettings());
+        const enabledSubsystems = Effect.fnUntraced(function* () {
+            const settings = yield* settingsRepository.getSettings();
 
-            return yield* Effect.try({
-                try: () => {
-                    const existing = modelFiles
-                        .map(({ path, subsystem }) => ({ file: new File(Paths.document, ...path), subsystem }))
-                        .filter(({ file }) => file.exists);
-
-                    return {
-                        all: existing.map(({ file }) => file),
-                        unused: existing
-                            .filter(({ subsystem }) => !isDefined(subsystem) || (!enabledSubsystems.has(subsystem) && !isBusy(subsystem)))
-                            .map(({ file }) => file)
-                    };
-                },
-                catch: cause => new NativeCallError({ cause })
-            });
+            return isAiEnabled() ? getEnabledAiSubsystems(settings) : new Set<AiSubsystemNameEnum>();
         });
 
         return {
             getUsage: Effect.fn('AiModelStorageService.getUsage')(function* () {
-                const files = yield* readFiles();
+                const enabled = yield* enabledSubsystems();
 
-                return { totalBytes: sumBytes(files.all), unusedBytes: sumBytes(files.unused) };
-            }),
-            deleteUnused: Effect.fn('AiModelStorageService.deleteUnused')(function* () {
-                const files = yield* readFiles();
-
-                yield* Effect.try({
-                    try: () => {
-                        files.unused.forEach(file => {
-                            file.delete();
-                        });
-                    },
+                return yield* Effect.try({
+                    try: () =>
+                        readFiles().reduce(
+                            (usage, { file, subsystem }) => ({
+                                totalBytes: usage.totalBytes + file.size,
+                                unusedBytes: usage.unusedBytes + (isUnused(subsystem, enabled) ? file.size : 0)
+                            }),
+                            { totalBytes: 0, unusedBytes: 0 }
+                        ),
                     catch: cause => new NativeCallError({ cause })
                 });
+            }),
+            deleteUnused: Effect.fn('AiModelStorageService.deleteUnused')(function* () {
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        const enabled = yield* enabledSubsystems();
+
+                        yield* Effect.try({
+                            try: () => {
+                                for (const { file, subsystem } of readFiles()) {
+                                    if (isUnused(subsystem, enabled)) {
+                                        file.delete();
+                                    }
+                                }
+                            },
+                            catch: cause => new NativeCallError({ cause })
+                        });
+                    })
+                );
             })
         };
     })

@@ -6,6 +6,7 @@ import * as FiberHandle from 'effect/FiberHandle';
 import * as FiberSet from 'effect/FiberSet';
 import * as Layer from 'effect/Layer';
 import * as Scope from 'effect/Scope';
+import * as Semaphore from 'effect/Semaphore';
 import * as Stream from 'effect/Stream';
 import * as SubscriptionRef from 'effect/SubscriptionRef';
 import { AppState } from 'react-native';
@@ -44,113 +45,149 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const settingsRepository = yield* SettingsRepository;
         const settleGraceMs = 5_000;
         const drainers = [translationDrainerService, ...embeddingDrainerService.drainers];
+        const lifecycle = yield* Semaphore.make(1);
         let activeScope: Scope.Closeable | null = null;
 
         const isActive = (): boolean => isDefined(activeScope) && !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended;
 
         const startSubsystemsWhenIdle = Effect.fn('AiCoordinatorService.startSubsystemsWhenIdle')(function* () {
             yield* waitForIdle;
-            if (!isActive()) {
-                return;
-            }
-            const settings = yield* settingsRepository.getSettings();
-            yield* aiModelResidencyService.resume(getEnabledAiSubsystems(settings));
-            if (settings.isAiTranslationsEnabled) {
-                yield* translationDrainerService.start();
-            }
-            if (settings.isAiSuggestionsEnabled) {
-                yield* aiEmbeddingStatusService.migrateModel();
-                yield* embeddingDrainerService.start();
-            }
-            yield* translationProgressStore.refresh();
-            yield* embeddingProgressStore.refresh();
+            yield* lifecycle.withPermit(
+                Effect.uninterruptible(
+                    Effect.gen(function* () {
+                        if (!isActive()) {
+                            return;
+                        }
+                        const settings = yield* settingsRepository.getSettings();
+                        yield* aiModelResidencyService.resume(getEnabledAiSubsystems(settings));
+                        if (settings.isAiTranslationsEnabled) {
+                            yield* translationDrainerService.start();
+                        }
+                        if (settings.isAiSuggestionsEnabled) {
+                            yield* aiEmbeddingStatusService.migrateModel();
+                            yield* embeddingDrainerService.start();
+                        }
+                        yield* translationProgressStore.refresh();
+                        yield* embeddingProgressStore.refresh();
+                    })
+                )
+            );
         });
 
         const stopSubsystems = Effect.fn('AiCoordinatorService.stopSubsystems')(function* () {
-            yield* Effect.forEach(drainers, drainer => drainer.stop(), { discard: true });
-            yield* chatService.interrupt.pipe(
+            yield* Effect.all([Effect.forEach(drainers, drainer => drainer.stop(), { discard: true }), chatService.interrupt], {
+                concurrency: 'unbounded',
+                discard: true
+            }).pipe(
                 Effect.andThen(Effect.forEach(drainers, drainer => drainer.whenIdle(), { concurrency: 'unbounded', discard: true })),
-                Effect.timeout(settleGraceMs),
-                Effect.ignore
+                Effect.timeout(settleGraceMs)
             );
-            if (isActive()) {
-                return;
-            }
             yield* aiModelResidencyService.suspend();
         });
 
         const releaseAfterDelay = Effect.fn('AiCoordinatorService.releaseAfterDelay')(function* () {
             yield* Effect.sleep(BACKGROUND_RELEASE_DELAY_MS);
-            patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
-            yield* Effect.forkDetach(stopSubsystems());
+            yield* lifecycle.withPermit(
+                Effect.uninterruptible(
+                    Effect.gen(function* () {
+                        patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
+                        yield* stopSubsystems();
+                    })
+                )
+            );
         });
 
         const handleAppStateChange = Effect.fn('AiCoordinatorService.handleAppStateChange')(function* (
             state: AppStateStatus,
             releaseTimer: FiberHandle.FiberHandle
         ) {
-            if (state !== 'active') {
-                yield* Effect.forEach(drainers, drainer => drainer.halt(), { discard: true });
-                drainers.forEach(drainer => {
-                    drainer.cancelBoost();
-                });
-                yield* FiberHandle.run(releaseTimer, releaseAfterDelay(), { onlyIfMissing: true });
+            const shouldResume = yield* lifecycle.withPermit(
+                Effect.uninterruptible(
+                    Effect.gen(function* () {
+                        if (state !== 'active') {
+                            yield* Effect.forEach(drainers, drainer => drainer.halt(), { discard: true });
+                            drainers.forEach(drainer => {
+                                drainer.cancelBoost();
+                            });
+                            yield* FiberHandle.run(releaseTimer, releaseAfterDelay().pipe(Effect.tapCause(Effect.logError)), {
+                                onlyIfMissing: true
+                            });
 
-                return;
-            }
-            yield* FiberHandle.clear(releaseTimer);
-            yield* Effect.forEach(drainers, drainer => drainer.schedule(), { discard: true });
-            if (appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended) {
-                patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: false });
+                            return false;
+                        }
+                        yield* FiberHandle.clear(releaseTimer);
+                        const { isSuspended } = appAtomRegistry.get(aiCoordinatorSnapshotAtom);
+                        if (isSuspended) {
+                            yield* stopSubsystems();
+                            patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: false });
+                        }
+                        yield* Effect.forEach(drainers, drainer => drainer.schedule(), { discard: true });
+
+                        return isSuspended;
+                    })
+                )
+            );
+            if (shouldResume) {
                 yield* startSubsystemsWhenIdle();
             }
         });
 
-        return {
-            start: Effect.fn('AiCoordinatorService.start')(function* () {
-                if (isDefined(activeScope) || !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isAvailable) {
-                    return;
-                }
-                const scope = Scope.makeUnsafe();
-                activeScope = scope;
-                const run = yield* Scope.provide(FiberSet.makeRuntime<Db>(), scope);
-                const releaseTimer = yield* Scope.provide(FiberHandle.make(), scope);
-                yield* Scope.provide(
-                    Effect.acquireRelease(
-                        Effect.sync(() =>
-                            AppState.addEventListener('change', state => {
-                                run(handleAppStateChange(state, releaseTimer));
-                            })
-                        ),
-                        subscription =>
-                            Effect.sync(() => {
-                                subscription.remove();
-                            })
+        const start = Effect.fnUntraced(function* () {
+            if (isDefined(activeScope) || !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isAvailable) {
+                return;
+            }
+            const settings = yield* settingsRepository.getSettings();
+            if (!settings.isAiEnabled) {
+                return;
+            }
+            const scope = Scope.makeUnsafe();
+            activeScope = scope;
+            const run = yield* Scope.provide(FiberSet.makeRuntime<Db>(), scope);
+            const releaseTimer = yield* Scope.provide(FiberHandle.make(), scope);
+            yield* Scope.provide(
+                Effect.acquireRelease(
+                    Effect.sync(() =>
+                        AppState.addEventListener('change', state => {
+                            run(handleAppStateChange(state, releaseTimer).pipe(Effect.tapCause(Effect.logError)));
+                        })
                     ),
-                    scope
-                );
-                yield* Effect.forkIn(
-                    Stream.runForEach(SubscriptionRef.changes(workload.foregroundCount), count =>
-                        Effect.forEach(drainers, drainer => drainer.setForegroundBusy(count > 0), { discard: true })
-                    ),
-                    scope
-                );
+                    subscription =>
+                        Effect.sync(() => {
+                            subscription.remove();
+                        })
+                ),
+                scope
+            );
+            yield* Effect.forkIn(
+                Stream.runForEach(SubscriptionRef.changes(workload.foregroundCount), count =>
+                    Effect.forEach(drainers, drainer => drainer.setForegroundBusy(count > 0), { discard: true })
+                ),
+                scope
+            );
+            const isSuspended = AppState.currentState !== 'active' && AppState.currentState !== 'unknown';
+            patchAtom(aiCoordinatorSnapshotAtom, { isSuspended });
+            if (!isSuspended) {
+                run(startSubsystemsWhenIdle().pipe(Effect.tapCause(Effect.logError)));
+            }
+        });
 
-                const isSuspended = AppState.currentState !== 'active' && AppState.currentState !== 'unknown';
-                patchAtom(aiCoordinatorSnapshotAtom, { isSuspended });
-                if (!isSuspended) {
-                    run(startSubsystemsWhenIdle());
-                }
-            }),
-            stop: Effect.fn('AiCoordinatorService.stop')(function* () {
-                const scope = activeScope;
-                if (!isDefined(scope)) {
-                    return;
-                }
-                activeScope = null;
-                yield* Scope.close(scope, Exit.void);
-                yield* Effect.forkDetach(stopSubsystems());
-            })
+        const stop = Effect.fnUntraced(function* () {
+            const scope = activeScope;
+            if (!isDefined(scope)) {
+                return;
+            }
+            patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
+            yield* Scope.close(scope, Exit.void);
+            yield* stopSubsystems();
+            activeScope = null;
+        });
+
+        return {
+            start: Effect.fn('AiCoordinatorService.start')(() => lifecycle.withPermit(Effect.uninterruptible(start()))),
+            restart: Effect.fn('AiCoordinatorService.restart')(() =>
+                lifecycle.withPermit(Effect.uninterruptible(Effect.andThen(stop(), start())))
+            ),
+            stop: Effect.fn('AiCoordinatorService.stop')(() => lifecycle.withPermit(Effect.uninterruptible(stop())))
         };
     })
 }) {

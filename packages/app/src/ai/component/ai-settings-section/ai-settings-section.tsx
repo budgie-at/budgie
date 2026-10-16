@@ -4,7 +4,6 @@ import { useLingui } from '@lingui/react/macro';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { AiEmbeddingStatusCard } from '../ai-embedding-status-card/ai-embedding-status-card';
 import { AiFeatureToggle } from '../ai-feature-toggle/ai-feature-toggle';
-import { AiModelStorage } from '../ai-model-storage/ai-model-storage';
 import { AiSystemStatusBanner } from '../ai-system-status-banner/ai-system-status-banner';
 import { AiTranslationStatusCard } from '../ai-translation-status-card/ai-translation-status-card';
 
@@ -37,7 +36,6 @@ export const AiSettingsSection = () => {
             {isAiEnabled ? <AiSystemStatusBanner /> : null}
             {isAiTranslationsEnabled ? <AiTranslationStatusCard /> : null}
             {isAiSuggestionsEnabled ? <AiEmbeddingStatusCard /> : null}
-            <AiModelStorage />
         </>
     );
 };
