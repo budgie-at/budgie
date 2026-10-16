@@ -26,7 +26,7 @@ jobs:
         steps:
             - name: Compute mobile-impact gate
               id: gate
-              uses: actions/github-script@v9
+              uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
               with:
                   script: |
                       let mobile = true;
@@ -78,15 +78,15 @@ jobs:
             pull-requests: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
             - name: Setup Node
-              uses: actions/setup-node@v7
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.1
                   cache: pnpm
@@ -99,7 +99,7 @@ jobs:
 
             - name: Read current PR title
               id: current-pr
-              uses: actions/github-script@v9
+              uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
               with:
                   script: |
                       const { data } = await github.rest.pulls.get({
@@ -152,12 +152,12 @@ jobs:
             contents: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
 
             - name: Setup Node
-              uses: actions/setup-node@v7
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.1
 
@@ -194,15 +194,15 @@ jobs:
             contents: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
             - name: Setup Node
-              uses: actions/setup-node@v7
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.1
                   cache: pnpm
@@ -324,7 +324,7 @@ jobs:
             pull-requests: write
         steps:
             - name: Post or update the screenshot gallery comment
-              uses: actions/github-script@v9
+              uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
               with:
                   script: |
                       const marker = '<!-- budgie-store-screenshots-gallery -->';
