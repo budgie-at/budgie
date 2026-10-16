@@ -5,7 +5,7 @@ on:
         types: [closed]
 
 permissions:
-    actions: write
+    contents: read
 
 jobs:
     cleanup:
@@ -18,7 +18,12 @@ jobs:
         name: Delete OTA preview releases for the closed PR
         needs: cleanup
         if: always()
-        runs-on: [self-hosted, linux-portable-2x4]
+        # GitHub-hosted: the steps need the gh CLI, which a linux-portable guest
+        # does not always have (run 38686906359). Drop this job once
+        # rnw-community/mobile-ci's pr-closed-cleanup-reusable.yml offers the
+        # OTA preview release cleanup itself.
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
         permissions:
             contents: write
             actions: read
