@@ -15,14 +15,14 @@ describe('monobank/unchanged-data-noop', () => {
             monobankStub.statement([txPayload]);
             yield* monobankSyncService.sync();
 
-            const txAfterFirst = (yield* testDb
+            const [txAfterFirst] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, 'tx-stable')))[0];
-            const entryAfterFirst = (yield* testDb
+                .where(eq(TransactionEntityTable.externalId, 'tx-stable'));
+            const [entryAfterFirst] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable')))[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable'));
 
             yield* testDb
                 .update(SyncEntityTable)
@@ -32,17 +32,17 @@ describe('monobank/unchanged-data-noop', () => {
             monobankStub.statement([txPayload]);
             yield* monobankSyncService.sync();
 
-            const txAfterSecond = (yield* testDb
+            const [txAfterSecond] = yield* testDb
                 .select()
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, 'tx-stable')))[0];
-            const entryAfterSecond = (yield* testDb
+                .where(eq(TransactionEntityTable.externalId, 'tx-stable'));
+            const [entryAfterSecond] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable')))[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable'));
 
-            expect(txAfterSecond.updatedAt?.getTime()).toBe(txAfterFirst.updatedAt?.getTime());
-            expect(entryAfterSecond.updatedAt?.getTime()).toBe(entryAfterFirst.updatedAt?.getTime());
+            expect(txAfterSecond.updatedAt.getTime()).toBe(txAfterFirst.updatedAt.getTime());
+            expect(entryAfterSecond.updatedAt.getTime()).toBe(entryAfterFirst.updatedAt.getTime());
 
             const allRows = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-stable'));
             expect(allRows).toHaveLength(1);

@@ -52,8 +52,6 @@ jobs:
                 .github/workflows/media-smoke.yml
                 .github/landing-media.config.json
             flows-dir: tests/app-tests/flows/media
-            # PIN rekey quits the app on a seeded DB, and AI is disabled in the e2e build.
-            flows-exclude-pattern: pin-app-lock-clip-1.flow.yaml, ai-auto-categorization-clip-1.flow.yaml
             shard-count: 1
             maestro-config: tests/app-tests/config.yaml
             pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml

@@ -25,7 +25,14 @@ export const OnboardingAi = () => {
     const handlePrimary = () => void goToNextStep(OnboardingStepEnum.AI);
     const handleEnablePress = () => {
         appRuntime.runFork(
-            logAndContinue(updateSettingsMutation({ isAiEnabled: true }).pipe(Effect.map(() => void goToNextStep(OnboardingStepEnum.AI))))
+            logAndContinue(
+                updateSettingsMutation({
+                    isAiEnabled: true,
+                    isAiVoiceInputEnabled: true,
+                    isAiSuggestionsEnabled: true,
+                    isAiTranslationsEnabled: true
+                }).pipe(Effect.map(() => void goToNextStep(OnboardingStepEnum.AI)))
+            )
         );
     };
 

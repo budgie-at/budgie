@@ -84,7 +84,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
                 .from(TransactionEntityTable)
                 .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK));
 
-            yield* expectFileImportConsolidationEnqueued(transaction?.id);
+            yield* expectFileImportConsolidationEnqueued(transaction.id);
         }).pipe(Effect.provide(TestLayer))
     );
 

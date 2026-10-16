@@ -50,6 +50,7 @@ export const CategoryForm = (props: Props) => {
     const [openCategorySelector] = useCategorySelectorModal();
     const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
+    const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
     const { isChatReady, modelStatus } = useChatModelStatus();
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
@@ -62,7 +63,7 @@ export const CategoryForm = (props: Props) => {
         currentTitle: title,
         regenerate,
         isRegenerating,
-        isModelReady: isChatReady
+        isModelReady: isTranslationsEnabled && isChatReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);

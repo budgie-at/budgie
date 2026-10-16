@@ -1,6 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { AppClip } from '../app-clip/app-clip';
 import { AppShot } from '../app-shot/app-shot';
 
 interface Props {
@@ -16,14 +15,7 @@ export const HeroSectionImage = ({ locale }: Props) => {
             <span aria-hidden="true" className="hero-bloom" />
 
             <div className="hero-frame">
-                <AppClip
-                    alt={alt}
-                    fallback={<AppShot alt={alt} locale={locale} priority scene="home-hero-1" sizes="60vw" slug="home-hero" />}
-                    locale={locale}
-                    priority
-                    scene="home-hero-clip-1"
-                    slug="home-hero"
-                />
+                <AppShot alt={alt} locale={locale} priority scene="home-hero-1" sizes="(min-width: 1024px) 30vw, 52vw" slug="home-hero" />
             </div>
         </div>
     );

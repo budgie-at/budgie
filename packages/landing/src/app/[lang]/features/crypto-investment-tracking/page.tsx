@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ChartLine, Coins, WifiOff } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,20 +23,29 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Crypto Holdings Alongside Your Cash</Trans>}
-                locale={lang}
+                heading={<Trans>Crypto next to your cash</Trans>}
                 tagline={
                     <Trans>
                         Track Bitcoin, Ethereum, and two hundred crypto assets alongside your bank accounts in a single net-worth view.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="crypto-investment-tracking-1"
+                    slug="crypto-investment-tracking"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>One coin, three screens</Trans>}>
@@ -54,12 +62,9 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="crypto-investment-tracking-1"
                     slug="crypto-investment-tracking"
                 >
@@ -127,104 +132,112 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why most expense apps stop at fiat</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, a
-                        symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and bank
-                        balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings →
-                        Runway.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Two hundred crypto instruments ship with the app, ranked by market cap, and the major assets come with real daily
-                        market history built in. Stocks and ETFs are not supported yet.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Ready before you add a single coin</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>coins ready to track</Trans>} value="200">
+                    <Trans>Bitcoin, Ethereum and the rest of the largest coins by market cap ship with the app.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>of daily prices built in</Trans>} value={<Trans>1 year</Trans>}>
+                    <Trans>The biggest coins have charts the moment you open them.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>price currencies</Trans>} value="2">
+                    <Trans>Every built-in price comes in both euro and dollar.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
+            <FeatureCropBand
+                heading={<Trans>Your cost next to today&apos;s price</Trans>}
+                lede={<Trans>Every coin gets a market screen that values your position against the stored daily price.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie Bitcoin market screen with a holdings card listing the quantity, average cost, cost basis and unrealized profit`}
+                        locale={lang}
+                        scene="crypto-investment-tracking-3"
+                        slug="crypto-investment-tracking"
+                        y={0.4}
+                    >
+                        <FeatureCropBand.Pin x={0.55} y={0.478} />
+                        <FeatureCropBand.Pin x={0.55} y={0.548} />
+                        <FeatureCropBand.Pin x={0.55} y={0.598} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>What you hold, valued in your currency</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Average cost and cost basis</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Unrealized gain over what you paid</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Coins} title={<Trans>Crypto inside your net worth</Trans>}>
+                    <Trans>Holdings roll up into net worth alongside fiat accounts</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ChartLine} title={<Trans>A market screen per coin</Trans>}>
+                    <Trans>A market screen per instrument with a price card, a sparkline, and period metrics</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={WifiOff} title={<Trans>Charts that work offline</Trans>}>
+                    <Trans>Charts read from your own database, so they keep working with no connection</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Crypto holdings sit next to your cash: symbol, quantity, and a daily price</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Daily prices backfilled only for the crypto accounts you actually hold</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Holdings roll up into net worth alongside fiat accounts</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Multi-currency aware — euro-priced coins, dollar-priced coins, and UAH cash all reconcile</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>A market screen per instrument with a price card, a sparkline, and period metrics</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
-                        <Trans>
-                            A year of daily prices for BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC, and HYPE ships with the app, in euro and
-                            dollar
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Charts read from your own database, so they keep working with no connection</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={7}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Reachable straight from the crypto group on the home screen</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={8}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Days since the built-in history fill in up to today, with a visible progress indicator</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Market history without a live ticker</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Each crypto instrument has its own market screen: the current price, a sparkline of where it has been, metrics for
-                        the period, and your holding valued against it. The app ships with a year of daily prices for the nine largest
-                        crypto assets, quoted in both euro and dollar, so the charts have something to show the moment you open them.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Beyond that, Budgie fills in the days since the built-in history up to today — but only for crypto accounts you
-                        actually hold, in the background, fetching just the days you are missing and then stopping. There is no live ticker
-                        and no account: the chart you look at is read from your own database, so it renders offline once the days are there.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why most expense apps stop at fiat</Trans>}>
+                    <p>
+                        <Trans>
+                            Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity,
+                            a symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and bank
+                            balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings →
+                            Runway.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Market history without a live ticker</Trans>}>
+                    <p>
+                        <Trans>
+                            Each crypto instrument has its own market screen: the current price, a sparkline of where it has been, metrics
+                            for the period, and your holding valued against it. The app ships with a year of daily prices for the nine
+                            largest crypto assets, quoted in both euro and dollar, so the charts have something to show the moment you open
+                            them.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Beyond that, Budgie fills in the days since the built-in history up to today — but only for crypto accounts you
+                            actually hold, in the background, fetching just the days you are missing and then stopping. There is no live
+                            ticker and no account: the chart you look at is read from your own database, so it renders offline once the days
+                            are there.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
-                    question={<Trans>Which assets can I track?</Trans>}
-                    answer={
-                        <Trans>
-                            Crypto today — two hundred assets ship with the app, each with a quantity and a daily price. Stocks, ETFs, and
-                            commodities are not supported yet.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Where do prices come from?</Trans>}
-                    answer={
-                        <Trans>
-                            The nine largest crypto assets ship with a year of daily prices in euro and dollar. The days since then are
-                            fetched automatically, up to today, and only for the crypto accounts you hold.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Do the charts work offline?</Trans>}
                     answer={
                         <Trans>
@@ -233,16 +246,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>Do I need an account or an API key?</Trans>}
-                    answer={
-                        <Trans>
-                            No. There is no live ticker and no account to create; Budgie fetches the missing days and stores them in your
-                            local database.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How far back does the history go?</Trans>}
                     answer={
                         <Trans>
@@ -251,16 +256,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>What does the progress indicator show?</Trans>}
-                    answer={
-                        <Trans>
-                            The backfill reports its progress per asset, so you can see how much of the recent history is still filling in
-                            and when it has finished.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>How is this different from a portfolio tracker?</Trans>}
                     answer={
                         <Trans>
@@ -269,7 +266,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I record buy / sell history?</Trans>}
                     answer={
                         <Trans>
@@ -278,7 +276,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I connect Binance?</Trans>}
                     answer={
                         <Trans>
@@ -287,7 +286,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

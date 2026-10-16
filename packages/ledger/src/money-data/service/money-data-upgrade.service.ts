@@ -1,4 +1,4 @@
-import { Db, TransactionEntryRepository, YIELD_TO_UI } from '@budgie/contracts';
+import { Db, TransactionEntryBaseValuationRepository, YIELD_TO_UI } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
 import { parseISO } from 'date-fns/parseISO';
 import * as Arr from 'effect/Array';
@@ -18,7 +18,7 @@ import type { PendingBaseValuationBucketInterface } from '@budgie/contracts';
 
 export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeService>()('@budgie/ledger/MoneyDataUpgradeService', {
     make: Effect.gen(function* () {
-        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const transactionEntryBaseValuationRepository = yield* TransactionEntryBaseValuationRepository;
         const exchangeRatesService = yield* ExchangeRatesService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
@@ -56,7 +56,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
                           operatedAt
                       );
 
-            yield* transactionEntryRepository.updateBaseValuationBucket({
+            yield* transactionEntryBaseValuationRepository.updateBaseValuationBucket({
                 rateDate: bucket.rateDate,
                 sourceInstrumentId: bucket.sourceInstrumentId,
                 baseInstrumentId,
@@ -88,7 +88,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
                 return yield* Effect.die(new Error(missingBaseInstrumentMessage));
             }
 
-            const buckets = yield* transactionEntryRepository.findPendingBaseValuationBuckets(baseInstrument.id);
+            const buckets = yield* transactionEntryBaseValuationRepository.findPendingBaseValuationBuckets(baseInstrument.id);
             const totalEntryCount = sumBucketEntries(buckets);
 
             yield* updateProgress(snapshot => ({
@@ -112,7 +112,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
                 return { ...initialSnapshot, lastError: missingBaseInstrumentMessage };
             }
 
-            const pendingEntryCount = yield* transactionEntryRepository.countPendingBaseValuationEntries(baseInstrument.id);
+            const pendingEntryCount = yield* transactionEntryBaseValuationRepository.countPendingBaseValuationEntries(baseInstrument.id);
 
             return { ...initialSnapshot, pendingEntryCount, totalEntryCount: pendingEntryCount };
         });
@@ -163,7 +163,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
 }) {
     static readonly layer = Layer.effect(MoneyDataUpgradeService, MoneyDataUpgradeService.make).pipe(
         Layer.provide([
-            TransactionEntryRepository.layer,
+            TransactionEntryBaseValuationRepository.layer,
             ExchangeRatesService.layer,
             AccountBalanceIncrementalService.layer,
             EntryBaseValuationService.layer

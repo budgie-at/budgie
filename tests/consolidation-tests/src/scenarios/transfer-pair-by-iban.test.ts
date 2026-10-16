@@ -61,7 +61,9 @@ layer(TestLayer)('consolidation/transfer-pair-by-iban', it => {
 
             const movedEntries = yield* testQueryService.fetchEntriesByTransactionId(canonicals[0].id);
             const sourceIds = movedEntries.flatMap(entry => (isDefined(entry.originalTransactionId) ? [entry.originalTransactionId] : []));
-            expect(sourceIds.sort()).toEqual([expense.id, income.id].sort());
+            expect(sourceIds.toSorted((left, right) => left - right)).toEqual(
+                [expense.id, income.id].toSorted((left, right) => left - right)
+            );
             expect(yield* testQueryService.fetchTransactionTagIds(canonicals[0].id)).toHaveLength(0);
         })
     );

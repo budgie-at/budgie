@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('pin-app-lock', i18n => ({
     title: t(i18n)`PIN App Lock`,
-    tagline: t(i18n)`One PIN. Real encryption.`,
-    tags: [t(i18n)`security`, t(i18n)`pin`, t(i18n)`encryption`]
+    tagline: t(i18n)`One PIN. A growing wait.`,
+    tags: [t(i18n)`security`, t(i18n)`pin`, t(i18n)`lock`]
 }));

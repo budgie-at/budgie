@@ -10,7 +10,7 @@ import {
     StatisticsRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
-    TransactionEntryRepository,
+    TransactionEntryBaseValuationRepository,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -153,11 +153,11 @@ describe('statistics fallback for unvalued entries', () => {
     it.effect('completes historical valuation while preserving unconvertible entries as unvalued', () =>
         Effect.gen(function* () {
             const statisticsRepository = yield* StatisticsRepository;
-            const transactionEntryRepository = yield* TransactionEntryRepository;
+            const transactionEntryBaseValuationRepository = yield* TransactionEntryBaseValuationRepository;
             const moneyDataUpgradeService = yield* MoneyDataUpgradeService;
             const { category, entry, euro } = yield* seedUnconvertibleExpense('Unconvertible upgrade expense');
 
-            expect(yield* transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).toBe(1);
+            expect(yield* transactionEntryBaseValuationRepository.countPendingBaseValuationEntries(euro.id)).toBe(1);
 
             yield* moneyDataUpgradeService.run('Base instrument not found');
 
@@ -171,7 +171,7 @@ describe('statistics fallback for unvalued entries', () => {
             expect(updatedEntry.baseInstrumentId).toBe(euro.id);
             expect(updatedEntry.baseExchangeRate).toBeNull();
             expect(updatedEntry.baseAmount).toBeNull();
-            expect(yield* transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).toBe(0);
+            expect(yield* transactionEntryBaseValuationRepository.countPendingBaseValuationEntries(euro.id)).toBe(0);
             expect(totals?.expense).toBe(0);
             expect(categoryAmount).toBe(0);
         }).pipe(Effect.provide(TestLayer))

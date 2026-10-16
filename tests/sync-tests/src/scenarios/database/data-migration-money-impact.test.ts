@@ -2,8 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { AccountBalanceRepository, AccountDebtTypeEnum, AccountTypeEnum, PRECISION, UserIconNameEnum } from '@budgie/contracts';
-import { AccountDebtOpeningService } from '@budgie/ledger';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { AccountDebtOpeningService, AccountBalanceIncrementalService } from '@budgie/ledger';
 import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -12,14 +11,19 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { seed, seedBankPair, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
-const applyMigration = (migrationName: string) =>
-    Effect.forEach(
-        readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', migrationName, 'migration.sql'), 'utf8').split(
-            '--> statement-breakpoint'
-        ),
+const applyMigration = (migrationName: string) => {
+    const migrationSql = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', migrationName, 'migration.sql'), 'utf8');
+    const dropAddedColumns = Array.from(
+        migrationSql.matchAll(/ALTER TABLE `(\w+)` ADD `(\w+)`/gu),
+        ([, table, column]) => `ALTER TABLE ${table} DROP COLUMN ${column}`
+    );
+
+    return Effect.forEach(
+        [...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
         statement => testDb.$client.unsafe(statement).raw,
         { discard: true }
     );
+};
 
 const MIGRATIONS_FOLDER = resolve(process.cwd(), '../../packages/app/drizzle');
 const DATA_CHANGE_PATTERN = /\b(?:UPDATE\s+\S+\s+SET|INSERT(?:\s+OR\s+\w+)?\s+INTO|DELETE\s+FROM)\b/iu;

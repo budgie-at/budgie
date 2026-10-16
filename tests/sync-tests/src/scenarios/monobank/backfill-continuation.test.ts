@@ -42,7 +42,7 @@ const synchronizeTestClock = Effect.gen(function* () {
 
     yield* Effect.acquireRelease(
         Effect.sync(() => vi.spyOn(Date, 'now').mockImplementation(() => clock.currentTimeMillisUnsafe())),
-        spy => Effect.sync(() => spy.mockRestore())
+        spy => Effect.sync(() => void spy.mockRestore())
     );
 });
 
@@ -291,7 +291,7 @@ describe('monobank/backfill-continuation', () => {
                 yield* TestClock.withLive(Effect.sleep(10));
                 expect(requestTimes).toHaveLength(2);
                 expect(requestTimes[1] - requestTimes[0]).toBeGreaterThanOrEqual(MONOBANK_RATE_LIMIT_MS);
-            }).pipe(Effect.ensuring(Effect.sync(() => accountLookupSpy.mockRestore())));
+            }).pipe(Effect.ensuring(Effect.sync(() => void accountLookupSpy.mockRestore())));
         }).pipe(Effect.provide(TestClockLayer))
     );
 
@@ -427,7 +427,11 @@ describe('monobank/backfill-continuation', () => {
             );
 
             const initialRun = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
-            for (let attempt = 0; attempt < 100 && requestCount === 0; attempt += 1) {
+            for (let attempt = 0; attempt < 100; attempt += 1) {
+                if (requestCount > 0) {
+                    break;
+                }
+
                 yield* TestClock.withLive(Effect.sleep(10));
             }
             expect(requestCount).toBe(1);
@@ -454,10 +458,10 @@ describe('monobank/backfill-continuation', () => {
             const appDataSyncService = yield* AppDataSyncService;
             const workload = yield* Workload;
             const clock = yield* Effect.clockWith(Effect.succeed);
-            const runFork = yield* FiberSet.makeRuntime<never>();
+            const runFork = yield* FiberSet.makeRuntime();
             const start = new Date();
             const syncIds: number[] = [];
-            const queuedRuns: Fiber.Fiber<boolean, never>[] = [];
+            const queuedRuns: Fiber.Fiber<boolean>[] = [];
             const lastRequestAtByToken = new Map<string, number>();
             let rateLimitedRequests = 0;
 

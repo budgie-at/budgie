@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { FaceScanSquare, Key, Lock } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,27 +23,29 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie lock screen on launch, showing Enter your PIN above four empty dots and a number keypad`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>PIN App Lock — Locks With the Encryption Key</Trans>}
-                locale={lang}
+                heading={<Trans>Lock the app and your data</Trans>}
                 tagline={
                     <Trans>
-                        A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable — even with
-                        full filesystem access.
+                        A 4-digit PIN opens Budgie. After a few wrong tries the app makes you wait, and the PIN is tied to your data on this
+                        device — there is no reset that hands it back.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="pin-app-lock-2" slug="pin-app-lock" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Nothing opens before the PIN</Trans>}>
                     <Trans>
-                        Three frames: the keypad the app opens on, the four digits that open the encrypted database, and the Settings group
-                        where you switch the lock on.
+                        Three frames: the keypad the app opens on, the four digits that open it, and the Settings group where you switch the
+                        lock on.
                     </Trans>
                 </FeatureStory.Intro>
 
@@ -55,14 +56,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         list, no skip.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie lock screen on launch, showing Enter your PIN above four empty dots and a number keypad`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="pin-app-lock-2"
-                    slug="pin-app-lock"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="pin-app-lock-2" slug="pin-app-lock">
                     <FeatureStory.Callout x={0.72} y={0.409}>
                         <Trans>Four slots, nothing typed</Trans>
                     </FeatureStory.Callout>
@@ -71,12 +65,12 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>The four digits are the key</Trans>}>
+                <FeatureStory.Step index={1} title={<Trans>Four digits, and a wait after wrong tries</Trans>}>
                     <Trans>
-                        The PIN is what the app opens the database with. Budgie keeps it in the device keychain, marked this-device-only,
-                        and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one.
-                        The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the
-                        data back.
+                        The fourth digit submits on its own — a wrong PIN clears the dots and says so. The first four wrong tries cost
+                        nothing; the fifth wrong PIN starts the first wait, which is 30 seconds, then 1 minute, 5 minutes, 15 minutes and
+                        finally 1 hour before the next try. The wait survives closing the app and restarting the phone, and a successful
+                        fingerprint or face unlock resets it. There is no reset that hands the data back.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -96,9 +90,9 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Step index={2} title={<Trans>You switch it on in Settings</Trans>}>
                     <Trans>
-                        App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID or Touch ID
-                        enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch
-                        directly underneath.
+                        App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID, Touch ID or
+                        Android fingerprint or face unlock enrolled Budgie offers to unlock with it — the keypad stays as the fallback.
+                        Screenshot Protection is its own switch directly underneath.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -111,7 +105,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     slug="screenshot-protection"
                 >
                     <FeatureStory.Callout y={0.42}>
-                        <Trans>App Lock: PIN and Face ID or Touch ID</Trans>
+                        <Trans>App Lock: PIN and biometric unlock</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.527}>
                         <Trans>Balances hidden from screenshots</Trans>
@@ -119,58 +113,95 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why most app locks are decoration</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie&apos;s PIN is wired to
-                        the database encryption itself, so the same digits that pass the lock screen are the encryption key.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        App goes to background → lock kicks in. A wrong PIN doesn&apos;t lock you out forever, but there is no reset that
-                        hands the data back (your call: keep the PIN safe).
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>What stands between you and your data</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>digits open the app and your data</Trans>} value="4">
+                    <Trans>The same four digits are tied to your data on this device.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>wrong PINs before any wait</Trans>} value="4">
+                    <Trans>The fifth wrong PIN starts a 30-second wait, and each one after that waits longer.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>re-lock when you leave the app</Trans>} value={<Trans>Instant</Trans>}>
+                    <Trans>Switch away and the keypad is back when you return.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>PIN is the database encryption key — not just a screen guard</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>A 4-digit PIN, set from Settings → Security</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Re-locks the moment the app goes to background</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Optional Face ID or Touch ID unlock, with the PIN as fallback</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie lock screen with the title Enter your PIN, four empty PIN dots and a number keypad`}
+                        locale={lang}
+                        scene="pin-app-lock-2"
+                        slug="pin-app-lock"
+                        y={0.25}
+                    />
+                }
+                heading={<Trans>See the lock for yourself</Trans>}
+                lede={<Trans>Leave Budgie and come back. The keypad is the first thing you see.</Trans>}
+            >
+                <FeatureProof.Fact icon={Lock}>
+                    <Trans>Leaving the app brings the keypad back</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Key}>
+                    <Trans>A wrong PIN clears the dots and says so</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Key} title={<Trans>A lock tied to your data</Trans>}>
+                    <Trans>The PIN is tied to your data — not just a screen guard</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={FaceScanSquare} title={<Trans>Unlock with your face</Trans>}>
+                    <Trans>Optional Face ID, Touch ID or Android fingerprint or face unlock, with the PIN as fallback</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Lock} title={<Trans>Locks when you leave</Trans>}>
+                    <Trans>Re-locks the moment the app goes to background</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
+                        <Trans>
+                            A 4-digit PIN, set from Settings → Security, with a wait that starts at the fifth wrong PIN and grows up to 1
+                            hour
+                        </Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>No &ldquo;forgot PIN&rdquo; recovery — that&apos;s the privacy guarantee</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why most app locks are decoration</Trans>}>
+                    <p>
+                        <Trans>
+                            Many app locks are only a screen laid over your data. Budgie&apos;s PIN is built into how the app opens your
+                            data, so the lock is not just a cover — and it adds a growing wait to slow down anyone guessing.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            App goes to background → lock kicks in. Wrong PINs never lock you out forever, but the fifth wrong try and every
+                            one after it makes you wait longer, and there is no reset that hands the data back (your call: keep the PIN
+                            safe). A 4-digit PIN is a convenience lock, not a vault.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What if I forget my PIN?</Trans>}
                     answer={
                         <Trans>
-                            The PIN is the encryption key — there&apos;s no recovery mechanism, by design. Keep your PIN somewhere safe (a
+                            Your data is tied to the PIN — there&apos;s no recovery mechanism, by design. Keep your PIN somewhere safe (a
                             password manager works) or use the database backup feature to restore from a known-good state.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How quickly does the app re-lock?</Trans>}
                     answer={
                         <Trans>
@@ -179,26 +210,28 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Is biometric the same as PIN security?</Trans>}
                     answer={
                         <Trans>
-                            Biometric unlock is the platform&apos;s Face ID / Touch ID check standing in for typing the PIN. The PIN itself
-                            stays in the device keychain, marked this-device-only, and remains the database key — biometrics are a faster
-                            path to the same lock, not a second one.
+                            Biometric unlock is your phone&apos;s Face ID, Touch ID or Android fingerprint or face check standing in for
+                            typing the PIN. The PIN stays on the device and remains what protects your data — biometrics are a faster path
+                            to the same lock, not a second one. A successful scan also clears any wait caused by wrong PINs.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does the lock work if my phone is jailbroken?</Trans>}
                     answer={
                         <Trans>
-                            Encryption with a strong PIN protects against filesystem-level access, but a jailbroken device with active
-                            malware can capture the PIN at entry time. Don&apos;t unlock Budgie on a compromised device.
+                            A jailbroken or rooted device with active malware can capture the PIN as you type it, and a 4-digit PIN has only
+                            10,000 combinations. Don&apos;t unlock Budgie on a compromised device.
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

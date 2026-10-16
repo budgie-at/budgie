@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'date-filter-presets',
     tier: FeatureTierEnum.CORE,
-    title: msg`Date Filter Presets — Past Periods, One Tap`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Date Filter Presets`,
     tagline: msg`Seven presets, a Monday-to-Sunday week for This Week and Last Week, custom range fallback, and an amount range beside them.`,
     metaTitle: msg`Date Filter Presets — Budgie`,
     metaDescription: msg`Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row.`,
@@ -27,7 +29,7 @@ export const FEATURE_METADATA = {
         'tag-analytics',
         'mcc-auto-category'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-05-02',
     updatedAt: '2026-09-02',
     ogTags: ['filters', 'dates', 'presets']

@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,8 +9,9 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'spending-analytics',
     tier: FeatureTierEnum.CORE,
-    title: msg`Spending Analytics That Actually Help`,
-    tagline: msg`Category and tag breakdowns for any period — drill into any row.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Spending Analytics`,
+    tagline: msg`Category and tag breakdowns for any period. Drill into any row.`,
     metaTitle: msg`Spending Analytics & Charts — Budgie`,
     metaDescription: msg`Category and tag breakdowns for any period, with drill-down from any row to its transactions. Analytics that find your gaps.`,
     primaryKeyword: 'spending tracker with charts',
@@ -30,7 +32,7 @@ export const FEATURE_METADATA = {
         'ai-category-translation',
         'bank-fee-tracking'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-12-19',
     updatedAt: '2026-09-16',
     ogTags: ['analytics', 'charts', 'drill-down']

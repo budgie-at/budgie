@@ -24,6 +24,7 @@ import {
     TagRepository,
     MccGroupRepository,
     StatisticsRepository,
+    TransactionEntryBaseValuationRepository,
     TransactionEntryPositionRepository,
     TransactionEntryRepository,
     TransactionPatternRepository,
@@ -85,6 +86,7 @@ import * as Layer from 'effect/Layer';
 import { AiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
+import { AiModelStorageService } from '../../ai/service/ai-model-storage.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AiTranslationStatusService } from '../../ai/service/ai-translation-status.service';
 import { ChatService } from '../../ai/service/chat.service';
@@ -183,6 +185,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TranslationDrainerService.layer,
     EmbeddingDrainerService.layer,
     AiCoordinatorService.layer,
+    AiModelStorageService.layer,
     AiStorageReplacementService.layer,
     AiEmbeddingStatusService.layer,
     AiTranslationStatusService.layer,
@@ -223,6 +226,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TransactionConsolidationRepository.layer,
     TransactionViewRepository.layer,
     TransactionEntryRepository.layer,
+    TransactionEntryBaseValuationRepository.layer,
     TransactionEntryPositionRepository.layer,
     TransactionTagsRepository.layer,
     TransactionPatternRepository.layer,

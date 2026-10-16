@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,7 +9,8 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'monobank-sync',
     tier: FeatureTierEnum.HERO,
-    title: msg`Monobank Expense Tracker — Direct Sync, No Middleman`,
+    pillar: PillarEnum.BANK,
+    name: msg`Monobank Sync`,
     tagline: msg`Direct from Monobank. No aggregator. Your history on your device.`,
     metaTitle: msg`Monobank Auto-Sync — Budgie`,
     metaDescription: msg`Connect Monobank with a personal token. Cards and jars, the history depth you choose, and exchange rates sync straight to your device — no aggregator.`,
@@ -27,7 +29,7 @@ export const FEATURE_METADATA = {
         'erste-bank-pdf-import',
         'privatbank-import'
     ],
-    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data', 'offline-first-bank-data-safety'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2025-12-25',
     updatedAt: '2026-10-14',
     ogTags: ['monobank', 'bank sync', 'privacy']

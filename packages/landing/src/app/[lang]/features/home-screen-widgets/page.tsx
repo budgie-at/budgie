@@ -3,13 +3,11 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -22,21 +20,23 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie home screen with the total balance header that the net worth widget mirrors`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Home Screen Widgets</Trans>}
-                locale={lang}
+                heading={<Trans>Your money, on the Home Screen</Trans>}
                 tagline={
                     <Trans>
                         Net worth, budget, and a quick way to add a transaction, right on your iPhone Home Screen. No need to open Budgie to
                         check where you stand.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Three widgets, one glance</Trans>}>
@@ -45,18 +45,12 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
 
                 <FeatureStory.Step index={0} title={<Trans>Total balance, before you unlock</Trans>}>
                     <Trans>
-                        The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and
-                        whether you are growing or burning. Tap it and Budgie opens straight to Home.
+                        The net worth widget mirrors the total at the top of Home along with whether you are growing or burning, and the
+                        larger size adds how much it moved this month and the total per account type. Tap it and Budgie opens straight to
+                        Home.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie home screen with the total balance header that the net worth widget mirrors`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="net-worth-tracker-1"
-                    slug="net-worth-tracker"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
                     <FeatureStory.Callout y={0.175}>
                         <Trans>Total in your base currency</Trans>
                     </FeatureStory.Callout>
@@ -67,8 +61,9 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
 
                 <FeatureStory.Step index={1} title={<Trans>How much of the month is left</Trans>}>
                     <Trans>
-                        The budget widget carries the same spent, left and percentage as the budget screen, and the larger size adds your
-                        top categories. Tap it and Budgie opens the budget screen for the active period.
+                        The budget widget shows what is left, the daily amount you can spend and the days remaining, with a ring for the
+                        percentage used. The larger size shows spent against your limit and adds your top categories. Tap it and Budgie
+                        opens the budget screen for the active period.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -108,32 +103,45 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Locked when you are, current when it matters</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is
-                        running low or that net worth moved, just not the figures themselves.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the
-                        numbers stay close to current even while Budgie stays closed.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail
-                        underneath. Quick add is one size, sized for its three tiles.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>What a widget gives you</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>widgets for net worth, budget and quick add</Trans>} value="3">
+                    <Trans>Each one is its own widget, so you add only the ones you want.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>sizes for net worth and budget</Trans>} value="2">
+                    <Trans>Small for the headline number, larger for the detail.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>in place of amounts when a PIN is on</Trans>} value={<Trans>Dots</Trans>}>
+                    <Trans>Only the figures hide, the layout stays.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Locked when you are, current when it matters</Trans>}>
+                    <p>
+                        <Trans>
+                            Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is
+                            running low or that net worth moved, just not the figures themselves.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so
+                            the numbers stay close to current even while Budgie stays closed.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Net worth and budget come in a small size for the headline number, or a larger size that adds the detail
+                            underneath. Quick add is one size, sized for its three tiles.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Which widgets does Budgie offer?</Trans>}
                     answer={
                         <Trans>
@@ -142,7 +150,8 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Do the widgets update on their own?</Trans>}
                     answer={
                         <Trans>
@@ -151,7 +160,8 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can anyone read my amounts by looking at my Home Screen?</Trans>}
                     answer={
                         <Trans>
@@ -160,11 +170,13 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What does the budget widget show if I have no active budget?</Trans>}
                     answer={<Trans>A short message instead of numbers, so an empty widget never looks like a zero balance.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Where does tapping a widget take me?</Trans>}
                     answer={
                         <Trans>
@@ -173,16 +185,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>Do I need to keep Budgie open for the numbers to stay right?</Trans>}
-                    answer={
-                        <Trans>
-                            No. Widgets are built to be read closed. They pick up every change you make inside the app and keep themselves
-                            current on a schedule in the background.
-                        </Trans>
-                    }
-                />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

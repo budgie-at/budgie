@@ -81,9 +81,9 @@ const categoryServiceFailingOnDelete = Layer.effect(CategoryService, CategorySer
 
 const getStoredBalance = Effect.fn(function* (accountId: number) {
     const accountBalanceRepository = yield* AccountBalanceRepository;
-    const [balance] = yield* accountBalanceRepository.getByAccountIds([accountId]);
+    const balances = yield* accountBalanceRepository.getByAccountIds([accountId]);
 
-    return balance?.amount;
+    return balances.at(0)?.amount;
 });
 
 describe('ledger', () => {

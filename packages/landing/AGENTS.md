@@ -10,7 +10,7 @@ pnpm build                    # Production build
 pnpm i18n:sync                # Extract & compile i18n translations
 pnpm media:manifest           # Rescan public/media and regenerate the committed media manifest
 pnpm media:og                 # Regenerate the dark OG device plates in public/og-plate from public/media
-pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot>/<AppClip> usages
+pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot> usages
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint (incl. local `lint-rules/` plugin)
 ```
@@ -52,7 +52,7 @@ Before starting any of the work areas below, read the corresponding doc first.
 | `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents         | `docs/lingui-rsc.md`            |
 | `FeatureStory` page copy, callout `y`/`x` anchors, i18n sync/rebase for a story PR, locale QA before merging a story page                      | `docs/feature-story-i18n-qa.md` |
 | IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                               | `docs/indexnow.md`              |
-| Product screenshots and motion clips, `public/media/**`, `<AppShot>`/`<AppClip>`, the generated media manifest, `media:manifest`/`media:check` | `tests/app-tests/readme.md`     |
+| Product screenshots, `public/media/**`, `<AppShot>`, the generated media manifest, `media:manifest`/`media:check` | `tests/app-tests/readme.md`     |
 
 ---
 

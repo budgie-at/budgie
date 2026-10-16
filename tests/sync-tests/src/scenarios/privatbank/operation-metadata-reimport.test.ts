@@ -98,7 +98,7 @@ describe('privatbank/operation-metadata-reimport', () => {
             yield* importDepositStatement(operationCurrencyCode);
 
             const [refreshed] = yield* fetchExpenseEntries(transaction.id);
-            const expectedInstrumentId = !isDefined(operationCurrencyCode) ? euro.id : dollar.id;
+            const expectedInstrumentId = isDefined(operationCurrencyCode) ? dollar.id : euro.id;
 
             expect(refreshed.amount).toBe(FUNDING_AMOUNT * PRECISION);
             expect(refreshed.operationInstrumentId).toBe(operationCurrencyCode === 999 ? null : expectedInstrumentId);

@@ -238,9 +238,9 @@ describe('account/deposit-transaction-safety', () => {
                 .from(TransactionEntryEntityTable)
                 .where(eq(TransactionEntryEntityTable.externalId, IMPORTED_EXTERNAL_ID));
 
-            expect(importedTransaction?.title).toBe('Legacy deposit expense');
-            expect(importedTransaction?.comment).toBe('');
-            expect(importedEntry?.amount).toBe(IMPORTED_INITIAL_AMOUNT);
+            expect(importedTransaction.title).toBe('Legacy deposit expense');
+            expect(importedTransaction.comment).toBe('');
+            expect(importedEntry.amount).toBe(IMPORTED_INITIAL_AMOUNT);
             expect(yield* fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );

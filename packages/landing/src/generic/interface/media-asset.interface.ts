@@ -1,4 +1,3 @@
-import type { MediaKindEnum } from '../enum/media-kind.enum';
 import type { MediaThemeEnum } from '../enum/media-theme.enum';
 
 export interface MediaAssetInterface {
@@ -6,5 +5,4 @@ export interface MediaAssetInterface {
     readonly locale: string;
     readonly scene: string;
     readonly theme: MediaThemeEnum;
-    readonly kind: MediaKindEnum;
 }

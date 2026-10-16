@@ -12,7 +12,7 @@ interface Props {
 export const FeaturePageBenefitGridItem = ({ children, index = 0 }: Props) => (
     <Motion index={index}>
         <div className="flex items-start gap-3 rounded-lg border border-border/60 bg-card p-4 md:p-5">
-            <CheckCircle aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+            <CheckCircle aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-pillar" />
             <p className="text-sm md:text-base">{children}</p>
         </div>
     </Motion>

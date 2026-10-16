@@ -404,7 +404,7 @@ describe('privatbank/duplicate-repair', () => {
             yield* seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
 
             const updateAllBalancesSpy = vi.spyOn(accountBalanceIncrementalService, 'updateAllBalances').mockReturnValue(Effect.void);
-            yield* Effect.addFinalizer(() => Effect.sync(() => updateAllBalancesSpy.mockRestore()));
+            yield* Effect.addFinalizer(() => Effect.sync(() => void updateAllBalancesSpy.mockRestore()));
 
             const result = yield* syncRepairService.removeDuplicates();
 

@@ -277,6 +277,7 @@ export type { TransactionEntryCreateEntityInterface } from './transaction-entry/
 export type { CryptoPositionEntryRowInterface } from './transaction-entry/interface/crypto-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
 
+export { TransactionEntryBaseValuationRepository } from './transaction-entry/repository/transaction-entry-base-valuation.repository';
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
 export { TransactionEntryPositionRepository } from './transaction-entry/repository/transaction-entry-position.repository';
 

@@ -159,6 +159,11 @@ export const Footer = async ({ lang }: Props) => {
                                 </Link>
                             </li>
                             <li>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/changelog`}>
+                                    <Trans>Changelog</Trans>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
                                     href="https://github.com/budgie-at/budgie"
@@ -177,7 +182,7 @@ export const Footer = async ({ lang }: Props) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/blog/mint-alternatives-developers`}
+                                    href={`/${lang}/blog/mint-shutdown-private-alternative`}
                                 >
                                     <Trans>Mint Alternatives</Trans>
                                 </Link>

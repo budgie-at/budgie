@@ -1,6 +1,5 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { MediaKindEnum } from '../../enum/media-kind.enum';
 import { resolveMediaAsset } from '../../utils/resolve-media-asset.util';
 
 import { AppShotPicture } from './app-shot-picture';
@@ -18,7 +17,7 @@ interface Props {
 }
 
 export const AppShot = ({ slug, scene, locale, alt, fallback, priority = false, sizes }: Props) => {
-    const { light: lightAsset, dark: darkAsset } = resolveMediaAsset(slug, scene, locale, MediaKindEnum.STILL);
+    const { light: lightAsset, dark: darkAsset } = resolveMediaAsset(slug, scene, locale);
 
     if (!isDefined(lightAsset) || !isDefined(darkAsset)) {
         return fallback;

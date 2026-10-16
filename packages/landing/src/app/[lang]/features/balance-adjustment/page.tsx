@@ -1,16 +1,15 @@
 /* eslint-disable max-lines-per-function */
 import { Trans } from '@lingui/react/macro';
+import { Coins, DocumentText, Scale } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -22,71 +21,114 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
-                locale={lang}
+                heading={<Trans>Fix a balance, keep history honest</Trans>}
                 tagline={
                     <Trans>
-                        Type the balance your bank shows and Budgie books the difference as a dated Adjustment transaction — not a silent
+                        Type the balance your bank shows and Budgie books the difference as a dated Adjustment transaction, not a silent
                         edit to your history.
                     </Trans>
                 }
             />
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why a correction is not an expense</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Reality drifts from the ledger: a cash amount you forgot to record, a starting balance you estimated, a bank that
-                        reports a number your history cannot reproduce. Most apps fix that by quietly overwriting the balance, rewriting the
-                        past without a trace.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Budgie does the opposite. You type the true balance; Budgie compares it with the current one and books the
-                        difference as a dated Adjustment transaction. The correction is visible, dated, and editable like any other row.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>One number in, one clean correction</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>number to type</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Enter the balance your bank shows and Budgie works out the difference.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>row added for every fix</Trans>} value={<Trans>Dated</Trans>}>
+                    <Trans>Open it, edit it or remove it later, like any other transaction.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>rules or spending totals touched</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>Adjustments are skipped by categorization rules and spending analytics.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Set a target balance on any account and Budgie writes the difference as an Adjustment</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureVersus
+                heading={<Trans>Two ways to fix a balance</Trans>}
+                lede={<Trans>Balances drift. What happens next is the difference.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Overwrite it</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Many apps just replace the number</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>The old balance quietly disappears</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No trace of what changed</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Past reports can shift without notice</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Adjust it</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>You type the true balance</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>A dated Adjustment row is added</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Every correction stays visible</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Edit or remove it any time</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Scale} title={<Trans>Fix a balance in one step</Trans>}>
+                    <Trans>Set a target balance on any account and Budgie writes the difference as an Adjustment</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Coins} title={<Trans>Net worth stays consistent</Trans>}>
+                    <Trans>The correction carries the exchange rate of the day it was booked, so net worth stays consistent</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={DocumentText} title={<Trans>Corrections stay visible</Trans>}>
+                    <Trans>An audited trail — the past is corrected in the open, never silently overwritten</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Adjustments are a first-class transaction type with their own read and edit screens</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>The correction carries the exchange rate of the day it was booked, so net worth stays consistent</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Adjustments are excluded from categorization rules, so reconciling never fires a rule built for spending
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Recalculate Balances in Settings rebuilds every cached balance from the transaction ledger</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
-                        <Trans>An audited trail — the past is corrected in the open, never silently overwritten</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a correction is not an expense</Trans>}>
+                    <p>
+                        <Trans>
+                            Reality drifts from the ledger: a cash amount you forgot to record, a starting balance you estimated, a bank
+                            that reports a number your history cannot reproduce. Most apps fix that by quietly overwriting the balance,
+                            rewriting the past without a trace.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Budgie does the opposite. You type the true balance; Budgie compares it with the current one and books the
+                            difference as a dated Adjustment transaction. The correction is visible, dated, and editable like any other row.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Is an adjustment just another transaction?</Trans>}
                     answer={
                         <Trans>
@@ -95,7 +137,8 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>When should I set a target balance?</Trans>}
                     answer={
                         <Trans>
@@ -104,7 +147,8 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Does an adjustment count as income or spending?</Trans>}
                     answer={
                         <Trans>
@@ -113,7 +157,8 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What does Recalculate Balances do?</Trans>}
                     answer={
                         <Trans>
@@ -122,7 +167,8 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I edit or remove an adjustment?</Trans>}
                     answer={
                         <Trans>
@@ -131,7 +177,7 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

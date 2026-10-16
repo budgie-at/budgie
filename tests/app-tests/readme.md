@@ -44,7 +44,7 @@ Tests execute on both iOS (macos-latest) and Android (ubuntu-latest) after code 
 ## Landing media pipeline
 
 Captures the App Store screenshot set a second time for the landing site's
-own stills and clips, driven by `.github/landing-media.config.json` (the same
+own stills, driven by `.github/landing-media.config.json` (the same
 mobile-ci schema as the store config, iPhone 17 Pro Max only).
 
 ```bash
@@ -55,12 +55,10 @@ pnpm media:manifest
 
 `media:capture` runs `capture-store-screenshots.sh` against that config, raw
 output under `packages/app/fastlane/screenshots/landing-raw/` (gitignored).
-`media:compose` frames stills and encodes clips into
+`media:compose` frames stills into
 `packages/landing/public/media/<slug>/<locale>/<theme>/`: a still is
-`<scene>@2x.{avif,webp}`, a clip is `<scene>.{webm,mp4}` plus
-`<scene>-poster.webp`. `<slug>` drops the scene name's trailing `-<n>` (and,
-for clips, the `-clip` before it), so `voice-transaction-entry-clip-1` and
-`voice-transaction-entry-1` share the `voice-transaction-entry` route.
+`<scene>@2x.{avif,webp}`. `<slug>` drops the scene name's trailing `-<n>`, so
+`voice-transaction-entry-1` lives under the `voice-transaction-entry` route.
 `media:manifest` validates the encoded variants and slugs the pages reference.
 
 A scene may carry a state overlay on top of the showcase database:
@@ -69,23 +67,14 @@ usually just `.read shared/<state>.sql`.
 
 To add a scene: one `capture-scenes` entry (`deepLink` for a still, `flow`
 when the state needs interaction) plus an overlay `.sql` file only if the
-default data isn't enough. A flow takes exactly one `takeScreenshot`; a clip
-adds one `startRecording`/`stopRecording` pair after it and is named
-`<slug>-clip-<n>`. Flows reach their state by `runFlow`ing the E2E subflows
-under `flows/subflows/`, never by re-implementing navigation.
+default data isn't enough. A flow takes exactly one `takeScreenshot`. Flows reach their state by
+`runFlow`ing the E2E subflows under `flows/subflows/`, never by re-implementing navigation.
 
 `.github/workflows/media-smoke.yml` runs every `flows/media/*.flow.yaml` once
 per PR touching them and nightly, on one shard, seeding each flow's scene
 (`en`/`dark`) through `seed-screenshot-scene.sh` as mobile-ci's
 `pre-flow-command`. `pr.yml`'s `detect-mobile-impact` keeps those same paths
-out of the full iOS suite. `pin-app-lock-clip-1` is excluded until #697 makes
-the seed hook produce a SQLCipher database for lock-flag scenes. `ai-auto-categorization-clip-1`
-is excluded because the smoke job's e2e build sets `EXPO_PUBLIC_AI_DISABLE=true`
-(see #700), which cannot exercise the on-device AI categorization the clip
-records; it stays in `landing-media.config.json` for local capture against an
-AI-enabled build (see #718). There is no
-CSV import clip: the flow recorded the iOS Files picker, which both needs
-E2EFixtures on the CI runner and exposes `01.db`…`09.db` fixture filenames.
+out of the full iOS suite.
 
 Screenshot protection blanks Maestro's `takeScreenshot`, not `simctl io
 screenshot`. A `deepLink` scene seeded with `is_screenshot_protection_enabled = 1`

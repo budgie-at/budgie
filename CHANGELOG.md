@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **app:** add the AI feature settings migration snapshot ([f9b223f](https://github.com/budgie-at/budgie/commit/f9b223f28395cf5f20245644f07248ffc35a9fbb))
+* **app:** hide empty AI downloads cleanup ([d17762d](https://github.com/budgie-at/budgie/commit/d17762d9474b7a63e6091962fa6752854c6a2243))
+* **app:** keep AI shutdown safe for model cleanup ([3dd3580](https://github.com/budgie-at/budgie/commit/3dd35805397b1f482eb7d0230b615da3be47b675))
+* **app:** prevent unsafe AI cleanup and lost feature changes ([32a3733](https://github.com/budgie-at/budgie/commit/32a37332da4c92dc5fde11918522fc5ab31844fa))
+* **app:** show the shared-downloads note after a confirmed disable ([7e2efa7](https://github.com/budgie-at/budgie/commit/7e2efa76728dd9cf355163738619ac3a0bb55f41))
+* keep iOS detection compatible with the Turbo config ([a7b13ad](https://github.com/budgie-at/budgie/commit/a7b13ad0298fe3ba13f4d3eccb6fa23c85edeee6))
+
+
+### Features
+
+* **app:** add AI model storage cleanup service ([7a2ff94](https://github.com/budgie-at/budgie/commit/7a2ff941631686aa540dfd8aa0425469577c5215))
+* **app:** clarify unused AI downloads cleanup ([a419725](https://github.com/budgie-at/budgie/commit/a41972509f2a1d980c4dc34f51970888c6383d52))
+* **app:** expose AI model storage in settings ([b88dbe1](https://github.com/budgie-at/budgie/commit/b88dbe1d05857e2088140dfe92ffb698288b6f7b))
+* **app:** manage AI features and unused downloads ([8e1f0be](https://github.com/budgie-at/budgie/commit/8e1f0bede72ff567a1d46a9a66a38af62d9e9be5))
+* **app:** move AI model storage to its own settings screen ([e9271aa](https://github.com/budgie-at/budgie/commit/e9271aa6000d72c24749586fd700511c43a6a0cf))
+* **app:** show downloaded AI model storage controls ([6a57cef](https://github.com/budgie-at/budgie/commit/6a57cef261ab947d97ea94e7f8c3c647c22f5e3a))
+* **app:** simplify AI model storage screen ([724d6de](https://github.com/budgie-at/budgie/commit/724d6decb248c7b146d1b669b1573ad227995a75))
+
+
+
+
+
 ## [6.104.1](https://github.com/budgie-at/budgie/compare/v6.104.0...v6.104.1) (2026-10-15)
 
 **Note:** Version bump only for package @budgie-at/root

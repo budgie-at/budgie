@@ -19,6 +19,7 @@ import {
     buildEarnDayKey,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
+    fetchSortedBinanceExternalIds,
     recentDayInMonthsAgo,
     seed,
     seedCryptoInstrument,
@@ -75,7 +76,7 @@ const stubAccountAgnosticSourceResponses = () => {
 
 const expectAllSourceExternalIds = (previousMonth: number, currentMonth: number) =>
     Effect.gen(function* () {
-        const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
+        const externalIds = yield* fetchSortedBinanceExternalIds();
         expect(externalIds).toStrictEqual(
             [
                 'binance:c2c:usdt-p2p-buy',
@@ -231,7 +232,7 @@ describe('binance/account-agnostic-sources', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
+            const externalIds = yield* fetchSortedBinanceExternalIds();
             expect(externalIds).toStrictEqual([`binance:c2c:usdt-c2c`, `binance:earn:USDT:${buildEarnDayKey(earnTime)}`].sort());
             expect((yield* fetchBinanceEntriesByExternalId('binance:c2c:usdt-c2c'))[0].accountId).toBe(usdtFundingAccount.id);
         }).pipe(Effect.provide(TestLayer))

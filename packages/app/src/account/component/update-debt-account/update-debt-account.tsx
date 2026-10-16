@@ -47,7 +47,9 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     );
 
     const stickyInstrument = useStickyDefinedValue(instrument);
-    const balanceFieldLabel = account.debtType === AccountDebtTypeEnum.LENT ? t`Already returned` : t`Already repaid`;
+    const isLentDebt = account.debtType === AccountDebtTypeEnum.LENT;
+    const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
+    const debtAmountLabel = isLentDebt ? t`Amount lent` : t`Amount borrowed`;
 
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
@@ -64,7 +66,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             control={control}
             isSubmitting={isSubmitting}
         >
-            <AccountTargetBalanceField control={control} instrumentSymbol={instrumentSymbol} />
+            <AccountTargetBalanceField control={control} instrumentSymbol={instrumentSymbol} label={debtAmountLabel} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
             <IncludeInNetWorthField control={control} />

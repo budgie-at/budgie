@@ -11,7 +11,7 @@ import { EntryBaseValuationService } from '../src/valuation/service/entry-base-v
 
 import { makeFakeHttpClientLayer, setDefaultInstrument, TestLayer, testSeedService } from './test-context';
 
-const seedPair = Effect.fnUntraced(function* (baseCode: string, quoteCode: string, type = InstrumentTypeEnum.FIAT) {
+const seedPair = Effect.fnUntraced(function* (baseCode: string, quoteCode: string, type: InstrumentTypeEnum = InstrumentTypeEnum.FIAT) {
     const base = yield* testSeedService.instrument({ code: baseCode, name: baseCode, symbol: baseCode, type });
     const quote = yield* testSeedService.instrument({ code: quoteCode, name: quoteCode, symbol: quoteCode });
 

@@ -14,8 +14,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { AccountDebtOpeningService } from '@budgie/ledger';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { AccountDebtOpeningService, AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -89,7 +88,7 @@ describe('opening a debt from a funding account', () => {
             const debtEvents = yield* readDebtEvents(debtAccount.id);
 
             expect(yield* readEntries(fundingAccount.id)).toHaveLength(1);
-            expect(transaction?.type).toBe(transactionType);
+            expect(transaction.type).toBe(transactionType);
             expect(entry.categoryId).toBe(categoryId);
             expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
             expect(entry.amount).toBe(OPENING_AMOUNT * PRECISION);

@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { BookmarkCheck, History, Tags } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,25 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>MCC Auto-Categorization</Trans>}
-                locale={lang}
+                heading={<Trans>Bank codes sort your spending</Trans>}
                 tagline={
                     <Trans>
-                        Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically — first
+                        Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically, first
                         import, no setup.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="mcc-auto-category-1" slug="mcc-auto-category" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Categories before you type</Trans>}>
@@ -53,16 +56,7 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                         shown under the merchant name.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="mcc-auto-category-1"
-                    slug="mcc-auto-category"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="mcc-auto-category-1" slug="mcc-auto-category">
                     <FeatureStory.Callout y={0.411}>
                         <Trans>The bank&apos;s category code</Trans>
                     </FeatureStory.Callout>
@@ -108,51 +102,87 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why MCC is the universal merchant taxonomy</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        MCC is the universal merchant taxonomy banks already attach to every card transaction. Budgie ships a lookup for
-                        about 1,050 codes, so a cafe (MCC 5814) lands in &quot;Restaurants &amp; Cafes&quot;, a fuel stop (5541, 5542) in
-                        &quot;Car &amp; Fuel&quot; and transit (4111) in &quot;Transportation&quot; without a single tap.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Want a different category? Change it once and tap the Quick rule pill to remember it for that merchant, or write a
-                        rule on the merchant code yourself. Prefer to categorize everything by hand? Turn off &quot;Auto-assign categories
-                        from MCC&quot; in Settings — it is on by default.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Sorted before you open the form</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>merchant codes already mapped</Trans>} value="1051">
+                    <Trans>Cafes, fuel, transit and the rest land in your categories with no setup.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>to remember an override</Trans>} value={<Trans>One tap</Trans>}>
+                    <Trans>After you change a category, the Quick rule pill keeps your choice.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>by default, one switch to turn off</Trans>} value={<Trans>On</Trans>}>
+                    <Trans>Prefer to categorize by hand? Turn it off in Settings.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Default categories for about 1,050 merchant category codes, on by default</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Override a category once and a Quick rule remembers it for that merchant</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureCropBand
+                heading={<Trans>From bank code to category</Trans>}
+                lede={<Trans>Silpo arrives with its Grocery code, and Groceries is already set.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie expense form for a Silpo transaction with the Grocery merchant code under the merchant name and Groceries set as the category`}
+                        locale={lang}
+                        scene="mcc-auto-category-1"
+                        slug="mcc-auto-category"
+                        y={0.3}
+                    >
+                        <FeatureCropBand.Pin x={0.72} y={0.405} />
+                        <FeatureCropBand.Pin x={0.7} y={0.525} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>The bank&apos;s code, under the merchant</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Your category, filled in for you</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Categories assigned for you</Trans>}>
+                    <Trans>Default categories for about 1,050 merchant category codes, on by default</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={BookmarkCheck} title={<Trans>Override once, remembered</Trans>}>
+                    <Trans>Override a category once and a Quick rule remembers it for that merchant</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={History} title={<Trans>Your history fills the gaps</Trans>}>
+                    <Trans>Suggestions from your own history fill the gap for transactions without a code</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>The merchant category shows under the merchant name on the transaction form</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Suggestions from your own history fill the gap for transactions without a code</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>PrivatBank&apos;s own categories are translated to merchant codes too</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why MCC is the universal merchant taxonomy</Trans>}>
+                    <p>
+                        <Trans>
+                            MCC is the universal merchant taxonomy banks already attach to every card transaction. Budgie ships a lookup for
+                            about 1,050 codes, so a cafe (MCC 5814) lands in &quot;Restaurants &amp; Cafes&quot;, a fuel stop (5541, 5542)
+                            in &quot;Car &amp; Fuel&quot; and transit (4111) in &quot;Transportation&quot; without a single tap.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Want a different category? Change it once and tap the Quick rule pill to remember it for that merchant, or write
+                            a rule on the merchant code yourself. Prefer to categorize everything by hand? Turn off &quot;Auto-assign
+                            categories from MCC&quot; in Settings — it is on by default.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What&apos;s an MCC?</Trans>}
                     answer={
                         <Trans>
@@ -161,7 +191,8 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What if I want my own category mapping?</Trans>}
                     answer={
                         <Trans>
@@ -171,7 +202,8 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What if the transaction has no MCC?</Trans>}
                     answer={
                         <Trans>
@@ -180,7 +212,8 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I see the MCC on a transaction?</Trans>}
                     answer={
                         <Trans>
@@ -188,7 +221,7 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }
