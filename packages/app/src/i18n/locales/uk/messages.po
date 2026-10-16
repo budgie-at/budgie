@@ -508,6 +508,15 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "AI downloads on this device: {totalSize}"
+msgstr "Завантаження ШІ на цьому пристрої: {totalSize}"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "AI features"
+msgstr "Функції ШІ"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "ШІ вимкнено"
@@ -857,6 +866,10 @@ msgstr "Budgie позначить як видалені такі записи: {
 msgid "Burning"
 msgstr "Спадає"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "bytes"
+msgstr "байт"
+
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
 msgstr "Може тривати годинами для старих рахунків і значно повільніше, коли застосунок закрито."
@@ -925,10 +938,6 @@ msgstr "Категорії автоматично розподіляють ва�
 msgid "Categorise imports automatically"
 msgstr "Автоматична категоризація імпортів"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
-msgstr "Категоризує транзакції, пропонує теги та розшифровує голосові нотатки просто на цьому пристрої. Один раз завантажує близько 2,5 ГБ моделей — краще через Wi-Fi."
-
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
 msgstr "Категоризувати"
@@ -994,6 +1003,10 @@ msgstr "Оберіть «Excel» як формат експорту — файл
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+msgid "Choose features and free space from unused downloads"
+msgstr "Вибирайте функції та звільняйте місце від невикористаних завантажень"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1300,6 +1313,10 @@ msgstr "Не вдалося завантажити рахунки"
 msgid "Could not load accounts from the bank"
 msgstr "Не вдалося завантажити рахунки з банку"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load AI downloads"
+msgstr "Не вдалося завантажити дані ШІ"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
@@ -1335,6 +1352,10 @@ msgstr "Не вдалося перепризначити тег"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not remove unused downloads"
+msgstr "Не вдалося видалити невикористані завантаження"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1393,6 +1414,10 @@ msgstr "Не вдалося розконсолідувати транзакці�
 msgid "Could not undo the move to cash"
 msgstr "Не вдалося скасувати перенесення в готівку"
 
+#: src/ai/component/ai-feature-toggle/ai-feature-toggle.tsx
+msgid "Could not update AI feature"
+msgstr "Не вдалося оновити функцію ШІ"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
 msgstr "Не вдалося оновити іконку категорії"
@@ -1400,10 +1425,6 @@ msgstr "Не вдалося оновити іконку категорії"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Не вдалося оновити сповіщення"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Could not update on-device AI"
-msgstr "Не вдалося оновити ШІ на пристрої"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Could not update recurring payment."
@@ -2178,6 +2199,10 @@ msgstr "Сума поповнення"
 msgid "General"
 msgstr "Загальне"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Generate English names and search keywords automatically."
+msgstr "Автоматично створювати англійські назви й ключові слова для пошуку."
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Загальний"
@@ -2193,6 +2218,10 @@ msgstr "Отримати API-ключ"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "Отримати API-токен"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Get category, tag, and note suggestions from your history."
+msgstr "Отримуйте пропозиції категорій, тегів і нотаток на основі своєї історії."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
@@ -2497,6 +2526,10 @@ msgstr "Ліміт"
 msgid "Listening..."
 msgstr "Слухаю..."
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Loading AI downloads…"
+msgstr "Завантаження даних ШІ…"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
@@ -2650,6 +2683,10 @@ msgstr "Без категорій"
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "Missing rate"
 msgstr "Курс відсутній"
+
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "Models download once, best on Wi-Fi"
+msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -2999,10 +3036,6 @@ msgstr "зараз"
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
 msgstr "з"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "On-device AI"
-msgstr "ШІ на пристрої"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
@@ -3457,6 +3490,10 @@ msgstr "Прибрати розділення"
 msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Remove unused downloads ({unusedSize})"
+msgstr "Видалити невикористані завантаження ({unusedSize})"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
 msgstr "Перейменувати"
@@ -3502,6 +3539,10 @@ msgstr "Відновити з файлу резервної копії"
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Restore from Backup"
 msgstr "Відновити з резервної копії"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Retry"
+msgstr "Повторити"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -3905,6 +3946,10 @@ msgstr "Схожі транзакції"
 msgid "Skip"
 msgstr "Пропустити"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Smart suggestions"
+msgstr "Розумні підказки"
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Smarter, without the cloud"
 msgstr "Розумніше, без хмари"
@@ -3937,6 +3982,10 @@ msgstr "Джерела"
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Іспанська"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Speak an expense and Budgie fills in the transaction."
+msgstr "Скажіть витрату, і Budgie заповнить транзакцію."
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Spending by Category"
@@ -4390,6 +4439,10 @@ msgstr "Переказ з рахунку"
 msgid "Transfer To Account"
 msgstr "Переказ на рахунок"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Translate categories and tags"
+msgstr "Перекладати категорії й теги"
+
 #: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translating categories and tags"
 msgstr "Переклад категорій і тегів"
@@ -4577,6 +4630,10 @@ msgstr "Перегляд та відновлення архівованих ра
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
 msgstr "Переглянути вихідні транзакції"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Voice notes"
+msgstr "Голосові нотатки"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"

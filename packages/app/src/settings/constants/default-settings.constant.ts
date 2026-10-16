@@ -20,6 +20,9 @@ export const DEFAULT_SETTINGS = {
     isOnboardingCompleted: false,
     onboardingStep: 0,
     isAiEnabled: false,
+    isAiVoiceInputEnabled: false,
+    isAiSuggestionsEnabled: false,
+    isAiTranslationsEnabled: false,
     isRunwayPillEnabled: true,
     isRunwayCryptoIncluded: false
 } satisfies SettingsEntityInterface;
