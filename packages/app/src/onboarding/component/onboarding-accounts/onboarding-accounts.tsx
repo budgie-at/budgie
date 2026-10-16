@@ -73,9 +73,7 @@ export const OnboardingAccounts = () => {
         setIsSaving(true);
         appRuntime.runFork(
             logAndContinue(
-                Effect.flatMap(OnboardingService, onboardingService =>
-                    onboardingService.provisionAccounts(newOptions.map(option => ({ type: option.type, title: option.title })))
-                ).pipe(
+                Effect.flatMap(OnboardingService, onboardingService => onboardingService.provisionAccounts(newOptions)).pipe(
                     Effect.andThen(Effect.sync(() => void goToStep(OnboardingStepEnum.BALANCES))),
                     Effect.ensuring(Effect.sync(() => void setIsSaving(false)))
                 )

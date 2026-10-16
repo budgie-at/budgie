@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Button } from '../../../@generic/component/button/button';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
+import { useOnboardingReceiptRows } from '../../hook/use-onboarding-receipt-rows.hook';
 import { OnboardingNote } from '../onboarding-note/onboarding-note';
 import { OnboardingReceiptCard } from '../onboarding-receipt-card/onboarding-receipt-card';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
@@ -18,10 +19,7 @@ export const OnboardingPhoneLock = () => {
     const handleContinuePress = () => void goToStep(OnboardingStepEnum.ACCOUNTS);
     const handleMakePinPress = () => void replaceWithStep(OnboardingStepEnum.PIN);
 
-    const receiptRows = [
-        { label: t`Opens with`, value: t`This phone's lock` },
-        { label: t`Copies elsewhere`, value: t`None` }
-    ];
+    const receiptRows = useOnboardingReceiptRows();
 
     return (
         <OnboardingStepLayout

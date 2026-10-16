@@ -84,19 +84,15 @@ export const CreateMonobankAccount = () => {
             text={t`Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app.`}
         />
     ) : null;
-    const accountsFooter = isOnboardingActive ? (
+    const accountsFooterVariant = isOnboardingActive ? 'cta' : 'primary';
+    const accountsFooterLabel = isOnboardingActive ? addAccountsLabel : t`Continue`;
+    const handleAccountsFooterPress = isOnboardingActive ? handleSetupSync : handleContinueToHistory;
+    const accountsFooter = (
         <Button
-            variant="cta"
-            onPress={handleSetupSync}
+            variant={accountsFooterVariant}
+            onPress={handleAccountsFooterPress}
             disabled={isStartSyncDisabled}
-            content={addAccountsLabel}
-            testID={CreateMonobankAccountSelector.ContinueButton}
-        />
-    ) : (
-        <Button
-            onPress={handleContinueToHistory}
-            disabled={isStartSyncDisabled}
-            content={t`Continue`}
+            content={accountsFooterLabel}
             testID={CreateMonobankAccountSelector.ContinueButton}
         />
     );

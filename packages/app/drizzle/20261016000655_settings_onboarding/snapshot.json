@@ -1,8 +1,8 @@
 {
     "version": "7",
     "dialect": "sqlite",
-    "id": "3679deaa-05f8-4380-b94b-0a5c8601b3d2",
-    "prevIds": ["435c19b4-bc71-4a76-94bf-e5db46851887"],
+    "id": "0c3f5c2c-97ef-41bb-bf9e-822a23cc4343",
+    "prevIds": ["de0f28c1-b766-4205-9def-18091b82a085"],
     "ddl": [
         {
             "name": "account_balances",

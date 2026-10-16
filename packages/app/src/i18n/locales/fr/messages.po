@@ -1313,10 +1313,7 @@ msgstr "Convertir en virement"
 msgid "Convert to Transfer?"
 msgstr "Convertir en transfert ?"
 
-#: src/app/(tabs)/settings/your-data.tsx
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Copies elsewhere"
 msgstr "Copies ailleurs"
 
@@ -1443,7 +1440,7 @@ msgstr "Impossible d'effacer les données"
 msgid "Could not export CSV"
 msgstr "Impossible d'exporter le CSV"
 
-#: src/export/hook/use-export-database-action.hook.ts
+#: src/export/components/export-database/export-database.tsx
 msgid "Could not export database"
 msgstr "Impossible d'exporter la base de données"
 
@@ -1635,10 +1632,6 @@ msgstr "Couvert par {coverMonths} mois de dépenses"
 msgid "Covered by your liquid balance"
 msgstr "Couvert par votre solde liquide"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Create a backup of all your data"
-msgstr "Créer une sauvegarde de toutes vos données"
-
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
@@ -1762,7 +1755,7 @@ msgstr "Mode sombre"
 msgid "Data management"
 msgstr "Gestion des données"
 
-#: src/export/hook/use-export-database-action.hook.ts
+#: src/export/components/export-database/export-database.tsx
 msgid "Database exported"
 msgstr "Base de données exportée"
 
@@ -2297,7 +2290,7 @@ msgstr "Dépense"
 msgid "Expenses"
 msgstr "Dépenses"
 
-#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+#: src/export/components/export-database/export-database.tsx
 msgid "Export a backup"
 msgstr "Exporter une sauvegarde"
 
@@ -2308,10 +2301,6 @@ msgstr "Exporter toutes les transactions vers un fichier CSV"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export CSV"
 msgstr "Exporter CSV"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Export Database"
-msgstr "Exporter la base de données"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
@@ -3326,10 +3315,7 @@ msgstr "Aucune transaction ne correspond"
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
-#: src/app/(tabs)/settings/your-data.tsx
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
 msgstr "Aucune"
@@ -3350,7 +3336,7 @@ msgstr "Ne contient pas"
 msgid "Not downloaded"
 msgstr "Non téléchargé"
 
-#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+#: src/export/components/export-database/export-database.tsx
 msgid "Not encrypted, because there's no PIN. You choose where it goes."
 msgstr "Non chiffrée, car il n'y a pas de code PIN. Tu choisis où elle va."
 
@@ -3521,10 +3507,7 @@ msgstr "Ouvrez Privat24 et sélectionnez la carte ou le compte que vous souhaite
 msgid "Open settings"
 msgstr "Ouvrir les paramètres"
 
-#: src/app/(tabs)/settings/your-data.tsx
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
 msgstr "S'ouvre avec"
 
@@ -3684,9 +3667,8 @@ msgstr "par mois"
 msgid "Permission to access contacts was denied."
 msgstr "La permission d'accéder aux contacts a été refusée."
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-status-badge/security-status-badge.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Phone lock only"
 msgstr "Verrouillage du téléphone uniquement"
 
@@ -4136,8 +4118,7 @@ msgstr "Protection des captures d'écran"
 msgid "Seal"
 msgstr "Sceller"
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
+#: src/auth/components/security-status-badge/security-status-badge.tsx
 msgid "Sealed"
 msgstr "Scellé"
 
@@ -4145,7 +4126,7 @@ msgstr "Scellé"
 msgid "Sealed · {contents}"
 msgstr "Scellé · {contents}"
 
-#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+#: src/export/components/export-database/export-database.tsx
 msgid "Sealed with your PIN. You choose where it goes."
 msgstr "Scellée avec ton code PIN. Tu choisis où elle va."
 
@@ -4800,8 +4781,7 @@ msgstr "Ce téléphone a d'abord besoin de {missingSize} Go d'espace libre en pl
 msgid "This phone only"
 msgstr "Ce téléphone uniquement"
 
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "This phone's lock"
 msgstr "Le verrouillage de ce téléphone"
 
@@ -5406,7 +5386,7 @@ msgstr "Vos données restent intactes sur cet appareil. Réessayez ou restaurez 
 msgid "Your data: {state}"
 msgstr "Tes données : {state}"
 
-#: src/export/hook/use-export-database-action.hook.ts
+#: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
 msgstr "Votre sauvegarde de base de données est prête à être partagée."
 
@@ -5426,15 +5406,15 @@ msgstr "Votre argent sera dans un fichier sur ce téléphone. Choisissez qui peu
 msgid "Your phone's lock will be the only lock."
 msgstr "Le verrouillage de ton téléphone sera le seul verrou."
 
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN"
 msgstr "Ton code PIN"
 
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Face ID"
 msgstr "Ton code PIN · Face ID"
 
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Fingerprint"
 msgstr "Ton code PIN · Empreinte digitale"
 

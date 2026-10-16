@@ -55,7 +55,7 @@ export const OnboardingStepLayout = (props: Props) => {
             }
             footer={<View className="mx-5xl mb-5xl gap-y-md">{footer}</View>}
         >
-            <ScrollView className="flex-1" contentContainerClassName="pb-5xl gap-y-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
                 <Animated.View key={step} entering={contentEntering} className="gap-y-5xl">
                     {children}
                 </Animated.View>

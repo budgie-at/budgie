@@ -1,11 +1,14 @@
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import type { AiModelDownloadBytesInterface } from '../interface/ai-model-download-bytes.interface';
 import type { AiModelDownloadProgressInterface } from '../interface/ai-model-download-progress.interface';
 
-export const sumAiModelDownloadBytes = (models: readonly AiModelDownloadProgressInterface[]): AiModelDownloadBytesInterface =>
-    models.reduce<AiModelDownloadBytesInterface>(
-        (sum, model) => ({
-            downloadedBytes: sum.downloadedBytes + (model.isComplete ? model.totalBytes : Math.min(model.bytesWritten, model.totalBytes)),
-            totalBytes: sum.totalBytes + model.totalBytes
-        }),
-        { downloadedBytes: 0, totalBytes: 0 }
+export const sumAiModelDownloadBytes = (models: readonly AiModelDownloadProgressInterface[]): AiModelDownloadBytesInterface => {
+    const downloadedBytes = models.reduce(
+        (sum, model) => sum + (model.isComplete ? model.totalBytes : Math.min(model.bytesWritten, model.totalBytes)),
+        0
     );
+    const totalBytes = models.reduce((sum, model) => sum + model.totalBytes, 0);
+
+    return { downloadedBytes, totalBytes, ratio: isPositiveNumber(totalBytes) ? downloadedBytes / totalBytes : 0 };
+};

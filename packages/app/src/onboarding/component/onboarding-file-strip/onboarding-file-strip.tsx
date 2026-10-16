@@ -1,11 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { FileChip } from '../../../@generic/component/file-chip/file-chip';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
+import { cn } from '../../../@generic/utils/cn.util';
 
 import { OnboardingFileStripSelector } from './onboarding-file-strip.selector';
 
@@ -27,21 +29,18 @@ export const OnboardingFileStrip = ({ state, isSealed }: Props) => {
     const stateIcon = isSealed ? UserIconNameEnum.Lock : UserIconNameEnum.LockOpen;
 
     return (
-        <View
+        <FileChip
             testID={OnboardingFileStripSelector.Root}
-            accessible
+            icon={UserIconNameEnum.Database}
+            name={DB_NAME}
             accessibilityLabel={t`Your data: ${state}`}
-            className="flex-1 flex-row items-center gap-x-md rounded-3xl border border-secondary-corner bg-secondary-background px-lg py-md"
         >
-            <Icon icon={UserIconNameEnum.Database} size={16} className="text-primary" />
-            <Text className="text-primary text-xs font-semibold">{DB_NAME}</Text>
-
             <Animated.View key={state} entering={stateEntering} exiting={stateExiting} className="ml-auto flex-row items-center gap-x-xs">
                 <Icon icon={stateIcon} size={12} className={stateColorClassName} />
-                <Text testID={OnboardingFileStripSelector.State} numberOfLines={1} className={`text-xs ${stateColorClassName}`}>
+                <Text testID={OnboardingFileStripSelector.State} numberOfLines={1} className={cn('text-xs', stateColorClassName)}>
                     {state}
                 </Text>
             </Animated.View>
-        </View>
+        </FileChip>
     );
 };

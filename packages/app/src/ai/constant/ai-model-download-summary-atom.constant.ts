@@ -16,7 +16,7 @@ const FULL_PERCENT = 100;
 const deriveSummary = (get: Atom.AtomContext): AiModelDownloadSummaryInterface => {
     const snapshot = get(aiModelDownloadSnapshotAtom);
     const isEnabled = isAiEnabled() && get(settingsContextAtom).settings.isAiEnabled;
-    const { downloadedBytes, totalBytes } = sumAiModelDownloadBytes(Object.values(snapshot.models));
+    const { downloadedBytes, totalBytes, ratio } = sumAiModelDownloadBytes(Object.values(snapshot.models));
     const remainingBytes = Math.max(0, totalBytes - downloadedBytes);
     const isDownloading = snapshot.status === AiModelDownloadStatusEnum.DOWNLOADING;
 
@@ -25,7 +25,7 @@ const deriveSummary = (get: Atom.AtomContext): AiModelDownloadSummaryInterface =
         downloadedBytes,
         totalBytes,
         remainingBytes,
-        percent: isPositiveNumber(totalBytes) ? Math.floor((downloadedBytes / totalBytes) * FULL_PERCENT) : 0,
+        percent: Math.floor(ratio * FULL_PERCENT),
         etaSeconds: isDownloading && isPositiveNumber(snapshot.bytesPerSecond) ? Math.ceil(remainingBytes / snapshot.bytesPerSecond) : null,
         missingBytes: snapshot.missingBytes,
         freeBytes: snapshot.freeBytes,

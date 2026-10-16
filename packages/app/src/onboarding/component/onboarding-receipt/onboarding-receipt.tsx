@@ -6,7 +6,7 @@ import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingFileState } from '../../hook/use-onboarding-file-state.hook';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
-import { useOnboardingOpensWithLabel } from '../../hook/use-onboarding-opens-with-label.hook';
+import { useOnboardingReceiptRows } from '../../hook/use-onboarding-receipt-rows.hook';
 import { OnboardingNote } from '../onboarding-note/onboarding-note';
 import { OnboardingReceiptCard } from '../onboarding-receipt-card/onboarding-receipt-card';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
@@ -18,16 +18,11 @@ export const OnboardingReceipt = () => {
     const { t } = useLingui();
     const { goToStep, completeOnboarding } = useOnboardingNavigation();
     const { state, isSealed } = useOnboardingFileState();
-    const opensWith = useOnboardingOpensWithLabel();
+    const fileRows = useOnboardingReceiptRows();
 
     const handleChooseContentsPress = () => void goToStep(OnboardingStepEnum.ACCOUNTS);
 
-    const receiptRows = [
-        { label: t`File`, value: DB_NAME },
-        { label: t`Lives on`, value: t`This phone` },
-        { label: t`Opens with`, value: opensWith },
-        { label: t`Copies elsewhere`, value: t`None` }
-    ];
+    const receiptRows = [{ label: t`File`, value: DB_NAME }, { label: t`Lives on`, value: t`This phone` }, ...fileRows];
 
     return (
         <OnboardingStepLayout

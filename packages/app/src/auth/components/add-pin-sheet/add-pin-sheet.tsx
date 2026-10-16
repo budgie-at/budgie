@@ -5,11 +5,11 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
 import { useDatabaseFileSize } from '../../../@generic/drizzle/hook/use-database-file-size.hook';
 import { useFormatFileSize } from '../../../@generic/hook/use-format-file-size.hook';
+import { OnboardingStepIntro } from '../../../onboarding/component/onboarding-step-intro/onboarding-step-intro';
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 
 import { AddPinSheetSelector } from './add-pin-sheet.selector';
@@ -31,19 +31,12 @@ export const AddPinSheet = () => {
 
     return (
         <View testID={AddPinSheetSelector.Root} className="bg-primary-reverse px-5xl pt-7xl pb-safe-or-[16px] gap-y-3xl">
-            <CircleIcon icon={UserIconNameEnum.KeyRound} variant="warning" size={48} iconSize={24} className="rounded-3xl" />
-
-            <View className="gap-y-md">
-                <Text className="text-primary text-3xl font-semibold">
-                    <Trans>Lock Budgie with your own PIN</Trans>
-                </Text>
-                <Text className="text-secondary-foreground text-md">
-                    <Trans>
-                        Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens
-                        with it.
-                    </Trans>
-                </Text>
-            </View>
+            <OnboardingStepIntro
+                icon={UserIconNameEnum.KeyRound}
+                iconVariant="warning"
+                title={t`Lock Budgie with your own PIN`}
+                description={t`Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it.`}
+            />
 
             <Card variant="secondary" size="md" className="gap-y-md">
                 {steps.map((step, index) => (

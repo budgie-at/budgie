@@ -16,6 +16,7 @@ import { AppResetService } from '../../../@generic/service/app-reset.service';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
+import { OnboardingStepIntro } from '../../../onboarding/component/onboarding-step-intro/onboarding-step-intro';
 
 import { ForgotPinSheetSelector } from './forgot-pin-sheet.selector';
 
@@ -54,19 +55,12 @@ export const ForgotPinSheet = () => {
 
     return (
         <View testID={ForgotPinSheetSelector.Root} className="bg-primary-reverse px-5xl pt-7xl pb-safe-or-[16px] gap-y-3xl">
-            <CircleIcon icon={UserIconNameEnum.KeyRound} variant="destructive" size={48} iconSize={24} className="rounded-3xl" />
-
-            <View className="gap-y-md">
-                <Text className="text-primary text-3xl font-semibold">
-                    <Trans>Budgie can&apos;t reset your PIN</Trans>
-                </Text>
-                <Text className="text-secondary-foreground text-md">
-                    <Trans>
-                        It&apos;s the only key to your file. There&apos;s no account and no copy on a server, so there&apos;s nothing to
-                        reset it from.
-                    </Trans>
-                </Text>
-            </View>
+            <OnboardingStepIntro
+                icon={UserIconNameEnum.KeyRound}
+                iconVariant="destructive"
+                title={t`Budgie can't reset your PIN`}
+                description={t`It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from.`}
+            />
 
             <View className="gap-y-md">
                 <SimpleHorizontalCell

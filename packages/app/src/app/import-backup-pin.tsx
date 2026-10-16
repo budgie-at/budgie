@@ -8,8 +8,8 @@ import { Text, View } from 'react-native';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../@generic/component/button/button';
+import { FileChip } from '../@generic/component/file-chip/file-chip';
 import { GoBackButton } from '../@generic/component/go-back-button/go-back-button';
-import { Icon } from '../@generic/component/icon/icon';
 import { LoadingOverlay } from '../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../@generic/component/page/full-page';
 import { useFormatFileSize } from '../@generic/hook/use-format-file-size.hook';
@@ -95,13 +95,9 @@ export default function ImportBackupPinModal() {
             <View className="flex-row items-center gap-x-md px-5xl pt-lg">
                 <GoBackButton onPress={handleCancel} />
 
-                <View className="flex-1 flex-row items-center gap-x-md rounded-3xl border border-secondary-corner bg-secondary-background px-lg py-md">
-                    <Icon icon={UserIconNameEnum.Archive} size={16} className="text-primary" />
-                    <Text numberOfLines={1} className="text-primary text-xs font-semibold flex-1">
-                        {backupFileName}
-                    </Text>
-                    <Text className="text-secondary-foreground text-xs">{backupFileSize}</Text>
-                </View>
+                <FileChip icon={UserIconNameEnum.Archive} name={backupFileName}>
+                    <Text className="ml-auto text-secondary-foreground text-xs">{backupFileSize}</Text>
+                </FileChip>
             </View>
 
             <View className="flex-1 px-6xl justify-center">

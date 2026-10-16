@@ -89,8 +89,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
             return {
                 directory,
                 modelFile: new File(directory, filename),
-                tempFile: new File(directory, `${filename}.download`),
-                sizeFile: new File(directory, `${filename}.size`)
+                tempFile: new File(directory, `${filename}.download`)
             };
         };
 
@@ -231,7 +230,7 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
             Effect.retry(effect, { schedule: retrySchedule, times: retryTimes, while: isNetworkAllowed });
 
         const finalizeModel = Effect.fnUntraced(function* (name: AiSubsystemNameEnum) {
-            const { modelFile, tempFile, sizeFile } = resolveFiles(name);
+            const { modelFile, tempFile } = resolveFiles(name);
             const expectedBytes = reportedTotals.get(name) ?? 0;
             const downloadedBytes = tempFile.exists ? tempFile.size : 0;
             yield* forgetResume(name);
@@ -246,9 +245,6 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
                 deleteIfExists(modelFile);
             });
             yield* Effect.promise(() => tempFile.move(modelFile));
-            yield* Effect.sync(() => {
-                sizeFile.writeSync(String(downloadedBytes));
-            });
             patchModel(name, { bytesWritten: downloadedBytes, totalBytes: downloadedBytes, isComplete: true });
 
             return AiModelDownloadOutcomeEnum.COMPLETED;
@@ -372,8 +368,8 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
         });
 
         const deleteModelFiles = (name: AiSubsystemNameEnum): void => {
-            const { modelFile, tempFile, sizeFile } = resolveFiles(name);
-            deleteIfExists(modelFile, tempFile, sizeFile);
+            const { modelFile, tempFile } = resolveFiles(name);
+            deleteIfExists(modelFile, tempFile);
             reportedTotals.delete(name);
             patchModel(name, { bytesWritten: 0, totalBytes: AI_MODEL_FILES[name].estimatedBytes, isComplete: false });
         };

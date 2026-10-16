@@ -66,7 +66,6 @@ export { mapSyncAccountToCreateInput } from './core/utils/map-sync-account-to-cr
 export type { SyncProviderCapabilitiesInterface } from './core/interface/sync-provider-capabilities.interface';
 export type { FileBankSyncImportResultInterface } from './core/interface/file-bank-sync-import-result.interface';
 export type { FileBankSyncImportReviewInterface } from './core/interface/file-bank-sync-import-review.interface';
-export type { FileBankSyncReviewAccountInterface } from './core/interface/file-bank-sync-review-account.interface';
 export type { FileBankSyncReviewTransactionInterface } from './core/interface/file-bank-sync-review-transaction.interface';
 export type { FileBasedSyncClientInterface } from './core/interface/file-based-sync-client.interface';
 export type { FileSyncServiceDefinitionInterface } from './core/interface/file-sync-service-definition.interface';

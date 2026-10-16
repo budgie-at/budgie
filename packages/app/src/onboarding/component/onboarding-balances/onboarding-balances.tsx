@@ -10,6 +10,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { MANUAL_BALANCE_ACCOUNT_TYPES } from '../../../account/constant/manual-balance-account-types.constant';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -23,15 +24,6 @@ import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-
 
 import { OnboardingBalancesSelector } from './onboarding-balances.selector';
 
-const MANUAL_BALANCE_TYPES: ReadonlySet<AccountTypeEnum> = new Set([
-    AccountTypeEnum.CASH,
-    AccountTypeEnum.BANK,
-    AccountTypeEnum.SAVINGS,
-    AccountTypeEnum.DEPOSIT,
-    AccountTypeEnum.CRYPTO,
-    AccountTypeEnum.STOCKS
-]);
-
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const OnboardingBalances = () => {
     const { t } = useLingui();
@@ -44,10 +36,10 @@ export const OnboardingBalances = () => {
     const { defaultInstrument } = useSettingsContext();
     const { state, isSealed } = useOnboardingFileState();
 
-    const manualAccounts = accounts.filter(account => MANUAL_BALANCE_TYPES.has(account.type));
+    const manualAccounts = accounts.filter(account => MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type));
     const enteredBalances = manualAccounts
         .filter(account => (balances[account.id] ?? 0) !== 0)
-        .map(account => ({ account, balance: balances[account.id] ?? 0 }));
+        .map(account => ({ accountId: account.id, balance: balances[account.id] ?? 0 }));
 
     const handleBalanceChange = (accountId: number, value: number) => {
         setBalances(currentBalances => ({ ...currentBalances, [accountId]: value }));

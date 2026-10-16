@@ -21,78 +21,63 @@ import { FileUploadStep } from '../file-upload-step/file-upload-step';
 import { CreateFileBankAccountSelector } from './create-file-bank-account.selector';
 
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
-import type { SelectedFileInterface } from '../../interface/selected-file.interface';
 import type { FileBankSyncImportReviewInterface } from '@budgie/sync';
 
 interface CreateFileBankAccountProps {
     readonly config: CreateFileBankAccountConfigInterface;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
     const [step, setStep] = useState(FileImportStepEnum.FILE);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<SelectedFileInterface | null>(null);
+    const [selectedFile, setSelectedFile] = useState<Pick<DocumentPicker.DocumentPickerAsset, 'name' | 'uri'> | null>(null);
     const [review, setReview] = useState<FileBankSyncImportReviewInterface | null>(null);
     const accountSelection = useAccountSelection();
     const { selectedAccounts, setPreviews } = accountSelection;
     const onboardingHref = useOnboardingRedirect();
 
-    const handleSelectFile = async () => {
+    const runStep = async (errorTitle: string, action: () => Promise<void>) => {
         setIsLoading(true);
         try {
+            await action();
+        } catch (error) {
+            Toast.show({ type: 'error', text1: errorTitle, text2: getErrorMessage(error) });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSelectFile = () =>
+        runStep(t`Invalid file`, async () => {
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
             const asset = result.assets?.at(0);
 
             if (result.canceled || !isDefined(asset) || !isNotEmptyString(asset.uri)) {
-                setIsLoading(false);
-
                 return;
             }
 
-            const previews = await config.importPreview(asset.uri);
-            setSelectedFile({ uri: asset.uri, name: asset.name });
-            setPreviews(previews);
+            setPreviews(await config.importPreview(asset.uri));
+            setSelectedFile(asset);
             setStep(FileImportStepEnum.ACCOUNTS);
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Invalid file`, text2: getErrorMessage(error) });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        });
 
-    const handleReview = async () => {
-        if (!isDefined(selectedFile)) {
-            return;
-        }
+    const handleReview = () =>
+        runStep(t`Invalid file`, async () => {
+            if (isDefined(selectedFile)) {
+                setReview(await config.reviewImport(selectedFile.uri, [...selectedAccounts]));
+                setStep(FileImportStepEnum.REVIEW);
+            }
+        });
 
-        setIsLoading(true);
-        try {
-            setReview(await config.reviewImport(selectedFile.uri, [...selectedAccounts]));
-            setStep(FileImportStepEnum.REVIEW);
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Invalid file`, text2: getErrorMessage(error) });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleImport = async () => {
-        if (!isDefined(selectedFile)) {
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            await config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
-            router.replace(onboardingHref ?? '/');
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Import failed`, text2: getErrorMessage(error) });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const handleImport = () =>
+        runStep(t`Import failed`, async () => {
+            if (isDefined(selectedFile)) {
+                await config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
+                router.replace(onboardingHref ?? '/');
+            }
+        });
 
     const newTransactionCount = isDefined(review) ? review.parsedTransactionCount - review.duplicateTransactionCount : 0;
     const importLabel = t({ message: plural(newTransactionCount, { one: 'Import # transaction', other: 'Import # transactions' }) });

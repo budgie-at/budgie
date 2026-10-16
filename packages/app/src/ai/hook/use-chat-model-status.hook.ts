@@ -2,8 +2,6 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import { useEffect } from 'react';
 
-import { isPositiveNumber } from '@rnw-community/shared';
-
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { aiModelDownloadSnapshotAtom, chatModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
@@ -42,17 +40,14 @@ export const useChatModelStatus = (): UseChatModelStatusReturn => {
         };
     }, []);
 
-    const { downloadedBytes, totalBytes } = sumAiModelDownloadBytes([
-        models[AiSubsystemNameEnum.CHAT],
-        models[AiSubsystemNameEnum.EMBEDDING]
-    ]);
+    const { ratio } = sumAiModelDownloadBytes([models[AiSubsystemNameEnum.CHAT], models[AiSubsystemNameEnum.EMBEDDING]]);
 
     return {
         isChatReady,
         modelStatus: {
             isReady: isChatReady,
             isInitializing: chat.status === AiSubsystemStatusEnum.INITIALIZING || chat.status === AiSubsystemStatusEnum.DOWNLOADING,
-            downloadProgress: isPositiveNumber(totalBytes) ? downloadedBytes / totalBytes : 0,
+            downloadProgress: ratio,
             error: chat.errorMessage
         }
     };

@@ -15,7 +15,7 @@ import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { useOnboardingOpensWithLabel } from '../../hook/use-onboarding-opens-with-label.hook';
+import { useOnboardingReceiptRows } from '../../hook/use-onboarding-receipt-rows.hook';
 
 import { OnboardingSealedMomentSelector } from './onboarding-sealed-moment.selector';
 
@@ -34,7 +34,7 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
 
     const reducedMotion = useReducedMotion();
     const [, hapticImpact] = useVibration();
-    const opensWith = useOnboardingOpensWithLabel();
+    const [opensWithRow, copiesElsewhereRow] = useOnboardingReceiptRows();
 
     const sealedAt = new Date();
     const sealedDate = intl.formatDate(sealedAt, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -88,18 +88,12 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
 
                 <View className="mx-5xl rounded-[22px] border border-white/22 bg-white/10 px-4xl py-xs">
                     <View className="flex-row justify-between gap-x-lg border-b border-white/18 py-xl">
-                        <Text className="text-white/80 text-sm">
-                            <Trans>Opens with</Trans>
-                        </Text>
-                        <Text className="text-white text-sm">{opensWith}</Text>
+                        <Text className="text-white/80 text-sm">{opensWithRow.label}</Text>
+                        <Text className="text-white text-sm">{opensWithRow.value}</Text>
                     </View>
                     <View className="flex-row justify-between gap-x-lg py-xl">
-                        <Text className="text-white/80 text-sm">
-                            <Trans>Copies elsewhere</Trans>
-                        </Text>
-                        <Text className="text-white text-sm font-semibold">
-                            <Trans>None</Trans>
-                        </Text>
+                        <Text className="text-white/80 text-sm">{copiesElsewhereRow.label}</Text>
+                        <Text className="text-white text-sm font-semibold">{copiesElsewhereRow.value}</Text>
                     </View>
                 </View>
 

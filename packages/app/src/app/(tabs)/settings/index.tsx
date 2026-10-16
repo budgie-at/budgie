@@ -236,7 +236,7 @@ export default function SettingsPage() {
                             <ImportCsv />
                             <ExportCsv />
                             <ImportDatabase />
-                            <ExportDatabase />
+                            <ExportDatabase testID={SettingsPageSelector.ExportDatabaseCard} />
                             <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
                             <RepairSyncData />
                             <ConsolidateTransfers />

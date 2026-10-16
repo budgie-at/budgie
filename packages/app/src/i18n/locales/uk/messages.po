@@ -1313,10 +1313,7 @@ msgstr "Перетворити на переказ"
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
-#: src/app/(tabs)/settings/your-data.tsx
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Copies elsewhere"
 msgstr "Копії деінде"
 
@@ -1443,7 +1440,7 @@ msgstr "Не вдалося стерти дані"
 msgid "Could not export CSV"
 msgstr "Не вдалося експортувати CSV"
 
-#: src/export/hook/use-export-database-action.hook.ts
+#: src/export/components/export-database/export-database.tsx
 msgid "Could not export database"
 msgstr "Не вдалося експортувати базу даних"
 
@@ -1635,10 +1632,6 @@ msgstr "Покрито {coverMonths} місяцями витрат"
 msgid "Covered by your liquid balance"
 msgstr "Покрито вашим ліквідним балансом"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Create a backup of all your data"
-msgstr "Створити резервну копію всіх ваших даних"
-
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
@@ -1762,7 +1755,7 @@ msgstr "Темний режим"
 msgid "Data management"
 msgstr "Управління даними"
 
-#: src/export/hook/use-export-database-action.hook.ts
+#: src/export/components/export-database/export-database.tsx
 msgid "Database exported"
 msgstr "Базу даних експортовано"
 
@@ -2297,7 +2290,7 @@ msgstr "Витрата"
 msgid "Expenses"
 msgstr "Витрати"
 
-#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+#: src/export/components/export-database/export-database.tsx
 msgid "Export a backup"
 msgstr "Експортувати резервну копію"
 
@@ -2308,10 +2301,6 @@ msgstr "Експортувати всі транзакції до CSV-файлу
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export CSV"
 msgstr "Експортувати CSV"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Export Database"
-msgstr "Експортувати базу даних"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
@@ -3326,10 +3315,7 @@ msgstr "Жодна транзакція не відповідає"
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
-#: src/app/(tabs)/settings/your-data.tsx
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
 msgstr "Немає"
@@ -3350,7 +3336,7 @@ msgstr "Не містить"
 msgid "Not downloaded"
 msgstr "Не завантажено"
 
-#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+#: src/export/components/export-database/export-database.tsx
 msgid "Not encrypted, because there's no PIN. You choose where it goes."
 msgstr "Не зашифровано, бо немає PIN-коду. Ви обираєте, куди її зберегти."
 
@@ -3521,10 +3507,7 @@ msgstr "Відкрийте Приват24 і виберіть картку аб�
 msgid "Open settings"
 msgstr "Відкрити налаштування"
 
-#: src/app/(tabs)/settings/your-data.tsx
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
 msgstr "Відкривається"
 
@@ -3684,9 +3667,8 @@ msgstr "на місяць"
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-status-badge/security-status-badge.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
 msgid "Phone lock only"
 msgstr "Лише блокування телефона"
 
@@ -4136,8 +4118,7 @@ msgstr "Захист від скріншотів"
 msgid "Seal"
 msgstr "Запечатати"
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
+#: src/auth/components/security-status-badge/security-status-badge.tsx
 msgid "Sealed"
 msgstr "Запечатано"
 
@@ -4145,7 +4126,7 @@ msgstr "Запечатано"
 msgid "Sealed · {contents}"
 msgstr "Запечатано · {contents}"
 
-#: src/settings/components/your-data-export-card/your-data-export-card.tsx
+#: src/export/components/export-database/export-database.tsx
 msgid "Sealed with your PIN. You choose where it goes."
 msgstr "Запечатано вашим PIN-кодом. Ви обираєте, куди її зберегти."
 
@@ -4800,8 +4781,7 @@ msgstr "Цьому телефону спершу потрібно ще {missingS
 msgid "This phone only"
 msgstr "Лише цей телефон"
 
-#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "This phone's lock"
 msgstr "Блокування цього телефона"
 
@@ -5406,7 +5386,7 @@ msgstr "Ваші дані залишаються недоторканими на
 msgid "Your data: {state}"
 msgstr "Ваші дані: {state}"
 
-#: src/export/hook/use-export-database-action.hook.ts
+#: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
 msgstr "Ваша резервна копія бази даних готова до поширення."
 
@@ -5426,15 +5406,15 @@ msgstr "Ваші гроші зберігатимуться в одному фа�
 msgid "Your phone's lock will be the only lock."
 msgstr "Блокування телефона буде єдиним замком."
 
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN"
 msgstr "Ваш PIN-код"
 
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Face ID"
 msgstr "Ваш PIN-код · Face ID"
 
-#: src/onboarding/hook/use-onboarding-opens-with-label.hook.ts
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Fingerprint"
 msgstr "Ваш PIN-код · Відбиток пальця"
 

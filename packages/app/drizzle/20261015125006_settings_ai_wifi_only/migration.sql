@@ -1,1 +1,0 @@
-ALTER TABLE `settings` ADD `is_ai_wifi_only` integer DEFAULT true NOT NULL;
