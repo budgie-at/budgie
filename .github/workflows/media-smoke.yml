@@ -27,7 +27,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@aa9a6b522313196b50dbc1601db4333de6f7f0b0 # v3.3.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@b9502c1c3ea1c933485b3e657b47574072ed7ddf # v3.3.1
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder","trf-budgie-builder-2"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -43,11 +43,14 @@ jobs:
             # flows, fixtures and scripts this workflow triggers on live in
             # @budgie-at/app-tests, which the app does not depend on. Without app-tests
             # here a media-only pull request would skip the very smoke it triggered.
-            # A change to only the two .github files in `paths` affects no package
-            # and still skips; the nightly schedule always runs.
             target-packages: |
                 @budgie-at/app
                 @budgie-at/app-tests
+            # turbo attributes no change outside a workspace package, so the two
+            # .github files in `paths` would otherwise skip the smoke they trigger.
+            trigger-paths: |
+                .github/workflows/media-smoke.yml
+                .github/landing-media.config.json
             flows-dir: tests/app-tests/flows/media
             # PIN rekey quits the app on a seeded DB, and AI is disabled in the e2e build.
             flows-exclude-pattern: pin-app-lock-clip-1.flow.yaml, ai-auto-categorization-clip-1.flow.yaml
