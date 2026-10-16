@@ -430,6 +430,34 @@ jobs:
                         await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
                       }
 
+    lint-workflows:
+        name: Lint workflows
+        # Catches workflow files GitHub would reject at startup (e.g. a key
+        # duplicated by two merged PRs) before they reach main.
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Run actionlint
+              shell: bash
+              env:
+                  ACTIONLINT_VERSION: 1.7.12
+                  ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+              run: |
+                  set -euo pipefail
+                  dir="$(mktemp -d)"
+                  archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+                  curl -fsSL --retry 3 -o "$dir/$archive" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${archive}"
+                  echo "${ACTIONLINT_SHA256}  $dir/$archive" | sha256sum -c -
+                  tar -xzf "$dir/$archive" -C "$dir" actionlint
+                  "$dir/actionlint" -color
+
     required-ci:
         name: Required CI
         # The single check to mark required: it waits for every job above and
@@ -440,6 +468,7 @@ jobs:
         if: ${{ always() }}
         needs:
             - detect-mobile-impact
+            - lint-workflows
             - code-quality
             - e2e-script-tests
             - assert-ai-ota
