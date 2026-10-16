@@ -1,10 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import * as Duration from 'effect/Duration';
-import * as Effect from 'effect/Effect';
-import * as Fiber from 'effect/Fiber';
 import { ImpactFeedbackStyle } from 'expo-haptics';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { AccessibilityInfo, Pressable, Text, View } from 'react-native';
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 
@@ -13,13 +10,10 @@ import { EmptyFn } from '@rnw-community/shared';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useOnboardingReceiptRows } from '../../hook/use-onboarding-receipt-rows.hook';
 
 import { OnboardingSealedMomentSelector } from './onboarding-sealed-moment.selector';
-
-const MOMENT_DURATION = Duration.millis(1600);
 
 interface Props {
     readonly onContinue: EmptyFn;
@@ -28,9 +22,6 @@ interface Props {
 export const OnboardingSealedMoment = ({ onContinue }: Props) => {
     const { t } = useLingui();
     const { intl } = useI18nContext();
-
-    const onContinueRef = useRef(onContinue);
-    onContinueRef.current = onContinue;
 
     const reducedMotion = useReducedMotion();
     const [, hapticImpact] = useVibration();
@@ -45,13 +36,7 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
     useEffect(() => {
         hapticImpact(ImpactFeedbackStyle.Heavy);
         AccessibilityInfo.announceForAccessibility(t`Sealed. Only your PIN opens this file.`);
-
-        const fiber = appRuntime.runFork(
-            Effect.sleep(MOMENT_DURATION).pipe(Effect.andThen(Effect.sync(() => void onContinueRef.current())))
-        );
-
-        return () => void appRuntime.runFork(Fiber.interrupt(fiber));
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only effect; ref reads the live callback
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only haptic and announcement
     }, []);
 
     return (
