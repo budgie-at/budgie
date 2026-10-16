@@ -1,5 +1,5 @@
 import * as Effect from 'effect/Effect';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }: Props) => {
 
     const [isUnlocked, setIsUnlocked] = useState(hasFreshSealUnlockGrant);
     const [hasEnteredPinSinceLaunch, setHasEnteredPinSinceLaunch] = useState(isUnlocked);
+    const isPinEnteredRef = useRef(isUnlocked);
 
     const shouldAutoUnlock = !settingsLoading && !isPinEnabled;
 
@@ -36,13 +37,16 @@ export const AuthProvider = ({ children }: Props) => {
         const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
             if (nextAppState === 'background' && isPinEnabled) {
                 setIsUnlocked(false);
+                setHasEnteredPinSinceLaunch(isPinEnteredRef.current);
             }
         });
 
         return () => void subscription.remove();
     }, [isPinEnabled]);
 
-    const markPinEntered = () => void setHasEnteredPinSinceLaunch(true);
+    const markPinEntered = () => {
+        isPinEnteredRef.current = true;
+    };
 
     const value: AuthContextInterface = {
         isUnlocked,
