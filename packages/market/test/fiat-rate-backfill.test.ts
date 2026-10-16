@@ -2,6 +2,8 @@ import {
     AccountRepository,
     CurrencyEnum,
     HistoricalExchangeRateEntityTable,
+    InstrumentMarketDataJobEntityTable,
+    InstrumentMarketDataJobStatusEnum,
     InstrumentRepository,
     PRECISION,
     TransactionEntryEntityTable
@@ -178,10 +180,35 @@ describe('fiat rate backfill', () => {
 
             const drained = yield* drainFiatJob();
 
-            expect(drained?.result.unsupportedCurrencyCodes).toStrictEqual([CurrencyEnum.GBP]);
+            expect(drained?.result.unsupportedInstruments.map(instrument => instrument.code)).toStrictEqual([CurrencyEnum.GBP]);
             expect(requestedQuotes).not.toContain(CurrencyEnum.GBP);
             expect(yield* findBackfilledRates([pound.id])).toStrictEqual([]);
             expect(yield* findBackfilledRates([dollar.id])).toHaveLength(backfilledDates.length);
+        }).pipe(Effect.provide(FiatBackfillLayer))
+    );
+
+    it.effect('stops refetching a held currency the rate source does not cover', () =>
+        Effect.gen(function* () {
+            const [dollar, pound, euro] = yield* prepare([CurrencyEnum.USD, CurrencyEnum.GBP, CurrencyEnum.EUR]);
+
+            yield* setDefaultInstrument(dollar.id);
+            yield* testSeedService.account({ instrumentId: pound.id });
+            yield* drainFiatJob();
+            yield* testDb
+                .insert(HistoricalExchangeRateEntityTable)
+                .values({ sourceInstrumentId: dollar.id, targetInstrumentId: euro.id, rateDate: '2026-06-04', rate: 1 / 1.2 });
+            yield* TestClock.adjust('1 day');
+
+            expect(yield* drainFiatJob()).toBeNull();
+            expect(
+                yield* testDb
+                    .select({
+                        instrumentId: InstrumentMarketDataJobEntityTable.instrumentId,
+                        quoteInstrumentId: InstrumentMarketDataJobEntityTable.quoteInstrumentId
+                    })
+                    .from(InstrumentMarketDataJobEntityTable)
+                    .where(eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.UNSUPPORTED))
+            ).toStrictEqual([{ instrumentId: pound.id, quoteInstrumentId: euro.id }]);
         }).pipe(Effect.provide(FiatBackfillLayer))
     );
 });

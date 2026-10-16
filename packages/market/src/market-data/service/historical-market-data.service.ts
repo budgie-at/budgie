@@ -4,6 +4,7 @@ import {
     CurrencyEnum,
     Db,
     DbError,
+    InstrumentMarketDataJobStatusEnum,
     InstrumentPriceProviderEnum,
     InstrumentRepository,
     InstrumentTypeEnum,
@@ -234,12 +235,18 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
                 const accounts = yield* accountRepository.getAllActiveAccounts();
                 const heldInstrumentIds = new Set([baseInstrument.id, ...accounts.map(account => account.instrumentId)]);
+                const unsupportedInstrumentIds = new Set(
+                    yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(euroInstrument.id)
+                );
                 const fiatInstruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
 
                 return {
                     euroInstrument,
                     instruments: fiatInstruments.filter(
-                        instrument => heldInstrumentIds.has(instrument.id) && instrument.id !== euroInstrument.id
+                        instrument =>
+                            heldInstrumentIds.has(instrument.id) &&
+                            !unsupportedInstrumentIds.has(instrument.id) &&
+                            instrument.id !== euroInstrument.id
                     )
                 };
             });
@@ -319,9 +326,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                             ? [{ sourceInstrumentId, targetInstrumentId: job.quoteInstrumentId, rateDate: date, rate: 1 / rate }]
                             : [];
                     }),
-                    unsupportedCurrencyCodes: instruments
-                        .filter(instrument => !supportedCodes.has(instrument.code))
-                        .map(instrument => instrument.code)
+                    unsupportedInstruments: instruments.filter(instrument => !supportedCodes.has(instrument.code))
                 };
 
                 return result;
@@ -418,7 +423,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     const result: MarketDataJobResultInterface = {
                         prices,
                         rates: buildHistoricalRateInputs(prices),
-                        unsupportedCurrencyCodes: []
+                        unsupportedInstruments: []
                     };
 
                     return result;
@@ -435,6 +440,15 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                             [
                                 instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
                                 instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
+                                instrumentMarketDataJobRepository.enqueueMany(
+                                    result.unsupportedInstruments.map(unsupportedInstrument => ({
+                                        instrumentId: unsupportedInstrument.id,
+                                        quoteInstrumentId: job.quoteInstrumentId,
+                                        fromDate: job.fromDate,
+                                        toDate: job.toDate,
+                                        status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+                                    }))
+                                ),
                                 instrumentMarketDataJobRepository.markCompleted(job.id)
                             ],
                             { discard: true }

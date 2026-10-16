@@ -1,7 +1,11 @@
-import type { HistoricalExchangeRateCreateEntityInterface, InstrumentDailyMarketPriceCreateEntityInterface } from '@budgie/contracts';
+import type {
+    HistoricalExchangeRateCreateEntityInterface,
+    InstrumentDailyMarketPriceCreateEntityInterface,
+    InstrumentEntityInterface
+} from '@budgie/contracts';
 
 export interface MarketDataJobResultInterface {
     readonly prices: InstrumentDailyMarketPriceCreateEntityInterface[];
     readonly rates: HistoricalExchangeRateCreateEntityInterface[];
-    readonly unsupportedCurrencyCodes: string[];
+    readonly unsupportedInstruments: Pick<InstrumentEntityInterface, 'code' | 'id'>[];
 }

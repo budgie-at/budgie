@@ -30,8 +30,11 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
 
                 yield* historicalMarketDataService.fetchJobData(job).pipe(
                     Effect.tap(result =>
-                        isNotEmptyArray(result.unsupportedCurrencyCodes)
-                            ? Effect.logWarning('Historical fiat rates unavailable', result.unsupportedCurrencyCodes)
+                        isNotEmptyArray(result.unsupportedInstruments)
+                            ? Effect.logWarning(
+                                  'Historical fiat rates unavailable',
+                                  result.unsupportedInstruments.map(instrument => instrument.code)
+                              )
                             : Effect.void
                     ),
                     Effect.flatMap(result => workload.run(historicalMarketDataService.storeJobData(job, result))),
