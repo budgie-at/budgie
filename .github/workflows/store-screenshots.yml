@@ -29,7 +29,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@v3.3.0 # v3.3.0
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@aa9a6b522313196b50dbc1601db4333de6f7f0b0 # v3.3.0
         with:
             config-path: .github/store-screenshots.config.json
             package-manager: pnpm

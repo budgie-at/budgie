@@ -220,7 +220,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v3.3.0 # v3.3.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@aa9a6b522313196b50dbc1601db4333de6f7f0b0 # v3.3.0
         with:
             app-dir: packages/app
             scheme: budgie
@@ -239,7 +239,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v3.3.0 # v3.3.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@aa9a6b522313196b50dbc1601db4333de6f7f0b0 # v3.3.0
         with:
             working-directory: packages/app
             platforms: ios,android
@@ -262,7 +262,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.3.0 # v3.3.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@aa9a6b522313196b50dbc1601db4333de6f7f0b0 # v3.3.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder","trf-budgie-builder-2"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
