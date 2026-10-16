@@ -13,8 +13,8 @@ on:
         - cron: '0 3 * * *'
 
 concurrency:
-    group: media-smoke-${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: true
+    group: media-smoke-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
     contents: read

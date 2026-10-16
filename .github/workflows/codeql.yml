@@ -19,6 +19,13 @@ on:
   schedule:
     - cron: '25 13 * * 0'
 
+concurrency:
+  group: codeql-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
@@ -29,6 +36,7 @@ jobs:
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     # CodeQL is pinned to GitHub-hosted Ubuntu because the CLI does not support Linux arm64.
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       # required for all workflows
       security-events: write
