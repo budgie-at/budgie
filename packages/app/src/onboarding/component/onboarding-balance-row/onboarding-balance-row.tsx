@@ -45,7 +45,7 @@ export const OnboardingBalanceRow = ({ account, currencySymbol, value, onChangeV
                     onChangeValue={handleChangeValue}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
-                    inputClassName="text-primary text-2xl text-right border-0 h-auto min-w-24"
+                    inputClassName="flex-1 px-0 text-primary text-2xl text-right border-0 h-auto"
                     cursorColorClassName="accent-violet-foreground"
                     borderless
                     selectTextOnFocus
