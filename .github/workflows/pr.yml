@@ -426,3 +426,34 @@ jobs:
                       } else {
                         await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
                       }
+
+    required-ci:
+        name: Required CI
+        # The single check to mark required: it waits for every job above and
+        # fails if any of them failed or was cancelled. A skipped job (mobile
+        # impact gate off, fork PR) counts as passing.
+        if: ${{ !cancelled() }}
+        needs:
+            - detect-mobile-impact
+            - code-quality
+            - e2e-script-tests
+            - assert-ai-ota
+            - ota-preview
+            - fingerprint-guard
+            - ios-maestro
+            - store-screenshots-gallery
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions: {}
+        steps:
+            - name: Check every required job succeeded or was skipped
+              env:
+                  NEEDS_JSON: ${{ toJSON(needs) }}
+              run: |
+                  set -euo pipefail
+                  printf '%s' "$NEEDS_JSON" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+                  failed="$(printf '%s' "$NEEDS_JSON" | jq -r '[to_entries[] | select(.value.result != "success" and .value.result != "skipped") | .key] | join(", ")')"
+                  if [ -n "$failed" ]; then
+                    echo "::error::Required jobs did not succeed: $failed"
+                    exit 1
+                  fi
