@@ -77,7 +77,7 @@ const handleSafeAreaChange: SafeAreaListenerProps['onChange'] = ({ insets }) => 
 };
 
 const handleAppStateChange = (isActive: boolean): void => {
-    void appRuntime.runPromise(
+    appRuntime.runFork(
         Effect.gen(function* () {
             const workload = yield* Workload;
 
