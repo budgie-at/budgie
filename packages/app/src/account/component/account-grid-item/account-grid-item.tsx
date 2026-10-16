@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { MANUAL_BALANCE_ACCOUNT_TYPES } from '../../constant/manual-balance-account-types.constant';
 import { AccountCardBase } from '../account-card-base/account-card-base';
+import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 import { AccountCard } from '../account-card/account-card';
 
 interface Props {
@@ -21,7 +22,7 @@ export const AccountGridItem = ({ account, balance, hasLedgerHistory, type, isLe
     const cardTargetBalance = convertFromMicroUnits(targetBalance);
     const isAwaitingBalance = !hasLedgerHistory && MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type);
     const addBalanceContent = (
-        <Text className="text-secondary-foreground font-medium">
+        <Text testID={AccountCardBaseSelector.AddBalance(title)} className="text-secondary-foreground font-medium">
             <Trans>Add balance</Trans>
         </Text>
     );
