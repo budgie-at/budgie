@@ -65,7 +65,10 @@ jobs:
 
     code-quality:
         name: Code quality checks
-        runs-on: [self-hosted, trf-linux-amd64-4x8]
+        # GitHub-hosted (public repo: 4 vCPU / 16 GiB, no queue). The monorepo
+        # typecheck + type-aware oxlint + build need more than the fleet's 4 GiB
+        # 2x4 pool, and the 4x8 pool is the KVM pool Android e2e queues on.
+        runs-on: ubuntu-latest
         timeout-minutes: 60
         permissions:
             contents: read
@@ -182,7 +185,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
-        runs-on: [self-hosted, trf-linux-amd64-4x8]
+        runs-on: ubuntu-latest
         timeout-minutes: 10
         permissions:
             contents: read
@@ -199,7 +202,7 @@ jobs:
               uses: actions/setup-node@v7
               with:
                   node-version: 22.22.1
-                  package-manager-cache: false
+                  cache: pnpm
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
