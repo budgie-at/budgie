@@ -434,8 +434,10 @@ jobs:
         name: Required CI
         # The single check to mark required: it waits for every job above and
         # fails if any of them failed or was cancelled. A skipped job (mobile
-        # impact gate off, fork PR) counts as passing.
-        if: ${{ !cancelled() }}
+        # impact gate off, fork PR) counts as passing. always(), not
+        # !cancelled(): a cancelled run must still run this job and fail it,
+        # because GitHub treats a skipped required check as passing.
+        if: ${{ always() }}
         needs:
             - detect-mobile-impact
             - code-quality
