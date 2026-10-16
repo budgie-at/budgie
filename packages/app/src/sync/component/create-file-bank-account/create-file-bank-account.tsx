@@ -75,7 +75,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         runStep(t`Import failed`, async () => {
             if (isDefined(selectedFile)) {
                 await config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
-                router.replace(onboardingHref ?? '/');
+                router.dismissTo(onboardingHref ?? '/');
             }
         });
 
