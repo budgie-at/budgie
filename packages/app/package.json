@@ -126,7 +126,7 @@
         "babel-preset-expo": "58.0.6",
         "better-sqlite3": "^12.10.0",
         "drizzle-kit": "1.0.0-rc.4",
-        "eas-build-cache-provider": "^19.0.0",
+        "eas-build-cache-provider": "^24.13.0",
         "emojibase-data": "~17.0.0",
         "tailwindcss": "^4.3.3",
         "vitest": "^5.0.2"
