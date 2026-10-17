@@ -20,13 +20,13 @@
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
-        "@effect/sql-sqlite-node": "4.0.0",
+        "@effect/sql-sqlite-node": "4.0.4",
         "@rnw-community/shared": "^2.2.0",
         "drizzle-orm": "1.0.0-rc.4"
     },
     "devDependencies": {
         "@types/node": "22.20.1",
-        "effect": "4.0.0",
+        "effect": "4.0.4",
         "typescript": "npm:@typescript/typescript6@6.0.2"
     }
 }

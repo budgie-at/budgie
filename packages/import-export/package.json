@@ -28,12 +28,12 @@
         "@budgie/ledger": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
-        "effect": "4.0.0",
+        "effect": "4.0.4",
         "papaparse": "^5.7.0"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/vitest": "4.0.0",
+        "@effect/vitest": "4.0.4",
         "@types/node": "22.20.1",
         "@types/papaparse": "^5",
         "vitest": "^5.0.2"

@@ -18,8 +18,8 @@
         "@budgie/market": "workspace:*",
         "@budgie/rules": "workspace:*",
         "@budgie/sync": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.0",
-        "@effect/vitest": "4.0.0",
+        "@effect/sql-sqlite-node": "4.0.4",
+        "@effect/vitest": "4.0.4",
         "@liaugust/monobank-sdk": "^0.8.0",
         "@rnw-community/shared": "^2.2.0",
         "drizzle-orm": "1.0.0-rc.4",
@@ -27,9 +27,9 @@
         "vitest": "^5.0.2"
     },
     "devDependencies": {
-        "@lingui/core": "6.6.0",
+        "@lingui/core": "6.9.1",
         "@types/node": "22.20.1",
-        "effect": "4.0.0",
+        "effect": "4.0.4",
         "typescript": "npm:@typescript/typescript6@6.0.2",
         "xlsx": "^0.18.5"
     }

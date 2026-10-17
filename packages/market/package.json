@@ -28,12 +28,12 @@
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
         "drizzle-orm": "1.0.0-rc.4",
-        "effect": "4.0.0"
+        "effect": "4.0.4"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.0",
-        "@effect/vitest": "4.0.0",
+        "@effect/sql-sqlite-node": "4.0.4",
+        "@effect/vitest": "4.0.4",
         "@types/node": "22.20.1",
         "vitest": "^5.0.2"
     }
