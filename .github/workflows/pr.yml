@@ -5,10 +5,13 @@ env:
     PR_NUMBER: ${{ github.event.pull_request.number }}
 
 concurrency:
-    group: pr-${{ github.event.pull_request.number }}
-    cancel-in-progress: true
+    group: pr-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 on: pull_request
+
+permissions:
+    contents: read
 
 jobs:
     detect-mobile-impact:
@@ -23,7 +26,7 @@ jobs:
         steps:
             - name: Compute mobile-impact gate
               id: gate
-              uses: actions/github-script@v9
+              uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
               with:
                   script: |
                       let mobile = true;
@@ -65,22 +68,25 @@ jobs:
 
     code-quality:
         name: Code quality checks
-        runs-on: [self-hosted, trf-linux-amd64-4x8]
+        # GitHub-hosted (public repo: 4 vCPU / 16 GiB, no queue). The monorepo
+        # typecheck + type-aware oxlint + build need more than the fleet's 4 GiB
+        # 2x4 pool, and the 4x8 pool is the KVM pool Android e2e queues on.
+        runs-on: ubuntu-latest
         timeout-minutes: 60
         permissions:
             contents: read
             pull-requests: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
             - name: Setup Node
-              uses: actions/setup-node@v7
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.1
                   cache: pnpm
@@ -93,7 +99,7 @@ jobs:
 
             - name: Read current PR title
               id: current-pr
-              uses: actions/github-script@v9
+              uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
               with:
                   script: |
                       const { data } = await github.rest.pulls.get({
@@ -146,12 +152,12 @@ jobs:
             contents: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
 
             - name: Setup Node
-              uses: actions/setup-node@v7
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.1
 
@@ -159,7 +165,7 @@ jobs:
               timeout-minutes: 3
               run: |
                   if command -v sqlite3 && command -v ruby; then exit 0; fi
-                  for attempt in 1 2 3; do
+                  for _ in 1 2 3; do
                     timeout 90 sudo apt-get -o Acquire::Retries=3 update -qq \
                       && timeout 90 sudo apt-get install -y --no-install-recommends sqlite3 ruby \
                       && exit 0
@@ -182,24 +188,24 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
-        runs-on: [self-hosted, trf-linux-amd64-4x8]
+        runs-on: ubuntu-latest
         timeout-minutes: 10
         permissions:
             contents: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
             - name: Setup Node
-              uses: actions/setup-node@v7
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.1
-                  package-manager-cache: false
+                  cache: pnpm
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -214,7 +220,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v3.1.0 # v3.1.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@b9502c1c3ea1c933485b3e657b47574072ed7ddf # v3.3.1
         with:
             app-dir: packages/app
             scheme: budgie
@@ -233,7 +239,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v3.1.0 # v3.1.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@b9502c1c3ea1c933485b3e657b47574072ed7ddf # v3.3.1
         with:
             working-directory: packages/app
             platforms: ios,android
@@ -256,7 +262,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.1.0 # v3.1.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@b9502c1c3ea1c933485b3e657b47574072ed7ddf # v3.3.1
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder","trf-budgie-builder-2"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -267,6 +273,9 @@ jobs:
             target-packages: |
                 @budgie-at/app
                 @budgie-at/app-tests
+            # This file wires the e2e job, and turbo never sees it: a change here
+            # runs the suite rather than skipping it.
+            trigger-paths: .github/workflows/pr.yml
             targets: >-
                 [{"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
                 "appId":"com.vitalyiegorov.budgie.e2e","prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]
@@ -315,7 +324,7 @@ jobs:
             pull-requests: write
         steps:
             - name: Post or update the screenshot gallery comment
-              uses: actions/github-script@v9
+              uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
               with:
                   script: |
                       const marker = '<!-- budgie-store-screenshots-gallery -->';
@@ -420,3 +429,65 @@ jobs:
                       } else {
                         await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
                       }
+
+    lint-workflows:
+        name: Lint workflows
+        # Catches workflow files GitHub would reject at startup (e.g. a key
+        # duplicated by two merged PRs) before they reach main.
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Run actionlint
+              shell: bash
+              env:
+                  ACTIONLINT_VERSION: 1.7.12
+                  ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+              run: |
+                  set -euo pipefail
+                  dir="$(mktemp -d)"
+                  archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+                  curl -fsSL --retry 3 -o "$dir/$archive" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${archive}"
+                  echo "${ACTIONLINT_SHA256}  $dir/$archive" | sha256sum -c -
+                  tar -xzf "$dir/$archive" -C "$dir" actionlint
+                  "$dir/actionlint" -color
+
+    required-ci:
+        name: Required CI
+        # The single check to mark required: it waits for every job above and
+        # fails if any of them failed or was cancelled. A skipped job (mobile
+        # impact gate off, fork PR) counts as passing. always(), not
+        # !cancelled(): a cancelled run must still run this job and fail it,
+        # because GitHub treats a skipped required check as passing.
+        if: ${{ always() }}
+        needs:
+            - detect-mobile-impact
+            - lint-workflows
+            - code-quality
+            - e2e-script-tests
+            - assert-ai-ota
+            - ota-preview
+            - fingerprint-guard
+            - ios-maestro
+            - store-screenshots-gallery
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions: {}
+        steps:
+            - name: Check every required job succeeded or was skipped
+              env:
+                  NEEDS_JSON: ${{ toJSON(needs) }}
+              run: |
+                  set -euo pipefail
+                  printf '%s' "$NEEDS_JSON" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+                  failed="$(printf '%s' "$NEEDS_JSON" | jq -r '[to_entries[] | select(.value.result != "success" and .value.result != "skipped") | .key] | join(", ")')"
+                  if [ -n "$failed" ]; then
+                    echo "::error::Required jobs did not succeed: $failed"
+                    exit 1
+                  fi

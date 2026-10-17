@@ -13,8 +13,8 @@ on:
         - cron: '0 3 * * *'
 
 concurrency:
-    group: media-smoke-${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: true
+    group: media-smoke-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
     contents: read
@@ -27,7 +27,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.1.0 # v3.1.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@b9502c1c3ea1c933485b3e657b47574072ed7ddf # v3.3.1
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder","trf-budgie-builder-2"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -38,6 +38,19 @@ jobs:
                 APP_VARIANT=e2e
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true
+            # mobile-ci v3.3.0 gates pull requests on turbo even when target-packages
+            # is empty (it derives @budgie-at/app from targets[].appDir), and the media
+            # flows, fixtures and scripts this workflow triggers on live in
+            # @budgie-at/app-tests, which the app does not depend on. Without app-tests
+            # here a media-only pull request would skip the very smoke it triggered.
+            target-packages: |
+                @budgie-at/app
+                @budgie-at/app-tests
+            # turbo attributes no change outside a workspace package, so the two
+            # .github files in `paths` would otherwise skip the smoke they trigger.
+            trigger-paths: |
+                .github/workflows/media-smoke.yml
+                .github/landing-media.config.json
             flows-dir: tests/app-tests/flows/media
             shard-count: 1
             maestro-config: tests/app-tests/config.yaml
