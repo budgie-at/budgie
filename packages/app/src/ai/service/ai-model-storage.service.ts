@@ -1,4 +1,3 @@
-import { EMBEDDING_MODEL_FILENAME } from '@budgie/categorization';
 import { Db, SettingsRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -10,11 +9,11 @@ import { isDefined } from '@rnw-community/shared';
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { AI_MODEL_FILES } from '../constant/ai-model-files.constant';
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
-import { WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_FILENAME, WHISPER_MODEL_TEMP_FILENAME } from '../constant/whisper-model.constant';
+import { WHISPER_MODEL_FILENAME } from '../constant/whisper-model.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { CHAT_MODEL_FILENAME } from '../utils/ai-constants.util';
 import { getEnabledAiSubsystems } from '../utils/get-enabled-ai-subsystems.util';
 
 export class AiModelStorageService extends Context.Service<AiModelStorageService>()('@budgie/app/AiModelStorageService', {
@@ -26,10 +25,15 @@ export class AiModelStorageService extends Context.Service<AiModelStorageService
             [AiSubsystemNameEnum.STT]: sttSnapshotAtom
         };
         const modelFiles = [
-            { path: [CHAT_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.CHAT },
-            { path: [EMBEDDING_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.EMBEDDING },
-            { path: [WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.STT },
-            { path: [WHISPER_MODEL_DIRECTORY, WHISPER_MODEL_TEMP_FILENAME], subsystem: AiSubsystemNameEnum.STT },
+            ...Object.values(AiSubsystemNameEnum).flatMap(subsystem => {
+                const { directory, filename } = AI_MODEL_FILES[subsystem];
+                const directoryPath = isDefined(directory) ? [directory] : [];
+
+                return [
+                    { path: [...directoryPath, filename], subsystem },
+                    { path: [...directoryPath, `${filename}.download`], subsystem }
+                ];
+            }),
             { path: [WHISPER_MODEL_FILENAME], subsystem: AiSubsystemNameEnum.STT },
             { path: ['nomic-embed-text-v2-moe.Q8_0.gguf'], subsystem: null },
             { path: ['qwen2.5-1.5b-instruct-q8_0.gguf'], subsystem: null }

@@ -29,7 +29,7 @@ import { vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import { Fiber, testDb } from '../../harness';
+import { aiModelDownloadStub, Fiber, testDb } from '../../harness';
 
 import type { AiFeatureSettingsInterface } from '@app/ai/interface/ai-feature-settings.interface';
 
@@ -42,9 +42,11 @@ const native = vi.hoisted(() => ({
 }));
 
 vi.mock('llama.rn', () => ({ initLlama: () => Promise.resolve(native.context) }));
-vi.mock('@app/ai/utils/download-model.util', () => ({ downloadModel: () => Effect.succeed('/tmp/model') }));
 
 vi.mock('react-native', () => ({ AppState: { currentState: 'active', addEventListener: appState.addEventListener } }));
+
+const provideTestServices = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+    effect.pipe(Effect.provide([SettingsRepository.layer, aiModelDownloadStub]), Effect.provideService(Db, testDb));
 
 const makeLifecycle = Effect.fnUntraced(function* (
     features: AiFeatureSettingsInterface = {
@@ -143,7 +145,7 @@ describe('AiCoordinatorService lifecycle', () => {
             expect(resumes).toEqual([[AiSubsystemNameEnum.CHAT], [AiSubsystemNameEnum.CHAT]]);
             yield* coordinator.stop();
             yield* chat.model.stop();
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 
     it.effect('joins shutdown before restart and uses the latest committed feature flags', () =>
@@ -163,7 +165,7 @@ describe('AiCoordinatorService lifecycle', () => {
             yield* Effect.andThen(repository.update({ isAiEnabled: false, isAiSuggestionsEnabled: false }), coordinator.restart());
             expect(resumes).toHaveLength(2);
             yield* coordinator.stop();
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 
     it.effect('keeps rapid queued restarts disabled after the final committed toggle', () =>
@@ -180,7 +182,7 @@ describe('AiCoordinatorService lifecycle', () => {
             yield* Fiber.joinAll([first, second, third]);
             expect(resumes).toHaveLength(1);
             yield* coordinator.stop();
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 });
 
@@ -211,7 +213,7 @@ describe('AI shutdown recovery', () => {
             yield* Queue.take(started);
             expect(resumes).toHaveLength(2);
             yield* coordinator.stop();
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 
     it.effect('retries a failed background shutdown before foreground replacement', () =>
@@ -231,7 +233,7 @@ describe('AI shutdown recovery', () => {
             setShutdown(Effect.void);
             yield* coordinator.stop();
             expect(transition).toBe('retry');
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 });
 
@@ -246,7 +248,7 @@ describe('AI background transitions', () => {
             yield* coordinator.restart();
             yield* Queue.take(started);
             yield* coordinator.stop();
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 
     it.effect('orders background release and foreground restart without a scope-close deadlock', () =>
@@ -262,7 +264,7 @@ describe('AI background transitions', () => {
             yield* Effect.yieldNow;
             expect(resumes).toHaveLength(1);
             yield* release.pipe(Effect.andThen(Fiber.join(restarting)), Effect.andThen(coordinator.stop()));
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 });
 
@@ -287,6 +289,6 @@ describe('AiCoordinatorService.start', () => {
             expect(resumes).toEqual([subsystems]);
             expect(drainerStarts).toEqual(startedDrainers);
             yield* coordinator.stop();
-        }).pipe(Effect.provide(SettingsRepository.layer), Effect.provideService(Db, testDb))
+        }).pipe(provideTestServices)
     );
 });

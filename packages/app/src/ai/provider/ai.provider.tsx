@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from 'react';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { AiCoordinatorService } from '../service/ai-coordinator.service';
+import { AiModelDownloadService } from '../service/ai-model-download.service';
 
 interface Props {
     readonly children: ReactNode;
@@ -14,6 +15,13 @@ export const AiProvider = ({ children }: Props) => {
     const isAiVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
     const isAiSuggestionsEnabled = useSetting('isAiSuggestionsEnabled');
     const isAiTranslationsEnabled = useSetting('isAiTranslationsEnabled');
+    const isAiWifiOnly = useSetting('isAiWifiOnly');
+
+    useEffect(() => {
+        appRuntime.runFork(
+            Effect.flatMap(AiModelDownloadService, aiModelDownloadService => aiModelDownloadService.setWifiOnly(isAiWifiOnly))
+        );
+    }, [isAiWifiOnly]);
 
     useEffect(() => {
         appRuntime.runFork(

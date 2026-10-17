@@ -1,7 +1,4 @@
 import { AccountWithSyncEntityInterface } from '@budgie/contracts';
-import { View } from 'react-native';
-
-import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { AnimatedSectionList } from '../../../@generic/component/animated-section-list/animated-section-list';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
@@ -31,8 +28,7 @@ interface Props {
 export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
-    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
-    const emptyStateStyle = { paddingBottom: bottomPadding };
+    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20, flexGrow: 1 };
     const listFormatKey = `${defaultInstrument.id}-${decimalPlaces}`;
     const listFooterComponent =
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
@@ -59,15 +55,6 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
         return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.left.id);
     };
 
-    if (!isNotEmptyArray(sections)) {
-        return (
-            <View className="flex-1 px-5xl" style={emptyStateStyle}>
-                {listHeaderComponent}
-                <AccountsEmptyState />
-            </View>
-        );
-    }
-
     return (
         <AnimatedSectionList<AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface, HomeSectionInterface>
             key={listFormatKey}
@@ -82,6 +69,7 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
             contentContainerStyle={contentContainerStyle}
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}
+            ListEmptyComponent={AccountsEmptyState}
         />
     );
 };

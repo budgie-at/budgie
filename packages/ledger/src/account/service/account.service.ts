@@ -11,7 +11,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNumber } from '@rnw-community/shared';
 
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { TransactionService } from '../../transaction/service/transaction.service';
@@ -63,6 +63,11 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
             effect => Db.transaction(effect)
         );
 
+        const orFail = <A>(id: number, findAccount: Effect.Effect<A | undefined, DbError, Db>) =>
+            Effect.flatMap(findAccount, account =>
+                isDefined(account) ? Effect.succeed(account) : Effect.fail(new AccountNotFoundError({ id }))
+            );
+
         const updateWithBalance = Effect.fn('AccountService.updateWithBalance')(
             function* (
                 id: number,
@@ -71,7 +76,9 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                     ...input
                 }: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>> | Partial<DepositAccountCreateInputInterface>
             ) {
-                const updatedAccount = yield* accountRepository.updateById(id, input);
+                const updatedAccount = isNotEmptyArray(Object.keys(input))
+                    ? yield* accountRepository.updateById(id, input)
+                    : yield* orFail(id, accountRepository.findById(id));
 
                 if (isNumber(currentBalance)) {
                     yield* adjustBalanceTo(updatedAccount.id, currentBalance);
@@ -81,11 +88,6 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
             },
             effect => Db.transaction(effect)
         );
-
-        const orFail = <A>(id: number, findAccount: Effect.Effect<A | undefined, DbError, Db>) =>
-            Effect.flatMap(findAccount, account =>
-                isDefined(account) ? Effect.succeed(account) : Effect.fail(new AccountNotFoundError({ id }))
-            );
 
         const processBatch = Effect.fn('AccountService.processBatch')(
             function* (batch: LiabilityAccountCreateInputInterface[]) {

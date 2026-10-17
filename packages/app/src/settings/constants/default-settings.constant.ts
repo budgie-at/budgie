@@ -23,6 +23,9 @@ export const DEFAULT_SETTINGS = {
     isAiVoiceInputEnabled: false,
     isAiSuggestionsEnabled: false,
     isAiTranslationsEnabled: false,
+    isAiWifiOnly: true,
     isRunwayPillEnabled: true,
-    isRunwayCryptoIncluded: false
+    isRunwayCryptoIncluded: false,
+    lastBackupAt: null,
+    isAiNoteHintShown: false
 } satisfies SettingsEntityInterface;

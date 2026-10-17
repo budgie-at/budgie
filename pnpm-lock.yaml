@@ -305,6 +305,9 @@ importers:
       expo-localization:
         specifier: ~58.0.2
         version: 58.0.2(expo@58.0.1)(react@19.3.0)
+      expo-network:
+        specifier: ~58.0.3
+        version: 58.0.3(expo@58.0.1)(react@19.3.0)
       expo-notifications:
         specifier: ~58.0.10
         version: 58.0.10(expo@58.0.1)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1)(typescript@6.0.2)
@@ -6551,6 +6554,12 @@ packages:
 
   expo-modules-macros@0.14.0:
     resolution: {integrity: sha512-R6ODnfK0Za+pSZZjv0SuOTV2YkxczeavvrsLv40gueH3U7QJ8H5OlD3kkFqyT68UzDLRJhwF52D884egtNH7Rw==}
+
+  expo-network@58.0.3:
+    resolution: {integrity: sha512-0WfFHUKt08Zk7ajaFzVDcZ4iNF3ywPVhGtxo7kDSiNQI4XO3MAqB6jYvpqf0D7+KQ28o/BIEkFdwkZl6AynIvw==}
+    peerDependencies:
+      expo: '*'
+      react: 19.3.0
 
   expo-notifications@58.0.10:
     resolution: {integrity: sha512-LC6cmL3WkpICtqzyyNrfiD6n0mMuI3BAhVshi014ssp0uAy5aMmZF4+ElpuhaXjcxv7SuHZeiKQu097WCFwYtA==}
@@ -15171,6 +15180,11 @@ snapshots:
       react-native: 0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1)
 
   expo-modules-macros@0.14.0: {}
+
+  expo-network@58.0.3(expo@58.0.1)(react@19.3.0):
+    dependencies:
+      expo: 58.0.1(9c71a3bc52e149ae2beedac5637265b8)
+      react: 19.3.0
 
   expo-notifications@58.0.10(expo@58.0.1)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1)(typescript@6.0.2):
     dependencies:

@@ -14,6 +14,11 @@ const VIRTUAL_SHIMS: Record<string, string> = {
         export const Paths = { document: '/tmp', cache: '/tmp' };
     `,
     'expo-file-system/legacy': `export const createDownloadResumable = () => ({});`,
+    'expo-network': `
+        export const NetworkStateType = { NONE: 'NONE', WIFI: 'WIFI', ETHERNET: 'ETHERNET', CELLULAR: 'CELLULAR', UNKNOWN: 'UNKNOWN' };
+        export const getNetworkStateAsync = async () => ({ type: 'WIFI', isConnected: true });
+        export const addNetworkStateListener = () => ({ remove: () => undefined });
+    `,
     'expo-constants': `export default { expoConfig: { extra: { aiEnabled: true } } };`,
     'llama.rn': `export const initLlama = async () => ({});`,
     'whisper.rn': `export const initWhisper = async () => ({});`,

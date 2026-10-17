@@ -10,11 +10,11 @@ export const BANK_CREDENTIALS_STEP_CONFIG: Partial<Record<ExternalSourceEnum, Ba
         title: msg`Get API Token`,
         description: msg`Open Monobank to get your token`,
         modalTitle: msg`Create and copy the personal token`,
-        warningTitle: msg`Your token is stored securely in the database. Sync continues in the background.`,
+        warningTitle: msg`Kept inside Budgie's file on this phone. Sent only to Monobank, never to us.`,
         steps: [
-            msg`Tap "Get API Token" above and log in to Monobank`,
-            msg`Create and copy your personal API token`,
-            msg`Paste the token into the field below`
+            msg`Tap "Get API Token" above to open api.monobank.ua`,
+            msg`Scan the QR code with the Monobank app`,
+            msg`Copy the token and paste it below`
         ]
     },
     [ExternalSourceEnum.BINANCE]: {

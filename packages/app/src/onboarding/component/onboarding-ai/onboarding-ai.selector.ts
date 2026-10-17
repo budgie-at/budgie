@@ -1,3 +1,5 @@
 export const OnboardingAiSelector = {
-    SuccessRow: 'OnboardingAi.SuccessRow'
+    DownloadButton: 'OnboardingAi.DownloadButton',
+    LaterButton: 'OnboardingAi.LaterButton',
+    NoThanksButton: 'OnboardingAi.NoThanksButton'
 } as const;

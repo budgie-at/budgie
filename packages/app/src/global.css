@@ -81,6 +81,8 @@
             --color-cta-background: rgb(0, 0, 0);
             --color-cta-corner: rgb(0, 0, 0);
 
+            --color-seal-background: rgb(15, 110, 77);
+
             --color-secondary-foreground: rgba(115, 115, 115, 1);
             --color-secondary-corner: rgba(229, 229, 229, 1);
             --color-secondary-background: rgba(248, 248, 248, 1);
@@ -135,6 +137,8 @@
             --color-cta-foreground: rgb(0, 0, 0);
             --color-cta-background: rgb(255, 255, 255);
             --color-cta-corner: rgb(255, 255, 255);
+
+            --color-seal-background: rgb(12, 80, 57);
 
             --color-secondary-foreground: rgba(136, 136, 136, 1);
             --color-secondary-corner: rgba(34, 34, 34, 1);

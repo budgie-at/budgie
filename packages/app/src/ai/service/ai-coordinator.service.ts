@@ -24,6 +24,7 @@ import { getEnabledAiSubsystems } from '../utils/get-enabled-ai-subsystems.util'
 import { patchAtom } from '../utils/patch-atom.util';
 
 import { AiEmbeddingStatusService } from './ai-embedding-status.service';
+import { AiModelDownloadService } from './ai-model-download.service';
 import { AiModelResidencyService } from './ai-model-residency.service';
 import { ChatService } from './chat.service';
 import { EmbeddingDrainerService } from './embedding-drainer.service';
@@ -42,6 +43,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const translationDrainerService = yield* TranslationDrainerService;
         const translationProgressStore = yield* TranslationProgressStore;
         const embeddingProgressStore = yield* EmbeddingProgressStore;
+        const aiModelDownloadService = yield* AiModelDownloadService;
         const settingsRepository = yield* SettingsRepository;
         const settleGraceMs = 5_000;
         const drainers = [translationDrainerService, ...embeddingDrainerService.drainers];
@@ -164,6 +166,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
                 ),
                 scope
             );
+            yield* aiModelDownloadService.start(getEnabledAiSubsystems(settings));
             const isSuspended = AppState.currentState !== 'active' && AppState.currentState !== 'unknown';
             patchAtom(aiCoordinatorSnapshotAtom, { isSuspended });
             if (!isSuspended) {
@@ -178,6 +181,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             }
             patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: true });
             yield* Scope.close(scope, Exit.void);
+            yield* aiModelDownloadService.suspend();
             yield* stopSubsystems();
             activeScope = null;
         });
@@ -201,6 +205,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             TranslationDrainerService.layer,
             TranslationProgressStore.layer,
             EmbeddingProgressStore.layer,
+            AiModelDownloadService.layer,
             SettingsRepository.layer
         ])
     );

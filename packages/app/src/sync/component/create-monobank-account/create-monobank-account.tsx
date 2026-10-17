@@ -1,4 +1,6 @@
-import { MonobankSyncService } from '@budgie/sync';
+import { UserIconNameEnum } from '@budgie/contracts';
+import { MonobankSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
@@ -6,6 +8,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { OnboardingNote } from '../../../onboarding/component/onboarding-note/onboarding-note';
+import { useIsOnboardingActive } from '../../../onboarding/hook/use-is-onboarding-active.hook';
 import { DEFAULT_SYNC_HISTORY_DEPTH } from '../../constant/sync-history-depth-options.constant';
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
@@ -16,16 +20,20 @@ import { TokenInputStep } from '../token-input-step/token-input-step';
 
 import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
 
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
+
+    const isOnboardingActive = useIsOnboardingActive();
 
     const [step, setStep] = useState(SetupStepEnum.TOKEN);
     const [token, setToken] = useState('');
     const [historyDepth, setHistoryDepth] = useState(DEFAULT_SYNC_HISTORY_DEPTH);
+    const effectiveHistoryDepth = isOnboardingActive ? SyncHistoryDepthEnum.MONTH_1 : historyDepth;
 
     const { accountSelection, isLoading, fetchAccountPreviews, handleGoBack, handleSetupSync, isStartSyncDisabled } =
         useSyncAccountSetupFlow(MonobankSyncService, (monobankSyncService, selectedAccountIds) =>
-            monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds, historyDepth)
+            monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds, effectiveHistoryDepth)
         );
 
     const handleFetchAccounts = async () => {
@@ -68,20 +76,39 @@ export const CreateMonobankAccount = () => {
         setStep(SetupStepEnum.HISTORY);
     };
 
+    const selectedAccountCount = accountSelection.selectedAccounts.size;
+    const addAccountsLabel = t({ message: plural(selectedAccountCount, { one: 'Add # account', other: 'Add # accounts' }) });
+    const onboardingHistoryNote = isOnboardingActive ? (
+        <OnboardingNote
+            icon={UserIconNameEnum.CalendarDays}
+            text={t`Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app.`}
+        />
+    ) : null;
+    const accountsFooterVariant = isOnboardingActive ? 'cta' : 'primary';
+    const accountsFooterLabel = isOnboardingActive ? addAccountsLabel : t`Continue`;
+    const handleAccountsFooterPress = isOnboardingActive ? handleSetupSync : handleContinueToHistory;
+    const accountsFooter = (
+        <Button
+            variant={accountsFooterVariant}
+            onPress={handleAccountsFooterPress}
+            disabled={isStartSyncDisabled}
+            content={accountsFooterLabel}
+            testID={CreateMonobankAccountSelector.ContinueButton}
+        />
+    );
+
     let stepContent = <TokenInputStep token={token} onTokenChange={setToken} />;
-    let footer = <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />;
+    let footer = <Button onPress={handleFetchAccounts} disabled={isLoading} isLoading={isLoading} content={t`Connect`} />;
 
     switch (step) {
         case SetupStepEnum.ACCOUNTS:
-            stepContent = <AccountSelectionStep {...accountSelection} />;
-            footer = (
-                <Button
-                    onPress={handleContinueToHistory}
-                    disabled={isStartSyncDisabled}
-                    content={t`Continue`}
-                    testID={CreateMonobankAccountSelector.ContinueButton}
-                />
+            stepContent = (
+                <>
+                    <AccountSelectionStep {...accountSelection} />
+                    {onboardingHistoryNote}
+                </>
             );
+            footer = accountsFooter;
             break;
         case SetupStepEnum.HISTORY:
             stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={setHistoryDepth} />;
@@ -94,7 +121,7 @@ export const CreateMonobankAccount = () => {
     return (
         <SyncAccountSetupPage
             title={t`Connect Monobank`}
-            description={t`Sync your Monobank accounts and transactions`}
+            description={t`Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between.`}
             onGoBack={handleStepAwareGoBack}
             footer={footer}
             scrollViewTestID={CreateMonobankAccountSelector.ScrollView}

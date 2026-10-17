@@ -12,10 +12,11 @@ import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.i
 import { LlamaConfigInterface } from '../interface/llama-config.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { GPU_LAYERS } from '../utils/ai-constants.util';
-import { downloadModel } from '../utils/download-model.util';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
+import type { AiModelDownloadService } from './ai-model-download.service';
+import type * as Context from 'effect/Context';
 import type { LlamaContext } from 'llama.rn';
 
 export class LlamaModelService implements AiSubsystemServiceInterface {
@@ -25,10 +26,12 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
                 return;
             }
             yield* this.releaseContext();
-            patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
-            const modelPath = yield* downloadModel(this.config.modelUrl, this.config.modelFilename, downloadProgress => {
-                patchAtom(this.snapshot, { downloadProgress });
-            });
+            const modelPath = this.modelDownload.modelPath(this.config.name);
+            if (!isDefined(modelPath)) {
+                patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.DOWNLOADING });
+
+                return;
+            }
             patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.INITIALIZING });
             const { initLlama } = yield* Effect.promise(() => import('llama.rn'));
             this.context = yield* Effect.promise(() =>
@@ -61,7 +64,7 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
                 return;
             }
             yield* this.releaseContext();
-            patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.SUSPENDED, downloadProgress: 0 });
+            patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.SUSPENDED });
         },
         effect => this.contextLock.withPermit(Effect.uninterruptible(effect))
     );
@@ -72,7 +75,10 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
 
     readonly snapshot: Atom.Writable<LlamaSubsystemSnapshotInterface>;
 
-    constructor(private readonly config: LlamaConfigInterface) {
+    constructor(
+        private readonly config: LlamaConfigInterface,
+        private readonly modelDownload: Context.Service.Shape<typeof AiModelDownloadService>
+    ) {
         this.snapshot = config.snapshot;
     }
 

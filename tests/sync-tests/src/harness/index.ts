@@ -85,3 +85,4 @@ export { expectParentedToCanonical } from './consolidation/expect-parented-to-ca
 export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';
 export { DEBT_OPENING_MESSAGES } from './debt/debt-opening-messages';
+export { aiModelDownloadStub } from './ai/ai-model-download-stub';
