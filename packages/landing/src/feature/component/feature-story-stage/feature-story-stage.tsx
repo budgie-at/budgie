@@ -38,26 +38,22 @@ const createActivator = (grid: HTMLElement) => {
     };
 };
 
-const observeStory = (sentinels: HTMLElement[], activate: (index: number) => void) => {
-    const resolveActiveIndex = () => {
+const trackStory = (sentinels: HTMLElement[], activate: (index: number) => void) => {
+    const update = () => {
         const anchorLine = window.innerHeight * STORY_ANCHOR;
         const lastPassed = sentinels.filter(sentinel => sentinel.getBoundingClientRect().top <= anchorLine).at(-1);
 
-        return isDefined(lastPassed) ? readIndex(lastPassed) : 0;
+        activate(isDefined(lastPassed) ? readIndex(lastPassed) : 0);
     };
 
-    const observer = new IntersectionObserver(
-        () => {
-            activate(resolveActiveIndex());
-        },
-        { rootMargin: ['-50%', '0px', '-49%', '0px'].join(' '), threshold: 0 }
-    );
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
 
-    sentinels.forEach(sentinel => {
-        observer.observe(sentinel);
-    });
-
-    return observer;
+    return () => {
+        window.removeEventListener('scroll', update);
+        window.removeEventListener('resize', update);
+    };
 };
 
 interface Props {
@@ -73,7 +69,7 @@ export const FeatureStoryStage = ({ count, children }: Props) => {
     useEffect(() => {
         const grid = gridRef.current;
 
-        if (!isDefined(grid) || !('IntersectionObserver' in window)) {
+        if (!isDefined(grid)) {
             return emptyFn;
         }
 
@@ -84,13 +80,12 @@ export const FeatureStoryStage = ({ count, children }: Props) => {
         }
 
         const activate = createActivator(grid);
-        const observer = observeStory(sentinels, activate);
-
         grid.dataset.ready = '';
-        activate(0);
+
+        const stopTracking = trackStory(sentinels, activate);
 
         return () => {
-            observer.disconnect();
+            stopTracking();
             grid.removeAttribute('data-ready');
         };
     }, []);
