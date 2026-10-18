@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.106.2](https://github.com/budgie-at/budgie/compare/v6.106.1...v6.106.2) (2026-10-18)
+
+### Bug Fixes
+
+* **landing:** keep scroll stories in sync with viewport ([#1602](https://github.com/budgie-at/budgie/issues/1602)) ([700960e](https://github.com/budgie-at/budgie/commit/700960e709660487aa3509b5852781947a3892c1))
+
+
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie-at/landing
