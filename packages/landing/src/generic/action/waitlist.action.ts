@@ -65,12 +65,10 @@ redis.call('INCR', KEYS[2])
 return {'${WaitlistMessageKeyEnum.SUCCESS}', position}
 `;
 
-type RedisClient = RedisClientType;
-
-let redisClient: RedisClient | null = null;
+let redisClient: RedisClientType | null = null;
 const redisConnectionLock = Semaphore.makeUnsafe(1);
 
-const destroyRedisClient = (client: RedisClient) => {
+const destroyRedisClient = (client: RedisClientType) => {
     if (client.isOpen) {
         client.destroy();
     }
@@ -80,7 +78,7 @@ const destroyRedisClient = (client: RedisClient) => {
     }
 };
 
-const runRedisCommand = <Result>(client: RedisClient, command: () => Promise<Result>, deadlineMs: number) =>
+const runRedisCommand = <Result>(client: RedisClientType, command: () => Promise<Result>, deadlineMs: number) =>
     Effect.tryPromise(command).pipe(
         Effect.timeout(deadlineMs),
         Effect.tapError(() => Effect.sync(() => void destroyRedisClient(client)))
