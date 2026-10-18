@@ -16,7 +16,7 @@ import {
 import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
@@ -35,7 +35,6 @@ import type { SuggestRuleDataInterface } from '@budgie/rules';
 import type { EdgeFadePropsInterface } from '@rnw-community/react-native-screen-chrome';
 
 const FOOTER_CONTENT_CLEARANCE = 140;
-const SCROLL_VIEW_STYLE = { flex: 1 };
 const FOOTER_EDGE_FADE_PROPS = { blurMethod: 'dimezisBlurView' } satisfies Omit<EdgeFadePropsInterface, 'position'>;
 
 export const TransactionInfoPageContent = ({
@@ -78,7 +77,6 @@ export const TransactionInfoPageContent = ({
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
             <ScreenChromeScrollView
-                style={SCROLL_VIEW_STYLE}
                 contentInsetTop={config.headerHeight}
                 contentInsetBottom={contentInsetBottom}
                 contentContainerClassName="px-5xl"
@@ -111,9 +109,8 @@ export const TransactionInfoPageContent = ({
             <EdgeFade position="top" blurMethod="dimezisBlurView" />
 
             <ScreenChromeHeader>
-                <View className="-mx-4 self-stretch">
-                    <PageHeader title="" size="md" onGoBack={handleGoBack} right={actionsMenu} />
-                </View>
+                <GoBackButton onPress={handleGoBack} />
+                {actionsMenu}
             </ScreenChromeHeader>
 
             <ScreenChromeFooter edgeFadeProps={FOOTER_EDGE_FADE_PROPS}>

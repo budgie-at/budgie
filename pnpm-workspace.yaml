@@ -50,28 +50,12 @@ peerDependencyRules:
     '@effect/sql-sqlite-react-native>@op-engineering/op-sqlite': 18.2.5
 
 minimumReleaseAgeExclude:
-  - '@effect/sql-sqlite-react-native@4.0.0'
-  - '@effect/sql-sqlite-node@4.0.0'
-  - '@effect/atom-react@4.0.0'
-  - '@effect/vitest@4.0.0'
-  - effect@4.0.0
-  - llama.rn@0.13.0-rc.6
-  - '@expo/cli@58.1.0 || 58.1.11'
-  - '@expo/log-box@58.0.8'
-  - '@expo/metro-runtime@58.0.10'
-  - '@expo/router-server@58.0.5'
-  - '@expo/ui@58.0.10'
-  - babel-preset-expo@58.0.7
+  - '@expo/cli@58.1.11'
   - expo-eas-client@58.0.2
-  - expo-image@58.0.9
-  - expo-modules-core@58.0.10 || 58.0.22
+  - expo-modules-core@58.0.22
   - expo-modules-jsi@58.0.15
-  - expo-notifications@58.0.10
-  - expo-router@58.0.11 || 58.0.23
-  - expo-splash-screen@58.0.3
-  - expo-updates@58.0.12
-  - expo-widgets@58.0.10
-  - expo@58.0.1 || 58.0.14
+  - expo-router@58.0.23
+  - expo@58.0.14
   - '@expo/schema-utils@58.0.2'
   - '@hookform/resolvers@5.9.2'
   - '@node-llama-cpp/linux-arm64@3.22.2'
