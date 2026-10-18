@@ -7,7 +7,7 @@ import * as Schema from 'effect/Schema';
 import * as SchemaTransformation from 'effect/SchemaTransformation';
 import * as Semaphore from 'effect/Semaphore';
 import { unstable_cache as cacheServerResult } from 'next/cache';
-import { createClient } from 'redis';
+import { createClient, type RedisClientType } from 'redis';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -65,7 +65,7 @@ redis.call('INCR', KEYS[2])
 return {'${WaitlistMessageKeyEnum.SUCCESS}', position}
 `;
 
-type RedisClient = ReturnType<typeof createClient>;
+type RedisClient = RedisClientType;
 
 let redisClient: RedisClient | null = null;
 const redisConnectionLock = Semaphore.makeUnsafe(1);

@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
-        "@rnw-community/shared": "^2.2.0",
-        "effect": "4.0.0"
+        "@rnw-community/shared": "^2.28.0",
+        "effect": "4.0.5"
     }
 }

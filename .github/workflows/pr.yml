@@ -88,7 +88,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
-                  node-version: 22.22.1
+                  node-version: 22.22.2
                   cache: pnpm
 
             - name: Install dependencies
@@ -159,7 +159,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
-                  node-version: 22.22.1
+                  node-version: 22.22.2
 
             - name: Install sqlite3 and ruby
               timeout-minutes: 3
@@ -204,7 +204,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
-                  node-version: 22.22.1
+                  node-version: 22.22.2
                   cache: pnpm
 
             - name: Install dependencies
@@ -248,7 +248,7 @@ jobs:
             package-manager: pnpm
             install-command: pnpm install --frozen-lockfile
             runner-labels: '["self-hosted","linux-portable-4x8"]'
-            node-version: 22.22.1
+            node-version: 22.22.2
 
     ios-maestro:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'

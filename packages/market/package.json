@@ -25,16 +25,16 @@
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
-        "@rnw-community/shared": "^2.2.0",
-        "date-fns": "^4.3.0",
+        "@rnw-community/shared": "^2.28.0",
+        "date-fns": "^4.4.0",
         "drizzle-orm": "1.0.0-rc.4",
-        "effect": "4.0.0"
+        "effect": "4.0.5"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.0",
-        "@effect/vitest": "4.0.0",
-        "@types/node": "22.20.1",
-        "vitest": "^5.0.2"
+        "@effect/sql-sqlite-node": "4.0.5",
+        "@effect/vitest": "4.0.5",
+        "@types/node": "26.6.5",
+        "vitest": "^5.0.5"
     }
 }

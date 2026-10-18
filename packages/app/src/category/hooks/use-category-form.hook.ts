@@ -6,9 +6,17 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import type { UseFormReturn } from 'react-hook-form';
+
 const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: UserIconNameEnum.Folder, title: '' };
 
-export const useCategoryForm = (defaultValues: CategoryEntityInterface | null, defaultTitle?: string) => {
+export const useCategoryForm = (
+    defaultValues: CategoryEntityInterface | null,
+    defaultTitle?: string
+): UseFormReturn<CategoryCreateEntityInterface> & {
+    readonly icon: CategoryCreateEntityInterface['icon'];
+    readonly title: CategoryCreateEntityInterface['title'];
+} => {
     const form = useForm({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(CategoryCreateEntitySchema)),
         defaultValues: defaultValues ?? DEFAULT_VALUES,
