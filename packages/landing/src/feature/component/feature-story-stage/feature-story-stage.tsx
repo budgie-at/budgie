@@ -38,24 +38,6 @@ const createActivator = (grid: HTMLElement) => {
     };
 };
 
-const trackStory = (sentinels: HTMLElement[], activate: (index: number) => void) => {
-    const update = () => {
-        const anchorLine = window.innerHeight * STORY_ANCHOR;
-        const lastPassed = sentinels.filter(sentinel => sentinel.getBoundingClientRect().top <= anchorLine).at(-1);
-
-        activate(isDefined(lastPassed) ? readIndex(lastPassed) : 0);
-    };
-
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-
-    return () => {
-        window.removeEventListener('scroll', update);
-        window.removeEventListener('resize', update);
-    };
-};
-
 interface Props {
     readonly count: number;
     readonly children: ReactNode;
@@ -80,12 +62,21 @@ export const FeatureStoryStage = ({ count, children }: Props) => {
         }
 
         const activate = createActivator(grid);
-        grid.dataset.ready = '';
+        const update = () => {
+            const anchorLine = window.innerHeight * STORY_ANCHOR;
+            const lastPassed = sentinels.filter(sentinel => sentinel.getBoundingClientRect().top <= anchorLine).at(-1);
 
-        const stopTracking = trackStory(sentinels, activate);
+            activate(isDefined(lastPassed) ? readIndex(lastPassed) : 0);
+        };
+
+        grid.dataset.ready = '';
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
 
         return () => {
-            stopTracking();
+            window.removeEventListener('scroll', update);
+            window.removeEventListener('resize', update);
             grid.removeAttribute('data-ready');
         };
     }, []);
