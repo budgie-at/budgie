@@ -28,18 +28,18 @@
     "dependencies": {
         "@budgie/ai": "workspace:^",
         "@budgie/contracts": "workspace:^",
-        "@rnw-community/shared": "^2.2.0",
+        "@rnw-community/shared": "^2.28.0",
         "drizzle-orm": "1.0.0-rc.4",
-        "effect": "4.0.0"
+        "effect": "4.0.5"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
         "@budgie/rules": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.0",
-        "@effect/vitest": "4.0.0",
-        "@types/node": "22.20.1",
-        "node-llama-cpp": "3.22.1",
+        "@effect/sql-sqlite-node": "4.0.5",
+        "@effect/vitest": "4.0.5",
+        "@types/node": "26.6.5",
+        "node-llama-cpp": "3.22.2",
         "typescript": "npm:@typescript/typescript6@6.0.2",
-        "vitest": "^5.0.2"
+        "vitest": "^5.0.5"
     }
 }

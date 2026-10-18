@@ -26,16 +26,16 @@
     "dependencies": {
         "@budgie/contracts": "workspace:^",
         "@budgie/ledger": "workspace:*",
-        "@rnw-community/shared": "^2.2.0",
-        "date-fns": "^4.3.0",
-        "effect": "4.0.0",
+        "@rnw-community/shared": "^2.28.0",
+        "date-fns": "^4.4.0",
+        "effect": "4.0.5",
         "papaparse": "^5.7.0"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/vitest": "4.0.0",
-        "@types/node": "22.20.1",
+        "@effect/vitest": "4.0.5",
+        "@types/node": "26.6.5",
         "@types/papaparse": "^5",
-        "vitest": "^5.0.2"
+        "vitest": "^5.0.5"
     }
 }

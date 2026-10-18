@@ -28,10 +28,10 @@
         "@budgie/ledger": "workspace:*",
         "@budgie/rules": "workspace:*",
         "@liaugust/monobank-sdk": "^0.8.0",
-        "@noble/hashes": "^1.8.0",
-        "@rnw-community/shared": "^2.2.0",
-        "date-fns": "^4.3.0",
-        "effect": "4.0.0",
+        "@noble/hashes": "^2.4.0",
+        "@rnw-community/shared": "^2.28.0",
+        "date-fns": "^4.4.0",
+        "effect": "4.0.5",
         "xlsx": "^0.18.5"
     }
 }
