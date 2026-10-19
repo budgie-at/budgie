@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.107.1](https://github.com/budgie-at/budgie/compare/v6.107.0...v6.107.1) (2026-10-19)
+
+### Bug Fixes
+
+* **app:** format the absolute amount instead of number parts, which Hermes lacks ([e0a5dbb](https://github.com/budgie-at/budgie/commit/e0a5dbb6987efc81410ccebd2c393049b16fe174))
+* **app:** put the minus sign before the currency symbol ([2523fd0](https://github.com/budgie-at/budgie/commit/2523fd066f5ad4c9e6527388562d1dd4f85ba7a6))
+
+
 # [6.107.0](https://github.com/budgie-at/budgie/compare/v6.106.4...v6.107.0) (2026-10-19)
 
 **Note:** Version bump only for package @budgie-at/app
