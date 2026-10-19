@@ -2,6 +2,7 @@ import { isNumber } from '@rnw-community/shared';
 
 import { BILLION, HUNDRED_THOUSAND, MILLION, THOUSAND } from '../constant/compact-thresholds.constant';
 import { useI18nContext } from '../context/i18n.context';
+import { formatSymbolAmount } from '../utils/format-symbol-amount.util';
 
 const COMPACT_DIVISORS = [BILLION, MILLION, THOUSAND] as const;
 const COMPACT_SUFFIX_BY_DIVISOR = new Map<number, string>([
@@ -21,7 +22,7 @@ export const useFormatCompactDigits = (minimumCompactThreshold = HUNDRED_THOUSAN
         const absoluteValue = Math.abs(value);
 
         if (!Number.isFinite(value) || absoluteValue < minimumCompactThreshold) {
-            return `${symbol}${intl.formatNumber(value, { maximumFractionDigits: 0 })}`;
+            return formatSymbolAmount(intl.formatNumberToParts(value, { maximumFractionDigits: 0 }), symbol);
         }
 
         const sign = value < 0 ? '-' : '';
